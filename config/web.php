@@ -12,6 +12,9 @@ $config = [
         'pagePointer'=>'page',
         'orderByRoute'=>'DESC',
     ],
+    'components'=>[
+        'db'=>require(__DIR__ . '/db.php'),
+    ],
 ];
 
 return $config;

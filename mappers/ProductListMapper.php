@@ -45,9 +45,9 @@ class ProductListMapper extends BaseAbstractMapper
     {
         try {
             $getKeys = array_keys(\Yii::$app->request->get());
-            if (in_array('category', $getKeys)) {
+            if (in_array('category', $getKeys) && !in_array('subcategory', $getKeys)) {
                 $this->queryForCategory();
-            } else if (in_array('subcategory', $getKeys)) {
+            } else if (in_array('subcategory', $getKeys) && in_array('category', $getKeys)) {
                 $this->queryForSubCategory();
             } else {
                 $this->queryForAll();
@@ -65,10 +65,8 @@ class ProductListMapper extends BaseAbstractMapper
     private function queryForAll()
     {
         try {
-            $this->getSelectHead();
-            $this->_query .= $this->addFilters();
-            $this->_query .= $this->getOrder();
-            $this->_query .= $this->getLimit();
+            $this->addSelectHead();
+            $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListMapper::queryForAll\n" . $e->getMessage());
         }
@@ -82,11 +80,9 @@ class ProductListMapper extends BaseAbstractMapper
     public function queryForCategory()
     {
         try {
-            $this->getSelectHead();
+            $this->addSelectHead();
             $this->_query .= ' WHERE category=:category';
-            $this->_query .= $this->addFilters();
-            $this->_query .= $this->getOrder();
-            $this->_query .= $this->getLimit();
+            $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListMapper::queryForCategory\n" . $e->getMessage());
         }
@@ -94,16 +90,46 @@ class ProductListMapper extends BaseAbstractMapper
     }
     
     /**
+     * Возвращает сформированную строку запроса к БД, фильруя по подкатегории
+     * @return string
+     */
+    public function queryForSubCategory()
+    {
+        try {
+            $this->addSelectHead();
+            $this->_query .= ' WHERE category=:category AND subcategory=:subcategory';
+            $this->addSelectEnd();
+        } catch (\Exception $e) {
+            throw new ErrorException("Ошибка при вызове метода ProductListMapper::queryForSubCategory\n" . $e->getMessage());
+        }
+        return $this->_query;
+    }
+    
+    /**
      * Формирует начальную часть строки запроса к БД
      */
-    private function getSelectHead()
+    private function addSelectHead()
     {
         try {
             $this->_query = 'SELECT ';
-            $this->_query .= $this->getFields();
-            $this->_query .= $this->getTableName();
+            $this->_query .= $this->addFields();
+            $this->_query .= $this->addTableName();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListMapper::getSelectHead\n" . $e->getMessage());
+            throw new ErrorException("Ошибка при вызове метода ProductListMapper::addSelectHead\n" . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Формирует финальную часть строки запроса к БД
+     */
+    private function addSelectEnd()
+    {
+        try {
+            $this->_query .= $this->addFilters();
+            $this->_query .= $this->addOrder();
+            $this->_query .= $this->addLimit();
+        } catch (\Exception $e) {
+            throw new ErrorException("Ошибка при вызове метода ProductListMapper::addSelectEnd\n" . $e->getMessage());
         }
     }
     
@@ -111,7 +137,7 @@ class ProductListMapper extends BaseAbstractMapper
      * Формирует часть запроса к БД, перечисляющую столбцы данных, которые необходимо включить в выборку
      * @return string
      */
-    private function getFields()
+    private function addFields()
     {
         try {
             $result = [];
@@ -119,7 +145,7 @@ class ProductListMapper extends BaseAbstractMapper
                 $result[] = '[[' . $field . ']]';
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListMapper::getFields\n" . $e->getMessage());
+            throw new ErrorException("Ошибка при вызове метода ProductListMapper::addFields\n" . $e->getMessage());
         }
         
         if (!empty($result)) {
@@ -132,14 +158,14 @@ class ProductListMapper extends BaseAbstractMapper
      * Формирует часть запроса к БД, указывающую из какой таблицы берутся данные
      * @return string
      */
-    private function getTableName()
+    private function addTableName()
     {
         try {
             if (!isset($this->tableName)) {
                 throw new ErrorException('Не задано имя таблицы!');
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListMapper::getTableName\n" . $e->getMessage());
+            throw new ErrorException("Ошибка при вызове метода ProductListMapper::addTableName\n" . $e->getMessage());
         }
         return ' FROM {{' . $this->tableName . '}}';
     }
@@ -171,14 +197,14 @@ class ProductListMapper extends BaseAbstractMapper
      * Формирует часть запроса к БД, задающую порядок сортировки
      * @return string
      */
-    public function getOrder()
+    public function addOrder()
     {
         try {
             if (!isset($this->orderByField)) {
                 throw new ErrorException('Не задано имя столбца для сортировки!');
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListMapper::getOrder\n" . $e->getMessage());
+            throw new ErrorException("Ошибка при вызове метода ProductListMapper::addOrder\n" . $e->getMessage());
         }
         return ' ORDER BY ' . $this->orderByField . ' ' . $this->orderByRoute;
     }
@@ -187,14 +213,14 @@ class ProductListMapper extends BaseAbstractMapper
      * Формирует часть запроса к БД, ограничивающую выборку
      * @return string
      */
-    private function getLimit()
+    private function addLimit()
     {
         try {
             if (in_array(\Yii::$app->params['pagePointer'], array_keys(\Yii::$app->request->get()))) {
                 return ' LIMIT ' . (\Yii::$app->request->get(\Yii::$app->params['pagePointer']) * $this->limit) . ', ' . $this->limit;
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListMapper::getLimit\n" . $e->getMessage());
+            throw new ErrorException("Ошибка при вызове метода ProductListMapper::addLimit\n" . $e->getMessage());
         }
         return ' LIMIT 0, ' . $this->limit;
     }
