@@ -19,22 +19,30 @@ abstract class BaseAbstractMapper extends Object
      */
     public $fields = array();
     /**
-     * @var string поле по которому будет произветена сортировка
+     * @var string поле по которому будет произведена сортировка
      */
     public $orderByField;
     /**
      * @var string порядок сортировки ASC DESC
      */
     public $orderByRoute;
-    
     /**
      * @var string результирующая строка запроса
      */
-    protected $_query;
+    public $_query;
+    /**
+     * @var array массив результирующих данных, полученный из БД
+     */
+    protected $_DbArray = array();
+    
+    /**
+     * Передает классу-визитеру объект для дополнительной обработке данных
+     * @param Object объект класса-визитера
+     */
+    public function visit($visitor)
+    {
+        $visitor->update($this);
+    }
     
     abstract public function getGroup();
-    /*abstract public function getOne($id);
-    abstract public function add(Array $array);
-    abstract public function update(Array $array);
-    abstract public function delete(Array $array);*/
 }
