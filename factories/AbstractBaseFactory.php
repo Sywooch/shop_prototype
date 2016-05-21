@@ -6,6 +6,5 @@ use yii\base\Object;
 
 abstract class AbstractBaseFactory extends Object
 {
-    protected $objectsArray = array();
-    abstract public function getObjects(Array $DbArray);
+    abstract public function getObjects();
 }

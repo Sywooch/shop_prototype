@@ -20,12 +20,16 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
      * запускает процесс
-     * @param $object объект
+     * @param $object
      */
     public function update($object)
     {
-        $this->_mapperObject = $object;
-        $this->getSelectQuery();
+        try {
+            $this->_mapperObject = $object;
+            $this->getSelectQuery();
+        } catch (\Exception $e) {
+            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::update\n" . $e->getMessage());
+        }
     }
     
     /**
@@ -69,12 +73,12 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             $this->addSelectHead();
-            $this->_mapperObject->_query .= ' WHERE category=:category';
+            $this->_mapperObject->query .= ' WHERE category=:category';
             $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForCategory\n" . $e->getMessage());
         }
-        $this->_mapperObject->_categoryFlag = true;
+        $this->_mapperObject->categoryFlag = true;
     }
     
     /**
@@ -85,13 +89,13 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             $this->addSelectHead();
-            $this->_mapperObject->_query .= ' WHERE category=:category AND subcategory=:subcategory';
+            $this->_mapperObject->query .= ' WHERE category=:category AND subcategory=:subcategory';
             $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForSubCategory\n" . $e->getMessage());
         }
-        $this->_mapperObject->_categoryFlag = true;
-        $this->_mapperObject->_subcategoryFlag = true;
+        $this->_mapperObject->categoryFlag = true;
+        $this->_mapperObject->subcategoryFlag = true;
     }
     
     /**
@@ -100,9 +104,9 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     private function addSelectHead()
     {
         try {
-            $this->_mapperObject->_query = 'SELECT ';
-            $this->_mapperObject->_query .= $this->addFields();
-            $this->_mapperObject->_query .= $this->addTableName();
+            $this->_mapperObject->query = 'SELECT ';
+            $this->_mapperObject->query .= $this->addFields();
+            $this->_mapperObject->query .= $this->addTableName();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addSelectHead\n" . $e->getMessage());
         }
@@ -151,9 +155,9 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     private function addSelectEnd()
     {
         try {
-            $this->_mapperObject->_query .= $this->addFilters();
-            $this->_mapperObject->_query .= $this->addOrder();
-            $this->_mapperObject->_query .= $this->addLimit();
+            $this->_mapperObject->query .= $this->addFilters();
+            $this->_mapperObject->query .= $this->addOrder();
+            $this->_mapperObject->query .= $this->addLimit();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addSelectEnd\n" . $e->getMessage());
         }
@@ -171,17 +175,17 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             foreach ($this->_mapperObject->filterKeys as $filter) {
                 if (in_array($filter, $arrayKeys)) {
                     $result[] = $filter . '=:' . $filter;
-                    $this->_mapperObject->_filtersArray[':' . $filter] = \Yii::$app->request->get($filter);
+                    $this->_mapperObject->filtersArray[':' . $filter] = \Yii::$app->request->get($filter);
                 }
             }
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addFilters\n" . $e->getMessage());
         }
         
-        $this->_mapperObject->_filtersFlag = true;
+        $this->_mapperObject->filtersFlag = true;
         
         if (!empty($result)) {
-            return ((strpos($this->_mapperObject->_query, 'WHERE')) ? ' AND ' : ' WHERE ') . implode(' AND ', $result);
+            return ((strpos($this->_mapperObject->query, 'WHERE')) ? ' AND ' : ' WHERE ') . implode(' AND ', $result);
         }
         return '';
     }

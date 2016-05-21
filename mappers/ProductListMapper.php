@@ -5,7 +5,11 @@ namespace app\mappers;
 use app\mappers\BaseAbstractMapper;
 use yii\base\ErrorException;
 use app\queries\ProductListQueryCreator;
+use app\factories\ProductObjectsFactory;
 
+/**
+ * Получает строки с данными о товарах из БД, конструирует из каждой строки объект данных
+ */
 class ProductListMapper extends BaseAbstractMapper
 {
     /**
@@ -23,19 +27,19 @@ class ProductListMapper extends BaseAbstractMapper
     /**
      * @var boolean флаг, отмечающий, делается ли выборка для категории
      */
-    public $_categoryFlag = false;
+    public $categoryFlag = false;
     /**
      * @var boolean флаг, отмечающий, делается ли выборка для подкатегории
      */
-    public $_subcategoryFlag = false;
+    public $subcategoryFlag = false;
     /**
      * @var boolean флаг, отмечающий, применяются ли фильтры
      */
-    public $_filtersFlag = false;
+    public $filtersFlag = false;
     /**
      * @var array массив фильтров для привязки к запросу
      */
-    public $_filtersArray = array();
+    public $filtersArray = array();
     
     public function init()
     {
@@ -56,6 +60,8 @@ class ProductListMapper extends BaseAbstractMapper
     
     /**
      * Возвращает массив объектов, представляющих строки в БД
+     * Класс ProductListQueryCreator формирует строку запроса и заполняет свойства данными
+     * Класс ProductObjectsFactory создает из данных БД объекты
      * @return array
      */
     public function getGroup()
@@ -63,10 +69,11 @@ class ProductListMapper extends BaseAbstractMapper
         try {
             $this->visit(new ProductListQueryCreator());
             $this->getData();
+            $this->visit(new ProductObjectsFactory());
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListMapper::getGroup\n" . $e->getMessage());
         }
-        return $this->_DbArray;
+        return $this->objectsArray;
     }
     
     /**
@@ -76,12 +83,12 @@ class ProductListMapper extends BaseAbstractMapper
     private function getData()
     {
         try {
-            $command = \Yii::$app->db->createCommand($this->_query);
+            $command = \Yii::$app->db->createCommand($this->query);
             $bindArray = $this->getBindArray();
             if (!empty($bindArray)) {
                 $command->bindValues($bindArray);
             }
-            $this->_DbArray = $command->queryAll();
+            $this->DbArray = $command->queryAll();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListMapper::getData\n" . $e->getMessage());
         }
@@ -94,14 +101,14 @@ class ProductListMapper extends BaseAbstractMapper
     {
         $result = array();
         try {
-            if ($this->_categoryFlag) {
+            if ($this->categoryFlag) {
                 $result[':category'] = \Yii::$app->request->get('category');
             } 
-            if ($this->_subcategoryFlag) {
+            if ($this->subcategoryFlag) {
                 $result[':subcategory'] = \Yii::$app->request->get('subcategory');
             } 
-            if ($this->_filtersFlag) {
-                $result = array_merge($result, $this->_filtersArray);
+            if ($this->filtersFlag) {
+                $result = array_merge($result, $this->filtersArray);
             }
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListMapper::getBindArray\n" . $e->getMessage());

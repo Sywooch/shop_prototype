@@ -29,11 +29,15 @@ abstract class BaseAbstractMapper extends Object
     /**
      * @var string результирующая строка запроса
      */
-    public $_query;
+    public $query;
     /**
      * @var array массив результирующих данных, полученный из БД
      */
-    protected $_DbArray = array();
+    public $DbArray = array();
+    /**
+     * @var array массив объектов, созданных из результирующих данных, полученных из БД
+     */
+    public $objectsArray = array();
     
     /**
      * Передает классу-визитеру объект для дополнительной обработке данных
@@ -44,5 +48,9 @@ abstract class BaseAbstractMapper extends Object
         $visitor->update($this);
     }
     
+    /**
+     * Возвращает массив объектов, представляющий строки в БД
+     * @return array
+     */
     abstract public function getGroup();
 }
