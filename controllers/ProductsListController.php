@@ -15,7 +15,7 @@ class ProductsListController extends Controller
      */
     public function actionIndex()
     {
-        $productList = new ProductListMapper(['fields'=>['id', 'name', 'price'], 'orderByField'=>'price']);
+        $productList = new ProductListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'price'], 'orderByField'=>'price']);
         print_r($productList->getGroup());
         return '';
     }

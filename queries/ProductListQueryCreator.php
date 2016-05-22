@@ -121,7 +121,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         try {
             $result = [];
             foreach ($this->_mapperObject->fields as $field) {
-                $result[] = '[[' . $field . ']]';
+                $result[] = '[[' . $this->_mapperObject->tableName . '.' . $field . ']]';
             }
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addFields\n" . $e->getMessage());
@@ -203,7 +203,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addOrder\n" . $e->getMessage());
         }
-        return ' ORDER BY [[' . $this->_mapperObject->orderByField . ']] ' . $this->_mapperObject->orderByRoute;
+        return ' ORDER BY [[' . $this->_mapperObject->tableName . '.' . $this->_mapperObject->orderByField . ']] ' . $this->_mapperObject->orderByRoute;
     }
     
     /**
