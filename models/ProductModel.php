@@ -11,11 +11,12 @@ class ProductModel extends Model
     public $id;
     public $name;
     public $price;
+    public $description;
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'name', 'price'],
+            self::GET_FROM_DB=>['id', 'name', 'price', 'description'],
         ];
     }
 }

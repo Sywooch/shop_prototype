@@ -1,0 +1,22 @@
+{{ this.beginPage() }}
+<!DOCTYPE html>
+<html lang="{{ app.language }}">
+
+    <head>
+        {{ html.csrfMetaTags()|raw }}
+        <title>{{ title|default('Shop') }}</title>
+        <meta charset="{{ app.charset }}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {{ this.head() }}
+    </head>
+    
+    {{ this.beginBody() }}
+        <body>
+        
+            {{ content|raw }}
+        
+        </body>
+    {{ this.endBody() }}
+    
+</html>
+{{ this.endPage() }}

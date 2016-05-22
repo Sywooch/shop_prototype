@@ -10,7 +10,7 @@ use app\factories\ProductObjectsFactory;
 /**
  * Получает строки с данными о товарах из БД, конструирует из каждой строки объект данных
  */
-class ProductListMapper extends BaseAbstractMapper
+class ProductsListMapper extends BaseAbstractMapper
 {
     /**
      * @var array массив имен фильтров, которые могут быть переданы в $_GET
@@ -70,6 +70,7 @@ class ProductListMapper extends BaseAbstractMapper
             $this->visit(new ProductListQueryCreator());
             $this->getData();
             $this->visit(new ProductObjectsFactory());
+            print_r($this->query);
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListMapper::getGroup\n" . $e->getMessage());
         }

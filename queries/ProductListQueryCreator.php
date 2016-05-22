@@ -73,7 +73,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             $this->addSelectHead();
-            $this->_mapperObject->query .= ' WHERE category=:category';
+            $this->_mapperObject->query .= ' JOIN {{categories}} ON [[products.id_category]]=[[categories.id]] WHERE [[categories.name]]=:category';
             $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForCategory\n" . $e->getMessage());
@@ -89,7 +89,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             $this->addSelectHead();
-            $this->_mapperObject->query .= ' WHERE category=:category AND subcategory=:subcategory';
+            $this->_mapperObject->query .= ' JOIN {{categories}} ON [[products.id_category]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.name]]=:category AND [[subcategory.name]]=:subcategory';
             $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForSubCategory\n" . $e->getMessage());
