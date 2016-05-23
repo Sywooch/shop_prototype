@@ -21,10 +21,6 @@ class ProductsListMapper extends BaseAbstractMapper
      */
     public $limit;
     /**
-     * @var string имя таблицы, источника данных
-     */
-    public $tableName = 'products';
-    /**
      * @var boolean флаг, отмечающий, делается ли выборка для категории
      */
     public $categoryFlag = false;
@@ -103,10 +99,10 @@ class ProductsListMapper extends BaseAbstractMapper
         $result = array();
         try {
             if ($this->categoryFlag) {
-                $result[':category'] = \Yii::$app->request->get('category');
+                $result[':' . \Yii::$app->params['categoryKey']] = \Yii::$app->request->get(\Yii::$app->params['categoryKey']);
             } 
             if ($this->subcategoryFlag) {
-                $result[':subcategory'] = \Yii::$app->request->get('subcategory');
+                $result[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']);
             } 
             if ($this->filtersFlag) {
                 $result = array_merge($result, $this->filtersArray);
