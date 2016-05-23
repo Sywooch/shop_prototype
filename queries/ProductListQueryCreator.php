@@ -47,6 +47,19 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             'secondTableFieldOn'=>'id',
             'secondTableFieldWhere'=>'color',
         ],
+        'products_sizes'=>[ # Данные для выборки из таблицы products_sizes
+            'firstTableName'=>'products',
+            'firstTableFieldOn'=>'id',
+            'secondTableName'=>'products_sizes',
+            'secondTableFieldOn'=>'id_product',
+        ],
+        'sizes'=>[ # Данные для выборки из таблицы sizes
+            'firstTableName'=>'products_sizes',
+            'firstTableFieldOn'=>'id_size',
+            'secondTableName'=>'sizes',
+            'secondTableFieldOn'=>'id',
+            'secondTableFieldWhere'=>'size',
+        ],
     ];
     
     /**
@@ -65,7 +78,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     }
     
     /**
-     * Инициирует создание запроса, выбирая сценарий на основе данных из объекта запроса Yii::$app->request
+     * Инициирует создание запроса, выбирая сценарий на основе данных из объекта Yii::$app->request
      */
     public function getSelectQuery()
     {
@@ -84,7 +97,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     }
     
     /**
-     * Возвращает сформированную строку запроса к БД
+     * Формирует строку запроса к БД
      * @return string
      */
     private function queryForAll()
@@ -99,10 +112,10 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     }
     
     /**
-     * Возвращает сформированную строку запроса к БД, фильруя по категории
+     * Формирует строку запроса к БД, фильруя по категории
      * @return string
      */
-    public function queryForCategory()
+    private function queryForCategory()
     {
         try {
             $this->addSelectHead();
@@ -117,10 +130,10 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     }
     
     /**
-     * Возвращает сформированную строку запроса к БД, фильруя по подкатегории
+     * Формирует строку запроса к БД, фильруя по подкатегории
      * @return string
      */
-    public function queryForSubCategory()
+    private function queryForSubCategory()
     {
         try {
             $this->addSelectHead();
@@ -208,19 +221,22 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             $getArrayKeys = array_keys(\Yii::$app->request->get());
-            $result = [];
+            
             foreach ($this->_mapperObject->filterKeys as $filter) {
                 if (in_array($filter, $getArrayKeys)) {
                     $this->_mapperObject->query .= $this->getJoin($this->_mapperObject->tableName . '_' . $filter);
                     $this->_mapperObject->query .= $this->getJoin($filter);
-                    $this->_mapperObject->query .= $this->getWhere($filter);
                     $this->_mapperObject->filtersArray[':' . $filter] = \Yii::$app->request->get($filter);
+                }
+            }
+            foreach ($this->_mapperObject->filterKeys as $filter) {
+                if (in_array($filter, $getArrayKeys)) {
+                    $this->_mapperObject->query .= $this->getWhere($filter);
                 }
             }
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addFilters\n" . $e->getMessage());
         }
-        
         $this->_mapperObject->filtersFlag = true;
     }
     
@@ -228,7 +244,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
      * Формирует часть запроса к БД, задающую порядок сортировки
      * @return string
      */
-    public function addOrder()
+    private function addOrder()
     {
         try {
             if (!isset($this->_mapperObject->orderByField)) {
@@ -283,14 +299,3 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-

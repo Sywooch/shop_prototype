@@ -11,7 +11,8 @@ use app\mappers\ProductsListMapper;
 class ProductsListController extends Controller
 {
     /**
-     * 
+     * Обрабатывает запрос к списку продуктов, рендерит ответ
+     * @return string
      */
     public function actionIndex()
     {

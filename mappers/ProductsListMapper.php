@@ -66,7 +66,7 @@ class ProductsListMapper extends BaseAbstractMapper
             $this->visit(new ProductListQueryCreator());
             $this->getData();
             $this->visit(new ProductObjectsFactory());
-            print_r($this->query);
+            print_r($this->query); # выводит строку запроса на экран в отладочных целях
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListMapper::getGroup\n" . $e->getMessage());
         }
