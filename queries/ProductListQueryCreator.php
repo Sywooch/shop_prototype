@@ -17,22 +17,35 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
      */
     private $_mapperObject;
     /**
-     * @var array массив данных для выборки данных с учетом категории или(и) подкатегории
+     * @var array массив данных для выборки данных с учетом категории или(и) подкатегории, а также фильтров
      */
     public $categoriesArrayFilters = [
-        'category'=>[ # Данные для выборки по категории
+        'categories'=>[ # Данные для выборки из таблицы categories
             'firstTableName'=>'products', # Имя первой таблицы участвующей в объединении
             'firstTableFieldOn'=>'id_category', # Имя поля первой таблицы, по которому проходит объединение
             'secondTableName'=>'categories', # Имя второй таблицы участвующей в объединении
             'secondTableFieldOn'=>'id', # Имя поля второй таблицы, по которому проходит объединение
             'secondTableFieldWhere'=>'name', # Имя поля второй таблицы, по которому делается выборка с помощью WHERE
         ],
-        'subcategory'=>[ # Данные для выборки по подкатегории
-            'firstTableName'=>'products', # Имя первой таблицы участвующей в объединении
-            'firstTableFieldOn'=>'id_subcategory', # Имя поля первой таблицы, по которому проходит объединени
-            'secondTableName'=>'subcategory', # Имя второй таблицы участвующей в объединении
-            'secondTableFieldOn'=>'id', # Имя поля второй таблицы, по которому проходит объединение
-            'secondTableFieldWhere'=>'name', # Имя поля второй таблицы, по которому делается выборка с помощью WHERE
+        'subcategory'=>[ # Данные для выборки из таблицы subcategory
+            'firstTableName'=>'products',
+            'firstTableFieldOn'=>'id_subcategory',
+            'secondTableName'=>'subcategory',
+            'secondTableFieldOn'=>'id',
+            'secondTableFieldWhere'=>'name',
+        ],
+        'products_colors'=>[ # Данные для выборки из таблицы products_colors
+            'firstTableName'=>'products',
+            'firstTableFieldOn'=>'id',
+            'secondTableName'=>'products_colors',
+            'secondTableFieldOn'=>'id_product',
+        ],
+        'colors'=>[ # Данные для выборки из таблицы colors
+            'firstTableName'=>'products_colors',
+            'firstTableFieldOn'=>'id_color',
+            'secondTableName'=>'colors',
+            'secondTableFieldOn'=>'id',
+            'secondTableFieldWhere'=>'color',
         ],
     ];
     
@@ -78,6 +91,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             $this->addSelectHead();
+            $this->_mapperObject->query .= $this->addFilters();
             $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForAll\n" . $e->getMessage());
@@ -92,7 +106,9 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             $this->addSelectHead();
-            $this->_mapperObject->query .= $this->joinIt([\Yii::$app->params['categoryKey']]);
+            $this->_mapperObject->query .= $this->getJoin(\Yii::$app->params['categoryKey']);
+            $this->_mapperObject->query .= $this->addFilters();
+            $this->_mapperObject->query .= $this->getWhere(\Yii::$app->params['categoryKey']);
             $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForCategory\n" . $e->getMessage());
@@ -108,7 +124,11 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             $this->addSelectHead();
-            $this->_mapperObject->query .= $this->joinIt([\Yii::$app->params['categoryKey'], \Yii::$app->params['subCategoryKey']]);
+            $this->_mapperObject->query .= $this->getJoin(\Yii::$app->params['categoryKey']);
+            $this->_mapperObject->query .= $this->getJoin(\Yii::$app->params['subCategoryKey']);
+            $this->_mapperObject->query .= $this->addFilters();
+            $this->_mapperObject->query .= $this->getWhere(\Yii::$app->params['categoryKey']);
+            $this->_mapperObject->query .= $this->getWhere(\Yii::$app->params['subCategoryKey']);
             $this->addSelectEnd();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForSubCategory\n" . $e->getMessage());
@@ -174,7 +194,6 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     private function addSelectEnd()
     {
         try {
-            $this->_mapperObject->query .= $this->addFilters();
             $this->_mapperObject->query .= $this->addOrder();
             $this->_mapperObject->query .= $this->addLimit();
         } catch (\Exception $e) {
@@ -184,16 +203,17 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     
     /**
      * Формирует часть запроса к БД, добавляющую фильтры
-     * @return string
      */
     private function addFilters()
     {
         try {
-            $arrayKeys = array_keys(\Yii::$app->request->get());
+            $getArrayKeys = array_keys(\Yii::$app->request->get());
             $result = [];
             foreach ($this->_mapperObject->filterKeys as $filter) {
-                if (in_array($filter, $arrayKeys)) {
-                    $result[] = $filter . '=:' . $filter;
+                if (in_array($filter, $getArrayKeys)) {
+                    $this->_mapperObject->query .= $this->getJoin($this->_mapperObject->tableName . '_' . $filter);
+                    $this->_mapperObject->query .= $this->getJoin($filter);
+                    $this->_mapperObject->query .= $this->getWhere($filter);
                     $this->_mapperObject->filtersArray[':' . $filter] = \Yii::$app->request->get($filter);
                 }
             }
@@ -202,11 +222,6 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         }
         
         $this->_mapperObject->filtersFlag = true;
-        
-        if (!empty($result)) {
-            return ((strpos($this->_mapperObject->query, 'WHERE')) ? ' AND ' : ' WHERE ') . implode(' AND ', $result);
-        }
-        return '';
     }
     
     /**
@@ -233,7 +248,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     {
         try {
             if (in_array(\Yii::$app->params['pagePointer'], array_keys(\Yii::$app->request->get()))) {
-                return ' LIMIT ' . (\Yii::$app->request->get(\Yii::$app->params['pagePointer']) * $this->limit) . ', ' . $this->limit;
+                return ' LIMIT ' . (\Yii::$app->request->get(\Yii::$app->params['pagePointer']) * $this->_mapperObject->limit) . ', ' . $this->_mapperObject->limit;
             }
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addLimit\n" . $e->getMessage());
@@ -243,34 +258,9 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     
     /**
      * Формирует часть запроса к БД, объединяющую таблицы
-     * @see $this::getJoins()
-     * @see $this::getWhere()
      * @return string
-     */
-    private function joinIt(Array $flags)
-    {
-        try {
-            $forCategory = '';
-            $whereCategory = '';
-            $forSubCategory = '';
-            $whereSubCategory = '';
-            
-            if (in_array(\Yii::$app->params['categoryKey'], $flags)) {
-                $forCategory = $this->getJoins(\Yii::$app->params['categoryKey']);
-                $whereCategory = $this->getWhere(\Yii::$app->params['categoryKey']);
-            }
-            
-            if (in_array(\Yii::$app->params['subCategoryKey'], $flags)) {
-                $forSubCategory = $this->getJoins(\Yii::$app->params['subCategoryKey']);
-                $whereSubCategory = $this->getWhere(\Yii::$app->params['subCategoryKey']);
-            }
-        } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::joinIt\n" . $e->getMessage());
-        }
-        return ($forCategory . $forSubCategory . $whereCategory . $whereSubCategory);
-    }
-    
-    private function getJoins($key)
+    */
+    private function getJoin($key)
     {
         try {
             return ' JOIN {{' . $this->categoriesArrayFilters[$key]['secondTableName'] . '}} ON [[' . $this->categoriesArrayFilters[$key]['firstTableName'] . '.' . $this->categoriesArrayFilters[$key]['firstTableFieldOn'] . ']]=[[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldOn'] . ']]';
@@ -279,18 +269,18 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         }
     }
     
+    /**
+     * Формирует часть запроса к БД, добавляющую условия выборки
+     * @return string
+    */
     private function getWhere($key)
     {
         try {
-            if ($key == \Yii::$app->params['categoryKey']) {
-                $string = ' WHERE';
-            } else if ($key == \Yii::$app->params['subCategoryKey']) {
-                $string = ' AND';
-            }
+            $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
+            return $string . ' [[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldWhere'] . ']]=:' . $key;
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::getWhere\n" . $e->getMessage());
         }
-        return $string . ' [[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldWhere'] . ']]=:' . $key;
     }
 }
 

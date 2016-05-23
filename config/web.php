@@ -12,7 +12,7 @@ $config = [
         'limit'=>20, # Кол-во записей на страницу
         'pagePointer'=>'page', # Ключ, по которому в $_REQUEST доступен номер текущей страницы
         'orderByRoute'=>'DESC', # Порядок сортировки для БД
-        'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступно название категории
+        'categoryKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
         'subCategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории
     ],
     'components'=>[
