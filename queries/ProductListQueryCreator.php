@@ -158,7 +158,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         try {
             $this->_mapperObject->query = 'SELECT ';
             $this->_mapperObject->query .= $this->addFields();
-            $this->_mapperObject->query .= $this->addTableName();
+            $this->addTableName();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addSelectHead\n" . $e->getMessage());
         }
@@ -198,7 +198,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addTableName\n" . $e->getMessage());
         }
-        return ' FROM {{' . $this->_mapperObject->tableName . '}}';
+        $this->_mapperObject->query .= ' FROM {{' . $this->_mapperObject->tableName . '}}';
     }
     
     /**
@@ -207,7 +207,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     private function addSelectEnd()
     {
         try {
-            $this->_mapperObject->query .= $this->addOrder();
+            $this->addOrder();
             $this->_mapperObject->query .= $this->addLimit();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addSelectEnd\n" . $e->getMessage());
@@ -253,7 +253,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addOrder\n" . $e->getMessage());
         }
-        return ' ORDER BY [[' . $this->_mapperObject->tableName . '.' . $this->_mapperObject->orderByField . ']] ' . $this->_mapperObject->orderByRoute;
+        $this->_mapperObject->query .= ' ORDER BY [[' . $this->_mapperObject->tableName . '.' . $this->_mapperObject->orderByField . ']] ' . $this->_mapperObject->orderByRoute;
     }
     
     /**
