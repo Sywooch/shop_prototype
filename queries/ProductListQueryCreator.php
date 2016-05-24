@@ -5,12 +5,15 @@ namespace app\queries;
 use app\queries\AbstractBaseQueryCreator;
 use app\interfaces\VisitorInterface;
 use yii\base\ErrorException;
+use app\traits\ExceptionsTrait;
 
 /**
  * Конструирует запрос к БД для получения списка строк
  */
 class ProductListQueryCreator extends AbstractBaseQueryCreator implements VisitorInterface
 {
+    use ExceptionsTrait;
+    
     /**
      * @var object объект на основании данных которого создается запрос,
      * запрос сохраняется в свойство $query этого объекта
@@ -73,7 +76,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             $this->_mapperObject = $object;
             $this->getSelectQuery();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::update\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -92,7 +95,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
                 $this->queryForAll();
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::getSelectQuery\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -107,7 +110,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             $this->_mapperObject->query .= $this->addFilters();
             $this->addSelectEnd();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForAll\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -124,7 +127,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             $this->_mapperObject->query .= $this->getWhere(\Yii::$app->params['categoryKey']);
             $this->addSelectEnd();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForCategory\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         $this->_mapperObject->categoryFlag = true;
     }
@@ -144,7 +147,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             $this->_mapperObject->query .= $this->getWhere(\Yii::$app->params['subCategoryKey']);
             $this->addSelectEnd();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::queryForSubCategory\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         $this->_mapperObject->categoryFlag = true;
         $this->_mapperObject->subcategoryFlag = true;
@@ -160,7 +163,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             $this->_mapperObject->query .= $this->addFields();
             $this->addTableName();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addSelectHead\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -176,7 +179,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
                 $result[] = '[[' . $this->_mapperObject->tableName . '.' . $field . ']]';
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addFields\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         
         if (!empty($result)) {
@@ -196,7 +199,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
                 throw new ErrorException('Не задано имя таблицы!');
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addTableName\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         $this->_mapperObject->query .= ' FROM {{' . $this->_mapperObject->tableName . '}}';
     }
@@ -210,7 +213,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             $this->addOrder();
             $this->_mapperObject->query .= $this->addLimit();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addSelectEnd\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -235,7 +238,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
                 }
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addFilters\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         $this->_mapperObject->filtersFlag = true;
     }
@@ -251,7 +254,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
                 throw new ErrorException('Не задано имя столбца для сортировки!');
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addOrder\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         $this->_mapperObject->query .= ' ORDER BY [[' . $this->_mapperObject->tableName . '.' . $this->_mapperObject->orderByField . ']] ' . $this->_mapperObject->orderByRoute;
     }
@@ -267,7 +270,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
                 return ' LIMIT ' . (\Yii::$app->request->get(\Yii::$app->params['pagePointer']) * $this->_mapperObject->limit) . ', ' . $this->_mapperObject->limit;
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::addLimit\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         return ' LIMIT 0, ' . $this->_mapperObject->limit;
     }
@@ -281,7 +284,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         try {
             return ' JOIN {{' . $this->categoriesArrayFilters[$key]['secondTableName'] . '}} ON [[' . $this->categoriesArrayFilters[$key]['firstTableName'] . '.' . $this->categoriesArrayFilters[$key]['firstTableFieldOn'] . ']]=[[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldOn'] . ']]';
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::getJoins\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -295,7 +298,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
             return $string . ' [[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldWhere'] . ']]=:' . $key;
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListQueryCreator::getWhere\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
 }

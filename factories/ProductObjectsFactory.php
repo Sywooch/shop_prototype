@@ -6,12 +6,15 @@ use app\factories\AbstractBaseFactory;
 use app\models\ProductModel;
 use app\interfaces\VisitorInterface;
 use yii\base\ErrorException;
+use app\traits\ExceptionsTrait;
 
 /**
  * Создает объекты на оснований данных БД
  */
 class ProductObjectsFactory extends AbstractBaseFactory implements VisitorInterface
 {
+    use ExceptionsTrait;
+    
     /**
      * @var object объект на основании данных которого создаются объекты данных,
      * объекты данных сохраняются в свойство objectsArray этого объекта
@@ -29,7 +32,7 @@ class ProductObjectsFactory extends AbstractBaseFactory implements VisitorInterf
             $this->_mapperObject = $object;
             $this->getObjects();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductObjectsFactory::update\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -49,7 +52,7 @@ class ProductObjectsFactory extends AbstractBaseFactory implements VisitorInterf
                 $this->_mapperObject->objectsArray[] = $model;
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductObjectsFactory::getObjects\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
 }

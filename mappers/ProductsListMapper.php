@@ -6,20 +6,15 @@ use app\mappers\BaseAbstractMapper;
 use yii\base\ErrorException;
 use app\queries\ProductListQueryCreator;
 use app\factories\ProductObjectsFactory;
+use app\traits\ExceptionsTrait;
 
 /**
  * Получает строки с данными о товарах из БД, конструирует из каждой строки объект данных
  */
 class ProductsListMapper extends BaseAbstractMapper
 {
-    /**
-     * @var string поле по которому будет произведена сортировка
-     */
-    public $orderByField;
-    /**
-     * @var string порядок сортировки ASC DESC
-     */
-    public $orderByRoute;
+    use ExceptionsTrait;
+    
     /**
      * @var int максимальное кол-во возвращаемых записей
      */
@@ -68,7 +63,7 @@ class ProductsListMapper extends BaseAbstractMapper
             $this->visit(new ProductObjectsFactory());
             //print_r($this->query); # выводит строку запроса на экран в отладочных целях
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListMapper::getGroup\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         return $this->objectsArray;
     }
@@ -87,7 +82,7 @@ class ProductsListMapper extends BaseAbstractMapper
             }
             $this->DbArray = $command->queryAll();
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListMapper::getData\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -108,7 +103,7 @@ class ProductsListMapper extends BaseAbstractMapper
                 $result = array_merge($result, $this->filtersArray);
             }
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при вызове метода ProductListMapper::getBindArray\n" . $e->getMessage());
+            $this->throwException($e, __METHOD__);
         }
         return $result;
     }

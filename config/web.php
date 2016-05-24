@@ -7,6 +7,7 @@ $config = [
     'sourceLanguage'=>'en-US',
     'timeZone'=>'Europe/Kiev',
     'layout'=>'main.twig',
+    'bootstrap'=>['log'],
     'params'=>[
         'filterKeys'=>['colors', 'sizes'], # Ключи, по которым в $_REQUEST доступны значения выбранных фильтров
         'limit'=>20, # Кол-во записей на страницу
@@ -29,6 +30,18 @@ $config = [
         ],
         'request'=>[
             'cookieValidationKey'=>md5('sLkuN'),
+        ],
+        'log'=>[
+            'traceLevel'=>YII_DEBUG ? 3 : 0,
+            'flushInterval'=>100,
+            'targets'=>[
+                'file'=>[
+                    'class'=>'yii\log\FileTarget',
+                    'logFile'=>__DIR__ . '/../logs/error.log',
+                    'levels'=>['error', 'warning'],
+                    'exportInterval'=>100,
+                ],
+            ],
         ],
     ],
 ];
