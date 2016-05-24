@@ -35,7 +35,7 @@ class DbManager extends Object
     {
         parent::init();
         
-        $this->dbSchemePath = __DIR__ . '/source/sql/test.sql';
+        $this->dbSchemePath = __DIR__ . '/source/sql/shop.sql';
     }
     
     /**

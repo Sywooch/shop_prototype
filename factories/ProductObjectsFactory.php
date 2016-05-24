@@ -5,12 +5,16 @@ namespace app\factories;
 use app\factories\AbstractBaseFactory;
 use app\models\ProductModel;
 use app\interfaces\VisitorInterface;
+use yii\base\ErrorException;
 
+/**
+ * Создает объекты на оснований данных БД
+ */
 class ProductObjectsFactory extends AbstractBaseFactory implements VisitorInterface
 {
     /**
      * @var object объект на основании данных которого создаются объекты данных,
-     * объекты данных сохраняются в свойство этого объекта
+     * объекты данных сохраняются в свойство objectsArray этого объекта
      */
     private $_mapperObject;
     
@@ -35,8 +39,12 @@ class ProductObjectsFactory extends AbstractBaseFactory implements VisitorInterf
     public function getObjects()
     {
         try {
+            if (empty($this->_mapperObject->DbArray)) {
+                throw new ErrorException('Отсутствуют данные для построения объектов!');
+            }
+            
             foreach ($this->_mapperObject->DbArray as $entry) {
-                $model = new ProductModel(['scenario'=>ProductModel::GET_FROM_DB]);
+                $model = new ProductModel(['scenario'=>ProductModel::GET_LIST_FROM_DB]);
                 $model->attributes = $entry;
                 $this->_mapperObject->objectsArray[] = $model;
             }

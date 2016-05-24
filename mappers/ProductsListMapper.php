@@ -13,9 +13,13 @@ use app\factories\ProductObjectsFactory;
 class ProductsListMapper extends BaseAbstractMapper
 {
     /**
-     * @var array массив имен фильтров, которые могут быть переданы в $_GET
+     * @var string поле по которому будет произведена сортировка
      */
-    public $filterKeys;
+    public $orderByField;
+    /**
+     * @var string порядок сортировки ASC DESC
+     */
+    public $orderByRoute;
     /**
      * @var int максимальное кол-во возвращаемых записей
      */
@@ -41,10 +45,6 @@ class ProductsListMapper extends BaseAbstractMapper
     {
         parent::init();
         
-        if (!isset($this->filterKeys)) {
-            $this->filterKeys = \Yii::$app->params['filterKeys'];
-        }
-        
         if (!isset($this->limit)) {
             $this->limit = \Yii::$app->params['limit'];
         }
@@ -66,7 +66,7 @@ class ProductsListMapper extends BaseAbstractMapper
             $this->visit(new ProductListQueryCreator());
             $this->getData();
             $this->visit(new ProductObjectsFactory());
-            print_r($this->query); # выводит строку запроса на экран в отладочных целях
+            //print_r($this->query); # выводит строку запроса на экран в отладочных целях
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при вызове метода ProductListMapper::getGroup\n" . $e->getMessage());
         }

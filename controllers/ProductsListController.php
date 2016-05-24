@@ -6,7 +6,7 @@ use yii\web\Controller;
 use app\mappers\ProductsListMapper;
 
 /**
- * Контроллер обрабатывает запросы на получение списка продуктов
+ * Обрабатывает запросы на получение списка продуктов
  */
 class ProductsListController extends Controller
 {
@@ -18,7 +18,7 @@ class ProductsListController extends Controller
     {
         $productsMapper = new ProductsListMapper([
             'tableName'=>'products',
-            'fields'=>['id', 'name', 'description', 'price'],
+            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
             'orderByField'=>'price'
         ]);
         $productsList = $productsMapper->getGroup();

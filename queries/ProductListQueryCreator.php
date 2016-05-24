@@ -22,7 +22,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     public $categoriesArrayFilters = [
         'categories'=>[ # Данные для выборки из таблицы categories
             'firstTableName'=>'products', # Имя первой таблицы участвующей в объединении
-            'firstTableFieldOn'=>'id_category', # Имя поля первой таблицы, по которому проходит объединение
+            'firstTableFieldOn'=>'id_categories', # Имя поля первой таблицы, по которому проходит объединение
             'secondTableName'=>'categories', # Имя второй таблицы участвующей в объединении
             'secondTableFieldOn'=>'id', # Имя поля второй таблицы, по которому проходит объединение
             'secondTableFieldWhere'=>'name', # Имя поля второй таблицы, по которому делается выборка с помощью WHERE
@@ -38,11 +38,11 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             'firstTableName'=>'products',
             'firstTableFieldOn'=>'id',
             'secondTableName'=>'products_colors',
-            'secondTableFieldOn'=>'id_product',
+            'secondTableFieldOn'=>'id_products',
         ],
         'colors'=>[ # Данные для выборки из таблицы colors
             'firstTableName'=>'products_colors',
-            'firstTableFieldOn'=>'id_color',
+            'firstTableFieldOn'=>'id_colors',
             'secondTableName'=>'colors',
             'secondTableFieldOn'=>'id',
             'secondTableFieldWhere'=>'color',
@@ -51,11 +51,11 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
             'firstTableName'=>'products',
             'firstTableFieldOn'=>'id',
             'secondTableName'=>'products_sizes',
-            'secondTableFieldOn'=>'id_product',
+            'secondTableFieldOn'=>'id_products',
         ],
         'sizes'=>[ # Данные для выборки из таблицы sizes
             'firstTableName'=>'products_sizes',
-            'firstTableFieldOn'=>'id_size',
+            'firstTableFieldOn'=>'id_sizes',
             'secondTableName'=>'sizes',
             'secondTableFieldOn'=>'id',
             'secondTableFieldWhere'=>'size',
@@ -222,14 +222,14 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         try {
             $getArrayKeys = array_keys(\Yii::$app->request->get());
             
-            foreach ($this->_mapperObject->filterKeys as $filter) {
+            foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if (in_array($filter, $getArrayKeys)) {
                     $this->_mapperObject->query .= $this->getJoin($this->_mapperObject->tableName . '_' . $filter);
                     $this->_mapperObject->query .= $this->getJoin($filter);
                     $this->_mapperObject->filtersArray[':' . $filter] = \Yii::$app->request->get($filter);
                 }
             }
-            foreach ($this->_mapperObject->filterKeys as $filter) {
+            foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if (in_array($filter, $getArrayKeys)) {
                     $this->_mapperObject->query .= $this->getWhere($filter);
                 }

@@ -7,7 +7,7 @@ use app\queries\ProductListQueryCreator;
 use app\mappers\ProductsListMapper;
 
 /**
- * Тестирует класс ProductListQueryCreator
+ * Тестирует класс app\queries\ProductListQueryCreator
  */
 class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
@@ -42,7 +42,7 @@ class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'price']);
         $productsListMapper->visit(new ProductListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_category]]=[[categories.id]] WHERE [[categories.name]]=:categories ORDER BY [[products.price]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] WHERE [[categories.name]]=:categories ORDER BY [[products.price]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }
@@ -57,7 +57,7 @@ class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'price']);
         $productsListMapper->visit(new ProductListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_category]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.name]]=:categories AND [[subcategory.name]]=:subcategory ORDER BY [[products.price]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.name]]=:categories AND [[subcategory.name]]=:subcategory ORDER BY [[products.price]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }
@@ -73,7 +73,7 @@ class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'price']);
         $productsListMapper->visit(new ProductListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_category]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_product]] JOIN {{colors}} ON [[products_colors.id_color]]=[[colors.id]] WHERE [[colors.color]]=:colors AND [[categories.name]]=:categories AND [[subcategory.name]]=:subcategory ORDER BY [[products.price]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] WHERE [[colors.color]]=:colors AND [[categories.name]]=:categories AND [[subcategory.name]]=:subcategory ORDER BY [[products.price]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }
@@ -89,7 +89,7 @@ class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'price']);
         $productsListMapper->visit(new ProductListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_category]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_product]] JOIN {{colors}} ON [[products_colors.id_color]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_product]] JOIN {{sizes}} ON [[products_sizes.id_size]]=[[sizes.id]] WHERE [[colors.color]]=:colors AND [[sizes.size]]=:sizes AND [[categories.name]]=:categories AND [[subcategory.name]]=:subcategory ORDER BY [[products.price]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_products]] JOIN {{sizes}} ON [[products_sizes.id_sizes]]=[[sizes.id]] WHERE [[colors.color]]=:colors AND [[sizes.size]]=:sizes AND [[categories.name]]=:categories AND [[subcategory.name]]=:subcategory ORDER BY [[products.price]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }
@@ -104,7 +104,7 @@ class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'price']);
         $productsListMapper->visit(new ProductListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_product]] JOIN {{colors}} ON [[products_colors.id_color]]=[[colors.id]] WHERE [[colors.color]]=:colors ORDER BY [[products.price]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] WHERE [[colors.color]]=:colors ORDER BY [[products.price]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }
@@ -120,7 +120,7 @@ class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'price']);
         $productsListMapper->visit(new ProductListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_product]] JOIN {{colors}} ON [[products_colors.id_color]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_product]] JOIN {{sizes}} ON [[products_sizes.id_size]]=[[sizes.id]] WHERE [[colors.color]]=:colors AND [[sizes.size]]=:sizes ORDER BY [[products.price]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_products]] JOIN {{sizes}} ON [[products_sizes.id_sizes]]=[[sizes.id]] WHERE [[colors.color]]=:colors AND [[sizes.size]]=:sizes ORDER BY [[products.price]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }
@@ -135,7 +135,7 @@ class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'price']);
         $productsListMapper->visit(new ProductListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_category]]=[[categories.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_product]] JOIN {{sizes}} ON [[products_sizes.id_size]]=[[sizes.id]] WHERE [[sizes.size]]=:sizes AND [[categories.name]]=:categories ORDER BY [[products.price]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_products]] JOIN {{sizes}} ON [[products_sizes.id_sizes]]=[[sizes.id]] WHERE [[sizes.size]]=:sizes AND [[categories.name]]=:categories ORDER BY [[products.price]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }
@@ -152,7 +152,7 @@ class ProductListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'price']);
         $productsListMapper->visit(new ProductListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_category]]=[[categories.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_product]] JOIN {{colors}} ON [[products_colors.id_color]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_product]] JOIN {{sizes}} ON [[products_sizes.id_size]]=[[sizes.id]] WHERE [[colors.color]]=:colors AND [[sizes.size]]=:sizes AND [[categories.name]]=:categories ORDER BY [[products.price]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_products]] JOIN {{sizes}} ON [[products_sizes.id_sizes]]=[[sizes.id]] WHERE [[colors.color]]=:colors AND [[sizes.size]]=:sizes AND [[categories.name]]=:categories ORDER BY [[products.price]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }

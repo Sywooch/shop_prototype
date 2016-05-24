@@ -15,17 +15,9 @@ abstract class BaseAbstractMapper extends Object
      */
     public $tableName;
     /**
-     * @var array столбцы данных, которые необходимо включить в выборку
+     * @var array столбцы данных, которые необходимо включить запрос
      */
     public $fields = array();
-    /**
-     * @var string поле по которому будет произведена сортировка
-     */
-    public $orderByField;
-    /**
-     * @var string порядок сортировки ASC DESC
-     */
-    public $orderByRoute;
     /**
      * @var string результирующая строка запроса
      */
@@ -40,8 +32,8 @@ abstract class BaseAbstractMapper extends Object
     public $objectsArray = array();
     
     /**
-     * Передает классу-визитеру объект для дополнительной обработке данных
-     * @param Object объект класса-визитера
+     * Передает классу-визитеру объект для дополнительной обработки данных
+     * @param object объект класса-визитера
      */
     public function visit($visitor)
     {
