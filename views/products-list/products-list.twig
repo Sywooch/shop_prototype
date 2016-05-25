@@ -1,7 +1,4 @@
 
-{% extends 'products-list.twig' %}
-
-{% block content %}
 <ol>
 {% for product in productsList %}
     <li>
@@ -10,4 +7,5 @@
     </li>
 {% endfor %}
 </ol>
-{% endblock %}
+
+{% include 'menu.twig' %}

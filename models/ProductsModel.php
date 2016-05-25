@@ -7,12 +7,12 @@ use yii\base\Model;
 /**
  * Представляет данные таблицы products
  */
-class ProductModel extends Model
+class ProductsModel extends Model
 {
     /**
      * Сценарий загрузки данных из БД в рамках списка продуктов
     */
-    const GET_LIST_FROM_DB = 'getFromBd';
+    const GET_LIST_FROM_DB = 'getListFromBd';
     
     public $id;
     public $code;

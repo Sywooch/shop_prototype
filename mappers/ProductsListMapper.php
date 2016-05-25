@@ -4,8 +4,8 @@ namespace app\mappers;
 
 use app\mappers\BaseAbstractMapper;
 use yii\base\ErrorException;
-use app\queries\ProductListQueryCreator;
-use app\factories\ProductObjectsFactory;
+use app\queries\ProductsListQueryCreator;
+use app\factories\ProductsObjectsFactory;
 use app\traits\ExceptionsTrait;
 
 /**
@@ -51,16 +51,16 @@ class ProductsListMapper extends BaseAbstractMapper
     
     /**
      * Возвращает массив объектов, представляющих строки в БД
-     * Класс ProductListQueryCreator формирует строку запроса и заполняет свойства данными
+     * Класс ProductsListQueryCreator формирует строку запроса и заполняет свойства данными
      * Класс ProductObjectsFactory создает из данных БД объекты
      * @return array
      */
     public function getGroup()
     {
         try {
-            $this->visit(new ProductListQueryCreator());
+            $this->visit(new ProductsListQueryCreator());
             $this->getData();
-            $this->visit(new ProductObjectsFactory());
+            $this->visit(new ProductsObjectsFactory());
             //print_r($this->query); # выводит строку запроса на экран в отладочных целях
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -9,5 +9,14 @@ use yii\base\Object;
  */
 abstract class AbstractBaseFactory extends Object
 {
+    /**
+     * @var object объект на основании данных которого создаются объекты данных,
+     * объекты данных сохраняются в свойство objectsArray этого объекта
+     */
+    protected $_mapperObject;
+    
+    /**
+     * Создает на основе массива строк массив объектов
+     */
     abstract public function getObjects();
 }

@@ -2,16 +2,16 @@
 
 namespace app\tests\factories;
 
-use app\factories\ProductObjectsFactory;
+use app\factories\ProductsObjectsFactory;
 use app\tests\DbManager;
 use app\mappers\ProductsListMapper;
-use app\queries\ProductListQueryCreator;
-use app\models\ProductModel;
+use app\queries\ProductsListQueryCreator;
+use app\models\ProductsModel;
 
 /**
- * Тестирует класс app\factories\ProductObjectsFactory
+ * Тестирует класс app\factories\ProductsObjectsFactory
  */
-class ProductObjectsFactoryTests extends \PHPUnit_Framework_TestCase
+class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
     private static $dbClass;
     
@@ -22,7 +22,7 @@ class ProductObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод ProductObjectsFactory::getObjects()
+     * Тестирует метод ProductsObjectsFactory::getObjects()
      */
     public function testGetObjects()
     {
@@ -37,17 +37,17 @@ class ProductObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         
         $_GET = array();
         
-        $productsMapper->visit(new ProductListQueryCreator());
+        $productsMapper->visit(new ProductsListQueryCreator());
         
         $productsMapper->DbArray = \Yii::$app->db->createCommand($productsMapper->query)->queryAll();
         
         $this->assertFalse(empty($productsMapper->DbArray));
         
-        $productsMapper->visit(new ProductObjectsFactory());
+        $productsMapper->visit(new ProductsObjectsFactory());
         
         $this->assertFalse(empty($productsMapper->objectsArray));
         $this->assertTrue(is_object($productsMapper->objectsArray[0]));
-        $this->assertTrue($productsMapper->objectsArray[0] instanceof ProductModel);
+        $this->assertTrue($productsMapper->objectsArray[0] instanceof ProductsModel);
         
         $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'id'));
         $this->assertTrue(property_exists($productsMapper->objectsArray[1], 'code'));

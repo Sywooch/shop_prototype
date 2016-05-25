@@ -10,15 +10,10 @@ use app\traits\ExceptionsTrait;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class ProductListQueryCreator extends AbstractBaseQueryCreator implements VisitorInterface
+class ProductsListQueryCreator extends AbstractBaseQueryCreator implements VisitorInterface
 {
     use ExceptionsTrait;
     
-    /**
-     * @var object объект на основании данных которого создается запрос,
-     * запрос сохраняется в свойство $query этого объекта
-     */
-    private $_mapperObject;
     /**
      * @var array массив данных для выборки данных с учетом категории или(и) подкатегории, а также фильтров
      */
@@ -81,7 +76,7 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
     }
     
     /**
-     * Инициирует создание запроса, выбирая сценарий на основе данных из объекта Yii::$app->request
+     * Инициирует создание SELECT запроса, выбирая сценарий на основе данных из объекта Yii::$app->request
      */
     public function getSelectQuery()
     {
@@ -165,43 +160,6 @@ class ProductListQueryCreator extends AbstractBaseQueryCreator implements Visito
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-    }
-    
-    /**
-     * Формирует часть запроса к БД, перечисляющую столбцы данных, которые необходимо включить в выборку
-     * @return string
-     */
-    private function addFields()
-    {
-        try {
-            $result = [];
-            foreach ($this->_mapperObject->fields as $field) {
-                $result[] = '[[' . $this->_mapperObject->tableName . '.' . $field . ']]';
-            }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-        
-        if (!empty($result)) {
-            return implode(',', $result);
-        }
-        return '*';
-    }
-    
-    /**
-     * Формирует часть запроса к БД, указывающую из какой таблицы берутся данные
-     * @return string
-     */
-    private function addTableName()
-    {
-        try {
-            if (!isset($this->_mapperObject->tableName)) {
-                throw new ErrorException('Не задано имя таблицы!');
-            }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-        $this->_mapperObject->query .= ' FROM {{' . $this->_mapperObject->tableName . '}}';
     }
     
     /**

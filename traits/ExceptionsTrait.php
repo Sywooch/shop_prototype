@@ -2,6 +2,8 @@
 
 namespace app\traits;
 
+use yii\base\ErrorException;
+
 /**
  * Предоставляет методы записи логов и выброса маркированных исключений
  */

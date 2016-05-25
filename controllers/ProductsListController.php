@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use yii\web\Controller;
 use app\mappers\ProductsListMapper;
+use app\mappers\CategoriesMapper;
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 
@@ -27,10 +28,16 @@ class ProductsListController extends Controller
                 'orderByField'=>'price'
             ]);
             $productsList = $productsMapper->getGroup();
+            
+            $categoriesMapper = new CategoriesMapper([
+                'tableName'=>'categories',
+                'fields'=>['id', 'name'],
+            ]);
+            $categoriesList = $categoriesMapper->getGroup();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->render('content.twig', ['productsList'=>$productsList]);
+        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList]);
     }
 }

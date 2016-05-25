@@ -12,12 +12,6 @@ class CategoriesQueryCreator extends AbstractBaseQueryCreator implements Visitor
     use ExceptionsTrait;
     
     /**
-     * @var object объект на основании данных которого создается запрос,
-     * запрос сохраняется в свойство $query этого объекта
-     */
-    private $_mapperObject;
-    
-    /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
      * запускает процесс
      * @param $object
@@ -33,22 +27,9 @@ class CategoriesQueryCreator extends AbstractBaseQueryCreator implements Visitor
     }
     
     /**
-     * Инициирует создание запроса
+     * Инициирует создание SELECT запроса
      */
     public function getSelectQuery()
-    {
-        try {
-            $this->addSelectHead();
-            $this->addSelectEnd();
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Формирует начальную часть строки запроса к БД
-     */
-    private function addSelectHead()
     {
         try {
             $this->_mapperObject->query = 'SELECT ';

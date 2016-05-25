@@ -4,7 +4,7 @@ namespace app\tests\mappers;
 
 use app\mappers\ProductsListMapper;
 use app\tests\DbManager;
-use app\models\ProductModel;
+use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\mappers\ProductsListMapper
@@ -34,7 +34,7 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_array($productsList));
         $this->assertFalse(empty($productsList));
         $this->assertTrue(is_object($productsList[0]));
-        $this->assertTrue($productsList[0] instanceof ProductModel);
+        $this->assertTrue($productsList[0] instanceof ProductsModel);
         
         $this->assertTrue(property_exists($productsList[0], 'id'));
         $this->assertTrue(property_exists($productsList[1], 'code'));
