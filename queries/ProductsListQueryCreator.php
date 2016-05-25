@@ -15,7 +15,7 @@ class ProductsListQueryCreator extends AbstractBaseQueryCreator implements Visit
     use ExceptionsTrait;
     
     /**
-     * @var array массив данных для выборки данных с учетом категории или(и) подкатегории, а также фильтров
+     * @var array массив для выборки данных с учетом категории или(и) подкатегории, а также фильтров
      */
     public $categoriesArrayFilters = [
         'categories'=>[ # Данные для выборки из таблицы categories
@@ -231,32 +231,5 @@ class ProductsListQueryCreator extends AbstractBaseQueryCreator implements Visit
             $this->throwException($e, __METHOD__);
         }
         return ' LIMIT 0, ' . $this->_mapperObject->limit;
-    }
-    
-    /**
-     * Формирует часть запроса к БД, объединяющую таблицы
-     * @return string
-    */
-    private function getJoin($key)
-    {
-        try {
-            return ' JOIN {{' . $this->categoriesArrayFilters[$key]['secondTableName'] . '}} ON [[' . $this->categoriesArrayFilters[$key]['firstTableName'] . '.' . $this->categoriesArrayFilters[$key]['firstTableFieldOn'] . ']]=[[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldOn'] . ']]';
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Формирует часть запроса к БД, добавляющую условия выборки
-     * @return string
-    */
-    private function getWhere($key)
-    {
-        try {
-            $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
-            return $string . ' [[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldWhere'] . ']]=:' . $key;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
     }
 }

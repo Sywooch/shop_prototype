@@ -50,9 +50,9 @@ class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($productsMapper->objectsArray[0] instanceof ProductsModel);
         
         $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($productsMapper->objectsArray[1], 'code'));
+        $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'code'));
         $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'name'));
-        $this->assertTrue(property_exists($productsMapper->objectsArray[2], 'description'));
+        $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'description'));
         $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'price'));
         $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'images'));
     }

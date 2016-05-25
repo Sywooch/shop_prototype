@@ -34,8 +34,6 @@ class CategoriesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $this->assertEmpty($categoriesMapper->objectsArray);
         $this->assertEmpty($categoriesMapper->DbArray);
         
-        $_GET = array();
-        
         $categoriesMapper->visit(new CategoriesQueryCreator());
         
         $categoriesMapper->DbArray = \Yii::$app->db->createCommand($categoriesMapper->query)->queryAll();

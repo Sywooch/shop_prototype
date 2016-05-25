@@ -1,6 +1,12 @@
 
 <ul>
     {% for category in categoriesList %}
-        <li>{{ category.name }}</li>
+        <li>{{ category.name }}
+            <ul>
+                {% for subcategory in category.subcategory %}
+                    <li>{{ subcategory.name }}</li>
+                {% endfor %}
+            </ul>
+        </li>
     {% endfor %}
 </ul>

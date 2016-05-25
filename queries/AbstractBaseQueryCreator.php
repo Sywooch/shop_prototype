@@ -53,6 +53,33 @@ abstract class AbstractBaseQueryCreator extends Object
     }
     
     /**
+     * Формирует часть запроса к БД, объединяющую таблицы
+     * @return string
+    */
+    protected function getJoin($key)
+    {
+        try {
+            return ' JOIN {{' . $this->categoriesArrayFilters[$key]['secondTableName'] . '}} ON [[' . $this->categoriesArrayFilters[$key]['firstTableName'] . '.' . $this->categoriesArrayFilters[$key]['firstTableFieldOn'] . ']]=[[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldOn'] . ']]';
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует часть запроса к БД, добавляющую условия выборки
+     * @return string
+    */
+    protected function getWhere($key)
+    {
+        try {
+            $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
+            return $string . ' [[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldWhere'] . ']]=:' . $key;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Инициирует создание SELECT запроса
      */
     abstract public function getSelectQuery();
