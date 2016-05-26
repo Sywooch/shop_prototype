@@ -28,9 +28,7 @@ class SubcategoryQueryCreator extends AbstractSeletcQueryCreator
     public function getSelectQuery()
     {
         try {
-            $this->_mapperObject->query = 'SELECT ';
-            $this->_mapperObject->query .= $this->addFields();
-            $this->addTableName();
+            parent::getSelectQuery();
             $this->_mapperObject->query .= $this->getJoin(\Yii::$app->params['categoryKey']);
             $this->_mapperObject->query .= $this->getWhere(\Yii::$app->params['categoryKey']);
         } catch (\Exception $e) {

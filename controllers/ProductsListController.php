@@ -6,6 +6,7 @@ use yii\web\Controller;
 use app\mappers\ProductsListMapper;
 use app\mappers\CategoriesMapper;
 use app\mappers\CurrencyMapper;
+use app\mappers\ColorsMapper;
 use app\traits\ExceptionsTrait;
 
 /**
@@ -45,10 +46,18 @@ class ProductsListController extends Controller
                 'orderByField'=>'currency'
             ]);
             $currencyList = $currencyMapper->getGroup();
+            
+            # Получаю массив объектов цветов для фильтра
+            $colorsMapper = new ColorsMapper([
+                'tableName'=>'colors',
+                'fields'=>['id', 'color'],
+                'orderByField'=>'color'
+            ]);
+            $colorsList = $colorsMapper->getGroup();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList, 'currencyList'=>$currencyList]);
+        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList, 'currencyList'=>$currencyList, 'colorsList'=>$colorsList]);
     }
 }

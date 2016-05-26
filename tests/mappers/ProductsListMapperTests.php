@@ -42,6 +42,13 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($productsList[0], 'description'));
         $this->assertTrue(property_exists($productsList[0], 'price'));
         $this->assertTrue(property_exists($productsList[0], 'images'));
+        
+        $this->assertTrue(isset($productsList[0]->id));
+        $this->assertTrue(isset($productsList[0]->code));
+        $this->assertTrue(isset($productsList[0]->name));
+        $this->assertTrue(isset($productsList[0]->description));
+        $this->assertTrue(isset($productsList[0]->price));
+        $this->assertTrue(isset($productsList[0]->images));
     }
     
     public static function tearDownAfterClass()

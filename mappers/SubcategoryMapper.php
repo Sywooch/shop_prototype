@@ -30,7 +30,7 @@ class SubcategoryMapper extends AbstractGetGroupMapper
     protected function getData()
     {
         try {
-            if (!isset($this->categoriesModel)) {
+            if (!isset($this->categoriesModel) || !isset($this->categoriesModel->id)) {
                 throw new ErrorException('Не определен объект модели, для которой необходимо получить подкатегории!');
             }
             $command = \Yii::$app->db->createCommand($this->query);

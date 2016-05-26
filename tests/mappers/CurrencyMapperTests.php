@@ -38,6 +38,9 @@ class CurrencyMapperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(property_exists($currencyList[0], 'id'));
         $this->assertTrue(property_exists($currencyList[0], 'currency'));
+        
+        $this->assertTrue(isset($currencyList[0]->id));
+        $this->assertTrue(isset($currencyList[0]->currency));
     }
     
     public static function tearDownAfterClass()

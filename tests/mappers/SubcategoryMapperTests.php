@@ -38,6 +38,9 @@ class SubcategoryMapperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(property_exists($subcategoryList[0], 'id'));
         $this->assertTrue(property_exists($subcategoryList[0], 'name'));
+        
+        $this->assertTrue(isset($subcategoryList[0]->id));
+        $this->assertTrue(isset($subcategoryList[0]->name));
     }
     
     public static function tearDownAfterClass()

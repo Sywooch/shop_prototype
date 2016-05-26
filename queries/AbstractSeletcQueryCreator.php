@@ -21,4 +21,18 @@ abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator imple
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Инициирует создание SELECT запроса
+     */
+    public function getSelectQuery()
+    {
+        try {
+            $this->_mapperObject->query = 'SELECT ';
+            $this->_mapperObject->query .= $this->addFields();
+            $this->addTableName();
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

@@ -7,7 +7,7 @@ use app\queries\AbstractSeletcQueryCreator;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class CategoriesQueryCreator extends AbstractSeletcQueryCreator
+class ColorsQueryCreator extends AbstractSeletcQueryCreator
 {
     
 }
