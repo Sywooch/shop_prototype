@@ -2,15 +2,22 @@
 
 namespace app\mappers;
 
-use app\mappers\BaseAbstractMapper;
-use app\traits\ExceptionsTrait;
-use yii\base\ErrorException;
-use app\queries\SubcategoryQueryCreator;
-use app\factories\SubcategoryObjectsFactory;
+use app\mappers\AbstractGetGroupMapper;
+use yii\helpers\ArrayHelper;
 
-class SubcategoryMapper extends BaseAbstractMapper
+/**
+ * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
+ */
+class SubcategoryMapper extends AbstractGetGroupMapper
 {
-    use ExceptionsTrait;
+    /**
+     * @var string имя класса, который формирует строку запроса
+     */
+    public $queryClass = 'app\queries\SubcategoryQueryCreator';
+    /**
+     * @var string имя класса, который создает объекты из данных БД
+     */
+    public $objectsClass = 'app\factories\SubcategoryObjectsFactory';
     
     /**
      * @var object объект модели, представляющей таблицу category, для которой необходимо получить связанные объекты из subcategory
@@ -18,33 +25,17 @@ class SubcategoryMapper extends BaseAbstractMapper
     public $categoriesModel;
     
     /**
-     * Возвращает массив объектов, представляющий строки в БД
-     * Класс SubcategoryQueryCreator формирует строку запроса
-     * Класс SubcategoryObjectsFactory создает из данных БД объекты
-     * @return array
-     */
-    public function getGroup()
-    {
-        try {
-            $this->visit(new SubcategoryQueryCreator());
-            $this->getData();
-            $this->visit(new SubcategoryObjectsFactory());
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-        return $this->objectsArray;
-    }
-    
-    /**
      * Выполняет запрос к базе данных
      * @return array
      */
-    private function getData()
+    protected function getData()
     {
         try {
             $command = \Yii::$app->db->createCommand($this->query);
             $command->bindValue(':' . \Yii::$app->params['categoryKey'], $this->categoriesModel->id);
-            $this->DbArray = $command->queryAll();
+            $result = $command->queryAll();
+            ArrayHelper::multisort($result, ['name'], [SORT_ASC]);
+            $this->DbArray = $result;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

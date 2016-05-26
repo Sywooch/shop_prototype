@@ -2,30 +2,13 @@
 
 namespace app\queries;
 
-use app\queries\AbstractBaseQueryCreator;
-use app\interfaces\VisitorInterface;
-use yii\base\ErrorException;
-use app\traits\ExceptionsTrait;
+use app\queries\AbstractSeletcQueryCreator;
 
-class CategoriesQueryCreator extends AbstractBaseQueryCreator implements VisitorInterface
+/**
+ * Конструирует запрос к БД для получения списка строк
+ */
+class CategoriesQueryCreator extends AbstractSeletcQueryCreator
 {
-    use ExceptionsTrait;
-    
-    /**
-     * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
-     * запускает процесс
-     * @param $object
-     */
-    public function update($object)
-    {
-        try {
-            $this->_mapperObject = $object;
-            $this->getSelectQuery();
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
     /**
      * Инициирует создание SELECT запроса
      */

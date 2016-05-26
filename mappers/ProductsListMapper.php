@@ -2,23 +2,25 @@
 
 namespace app\mappers;
 
-use app\mappers\BaseAbstractMapper;
-use yii\base\ErrorException;
-use app\queries\ProductsListQueryCreator;
-use app\factories\ProductsObjectsFactory;
-use app\traits\ExceptionsTrait;
+use app\mappers\AbstractGetGroupMapper;
 
 /**
  * Получает строки с данными о товарах из БД, конструирует из каждой строки объект данных
  */
-class ProductsListMapper extends BaseAbstractMapper
+class ProductsListMapper extends AbstractGetGroupMapper
 {
-    use ExceptionsTrait;
-    
     /**
      * @var int максимальное кол-во возвращаемых записей
      */
     public $limit;
+    /**
+     * @var string имя класса, который формирует строку запроса
+     */
+    public $queryClass = 'app\queries\ProductsListQueryCreator';
+    /**
+     * @var string имя класса, который создает объекты из данных БД
+     */
+    public $objectsClass = 'app\factories\ProductsObjectsFactory';
     /**
      * @var boolean флаг, отмечающий, делается ли выборка для категории
      */
@@ -50,29 +52,10 @@ class ProductsListMapper extends BaseAbstractMapper
     }
     
     /**
-     * Возвращает массив объектов, представляющих строки в БД
-     * Класс ProductsListQueryCreator формирует строку запроса и заполняет свойства данными
-     * Класс ProductObjectsFactory создает из данных БД объекты
-     * @return array
-     */
-    public function getGroup()
-    {
-        try {
-            $this->visit(new ProductsListQueryCreator());
-            $this->getData();
-            $this->visit(new ProductsObjectsFactory());
-            //print_r($this->query); # выводит строку запроса на экран в отладочных целях
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-        return $this->objectsArray;
-    }
-    
-    /**
      * Выполняет запрос к базе данных
      * @return array
      */
-    private function getData()
+    protected function getData()
     {
         try {
             $command = \Yii::$app->db->createCommand($this->query);

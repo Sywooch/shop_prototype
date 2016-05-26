@@ -5,7 +5,6 @@ namespace app\controllers;
 use yii\web\Controller;
 use app\mappers\ProductsListMapper;
 use app\mappers\CategoriesMapper;
-use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 
 /**

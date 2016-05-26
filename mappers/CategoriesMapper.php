@@ -2,43 +2,28 @@
 
 namespace app\mappers;
 
-use app\mappers\BaseAbstractMapper;
-use app\traits\ExceptionsTrait;
-use yii\base\ErrorException;
-use app\queries\CategoriesQueryCreator;
+use app\mappers\AbstractGetGroupMapper;
 use yii\helpers\ArrayHelper;
-use app\factories\CategoriesObjectsFactory;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class CategoriesMapper extends BaseAbstractMapper
+class CategoriesMapper extends AbstractGetGroupMapper
 {
-    use ExceptionsTrait;
-    
     /**
-     * Возвращает массив объектов, представляющий строки в БД
-     * Класс CategoriesQueryCreator формирует строку запроса
-     * Класс CategoriesObjectsFactory создает из данных БД объекты
-     * @return array
+     * @var string имя класса, который формирует строку запроса
      */
-    public function getGroup()
-    {
-        try {
-            $this->visit(new CategoriesQueryCreator());
-            $this->getData();
-            $this->visit(new CategoriesObjectsFactory());
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-        return $this->objectsArray;
-    }
+    public $queryClass = 'app\queries\CategoriesQueryCreator';
+    /**
+     * @var string имя класса, который создает объекты из данных БД
+     */
+    public $objectsClass = 'app\factories\CategoriesObjectsFactory';
     
     /**
      * Выполняет запрос к базе данных
      * @return array
      */
-    private function getData()
+    protected function getData()
     {
         try {
             $command = \Yii::$app->db->createCommand($this->query);

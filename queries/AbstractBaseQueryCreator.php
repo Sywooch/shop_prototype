@@ -3,12 +3,15 @@
 namespace app\queries;
 
 use yii\base\Object;
+use app\traits\ExceptionsTrait;
 
 /**
  * Абстрактный суперкласс для подклассов, реализующих построение строки запроса к БД
  */
 abstract class AbstractBaseQueryCreator extends Object
 {
+    use ExceptionsTrait;
+    
     /**
      * @var object объект на основании данных которого создается запрос,
      * запрос сохраняется в свойство $query этого объекта

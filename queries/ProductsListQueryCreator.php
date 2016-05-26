@@ -2,18 +2,13 @@
 
 namespace app\queries;
 
-use app\queries\AbstractBaseQueryCreator;
-use app\interfaces\VisitorInterface;
-use yii\base\ErrorException;
-use app\traits\ExceptionsTrait;
+use app\queries\AbstractSeletcQueryCreator;
 
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class ProductsListQueryCreator extends AbstractBaseQueryCreator implements VisitorInterface
+class ProductsListQueryCreator extends AbstractSeletcQueryCreator
 {
-    use ExceptionsTrait;
-    
     /**
      * @var array массив для выборки данных с учетом категории или(и) подкатегории, а также фильтров
      */
@@ -59,21 +54,6 @@ class ProductsListQueryCreator extends AbstractBaseQueryCreator implements Visit
             'secondTableFieldWhere'=>'size',
         ],
     ];
-    
-    /**
-     * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
-     * запускает процесс
-     * @param $object
-     */
-    public function update($object)
-    {
-        try {
-            $this->_mapperObject = $object;
-            $this->getSelectQuery();
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
     
     /**
      * Инициирует создание SELECT запроса, выбирая сценарий на основе данных из объекта Yii::$app->request

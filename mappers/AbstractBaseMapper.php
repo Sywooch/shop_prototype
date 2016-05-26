@@ -9,7 +9,7 @@ use app\traits\ExceptionsTrait;
  * Абстрактный суперкласс, определяет интерфейс для классов наследников, 
  * получающих, создающих, обновляющих или удаляющих данные из БД
  */
-abstract class BaseAbstractMapper extends Object
+abstract class AbstractBaseMapper extends Object
 {
     use ExceptionsTrait;
     
@@ -30,6 +30,14 @@ abstract class BaseAbstractMapper extends Object
      */
     public $orderByRoute;
     /**
+     * @var string имя класса, который формирует строку запроса
+     */
+    public $queryClass;
+    /**
+     * @var string имя класса, который создает объекты из данных БД
+     */
+    public $objectsClass;
+    /**
      * @var string результирующая строка запроса
      */
     public $query;
@@ -43,20 +51,7 @@ abstract class BaseAbstractMapper extends Object
     public $objectsArray = array();
     
     /**
-     * Передает классу-визитеру объект для дополнительной обработки данных
-     * @param object объект класса-визитера
-     */
-    public function visit($visitor)
-    {
-        try {
-            $visitor->update($this);
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив объектов, представляющий строки в БД
+     * Возвращает массив объектов, представляющих строки в БД
      * @return array
      */
     abstract public function getGroup();

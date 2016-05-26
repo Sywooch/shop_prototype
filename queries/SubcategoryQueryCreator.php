@@ -2,15 +2,13 @@
 
 namespace app\queries;
 
-use app\queries\AbstractBaseQueryCreator;
-use app\interfaces\VisitorInterface;
-use yii\base\ErrorException;
-use app\traits\ExceptionsTrait;
+use app\queries\AbstractSeletcQueryCreator;
 
-class SubcategoryQueryCreator extends AbstractBaseQueryCreator implements VisitorInterface
+/**
+ * Конструирует запрос к БД для получения списка строк
+ */
+class SubcategoryQueryCreator extends AbstractSeletcQueryCreator
 {
-    use ExceptionsTrait;
-    
     /**
      * @var array массив для выборки данных
      */
@@ -23,21 +21,6 @@ class SubcategoryQueryCreator extends AbstractBaseQueryCreator implements Visito
             'secondTableFieldWhere'=>'id', # Имя поля второй таблицы, по которому делается выборка с помощью WHERE
         ],
     ];
-    
-    /**
-     * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
-     * запускает процесс
-     * @param $object
-     */
-    public function update($object)
-    {
-        try {
-            $this->_mapperObject = $object;
-            $this->getSelectQuery();
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
     
     /**
      * Инициирует создание SELECT запроса
