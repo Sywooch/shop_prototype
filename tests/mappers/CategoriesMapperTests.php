@@ -36,7 +36,7 @@ class CategoriesMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($categoriesList[0] instanceof CategoriesModel);
         
         $this->assertTrue(property_exists($categoriesList[0], 'id'));
-        $this->assertTrue(property_exists($categoriesList[1], 'name'));
+        $this->assertTrue(property_exists($categoriesList[0], 'name'));
     }
     
     public static function tearDownAfterClass()

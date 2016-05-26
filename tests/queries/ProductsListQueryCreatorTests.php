@@ -2,7 +2,6 @@
 
 namespace app\tests\queries;
 
-use app\tests\DbManager;
 use app\queries\ProductsListQueryCreator;
 use app\mappers\ProductsListMapper;
 

@@ -55,6 +55,13 @@ class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'description'));
         $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'price'));
         $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'images'));
+        
+        $this->assertTrue(isset($productsMapper->objectsArray[0]->id));
+        $this->assertTrue(isset($productsMapper->objectsArray[0]->code));
+        $this->assertTrue(isset($productsMapper->objectsArray[0]->name));
+        $this->assertTrue(isset($productsMapper->objectsArray[0]->description));
+        $this->assertTrue(isset($productsMapper->objectsArray[0]->price));
+        $this->assertTrue(isset($productsMapper->objectsArray[0]->images));
     }
     
     public static function tearDownAfterClass()

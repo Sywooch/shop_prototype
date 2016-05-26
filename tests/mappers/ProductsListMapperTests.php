@@ -37,9 +37,9 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($productsList[0] instanceof ProductsModel);
         
         $this->assertTrue(property_exists($productsList[0], 'id'));
-        $this->assertTrue(property_exists($productsList[1], 'code'));
+        $this->assertTrue(property_exists($productsList[0], 'code'));
         $this->assertTrue(property_exists($productsList[0], 'name'));
-        $this->assertTrue(property_exists($productsList[2], 'description'));
+        $this->assertTrue(property_exists($productsList[0], 'description'));
         $this->assertTrue(property_exists($productsList[0], 'price'));
         $this->assertTrue(property_exists($productsList[0], 'images'));
     }

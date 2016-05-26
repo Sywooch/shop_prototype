@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\Model;
 use app\mappers\SubcategoryMapper;
 use app\traits\ExceptionsTrait;
+use yii\base\ErrorException;
 
 /**
  * Представляет данные таблицы categories
@@ -37,6 +38,9 @@ class CategoriesModel extends Model
     {
         try {
             if (is_null($this->_subcategory)) {
+                if (!isset($this->id)) {
+                    throw new ErrorException('Не определен id категории, для которой необходимо получить подкатегории!');
+                }
                 $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name'], 'categoriesModel'=>$this]);
                 $this->_subcategory = $subcategoryMapper->getGroup();
             }

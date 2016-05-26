@@ -2,7 +2,6 @@
 
 namespace app\tests\queries;
 
-use app\tests\DbManager;
 use app\queries\SubcategoryQueryCreator;
 use app\mappers\SubcategoryMapper;
 use app\models\CategoriesModel;

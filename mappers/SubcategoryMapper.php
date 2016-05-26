@@ -18,7 +18,6 @@ class SubcategoryMapper extends AbstractGetGroupMapper
      * @var string имя класса, который создает объекты из данных БД
      */
     public $objectsClass = 'app\factories\SubcategoryObjectsFactory';
-    
     /**
      * @var object объект модели, представляющей таблицу category, для которой необходимо получить связанные объекты из subcategory
      */
@@ -31,6 +30,9 @@ class SubcategoryMapper extends AbstractGetGroupMapper
     protected function getData()
     {
         try {
+            if (!isset($this->categoriesModel)) {
+                throw new ErrorException('Не определен объект модели, для которой необходимо получить подкатегории!');
+            }
             $command = \Yii::$app->db->createCommand($this->query);
             $command->bindValue(':' . \Yii::$app->params['categoryKey'], $this->categoriesModel->id);
             $result = $command->queryAll();

@@ -5,6 +5,7 @@ namespace app\controllers;
 use yii\web\Controller;
 use app\mappers\ProductsListMapper;
 use app\mappers\CategoriesMapper;
+use app\mappers\CurrencyMapper;
 use app\traits\ExceptionsTrait;
 
 /**
@@ -21,6 +22,7 @@ class ProductsListController extends Controller
     public function actionIndex()
     {
         try {
+            # Получаю массив объектов товаров
             $productsMapper = new ProductsListMapper([
                 'tableName'=>'products',
                 'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
@@ -28,15 +30,25 @@ class ProductsListController extends Controller
             ]);
             $productsList = $productsMapper->getGroup();
             
+            # Получаю массив объектов категорий
             $categoriesMapper = new CategoriesMapper([
                 'tableName'=>'categories',
                 'fields'=>['id', 'name'],
+                'orderByField'=>'name'
             ]);
             $categoriesList = $categoriesMapper->getGroup();
+            
+            # Получаю массив объектов валют
+            $currencyMapper = new CurrencyMapper([
+                'tableName'=>'currency',
+                'fields'=>['id', 'currency'],
+                'orderByField'=>'currency'
+            ]);
+            $currencyList = $currencyMapper->getGroup();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList]);
+        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList, 'currencyList'=>$currencyList]);
     }
 }
