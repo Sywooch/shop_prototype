@@ -7,6 +7,7 @@ use app\mappers\ProductsListMapper;
 use app\mappers\CategoriesMapper;
 use app\mappers\CurrencyMapper;
 use app\mappers\ColorsMapper;
+use app\mappers\SizesMapper;
 use app\traits\ExceptionsTrait;
 
 /**
@@ -54,10 +55,18 @@ class ProductsListController extends Controller
                 'orderByField'=>'color'
             ]);
             $colorsList = $colorsMapper->getGroup();
+            
+            # Получаю массив объектов размеров для фильтра
+            $sizesMapper = new SizesMapper([
+                'tableName'=>'sizes',
+                'fields'=>['id', 'size'],
+                'orderByField'=>'size'
+            ]);
+            $sizesList = $sizesMapper->getGroup();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList, 'currencyList'=>$currencyList, 'colorsList'=>$colorsList]);
+        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList, 'currencyList'=>$currencyList, 'colorsList'=>$colorsList, 'sizesList'=>$sizesList]);
     }
 }
