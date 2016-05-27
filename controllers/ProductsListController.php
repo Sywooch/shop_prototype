@@ -52,7 +52,7 @@ class ProductsListController extends Controller
             $colorsMapper = new ColorsMapper([
                 'tableName'=>'colors',
                 'fields'=>['id', 'color'],
-                'orderByField'=>'color'
+                'orderByField'=>'color',
             ]);
             $colorsList = $colorsMapper->getGroup();
             

@@ -2,16 +2,22 @@
 
 namespace app\mappers;
 
-use yii\base\Object;
+use yii\base\Component;
 use app\traits\ExceptionsTrait;
+use yii\base\Event;
 
 /**
  * Абстрактный суперкласс, определяет интерфейс для классов наследников, 
  * получающих, создающих, обновляющих или удаляющих данные из БД
  */
-abstract class AbstractBaseMapper extends Object
+abstract class AbstractBaseMapper extends Component
 {
     use ExceptionsTrait;
+    
+    /**
+     * Константа события выполнения запроса к БД
+     */
+    const SENT_REQUESTS_TO_DB = 'sentRequestsToDb';
     
     /**
      * @var string имя таблицы, источника данных
@@ -49,6 +55,15 @@ abstract class AbstractBaseMapper extends Object
      * @var array массив объектов, созданных из результирующих данных, полученных из БД
      */
     public $objectsArray = array();
+    
+    public function init()
+    {
+        parent::init();
+        
+        if (YII_DEBUG) {
+            $this->on($this::SENT_REQUESTS_TO_DB, ['app\helpers\FixSentRequests', 'fix']); # Регистрирует обработчик, подсчитывающий обращения к БД
+        }
+    }
     
     /**
      * Возвращает массив объектов, представляющих строки в БД

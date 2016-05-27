@@ -15,6 +15,7 @@ $config = [
         'orderByRoute'=>'DESC', # Порядок сортировки для БД
         'categoryKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
         'subCategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории
+        'fixSentRequests'=>0 #Количество запросов к БД при выполнении скрипта
     ],
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),
@@ -45,5 +46,9 @@ $config = [
         ],
     ],
 ];
+
+if (YII_DEBUG) {
+    $config['as CheckScriptInfoFilter'] = ['class'=>'app\filters\CheckScriptInfoFilter'];
+}
 
 return $config;

@@ -36,6 +36,9 @@ class SubcategoryMapper extends AbstractGetGroupMapper
             $command = \Yii::$app->db->createCommand($this->query);
             $command->bindValue(':' . \Yii::$app->params['categoryKey'], $this->categoriesModel->id);
             $result = $command->queryAll();
+            if (YII_DEBUG) {
+                $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
+            }
             ArrayHelper::multisort($result, ['name'], [SORT_ASC]);
             $this->DbArray = $result;
         } catch (\Exception $e) {

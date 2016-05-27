@@ -64,6 +64,9 @@ class ProductsListMapper extends AbstractGetGroupMapper
                 $command->bindValues($bindArray);
             }
             $this->DbArray = $command->queryAll();
+            if (YII_DEBUG) {
+                $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
+            }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

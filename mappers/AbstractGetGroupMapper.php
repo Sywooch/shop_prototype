@@ -54,6 +54,9 @@ abstract class AbstractGetGroupMapper extends AbstractBaseMapper
         try {
             $command = \Yii::$app->db->createCommand($this->query);
             $result = $command->queryAll();
+            if (YII_DEBUG) {
+                $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
+            }
             ArrayHelper::multisort($result, [$this->orderByField], [SORT_ASC]);
             $this->DbArray = $result;
         } catch (\Exception $e) {

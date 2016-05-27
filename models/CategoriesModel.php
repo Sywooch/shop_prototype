@@ -42,6 +42,9 @@ class CategoriesModel extends Model
                     throw new ErrorException('Не определен id категории, для которой необходимо получить подкатегории!');
                 }
                 $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name'], 'categoriesModel'=>$this]);
+                /*if (YII_DEBUG) {
+                    $subcategoryMapper->on($subcategoryMapper::SENT_REQUESTS_TO_DB, ['app\helpers\FixSentRequests', 'fix']);
+                }*/
                 $this->_subcategory = $subcategoryMapper->getGroup();
             }
         } catch (\Exception $e) {
