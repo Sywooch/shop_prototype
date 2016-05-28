@@ -34,7 +34,7 @@ abstract class AbstractBaseMapper extends Component
     /**
      * @var string порядок сортировки ASC DESC
      */
-    public $orderByRoute;
+    public $orderByType;
     /**
      * @var string имя класса, который формирует строку запроса
      */

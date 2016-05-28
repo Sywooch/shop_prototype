@@ -28,10 +28,37 @@ class ProductsListController extends Controller
             $productsMapper = new ProductsListMapper([
                 'tableName'=>'products',
                 'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-                'orderByField'=>'price'
+                'orderByField'=>'date'
             ]);
             $productsList = $productsMapper->getGroup();
             
+            $dataForRender = $this->getDataForRender();
+            $resultArray = array_merge(['productsList'=>$productsList], $dataForRender);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return $this->render('products-list.twig', $resultArray);
+    }
+    
+    /**
+     * Обрабатывает поисковый запрос к списку продуктов, рендерит ответ
+     * @return string
+     */
+    public function actionSearch()
+    {
+        try {
+            
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList, 'currencyList'=>$currencyList, 'colorsList'=>$colorsList, 'sizesList'=>$sizesList]);
+    }
+    
+    private function getDataForRender()
+    {
+        try {
             # Получаю массив объектов категорий
             $categoriesMapper = new CategoriesMapper([
                 'tableName'=>'categories',
@@ -67,6 +94,6 @@ class ProductsListController extends Controller
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList, 'currencyList'=>$currencyList, 'colorsList'=>$colorsList, 'sizesList'=>$sizesList]);
+        return ['categoriesList'=>$categoriesList, 'currencyList'=>$currencyList, 'colorsList'=>$colorsList, 'sizesList'=>$sizesList];
     }
 }

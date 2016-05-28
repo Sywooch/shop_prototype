@@ -27,7 +27,7 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         $productsMapper = new ProductsListMapper([
             'tableName'=>'products',
             'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-            'orderByField'=>'price'
+            'orderByField'=>'date'
         ]);
         $productsList = $productsMapper->getGroup();
         
@@ -51,6 +51,50 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($productsList[0]->images));
     }
     
+    /**
+     * Тестирую утверждение, что при передаче в $_GET типа сортировки, значение свойства ProductsListMapper::orderByType изменяется
+     */
+    public function testOrderByType()
+    {
+        $config = [
+            'tableName'=>'products',
+            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+            'orderByField'=>'date'
+        ];
+        
+        $productsMapper = new ProductsListMapper($config);
+        
+        $this->assertEquals(\Yii::$app->params['orderByType'], $productsMapper->orderByType);
+        
+        $_GET = [\Yii::$app->params['orderTypePointer']=>'ASC'];
+        
+        $productsMapper = new ProductsListMapper($config);
+        
+        $this->assertEquals('ASC', $productsMapper->orderByType);
+    }
+    
+    /**
+     * Тестирую утверждение, что при передаче в $_GET поля сортировки, значение свойства ProductsListMapper::orderByField изменяется
+     */
+    public function testOrderByField()
+    {
+        $config = [
+            'tableName'=>'products',
+            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+            'orderByField'=>'date'
+        ];
+        
+        $productsMapper = new ProductsListMapper($config);
+        
+        $this->assertEquals('date', $productsMapper->orderByField);
+        
+        $_GET = [\Yii::$app->params['orderFieldPointer']=>'price'];
+        
+        $productsMapper = new ProductsListMapper($config);
+        
+        $this->assertEquals('price', $productsMapper->orderByField);
+    }
+     
     public static function tearDownAfterClass()
     {
         self::$dbClass->deleteDb();

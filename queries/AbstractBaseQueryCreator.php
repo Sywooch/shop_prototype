@@ -69,7 +69,7 @@ abstract class AbstractBaseQueryCreator extends Object
     }
     
     /**
-     * Формирует часть запроса к БД, добавляющую условия выборки
+     * Формирует часть запроса к БД, добавляющую условия выборки WHERE
      * @return string
     */
     protected function getWhere($key)
@@ -77,6 +77,20 @@ abstract class AbstractBaseQueryCreator extends Object
         try {
             $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
             return $string . ' [[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldWhere'] . ']]=:' . $key;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует часть запроса к БД, добавляющую условия выборки WHERE LIKE
+     * @return string
+    */
+    protected function getWhereLike($key)
+    {
+        try {
+            $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
+            return $string . ' [[' . $this->categoriesArrayFilters[$key]['firstTableName'] . '.' . $this->categoriesArrayFilters[$key]['firstTableFieldWhere'] . ']] LIKE %:' . $key . '%';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

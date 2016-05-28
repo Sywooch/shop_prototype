@@ -46,8 +46,14 @@ class ProductsListMapper extends AbstractGetGroupMapper
             $this->limit = \Yii::$app->params['limit'];
         }
         
-        if (!isset($this->orderByRoute)) {
-            $this->orderByRoute = \Yii::$app->params['orderByRoute'];
+        if (!is_null(\Yii::$app->request->get(\Yii::$app->params['orderTypePointer']))) {
+            $this->orderByType = \Yii::$app->request->get(\Yii::$app->params['orderTypePointer']);
+        } elseif (!isset($this->orderByType)) {
+            $this->orderByType = \Yii::$app->params['orderByType'];
+        }
+        
+        if (!is_null(\Yii::$app->request->get(\Yii::$app->params['orderFieldPointer']))) {
+            $this->orderByField = \Yii::$app->request->get(\Yii::$app->params['orderFieldPointer']);
         }
     }
     
