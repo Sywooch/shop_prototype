@@ -28,6 +28,11 @@ abstract class AbstractBaseMapper extends Component
      */
     public $fields = array();
     /**
+     * @var array столбцы из JOIN таблиц, которые необходимо включить в выборку,
+     * формат ['table'=>'tablename', 'fields'=>['field'=>'fields1', 'as'=>'fields']]
+     */
+    public $otherTablesFields = array();
+    /**
      * @var string поле по которому будет произведена сортировка
      */
     public $orderByField;

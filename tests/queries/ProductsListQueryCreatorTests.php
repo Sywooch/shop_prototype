@@ -15,10 +15,18 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForAll()
     {
-        $productsListMapper = new ProductsListMapper(['tableName'=>'products', 'fields'=>['id', 'name', 'description', 'price'], 'orderByField'=>'date']);
+        $productsListMapper = new ProductsListMapper([
+            'tableName'=>'products',
+            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+            'otherTablesFields'=>[
+                ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+                ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+            ],
+            'orderByField'=>'date'
+        ]);
         $productsListMapper->visit(new ProductsListQueryCreator());
         
-        $query = 'SELECT [[products.id]],[[products.name]],[[products.description]],[[products.price]] FROM {{products}} ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = 'SELECT [[products.id]],[[products.code]],[[products.name]],[[products.description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] ORDER BY [[products.date]] DESC LIMIT 0, 20';
         
         $this->assertEquals($query, $productsListMapper->query);
     }

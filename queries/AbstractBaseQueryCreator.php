@@ -40,6 +40,31 @@ abstract class AbstractBaseQueryCreator extends Object
     }
     
     /**
+     * Формирует часть запроса к БД, добавляя столбцы данных из JOIN таблиц, которые необходимо включить в выборку
+     * @return string
+     */
+    protected function addOtherFields()
+    {
+        try {
+            if (!empty($this->_mapperObject->otherTablesFields)) {
+                $result = [];
+                foreach ($this->_mapperObject->otherTablesFields as $set) {
+                    foreach ($set['fields'] as $field) {
+                        $result[] = '[[' . $set['table'] . '.' . $field['field'] . ']]' . ' AS [['. $field['as'] . ']]';
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        
+        if (!empty($result)) {
+            return ',' . implode(',', $result);
+        }
+        return '';
+    }
+    
+    /**
      * Формирует часть запроса к БД, указывающую из какой таблицы берутся данные
      * @return string
      */

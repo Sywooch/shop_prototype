@@ -22,13 +22,15 @@ class ProductsModel extends Model
     public $images;
     public $id_categories;
     public $id_subcategory;
+    public $categories;
+    public $subcategory;
     public $colors;
     public $sizes;
     
     public function scenarios()
     {
         return [
-            self::GET_LIST_FROM_DB=>['id', 'code', 'name', 'description', 'price', 'images'],
+            self::GET_LIST_FROM_DB=>['id', 'code', 'name', 'description', 'price', 'images', 'categories', 'subcategory'],
         ];
     }
 }

@@ -19,6 +19,12 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
         ],
     ];
     
+    public function init()
+    {
+        $parent = (new parent())->categoriesArrayFilters;
+        $this->categoriesArrayFilters = array_merge($parent, $this->categoriesArrayFilters);
+    }
+    
     /**
      * Инициирует создание SELECT запроса
      */

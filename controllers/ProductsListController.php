@@ -28,9 +28,14 @@ class ProductsListController extends Controller
             $productsMapper = new ProductsListMapper([
                 'tableName'=>'products',
                 'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+                'otherTablesFields'=>[
+                    ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+                    ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+                ],
                 'orderByField'=>'date'
             ]);
             $productsList = $productsMapper->getGroup();
+            echo $productsMapper->query;
             $dataForRender = $this->getDataForRender();
             $resultArray = array_merge(['productsList'=>$productsList], $dataForRender);
         } catch (\Exception $e) {
@@ -51,6 +56,10 @@ class ProductsListController extends Controller
             $productsMapper = new ProductsListMapper([
                 'tableName'=>'products',
                 'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+                'otherTablesFields'=>[
+                    ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+                    ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+                ],
                 'orderByField'=>'date',
                 'queryClass'=>'app\queries\ProductsListSearchQueryCreator',
             ]);
