@@ -31,7 +31,6 @@ class ProductsListController extends Controller
                 'orderByField'=>'date'
             ]);
             $productsList = $productsMapper->getGroup();
-            
             $dataForRender = $this->getDataForRender();
             $resultArray = array_merge(['productsList'=>$productsList], $dataForRender);
         } catch (\Exception $e) {
@@ -48,24 +47,39 @@ class ProductsListController extends Controller
     public function actionSearch()
     {
         try {
-            
+            # Получаю массив объектов товаров
+            $productsMapper = new ProductsListMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+                'orderByField'=>'date',
+                'queryClass'=>'app\queries\ProductsListSearchQueryCreator',
+            ]);
+            $productsList = $productsMapper->getGroup();
+            $dataForRender = $this->getDataForRender();
+            $resultArray = array_merge(['productsList'=>$productsList], $dataForRender);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->render('products-list.twig', ['productsList'=>$productsList, 'categoriesList'=>$categoriesList, 'currencyList'=>$currencyList, 'colorsList'=>$colorsList, 'sizesList'=>$sizesList]);
+        return $this->render('products-list.twig', $resultArray);
     }
     
+    /**
+     * Получает данные, присутствующие во всех выводах списка продуктов
+     * @return array
+     */
     private function getDataForRender()
     {
         try {
+            $result = array();
+            
             # Получаю массив объектов категорий
             $categoriesMapper = new CategoriesMapper([
                 'tableName'=>'categories',
-                'fields'=>['id', 'name'],
+                'fields'=>['id', 'name', 'seocode'],
                 'orderByField'=>'name'
             ]);
-            $categoriesList = $categoriesMapper->getGroup();
+            $result['categoriesList'] = $categoriesMapper->getGroup();
             
             # Получаю массив объектов валют
             $currencyMapper = new CurrencyMapper([
@@ -73,7 +87,7 @@ class ProductsListController extends Controller
                 'fields'=>['id', 'currency'],
                 'orderByField'=>'currency'
             ]);
-            $currencyList = $currencyMapper->getGroup();
+            $result['currencyList'] = $currencyMapper->getGroup();
             
             # Получаю массив объектов цветов для фильтра
             $colorsMapper = new ColorsMapper([
@@ -81,7 +95,7 @@ class ProductsListController extends Controller
                 'fields'=>['id', 'color'],
                 'orderByField'=>'color',
             ]);
-            $colorsList = $colorsMapper->getGroup();
+            $result['colorsList'] = $colorsMapper->getGroup();
             
             # Получаю массив объектов размеров для фильтра
             $sizesMapper = new SizesMapper([
@@ -89,11 +103,11 @@ class ProductsListController extends Controller
                 'fields'=>['id', 'size'],
                 'orderByField'=>'size'
             ]);
-            $sizesList = $sizesMapper->getGroup();
+            $result['sizesList'] = $sizesMapper->getGroup();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return ['categoriesList'=>$categoriesList, 'currencyList'=>$currencyList, 'colorsList'=>$colorsList, 'sizesList'=>$sizesList];
+        return $result;
     }
 }

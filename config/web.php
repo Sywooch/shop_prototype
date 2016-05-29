@@ -27,7 +27,7 @@ $config = [
                 'twig'=>[
                     'class'=>'yii\twig\ViewRenderer',
                     'options'=>['auto_reload'=>true],
-                    'globals'=>['html'=>'yii\helpers\Html'],
+                    'globals'=>['html'=>'yii\helpers\Html', 'url'=>'yii\helpers\Url'],
                 ]
             ],
         ],
@@ -44,6 +44,17 @@ $config = [
                     'levels'=>['error', 'warning'],
                     'exportInterval'=>100,
                 ],
+            ],
+        ],
+        'urlManager'=>[
+            'enablePrettyUrl'=>true,
+            'showScriptName'=>false,
+            'enableStrictParsing' => false,
+            'rules'=>[
+                'products/<categories>/<subcategory>'=>'products-list/index',
+                'products/<categories>'=>'products-list/index',
+                'products'=>'products-list/index',
+                'search'=>'products-list/search',
             ],
         ],
     ],

@@ -95,6 +95,28 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals('price', $productsMapper->orderByField);
     }
      
+    /**
+     * Тестирую возможномть изменения значения свойства ProductsListMapper::queryClass
+     */
+    public function testQueryClass()
+    {
+        $config = [
+            'tableName'=>'products',
+            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+            'orderByField'=>'date'
+        ];
+        
+        $productsMapper = new ProductsListMapper($config);
+        
+        $this->assertEquals('app\queries\ProductsListQueryCreator', $productsMapper->queryClass);
+        
+        $config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
+        
+        $productsMapper = new ProductsListMapper($config);
+        
+        $this->assertEquals('app\queries\ProductsListSearchQueryCreator', $productsMapper->queryClass);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->deleteDb();

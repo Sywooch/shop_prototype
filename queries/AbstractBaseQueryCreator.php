@@ -59,10 +59,10 @@ abstract class AbstractBaseQueryCreator extends Object
      * Формирует часть запроса к БД, объединяющую таблицы
      * @return string
     */
-    protected function getJoin($key)
+    protected function getJoin($firstTableName, $firstTableFieldOn, $secondTableName, $secondTableFieldOn)
     {
         try {
-            return ' JOIN {{' . $this->categoriesArrayFilters[$key]['secondTableName'] . '}} ON [[' . $this->categoriesArrayFilters[$key]['firstTableName'] . '.' . $this->categoriesArrayFilters[$key]['firstTableFieldOn'] . ']]=[[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldOn'] . ']]';
+            return ' JOIN {{' . $secondTableName . '}} ON [[' . $firstTableName . '.' . $firstTableFieldOn . ']]=[[' . $secondTableName . '.' . $secondTableFieldOn . ']]';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -72,11 +72,11 @@ abstract class AbstractBaseQueryCreator extends Object
      * Формирует часть запроса к БД, добавляющую условия выборки WHERE
      * @return string
     */
-    protected function getWhere($key)
+    protected function getWhere($tableName, $tableField, $key)
     {
         try {
             $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
-            return $string . ' [[' . $this->categoriesArrayFilters[$key]['secondTableName'] . '.' . $this->categoriesArrayFilters[$key]['secondTableFieldWhere'] . ']]=:' . $key;
+            return $string . ' [[' . $tableName . '.' . $tableField . ']]=:' . $key;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -86,11 +86,11 @@ abstract class AbstractBaseQueryCreator extends Object
      * Формирует часть запроса к БД, добавляющую условия выборки WHERE LIKE
      * @return string
     */
-    protected function getWhereLike($key)
+    protected function getWhereLike($tableName, $tableField, $key)
     {
         try {
             $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
-            return $string . ' [[' . $this->categoriesArrayFilters[$key]['firstTableName'] . '.' . $this->categoriesArrayFilters[$key]['firstTableFieldWhere'] . ']] LIKE %:' . $key . '%';
+            return $string . ' [[' . $tableName . '.' . $tableField . ']] LIKE :' . $key;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

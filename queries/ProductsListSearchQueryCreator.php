@@ -14,8 +14,8 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
      */
     public $categoriesArrayFilters = [
         'search'=>[ # Данные для выборки из таблицы categories
-            'firstTableName'=>'products', # Имя таблицы участвующей в объединении
-            'firstTableFieldWhere'=>'description', # Имя поля таблицы, по которому делается выборка с помощью WHERE
+            'tableName'=>'products', # Имя таблицы участвующей в объединении
+            'tableFieldWhere'=>'description', # Имя поля таблицы, по которому делается выборка с помощью WHERE
         ],
     ];
     
@@ -25,7 +25,7 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     public function getSelectQuery()
     {
         try {
-             $this->addSelectHead();
+            $this->addSelectHead();
             $this->_mapperObject->query .= $this->addFilters();
             $this->addSelectEnd();
         } catch (\Exception $e) {
@@ -43,8 +43,12 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
             
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if (in_array($filter, $getArrayKeys)) {
-                    $this->_mapperObject->query .= $this->getWhereLike($filter);
-                    $this->_mapperObject->filtersArray[':' . $filter] = \Yii::$app->request->get($filter);
+                    $this->_mapperObject->query .= $this->getWhereLike(
+                        $this->categoriesArrayFilters[$filter]['tableName'],
+                        $this->categoriesArrayFilters[$filter]['tableFieldWhere'],
+                        $filter
+                    );
+                    $this->_mapperObject->filtersArray[':' . $filter] = '%' . \Yii::$app->request->get($filter) . '%';
                 }
             }
         } catch (\Exception $e) {

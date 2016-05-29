@@ -16,11 +16,12 @@ class SubcategoryModel extends Model
     
     public $id;
     public $name;
+    public $seocode;
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'name'],
+            self::GET_FROM_DB=>['id', 'name', 'seocode'],
         ];
     }
 }

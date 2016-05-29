@@ -21,12 +21,13 @@ class CategoriesModel extends Model
     
     public $id;
     public $name;
+    public $seocode;
     private $_subcategory = NULL;
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'name'],
+            self::GET_FROM_DB=>['id', 'name', 'seocode'],
         ];
     }
     
@@ -41,10 +42,7 @@ class CategoriesModel extends Model
                 if (!isset($this->id)) {
                     throw new ErrorException('Не определен id категории, для которой необходимо получить подкатегории!');
                 }
-                $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name'], 'categoriesModel'=>$this]);
-                /*if (YII_DEBUG) {
-                    $subcategoryMapper->on($subcategoryMapper::SENT_REQUESTS_TO_DB, ['app\helpers\FixSentRequests', 'fix']);
-                }*/
+                $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name', 'seocode'], 'categoriesModel'=>$this]);
                 $this->_subcategory = $subcategoryMapper->getGroup();
             }
         } catch (\Exception $e) {
