@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `categories`;
 CREATE TABLE `categories` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `seocode` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`(20))
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
@@ -36,7 +37,7 @@ CREATE TABLE `categories` (
 
 LOCK TABLES `categories` WRITE;
 /*!40000 ALTER TABLE `categories` DISABLE KEYS */;
-INSERT INTO `categories` VALUES (1,'Мужская обувь'),(2,'Мужская одежда');
+INSERT INTO `categories` VALUES (1,'Мужская обувь','mensfootwear'),(2,'Мужская одежда','menswear');
 /*!40000 ALTER TABLE `categories` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -211,6 +212,7 @@ DROP TABLE IF EXISTS `subcategory`;
 CREATE TABLE `subcategory` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
+  `seocode` varchar(255) NOT NULL,
   `id_categories` tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_categories` (`id_categories`),
@@ -224,7 +226,7 @@ CREATE TABLE `subcategory` (
 
 LOCK TABLES `subcategory` WRITE;
 /*!40000 ALTER TABLE `subcategory` DISABLE KEYS */;
-INSERT INTO `subcategory` VALUES (1,'Ботинки',1),(2,'Кроссовки',1),(3,'Брюки',2),(4,'Пиджаки',2);
+INSERT INTO `subcategory` VALUES (1,'Ботинки','boots',1),(2,'Кроссовки','snickers',1),(3,'Брюки','pants',2),(4,'Пиджаки','coats',2);
 /*!40000 ALTER TABLE `subcategory` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -237,4 +239,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-28 22:17:48
+-- Dump completed on 2016-05-30 18:28:57

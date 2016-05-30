@@ -40,7 +40,7 @@ abstract class AbstractBaseQueryCreator extends Object
     }
     
     /**
-     * Формирует часть запроса к БД, добавляя столбцы данных из JOIN таблиц, которые необходимо включить в выборку
+     * Формирует часть запроса к БД, добавляя в выборку столбцы данных из JOIN таблиц
      * @return string
      */
     protected function addOtherFields()

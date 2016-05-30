@@ -3,25 +3,24 @@
 namespace app\mappers;
 
 use app\mappers\AbstractBaseMapper;
-use yii\helpers\ArrayHelper;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-abstract class AbstractGetGroupMapper extends AbstractBaseMapper
+abstract class AbstractGetOneMapper extends AbstractBaseMapper
 {
     /**
      * Возвращает массив объектов, представляющих строки в БД
      * @return array
      */
-    public function getGroup()
+    public function getOne()
     {
         try {
             $this->run();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->objectsArray;
+        return $this->objectsOne;
     }
     
     /**
@@ -32,11 +31,11 @@ abstract class AbstractGetGroupMapper extends AbstractBaseMapper
     {
         try {
             $command = \Yii::$app->db->createCommand($this->query);
-            $result = $command->queryAll();
+            $command->bindValue(':' . \Yii::$app->params['idKey'], \Yii::$app->request->get(\Yii::$app->params['idKey']));
+            $result = $command->queryOne();
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
             }
-            ArrayHelper::multisort($result, [$this->orderByField], [SORT_ASC]);
             $this->DbArray = $result;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

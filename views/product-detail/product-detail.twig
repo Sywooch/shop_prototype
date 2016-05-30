@@ -1,0 +1,18 @@
+
+{% include '@app/views/parts/search.twig' %}
+
+<h1>{{ productsObject.name }}</h1>
+
+<p>{{ productsObject.code }}</p>
+<p>{{ productsObject.description }}</p>
+<p>{{ productsObject.price }}</p>
+
+{% include '@app/views/parts/product-detail-colors.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+{% include '@app/views/parts/currency.twig' %}
+
+{% include '@app/views/parts/colors.twig' %}
+
+{% include '@app/views/parts/sizes.twig' %}

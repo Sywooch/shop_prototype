@@ -42,20 +42,18 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     /**
      * Формирует часть запроса к БД, добавляющую фильтры
      */
-    private function addFilters()
+    protected function addFilters()
     {
         try {
-            $getArrayKeys = array_keys(\Yii::$app->request->get());
+            parent::addFilters();
             
-            foreach (\Yii::$app->params['filterKeys'] as $filter) {
-                if (in_array($filter, $getArrayKeys)) {
-                    $this->_mapperObject->query .= $this->getWhereLike(
-                        $this->categoriesArrayFilters[$filter]['tableName'],
-                        $this->categoriesArrayFilters[$filter]['tableFieldWhere'],
-                        $filter
-                    );
-                    $this->_mapperObject->filtersArray[':' . $filter] = '%' . \Yii::$app->request->get($filter) . '%';
-                }
+            if (\Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
+                $this->_mapperObject->query .= $this->getWhereLike(
+                    $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableName'],
+                    $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableFieldWhere'],
+                    \Yii::$app->params['searchKey']
+                );
+                $this->_mapperObject->filtersArray[':' . \Yii::$app->params['searchKey']] = '%' . \Yii::$app->request->get(\Yii::$app->params['searchKey']) . '%';
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

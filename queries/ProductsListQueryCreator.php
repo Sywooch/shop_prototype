@@ -180,7 +180,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     /**
      * Формирует часть запроса к БД, добавляющую фильтры
      */
-    private function addFilters()
+    protected function addFilters()
     {
         try {
             $getArrayKeys = array_keys(\Yii::$app->request->get());

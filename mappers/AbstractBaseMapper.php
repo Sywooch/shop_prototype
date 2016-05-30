@@ -24,7 +24,7 @@ abstract class AbstractBaseMapper extends Component
      */
     public $tableName;
     /**
-     * @var array столбцы данных, которые необходимо включить запрос
+     * @var array столбцы данных, которые необходимо включить в запрос
      */
     public $fields = array();
     /**
@@ -60,6 +60,10 @@ abstract class AbstractBaseMapper extends Component
      * @var array массив объектов, созданных из результирующих данных, полученных из БД
      */
     public $objectsArray = array();
+    /**
+     * @var object объект, созданный из результирующих данных, полученных из БД
+     */
+    public $objectsOne;
     
     public function init()
     {
@@ -71,8 +75,37 @@ abstract class AbstractBaseMapper extends Component
     }
     
     /**
-     * Возвращает массив объектов, представляющих строки в БД
-     * @return array
+     * Передает классу-визитеру объект для дополнительной обработки данных
+     * @param object объект класса-визитера
      */
-    abstract public function getGroup();
+    public function visit($visitor)
+    {
+        try {
+            $visitor->update($this);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует запрос к БД, выполняет его и формирует объекты, представляющих строки в БД
+     */
+    protected function run()
+    {
+        try {
+            if (!isset($this->queryClass)) {
+                throw new ErrorException('Не задано имя класа, формирующего строку!');
+            }
+            $this->visit(new $this->queryClass());
+            
+            $this->getData();
+            
+            if (!isset($this->objectsClass)) {
+                throw new ErrorException('Не задано имя класа, который создает объекты из данных БД!');
+            }
+            $this->visit(new $this->objectsClass());
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }
