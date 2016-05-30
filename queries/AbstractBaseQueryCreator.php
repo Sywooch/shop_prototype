@@ -50,7 +50,11 @@ abstract class AbstractBaseQueryCreator extends Object
                 $result = [];
                 foreach ($this->_mapperObject->otherTablesFields as $set) {
                     foreach ($set['fields'] as $field) {
-                        $result[] = '[[' . $set['table'] . '.' . $field['field'] . ']]' . ' AS [['. $field['as'] . ']]';
+                        $string = '[[' . $set['table'] . '.' . $field['field'] . ']]';
+                        if (isset($field['as'])) {
+                            $string .= ' AS [['. $field['as'] . ']]';
+                        }
+                        $result[] = $string;
                     }
                 }
             }

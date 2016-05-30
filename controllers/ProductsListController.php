@@ -35,7 +35,6 @@ class ProductsListController extends Controller
                 'orderByField'=>'date'
             ]);
             $productsList = $productsMapper->getGroup();
-            echo $productsMapper->query;
             $dataForRender = $this->getDataForRender();
             $resultArray = array_merge(['productsList'=>$productsList], $dataForRender);
         } catch (\Exception $e) {
