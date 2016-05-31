@@ -6,6 +6,7 @@ use app\controllers\AbstractBaseController;
 use app\mappers\ProductsListMapper;
 use app\mappers\ColorsMapper;
 use app\mappers\SizesMapper;
+use app\mappers\BrandsMapper;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -86,6 +87,14 @@ class ProductsListController extends AbstractBaseController
                 'orderByField'=>'size'
             ]);
             $result['sizesList'] = $sizesMapper->getGroup();
+            
+            # Получаю массив объектов размеров для фильтра
+            $brandsMapper = new BrandsMapper([
+                'tableName'=>'brands',
+                'fields'=>['id', 'brand'],
+                'orderByField'=>'brand'
+            ]);
+            $result['brandsList'] = $brandsMapper->getGroup();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

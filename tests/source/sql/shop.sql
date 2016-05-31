@@ -16,6 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
+-- Table structure for table `brands`
+--
+
+DROP TABLE IF EXISTS `brands`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `brands` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `brand` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `brand` (`brand`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `brands`
+--
+
+LOCK TABLES `brands` WRITE;
+/*!40000 ALTER TABLE `brands` DISABLE KEYS */;
+INSERT INTO `brands` VALUES (1,'Adidas'),(11,'Ergo'),(4,'Goorte'),(3,'Manson'),(8,'Minuel Gorat'),(2,'Montana'),(7,'Nine Lines'),(6,'Orin'),(12,'Pradella'),(10,'Reebok'),(5,'Zegna');
+/*!40000 ALTER TABLE `brands` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `categories`
 --
 
@@ -125,6 +150,33 @@ INSERT INTO `products` VALUES (1,1462453595,'GH56tg','Ботинки Pradella','
 UNLOCK TABLES;
 
 --
+-- Table structure for table `products_brands`
+--
+
+DROP TABLE IF EXISTS `products_brands`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `products_brands` (
+  `id_products` smallint(5) unsigned NOT NULL,
+  `id_brands` tinyint(3) unsigned NOT NULL,
+  UNIQUE KEY `id_products_id_brands` (`id_products`,`id_brands`),
+  KEY `id_brands` (`id_brands`),
+  CONSTRAINT `products_brands_ibfk_1` FOREIGN KEY (`id_products`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `products_brands_ibfk_2` FOREIGN KEY (`id_brands`) REFERENCES `brands` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `products_brands`
+--
+
+LOCK TABLES `products_brands` WRITE;
+/*!40000 ALTER TABLE `products_brands` DISABLE KEYS */;
+INSERT INTO `products_brands` VALUES (5,1),(7,2),(14,3),(3,4),(9,5),(10,6),(11,6),(12,6),(13,6),(15,6),(16,6),(2,7),(4,8),(6,10),(8,11),(1,12);
+/*!40000 ALTER TABLE `products_brands` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `products_colors`
 --
 
@@ -147,7 +199,7 @@ CREATE TABLE `products_colors` (
 
 LOCK TABLES `products_colors` WRITE;
 /*!40000 ALTER TABLE `products_colors` DISABLE KEYS */;
-INSERT INTO `products_colors` VALUES (1,1),(4,1),(7,1),(10,1),(13,1),(16,1),(2,2),(5,2),(8,2),(11,2),(14,2),(3,3),(6,3),(9,3),(12,3),(15,3);
+INSERT INTO `products_colors` VALUES (1,1),(4,1),(5,1),(7,1),(10,1),(13,1),(16,1),(2,2),(5,2),(8,2),(11,2),(14,2),(3,3),(6,3),(9,3),(12,3),(15,3);
 /*!40000 ALTER TABLE `products_colors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -239,4 +291,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-30 18:28:57
+-- Dump completed on 2016-05-31 21:46:36

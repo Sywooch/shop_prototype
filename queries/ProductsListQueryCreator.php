@@ -53,6 +53,19 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
             'secondTableFieldOn'=>'id',
             'secondTableFieldWhere'=>'size',
         ],
+        'products_brands'=>[ # Данные для выборки из таблицы products_brands
+            'firstTableName'=>'products',
+            'firstTableFieldOn'=>'id',
+            'secondTableName'=>'products_brands',
+            'secondTableFieldOn'=>'id_products',
+        ],
+        'brands'=>[ # Данные для выборки из таблицы brands
+            'firstTableName'=>'products_brands',
+            'firstTableFieldOn'=>'id_brands',
+            'secondTableName'=>'brands',
+            'secondTableFieldOn'=>'id',
+            'secondTableFieldWhere'=>'brand',
+        ],
     ];
     
     /**
