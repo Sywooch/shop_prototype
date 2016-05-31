@@ -6,6 +6,7 @@ use yii\base\Model;
 use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
 use app\mappers\ColorsForProductMapper;
+use app\mappers\SizesForProductMapper;
 
 /**
  * Представляет данные таблицы products
@@ -63,5 +64,30 @@ class ProductsModel extends Model
             $this->throwException($e, __METHOD__);
         }
         return $this->_colors;
+    }
+    
+    /**
+     * Возвращает по запросу массив объектов sizes, связанных с текущим объектом
+     * @return array
+     */
+    public function getSizes()
+    {
+        try {
+            if (is_null($this->_sizes)) {
+                if (!isset($this->id)) {
+                    throw new ErrorException('Не определен id продукта, для которого необходимо получить размеры!');
+                }
+                $sizesMapper = new SizesForProductMapper([
+                    'tableName'=>'sizes',
+                    'fields'=>['id', 'size'],
+                    'orderByField'=>'size',
+                    'productsModel'=>$this,
+                ]);
+                $this->_sizes = $sizesMapper->getGroup();
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return $this->_sizes;
     }
 }

@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use app\controllers\AbstractBaseController;
 use app\mappers\ProductsListMapper;
+use app\mappers\ColorsMapper;
+use app\mappers\SizesMapper;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -58,5 +60,36 @@ class ProductsListController extends AbstractBaseController
             $this->throwException($e, __METHOD__);
         }
         return $this->render('products-list.twig', $resultArray);
+    }
+    
+    /**
+     * Получает данные, необходимые в нескольких типах контроллеров 
+     * @return array
+     */
+    protected function getDataForRender()
+    {
+        try {
+            $result = parent::getDataForRender();
+            
+            # Получаю массив объектов цветов для фильтра
+            $colorsMapper = new ColorsMapper([
+                'tableName'=>'colors',
+                'fields'=>['id', 'color'],
+                'orderByField'=>'color',
+            ]);
+            $result['colorsList'] = $colorsMapper->getGroup();
+            
+            # Получаю массив объектов размеров для фильтра
+            $sizesMapper = new SizesMapper([
+                'tableName'=>'sizes',
+                'fields'=>['id', 'size'],
+                'orderByField'=>'size'
+            ]);
+            $result['sizesList'] = $sizesMapper->getGroup();
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return $result;
     }
 }
