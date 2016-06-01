@@ -19,10 +19,10 @@ class SubcategoryQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $categoryModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DB]);
         $categoryModel->attributes = ['id'=>1];
         
-        $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name'], 'categoriesModel'=>$categoryModel]);
+        $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name'], 'model'=>$categoryModel]);
         $subcategoryMapper->visit(new SubcategoryQueryCreator());
         
-        $query = 'SELECT [[subcategory.id]],[[subcategory.name]] FROM {{subcategory}} JOIN {{categories}} ON [[subcategory.id_categories]]=[[categories.id]] WHERE [[categories.id]]=:categories';
+        $query = 'SELECT [[subcategory.id]],[[subcategory.name]] FROM {{subcategory}} JOIN {{categories}} ON [[subcategory.id_categories]]=[[categories.id]] WHERE [[categories.id]]=:id';
         
         $this->assertEquals($query, $subcategoryMapper->query);
     }

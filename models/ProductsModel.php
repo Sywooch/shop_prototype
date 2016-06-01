@@ -56,7 +56,7 @@ class ProductsModel extends Model
                     'tableName'=>'colors',
                     'fields'=>['id', 'color'],
                     'orderByField'=>'color',
-                    'productsModel'=>$this,
+                    'model'=>$this,
                 ]);
                 $this->_colors = $colorsMapper->getGroup();
             }
@@ -81,7 +81,7 @@ class ProductsModel extends Model
                     'tableName'=>'sizes',
                     'fields'=>['id', 'size'],
                     'orderByField'=>'size',
-                    'productsModel'=>$this,
+                    'model'=>$this,
                 ]);
                 $this->_sizes = $sizesMapper->getGroup();
             }

@@ -38,7 +38,7 @@ class SubcategoryObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $subcategoryMapper->visit(new SubcategoryQueryCreator());
         
         $command = \Yii::$app->db->createCommand($subcategoryMapper->query);
-        $command->bindValue(':' . \Yii::$app->params['categoryKey'], 1);
+        $command->bindValue(':' . \Yii::$app->params['idKey'], 1);
         $subcategoryMapper->DbArray = $command->queryAll();
         
         $this->assertFalse(empty($subcategoryMapper->DbArray));

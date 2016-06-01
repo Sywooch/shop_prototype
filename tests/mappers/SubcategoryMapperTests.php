@@ -28,7 +28,7 @@ class SubcategoryMapperTests extends \PHPUnit_Framework_TestCase
         $categoryModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DB]);
         $categoryModel->attributes = ['id'=>1];
         
-        $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name'], 'categoriesModel'=>$categoryModel]);
+        $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name'], 'model'=>$categoryModel]);
         $subcategoryList = $subcategoryMapper->getGroup();
         
         $this->assertTrue(is_array($subcategoryList));

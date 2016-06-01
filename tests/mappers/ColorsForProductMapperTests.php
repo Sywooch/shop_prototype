@@ -29,7 +29,7 @@ class ColorsForProductMapperTests extends \PHPUnit_Framework_TestCase
             'tableName'=>'colors',
             'fields'=>['id', 'color'],
             'orderByField'=>'color',
-            'productsModel'=>new ProductsModel(['id'=>1]),
+            'model'=>new ProductsModel(['id'=>1]),
         ]);
         $colorsList = $colorsForProductMapper->getGroup();
         

@@ -104,7 +104,7 @@ abstract class AbstractBaseQueryCreator extends Object
     protected function getWhere($tableName, $tableField, $key)
     {
         try {
-            $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
+            $string = $this->getWhereStart();
             return $string . ' [[' . $tableName . '.' . $tableField . ']]=:' . $key;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -118,11 +118,45 @@ abstract class AbstractBaseQueryCreator extends Object
     protected function getWhereLike($tableName, $tableField, $key)
     {
         try {
-            $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
+            $string = $this->getWhereStart();
             return $string . ' [[' . $tableName . '.' . $tableField . ']] LIKE :' . $key;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
+    }
+    
+        /**
+     * Формирует часть запроса к БД, добавляющую условия выборки WHERE IN
+     * @return string
+    */
+    protected function getWhereIn($tableName, $tableField, $key)
+    {
+        try {
+            $string = $this->getWhereStart();
+            return $string . ' [[' . $tableName . '.' . $tableField . ']] IN (:' . $key . ')';
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует часть запроса к БД, добавляющую условия выборки WHERE NOT EQUAL
+     * @return string
+    */
+    protected function getWhereNotEqual($tableName, $tableField, $key)
+    {
+        try {
+            $string = $this->getWhereStart();
+            return $string . ' [[' . $tableName . '.' . $tableField . ']]!=:' . $key;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    protected function getWhereStart()
+    {
+        $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
+        return $string;
     }
     
     /**

@@ -13,7 +13,7 @@ class SizesForProductQueryCreator extends AbstractSeletcForProductQueryCreator
      * @var array массив для выборки данных
      */
     public $categoriesArrayFilters = [
-        'id'=>[ # Данные для выборки из таблицы colors
+        'id'=>[ # Данные для выборки из таблицы sizes
             'firstTableName'=>'sizes', # Имя первой таблицы участвующей в объединении
             'firstTableFieldOn'=>'id', # Имя поля первой таблицы, по которому проходит объединение
             'secondTableName'=>'products_sizes', # Имя второй таблицы участвующей в объединении

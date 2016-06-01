@@ -14,7 +14,7 @@ abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
     /**
      * @var object объект модели, представляющей строку таблицы products, для которой необходимо получить связанные объекты из colors
      */
-    public $productsModel;
+    public $model;
     
     /**
      * Выполняет запрос к базе данных
@@ -23,11 +23,11 @@ abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
     protected function getData()
     {
         try {
-            if (!isset($this->productsModel) || !isset($this->productsModel->id)) {
-                throw new ErrorException('Не определен объект модели, для которой необходимо получить sizes!');
+            if (!isset($this->model) || !isset($this->model->id)) {
+                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
             }
             $command = \Yii::$app->db->createCommand($this->query);
-            $command->bindValue(':' . \Yii::$app->params['idKey'], $this->productsModel->id);
+            $command->bindValue(':' . \Yii::$app->params['idKey'], $this->model->id);
             $result = $command->queryAll();
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД

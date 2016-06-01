@@ -38,7 +38,7 @@ class SubcategoryQueryCreator extends AbstractSeletcQueryCreator
             $this->_mapperObject->query .= $this->getWhere(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
-                \Yii::$app->params['categoryKey']
+                \Yii::$app->params['idKey']
             );
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -29,7 +29,7 @@ class SizesForProductMapperTests extends \PHPUnit_Framework_TestCase
             'tableName'=>'sizes',
             'fields'=>['id', 'size'],
             'orderByField'=>'size',
-            'productsModel'=>new ProductsModel(['id'=>1]),
+            'model'=>new ProductsModel(['id'=>1]),
         ]);
         $sizesList = $sizesForProductMapper->getGroup();
         

@@ -42,7 +42,7 @@ class CategoriesModel extends Model
                 if (!isset($this->id)) {
                     throw new ErrorException('Не определен id категории, для которой необходимо получить подкатегории!');
                 }
-                $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name', 'seocode'], 'categoriesModel'=>$this]);
+                $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name', 'seocode'], 'model'=>$this]);
                 $this->_subcategory = $subcategoryMapper->getGroup();
             }
         } catch (\Exception $e) {
