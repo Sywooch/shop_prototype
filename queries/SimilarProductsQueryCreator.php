@@ -62,7 +62,7 @@ class SimilarProductsQueryCreator extends AbstractSeletcQueryCreator
     public function getSelectQuery()
     {
         try {
-            $this->_mapperObject->query = 'SELECT ';
+            $this->_mapperObject->query = 'SELECT DISTINCT ';
             $this->_mapperObject->query .= $this->addFields();
             
             $this->_mapperObject->query .= $this->addOtherFields();

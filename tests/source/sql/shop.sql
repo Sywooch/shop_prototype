@@ -199,7 +199,7 @@ CREATE TABLE `products_colors` (
 
 LOCK TABLES `products_colors` WRITE;
 /*!40000 ALTER TABLE `products_colors` DISABLE KEYS */;
-INSERT INTO `products_colors` VALUES (1,1),(4,1),(5,1),(7,1),(10,1),(13,1),(16,1),(2,2),(5,2),(8,2),(11,2),(14,2),(3,3),(6,3),(9,3),(12,3),(15,3);
+INSERT INTO `products_colors` VALUES (1,1),(2,1),(3,1),(4,1),(5,1),(6,1),(7,1),(8,1),(9,1),(10,1),(11,1),(12,1),(13,1),(14,1),(15,1),(16,1),(1,2),(2,2),(4,2),(5,2),(7,2),(8,2),(10,2),(11,2),(13,2),(14,2),(16,2),(3,3),(6,3),(9,3),(12,3),(15,3);
 /*!40000 ALTER TABLE `products_colors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -226,7 +226,7 @@ CREATE TABLE `products_sizes` (
 
 LOCK TABLES `products_sizes` WRITE;
 /*!40000 ALTER TABLE `products_sizes` DISABLE KEYS */;
-INSERT INTO `products_sizes` VALUES (1,1),(8,1),(16,1),(2,2),(9,2),(12,2),(10,3),(15,3),(4,4),(3,5),(5,5),(11,5),(6,6),(13,6),(7,7),(14,7);
+INSERT INTO `products_sizes` VALUES (1,1),(2,1),(8,1),(16,1),(1,2),(2,2),(8,2),(9,2),(12,2),(16,2),(1,3),(8,3),(10,3),(15,3),(16,3),(1,4),(4,4),(8,4),(16,4),(1,5),(2,5),(3,5),(5,5),(11,5),(2,6),(6,6),(13,6),(2,7),(7,7),(14,7);
 /*!40000 ALTER TABLE `products_sizes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -291,4 +291,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-31 21:46:36
+-- Dump completed on 2016-06-02 14:02:11

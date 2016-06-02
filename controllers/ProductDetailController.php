@@ -47,7 +47,7 @@ class ProductDetailController extends AbstractBaseController
         try {
             $result = parent::getDataForRender();
             
-            # Получаю массив объектов цветов для фильтра
+            # Получаю массив similar products
             $similarProductsMapper = new SimilarProductsMapper([
                 'tableName'=>'products',
                 'fields'=>['id', 'name', 'price', 'images'],
@@ -59,7 +59,6 @@ class ProductDetailController extends AbstractBaseController
                 'model'=>$this->_productsObject,
             ]);
             $result['similarProductsList'] = $similarProductsMapper->getGroup();
-            echo $similarProductsMapper->query;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
