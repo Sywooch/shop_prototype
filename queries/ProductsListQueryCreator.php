@@ -159,7 +159,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
             $this->_mapperObject->query = 'SELECT ';
             $this->_mapperObject->query .= $this->addFields();
             $this->_mapperObject->query .= $this->addOtherFields();
-            $this->addTableName();
+            $this->_mapperObject->query .= $this->addTableName();
             $this->_mapperObject->query .= $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],

@@ -88,7 +88,7 @@ class ProductsListController extends AbstractBaseController
             ]);
             $result['sizesList'] = $sizesMapper->getGroup();
             
-            # Получаю массив объектов размеров для фильтра
+            # Получаю массив brands для фильтра
             $brandsMapper = new BrandsMapper([
                 'tableName'=>'brands',
                 'fields'=>['id', 'brand'],

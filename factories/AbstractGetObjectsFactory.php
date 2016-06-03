@@ -33,7 +33,8 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory implements 
     {
         try {
             if (empty($this->_mapperObject->DbArray)) {
-                throw new ErrorException('Отсутствуют данные для построения объектов!');
+                return;
+                //throw new ErrorException('Отсутствуют данные для построения объектов!');
             }
             
             foreach ($this->_mapperObject->DbArray as $entry) {

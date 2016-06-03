@@ -231,6 +231,33 @@ INSERT INTO `products_sizes` VALUES (1,1),(2,1),(8,1),(16,1),(1,2),(2,2),(8,2),(
 UNLOCK TABLES;
 
 --
+-- Table structure for table `related_products`
+--
+
+DROP TABLE IF EXISTS `related_products`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `related_products` (
+  `id_products` smallint(5) unsigned NOT NULL,
+  `id_related_products` smallint(5) unsigned NOT NULL,
+  UNIQUE KEY `two_colls` (`id_products`,`id_related_products`),
+  KEY `id_related_products` (`id_related_products`),
+  CONSTRAINT `related_products_ibfk_1` FOREIGN KEY (`id_products`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `related_products_ibfk_2` FOREIGN KEY (`id_related_products`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `related_products`
+--
+
+LOCK TABLES `related_products` WRITE;
+/*!40000 ALTER TABLE `related_products` DISABLE KEYS */;
+INSERT INTO `related_products` VALUES (15,1),(15,12),(2,15);
+/*!40000 ALTER TABLE `related_products` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `sizes`
 --
 
@@ -291,4 +318,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-02 14:02:11
+-- Dump completed on 2016-06-03 16:20:59

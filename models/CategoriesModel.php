@@ -22,6 +22,7 @@ class CategoriesModel extends Model
     public $id;
     public $name;
     public $seocode;
+    
     private $_subcategory = NULL;
     
     public function scenarios()

@@ -64,25 +64,20 @@ class SimilarProductsQueryCreator extends AbstractSeletcQueryCreator
         try {
             $this->_mapperObject->query = 'SELECT DISTINCT ';
             $this->_mapperObject->query .= $this->addFields();
-            
             $this->_mapperObject->query .= $this->addOtherFields();
-            
-            $this->addTableName();
-            
+            $this->_mapperObject->query .= $this->addTableName();
             $this->_mapperObject->query .= $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
-            
-            $this->_mapperObject->query .= $this->getJoin(
+           $this->_mapperObject->query .= $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
             );
-            
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if ($filter != 'brands') {
                     $this->_mapperObject->query .= $this->getJoin(
@@ -99,25 +94,21 @@ class SimilarProductsQueryCreator extends AbstractSeletcQueryCreator
                     );
                 }
             }
-            
             $this->_mapperObject->query .= $this->getWhereNotEqual(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
-            
             $this->_mapperObject->query .= $this->getWhere(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName']
             );
-            
             $this->_mapperObject->query .= $this->getWhere(
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldWhere'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName']
             );
-            
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if ($filter != 'brands') {
                     $this->_mapperObject->query .= $this->getWhereIn(

@@ -81,7 +81,7 @@ abstract class AbstractBaseQueryCreator extends Object
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        $this->_mapperObject->query .= ' FROM {{' . $this->_mapperObject->tableName . '}}';
+        return ' FROM {{' . $this->_mapperObject->tableName . '}}';
     }
     
     /**
@@ -148,6 +148,19 @@ abstract class AbstractBaseQueryCreator extends Object
         try {
             $string = $this->getWhereStart();
             return $string . ' [[' . $tableName . '.' . $tableField . ']]!=:' . $key;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует часть запроса к БД, добавляющую условия выборки WHERE WHERE
+     * @return string
+    */
+    protected function getWhereWhere($tableName, $tableField, $key)
+    {
+        try {
+            return ' WHERE [[' . $tableName . '.' . $tableField . ']]=:' . $key;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

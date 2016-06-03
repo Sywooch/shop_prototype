@@ -7,6 +7,8 @@ use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
 use app\mappers\ColorsForProductMapper;
 use app\mappers\SizesForProductMapper;
+use app\mappers\SimilarProductsMapper;
+use app\mappers\RelatedProductsMapper;
 
 /**
  * Представляет данные таблицы products
@@ -33,6 +35,8 @@ class ProductsModel extends Model
     
     private $_colors = NULL;
     private $_sizes = NULL;
+    private $_similar = NULL;
+    private $_related = NULL;
     
     public function scenarios()
     {
@@ -89,5 +93,63 @@ class ProductsModel extends Model
             $this->throwException($e, __METHOD__);
         }
         return $this->_sizes;
+    }
+    
+    /**
+     * Возвращает по запросу массив объектов similar products, связанных с текущим объектом
+     * @return array
+     */
+    public function getSimilar()
+    {
+        try {
+            if (is_null($this->_similar)) {
+                if (!isset($this->id)) {
+                    throw new ErrorException('Не определен id продукта, для которого необходимо получить похожие продукты!');
+                }
+                $similarProductsMapper = new SimilarProductsMapper([
+                    'tableName'=>'products',
+                    'fields'=>['id', 'name', 'price', 'images'],
+                    'orderByField'=>'date',
+                    'otherTablesFields'=>[
+                        ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+                        ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+                    ],
+                    'model'=>$this,
+                ]);
+                $this->_similar = $similarProductsMapper->getGroup();
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return $this->_similar;
+    }
+    
+    /**
+     * Возвращает по запросу массив объектов related products, связанных с текущим объектом
+     * @return array
+     */
+    public function getRelated()
+    {
+        try {
+            if (is_null($this->_related)) {
+                if (!isset($this->id)) {
+                    throw new ErrorException('Не определен id продукта, для которого необходимо получить похожие продукты!');
+                }
+                $relatedProductsMapper = new RelatedProductsMapper([
+                    'tableName'=>'products',
+                    'fields'=>['id', 'name', 'price', 'images'],
+                    'otherTablesFields'=>[
+                        ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+                        ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+                    ],
+                    'orderByField'=>'date',
+                    'model'=>$this,
+                ]);
+                $this->_related = $relatedProductsMapper->getGroup();
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return $this->_related;
     }
 }

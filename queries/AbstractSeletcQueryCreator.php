@@ -30,7 +30,7 @@ abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator imple
         try {
             $this->_mapperObject->query = 'SELECT ';
             $this->_mapperObject->query .= $this->addFields();
-            $this->addTableName();
+            $this->_mapperObject->query .= $this->addTableName();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -38,10 +38,12 @@ class SimilarProductsMapper extends AbstractGetGroupForProductMapper
             if (!empty($bindArray)) {
                 $command->bindValues($bindArray);
             }
-            $this->DbArray = $command->queryAll();
+            $result = $command->queryAll();
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
             }
+            ArrayHelper::multisort($result, $this->orderByField, [SORT_ASC]);
+            $this->DbArray = $result;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
