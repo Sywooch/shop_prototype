@@ -106,7 +106,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
      * Формирует строку запроса к БД, фильруя по категории
      * @return string
      */
-    private function queryForCategory()
+    protected function queryForCategory()
     {
         try {
             $this->addSelectHead();
@@ -127,7 +127,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
      * Формирует строку запроса к БД, фильруя по подкатегории
      * @return string
      */
-    private function queryForSubCategory()
+    protected function queryForSubCategory()
     {
         try {
             $this->addSelectHead();

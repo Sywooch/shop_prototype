@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupMapper;
+use app\mappers\AbstractFilterMapper;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class BrandsMapper extends AbstractGetGroupMapper
+class BrandsMapper extends AbstractFilterMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса

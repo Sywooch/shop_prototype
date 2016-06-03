@@ -25,6 +25,8 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForAll()
     {
+        $_GET = [];
+        
         $productsListMapper = new ProductsListMapper(self::$_config);
         $productsListMapper->visit(new ProductsListQueryCreator());
         
