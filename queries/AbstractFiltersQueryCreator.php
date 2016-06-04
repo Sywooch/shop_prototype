@@ -36,9 +36,13 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
     protected function queryForAll()
     {
         try {
-            $this->_mapperObject->query = 'SELECT DISTINCT ';
-            $this->_mapperObject->query .= $this->addFields();
-            $this->_mapperObject->query .= $this->addTableName();
+            $this->addSelectHead();
+            $this->_mapperObject->query .= $this->getJoin(
+                $this->categoriesArrayFilters['tableOne']['firstTableName'],
+                $this->categoriesArrayFilters['tableOne']['firstTableFieldOn'],
+                $this->categoriesArrayFilters['tableOne']['secondTableName'],
+                $this->categoriesArrayFilters['tableOne']['secondTableFieldOn']
+            );
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -51,7 +55,7 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
     protected function queryForCategory()
     {
         try {
-            $this->queryForAll();
+            $this->addSelectHead();
             $this->_mapperObject->query .= $this->getJoin(
                 $this->categoriesArrayFilters['tableOne']['firstTableName'],
                 $this->categoriesArrayFilters['tableOne']['firstTableFieldOn'],
@@ -88,7 +92,7 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
     protected function queryForSubCategory()
     {
         try {
-            $this->queryForAll();
+            $this->addSelectHead();
             $this->_mapperObject->query .= $this->getJoin(
                 $this->categoriesArrayFilters['tableOne']['firstTableName'],
                 $this->categoriesArrayFilters['tableOne']['firstTableFieldOn'],
@@ -128,5 +132,15 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
         }
         $this->_mapperObject->categoryFlag = true;
         $this->_mapperObject->subcategoryFlag = true;
+    }
+    
+    /**
+     * Формирует начальную часть строки запроса к БД
+     */
+    protected function addSelectHead()
+    {
+        $this->_mapperObject->query = 'SELECT DISTINCT ';
+        $this->_mapperObject->query .= $this->addFields();
+        $this->_mapperObject->query .= $this->addTableName();
     }
 }

@@ -24,7 +24,7 @@ class BrandsQueryCreatorTests extends \PHPUnit_Framework_TestCase
         ]);
         $brandsMapper->visit(new BrandsQueryCreator());
         
-        $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}}';
+        $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]]';
         
         $this->assertEquals($query, $brandsMapper->query);
     }
@@ -53,7 +53,7 @@ class BrandsQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForSubCategory()
     {
-        $_GET = ['categories'=>'mensfootwear', 'subcategory'=>'pants'];
+        $_GET = ['categories'=>'mensfootwear', 'subcategory'=>'boots'];
         
         $brandsMapper = new BrandsMapper([
             'tableName'=>'brands',

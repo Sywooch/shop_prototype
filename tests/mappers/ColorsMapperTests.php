@@ -24,6 +24,60 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetGroup()
     {
+        $_GET = [];
+        
+        $colorsMapper = new ColorsMapper([
+            'tableName'=>'colors',
+            'fields'=>['id', 'color'],
+            'orderByField'=>'color'
+        ]);
+        $colorsList = $colorsMapper->getGroup();
+        
+        $this->assertTrue(is_array($colorsList));
+        $this->assertFalse(empty($colorsList));
+        $this->assertTrue(is_object($colorsList[0]));
+        $this->assertTrue($colorsList[0] instanceof ColorsModel);
+        
+        $this->assertTrue(property_exists($colorsList[0], 'id'));
+        $this->assertTrue(property_exists($colorsList[0], 'color'));
+        
+        $this->assertTrue(isset($colorsList[0]->id));
+        $this->assertTrue(isset($colorsList[0]->color));
+    }
+    
+    /**
+     * Тестирует метод SizesMapper::getGroup с учетом категории
+     */
+    public function testGetGroupCategories()
+    {
+        $_GET = ['categories'=>'mensfootwear'];
+        
+        $colorsMapper = new ColorsMapper([
+            'tableName'=>'colors',
+            'fields'=>['id', 'color'],
+            'orderByField'=>'color'
+        ]);
+        $colorsList = $colorsMapper->getGroup();
+        
+        $this->assertTrue(is_array($colorsList));
+        $this->assertFalse(empty($colorsList));
+        $this->assertTrue(is_object($colorsList[0]));
+        $this->assertTrue($colorsList[0] instanceof ColorsModel);
+        
+        $this->assertTrue(property_exists($colorsList[0], 'id'));
+        $this->assertTrue(property_exists($colorsList[0], 'color'));
+        
+        $this->assertTrue(isset($colorsList[0]->id));
+        $this->assertTrue(isset($colorsList[0]->color));
+    }
+    
+    /**
+     * Тестирует метод SizesMapper::getGroup с учетом категории и подкатегории
+     */
+    public function testGetGroupSubcategories()
+    {
+        $_GET = ['categories'=>'mensfootwear', 'subcategory'=>'boots'];
+        
         $colorsMapper = new ColorsMapper([
             'tableName'=>'colors',
             'fields'=>['id', 'color'],

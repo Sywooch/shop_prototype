@@ -3,6 +3,6 @@
 
 <ul>
     {% for color in colorsList %}
-        <li>{{ color.color }}</li>
+        <li><a href="{{ url.to({0:app.request.requestUri, 'colors':color.color}) }}">{{ color.color }}</a></li>
     {% endfor %}
 </ul>
