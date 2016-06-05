@@ -52,6 +52,17 @@ $config = [
                 ],
             ],
         ],
+        'assetManager'=>[
+            'bundles'=>[
+                'yii\web\JqueryAsset'=>[
+                    'sourcePath'=>null,
+                    'js'=>['https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js']
+                ],
+            ],
+            'basePath'=>'@webroot/sources/temp',
+            'baseUrl'=>'@web/sources/temp',
+            'appendTimestamp'=>true
+        ],
         'urlManager'=>[
             'enablePrettyUrl'=>true,
             'showScriptName'=>false,
@@ -62,6 +73,7 @@ $config = [
                 'products/<categories>'=>'products-list/index',
                 'products'=>'products-list/index',
                 'search'=>'products-list/search',
+                'join'=>'users/add-user',
             ],
         ],
     ],

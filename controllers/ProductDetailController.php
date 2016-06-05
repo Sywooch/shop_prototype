@@ -2,13 +2,13 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
+use app\controllers\AbstractBaseProductsController;
 use app\mappers\ProductDetailMapper;
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
  */
-class ProductDetailController extends AbstractBaseController
+class ProductDetailController extends AbstractBaseProductsController
 {
     /**
      * Обрабатывает запрос к конкретному продукту, рендерит ответ

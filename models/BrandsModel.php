@@ -5,7 +5,7 @@ namespace app\models;
 use yii\base\Model;
 
 /**
- * ПРедставляет данные таблицы currency
+ * Представляет данные таблицы currency
  */
 class BrandsModel extends Model
 {

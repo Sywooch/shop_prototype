@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
+use app\controllers\AbstractBaseProductsController;
 use app\mappers\ProductsListMapper;
 use app\mappers\ColorsMapper;
 use app\mappers\SizesMapper;
@@ -11,7 +11,7 @@ use app\mappers\BrandsMapper;
 /**
  * Обрабатывает запросы на получение списка продуктов
  */
-class ProductsListController extends AbstractBaseController
+class ProductsListController extends AbstractBaseProductsController
 {
     private $_config = [
         'tableName'=>'products',

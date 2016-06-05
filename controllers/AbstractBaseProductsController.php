@@ -2,17 +2,14 @@
 
 namespace app\controllers;
 
-use yii\web\Controller;
-use app\mappers\CategoriesMapper;
-use app\traits\ExceptionsTrait;
+use app\controllers\AbstractBaseController;
+use app\mappers\CurrencyMapper;
 
 /**
  * Определяет функции, общие для разных типов контроллеров
  */
-abstract class AbstractBaseController extends Controller
+abstract class AbstractBaseProductsController extends AbstractBaseController
 {
-    use ExceptionsTrait;
-    
     /**
      * Получает данные, необходимые в нескольких типах контроллеров 
      * @return array
@@ -20,15 +17,15 @@ abstract class AbstractBaseController extends Controller
     protected function getDataForRender()
     {
         try {
-            $result = array();
+            $result = parent::getDataForRender();
             
-            # Получаю массив объектов категорий
-            $categoriesMapper = new CategoriesMapper([
-                'tableName'=>'categories',
-                'fields'=>['id', 'name', 'seocode'],
-                'orderByField'=>'name'
+            # Получаю массив объектов валют
+            $currencyMapper = new CurrencyMapper([
+                'tableName'=>'currency',
+                'fields'=>['id', 'currency'],
+                'orderByField'=>'currency'
             ]);
-            $result['categoriesList'] = $categoriesMapper->getGroup();
+            $result['currencyList'] = $currencyMapper->getGroup();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
