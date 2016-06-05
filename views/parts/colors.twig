@@ -2,7 +2,8 @@
 <p>Colors</p>
 
 <ul>
+    <li><a href="{{ getParams.delParam(app.request.getUrl(), 'colors') }}">Все</a></li>
     {% for color in colorsList %}
-        <li><a href="{{ url.to({0:app.request.requestUri, 'colors':color.color}) }}">{{ color.color }}</a></li>
+        <li><a href="{{ getParams.addParam(app.request.getUrl(), {'colors':color.color}) }}">{{ color.color }}</a></li>
     {% endfor %}
 </ul>

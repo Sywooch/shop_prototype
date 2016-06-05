@@ -29,7 +29,11 @@ $config = [
                 'twig'=>[
                     'class'=>'yii\twig\ViewRenderer',
                     'options'=>['auto_reload'=>true],
-                    'globals'=>['html'=>'yii\helpers\Html', 'url'=>'yii\helpers\Url'],
+                    'globals'=>[
+                        'html'=>'yii\helpers\Html', 
+                        'url'=>'yii\helpers\Url',
+                        'getParams'=>'app\helpers\AddGetParamsHelper',
+                    ],
                 ]
             ],
         ],

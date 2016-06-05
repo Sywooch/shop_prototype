@@ -2,7 +2,8 @@
 <p>Sizes</p>
 
 <ul>
+    <li><a href="{{ getParams.delParam(app.request.getUrl(), 'sizes') }}">Все</a></li>
     {% for size in sizesList %}
-        <li>{{ size.size }}</li>
+        <li><a href="{{ getParams.addParam(app.request.getUrl(), {'sizes':size.size}) }}">{{ size.size }}</a></li>
     {% endfor %}
 </ul

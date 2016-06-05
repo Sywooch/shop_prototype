@@ -2,7 +2,8 @@
 <p>Brands</p>
 
 <ul>
+    <li><a href="{{ getParams.delParam(app.request.getUrl(), 'brands') }}">Все</a></li>
     {% for brand in brandsList %}
-        <li>{{ brand.brand }}</li>
+        <li><a href="{{ getParams.addParam(app.request.getUrl(), {'brands':brand.brand}) }}">{{ brand.brand }}</a></li>
     {% endfor %}
 </ul>
