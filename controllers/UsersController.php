@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\controllers\AbstractBaseController;
 use app\models\UsersModel;
+use app\mappers\UsersInsertMapper;
 
 /**
  * Управляет работой с пользователями
@@ -20,7 +21,12 @@ class UsersController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {
-                    print_r($model);
+                    $usersInsertMapper = new UsersInsertMapper([
+                        'tableName'=>'users',
+                        'fields'=>['login', 'password', 'name'],
+                        'objectsOne'=>$model
+                    ]);
+                    $usersInsertMapper->setOne();
                 }
             }
             

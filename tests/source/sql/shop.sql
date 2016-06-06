@@ -27,7 +27,7 @@ CREATE TABLE `brands` (
   `brand` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `brand` (`brand`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -36,7 +36,7 @@ CREATE TABLE `brands` (
 
 LOCK TABLES `brands` WRITE;
 /*!40000 ALTER TABLE `brands` DISABLE KEYS */;
-INSERT INTO `brands` VALUES (1,'Adidas'),(11,'Ergo'),(4,'Goorte'),(3,'Manson'),(8,'Minuel Gorat'),(2,'Montana'),(7,'Nine Lines'),(6,'Orin'),(12,'Pradella'),(10,'Reebok'),(5,'Zegna');
+INSERT INTO `brands` VALUES (1,'Adidas'),(11,'Ergo'),(4,'Goorte'),(13,'Gosha'),(3,'Manson'),(8,'Minuel Gorat'),(2,'Montana'),(7,'Nine Lines'),(6,'Orin'),(12,'Pradella'),(10,'Reebok'),(5,'Zegna');
 /*!40000 ALTER TABLE `brands` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -77,7 +77,7 @@ CREATE TABLE `colors` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `color` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -86,7 +86,7 @@ CREATE TABLE `colors` (
 
 LOCK TABLES `colors` WRITE;
 /*!40000 ALTER TABLE `colors` DISABLE KEYS */;
-INSERT INTO `colors` VALUES (1,'black'),(2,'white'),(3,'green');
+INSERT INTO `colors` VALUES (1,'black'),(2,'white'),(3,'green'),(4,'red');
 /*!40000 ALTER TABLE `colors` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,6 +258,30 @@ INSERT INTO `related_products` VALUES (15,1),(15,12),(2,15);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `rules`
+--
+
+DROP TABLE IF EXISTS `rules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rules` (
+  `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
+  `rule` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rules`
+--
+
+LOCK TABLES `rules` WRITE;
+/*!40000 ALTER TABLE `rules` DISABLE KEYS */;
+INSERT INTO `rules` VALUES (1,'catalog view'),(2,'change products'),(3,'add products'),(4,'change personal info'),(5,'assign rule');
+/*!40000 ALTER TABLE `rules` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `sizes`
 --
 
@@ -268,7 +292,7 @@ CREATE TABLE `sizes` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
   `size` float(4,1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -277,7 +301,7 @@ CREATE TABLE `sizes` (
 
 LOCK TABLES `sizes` WRITE;
 /*!40000 ALTER TABLE `sizes` DISABLE KEYS */;
-INSERT INTO `sizes` VALUES (1,34.0),(2,35.0),(3,48.0),(4,50.0),(5,42.5),(6,45.0),(7,56.5);
+INSERT INTO `sizes` VALUES (1,34.0),(2,35.0),(3,48.0),(4,50.0),(5,42.5),(6,45.0),(7,56.5),(8,60.0);
 /*!40000 ALTER TABLE `sizes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -308,6 +332,58 @@ LOCK TABLES `subcategory` WRITE;
 INSERT INTO `subcategory` VALUES (1,'Ботинки','boots',1),(2,'Кроссовки','snickers',1),(3,'Брюки','pants',2),(4,'Пиджаки','coats',2);
 /*!40000 ALTER TABLE `subcategory` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `users`
+--
+
+DROP TABLE IF EXISTS `users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users` (
+  `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+  `login` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login` (`login`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `users_rules`
+--
+
+DROP TABLE IF EXISTS `users_rules`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `users_rules` (
+  `id_users` smallint(5) unsigned NOT NULL,
+  `id_rules` tinyint(3) unsigned NOT NULL,
+  UNIQUE KEY `id_users_id_rules` (`id_users`,`id_rules`),
+  KEY `id_rules` (`id_rules`),
+  CONSTRAINT `users_rules_ibfk_1` FOREIGN KEY (`id_users`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `users_rules_ibfk_2` FOREIGN KEY (`id_rules`) REFERENCES `rules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users_rules`
+--
+
+LOCK TABLES `users_rules` WRITE;
+/*!40000 ALTER TABLE `users_rules` DISABLE KEYS */;
+/*!40000 ALTER TABLE `users_rules` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -318,4 +394,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-03 16:20:59
+-- Dump completed on 2016-06-06 14:14:10

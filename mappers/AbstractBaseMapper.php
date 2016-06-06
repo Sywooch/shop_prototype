@@ -3,6 +3,7 @@
 namespace app\mappers;
 
 use yii\base\Component;
+use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 use yii\base\Event;
 
@@ -61,7 +62,8 @@ abstract class AbstractBaseMapper extends Component
      */
     public $objectsArray = array();
     /**
-     * @var object объект, созданный из результирующих данных, полученных из БД
+     * @var object объект, созданный из результирующих данных, полученных из БД, 
+     * или объект, на основании которого будет создана запись в БД
      */
     public $objectsOne;
     

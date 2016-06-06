@@ -3,6 +3,7 @@
 namespace app\queries;
 
 use yii\base\Object;
+use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 
 /**
@@ -82,6 +83,22 @@ abstract class AbstractBaseQueryCreator extends Object
             $this->throwException($e, __METHOD__);
         }
         return ' FROM {{' . $this->_mapperObject->tableName . '}}';
+    }
+    
+    /**
+     * Формирует часть запроса к БД для INSERT, указывающую из какой таблицы берутся данные
+     * @return string
+     */
+    protected function addTableNameToInsert()
+    {
+        try {
+            if (!isset($this->_mapperObject->tableName)) {
+                throw new ErrorException('Не задано имя таблицы!');
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return ' {{' . $this->_mapperObject->tableName . '}}';
     }
     
     /**
@@ -166,14 +183,68 @@ abstract class AbstractBaseQueryCreator extends Object
         }
     }
     
+    /**
+     * Формирует часть запроса к БД, перечисляющие имена столбцов, в которые будут добавлены данные
+     * @return string
+    */
+    protected function addFieldsToInsert()
+    {
+        try {
+            return ' (' . implode(',', $this->_mapperObject->fields) . ')';
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует часть запроса для подстановки данных
+     * @return string
+    */
+    protected function addValuesToInsert()
+    {
+        $string = ' VALUES';
+        try {
+            if (isset($this->_mapperObject->objectsOne)) {
+                $string .= ' (:' . implode(',:', $this->_mapperObject->fields) . ')';
+            } else {
+                throw new ErrorException('Отсутсвуют данные для конструирования запроса!');
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return $string;
+    }
+    
+    /**
+     * Формирует часть запроса для подстановки данных
+     * @return string
+    */
+    protected function addGroupValuesToInsert()
+    {
+        $string = ' VALUES ';
+        $arrayValues = array();
+        try {
+            if (!empty($this->_mapperObject->objectsArray)) {
+                foreach ($this->_mapperObject->objectsArray as $keyobject=>$object) {
+                    $objectGroup = array();
+                    foreach ($this->_mapperObject->fields as $keyfield=>$field) {
+                        $objectGroup[] = ':' . $keyobject . '_' . $field;
+                        $this->_mapperObject->insertData[':' . $keyobject . '_' . $field] = $object->$field;
+                    }
+                    $arrayValues[] = '(' . implode(',', $objectGroup) . ')';
+                }
+            } else {
+                throw new ErrorException('Отсутсвуют данные для конструирования запроса!');
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return $string . implode(',', $arrayValues);
+    }
+    
     protected function getWhereStart()
     {
         $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
         return $string;
     }
-    
-    /**
-     * Инициирует создание SELECT запроса
-     */
-    abstract public function getSelectQuery();
 }
