@@ -2,8 +2,7 @@
 
 namespace app\models;
 
-use yii\base\Model;
-use app\traits\ExceptionsTrait;
+use app\models\AbstractBaseModel;
 use yii\base\ErrorException;
 use app\mappers\ColorsForProductMapper;
 use app\mappers\SizesForProductMapper;
@@ -13,10 +12,8 @@ use app\mappers\RelatedProductsMapper;
 /**
  * Представляет данные таблицы products
  */
-class ProductsModel extends Model
+class ProductsModel extends AbstractBaseModel
 {
-    use ExceptionsTrait;
-    
     /**
      * Сценарий загрузки данных из БД в рамках списка продуктов
     */

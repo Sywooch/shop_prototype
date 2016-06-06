@@ -2,12 +2,13 @@
 
 namespace app\models;
 
-use yii\base\Model;
+use app\models\AbstractBaseModel;
+use app\mappers\RulesMapper;
 
 /**
  * Представляет данные таблицы users
  */
-class UsersModel extends Model
+class UsersModel extends AbstractBaseModel
 {
     /**
      * Сценарий сохранения данных из формы
@@ -17,8 +18,10 @@ class UsersModel extends Model
     public $id;
     public $login;
     public $name;
+    public $rulesFromForm = array();
     
     private $_password;
+    private $_allRules = NULL;
     
     public function scenarios()
     {
@@ -41,7 +44,11 @@ class UsersModel extends Model
      */
     public function setPassword($value)
     {
-        $this->_password = password_hash($value, PASSWORD_DEFAULT);
+        try {
+            $this->_password = password_hash($value, PASSWORD_DEFAULT);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
@@ -50,5 +57,26 @@ class UsersModel extends Model
     public function getPassword()
     {
         return $this->_password;
+    }
+    
+    /**
+     * Возвращает массив объектов всех доступных rules для формы создания пользователя
+     * @return array
+     */
+    public function getAllRules()
+    {
+        try {
+            if (is_null($this->_allRules)) {
+                $rulesMapper = new RulesMapper([
+                    'tableName'=>'rules',
+                    'fields'=>['id', 'rule'],
+                    'orderByField'=>'rule',
+                ]);
+                $this->_allRules = $rulesMapper->getGroup();
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return $this->_allRules;
     }
 }

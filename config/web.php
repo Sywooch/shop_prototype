@@ -30,7 +30,8 @@ $config = [
                     'class'=>'yii\twig\ViewRenderer',
                     'options'=>['auto_reload'=>true],
                     'globals'=>[
-                        'html'=>'yii\helpers\Html', 
+                        'html'=>'yii\helpers\Html',
+                        'array'=>'yii\helpers\ArrayHelper',
                         'url'=>'yii\helpers\Url',
                         'getParams'=>'app\helpers\AddGetParamsHelper',
                     ],

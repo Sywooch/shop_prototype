@@ -2,12 +2,12 @@
 
 namespace app\models;
 
-use yii\base\Model;
+use app\models\AbstractBaseModel;
 
 /**
  * Представляет данные таблицы subcategory
  */
-class SubcategoryModel extends Model
+class SubcategoryModel extends AbstractBaseModel
 {
     /**
      * Сценарий загрузки данных из БД

@@ -2,18 +2,15 @@
 
 namespace app\models;
 
-use yii\base\Model;
+use app\models\AbstractBaseModel;
 use app\mappers\SubcategoryMapper;
-use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
 
 /**
  * Представляет данные таблицы categories
  */
-class CategoriesModel extends Model
+class CategoriesModel extends AbstractBaseModel
 {
-    use ExceptionsTrait;
-    
     /**
      * Сценарий загрузки данных из БД
     */

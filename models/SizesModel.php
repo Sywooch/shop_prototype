@@ -2,12 +2,12 @@
 
 namespace app\models;
 
-use yii\base\Model;
+use app\models\AbstractBaseModel;
 
 /**
  * ПРедставляет данные таблицы sizes
  */
-class SizesModel extends Model
+class SizesModel extends AbstractBaseModel
 {
     /**
      * Сценарий загрузки данных из БД

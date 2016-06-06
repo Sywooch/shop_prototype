@@ -2,12 +2,12 @@
 
 namespace app\models;
 
-use yii\base\Model;
+use app\models\AbstractBaseModel;
 
 /**
  * Представляет данные таблицы currency
  */
-class BrandsModel extends Model
+class BrandsModel extends AbstractBaseModel
 {
     /**
      * Сценарий загрузки данных из БД
