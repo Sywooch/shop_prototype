@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\models\AbstractBaseModel;
 use app\mappers\RulesMapper;
+use app\mappers\UsersByLoginMapper;
 
 /**
  * Представляет данные таблицы users
@@ -14,26 +15,34 @@ class UsersModel extends AbstractBaseModel
      * Сценарий сохранения данных из формы
     */
     const GET_FROM_FORM = 'getFromForm';
+    /**
+     * Сценарий сохранения данных из БД
+    */
+    const GET_FROM_DB = 'getFromDB';
     
-    public $id;
     public $login;
     public $name;
+    /**
+     * @var array массив ID rules, выбранных пользователем в форме
+     */
     public $rulesFromForm = array();
     
+    private $_id = NULL;
     private $_password;
     private $_allRules = NULL;
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['login', 'password', 'name'],
+            self::GET_FROM_FORM=>['login', 'password', 'name', 'rulesFromForm'],
+            self::GET_FROM_DB=>['id', 'login', 'name'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['login', 'password'], 'required', 'on'=>self::GET_FROM_FORM],
+            [['login', 'password', 'rulesFromForm'], 'required', 'on'=>self::GET_FROM_FORM],
             ['login', 'app\validators\ExistUserValidator', 'on'=>self::GET_FROM_FORM],
         ];
     }
@@ -78,5 +87,31 @@ class UsersModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
         return $this->_allRules;
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_id
+     */
+    public function getId()
+    {
+        if (is_null($this->_id)) {
+            $usersByLoginMapper = new UsersByLoginMapper([
+                'tableName'=>'users',
+                'fields'=>['id', 'login', 'name'],
+                'model'=>$this,
+            ]);
+            $objectUser = $usersByLoginMapper->getOne();
+            $this->_id = $objectUser->id;
+        }
+        return $this->_id;
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_id
+     * @param string $value значение ID
+     */
+    public function setId($value)
+    {
+        $this->_id = $value;
     }
 }

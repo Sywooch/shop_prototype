@@ -3,12 +3,12 @@
 namespace app\factories;
 
 use app\factories\AbstractGetOneFactory;
-use app\models\ProductsModel;
+use app\models\UsersModel;
 
 /**
  * Создает объекты на оснований данных БД
  */
-class ProductDetailObjectsFactory extends AbstractGetOneFactory
+class UsersOneObjectsFactory extends AbstractGetOneFactory
 {
     public function init()
     {
@@ -16,7 +16,7 @@ class ProductDetailObjectsFactory extends AbstractGetOneFactory
         
         try {
             if (!isset($this->model)) {
-                $this->model = new ProductsModel(['scenario'=>ProductsModel::GET_LIST_FROM_DB]);
+                $this->model = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB]);
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
