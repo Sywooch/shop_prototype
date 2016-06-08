@@ -20,9 +20,9 @@ class UsersInsertMapperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод UsersInsertMapper::setOne
+     * Тестирует метод UsersInsertMapper::setGroup
      */
-    public function testSetOne()
+    public function testSetGroup()
     {
         $userArray = ['login'=>'user', 'password'=>'password', 'name'=>'Peter Bankman'];
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
@@ -31,9 +31,9 @@ class UsersInsertMapperTests extends \PHPUnit_Framework_TestCase
         $usersInsertMapper = new UsersInsertMapper([
             'tableName'=>'users',
             'fields'=>['login', 'password', 'name'],
-            'objectsOne'=>$model
+            'objectsArray'=>[$model]
         ]);
-        $result = $usersInsertMapper->setOne();
+        $result = $usersInsertMapper->setGroup();
         
         $this->assertEquals(1, $result);
         

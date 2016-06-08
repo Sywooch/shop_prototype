@@ -12,7 +12,7 @@ use yii\helpers\ArrayHelper;
 abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
 {
     /**
-     * @var object объект модели, представляющей строку таблицы products, для которой необходимо получить связанные объекты из colors
+     * @var object объект модели, представляющей строку таблицы products, для которой необходимо получить связанные объекты
      */
     public $model;
     

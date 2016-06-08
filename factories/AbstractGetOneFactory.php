@@ -2,13 +2,13 @@
 
 namespace app\factories;
 
-use app\factories\AbstractGetObjectsFactory;
+use app\factories\AbstractBaseFactory;
 use yii\base\ErrorException;
 
 /**
  * Конструирует массив объектов из массива строк БД
  */
-abstract class AbstractGetOneFactory extends AbstractGetObjectsFactory
+abstract class AbstractGetOneFactory extends AbstractBaseFactory
 {
     /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
@@ -18,7 +18,7 @@ abstract class AbstractGetOneFactory extends AbstractGetObjectsFactory
     public function update($object)
     {
         try {
-            $this->_mapperObject = $object;
+            parent::update($object);
             $this->getOne();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

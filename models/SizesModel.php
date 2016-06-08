@@ -5,7 +5,7 @@ namespace app\models;
 use app\models\AbstractBaseModel;
 
 /**
- * ПРедставляет данные таблицы sizes
+ * Представляет данные таблицы sizes
  */
 class SizesModel extends AbstractBaseModel
 {

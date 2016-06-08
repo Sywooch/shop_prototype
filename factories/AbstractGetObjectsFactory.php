@@ -3,13 +3,12 @@
 namespace app\factories;
 
 use app\factories\AbstractBaseFactory;
-use app\interfaces\VisitorInterface;
 use yii\base\ErrorException;
 
 /**
  * Конструирует массив объектов из массива строк БД
  */
-abstract class AbstractGetObjectsFactory extends AbstractBaseFactory implements VisitorInterface
+abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
 {
     /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
@@ -19,7 +18,7 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory implements 
     public function update($object)
     {
         try {
-            $this->_mapperObject = $object;
+            parent::update($object);
             $this->getObjects();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -34,7 +33,6 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory implements 
         try {
             if (empty($this->_mapperObject->DbArray)) {
                 return;
-                //throw new ErrorException('Отсутствуют данные для построения объектов!');
             }
             
             foreach ($this->_mapperObject->DbArray as $entry) {

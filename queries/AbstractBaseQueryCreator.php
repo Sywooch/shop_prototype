@@ -5,11 +5,12 @@ namespace app\queries;
 use yii\base\Object;
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
+use app\interfaces\VisitorInterface;
 
 /**
  * Абстрактный суперкласс для подклассов, реализующих построение строки запроса к БД
  */
-abstract class AbstractBaseQueryCreator extends Object
+abstract class AbstractBaseQueryCreator extends Object implements VisitorInterface
 {
     use ExceptionsTrait;
     
@@ -18,6 +19,20 @@ abstract class AbstractBaseQueryCreator extends Object
      * запрос сохраняется в свойство $query этого объекта
      */
     protected $_mapperObject;
+    
+    /**
+     * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве, реализуя VisitorInterface
+     * запускает процесс
+     * @param $object
+     */
+    public function update($object)
+    {
+        try {
+            $this->_mapperObject = $object;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
     
     /**
      * Формирует часть запроса к БД, перечисляющую столбцы данных, которые необходимо включить в выборку
@@ -62,7 +77,6 @@ abstract class AbstractBaseQueryCreator extends Object
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        
         if (!empty($result)) {
             return ',' . implode(',', $result);
         }

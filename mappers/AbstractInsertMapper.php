@@ -6,10 +6,16 @@ use app\mappers\AbstractBaseMapper;
 use yii\base\ErrorException;
 
 /**
- * Реализует вставку 1 строки данных в БД
+ * Реализует вставку строк данных в БД
  */
 abstract class AbstractInsertMapper extends AbstractBaseMapper
 {
+    /**
+     * @var array массив ключей и значений для подстановки в строку запроса,
+     * заполняется в процессе работы queryCreator
+     */
+    public $insertData = array();
+    
     /**
      * Формирует запрос к БД и выполняет его
      */
@@ -28,10 +34,10 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
     }
     
     /**
-     * Создает 1 запись в БД
+     * Создает группу записей в БД
      * @return boolean
      */
-    public function setOne()
+    public function setGroup()
     {
         try {
             $this->run();
@@ -70,18 +76,14 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
      */
     protected function getBindArray()
     {
-        $result = array();
         try {
-            if (isset($this->objectsOne)) {
-                foreach ($this->fields as $field) {
-                    $result[':' . $field] = $this->objectsOne->$field;
-                }
+            if (isset($this->objectsArray)) {
+                return $this->insertData;
             } else {
                 throw new ErrorException('Отсутсвуют данные для выполнения запроса!');
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $result;
     }
 }

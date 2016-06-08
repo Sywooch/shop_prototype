@@ -8,7 +8,7 @@ use app\traits\ExceptionsTrait;
 use yii\base\Event;
 
 /**
- * Абстрактный суперкласс, определяет интерфейс для классов наследников, 
+ * Абстрактный суперкласс, определяет интерфейс, общие свойства и методы для классов наследников, 
  * получающих, создающих, обновляющих или удаляющих данные из БД
  */
 abstract class AbstractBaseMapper extends Component
@@ -30,7 +30,7 @@ abstract class AbstractBaseMapper extends Component
     public $fields = array();
     /**
      * @var array столбцы из JOIN таблиц, которые необходимо включить в выборку,
-     * формат ['table'=>'tablename', 'fields'=>['field'=>'fields1', 'as'=>'fields']]
+     * формат ['table'=>'tablename', 'fields'=>[['field'=>'fields1', 'as'=>'fields']]]
      */
     public $otherTablesFields = array();
     /**
@@ -46,7 +46,7 @@ abstract class AbstractBaseMapper extends Component
      */
     public $queryClass;
     /**
-     * @var string имя класса, который создает объекты из данных БД
+     * @var string имя класса, который создает объекты из данных
      */
     public $objectsClass;
     /**

@@ -5,7 +5,7 @@ namespace app\models;
 use app\models\AbstractBaseModel;
 
 /**
- * ПРедставляет данные таблицы currency
+ * Представляет данные таблицы currency
  */
 class ColorsModel extends AbstractBaseModel
 {

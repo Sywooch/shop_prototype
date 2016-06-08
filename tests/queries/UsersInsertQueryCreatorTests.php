@@ -19,11 +19,11 @@ class UsersInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $usersInsertMapper = new UsersInsertMapper([
             'tableName'=>'users',
             'fields'=>['login', 'password', 'name'],
-            'objectsOne'=>new UsersModel(['login'=>'user', 'password'=>'password']),
+            'objectsArray'=>[new UsersModel(['login'=>'user', 'password'=>'password'])],
         ]);
         $usersInsertMapper->visit(new UsersInsertQueryCreator());
         
-        $query = 'INSERT INTO {{users}} (login,password,name) VALUES (:login,:password,:name)';
+        $query = 'INSERT INTO {{users}} (login,password,name) VALUES (:0_login,:0_password,:0_name)';
         
         $this->assertEquals($query, $usersInsertMapper->query);
     }

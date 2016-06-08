@@ -3,9 +3,8 @@
 namespace app\queries;
 
 use app\queries\AbstractBaseQueryCreator;
-use app\interfaces\VisitorInterface;
 
-abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator implements VisitorInterface
+abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator
 {
     /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве, реализуя VisitorInterface
@@ -15,7 +14,7 @@ abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator imple
     public function update($object)
     {
         try {
-            $this->_mapperObject = $object;
+            parent::update($object);
             $this->getSelectQuery();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

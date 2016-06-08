@@ -4,11 +4,12 @@ namespace app\factories;
 
 use yii\base\Object;
 use app\traits\ExceptionsTrait;
+use app\interfaces\VisitorInterface;
 
 /**
- * Определяет интерфейс классов-наследников, конструирующих объекты из строк БД
+ * Определяет интерфейс, общие свойства и методы классов-наследников, конструирующих объекты
  */
-abstract class AbstractBaseFactory extends Object
+abstract class AbstractBaseFactory extends Object implements VisitorInterface
 {
     use ExceptionsTrait;
     
@@ -23,7 +24,16 @@ abstract class AbstractBaseFactory extends Object
     protected $_mapperObject;
     
     /**
-     * Создает на основе массива строк массив объектов
+     * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
+     * запускает процесс
+     * @param $object
      */
-    abstract public function getObjects();
+    public function update($object)
+    {
+        try {
+            $this->_mapperObject = $object;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

@@ -26,17 +26,14 @@ class UsersController extends AbstractBaseController
                     $usersInsertMapper = new UsersInsertMapper([
                         'tableName'=>'users',
                         'fields'=>['login', 'password', 'name'],
-                        'objectsOne'=>$model
+                        'objectsArray'=>[$model],
                     ]);
-                    $result = $usersInsertMapper->setOne();
-                    
-                    $usersRulesAutonomicFactory = new UsersRulesAutonomicFactory(['dataArray'=>$this->getUsersRulesObjectsArray($model)]);
-                    $usersRulesObjectsArray = $usersRulesAutonomicFactory->getObjects();
+                    $result = $usersInsertMapper->setGroup();
                     
                     $usersRulesInsertMapper = new UsersRulesInsertMapper([
                         'tableName'=>'users_rules',
                         'fields'=>['id_users', 'id_rules'],
-                        'objectsArray'=>$usersRulesObjectsArray,
+                        'model'=>$model
                     ]);
                     $result = $usersRulesInsertMapper->setGroup();
                 }
@@ -49,20 +46,5 @@ class UsersController extends AbstractBaseController
             $this->throwException($e, __METHOD__);
         }
         return $this->render('add-user.twig', $resultArray);
-    }
-    
-    /**
-     * Создает массивы для создания строк таблицы users_rules из данных модели UsersModel
-     * @param object $model объект app\models\UsersModel
-     * @return array
-     */
-    private function getUsersRulesObjectsArray($model)
-    {
-        $result = array();
-        $rulesForUser = $model->rulesFromForm;
-        foreach ($rulesForUser as $rule) {
-            $result[] = ['id_users'=>$model->id, 'id_rules'=>$rule];
-        }
-        return $result;
     }
 }
