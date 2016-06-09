@@ -21,10 +21,10 @@ class AddGetParamsHelper
         
         foreach ($params as $key=>$val)
         {
-            if (strpos($currentUrl, $key . '=')) {
-                self::$_newUrl =  preg_replace('/' . $key . '=[^? &]+/', $key . '=' . $val, $currentUrl);
+            if (strpos(self::$_newUrl, $key . '=')) {
+                self::$_newUrl =  preg_replace('/' . $key . '=[^? &]+/', $key . '=' . $val, self::$_newUrl);
             } else {
-                if (strpos($currentUrl, '?')) {
+                if (strpos(self::$_newUrl, '?')) {
                     self::$_newUrl .= '&';
                 } else {
                     self::$_newUrl .= '?';
@@ -41,12 +41,14 @@ class AddGetParamsHelper
      * @param string $param параметр, которые необходимо убрать из URL
      * @return string отредактированный URL
      */
-    public static function delParam($currentUrl, $param)
+    public static function delParam($currentUrl, Array $params)
     {
         self::$_newUrl = $currentUrl;
         
-        if (strpos($currentUrl, $param . '=')) {
-            self::$_newUrl =  preg_replace(['/\?{1}' . $param . '=[^? &]+$/', '/&{1}' . $param . '=[a-z A-Z 0-9 .]+/', '/' . $param . '=[a-z A-Z 0-9 .]+&{1}/'], '', $currentUrl);
+        foreach ($params as $param) {
+            if (strpos(self::$_newUrl, $param . '=')) {
+                self::$_newUrl =  preg_replace(['/\?{1}' . $param . '=[^? &]+$/', '/&{1}' . $param . '=[a-z A-Z 0-9 .]+/', '/' . $param . '=[a-z A-Z 0-9 .]+&{1}/'], '', self::$_newUrl);
+            }
         }
         return self::$_newUrl;
     }

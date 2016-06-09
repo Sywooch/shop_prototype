@@ -2,7 +2,7 @@
 <p>Colors</p>
 
 <ul>
-    <li><a href="{{ getParams.delParam(app.request.getUrl(), 'colors') }}">Все</a></li>
+    <li><a href="{{ getParams.delParam(app.request.getUrl(), {0:'colors'}) }}">Все</a></li>
     {% for color in colorsList %}
         <li><a href="{{ getParams.addParam(app.request.getUrl(), {'colors':color.color}) }}">{{ color.color }}</a></li>
     {% endfor %}
