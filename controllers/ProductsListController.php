@@ -50,7 +50,6 @@ class ProductsListController extends AbstractBaseProductsController
     {
         try {
             $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
-            
             # Получаю массив объектов товаров
             $productsMapper = new ProductsListMapper($this->_config);
             $productsList = $productsMapper->getGroup();

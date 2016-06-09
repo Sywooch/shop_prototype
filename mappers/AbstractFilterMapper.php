@@ -10,6 +10,13 @@ use yii\helpers\ArrayHelper;
  */
 abstract class AbstractFilterMapper extends ProductsListMapper
 {
+    public function init()
+    {
+        if (!isset($this->orderByField)) {
+            parent::init();
+        }
+    }
+    
     /**
      * Выполняет запрос к базе данных
      * @return array

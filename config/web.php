@@ -75,6 +75,7 @@ $config = [
                 'products'=>'products-list/index',
                 'search'=>'products-list/search',
                 'join'=>'users/add-user',
+                'add-comment'=>'comments/add-comment',
             ],
         ],
     ],

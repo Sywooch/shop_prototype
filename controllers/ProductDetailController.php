@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\controllers\AbstractBaseProductsController;
 use app\mappers\ProductDetailMapper;
+use app\models\CommentsModel;
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
@@ -30,5 +31,21 @@ class ProductDetailController extends AbstractBaseProductsController
             $this->throwException($e, __METHOD__);
         }
         return $this->render('product-detail.twig', $resultArray);
+    }
+    
+    /**
+     * Получает данные, необходимые в нескольких типах контроллеров 
+     * @return array
+     */
+    protected function getDataForRender()
+    {
+        try {
+            $result = parent::getDataForRender();
+            $result['model'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return $result;
     }
 }

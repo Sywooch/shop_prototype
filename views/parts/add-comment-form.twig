@@ -1,0 +1,11 @@
+
+<p>Comments</p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form = active_form_begin({'id': 'comments-form', 'action': url.to({0:'comments/add-comment'}), method: 'POST'}) %}
+    {{ form.field(model, 'text').textarea() | raw }}
+    {{ form.field(model, 'name') | raw }}
+    {{ form.field(model, 'email') | raw }}
+    <input type="submit" value="Send" />
+{{ active_form_end() }}

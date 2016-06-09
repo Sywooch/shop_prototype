@@ -14,10 +14,10 @@
     <testsuites>
         
         <testsuite name="Global">
-            <directory suffix="Tests.php">queries</directory>
-            <directory suffix="Tests.php">factories</directory>
+            <!--<directory suffix="Tests.php">queries</directory>
+            <directory suffix="Tests.php">factories</directory>-->
             <directory suffix="Tests.php">mappers</directory>
-            <directory suffix="Tests.php">helpers</directory>
+            <!--<directory suffix="Tests.php">helpers</directory>-->
         </testsuite>
         
     </testsuites>
