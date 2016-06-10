@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\mappers\EmailsByEmailMapper;
 
 /**
  * Представляет данные таблицы currency
@@ -34,8 +35,18 @@ class EmailsModel extends AbstractBaseModel
      */
     public function getId()
     {
-        if (is_null($this->_id)) {
-            
+        try {
+            if (is_null($this->_id)) {
+                $emailsByEmailMapper = new EmailsByEmailMapper([
+                    'tableName'=>'emails',
+                    'fields'=>['id', 'email'],
+                    'model'=>$this
+                ]);
+                $emailsModel = $emailsByEmailMapper->getOne();
+                $this->_id = $emailsModel->id;
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
         return $this->_id;
     }

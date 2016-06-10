@@ -3,6 +3,7 @@
 namespace app\mappers;
 
 use app\mappers\AbstractBaseMapper;
+use app\exceptions\LostDataUserException;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
@@ -17,6 +18,8 @@ abstract class AbstractGetOneMapper extends AbstractBaseMapper
     {
         try {
             $this->run();
+        } catch (LostDataUserException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -6,6 +6,7 @@ use yii\base\Component;
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 use yii\base\Event;
+use app\exceptions\LostDataUserException;
 
 /**
  * Абстрактный суперкласс, определяет интерфейс, общие свойства и методы для классов наследников, 
@@ -84,6 +85,8 @@ abstract class AbstractBaseMapper extends Component
     {
         try {
             $visitor->update($this);
+        } catch (LostDataUserException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -106,6 +109,8 @@ abstract class AbstractBaseMapper extends Component
                 throw new ErrorException('Не задано имя класа, который создает объекты из данных БД!');
             }
             $this->visit(new $this->objectsClass());
+        } catch (LostDataUserException $e) {
+            throw $e;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
