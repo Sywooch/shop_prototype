@@ -21,9 +21,9 @@ class SimilarProductsMapperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод SimilarProductsMapper::getGroup
+     * Тестирует метод SimilarProductsMapper::getOne
      */
-    public function testGetGroup()
+    public function testGetOne()
     {
         $_GET = ['id'=>1, 'categories'=>'mensfootwear', 'subcategory'=>'boots'];
         

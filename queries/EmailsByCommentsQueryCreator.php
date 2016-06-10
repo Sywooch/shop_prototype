@@ -7,7 +7,7 @@ use app\queries\AbstractSeletcQueryCreator;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class EmailsQueryCreator extends AbstractSeletcQueryCreator
+class EmailsByCommentsQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
      * @var array массив для выборки данных

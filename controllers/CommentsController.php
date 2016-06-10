@@ -17,7 +17,12 @@ class CommentsController extends AbstractBaseController
         
         if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
             if ($model->validate()) {
-                //$commentsInsertMapper = new CommentsInsertMapper
+                $commentsInsertMapper = new CommentsInsertMapper([
+                    'tableName'=>'comments',
+                    'fields'=>['text', 'name', 'id_emails'],
+                    'objectsArray'=>[$model],
+                ]);
+                $commentsInsertMapper->setGroup();
             }
         }
     }
