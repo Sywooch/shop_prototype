@@ -15,9 +15,13 @@ use app\exceptions\LostDataUserException;
 class CommentsModel extends AbstractBaseModel
 {
     /**
-     * Сценарий загрузки данных из БД
+     * Сценарий загрузки данных из формы
     */
     const GET_FROM_FORM = 'getFromForm';
+    /**
+     * Сценарий загрузки данных из БД
+    */
+    const GET_FROM_DB = 'getFromDb';
     
     public $id;
     public $text;
@@ -25,13 +29,15 @@ class CommentsModel extends AbstractBaseModel
     public $active;
     
     public $email;
+    public $id_products;
     
     private $_id_emails = NULL;
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['text', 'name', 'email'],
+            self::GET_FROM_FORM=>['text', 'name', 'email', 'id_products'],
+            self::GET_FROM_DB=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
         ];
     }
     
@@ -43,6 +49,11 @@ class CommentsModel extends AbstractBaseModel
         ];
     }
     
+    /**
+     * Если не инициировано свойство $this->_id_emails, выполняет поиск при помощи ображения к БД,
+     * если возникает ошибка типа LostDataUserException, добавляет запись в БД и возвращает ID добавленной
+     * @return int
+     */
     public function getId_emails()
     {
         try {
@@ -78,6 +89,10 @@ class CommentsModel extends AbstractBaseModel
         return $this->_id_emails;
     }
     
+    /**
+     * Присваивает значение свойству $this->_id_emails
+     * @param int $value
+     */
     public function setId_emails($value)
     {
         $this->_id_emails = $value;

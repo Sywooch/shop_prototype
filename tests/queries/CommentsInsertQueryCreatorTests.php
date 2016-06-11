@@ -25,7 +25,7 @@ class CommentsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetInsertQuery()
     {
-        $commentsArray = ['text'=>'This a just example text of comment', 'name'=>'Тимофей', 'email'=>'test@test.com'];
+        $commentsArray = ['text'=>'This a just example text of comment', 'name'=>'Тимофей', 'email'=>'test@test.com', 'id_products'=>12];
         $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
         $commentsModel->attributes = $commentsArray;
         
@@ -35,13 +35,13 @@ class CommentsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         
         $commentsInsertMapper = new CommentsInsertMapper([
             'tableName'=>'comments',
-            'fields'=>['text', 'name', 'id_emails'],
+            'fields'=>['text', 'name', 'id_emails', 'id_products'],
             'objectsArray'=>[$commentsModel],
         ]);
         
         $commentsInsertMapper->visit(new CommentsInsertQueryCreator());
         
-        $query = 'INSERT INTO {{comments}} (text,name,id_emails) VALUES (:0_text,:0_name,:0_id_emails)';
+        $query = 'INSERT INTO {{comments}} (text,name,id_emails,id_products) VALUES (:0_text,:0_name,:0_id_emails,:0_id_products)';
         
         $this->assertEquals($query, $commentsInsertMapper->query);
     }

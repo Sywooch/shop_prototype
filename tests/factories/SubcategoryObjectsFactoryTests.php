@@ -8,6 +8,7 @@ use app\mappers\SubcategoryMapper;
 use app\queries\SubcategoryQueryCreator;
 use app\models\SubcategoryModel;
 use app\models\CategoriesModel;
+use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\factories\SubcategoryObjectsFactory
@@ -30,6 +31,7 @@ class SubcategoryObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $subcategoryMapper = new SubcategoryMapper([
             'tableName'=>'subcategory',
             'fields'=>['id', 'name'],
+            'model'=>new ProductsModel(['id'=>1]),
         ]);
         
         $this->assertEmpty($subcategoryMapper->objectsArray);

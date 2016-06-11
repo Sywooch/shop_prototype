@@ -102,11 +102,14 @@ CREATE TABLE `comments` (
   `text` varchar(2000) NOT NULL,
   `name` varchar(255) NOT NULL,
   `id_emails` smallint(5) unsigned NOT NULL,
+  `id_products` smallint(5) unsigned NOT NULL,
   `active` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `id_emails` (`id_emails`),
+  KEY `id_products` (`id_products`),
+  CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`id_products`) REFERENCES `products` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`id_emails`) REFERENCES `emails` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +156,7 @@ CREATE TABLE `emails` (
   `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -162,6 +165,7 @@ CREATE TABLE `emails` (
 
 LOCK TABLES `emails` WRITE;
 /*!40000 ALTER TABLE `emails` DISABLE KEYS */;
+INSERT INTO `emails` VALUES (1,'superadmin@tsalmin.com');
 /*!40000 ALTER TABLE `emails` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -445,4 +449,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-09 22:06:25
+-- Dump completed on 2016-06-11 17:53:10

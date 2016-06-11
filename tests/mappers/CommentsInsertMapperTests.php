@@ -25,7 +25,7 @@ class CommentsInsertMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetGroup()
     {
-        $commentsArray = ['text'=>'This a just example text of comment', 'name'=>'Тимофей', 'email'=>'test@test.com'];
+        $commentsArray = ['text'=>'This a just example text of comment', 'name'=>'Тимофей', 'email'=>'test@test.com', 'id_products'=>12];
         $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
         $commentsModel->attributes = $commentsArray;
         
@@ -35,7 +35,7 @@ class CommentsInsertMapperTests extends \PHPUnit_Framework_TestCase
         
         $commentsInsertMapper = new CommentsInsertMapper([
             'tableName'=>'comments',
-            'fields'=>['text', 'name', 'id_emails'],
+            'fields'=>['text', 'name', 'id_emails', 'id_products'],
             'objectsArray'=>[$commentsModel],
         ]);
         
@@ -54,10 +54,12 @@ class CommentsInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('text', $result);
         $this->assertArrayHasKey('name', $result);
         $this->assertArrayHasKey('id_emails', $result);
+        $this->assertArrayHasKey('id_products', $result);
         $this->assertArrayHasKey('active', $result);
         
         $this->assertEquals($commentsArray['text'], $result['text']);
         $this->assertEquals($commentsArray['name'], $result['name']);
+        $this->assertEquals($commentsArray['id_products'], $result['id_products']);
         $this->assertEquals(0, $result['active']);
         
         $emailsByCommentsMapper = new EmailsByCommentsMapper([

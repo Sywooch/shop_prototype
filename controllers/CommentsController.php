@@ -21,7 +21,7 @@ class CommentsController extends AbstractBaseController
                 if ($model->validate()) {
                     $commentsInsertMapper = new CommentsInsertMapper([
                         'tableName'=>'comments',
-                        'fields'=>['text', 'name', 'id_emails'],
+                        'fields'=>['text', 'name', 'id_emails', 'id_products'],
                         'objectsArray'=>[$model],
                     ]);
                     $commentsInsertMapper->setGroup();
