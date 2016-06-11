@@ -17,4 +17,17 @@ class ProductDetailMapper extends AbstractGetOneMapper
      * @var string имя класса, который создает объекты из данных БД
      */
     public $objectsClass = 'app\factories\ProductDetailObjectsFactory';
+    
+    public function init()
+    {
+        parent::init();
+        
+        if (!isset($this->paramBindKey)) {
+            $this->paramBindKey = \Yii::$app->params['idKey'];
+        }
+        
+        if (!isset($this->paramBindKeyValue)) {
+            $this->paramBindKeyValue = \Yii::$app->request->get(\Yii::$app->params['idKey']);
+        }
+    }
 }

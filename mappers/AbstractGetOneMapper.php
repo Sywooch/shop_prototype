@@ -11,6 +11,15 @@ use app\exceptions\LostDataUserException;
 abstract class AbstractGetOneMapper extends AbstractBaseMapper
 {
     /**
+     * @var string имя ключа и переменной для $command->bindValue
+     */
+    public $paramBindKey;
+    /**
+     * @var string значение ключа для $command->bindValue
+     */
+    public $paramBindKeyValue;
+    
+    /**
      * Возвращает массив объектов, представляющих строки в БД
      * @return array
      */
@@ -34,7 +43,7 @@ abstract class AbstractGetOneMapper extends AbstractBaseMapper
     {
         try {
             $command = \Yii::$app->db->createCommand($this->query);
-            $command->bindValue(':' . \Yii::$app->params['idKey'], \Yii::$app->request->get(\Yii::$app->params['idKey']));
+            $command->bindValue(':' . $this->paramBindKey, $this->paramBindKeyValue);
             $result = $command->queryOne();
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
