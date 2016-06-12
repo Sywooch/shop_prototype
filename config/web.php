@@ -33,7 +33,7 @@ $config = [
                         'html'=>'yii\helpers\Html',
                         'array'=>'yii\helpers\ArrayHelper',
                         'url'=>'yii\helpers\Url',
-                        'getParams'=>'app\helpers\AddGetParamsHelper',
+                        //'getParams'=>'app\helpers\AddGetParamsHelper',
                     ],
                 ]
             ],

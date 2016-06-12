@@ -2,7 +2,7 @@
 <p>Sorting</p>
 
 <ul>
-    <li><a href="{{ getParams.delParam(app.request.getUrl(), {0:'orderby', 1:'ordertype'}) }}">Новые первыми</a></li>
-    <li><a href="{{ getParams.addParam(app.request.getUrl(), {'orderby':'price', 'ordertype':'asc'}) }}">По возростанию цены</a></li>
-    <li><a href="{{ getParams.addParam(app.request.getUrl(), {'orderby':'price', 'ordertype':'desc'}) }}">По убыванию цены</a></li>
+    <li><a href="{{ url.current({'orderby':null, 'ordertype':null}) }}">Новые первыми</a></li>
+    <li><a href="{{ url.current({'orderby':'price', 'ordertype':'asc'}) }}">По возростанию цены</a></li>
+    <li><a href="{{ url.current({'orderby':'price', 'ordertype':'desc'}) }}">По убыванию цены</a></li>
 </ul>

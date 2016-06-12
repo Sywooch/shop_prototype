@@ -26,6 +26,8 @@ abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
     
     public function init()
     {
+        parent::init();
+        
         if (!isset($this->paramBindKey)) {
             $this->paramBindKey = \Yii::$app->params['idKey'];
         }
@@ -44,7 +46,7 @@ abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
     {
         try {
             $paramBindKey = $this->paramBindKey;
-            if (!isset($this->model) || !isset($this->model->$paramBindKey)) {
+            if (!isset($this->model)) {
                 throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
             }
             $command = \Yii::$app->db->createCommand($this->query);

@@ -18,10 +18,12 @@ class CommentsForProductMapper extends AbstractGetGroupForProductMapper
      */
     public $objectsClass = 'app\factories\CommentsObjectsFactory';
     
-    public function init()
+    public function __construct($config)
     {
         if (!isset($this->paramBindKey)) {
             $this->paramBindKey = 'id_products';
         }
+        
+        parent::__construct($config);
     }
 }
