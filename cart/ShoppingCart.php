@@ -12,9 +12,9 @@ class ShoppingCart extends Object
 {
     /**
      * @var array массив объектов, описывающих выбранные продукты
-     * название, артикул, стоимость, кол-во, цвет, размер
+     * название, артикул, стоимость, кол-во, цвет, размер и т.д.
      */
-    private $_productsArray = array();
+    private static $_productsArray = array();
     /**
      * @var float общая сумма покупок
      */
@@ -27,11 +27,27 @@ class ShoppingCart extends Object
     /**
      * Добавляет продукт в массив выбранных к покупке
      */
-    public function addProduct(ProductsModel $object)
+    public static function addProduct(ProductsModel $object)
     {
-        if (!in_array($object, $this->_productsArray, true)) {
-            $this->_productsArray[] = $object;
+        if (!in_array($object, self::$_productsArray)) {
+            self::$_productsArray[] = $object;
         }
+    }
+    
+    /**
+     * Возвращает значения self::$_productsArray
+     */
+    public static function getProductsArray()
+    {
+        return self::$_productsArray;
+    }
+    
+    /**
+     * Присваивает восстановленный из сесии массив объектов свойству self::$_productsArray
+     */
+    public static function setProductsArray(Array $productsArray)
+    {
+        self::$_productsArray = $productsArray;
     }
     
     /**
@@ -39,11 +55,10 @@ class ShoppingCart extends Object
      */
     public function getShortData()
     {
-        if (!empty($this->_productsArray)) {
+        if (!empty(self::$_productsArray)) {
             $this->_totalCost = 0.00;
             $this->_totalProducts = 0;
-            
-            foreach ($this->_productsArray as $product) {
+            foreach (self::$_productsArray as $product) {
                 $this->_totalCost += $product->price;
                 $this->_totalProducts++;
             }

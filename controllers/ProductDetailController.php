@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\AbstractBaseProductsController;
 use app\mappers\ProductDetailMapper;
 use app\models\CommentsModel;
+use app\models\ProductsModel;
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
@@ -41,7 +42,8 @@ class ProductDetailController extends AbstractBaseProductsController
     {
         try {
             $result = parent::getDataForRender();
-            $result['model'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
+            $result['commentsModel'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
+            $result['productsModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

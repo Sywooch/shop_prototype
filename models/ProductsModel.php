@@ -19,6 +19,10 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий загрузки данных из БД в рамках списка продуктов
     */
     const GET_LIST_FROM_DB = 'getListFromBd';
+    /**
+     * Сценарий загрузки данных из формы, добавляющей продукт в корзину
+    */
+    const GET_FROM_FORM_TO_CART = 'getFromFormToCart';
     
     public $id;
     public $code;
@@ -31,6 +35,12 @@ class ProductsModel extends AbstractBaseModel
     public $categories;
     public $subcategory;
     
+    /**
+     * Свойства получаемые из формы добавления в корзину
+     */
+    public $colorToCart;
+    public $sizeToCart;
+    
     private $_colors = NULL;
     private $_sizes = NULL;
     private $_similar = NULL;
@@ -41,6 +51,7 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             self::GET_LIST_FROM_DB=>['id', 'code', 'name', 'description', 'price', 'images', 'categories', 'subcategory'],
+            self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'categories', 'subcategory'],
         ];
     }
     

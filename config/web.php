@@ -75,10 +75,15 @@ $config = [
                 'search'=>'products-list/search',
                 'join'=>'users/add-user',
                 'add-comment'=>'comments/add-comment',
+                'add-to-cart'=>'shopping-cart/add-to-cart',
             ],
         ],
         'cart'=>[
             'class'=>'app\cart\ShoppingCart',
+        ],
+        'session'=>[
+            'class'=>'yii\web\DbSession',
+            'timeout'=>60*60*24*7
         ],
     ],
     'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter']
