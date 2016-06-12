@@ -33,7 +33,6 @@ $config = [
                         'html'=>'yii\helpers\Html',
                         'array'=>'yii\helpers\ArrayHelper',
                         'url'=>'yii\helpers\Url',
-                        //'getParams'=>'app\helpers\AddGetParamsHelper',
                     ],
                 ]
             ],
@@ -78,11 +77,15 @@ $config = [
                 'add-comment'=>'comments/add-comment',
             ],
         ],
+        'cart'=>[
+            'class'=>'app\cart\ShoppingCart',
+        ],
     ],
+    'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter']
 ];
 
 if (YII_DEBUG) {
-    $config['as CheckScriptInfoFilter'] = ['class'=>'app\filters\CheckScriptInfoFilter'];
+    $config['as checkScriptInfoFilter'] = ['class'=>'app\filters\CheckScriptInfoFilter'];
 }
 
 return $config;

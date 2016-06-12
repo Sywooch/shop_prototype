@@ -25,7 +25,9 @@ class CommentsController extends AbstractBaseController
                         'objectsArray'=>[$model],
                     ]);
                     $commentsInsertMapper->setGroup();
-                    $this->redirect(Url::to(['products-list/index']));
+                    
+                    $productData = \Yii::$app->request->post('CommentsModel');
+                    $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['id_products']]));
                 }
             }
         } catch (\Exception $e) {

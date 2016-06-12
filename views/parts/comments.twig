@@ -1,0 +1,11 @@
+
+<ul>
+{% for comment in productsObject.comments %}
+    {% if comment.active %}
+        <li>
+            {{ comment.text }}<br>
+            {{ comment.name }}
+        </li>
+    {% endif %}
+{% endfor %}
+</ul>

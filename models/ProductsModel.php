@@ -8,6 +8,7 @@ use app\mappers\ColorsForProductMapper;
 use app\mappers\SizesForProductMapper;
 use app\mappers\SimilarProductsMapper;
 use app\mappers\RelatedProductsMapper;
+use app\mappers\CommentsForProductMapper;
 
 /**
  * Представляет данные таблицы products
@@ -34,6 +35,7 @@ class ProductsModel extends AbstractBaseModel
     private $_sizes = NULL;
     private $_similar = NULL;
     private $_related = NULL;
+    private $_comments = NULL;
     
     public function scenarios()
     {
@@ -148,5 +150,29 @@ class ProductsModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
         return $this->_related;
+    }
+    
+    /**
+     * Возвращает по запросу массив объектов comments, связанных с текущим объектом
+     * @return array
+     */
+    public function getComments()
+    {
+        try {
+            if (is_null($this->_comments)) {
+                if (!isset($this->id)) {
+                    throw new ErrorException('Не определен id продукта, для которого необходимо получить комментарии!');
+                }
+                $commentsForProductMapper = new CommentsForProductMapper([
+                    'tableName'=>'comments',
+                    'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                    'model'=>$this,
+                ]);
+                $this->_comments = $commentsForProductMapper->getGroup();
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return $this->_comments;
     }
 }

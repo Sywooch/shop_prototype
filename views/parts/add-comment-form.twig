@@ -7,6 +7,8 @@
     {{ form.field(model, 'text').textarea() | raw }}
     {{ form.field(model, 'name') | raw }}
     {{ form.field(model, 'email') | raw }}
+    {{ form.field(model, 'categories').hiddenInput({'value':app.request.get(app.params['categoryKey'])}).label(false) | raw }}
+    {{ form.field(model, 'subcategory').hiddenInput({'value':app.request.get(app.params['subCategoryKey'])}).label(false) | raw }}
     {{ form.field(model, 'id_products').hiddenInput({'value':app.request.get(app.params['idKey'])}).label(false) | raw }}
     <input type="submit" value="Send" />
 {{ active_form_end() }}
