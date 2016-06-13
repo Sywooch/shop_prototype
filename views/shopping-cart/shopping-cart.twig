@@ -1,0 +1,30 @@
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/search.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+{% for product in app.cart.getProductsArray() %}
+    <p>{% set form = active_form_begin({'id':'cart-for-product-%s' | format(product.id), 'action':url.to({0:'shopping-cart/update-product'}), 'method':'POST'}) %}
+        {{ form.field(product, 'id').hiddenInput().label(false) | raw }}
+        {{ form.field(product, 'code') | raw }}
+        {{ form.field(product, 'name') | raw }}
+        {{ form.field(product, 'quantity') | raw }}
+        {{ form.field(product, 'colorToCart').dropDownList(array.map(product.colors, 'id', 'color')) | raw }}
+        {{ form.field(product, 'sizeToCart').dropDownList(array.map(product.sizes, 'id', 'size')) | raw }}
+        {{ form.field(product, 'price').textInput({'value':product.price | number_format(2, '.', ' ')}) | raw }}
+        {{ form.field(product, 'totalPrice').textInput({'value':(product.price * product.quantity) | number_format(2, '.', ' ')}) | raw }}
+        <input type="submit" value="Обновить" />
+    {{ active_form_end() }}
+    {% set removeForm = active_form_begin({'id':'remove-product-%s' | format(product.id), 'action':url.to({0:'shopping-cart/remove-product'}), 'method':'POST'}) %}
+        {{ removeForm.field(product, 'id').hiddenInput().label(false) | raw }}
+        <input type="submit" value="Remove" />
+    {{ active_form_end() }}</p>
+{% endfor %}
+
+<p>Total products: {{ app.cart.getTotalProducts() }}, Total cost: {{ app.cart.getTotalCost() | number_format(2, '.', ' ') }} 
+
+<p>{% include '@app/views/parts/clear-cart-form.twig' %}</p>

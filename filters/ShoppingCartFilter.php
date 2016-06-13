@@ -13,24 +13,22 @@ class ShoppingCartFilter extends ActionFilter
     {
         $cartClass = \Yii::$app->cart;
         $session = \Yii::$app->session;
-        if ($session->has('cart')) {
+        if ($session->has(\Yii::$app->params['cartKeyInSession'])) {
             $session->open();
-            $cartClass::setProductsArray($session->get('cart'));
+            $cartClass::setProductsArray($session->get(\Yii::$app->params['cartKeyInSession']));
             $session->close();
+            $cartClass::getShortData();
         }
-        $cartClass->getShortData();
         return parent::beforeAction($action);
     }
     
     public function afterAction($action, $result)
     {
         $cartClass = \Yii::$app->cart;
-        if (!empty($cartClass::getProductsArray())) {
-            $session = \Yii::$app->session;
-            $session->open();
-            $session->set('cart', $cartClass::getProductsArray());
-            $session->close();
-        }
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set(\Yii::$app->params['cartKeyInSession'], $cartClass::getProductsArray());
+        $session->close();
         return parent::afterAction($action, $result);
     }
 }

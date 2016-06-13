@@ -13,13 +13,14 @@ $config = [
         'limit'=>20, # Кол-во записей на страницу
         'pagePointer'=>'page', # Ключ, по которому в $_REQUEST доступен номер текущей страницы
         'orderFieldPointer'=>'orderby',# Ключ, по которому в $_REQUEST доступно поле сортировки
-        'orderTypePointer'=>'ordertype',# Ключ, по которому в $_REQUEST доступен порядок сортировки
+        'orderTypePointer'=>'ordertype', # Ключ, по которому в $_REQUEST доступен порядок сортировки
         'orderByType'=>'DESC', # Порядок сортировки для БД
         'categoryKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
         'subCategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории
         'searchKey'=>'search', # Ключ, по которому в $_REQUEST доступно значение для поиска
         'idKey'=>'id', # Ключ, по которому в $_REQUEST доступно значение id продукта
-        'fixSentRequests'=>0 #Количество запросов к БД при выполнении скрипта
+        'fixSentRequests'=>0, #Количество запросов к БД при выполнении скрипта
+        'cartKeyInSession'=>'cart', # Ключ, по которому в $_SESSION доступена переменная, хранящая купленные товары
     ],
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),
@@ -76,6 +77,10 @@ $config = [
                 'join'=>'users/add-user',
                 'add-comment'=>'comments/add-comment',
                 'add-to-cart'=>'shopping-cart/add-to-cart',
+                'clear-cart'=>'shopping-cart/clear-cart',
+                'shopping-cart'=>'shopping-cart/index',
+                'remove-product'=>'shopping-cart/remove-product',
+                'update-product'=>'shopping-cart/update-product',
             ],
         ],
         'cart'=>[

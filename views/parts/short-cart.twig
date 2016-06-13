@@ -1,2 +1,7 @@
 
-<p>Bag: {{ app.cart.getTotalProducts() }}, Total cost: {{ app.cart.getTotalCost() }}</p>
+<p>Bag: {{ app.cart.getTotalProducts() }}, Total cost: {{ app.cart.getTotalCost() | number_format(2, '.', ' ') }} 
+
+{% if app.cart.getProductsArray() %}
+    <a href="{{ url.to({0:'shopping-cart/index'}) }}">Go to cart</a>
+    {% include '@app/views/parts/clear-cart-form.twig' %}
+{% endif %}

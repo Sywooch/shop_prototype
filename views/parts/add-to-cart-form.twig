@@ -9,6 +9,7 @@
     {{ form.field(productsModel, 'price').hiddenInput({'value':productsObject.price}).label(false) | raw }}
     {{ form.field(productsModel, 'colorToCart').dropDownList(array.map(productsObject.colors, 'id', 'color')) | raw }}
     {{ form.field(productsModel, 'sizeToCart').dropDownList(array.map(productsObject.sizes, 'id', 'size')) | raw }}
+    {{ form.field(productsModel, 'quantity').textInput({'value':1}) | raw }}
     {{ form.field(productsModel, 'categories').hiddenInput({'value':app.request.get(app.params['categoryKey'])}).label(false) | raw }}
     {{ form.field(productsModel, 'subcategory').hiddenInput({'value':app.request.get(app.params['subCategoryKey'])}).label(false) | raw }}
     <input type="submit" value="To cart" />

@@ -23,8 +23,13 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы, добавляющей продукт в корзину
     */
     const GET_FROM_FORM_TO_CART = 'getFromFormToCart';
+    /**
+     * Сценарий загрузки данных из формы, удаляющей продукт из корзины
+    */
+    const GET_FROM_FORM_FOR_REMOVE = 'getFromFormForRemove';
     
     public $id;
+    public $date;
     public $code;
     public $name;
     public $description;
@@ -32,6 +37,10 @@ class ProductsModel extends AbstractBaseModel
     public $images;
     public $id_categories;
     public $id_subcategory;
+    
+    /**
+     * Свойства получаемые при выборке связанных и похожих продуктов, например, для построения ссылок
+     */
     public $categories;
     public $subcategory;
     
@@ -40,6 +49,7 @@ class ProductsModel extends AbstractBaseModel
      */
     public $colorToCart;
     public $sizeToCart;
+    public $quantity;
     
     private $_colors = NULL;
     private $_sizes = NULL;
@@ -51,7 +61,8 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             self::GET_LIST_FROM_DB=>['id', 'code', 'name', 'description', 'price', 'images', 'categories', 'subcategory'],
-            self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'categories', 'subcategory'],
+            self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory'],
+            self::GET_FROM_FORM_FOR_REMOVE=>['id'],
         ];
     }
     

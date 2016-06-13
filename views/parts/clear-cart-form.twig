@@ -1,0 +1,9 @@
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form = active_form_begin({'id':'clear-cart-form', 'action':url.to({0:'shopping-cart/clear-cart'}), 'method':'POST'}) %}
+    {{ form.field(clearCartModel, 'productId').hiddenInput({'value':app.request.get('id')}).label(false) | raw }}
+    {{ form.field(clearCartModel, 'categories').hiddenInput({'value':app.request.get(app.params['categoryKey'])}).label(false) | raw }}
+    {{ form.field(clearCartModel, 'subcategory').hiddenInput({'value':app.request.get(app.params['subCategoryKey'])}).label(false) | raw }}
+    <input type="submit" value="Clear cart" />
+{{ active_form_end() }}
