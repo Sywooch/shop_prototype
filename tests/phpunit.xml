@@ -18,6 +18,7 @@
             <directory suffix="Tests.php">factories</directory>
             <directory suffix="Tests.php">mappers</directory>
             <directory suffix="Tests.php">helpers</directory>
+            <directory suffix="Tests.php">cart</directory>
         </testsuite>
         
     </testsuites>

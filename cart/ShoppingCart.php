@@ -72,10 +72,12 @@ class ShoppingCart extends Object
             foreach (self::$_productsArray as $element) {
                 if ($element->id == $object->id) {
                     foreach ($object as $key=>$value) {
-                        $element->$key = $value;
+                        if (!empty($value)) {
+                            $element->$key = $value;
+                        }
                     }
+                    break;
                 }
-                break;
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
