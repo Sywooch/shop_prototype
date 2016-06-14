@@ -12,9 +12,13 @@ use app\mappers\UsersByLoginMapper;
 class UsersModel extends AbstractBaseModel
 {
     /**
-     * Сценарий сохранения данных из формы
+     * Сценарий сохранения данных из формы регистрации
     */
     const GET_FROM_FORM = 'getFromForm';
+    /**
+     * Сценарий сохранения данных из формы заказа
+    */
+    const GET_FROM_CART_FORM = 'getFromCartForm';
     /**
      * Сценарий сохранения данных из БД
     */
@@ -22,6 +26,8 @@ class UsersModel extends AbstractBaseModel
     
     public $login;
     public $name;
+    public $surname;
+    
     /**
      * @var array массив ID rules, выбранных пользователем в форме
      */
@@ -34,8 +40,9 @@ class UsersModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['login', 'password', 'name', 'rulesFromForm'],
-            self::GET_FROM_DB=>['id', 'login', 'name'],
+            self::GET_FROM_FORM=>['login', 'password', 'name', 'surname', 'rulesFromForm'],
+            self::GET_FROM_DB=>['id', 'login', 'name', 'surname'],
+            self::GET_FROM_CART_FORM=>['name', 'surname'],
         ];
     }
     
@@ -44,6 +51,7 @@ class UsersModel extends AbstractBaseModel
         return [
             [['login', 'password', 'rulesFromForm'], 'required', 'on'=>self::GET_FROM_FORM],
             ['login', 'app\validators\ExistUserValidator', 'on'=>self::GET_FROM_FORM],
+            [['name', 'surname'], 'required', 'on'=>self::GET_FROM_CART_FORM],
         ];
     }
     

@@ -33,7 +33,7 @@ class UsersByLoginMapperTests extends \PHPUnit_Framework_TestCase
         
         $usersByLoginMapper = new UsersByLoginMapper([
             'tableName'=>'users',
-            'fields'=>['id', 'login', 'name'],
+            'fields'=>['id', 'login', 'name', 'surname'],
             'model'=>$modelUserModel,
         ]);
         $objectUser = $usersByLoginMapper->getOne();

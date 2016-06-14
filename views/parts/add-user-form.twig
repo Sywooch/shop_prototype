@@ -5,6 +5,7 @@
     {{ form.field(model, 'login') | raw }}
     {{ form.field(model, 'password').passwordInput() | raw }}
     {{ form.field(model, 'name') | raw }}
+    {{ form.field(model, 'surname') | raw }}
     {{ form.field(model, 'rulesFromForm[]').dropDownList(array.map(model.allRules, 'id', 'rule'), {'multiple':'multiple'}) |raw }}
     <input type="submit" value="Join" />
 {{ active_form_end() }}

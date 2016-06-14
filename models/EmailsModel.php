@@ -30,6 +30,14 @@ class EmailsModel extends AbstractBaseModel
         ];
     }
     
+    public function rules()
+    {
+        return [
+            [['email'], 'required', 'on'=>self::GET_FROM_FORM],
+            [['email'], 'email'],
+        ];
+    }
+    
     /**
      * Возвращает значение свойства $this->_id
      */

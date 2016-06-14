@@ -24,13 +24,13 @@ class UsersInsertMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetGroup()
     {
-        $userArray = ['login'=>'user', 'password'=>'password', 'name'=>'Peter Bankman'];
+        $userArray = ['login'=>'user', 'password'=>'password', 'name'=>'Peter', 'surname'=>'Bankman'];
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
         $model->attributes = $userArray;
         
         $usersInsertMapper = new UsersInsertMapper([
             'tableName'=>'users',
-            'fields'=>['login', 'password', 'name'],
+            'fields'=>['login', 'password', 'name', 'surname'],
             'objectsArray'=>[$model]
         ]);
         $result = $usersInsertMapper->setGroup();
@@ -48,9 +48,11 @@ class UsersInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('login', $result);
         $this->assertArrayHasKey('password', $result);
         $this->assertArrayHasKey('name', $result);
+        $this->assertArrayHasKey('surname', $result);
         
         $this->assertEquals($userArray['login'], $result['login']);
         $this->assertEquals($userArray['name'], $result['name']);
+        $this->assertEquals($userArray['surname'], $result['surname']);
         $this->assertTrue(password_verify($userArray['password'], $result['password']));
     }
     

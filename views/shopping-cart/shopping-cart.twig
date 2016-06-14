@@ -31,3 +31,5 @@
 <p>Total products: {{ app.cart.getTotalProducts() }}, Total cost: {{ app.cart.getTotalCost() | number_format(2, '.', ' ') }} 
 
 <p>{% include '@app/views/parts/clear-cart-form.twig' %}</p>
+
+<p><a href="{{ url.to({0:'shopping-cart/address-contacts'}) }}">Continue to address</a></p>

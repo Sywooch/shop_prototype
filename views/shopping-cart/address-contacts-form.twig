@@ -1,0 +1,22 @@
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/search.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+{% set form=active_form_begin({'id':'address-contacts-form', 'action':'', 'method':'POST'}) %}
+    {{ form.field(emailsModel, 'email') | raw }}
+    {{ form.field(usersModel, 'name') | raw }}
+    {{ form.field(usersModel, 'surname') | raw }}
+    {{ form.field(addressModel, 'address') | raw }}
+    {{ form.field(addressModel, 'city') | raw }}
+    {{ form.field(addressModel, 'country') | raw }}
+    {{ form.field(addressModel, 'postcode') | raw }}
+    {{ form.field(phonesModel, 'phone') | raw }}
+    <input type="submit" value="Continue to shipping method" />
+{{ active_form_end() }}
+
+<p><a href="{{ url.to({0:'shopping-cart/index'}) }}">Return to cart</a></p>

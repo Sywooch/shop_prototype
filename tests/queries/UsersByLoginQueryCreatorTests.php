@@ -18,13 +18,13 @@ class UsersByLoginQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $usersByLoginMapper = new UsersByLoginMapper([
             'tableName'=>'users',
-            'fields'=>['id', 'login', 'name'],
+            'fields'=>['id', 'login', 'name', 'surname'],
             'model'=>new UsersModel(['login'=>'user']),
         ]);
         
         $usersByLoginMapper->visit(new UsersByLoginQueryCreator());
         
-        $query = 'SELECT [[users.id]],[[users.login]],[[users.name]] FROM {{users}} WHERE [[users.login]]=:login';
+        $query = 'SELECT [[users.id]],[[users.login]],[[users.name]],[[users.surname]] FROM {{users}} WHERE [[users.login]]=:login';
         
         $this->assertEquals($query, $usersByLoginMapper->query);
     }

@@ -25,7 +25,7 @@ class UsersController extends AbstractBaseController
                 if ($model->validate()) {
                     $usersInsertMapper = new UsersInsertMapper([
                         'tableName'=>'users',
-                        'fields'=>['login', 'password', 'name'],
+                        'fields'=>['login', 'password', 'name', 'surname'],
                         'objectsArray'=>[$model],
                     ]);
                     $result = $usersInsertMapper->setGroup();

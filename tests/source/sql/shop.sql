@@ -75,7 +75,7 @@ DROP TABLE IF EXISTS `colors`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `colors` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `color` varchar(50) DEFAULT NULL,
+  `color` varchar(5) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -103,12 +103,12 @@ CREATE TABLE `comments` (
   `name` varchar(255) NOT NULL,
   `id_emails` smallint(5) unsigned NOT NULL,
   `id_products` smallint(5) unsigned NOT NULL,
-  `active` tinyint(1) DEFAULT '0',
+  `active` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `id_emails` (`id_emails`),
   KEY `id_products` (`id_products`),
-  CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`id_products`) REFERENCES `products` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`id_emails`) REFERENCES `emails` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`id_emails`) REFERENCES `emails` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`id_products`) REFERENCES `products` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -118,6 +118,7 @@ CREATE TABLE `comments` (
 
 LOCK TABLES `comments` WRITE;
 /*!40000 ALTER TABLE `comments` DISABLE KEYS */;
+INSERT INTO `comments` VALUES (1,'Хорошие ботинки. Ношу уже 3 года.','Виктор',2,3,1),(2,'Лучшие, которые можно найти за эти деньги','Максим',3,3,1);
 /*!40000 ALTER TABLE `comments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,7 +166,7 @@ CREATE TABLE `emails` (
 
 LOCK TABLES `emails` WRITE;
 /*!40000 ALTER TABLE `emails` DISABLE KEYS */;
-INSERT INTO `emails` VALUES (1,'superadmin@tsalmin.com');
+INSERT INTO `emails` VALUES (1,'superadmin@tsalmin.com'),(2,'viktor@test.com'),(3,'maks@test.com');
 /*!40000 ALTER TABLE `emails` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -337,6 +338,31 @@ INSERT INTO `rules` VALUES (1,'catalog view'),(2,'change products'),(3,'add prod
 UNLOCK TABLES;
 
 --
+-- Table structure for table `session`
+--
+
+DROP TABLE IF EXISTS `session`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `session` (
+  `id` char(40) NOT NULL,
+  `expire` int(11) NOT NULL,
+  `data` blob NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `session`
+--
+
+LOCK TABLES `session` WRITE;
+/*!40000 ALTER TABLE `session` DISABLE KEYS */;
+INSERT INTO `session` VALUES ('k6oof3jno05rqq53u7r0d6a6d3',1466529525,'__flash|a:0:{}cart|a:2:{i:0;O:24:\"app\\models\\ProductsModel\":24:{s:2:\"id\";s:2:\"14\";s:4:\"date\";N;s:4:\"code\";s:4:\"HJyt\";s:4:\"name\";s:19:\"Пиджак Manson\";s:11:\"description\";s:343:\"Пиджак oodji приталенного силуэта выполнен из плотного мягкого хлопка. Детали: отложной воротник; контрастные светлые пуговицы; два внешних и два внутренних кармана; контрастная подкладка.\";s:5:\"price\";s:6:\"562.00\";s:6:\"images\";N;s:13:\"id_categories\";N;s:14:\"id_subcategory\";N;s:10:\"categories\";s:8:\"menswear\";s:11:\"subcategory\";s:5:\"coats\";s:11:\"colorToCart\";s:1:\"2\";s:10:\"sizeToCart\";s:1:\"7\";s:8:\"quantity\";s:1:\"2\";s:33:\"\0app\\models\\ProductsModel\0_colors\";a:2:{i:0;O:22:\"app\\models\\ColorsModel\":7:{s:2:\"id\";s:1:\"1\";s:5:\"color\";s:5:\"black\";s:23:\"\0yii\\base\\Model\0_errors\";N;s:27:\"\0yii\\base\\Model\0_validators\";N;s:25:\"\0yii\\base\\Model\0_scenario\";s:9:\"getFromBd\";s:27:\"\0yii\\base\\Component\0_events\";a:0:{}s:30:\"\0yii\\base\\Component\0_behaviors\";N;}i:1;O:22:\"app\\models\\ColorsModel\":7:{s:2:\"id\";s:1:\"2\";s:5:\"color\";s:5:\"white\";s:23:\"\0yii\\base\\Model\0_errors\";N;s:27:\"\0yii\\base\\Model\0_validators\";N;s:25:\"\0yii\\base\\Model\0_scenario\";s:9:\"getFromBd\";s:27:\"\0yii\\base\\Component\0_events\";a:0:{}s:30:\"\0yii\\base\\Component\0_behaviors\";N;}}s:32:\"\0app\\models\\ProductsModel\0_sizes\";a:1:{i:0;O:21:\"app\\models\\SizesModel\":7:{s:2:\"id\";s:1:\"7\";s:4:\"size\";s:4:\"56.5\";s:23:\"\0yii\\base\\Model\0_errors\";N;s:27:\"\0yii\\base\\Model\0_validators\";N;s:25:\"\0yii\\base\\Model\0_scenario\";s:9:\"getFromBd\";s:27:\"\0yii\\base\\Component\0_events\";a:0:{}s:30:\"\0yii\\base\\Component\0_behaviors\";N;}}s:34:\"\0app\\models\\ProductsModel\0_similar\";N;s:34:\"\0app\\models\\ProductsModel\0_related\";N;s:35:\"\0app\\models\\ProductsModel\0_comments\";N;s:23:\"\0yii\\base\\Model\0_errors\";a:0:{}s:27:\"\0yii\\base\\Model\0_validators\";C:11:\"ArrayObject\":21:{x:i:0;a:0:{};m:a:0:{}}s:25:\"\0yii\\base\\Model\0_scenario\";s:17:\"getFromFormToCart\";s:27:\"\0yii\\base\\Component\0_events\";a:0:{}s:30:\"\0yii\\base\\Component\0_behaviors\";a:0:{}}i:1;O:24:\"app\\models\\ProductsModel\":24:{s:2:\"id\";s:2:\"11\";s:4:\"date\";N;s:4:\"code\";s:7:\"Opput-4\";s:4:\"name\";s:15:\"Брюки Orin\";s:11:\"description\";s:276:\"Брюки зауженного кроя от Topman выполнены из тонкого хлопкового денима. Детали: застежка на пуговицы, шлевки под ремень, два боковых и два задних кармана..\";s:5:\"price\";s:6:\"567.00\";s:6:\"images\";N;s:13:\"id_categories\";N;s:14:\"id_subcategory\";N;s:10:\"categories\";s:8:\"menswear\";s:11:\"subcategory\";s:5:\"pants\";s:11:\"colorToCart\";s:1:\"1\";s:10:\"sizeToCart\";s:1:\"5\";s:8:\"quantity\";s:1:\"1\";s:33:\"\0app\\models\\ProductsModel\0_colors\";a:2:{i:0;O:22:\"app\\models\\ColorsModel\":7:{s:2:\"id\";s:1:\"1\";s:5:\"color\";s:5:\"black\";s:23:\"\0yii\\base\\Model\0_errors\";N;s:27:\"\0yii\\base\\Model\0_validators\";N;s:25:\"\0yii\\base\\Model\0_scenario\";s:9:\"getFromBd\";s:27:\"\0yii\\base\\Component\0_events\";a:0:{}s:30:\"\0yii\\base\\Component\0_behaviors\";N;}i:1;O:22:\"app\\models\\ColorsModel\":7:{s:2:\"id\";s:1:\"2\";s:5:\"color\";s:5:\"white\";s:23:\"\0yii\\base\\Model\0_errors\";N;s:27:\"\0yii\\base\\Model\0_validators\";N;s:25:\"\0yii\\base\\Model\0_scenario\";s:9:\"getFromBd\";s:27:\"\0yii\\base\\Component\0_events\";a:0:{}s:30:\"\0yii\\base\\Component\0_behaviors\";N;}}s:32:\"\0app\\models\\ProductsModel\0_sizes\";a:1:{i:0;O:21:\"app\\models\\SizesModel\":7:{s:2:\"id\";s:1:\"5\";s:4:\"size\";s:4:\"42.5\";s:23:\"\0yii\\base\\Model\0_errors\";N;s:27:\"\0yii\\base\\Model\0_validators\";N;s:25:\"\0yii\\base\\Model\0_scenario\";s:9:\"getFromBd\";s:27:\"\0yii\\base\\Component\0_events\";a:0:{}s:30:\"\0yii\\base\\Component\0_behaviors\";N;}}s:34:\"\0app\\models\\ProductsModel\0_similar\";N;s:34:\"\0app\\models\\ProductsModel\0_related\";N;s:35:\"\0app\\models\\ProductsModel\0_comments\";N;s:23:\"\0yii\\base\\Model\0_errors\";a:0:{}s:27:\"\0yii\\base\\Model\0_validators\";C:11:\"ArrayObject\":21:{x:i:0;a:0:{};m:a:0:{}}s:25:\"\0yii\\base\\Model\0_scenario\";s:17:\"getFromFormToCart\";s:27:\"\0yii\\base\\Component\0_events\";a:0:{}s:30:\"\0yii\\base\\Component\0_behaviors\";a:0:{}}}');
+/*!40000 ALTER TABLE `session` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `sizes`
 --
 
@@ -345,7 +371,7 @@ DROP TABLE IF EXISTS `sizes`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sizes` (
   `id` tinyint(3) unsigned NOT NULL AUTO_INCREMENT,
-  `size` float(4,1) DEFAULT NULL,
+  `size` float(4,1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -400,9 +426,10 @@ CREATE TABLE `users` (
   `login` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `surname` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `login` (`login`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 PACK_KEYS=0;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 PACK_KEYS=0;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -449,4 +476,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-11 17:53:10
+-- Dump completed on 2016-06-14 20:27:10

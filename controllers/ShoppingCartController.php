@@ -5,6 +5,10 @@ namespace app\controllers;
 use app\controllers\AbstractBaseController;
 use app\models\ProductsModel;
 use app\models\ClearCartModel;
+use app\models\UsersModel;
+use app\models\EmailsModel;
+use app\models\AddressModel;
+use app\models\PhonesModel;
 use yii\helpers\Url;
 use app\cart\ShoppingCart;
 
@@ -123,6 +127,26 @@ class ShoppingCartController extends AbstractBaseController
                     $this->redirect(Url::to(['shopping-cart/index']));
                 }
             }
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет процессом добавления адреса доставки, контактных данных
+     * @return string
+     */
+    public function actionAddressContacts()
+    {
+        try {
+            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
+            $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+            $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+            $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+            $dataForRender = $this->getDataForRender();
+            $dataForRender = array_merge($dataForRender, ['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel, 'addressModel'=>$addressModel, 'phonesModel'=>$phonesModel]);
+            return $this->render('address-contacts-form.twig', $dataForRender);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

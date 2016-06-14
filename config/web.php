@@ -81,6 +81,7 @@ $config = [
                 'shopping-cart'=>'shopping-cart/index',
                 'remove-product'=>'shopping-cart/remove-product',
                 'update-product'=>'shopping-cart/update-product',
+                'address-contacts'=>'shopping-cart/address-contacts',
             ],
         ],
         'cart'=>[
