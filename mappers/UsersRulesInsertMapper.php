@@ -29,7 +29,7 @@ class UsersRulesInsertMapper extends AbstractInsertMapper
     protected function run()
     {
         try {
-            $this->getUsersRulesObjectsArray();
+            $this->getUsersRulesDbArray();
             if (!isset($this->objectsClass)) {
                 throw new ErrorException('Не задано имя класа, формирующего объекты!');
             }
@@ -44,7 +44,7 @@ class UsersRulesInsertMapper extends AbstractInsertMapper
      * Создает массивы для создания строк таблицы users_rules из данных модели UsersModel
      * @return array
      */
-    private function getUsersRulesObjectsArray()
+    private function getUsersRulesDbArray()
     {
         try {
             if (!isset($this->model)) {

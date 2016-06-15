@@ -3,6 +3,7 @@
 namespace app\mappers;
 
 use app\mappers\AbstractBaseMapper;
+use yii\base\ErrorException;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных

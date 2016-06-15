@@ -19,6 +19,11 @@ trait ExceptionsTrait
         throw new ErrorException("Ошибка при вызове метода {$method}\n" . $e->getMessage());
     }
     
+    public static function throwStaticException(\Exception $e, $method)
+    {
+        throw new ErrorException("Ошибка при вызове метода {$method}\n" . $e->getMessage());
+    }
+    
     /**
      * Записывает в логи исключение уровня error
      * @param $e экзкмпляр \Exception

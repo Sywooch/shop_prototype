@@ -10,6 +10,10 @@ use app\models\AddressModel;
 use app\models\PhonesModel;
 use yii\helpers\Url;
 use app\cart\ShoppingCart;
+use app\mappers\UsersInsertMapper;
+use app\mappers\EmailsByEmailMapper;
+use app\mappers\EmailsInsertMapper;
+use app\mappers\UsersEmailsInsertMapper;
 
 /**
  * Управляет процессом добавления комментария
@@ -143,6 +147,43 @@ class ShoppingCartController extends AbstractBaseController
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
             $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
             $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+            
+            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post())) {
+                if ($usersModel->validate()) {
+                    $usersInsertMapper = new UsersInsertMapper([
+                        'tableName'=>'users',
+                        'fields'=>['login', 'password', 'name', 'surname'],
+                        'objectsArray'=>[$usersModel],
+                    ]);
+                    $usersInsertMapper->setGroup();
+                }
+                
+                if ($emailsModel->validate()) {
+                    $emailsByEmailMapper = new EmailsByEmailMapper([
+                        'tableName'=>'emails',
+                        'fields'=>['id', 'email'],
+                        'model'=>$emailsModel
+                    ]);
+                    if ($result = $emailsByEmailMapper->getOne()) {
+                        $emailsModel = $result;
+                    } else {
+                        $emailsInsertMapper = new EmailsInsertMapper([
+                            'tableName'=>'emails',
+                            'fields'=>['email'],
+                            'objectsArray'=>[$emailsModel],
+                        ]);
+                        $emailsInsertMapper->setGroup();
+                    }
+                    $usersModel->emails = $emailsModel;
+                    $usersEmailsInsertMapper = new UsersEmailsInsertMapper([ # С начала попробовать получить запись юзер/мейл
+                        'tableName'=>'users_emails',
+                        'fields'=>['id_users', 'id_emails'],
+                        'DbArray'=>[['id_users'=>$usersModel->id, 'id_emails'=>$emailsModel->id]],
+                    ]);
+                    $usersEmailsInsertMapper->setGroup();
+                }
+            }
+            
             $dataForRender = $this->getDataForRender();
             $dataForRender = array_merge($dataForRender, ['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel, 'addressModel'=>$addressModel, 'phonesModel'=>$phonesModel]);
             return $this->render('address-contacts-form.twig', $dataForRender);

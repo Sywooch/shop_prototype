@@ -27,7 +27,7 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
             }
             $this->visit(new $this->queryClass());
             
-            $result = $this->setData();
+            $this->setData();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -3,8 +3,12 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\models\EmailsModel;
+use yii\base\ErrorException;
 use app\mappers\RulesMapper;
 use app\mappers\UsersByLoginMapper;
+use app\helpers\TransliterationHelper;
+use app\helpers\PasswordHelper;
 
 /**
  * Представляет данные таблицы users
@@ -24,7 +28,6 @@ class UsersModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDB';
     
-    public $login;
     public $name;
     public $surname;
     
@@ -33,9 +36,11 @@ class UsersModel extends AbstractBaseModel
      */
     public $rulesFromForm = array();
     
+    private $_login = NULL;
     private $_id = NULL;
     private $_password;
     private $_allRules = NULL;
+    private $_emails = NULL;
     
     public function scenarios()
     {
@@ -73,6 +78,13 @@ class UsersModel extends AbstractBaseModel
      */
     public function getPassword()
     {
+        try {
+            if (is_null($this->_password)) {
+                $this->_password = PasswordHelper::getPassword();
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
         return $this->_password;
     }
     
@@ -102,14 +114,18 @@ class UsersModel extends AbstractBaseModel
      */
     public function getId()
     {
-        if (is_null($this->_id)) {
-            $usersByLoginMapper = new UsersByLoginMapper([
-                'tableName'=>'users',
-                'fields'=>['id', 'login', 'name'],
-                'model'=>$this,
-            ]);
-            $objectUser = $usersByLoginMapper->getOne();
-            $this->_id = $objectUser->id;
+        try {
+            if (is_null($this->_id)) {
+                $usersByLoginMapper = new UsersByLoginMapper([
+                    'tableName'=>'users',
+                    'fields'=>['id'],
+                    'model'=>$this,
+                ]);
+                $objectUser = $usersByLoginMapper->getOne();
+                $this->_id = $objectUser->id;
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
         return $this->_id;
     }
@@ -121,5 +137,49 @@ class UsersModel extends AbstractBaseModel
     public function setId($value)
     {
         $this->_id = $value;
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_login
+     */
+    public function getLogin()
+    {
+        try {
+            if (is_null($this->_login)) {
+                if (!isset($this->name) || empty($this->name)) {
+                    throw new ErrorException('Не присвоено значение свойству $this->name');
+                }
+                $this->_login = TransliterationHelper::getTransliteration($this->name);
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+        return $this->_login;
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_login
+     * @param string $value значение login
+     */
+    public function setLogin($value)
+    {
+        $this->_login = $value;
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_emails
+     */
+    public function getEmails()
+    {
+        return $this->_emails;
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_emails
+     * @param string $value значение email
+     */
+    public function setEmails(EmailsModel $value)
+    {
+        $this->_emails[] = $value;
     }
 }

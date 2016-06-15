@@ -47,7 +47,7 @@ class EmailsModel extends AbstractBaseModel
             if (is_null($this->_id)) {
                 $emailsByEmailMapper = new EmailsByEmailMapper([
                     'tableName'=>'emails',
-                    'fields'=>['id', 'email'],
+                    'fields'=>['id'],
                     'model'=>$this
                 ]);
                 $emailsModel = $emailsByEmailMapper->getOne();
