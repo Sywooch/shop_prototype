@@ -5,7 +5,7 @@ namespace app\tests\mappers;
 use app\mappers\CommentsInsertMapper;
 use app\tests\DbManager;
 use app\models\CommentsModel;
-use app\mappers\EmailsByCommentsMapper;
+use app\mappers\EmailsByEmailMapper;
 
 /**
  * Тестирует класс app\mappers\CommentsInsertMapper
@@ -62,7 +62,7 @@ class CommentsInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals($commentsArray['id_products'], $result['id_products']);
         $this->assertEquals(0, $result['active']);
         
-        $emailsByCommentsMapper = new EmailsByCommentsMapper([
+        $emailsByCommentsMapper = new EmailsByEmailMapper([
             'tableName'=>'emails',
             'fields'=>['id'],
             'model'=>$commentsModel

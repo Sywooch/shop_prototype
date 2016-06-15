@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use app\controllers\AbstractBaseController;
 use app\models\ProductsModel;
-use app\models\ClearCartModel;
 use app\models\UsersModel;
 use app\models\EmailsModel;
 use app\models\AddressModel;
@@ -46,12 +45,12 @@ class ShoppingCartController extends AbstractBaseController
     public function actionClearCart()
     {
         try {
-            $model = new ClearCartModel(['scenario'=>ClearCartModel::GET_FROM_FORM]);
+            $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
             
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {
                     ShoppingCart::clearProductsArray();
-                    $productData = \Yii::$app->request->post('ClearCartModel');
+                    $productData = \Yii::$app->request->post('ProductsModel');
                     if (!empty($productData['productId'])) {
                         $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['productId']]));
                     } else {

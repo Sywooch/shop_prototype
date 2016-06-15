@@ -4,8 +4,8 @@ namespace app\tests\factories;
 
 use app\factories\EmailsOneObjectFactory;
 use app\tests\DbManager;
-use app\mappers\EmailsByCommentsMapper;
-use app\queries\EmailsByCommentsQueryCreator;
+use app\mappers\EmailsByEmailMapper;
+use app\queries\EmailsByEmailQueryCreator;
 use app\models\CommentsModel;
 use app\models\EmailsModel;
 
@@ -35,7 +35,7 @@ class EmailsOneObjectFactoryTests extends \PHPUnit_Framework_TestCase
         $command->bindValue(':email', $commentsModel->email);
         $command->execute();
         
-        $emailsByCommentsMapper = new EmailsByCommentsMapper([
+        $emailsByCommentsMapper = new EmailsByEmailMapper([
             'tableName'=>'emails',
             'fields'=>['id', 'email'],
             'model'=>$commentsModel
@@ -44,7 +44,7 @@ class EmailsOneObjectFactoryTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($emailsByCommentsMapper->objectsOne));
         $this->assertEmpty($emailsByCommentsMapper->DbArray);
         
-        $emailsByCommentsMapper->visit(new EmailsByCommentsQueryCreator());
+        $emailsByCommentsMapper->visit(new EmailsByEmailQueryCreator());
         
         $command = \Yii::$app->db->createCommand($emailsByCommentsMapper->query);
         $command->bindValue(':email', $commentsModel->email);

@@ -4,7 +4,6 @@ namespace app\factories;
 
 use app\factories\AbstractBaseFactory;
 use yii\base\ErrorException;
-use app\exceptions\LostDataUserException;
 
 /**
  * Конструирует массив объектов из массива строк БД
@@ -21,8 +20,6 @@ abstract class AbstractGetOneFactory extends AbstractBaseFactory
         try {
             parent::update($object);
             $this->getOne();
-        } catch (LostDataUserException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -35,7 +32,7 @@ abstract class AbstractGetOneFactory extends AbstractBaseFactory
     {
         try {
             if (empty($this->_mapperObject->DbArray)) {
-                throw new LostDataUserException('Отсутствуют данные для построения объектов!');
+                throw new ErrorException('Отсутствуют данные для построения объектов!');
             }
             
             if (!isset($this->model) || !is_object($this->model)) {
@@ -44,8 +41,6 @@ abstract class AbstractGetOneFactory extends AbstractBaseFactory
             $model = clone $this->model;
             $model->attributes = $this->_mapperObject->DbArray;
             $this->_mapperObject->objectsOne = $model;
-        } catch (LostDataUserException $e) {
-            throw $e;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

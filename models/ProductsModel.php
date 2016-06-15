@@ -27,6 +27,10 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы, удаляющей продукт из корзины
     */
     const GET_FROM_FORM_FOR_REMOVE = 'getFromFormForRemove';
+    /**
+     * Сценарий загрузки данных из формы, инициирующей очищающение корзины
+    */
+    const GET_FROM_FORM_FOR_CLEAR_CART = 'getFromFormForClearCart';
     
     public $id;
     public $date;
@@ -63,6 +67,7 @@ class ProductsModel extends AbstractBaseModel
             self::GET_LIST_FROM_DB=>['id', 'code', 'name', 'description', 'price', 'images', 'categories', 'subcategory'],
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id'],
+            self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
         ];
     }
     

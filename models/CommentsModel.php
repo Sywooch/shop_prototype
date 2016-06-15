@@ -3,11 +3,10 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
-use app\mappers\EmailsByCommentsMapper;
+use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
 use app\models\EmailsModel;
 use yii\base\ErrorException;
-use app\exceptions\LostDataUserException;
 
 /**
  * Представляет данные таблицы currency
@@ -26,10 +25,10 @@ class CommentsModel extends AbstractBaseModel
     public $id;
     public $text;
     public $name;
+    public $id_products;
     public $active;
     
     public $email;
-    public $id_products;
     
     private $_id_emails = NULL;
     
@@ -51,21 +50,21 @@ class CommentsModel extends AbstractBaseModel
     
     /**
      * Если не инициировано свойство $this->_id_emails, выполняет поиск при помощи ображения к БД,
-     * если возникает ошибка типа LostDataUserException, добавляет запись в БД и возвращает ID добавленной
+     * если возникает ошибка, добавляет запись в БД и возвращает ID добавленной
      * @return int
      */
     public function getId_emails()
     {
         try {
             if (is_null($this->_id_emails)) {
-                $emailsByCommentsMapper = new EmailsByCommentsMapper([
+                $emailsByCommentsMapper = new EmailsByEmailMapper([
                     'tableName'=>'emails',
                     'fields'=>['id'],
                     'model'=>$this
                 ]);
-                try {
-                    $emailsModel = $emailsByCommentsMapper->getOne();
-                } catch (LostDataUserException $e) {
+                $emailsModel = $emailsByCommentsMapper->getOne();
+                
+                if (!$emailsModel) {
                     if (!isset($this->email)) {
                         throw new ErrorException('Не задан email для создания объекта!');
                     }
@@ -81,6 +80,7 @@ class CommentsModel extends AbstractBaseModel
                         throw new ErrorException('Не удалось добавить строку в БД!');
                     }
                 }
+                
                 $this->_id_emails = $emailsModel->id;
             }
         } catch (\Exception $e) {
