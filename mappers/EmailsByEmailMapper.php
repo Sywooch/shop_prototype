@@ -23,12 +23,6 @@ class EmailsByEmailMapper extends AbstractGetOneByMapper
     {
         parent::init();
         
-        if (!isset($this->paramBindKey)) {
-            $this->paramBindKey ='email';
-        }
-        
-        if (!isset($this->paramBindKeyValue)) {
-            $this->paramBindKeyValue = $this->model->email;
-        }
+        $this->params = [':email'=>$this->model->email];
     }
 }

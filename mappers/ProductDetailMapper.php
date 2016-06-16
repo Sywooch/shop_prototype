@@ -22,12 +22,6 @@ class ProductDetailMapper extends AbstractGetOneMapper
     {
         parent::init();
         
-        if (!isset($this->paramBindKey)) {
-            $this->paramBindKey = \Yii::$app->params['idKey'];
-        }
-        
-        if (!isset($this->paramBindKeyValue)) {
-            $this->paramBindKeyValue = \Yii::$app->request->get(\Yii::$app->params['idKey']);
-        }
+        $this->params = [':' . \Yii::$app->params['idKey']=>\Yii::$app->request->get(\Yii::$app->params['idKey'])];
     }
 }

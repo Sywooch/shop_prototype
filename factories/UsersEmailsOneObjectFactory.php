@@ -2,13 +2,13 @@
 
 namespace app\factories;
 
-use app\factories\AbstractGetObjectsFactory;
+use app\factories\AbstractGetOneFactory;
 use app\models\UsersEmailsModel;
 
 /**
  * Создает объекты на оснований данных
  */
-class UsersEmailsFactory extends AbstractGetObjectsFactory
+class UsersEmailsOneObjectFactory extends AbstractGetOneFactory
 {
     public function init()
     {

@@ -12,13 +12,9 @@ use yii\helpers\ArrayHelper;
 abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
 {
     /**
-     * @var string имя ключа и переменной для $command->bindValue
+     * @var array массив данных для подстановки в запрос
      */
-    public $paramBindKey;
-    /**
-     * @var string значение ключа для $command->bindValue
-     */
-    public $paramBindKeyValue;
+    public $params = array();
     /**
      * @var object объект модели, представляющей строку таблицы products, для которой необходимо получить связанные объекты
      */
@@ -28,13 +24,8 @@ abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
     {
         parent::init();
         
-        if (!isset($this->paramBindKey)) {
-            $this->paramBindKey = \Yii::$app->params['idKey'];
-        }
-        
-        if (!isset($this->paramBindKeyValue)) {
-            $propertyName = \Yii::$app->params['idKey'];
-            $this->paramBindKeyValue = $this->model->$propertyName;
+        if (empty($this->params)) {
+            $this->params = [':' . \Yii::$app->params['idKey']=>$this->model->id];
         }
     }
     
@@ -45,12 +36,11 @@ abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
     protected function getData()
     {
         try {
-            $paramBindKey = $this->paramBindKey;
             if (!isset($this->model)) {
                 throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
             }
             $command = \Yii::$app->db->createCommand($this->query);
-            $command->bindValue(':' . $this->paramBindKey, $this->paramBindKeyValue);
+            $command->bindValues($this->params);
             $result = $command->queryAll();
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД

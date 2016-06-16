@@ -17,7 +17,7 @@ class UsersEmailsInsertMapper extends AbstractInsertMapper
     /**
      * @var string имя класса, который создает объекты из переданных данных
      */
-    public $objectsClass = 'app\factories\UsersEmailsFactory';
+    public $objectsClass = 'app\factories\UsersEmailsObjectsFactory';
     
     /**
      * Формирует запрос к БД и выполняет его

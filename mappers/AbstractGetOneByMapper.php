@@ -22,7 +22,6 @@ abstract class AbstractGetOneByMapper extends AbstractGetOneMapper
     protected function getData()
     {
         try {
-            $paramBindKey = $this->paramBindKey;
             if (!isset($this->model)) {
                 throw new ErrorException('Не передана модель!');
             }

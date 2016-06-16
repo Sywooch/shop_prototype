@@ -159,28 +159,9 @@ class ShoppingCartController extends AbstractBaseController
                 }
                 
                 if ($emailsModel->validate()) {
-                    $emailsByEmailMapper = new EmailsByEmailMapper([
-                        'tableName'=>'emails',
-                        'fields'=>['id', 'email'],
-                        'model'=>$emailsModel
-                    ]);
-                    if ($result = $emailsByEmailMapper->getOne()) {
-                        $emailsModel = $result;
-                    } else {
-                        $emailsInsertMapper = new EmailsInsertMapper([
-                            'tableName'=>'emails',
-                            'fields'=>['email'],
-                            'objectsArray'=>[$emailsModel],
-                        ]);
-                        $emailsInsertMapper->setGroup();
-                    }
-                    $usersModel->emails = $emailsModel;
-                    $usersEmailsInsertMapper = new UsersEmailsInsertMapper([ # С начала попробовать получить запись юзер/мейл
-                        'tableName'=>'users_emails',
-                        'fields'=>['id_users', 'id_emails'],
-                        'DbArray'=>[['id_users'=>$usersModel->id, 'id_emails'=>$emailsModel->id]],
-                    ]);
-                    $usersEmailsInsertMapper->setGroup();
+                    $usersModel->emails = $this->getEmailsModel($emailsModel);
+                    
+                    
                 }
             }
             
@@ -191,5 +172,57 @@ class ShoppingCartController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
+    }
+    
+    /**
+     * Получает EmailsModel для переданного в форму email
+     * Проверяет, существет ли запись в БД для такого email, если да, возвращает ее,
+     * если нет, создает новую запись в БД
+     * @param object $emailsModel экземпляр EmailsModel, для которого надо получит Id из БД
+     */
+    private function getEmailsModel(EmailsModel $emailsModel)
+    {
+        try {
+            $emailsByEmailMapper = new EmailsByEmailMapper([
+                'tableName'=>'emails',
+                'fields'=>['id', 'email'],
+                'model'=>$emailsModel
+            ]);
+            if ($result = $emailsByEmailMapper->getOne()) {
+                $emailsModel = $result;
+            } else {
+                $emailsInsertMapper = new EmailsInsertMapper([
+                    'tableName'=>'emails',
+                    'fields'=>['email'],
+                    'objectsArray'=>[$emailsModel],
+                ]);
+                $emailsInsertMapper->setGroup();
+            }
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return $emailsModel;
+    }
+    
+    /**
+     * Проверяет, существет ли запись в БД для user and email, если да, прекращает выполнение,
+     * если нет, создает новую запись в БД
+     * @param object $emailsModel экземпляр EmailsModel, для которого надо получит Id из БД
+     */
+    private function setUsersEmailsModel(UsersModel $usersModel, EmailsModel $emailsModel)
+    {
+        try {
+            $usersEmailsInsertMapper = new UsersEmailsInsertMapper([ # С начала попробовать получить запись юзер/мейл
+                'tableName'=>'users_emails',
+                'fields'=>['id_users', 'id_emails'],
+                'DbArray'=>[['id_users'=>$usersModel->id, 'id_emails'=>$emailsModel->id]],
+            ]);
+            $usersEmailsInsertMapper->setGroup();
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return true;
     }
 }

@@ -41,7 +41,7 @@ class UsersByLoginMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($objectUser));
         $this->assertTrue($objectUser instanceof UsersModel);
         
-        $this->assertTrue(property_exists($objectUser, 'login'));
+        //$this->assertTrue(property_exists($objectUser, 'login'));
         
         $this->assertTrue(isset($objectUser->id));
         $this->assertTrue(isset($objectUser->login));

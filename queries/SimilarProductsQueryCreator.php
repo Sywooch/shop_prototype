@@ -128,7 +128,7 @@ class SimilarProductsQueryCreator extends AbstractSeletcQueryCreator
     {
         $array = ArrayHelper::getColumn($this->_mapperObject->model->$filter, \Yii::$app->params['idKey']);
         foreach ($array as $key=>$val) {
-            $this->_mapperObject->filtersArray[':' . $filter . $key] = $val;
+            $this->_mapperObject->params[':' . $filter . $key] = $val;
         }
     }
 }
