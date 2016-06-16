@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupForProductMapper;
+use app\mappers\AbstractGetGroupParamsMapper;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class CommentsForProductMapper extends AbstractGetGroupForProductMapper
+class CommentsForProductMapper extends AbstractGetGroupParamsMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса

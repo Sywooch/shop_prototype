@@ -9,14 +9,14 @@ use yii\helpers\ArrayHelper;
 /**
  * Обеспечивает функциональность, общую для классов GetGroupForProductMapper
  */
-abstract class AbstractGetGroupForProductMapper extends AbstractGetGroupMapper
+abstract class AbstractGetGroupParamsMapper extends AbstractGetGroupMapper
 {
     /**
      * @var array массив данных для подстановки в запрос
      */
     public $params = array();
     /**
-     * @var object объект модели, представляющей строку таблицы products, для которой необходимо получить связанные объекты
+     * @var object объект модели, из которой берутся данные для получения объектов
      */
     public $model;
     

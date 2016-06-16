@@ -2,13 +2,13 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupForProductMapper;
+use app\mappers\AbstractGetGroupParamsMapper;
 use yii\base\ErrorException;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class RelatedProductsMapper extends AbstractGetGroupForProductMapper
+class RelatedProductsMapper extends AbstractGetGroupParamsMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
