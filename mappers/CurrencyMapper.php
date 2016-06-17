@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupMapper;
+use app\mappers\AbstractGetMapper;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class CurrencyMapper extends AbstractGetGroupMapper
+class CurrencyMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса

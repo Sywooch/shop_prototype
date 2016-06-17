@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupFromModelMapper;
+use app\mappers\AbstractGetMapper;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class SubcategoryMapper extends AbstractGetGroupFromModelMapper
+class SubcategoryMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
@@ -21,6 +21,10 @@ class SubcategoryMapper extends AbstractGetGroupFromModelMapper
     public function init()
     {
         parent::init();
+        
+        if (!isset($this->model)) {
+            throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
+        }
         
         if (empty($this->params)) {
             $this->params = [':' . \Yii::$app->params['idKey']=>$this->model->id];

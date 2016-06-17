@@ -36,7 +36,7 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
             }
             
             foreach ($this->_mapperObject->DbArray as $entry) {
-                if (!isset($this->model) || !is_object($this->model)) {
+                if (!isset($this->model)) {
                     throw new ErrorException('Не задан объект класса модели для создания экземпляров!');
                 }
                 $model = clone $this->model;

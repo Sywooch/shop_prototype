@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupMapper;
+use app\mappers\AbstractGetMapper;
 
 /**
  * Получает строки с данными о товарах из БД, конструирует из каждой строки объект данных
  */
-class ProductsListMapper extends AbstractGetGroupMapper
+class ProductsListMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса

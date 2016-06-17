@@ -9,7 +9,7 @@ use yii\base\ErrorException;
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-abstract class AbstractGetGroupMapper extends AbstractBaseMapper
+abstract class AbstractGetMapper extends AbstractBaseMapper
 {
     /**
      * Возвращает массив объектов, представляющих строки в БД
@@ -26,7 +26,7 @@ abstract class AbstractGetGroupMapper extends AbstractBaseMapper
     }
     
     /**
-     * Возвращает 1 объект, представляющий строку в БД, является надстройкой над AbstractGetGroupMapper::getGroup()
+     * Возвращает 1 объект, представляющий строку в БД, является надстройкой над AbstractGetMapper::getGroup()
      * @return object
      */
     public function getOneFromGroup()

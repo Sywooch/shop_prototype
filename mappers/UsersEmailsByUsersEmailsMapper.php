@@ -2,13 +2,13 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupMapper;
+use app\mappers\AbstractGetMapper;
 use yii\base\ErrorException;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-class UsersEmailsByUsersEmailsMapper extends AbstractGetGroupMapper
+class UsersEmailsByUsersEmailsMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса

@@ -2,13 +2,13 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupFromModelMapper;
+use app\mappers\AbstractGetMapper;
 use yii\helpers\ArrayHelper;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class SimilarProductsMapper extends AbstractGetGroupFromModelMapper
+class SimilarProductsMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
@@ -22,6 +22,10 @@ class SimilarProductsMapper extends AbstractGetGroupFromModelMapper
     public function init()
     {
         parent::init();
+        
+        if (!isset($this->model)) {
+            throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
+        }
         
         if (empty($this->params)) {
             $this->params = [

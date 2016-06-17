@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupFromModelMapper;
+use app\mappers\AbstractGetMapper;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-class EmailsByEmailMapper extends AbstractGetGroupFromModelMapper
+class EmailsByEmailMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
@@ -21,6 +21,10 @@ class EmailsByEmailMapper extends AbstractGetGroupFromModelMapper
     public function init()
     {
         parent::init();
+        
+        if (!isset($this->model)) {
+            throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
+        }
         
         if (empty($this->params)) {
             $this->params = [':email'=>$this->model->email];

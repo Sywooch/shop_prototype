@@ -80,7 +80,9 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_password)) {
-                $this->_password = PasswordHelper::getPassword();
+                if (isset($this->name)) {
+                    $this->_password = PasswordHelper::getPassword();
+                }
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -146,10 +148,9 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_login)) {
-                if (!isset($this->name) || empty($this->name)) {
-                    throw new ErrorException('Не присвоено значение свойству $this->name');
+                if (isset($this->name)) {
+                    $this->_login = TransliterationHelper::getTransliteration($this->name);
                 }
-                $this->_login = TransliterationHelper::getTransliteration($this->name);
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -57,7 +57,7 @@ class TransliterationHelper
     public static function getTransliteration($string)
     {
         try {
-            self::$_inputArray = preg_split('//u', $string, -1, PREG_SPLIT_NO_EMPTY);
+            self::$_inputArray = preg_split('//u', preg_replace('/ /', '', $string), -1, PREG_SPLIT_NO_EMPTY);
             foreach (self::$_inputArray as $letter) {
                 self::$_outputArray[] = self::$_matrix[mb_strtolower($letter, 'UTF-8')];
             }

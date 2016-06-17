@@ -16,6 +16,13 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
     protected function run()
     {
         try {
+            if (!empty($this->DbArray)) {
+                if (!isset($this->objectsClass)) {
+                    throw new ErrorException('Не задано имя класа, формирующего объекты!');
+                }
+                $this->visit(new $this->objectsClass());
+            }
+            
             if (!isset($this->queryClass)) {
                 throw new ErrorException('Не задано имя класа, формирующего строку!');
             }

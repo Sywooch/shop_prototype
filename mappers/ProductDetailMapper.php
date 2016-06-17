@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupMapper;
+use app\mappers\AbstractGetMapper;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-class ProductDetailMapper extends AbstractGetGroupMapper
+class ProductDetailMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
@@ -16,12 +16,14 @@ class ProductDetailMapper extends AbstractGetGroupMapper
     /**
      * @var string имя класса, который создает объекты из данных БД
      */
-    public $objectsClass = 'app\factories\ProductDetailObjectsFactory';
+    public $objectsClass = 'app\factories\ProductsObjectsFactory';
     
     public function init()
     {
         parent::init();
         
-        $this->params = [':' . \Yii::$app->params['idKey']=>\Yii::$app->request->get(\Yii::$app->params['idKey'])];
+        if (empty($this->params)) {
+            $this->params = [':' . \Yii::$app->params['idKey']=>\Yii::$app->request->get(\Yii::$app->params['idKey'])];
+        }
     }
 }

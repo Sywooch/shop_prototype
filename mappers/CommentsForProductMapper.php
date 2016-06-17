@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetGroupFromModelMapper;
+use app\mappers\AbstractGetMapper;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class CommentsForProductMapper extends AbstractGetGroupFromModelMapper
+class CommentsForProductMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
@@ -21,6 +21,10 @@ class CommentsForProductMapper extends AbstractGetGroupFromModelMapper
     public function init()
     {
         parent::init();
+        
+        if (!isset($this->model)) {
+            throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
+        }
         
         if (empty($this->params)) {
             $this->params = [':id_products'=>$this->model->id];

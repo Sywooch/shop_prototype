@@ -10,9 +10,9 @@ use app\queries\ProductsListQueryCreator;
 class ProductsListSearchQueryCreator extends ProductsListQueryCreator
 {
     /**
-     * @var array массив для выборки данных с учетом категории или(и) подкатегории, а также фильтров
+     * @var array массив для выборки данных
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'search'=>[ # Данные для выборки из таблицы categories
             'tableName'=>'products', # Имя таблицы участвующей в объединении
             'tableFieldWhere'=>'description', # Имя поля таблицы, по которому делается выборка с помощью WHERE
@@ -21,8 +21,10 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     
     public function init()
     {
-        $parent = (new parent())->categoriesArrayFilters;
-        $this->categoriesArrayFilters = array_merge($parent, $this->categoriesArrayFilters);
+        //$parent = (new parent())->categoriesArrayFilters;
+        //$this->categoriesArrayFilters = array_merge($parent, $this->categoriesArrayFilters);
+        
+        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
     }
     
     /**

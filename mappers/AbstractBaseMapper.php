@@ -67,6 +67,10 @@ abstract class AbstractBaseMapper extends Component
      */
     public $params = array();
     /**
+     * @var object объект для получения данных, необходимых для построения объектов
+     */
+    public $model;
+    /**
      * @var array массив результирующих данных, полученный из БД
      */
     public $DbArray = array();
