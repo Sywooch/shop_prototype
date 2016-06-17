@@ -42,6 +42,15 @@ abstract class AbstractBaseMapper extends Component
      */
     public $orderByType;
     /**
+     * @var boolean определяет, нужна ли сортировка результатов выборки из БД в методе getData(),
+     * по умолчанию true
+     */
+    public $getDataSorting = true;
+    /**
+     * @var int максимальное кол-во возвращаемых записей
+     */
+    public $limit;
+    /**
      * @var string имя класса, который формирует строку запроса
      */
     public $queryClass;
@@ -54,6 +63,10 @@ abstract class AbstractBaseMapper extends Component
      */
     public $query;
     /**
+     * @var array массив данных для подстановки в запрос
+     */
+    public $params = array();
+    /**
      * @var array массив результирующих данных, полученный из БД
      */
     public $DbArray = array();
@@ -61,11 +74,6 @@ abstract class AbstractBaseMapper extends Component
      * @var array массив объектов, созданных из результирующих данных, полученных из БД
      */
     public $objectsArray = array();
-    /**
-     * @var object объект, созданный из результирующих данных, полученных из БД, 
-     * или объект, на основании которого будет создана запись в БД
-     */
-    public $objectsOne;
     
     public function init()
     {

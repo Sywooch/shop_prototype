@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetOneByMapper;
+use app\mappers\AbstractGetGroupFromModelMapper;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-class UsersByLoginMapper extends AbstractGetOneByMapper
+class UsersByLoginMapper extends AbstractGetGroupFromModelMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
@@ -16,12 +16,14 @@ class UsersByLoginMapper extends AbstractGetOneByMapper
     /**
      * @var string имя класса, который создает объекты из данных БД
      */
-    public $objectsClass = 'app\factories\UsersOneObjectsFactory';
+    public $objectsClass = 'app\factories\UsersObjectsFactory';
     
     public function init()
     {
         parent::init();
         
-        $this->params = [':login'=>$this->model->login];
+        if (empty($this->params)) {
+            $this->params = [':login'=>$this->model->login];
+        }
     }
 }

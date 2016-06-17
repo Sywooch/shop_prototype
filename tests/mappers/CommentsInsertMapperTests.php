@@ -62,12 +62,12 @@ class CommentsInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals($commentsArray['id_products'], $result['id_products']);
         $this->assertEquals(0, $result['active']);
         
-        $emailsByCommentsMapper = new EmailsByEmailMapper([
+        $emailsByEmailMapper = new EmailsByEmailMapper([
             'tableName'=>'emails',
             'fields'=>['id'],
             'model'=>$commentsModel
         ]);
-        $emailsModel = $emailsByCommentsMapper->getOne();
+        $emailsModel = $emailsByEmailMapper->getOneFromGroup();
         
         $this->assertEquals($emailsModel->id, $result['id_emails']);
     }

@@ -50,7 +50,7 @@ class EmailsModel extends AbstractBaseModel
                     'fields'=>['id'],
                     'model'=>$this
                 ]);
-                $emailsModel = $emailsByEmailMapper->getOne();
+                $emailsModel = $emailsByEmailMapper->getOneFromGroup();
                 $this->_id = $emailsModel->id;
             }
         } catch (\Exception $e) {

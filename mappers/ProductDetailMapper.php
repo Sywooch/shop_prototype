@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetOneMapper;
+use app\mappers\AbstractGetGroupMapper;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-class ProductDetailMapper extends AbstractGetOneMapper
+class ProductDetailMapper extends AbstractGetGroupMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса

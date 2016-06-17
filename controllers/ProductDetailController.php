@@ -24,7 +24,7 @@ class ProductDetailController extends AbstractBaseProductsController
                 'tableName'=>'products',
                 'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
             ]);
-            $productsObject = $productMapper->getOne();
+            $productsObject = $productMapper->getOneFromGroup();
             $dataForRender = $this->getDataForRender();
             $resultArray = array_merge(['productsObject'=>$productsObject], $dataForRender);
         } catch (\Exception $e) {

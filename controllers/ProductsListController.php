@@ -20,7 +20,8 @@ class ProductsListController extends AbstractBaseProductsController
             ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
             ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
         ],
-        'orderByField'=>'date'
+        'orderByField'=>'date',
+        'getDataSorting'=>false,
     ];
     
     /**

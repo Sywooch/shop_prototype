@@ -14,6 +14,7 @@ use app\mappers\UsersInsertMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
 use app\mappers\UsersEmailsInsertMapper;
+use app\mappers\UsersEmailsByUsersEmailsMapper;
 
 /**
  * Управляет процессом добавления комментария
@@ -161,7 +162,6 @@ class ShoppingCartController extends AbstractBaseController
                 if ($emailsModel->validate()) {
                     $usersModel->emails = $this->getEmailsModel($emailsModel);
                     
-                    
                 }
             }
             
@@ -188,7 +188,7 @@ class ShoppingCartController extends AbstractBaseController
                 'fields'=>['id', 'email'],
                 'model'=>$emailsModel
             ]);
-            if ($result = $emailsByEmailMapper->getOne()) {
+            if ($result = $emailsByEmailMapper->getOneFromGroup()) {
                 $emailsModel = $result;
             } else {
                 $emailsInsertMapper = new EmailsInsertMapper([

@@ -62,7 +62,7 @@ class CommentsModel extends AbstractBaseModel
                     'fields'=>['id'],
                     'model'=>$this
                 ]);
-                $emailsModel = $emailsByCommentsMapper->getOne();
+                $emailsModel = $emailsByCommentsMapper->getOneFromGroup();
                 
                 if (!$emailsModel) {
                     if (!isset($this->email)) {

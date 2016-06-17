@@ -53,11 +53,10 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
                     $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableFieldWhere'],
                     \Yii::$app->params['searchKey']
                 );
-                $this->_mapperObject->filtersArray[':' . \Yii::$app->params['searchKey']] = '%' . \Yii::$app->request->get(\Yii::$app->params['searchKey']) . '%';
+                $this->_mapperObject->params[':' . \Yii::$app->params['searchKey']] = '%' . \Yii::$app->request->get(\Yii::$app->params['searchKey']) . '%';
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        $this->_mapperObject->filtersFlag = true;
     }
 }

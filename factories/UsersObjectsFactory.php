@@ -2,13 +2,13 @@
 
 namespace app\factories;
 
-use app\factories\AbstractGetOneFactory;
+use app\factories\AbstractGetObjectsFactory;
 use app\models\UsersModel;
 
 /**
  * Создает объекты на оснований данных БД
  */
-class UsersOneObjectsFactory extends AbstractGetOneFactory
+class UsersObjectsFactory extends AbstractGetObjectsFactory
 {
     public function init()
     {

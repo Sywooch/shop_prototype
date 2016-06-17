@@ -2,13 +2,13 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetOneByMapper;
+use app\mappers\AbstractGetGroupMapper;
 use yii\base\ErrorException;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-class UsersEmailsByUsersEmailsMapper extends AbstractGetOneByMapper
+class UsersEmailsByUsersEmailsMapper extends AbstractGetGroupMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
@@ -17,5 +17,5 @@ class UsersEmailsByUsersEmailsMapper extends AbstractGetOneByMapper
     /**
      * @var string имя класса, который создает объекты из данных БД
      */
-    public $objectsClass = 'app\factories\UsersEmailsOneObjectFactory';
+    public $objectsClass = 'app\factories\UsersEmailsObjectsFactory';
 }

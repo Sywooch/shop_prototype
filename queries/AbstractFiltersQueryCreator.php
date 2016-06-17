@@ -10,30 +10,9 @@ use app\queries\ProductsListQueryCreator;
 abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * Инициирует создание SELECT запроса, выбирая сценарий на основе данных из объекта Yii::$app->request
      */
-    public $categoriesArrayFilters = [
-        'categories'=>[ # Данные для выборки из таблицы categories
-            'firstTableName'=>'products', # Имя первой таблицы участвующей в объединении
-            'firstTableFieldOn'=>'id_categories', # Имя поля первой таблицы, по которому проходит объединение
-            'secondTableName'=>'categories', # Имя второй таблицы участвующей в объединении
-            'secondTableFieldOn'=>'id', # Имя поля второй таблицы, по которому проходит объединение
-            'secondTableFieldWhere'=>'seocode', # Имя поля второй таблицы, по которому делается выборка с помощью WHERE
-        ],
-        'subcategory'=>[ # Данные для выборки из таблицы subcategory
-            'firstTableName'=>'products',
-            'firstTableFieldOn'=>'id_subcategory',
-            'secondTableName'=>'subcategory',
-            'secondTableFieldOn'=>'id',
-            'secondTableFieldWhere'=>'seocode',
-        ],
-    ];
-    
-    /**
-     * Формирует строку запроса к БД
-     * @return string
-     */
-    protected function queryForAll()
+    public function getSelectQuery()
     {
         try {
             $this->addSelectHead();
@@ -43,6 +22,12 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
                 $this->categoriesArrayFilters['tableOne']['secondTableName'],
                 $this->categoriesArrayFilters['tableOne']['secondTableFieldOn']
             );
+            
+            if (in_array(\Yii::$app->params['categoryKey'], array_keys(\Yii::$app->request->get())) && !in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get()))) {
+                $this->queryForCategory();
+            } elseif (in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get())) && in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get()))) {
+                $this->queryForSubCategory();
+            }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -55,34 +40,39 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
     protected function queryForCategory()
     {
         try {
-            $this->addSelectHead();
-            $this->_mapperObject->query .= $this->getJoin(
-                $this->categoriesArrayFilters['tableOne']['firstTableName'],
-                $this->categoriesArrayFilters['tableOne']['firstTableFieldOn'],
-                $this->categoriesArrayFilters['tableOne']['secondTableName'],
-                $this->categoriesArrayFilters['tableOne']['secondTableFieldOn']
-            );
-            $this->_mapperObject->query .= $this->getJoin(
-                $this->categoriesArrayFilters['tableTwo']['firstTableName'],
-                $this->categoriesArrayFilters['tableTwo']['firstTableFieldOn'],
-                $this->categoriesArrayFilters['tableTwo']['secondTableName'],
-                $this->categoriesArrayFilters['tableTwo']['secondTableFieldOn']
-            );
-            $this->_mapperObject->query .= $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
-            );
-            $this->_mapperObject->query .= $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
-                \Yii::$app->params['categoryKey']
-            );
+            $this->forCategoryJoin();
+            //$this->addFilters();
+            $this->forCategoryWhere();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        $this->_mapperObject->categoryFlag = true;
+    }
+    
+    protected function forCategoryJoin()
+    {
+        $this->_mapperObject->query .= $this->getJoin(
+            $this->categoriesArrayFilters['tableTwo']['firstTableName'],
+            $this->categoriesArrayFilters['tableTwo']['firstTableFieldOn'],
+            $this->categoriesArrayFilters['tableTwo']['secondTableName'],
+            $this->categoriesArrayFilters['tableTwo']['secondTableFieldOn']
+        );
+        $this->_mapperObject->query .= $this->getJoin(
+            $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
+            $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
+            $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
+            $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
+        );
+        //$this->_mapperObject->categoryFlag = true;
+        $this->_mapperObject->params[':' . \Yii::$app->params['categoryKey']] = \Yii::$app->request->get(\Yii::$app->params['categoryKey']);
+    }
+    
+    protected function forCategoryWhere()
+    {
+        $this->_mapperObject->query .= $this->getWhere(
+            $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
+            $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
+            \Yii::$app->params['categoryKey']
+        );
     }
     
     /**
@@ -92,46 +82,35 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
     protected function queryForSubCategory()
     {
         try {
-            $this->addSelectHead();
-            $this->_mapperObject->query .= $this->getJoin(
-                $this->categoriesArrayFilters['tableOne']['firstTableName'],
-                $this->categoriesArrayFilters['tableOne']['firstTableFieldOn'],
-                $this->categoriesArrayFilters['tableOne']['secondTableName'],
-                $this->categoriesArrayFilters['tableOne']['secondTableFieldOn']
-            );
-            $this->_mapperObject->query .= $this->getJoin(
-                $this->categoriesArrayFilters['tableTwo']['firstTableName'],
-                $this->categoriesArrayFilters['tableTwo']['firstTableFieldOn'],
-                $this->categoriesArrayFilters['tableTwo']['secondTableName'],
-                $this->categoriesArrayFilters['tableTwo']['secondTableFieldOn']
-            );
-            $this->_mapperObject->query .= $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
-            );
-            $this->_mapperObject->query .= $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
-            );
-            $this->_mapperObject->query .= $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
-                \Yii::$app->params['categoryKey']
-            );
-            $this->_mapperObject->query .= $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldWhere'],
-                \Yii::$app->params['subCategoryKey']
-            );
+            $this->forCategoryJoin();
+            $this->forSubCategoryJoin();
+            //$this->addFilters();
+            $this->forCategoryWhere();
+            $this->forSubCategoryWhere();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        $this->_mapperObject->categoryFlag = true;
-        $this->_mapperObject->subcategoryFlag = true;
+    }
+    
+    protected function forSubCategoryJoin()
+    {
+        $this->_mapperObject->query .= $this->getJoin(
+            $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableName'],
+            $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
+            $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
+            $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
+        );
+        //$this->_mapperObject->subcategoryFlag = true;
+        $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']);
+    }
+    
+    protected function forSubCategoryWhere()
+    {
+        $this->_mapperObject->query .= $this->getWhere(
+            $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
+            $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldWhere'],
+            \Yii::$app->params['subCategoryKey']
+        );
     }
     
     /**

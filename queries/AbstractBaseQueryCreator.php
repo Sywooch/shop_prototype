@@ -243,7 +243,7 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
                     $objectGroup = array();
                     foreach ($this->_mapperObject->fields as $field) {
                         $objectGroup[] = ':' . $keyobject . '_' . $field;
-                        $this->_mapperObject->insertData[':' . $keyobject . '_' . $field] = $object->$field;
+                        $this->_mapperObject->params[':' . $keyobject . '_' . $field] = $object->$field;
                     }
                     $arrayValues[] = '(' . implode(',', $objectGroup) . ')';
                 }

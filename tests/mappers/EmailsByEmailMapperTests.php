@@ -20,9 +20,9 @@ class EmailsByEmailMapperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод EmailsByEmailMapper::getOne
+     * Тестирует метод EmailsByEmailMapper::getOneFromGroup
      */
-    public function testGetOne()
+    public function testGetOneFromGroup()
     {
         $modelArray = ['email'=>'test@test.com'];
         $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
@@ -37,7 +37,7 @@ class EmailsByEmailMapperTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'email'],
             'model'=>$emailsModel
         ]);
-        $emailsModel = $emailsByEmailMapper->getOne();
+        $emailsModel = $emailsByEmailMapper->getOneFromGroup();
         
         $this->assertTrue(is_object($emailsModel));
         $this->assertTrue($emailsModel instanceof EmailsModel);

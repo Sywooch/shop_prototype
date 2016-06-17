@@ -36,7 +36,7 @@ class UsersByLoginMapperTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'login', 'name', 'surname'],
             'model'=>$modelUserModel,
         ]);
-        $objectUser = $usersByLoginMapper->getOne();
+        $objectUser = $usersByLoginMapper->getOneFromGroup();
         
         $this->assertTrue(is_object($objectUser));
         $this->assertTrue($objectUser instanceof UsersModel);

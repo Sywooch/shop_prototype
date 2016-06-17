@@ -11,12 +11,6 @@ use yii\base\ErrorException;
 abstract class AbstractInsertMapper extends AbstractBaseMapper
 {
     /**
-     * @var array массив ключей и значений для подстановки в строку запроса,
-     * заполняется в процессе работы queryCreator
-     */
-    public $insertData = array();
-    
-    /**
      * Формирует запрос к БД и выполняет его
      */
     protected function run()
@@ -55,9 +49,8 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
     {
         try {
             $command = \Yii::$app->db->createCommand($this->query);
-            $bindArray = $this->getBindArray();
-            if (!empty($bindArray)) {
-                $command->bindValues($bindArray);
+            if (!empty($this->params)) {
+                $command->bindValues($this->params);
             }
             $result = $command->execute();
             if (!$result) {
@@ -65,22 +58,6 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
             }
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
-            }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Формирует агрегированный массив данных для привязки к запросу
-     */
-    protected function getBindArray()
-    {
-        try {
-            if (isset($this->objectsArray)) {
-                return $this->insertData;
-            } else {
-                throw new ErrorException('Отсутсвуют данные для выполнения запроса!');
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

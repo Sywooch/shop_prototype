@@ -121,7 +121,7 @@ class UsersModel extends AbstractBaseModel
                     'fields'=>['id'],
                     'model'=>$this,
                 ]);
-                $objectUser = $usersByLoginMapper->getOne();
+                $objectUser = $usersByLoginMapper->getOneFromGroup();
                 $this->_id = $objectUser->id;
             }
         } catch (\Exception $e) {

@@ -31,7 +31,7 @@ class RelatedProductsMapperTests extends \PHPUnit_Framework_TestCase
             'tableName'=>'products',
             'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
         ]);
-        $objectProduct = $productMapper->getOne();
+        $objectProductsArray = $productMapper->getGroup();
         
         $relatedProductsMapper = new RelatedProductsMapper([
             'tableName'=>'products',
@@ -41,7 +41,7 @@ class RelatedProductsMapperTests extends \PHPUnit_Framework_TestCase
                 ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
             ],
             'orderByField'=>'date',
-            'model'=>$objectProduct,
+            'model'=>$objectProductsArray[0],
         ]);
         $productsList = $relatedProductsMapper->getGroup();
         

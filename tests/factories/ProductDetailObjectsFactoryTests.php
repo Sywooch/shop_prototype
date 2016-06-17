@@ -31,38 +31,38 @@ class ProductDetailObjectsFactoryTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
         ]);
         
+        $this->assertEmpty($productMapper->DbArray);
         $this->assertEmpty($productMapper->objectsArray);
-        $this->assertNull($productMapper->objectsOne);
         
         $_GET = ['id'=>1];
         
         $productMapper->visit(new ProductDetailQueryCreator());
         
         $command = \Yii::$app->db->createCommand($productMapper->query);
-        $command->bindValue(':' . \Yii::$app->params['idKey'], \Yii::$app->request->get(\Yii::$app->params['idKey']));
-        $productMapper->DbArray = $command->queryOne();
+        $command->bindValues([':' . \Yii::$app->params['idKey']=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]);
+        $productMapper->DbArray = $command->queryAll();
         
         $this->assertFalse(empty($productMapper->DbArray));
         
         $productMapper->visit(new ProductDetailObjectsFactory());
         
-        $this->assertTrue(isset($productMapper->objectsOne));
-        $this->assertTrue(is_object($productMapper->objectsOne));
-        $this->assertTrue($productMapper->objectsOne instanceof ProductsModel);
+        $this->assertFalse(empty($productMapper->objectsArray));
+        $this->assertTrue(is_object($productMapper->objectsArray[0]));
+        $this->assertTrue($productMapper->objectsArray[0] instanceof ProductsModel);
         
-        $this->assertTrue(property_exists($productMapper->objectsOne, 'id'));
-        $this->assertTrue(property_exists($productMapper->objectsOne, 'code'));
-        $this->assertTrue(property_exists($productMapper->objectsOne, 'name'));
-        $this->assertTrue(property_exists($productMapper->objectsOne, 'description'));
-        $this->assertTrue(property_exists($productMapper->objectsOne, 'price'));
-        $this->assertTrue(property_exists($productMapper->objectsOne, 'images'));
+        $this->assertTrue(property_exists($productMapper->objectsArray[0], 'id'));
+        $this->assertTrue(property_exists($productMapper->objectsArray[0], 'code'));
+        $this->assertTrue(property_exists($productMapper->objectsArray[0], 'name'));
+        $this->assertTrue(property_exists($productMapper->objectsArray[0], 'description'));
+        $this->assertTrue(property_exists($productMapper->objectsArray[0], 'price'));
+        $this->assertTrue(property_exists($productMapper->objectsArray[0], 'images'));
         
-        $this->assertTrue(isset($productMapper->objectsOne->id));
-        $this->assertTrue(isset($productMapper->objectsOne->code));
-        $this->assertTrue(isset($productMapper->objectsOne->name));
-        $this->assertTrue(isset($productMapper->objectsOne->description));
-        $this->assertTrue(isset($productMapper->objectsOne->price));
-        $this->assertTrue(isset($productMapper->objectsOne->images));
+        $this->assertTrue(isset($productMapper->objectsArray[0]->id));
+        $this->assertTrue(isset($productMapper->objectsArray[0]->code));
+        $this->assertTrue(isset($productMapper->objectsArray[0]->name));
+        $this->assertTrue(isset($productMapper->objectsArray[0]->description));
+        $this->assertTrue(isset($productMapper->objectsArray[0]->price));
+        $this->assertTrue(isset($productMapper->objectsArray[0]->images));
     }
     
     public static function tearDownAfterClass()
