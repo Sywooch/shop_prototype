@@ -2,50 +2,24 @@
 
 namespace app\queries;
 
-use app\queries\AbstractSeletcQueryCreator;
+use app\queries\ProductsListQueryCreator;
 use yii\helpers\ArrayHelper;
 
 /**
  * Формирует строку запроса к БД
  */
-class SimilarProductsQueryCreator extends AbstractSeletcQueryCreator
+class SimilarProductsQueryCreator extends ProductsListQueryCreator
 {
     /**
      * @var array массив для выборки данных
      */
-    public $categoriesArrayFilters = [
-        'categories'=>[ # Данные для выборки из таблицы categories
-            'firstTableName'=>'products', # Имя первой таблицы участвующей в объединении
-            'firstTableFieldOn'=>'id_categories', # Имя поля первой таблицы, по которому проходит объединение
-            'secondTableName'=>'categories', # Имя второй таблицы участвующей в объединении
-            'secondTableFieldOn'=>'id', # Имя поля второй таблицы, по которому проходит объединение
-            'secondTableFieldWhere'=>'seocode', # Имя поля второй таблицы, по которому делается выборка с помощью WHERE
-        ],
-        'subcategory'=>[ # Данные для выборки из таблицы subcategory
-            'firstTableName'=>'products',
-            'firstTableFieldOn'=>'id_subcategory',
-            'secondTableName'=>'subcategory',
-            'secondTableFieldOn'=>'id',
-            'secondTableFieldWhere'=>'seocode',
-        ],
-        'products_colors'=>[ # Данные для выборки из таблицы products_colors
-            'firstTableName'=>'products',
-            'firstTableFieldOn'=>'id',
-            'secondTableName'=>'products_colors',
-            'secondTableFieldOn'=>'id_products',
-        ],
+    public $config = [
         'colors'=>[ # Данные для выборки из таблицы colors
             'firstTableName'=>'products_colors',
             'firstTableFieldOn'=>'id_colors',
             'secondTableName'=>'colors',
             'secondTableFieldOn'=>'id',
             'secondTableFieldWhere'=>'id',
-        ],
-        'products_sizes'=>[ # Данные для выборки из таблицы products_sizes
-            'firstTableName'=>'products',
-            'firstTableFieldOn'=>'id',
-            'secondTableName'=>'products_sizes',
-            'secondTableFieldOn'=>'id_products',
         ],
         'sizes'=>[ # Данные для выборки из таблицы sizes
             'firstTableName'=>'products_sizes',
@@ -55,6 +29,13 @@ class SimilarProductsQueryCreator extends AbstractSeletcQueryCreator
             'secondTableFieldWhere'=>'id',
         ],
     ];
+    
+    public function init()
+    {
+        parent::init();
+        
+        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
+    }
     
     /**
      * Инициирует создание SELECT запроса
@@ -124,7 +105,7 @@ class SimilarProductsQueryCreator extends AbstractSeletcQueryCreator
         }
     }
     
-    private function addFilters($filter)
+    protected function addFilters($filter)
     {
         $array = ArrayHelper::getColumn($this->_mapperObject->model->$filter, \Yii::$app->params['idKey']);
         foreach ($array as $key=>$val) {

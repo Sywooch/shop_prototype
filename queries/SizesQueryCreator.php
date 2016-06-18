@@ -9,24 +9,28 @@ use app\queries\AbstractFiltersQueryCreator;
  */
 class SizesQueryCreator extends AbstractFiltersQueryCreator
 {
+    /**
+     * @var array массив для выборки данных
+     */
+    public $config = [
+        'tableOne'=>[ # Данные для выборки из таблицы products_sizes
+            'firstTableName'=>'sizes',
+            'firstTableFieldOn'=>'id',
+            'secondTableName'=>'products_sizes',
+            'secondTableFieldOn'=>'id_sizes',
+        ],
+        'tableTwo'=>[ # Данные для выборки из таблицы products
+            'firstTableName'=>'products_sizes',
+            'firstTableFieldOn'=>'id_products',
+            'secondTableName'=>'products',
+            'secondTableFieldOn'=>'id',
+        ],
+    ];
+    
     public function init()
     {
         parent::init();
         
-        $config = [
-            'tableOne'=>[ # Данные для выборки из таблицы products_sizes
-                'firstTableName'=>'sizes',
-                'firstTableFieldOn'=>'id',
-                'secondTableName'=>'products_sizes',
-                'secondTableFieldOn'=>'id_sizes',
-            ],
-            'tableTwo'=>[ # Данные для выборки из таблицы products
-                'firstTableName'=>'products_sizes',
-                'firstTableFieldOn'=>'id_products',
-                'secondTableName'=>'products',
-                'secondTableFieldOn'=>'id',
-            ],
-        ];
-        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $config);
+        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
     }
 }

@@ -41,7 +41,6 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
     {
         try {
             $this->forCategoryJoin();
-            //$this->addFilters();
             $this->forCategoryWhere();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -62,7 +61,6 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
             $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
             $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
         );
-        //$this->_mapperObject->categoryFlag = true;
         $this->_mapperObject->params[':' . \Yii::$app->params['categoryKey']] = \Yii::$app->request->get(\Yii::$app->params['categoryKey']);
     }
     
@@ -84,7 +82,6 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
         try {
             $this->forCategoryJoin();
             $this->forSubCategoryJoin();
-            //$this->addFilters();
             $this->forCategoryWhere();
             $this->forSubCategoryWhere();
         } catch (\Exception $e) {
@@ -100,7 +97,6 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
             $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
             $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
         );
-        //$this->_mapperObject->subcategoryFlag = true;
         $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']);
     }
     

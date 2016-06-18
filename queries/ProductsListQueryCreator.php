@@ -105,7 +105,6 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        //$this->_mapperObject->categoryFlag = true;
         $this->_mapperObject->params[':' . \Yii::$app->params['categoryKey']] = \Yii::$app->request->get(\Yii::$app->params['categoryKey']);
     }
     
@@ -124,8 +123,6 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        //$this->_mapperObject->categoryFlag = true;
-        //$this->_mapperObject->subcategoryFlag = true;
         $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']);
     }
     

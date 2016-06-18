@@ -21,8 +21,7 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     
     public function init()
     {
-        //$parent = (new parent())->categoriesArrayFilters;
-        //$this->categoriesArrayFilters = array_merge($parent, $this->categoriesArrayFilters);
+        parent::init();
         
         $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
     }
@@ -34,7 +33,7 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     {
         try {
             $this->addSelectHead();
-            $this->_mapperObject->query .= $this->addFilters();
+            $this->addFilters();
             $this->addSelectEnd();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
