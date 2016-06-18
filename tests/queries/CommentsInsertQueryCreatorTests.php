@@ -2,52 +2,31 @@
 
 namespace app\queries;
 
-use app\mappers\CommentsInsertMapper;
+use app\tests\MockObject;
+use app\tests\MockModel;
 use app\queries\CommentsInsertQueryCreator;
-use app\models\CommentsModel;
-use app\tests\DbManager;
 
 /**
  * Тестирует класс app\queries\CommentsInsertQueryCreator
  */
 class CommentsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
-    }
-    
     /**
      * Тестирует создание строки SQL запроса
      */
     public function testGetInsertQuery()
     {
-        $commentsArray = ['text'=>'This a just example text of comment', 'name'=>'Тимофей', 'email'=>'test@test.com', 'id_products'=>12];
-        $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
-        $commentsModel->attributes = $commentsArray;
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[emails.email]]=:email');
-        $command->bindValue(':email', $commentsModel->email);
-        $command->execute();
-        
-        $commentsInsertMapper = new CommentsInsertMapper([
+        $mockObject = new MockObject([
             'tableName'=>'comments',
-            'fields'=>['text', 'name', 'id_emails', 'id_products'],
-            'objectsArray'=>[$commentsModel],
+            'fields'=>['text', 'name', 'email', 'id_products'],
+            'objectsArray'=>[new MockModel(['text'=>'some', 'name'=>'some', 'email'=>'some@some.com', 'id_products'=>'some'])],
         ]);
         
-        $commentsInsertMapper->visit(new CommentsInsertQueryCreator());
+        $queryCreator = new CommentsInsertQueryCreator();
+        $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{comments}} (text,name,id_emails,id_products) VALUES (:0_text,:0_name,:0_id_emails,:0_id_products)';
+        $query = 'INSERT INTO {{comments}} (text,name,email,id_products) VALUES (:0_text,:0_name,:0_email,:0_id_products)';
         
-        $this->assertEquals($query, $commentsInsertMapper->query);
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->deleteDb();
+        $this->assertEquals($query, $mockObject->query);
     }
 }

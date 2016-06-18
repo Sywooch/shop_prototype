@@ -2,9 +2,9 @@
 
 namespace app\queries;
 
-use app\mappers\UsersInsertMapper;
+use app\tests\MockObject;
+use app\tests\MockModel;
 use app\queries\UsersInsertQueryCreator;
-use app\models\UsersModel;
 
 /**
  * Тестирует класс app\queries\UsersInsertQueryCreator
@@ -16,15 +16,17 @@ class UsersInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetInsertQuery()
     {
-        $usersInsertMapper = new UsersInsertMapper([
+        $mockObject = new MockObject([
             'tableName'=>'users',
             'fields'=>['login', 'password', 'name', 'surname'],
-            'objectsArray'=>[new UsersModel(['login'=>'user', 'password'=>'password'])],
+            'objectsArray'=>[new MockModel(['login'=>'user', 'password'=>'password', 'name'=>'name'])],
         ]);
-        $usersInsertMapper->visit(new UsersInsertQueryCreator());
+        
+        $queryCreator = new UsersInsertQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'INSERT INTO {{users}} (login,password,name,surname) VALUES (:0_login,:0_password,:0_name,:0_surname)';
         
-        $this->assertEquals($query, $usersInsertMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

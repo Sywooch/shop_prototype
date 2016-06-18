@@ -2,8 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\ProductDetailQueryCreator;
-use app\mappers\ProductDetailMapper;
 
 /**
  * Тестирует класс app\queries\ProductDetailQueryCreator
@@ -15,14 +15,16 @@ class ProductDetailQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $productMapper = new ProductDetailMapper([
-                'tableName'=>'products',
-                'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-            ]);
-        $productMapper->visit(new ProductDetailQueryCreator());
+        $mockObject = new MockObject([
+            'tableName'=>'products',
+            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+        ]);
+        
+        $queryCreator = new ProductDetailQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[products.id]],[[products.code]],[[products.name]],[[products.description]],[[products.price]],[[products.images]] FROM {{products}} WHERE [[products.id]]=:id';
         
-        $this->assertEquals($query, $productMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

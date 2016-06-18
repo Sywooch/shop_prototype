@@ -2,9 +2,8 @@
 
 namespace app\queries;
 
-use app\mappers\CommentsForProductMapper;
+use app\tests\MockObject;
 use app\queries\CommentsForProductQueryCreator;
-use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\queries\CommentsForProductQueryCreator
@@ -16,15 +15,16 @@ class CommentsForProductQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $commentsForProductMapper = new CommentsForProductMapper([
+        $mockObject = new MockObject([
             'tableName'=>'comments',
             'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
-            'model'=>new ProductsModel(['id'=>1]),
         ]);
-        $commentsForProductMapper->visit(new CommentsForProductQueryCreator());
+        
+        $queryCreator = new CommentsForProductQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[comments.id]],[[comments.text]],[[comments.name]],[[comments.id_emails]],[[comments.id_products]],[[comments.active]] FROM {{comments}} WHERE [[comments.id_products]]=:id_products';
         
-        $this->assertEquals($query, $commentsForProductMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

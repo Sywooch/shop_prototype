@@ -2,8 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\UsersEmailsByUsersEmailsQueryCreator;
-use app\mappers\UsersEmailsByUsersEmailsMapper;
 
 /**
  * Тестирует класс app\queries\UsersEmailsByUsersEmailsQueryCreator
@@ -15,15 +15,16 @@ class UsersEmailsByUsersEmailsQueryCreatorTests extends \PHPUnit_Framework_TestC
      */
     public function testGetSelectQuery()
     {
-        $usersEmailsByUsersEmailsMapper = new UsersEmailsByUsersEmailsMapper([
+        $mockObject = new MockObject([
             'tableName'=>'users_emails',
             'fields'=>['id_users', 'id_emails'],
-            'params'=>[':id_users'=>1, ':id_emails'=>2]
         ]);
-        $usersEmailsByUsersEmailsMapper->visit(new UsersEmailsByUsersEmailsQueryCreator());
+        
+        $queryCreator = new UsersEmailsByUsersEmailsQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[users_emails.id_users]],[[users_emails.id_emails]] FROM {{users_emails}} WHERE [[users_emails.id_users]]=:id_users AND [[users_emails.id_emails]]=:id_emails';
         
-        $this->assertEquals($query, $usersEmailsByUsersEmailsMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

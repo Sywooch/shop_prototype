@@ -2,9 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\SubcategoryQueryCreator;
-use app\mappers\SubcategoryMapper;
-use app\models\CategoriesModel;
 
 /**
  * Тестирует класс app\queries\SubcategoryQueryCreator
@@ -16,14 +15,16 @@ class SubcategoryQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $categoryModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DB]);
-        $categoryModel->attributes = ['id'=>1];
+        $mockObject = new MockObject([
+            'tableName'=>'subcategory',
+            'fields'=>['id', 'name'],
+        ]);
         
-        $subcategoryMapper = new SubcategoryMapper(['tableName'=>'subcategory', 'fields'=>['id', 'name'], 'model'=>$categoryModel]);
-        $subcategoryMapper->visit(new SubcategoryQueryCreator());
+        $queryCreator = new SubcategoryQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[subcategory.id]],[[subcategory.name]] FROM {{subcategory}} JOIN {{categories}} ON [[subcategory.id_categories]]=[[categories.id]] WHERE [[categories.id]]=:id';
         
-        $this->assertEquals($query, $subcategoryMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

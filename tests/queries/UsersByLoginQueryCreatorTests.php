@@ -2,9 +2,8 @@
 
 namespace app\queries;
 
-use app\mappers\UsersByLoginMapper;
+use app\tests\MockObject;
 use app\queries\UsersByLoginQueryCreator;
-use app\models\UsersModel;
 
 /**
  * Тестирует класс app\queries\UsersByLoginQueryCreator
@@ -16,16 +15,16 @@ class UsersByLoginQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetInsertQuery()
     {
-        $usersByLoginMapper = new UsersByLoginMapper([
+        $mockObject = new MockObject([
             'tableName'=>'users',
             'fields'=>['id', 'login', 'name', 'surname'],
-            'model'=>new UsersModel(['login'=>'user']),
         ]);
         
-        $usersByLoginMapper->visit(new UsersByLoginQueryCreator());
+        $queryCreator = new UsersByLoginQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[users.id]],[[users.login]],[[users.name]],[[users.surname]] FROM {{users}} WHERE [[users.login]]=:login';
         
-        $this->assertEquals($query, $usersByLoginMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

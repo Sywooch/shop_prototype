@@ -2,8 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\SizesQueryCreator;
-use app\mappers\SizesMapper;
 
 /**
  * Тестирует класс app\queries\SizesQueryCreator
@@ -17,16 +17,17 @@ class SizesQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = [];
         
-        $sizesMapper = new SizesMapper([
+        $mockObject = new MockObject([
             'tableName'=>'sizes',
             'fields'=>['id', 'size'],
-            'orderByField'=>'size'
         ]);
-        $sizesMapper->visit(new SizesQueryCreator());
+        
+        $queryCreator = new SizesQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT DISTINCT [[sizes.id]],[[sizes.size]] FROM {{sizes}} JOIN {{products_sizes}} ON [[sizes.id]]=[[products_sizes.id_sizes]]';
         
-        $this->assertEquals($query, $sizesMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
     
     /**
@@ -36,16 +37,17 @@ class SizesQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>'mensfootwear'];
         
-        $sizesMapper = new SizesMapper([
+        $mockObject = new MockObject([
             'tableName'=>'sizes',
             'fields'=>['id', 'size'],
-            'orderByField'=>'size'
         ]);
-        $sizesMapper->visit(new SizesQueryCreator());
+        
+        $queryCreator = new SizesQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT DISTINCT [[sizes.id]],[[sizes.size]] FROM {{sizes}} JOIN {{products_sizes}} ON [[sizes.id]]=[[products_sizes.id_sizes]] JOIN {{products}} ON [[products_sizes.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] WHERE [[categories.seocode]]=:categories';
         
-        $this->assertEquals($query, $sizesMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
     
      /**
@@ -55,15 +57,16 @@ class SizesQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>'mensfootwear', 'subcategory'=>'boots'];
         
-        $sizesMapper = new SizesMapper([
+        $mockObject = new MockObject([
             'tableName'=>'sizes',
             'fields'=>['id', 'size'],
-            'orderByField'=>'size'
         ]);
-        $sizesMapper->visit(new SizesQueryCreator());
+        
+        $queryCreator = new SizesQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT DISTINCT [[sizes.id]],[[sizes.size]] FROM {{sizes}} JOIN {{products_sizes}} ON [[sizes.id]]=[[products_sizes.id_sizes]] JOIN {{products}} ON [[products_sizes.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory';
         
-        $this->assertEquals($query, $sizesMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

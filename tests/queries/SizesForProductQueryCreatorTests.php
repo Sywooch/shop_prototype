@@ -2,9 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\SizesForProductQueryCreator;
-use app\mappers\SizesForProductMapper;
-use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\queries\SizesForProductQueryCreator
@@ -16,16 +15,16 @@ class SizesForProductQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $sizesMapper = new SizesForProductMapper([
+        $mockObject = new MockObject([
             'tableName'=>'sizes',
             'fields'=>['id', 'size'],
-            'orderByField'=>'size',
-            'model'=>new ProductsModel(['id'=>1]),
         ]);
-        $sizesMapper->visit(new SizesForProductQueryCreator());
+        
+        $queryCreator = new SizesForProductQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[sizes.id]],[[sizes.size]] FROM {{sizes}} JOIN {{products_sizes}} ON [[sizes.id]]=[[products_sizes.id_sizes]] WHERE [[products_sizes.id_products]]=:id';
         
-        $this->assertEquals($query, $sizesMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

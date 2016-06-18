@@ -2,8 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\CurrencyQueryCreator;
-use app\mappers\CurrencyMapper;
 
 /**
  * Тестирует класс app\queries\CurrencyQueryCreator
@@ -15,15 +15,16 @@ class CurrencyQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $currencyMapper = new CurrencyMapper([
+        $mockObject = new MockObject([
             'tableName'=>'currency',
             'fields'=>['id', 'currency'],
-            'orderByField'=>'currency'
         ]);
-        $currencyMapper->visit(new CurrencyQueryCreator());
+        
+        $queryCreator = new CurrencyQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[currency.id]],[[currency.currency]] FROM {{currency}}';
         
-        $this->assertEquals($query, $currencyMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

@@ -2,9 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\EmailsByEmailQueryCreator;
-use app\mappers\EmailsByEmailMapper;
-use app\models\EmailsModel;
 
 /**
  * Тестирует класс app\queries\EmailsByEmailQueryCreator
@@ -16,19 +15,16 @@ class EmailsByEmailQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $modelArray = ['email'=>'test@test.com'];
-        $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-        $emailsModel->attributes = $modelArray;
-        
-        $emailsByEmailMapper = new EmailsByEmailMapper([
+        $mockObject = new MockObject([
             'tableName'=>'emails',
             'fields'=>['id', 'email'],
-            'model'=>$emailsModel
         ]);
-        $emailsByEmailMapper->visit(new EmailsByEmailQueryCreator());
+        
+        $queryCreator = new EmailsByEmailQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[emails.id]],[[emails.email]] FROM {{emails}} WHERE [[emails.email]]=:email';
         
-        $this->assertEquals($query, $emailsByEmailMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

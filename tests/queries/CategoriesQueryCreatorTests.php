@@ -2,8 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\CategoriesQueryCreator;
-use app\mappers\CategoriesMapper;
 
 /**
  * Тестирует класс app\queries\CategoriesQueryCreator
@@ -15,11 +15,16 @@ class CategoriesQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $categoriesMapper = new CategoriesMapper(['tableName'=>'categories', 'fields'=>['id', 'name']]);
-        $categoriesMapper->visit(new CategoriesQueryCreator());
+        $mockObject = new MockObject([
+            'tableName'=>'categories',
+            'fields'=>['id', 'name'],
+        ]);
+        
+        $queryCreator = new CategoriesQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[categories.id]],[[categories.name]] FROM {{categories}}';
         
-        $this->assertEquals($query, $categoriesMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

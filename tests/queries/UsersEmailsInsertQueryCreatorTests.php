@@ -2,9 +2,9 @@
 
 namespace app\queries;
 
-use app\mappers\UsersEmailsInsertMapper;
+use app\tests\MockObject;
+use app\tests\MockModel;
 use app\queries\UsersEmailsInsertQueryCreator;
-use app\models\UsersEmailsModel;
 
 /**
  * Тестирует класс app\queries\UsersEmailsInsertQueryCreator
@@ -16,16 +16,21 @@ class UsersEmailsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetInsertQuery()
     {
-        $usersEmailsInsertMapper = new UsersEmailsInsertMapper([
+        $mockObject = new MockObject([
             'tableName'=>'users_emails',
             'fields'=>['id_users', 'id_emails'],
-            'objectsArray'=>[new UsersEmailsModel(['id_users'=>1, 'id_emails'=>2]), new UsersEmailsModel(['id_users'=>2, 'id_emails'=>2])]
+            'objectsArray'=>[
+                new MockModel(['id_users'=>1, 'id_emails'=>2]),
+                new MockModel(['id_users'=>2, 'id_emails'=>2]),
+                new MockModel(['id_users'=>3, 'id_emails'=>3]),
+            ],
         ]);
         
-        $usersEmailsInsertMapper->visit(new UsersEmailsInsertQueryCreator());
+        $queryCreator = new UsersEmailsInsertQueryCreator();
+        $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{users_emails}} (id_users,id_emails) VALUES (:0_id_users,:0_id_emails),(:1_id_users,:1_id_emails)';
+        $query = 'INSERT INTO {{users_emails}} (id_users,id_emails) VALUES (:0_id_users,:0_id_emails),(:1_id_users,:1_id_emails),(:2_id_users,:2_id_emails)';
         
-        $this->assertEquals($query, $usersEmailsInsertMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

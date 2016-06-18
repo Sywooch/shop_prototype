@@ -2,8 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\BrandsQueryCreator;
-use app\mappers\BrandsMapper;
 
 /**
  * Тестирует класс app\queries\BrandsQueryCreator
@@ -17,16 +17,17 @@ class BrandsQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = [];
         
-        $brandsMapper = new BrandsMapper([
+        $mockObject = new MockObject([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            'orderByField'=>'brand'
         ]);
-        $brandsMapper->visit(new BrandsQueryCreator());
+        
+        $queryCreator = new BrandsQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]]';
         
-        $this->assertEquals($query, $brandsMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
     
     /**
@@ -36,16 +37,17 @@ class BrandsQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>'mensfootwear'];
         
-        $brandsMapper = new BrandsMapper([
+        $mockObject = new MockObject([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            'orderByField'=>'brand'
         ]);
-        $brandsMapper->visit(new BrandsQueryCreator());
+        
+        $queryCreator = new BrandsQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]] JOIN {{products}} ON [[products_brands.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] WHERE [[categories.seocode]]=:categories';
         
-        $this->assertEquals($query, $brandsMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
     
     /**
@@ -55,15 +57,16 @@ class BrandsQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>'mensfootwear', 'subcategory'=>'boots'];
         
-        $brandsMapper = new BrandsMapper([
+        $mockObject = new MockObject([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            'orderByField'=>'brand'
         ]);
-        $brandsMapper->visit(new BrandsQueryCreator());
+        
+        $queryCreator = new BrandsQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]] JOIN {{products}} ON [[products_brands.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory';
         
-        $this->assertEquals($query, $brandsMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

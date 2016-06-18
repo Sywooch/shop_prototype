@@ -97,7 +97,7 @@ class SimilarProductsQueryCreator extends ProductsListQueryCreator
                         $this->categoriesArrayFilters[$filter]['secondTableFieldWhere'],
                         $filter . implode(",:{$filter}", (array_keys(ArrayHelper::getColumn($this->_mapperObject->model->$filter, \Yii::$app->params['idKey']))))
                     );
-                    $this->addFilters($filter);
+                    $this->addFilter($filter);
                 }
             }
         } catch (\Exception $e) {
@@ -105,7 +105,7 @@ class SimilarProductsQueryCreator extends ProductsListQueryCreator
         }
     }
     
-    protected function addFilters($filter)
+    private function addFilter($filter)
     {
         $array = ArrayHelper::getColumn($this->_mapperObject->model->$filter, \Yii::$app->params['idKey']);
         foreach ($array as $key=>$val) {

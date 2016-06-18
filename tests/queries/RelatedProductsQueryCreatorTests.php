@@ -2,10 +2,8 @@
 
 namespace app\tests\queries;
 
+use app\tests\MockObject;
 use app\queries\RelatedProductsQueryCreator;
-use app\mappers\RelatedProductsMapper;
-use app\models\ProductsModel;
-use app\tests\DbManager;
 
 /**
  * Тестирует класс app\queries\RelatedProductsQueryCreator
@@ -17,7 +15,7 @@ class RelatedProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $relatedProductsMapper = new RelatedProductsMapper([
+        $mockObject = new MockObject([
             'tableName'=>'products',
             'fields'=>['id', 'name', 'price', 'images'],
             'otherTablesFields'=>[
@@ -25,12 +23,13 @@ class RelatedProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
                 ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
             ],
             'orderByField'=>'date',
-            'model'=>new ProductsModel(['id'=>1]),
         ]);
-        $relatedProductsMapper->visit(new RelatedProductsQueryCreator());
+        
+        $queryCreator = new RelatedProductsQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[products.id]],[[products.name]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{related_products}} ON [[products.id]]=[[related_products.id_related_products]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[related_products.id_products]]=:id UNION SELECT [[products.id]],[[products.name]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{related_products}} ON [[products.id]]=[[related_products.id_products]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[related_products.id_related_products]]=:id';
         
-        $this->assertEquals($query, $relatedProductsMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }

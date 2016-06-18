@@ -2,7 +2,7 @@
 
 namespace app\queries;
 
-use app\mappers\RulesMapper;
+use app\tests\MockObject;
 use app\queries\RulesQueryCreator;
 
 /**
@@ -15,16 +15,16 @@ class RulesQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelectQuery()
     {
-        $rulesMapper = new RulesMapper([
+        $mockObject = new MockObject([
             'tableName'=>'rules',
             'fields'=>['id', 'rule'],
-            'orderByField'=>'rule',
         ]);
         
-        $rulesMapper->visit(new RulesQueryCreator());
+        $queryCreator = new RulesQueryCreator();
+        $queryCreator->update($mockObject);
         
         $query = 'SELECT [[rules.id]],[[rules.rule]] FROM {{rules}}';
         
-        $this->assertEquals($query, $rulesMapper->query);
+        $this->assertEquals($query, $mockObject->query);
     }
 }
