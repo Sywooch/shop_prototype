@@ -84,12 +84,12 @@ class DbManager extends Object
             throw new ErrorException("Ошибка при удалении тестовой БД!\n" . $e->getMessage());
         }
         
-        /*try {
+        try {
             if (file_exists($this->dbSchemePath)) {
                 unlink($this->dbSchemePath);
             }
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при удалении файла со структурой БД!\n" . $e->getMessage());
-        }*/
+        }
     }
 }
