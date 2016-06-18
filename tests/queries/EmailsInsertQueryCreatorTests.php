@@ -19,7 +19,9 @@ class EmailsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'emails',
             'fields'=>['email'],
-            'objectsArray'=>[new MockModel(['email'=>'some@some.com'])],
+            'objectsArray'=>[
+                new MockModel(['email'=>'some@some.com'])
+            ],
         ]);
         
         $queryCreator = new EmailsInsertQueryCreator();

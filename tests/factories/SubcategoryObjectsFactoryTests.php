@@ -2,64 +2,40 @@
 
 namespace app\tests\factories;
 
+use app\tests\MockObject;
 use app\factories\SubcategoryObjectsFactory;
-use app\tests\DbManager;
-use app\mappers\SubcategoryMapper;
-use app\queries\SubcategoryQueryCreator;
 use app\models\SubcategoryModel;
-use app\models\CategoriesModel;
-use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\factories\SubcategoryObjectsFactory
  */
 class SubcategoryObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
-    }
-    
     /**
      * Тестирует метод SubcategoryObjectsFactory::getObjects()
      */
     public function testGetObjects()
     {
-        $subcategoryMapper = new SubcategoryMapper([
-            'tableName'=>'subcategory',
-            'fields'=>['id', 'name'],
-            'model'=>new ProductsModel(['id'=>1]),
+        $mockObject = new MockObject([
+            'DbArray'=>[
+                ['id'=>1, 'name'=>'Something 1'],
+                ['id'=>2, 'name'=>'Something 2'],
+                ['id'=>3, 'name'=>'Something 3']
+            ],
         ]);
         
-        $this->assertEmpty($subcategoryMapper->objectsArray);
-        $this->assertEmpty($subcategoryMapper->DbArray);
+        $objectsCreator = new SubcategoryObjectsFactory();
+        $objectsCreator->update($mockObject);
         
-        $subcategoryMapper->visit(new SubcategoryQueryCreator());
+        $this->assertFalse(empty($mockObject->objectsArray));
+        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertTrue(is_object($mockObject->objectsArray[0]));
+        $this->assertTrue($mockObject->objectsArray[0] instanceof SubcategoryModel);
         
-        $command = \Yii::$app->db->createCommand($subcategoryMapper->query);
-        $command->bindValue(':' . \Yii::$app->params['idKey'], 1);
-        $subcategoryMapper->DbArray = $command->queryAll();
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'name'));
         
-        $this->assertFalse(empty($subcategoryMapper->DbArray));
-        
-        $subcategoryMapper->visit(new SubcategoryObjectsFactory());
-        
-        $this->assertFalse(empty($subcategoryMapper->objectsArray));
-        $this->assertTrue(is_object($subcategoryMapper->objectsArray[0]));
-        $this->assertTrue($subcategoryMapper->objectsArray[0] instanceof SubcategoryModel);
-        
-        $this->assertTrue(property_exists($subcategoryMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($subcategoryMapper->objectsArray[0], 'name'));
-        
-        $this->assertTrue(isset($subcategoryMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($subcategoryMapper->objectsArray[0]->name));
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->deleteDb();
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->name));
     }
 }

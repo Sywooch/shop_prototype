@@ -22,7 +22,6 @@ class RelatedProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
                 ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
                 ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
             ],
-            'orderByField'=>'date',
         ]);
         
         $queryCreator = new RelatedProductsQueryCreator();

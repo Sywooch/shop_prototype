@@ -2,10 +2,9 @@
 
 namespace app\tests\factories;
 
-use app\tests\DbManager;
+use app\tests\MockObject;
 use app\factories\UsersEmailsObjectsFactory;
 use app\models\UsersEmailsModel;
-use app\mappers\UsersEmailsInsertMapper;
 
 /**
  * Тестирует класс app\factories\UsersEmailsObjectsFactory
@@ -17,24 +16,26 @@ class UsersEmailsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetObjects()
     {
-        $usersEmailsInsertMapper = new UsersEmailsInsertMapper([
-            'tableName'=>'users_emails',
-            'fields'=>['id_users', 'id_emails'],
-            'DbArray'=>[['id_users'=>1, 'id_emails'=>1]],
+        $mockObject = new MockObject([
+            'DbArray'=>[
+                ['id_users'=>1, 'id_emails'=>'something1@something.com'],
+                ['id_users'=>2, 'id_emails'=>'something2@something.com'],
+                ['id_users'=>3, 'id_emails'=>'something3@something.com']
+            ],
         ]);
         
-        $this->assertEmpty($usersEmailsInsertMapper->objectsArray);
+        $objectsCreator = new UsersEmailsObjectsFactory();
+        $objectsCreator->update($mockObject);
         
-        $usersEmailsInsertMapper->visit(new UsersEmailsObjectsFactory());
+        $this->assertFalse(empty($mockObject->objectsArray));
+        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertTrue(is_object($mockObject->objectsArray[0]));
+        $this->assertTrue($mockObject->objectsArray[0] instanceof UsersEmailsModel);
         
-        $this->assertFalse(empty($usersEmailsInsertMapper->objectsArray));
-        $this->assertTrue(is_object($usersEmailsInsertMapper->objectsArray[0]));
-        $this->assertTrue($usersEmailsInsertMapper->objectsArray[0] instanceof UsersEmailsModel);
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_users'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_emails'));
         
-        $this->assertTrue(property_exists($usersEmailsInsertMapper->objectsArray[0], 'id_users'));
-        $this->assertTrue(property_exists($usersEmailsInsertMapper->objectsArray[0], 'id_emails'));
-        
-        $this->assertTrue(isset($usersEmailsInsertMapper->objectsArray[0]->id_users));
-        $this->assertTrue(isset($usersEmailsInsertMapper->objectsArray[0]->id_emails));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id_users));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id_emails));
     }
 }

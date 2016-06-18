@@ -32,13 +32,14 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
     {
         try {
             if (empty($this->_mapperObject->DbArray)) {
-                return;
+                return false;
             }
             
+            if (!isset($this->model)) {
+                throw new ErrorException('Не задан объект класса модели для создания экземпляров!');
+            }
+                
             foreach ($this->_mapperObject->DbArray as $entry) {
-                if (!isset($this->model)) {
-                    throw new ErrorException('Не задан объект класса модели для создания экземпляров!');
-                }
                 $model = clone $this->model;
                 $model->attributes = $entry;
                 $this->_mapperObject->objectsArray[] = $model;
@@ -46,5 +47,6 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
+        return true;
     }
 }

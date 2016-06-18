@@ -64,7 +64,7 @@ class ProductsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_LIST_FROM_DB=>['id', 'code', 'name', 'description', 'price', 'images', 'categories', 'subcategory'],
+            self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'price', 'images', 'categories', 'subcategory'],
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],

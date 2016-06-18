@@ -19,7 +19,9 @@ class UsersInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'users',
             'fields'=>['login', 'password', 'name', 'surname'],
-            'objectsArray'=>[new MockModel(['login'=>'user', 'password'=>'password', 'name'=>'name'])],
+            'objectsArray'=>[
+                new MockModel(['login'=>'user', 'password'=>'password', 'name'=>'name'])
+            ],
         ]);
         
         $queryCreator = new UsersInsertQueryCreator();

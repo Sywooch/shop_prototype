@@ -2,136 +2,40 @@
 
 namespace app\tests\factories;
 
+use app\tests\MockObject;
 use app\factories\ColorsObjectsFactory;
-use app\tests\DbManager;
 use app\models\ColorsModel;
-use app\mappers\ColorsMapper;
-use app\queries\ColorsQueryCreator;
 
 /**
  * Тестирует класс app\factories\ColorsObjectsFactory
  */
 class ColorsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
-    }
-    
     /**
      * Тестирует метод ColorsObjectsFactory::getObjects()
      */
     public function testGetObjects()
     {
-        $_GET = [];
-        
-        $colorsMapper = new ColorsMapper([
-            'tableName'=>'colors',
-            'fields'=>['id', 'color'],
-            'orderByField'=>'color'
+        $mockObject = new MockObject([
+            'DbArray'=>[
+                ['id'=>1, 'color'=>'Something 1'],
+                ['id'=>2, 'color'=>'Something 2'],
+                ['id'=>3, 'color'=>'Something 3']
+            ],
         ]);
         
-        $this->assertEmpty($colorsMapper->objectsArray);
-        $this->assertEmpty($colorsMapper->DbArray);
+        $objectsCreator = new ColorsObjectsFactory();
+        $objectsCreator->update($mockObject);
         
-        $colorsMapper->visit(new ColorsQueryCreator());
+        $this->assertFalse(empty($mockObject->objectsArray));
+        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertTrue(is_object($mockObject->objectsArray[0]));
+        $this->assertTrue($mockObject->objectsArray[0] instanceof ColorsModel);
         
-        $colorsMapper->DbArray = \Yii::$app->db->createCommand($colorsMapper->query)->queryAll();
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'color'));
         
-        $this->assertFalse(empty($colorsMapper->DbArray));
-        
-        $colorsMapper->visit(new ColorsObjectsFactory());
-        
-        $this->assertFalse(empty($colorsMapper->objectsArray));
-        $this->assertTrue(is_object($colorsMapper->objectsArray[0]));
-        $this->assertTrue($colorsMapper->objectsArray[0] instanceof ColorsModel);
-        
-        $this->assertTrue(property_exists($colorsMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($colorsMapper->objectsArray[0], 'color'));
-        
-        $this->assertTrue(isset($colorsMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($colorsMapper->objectsArray[0]->color));
-    }
-    
-    /**
-     * Тестирует метод BrandsObjectsFactory::getObjects() с учетом категории
-     */
-    public function testGetObjectsCategories()
-    {
-        $_GET = ['categories'=>'mensfootwear'];
-        
-        $colorsMapper = new ColorsMapper([
-            'tableName'=>'colors',
-            'fields'=>['id', 'color'],
-            'orderByField'=>'color'
-        ]);
-        
-        $this->assertEmpty($colorsMapper->objectsArray);
-        $this->assertEmpty($colorsMapper->DbArray);
-        
-        $colorsMapper->visit(new ColorsQueryCreator());
-        
-        $command = \Yii::$app->db->createCommand($colorsMapper->query);
-        $command->bindValue(':categories', 'mensfootwear');
-        $colorsMapper->DbArray = $command->queryAll();
-        
-        $this->assertFalse(empty($colorsMapper->DbArray));
-        
-        $colorsMapper->visit(new ColorsObjectsFactory());
-        
-        $this->assertFalse(empty($colorsMapper->objectsArray));
-        $this->assertTrue(is_object($colorsMapper->objectsArray[0]));
-        $this->assertTrue($colorsMapper->objectsArray[0] instanceof ColorsModel);
-        
-        $this->assertTrue(property_exists($colorsMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($colorsMapper->objectsArray[0], 'color'));
-        
-        $this->assertTrue(isset($colorsMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($colorsMapper->objectsArray[0]->color));
-    }
-    
-    /**
-     * Тестирует метод BrandsObjectsFactory::getObjects() с учетом категории и подкатегории
-     */
-    public function testGetObjectsSubcategories()
-    {
-        $_GET = ['categories'=>'mensfootwear', 'subcategory'=>'boots'];
-        
-        $colorsMapper = new ColorsMapper([
-            'tableName'=>'colors',
-            'fields'=>['id', 'color'],
-            'orderByField'=>'color'
-        ]);
-        
-        $this->assertEmpty($colorsMapper->objectsArray);
-        $this->assertEmpty($colorsMapper->DbArray);
-        
-        $colorsMapper->visit(new ColorsQueryCreator());
-        
-        $command = \Yii::$app->db->createCommand($colorsMapper->query);
-        $command->bindValues([':categories'=>'mensfootwear',':subcategory'=>'boots']);
-        $colorsMapper->DbArray = $command->queryAll();
-        
-        $this->assertFalse(empty($colorsMapper->DbArray));
-        
-        $colorsMapper->visit(new ColorsObjectsFactory());
-        
-        $this->assertFalse(empty($colorsMapper->objectsArray));
-        $this->assertTrue(is_object($colorsMapper->objectsArray[0]));
-        $this->assertTrue($colorsMapper->objectsArray[0] instanceof ColorsModel);
-        
-        $this->assertTrue(property_exists($colorsMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($colorsMapper->objectsArray[0], 'color'));
-        
-        $this->assertTrue(isset($colorsMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($colorsMapper->objectsArray[0]->color));
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->deleteDb();
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->color));
     }
 }

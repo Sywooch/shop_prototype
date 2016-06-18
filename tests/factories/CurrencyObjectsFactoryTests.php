@@ -2,60 +2,39 @@
 
 namespace app\tests\factories;
 
+use app\tests\MockObject;
 use app\factories\CurrencyObjectsFactory;
-use app\tests\DbManager;
 use app\models\CurrencyModel;
-use app\mappers\CurrencyMapper;
-use app\queries\CurrencyQueryCreator;
 
 /**
  * Тестирует класс app\factories\CurrencyObjectsFactory
  */
 class CurrencyObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
-    }
-    
     /**
      * Тестирует метод CurrencyObjectsFactory::getObjects()
      */
     public function testGetObjects()
     {
-        $currencyMapper = new CurrencyMapper([
-            'tableName'=>'currency',
-            'fields'=>['id', 'currency'],
-            'orderByField'=>'currency'
+        $mockObject = new MockObject([
+            'DbArray'=>[
+                ['id'=>1, 'currency'=>'Something 1'],
+                ['id'=>2, 'currency'=>'Something 2'],
+            ],
         ]);
         
-        $this->assertEmpty($currencyMapper->objectsArray);
-        $this->assertEmpty($currencyMapper->DbArray);
+        $objectsCreator = new CurrencyObjectsFactory();
+        $objectsCreator->update($mockObject);
         
-        $currencyMapper->visit(new CurrencyQueryCreator());
+        $this->assertFalse(empty($mockObject->objectsArray));
+        $this->assertEquals(2, count($mockObject->objectsArray));
+        $this->assertTrue(is_object($mockObject->objectsArray[0]));
+        $this->assertTrue($mockObject->objectsArray[0] instanceof CurrencyModel);
         
-        $currencyMapper->DbArray = \Yii::$app->db->createCommand($currencyMapper->query)->queryAll();
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'currency'));
         
-        $this->assertFalse(empty($currencyMapper->DbArray));
-        
-        $currencyMapper->visit(new CurrencyObjectsFactory());
-        
-        $this->assertFalse(empty($currencyMapper->objectsArray));
-        $this->assertTrue(is_object($currencyMapper->objectsArray[0]));
-        $this->assertTrue($currencyMapper->objectsArray[0] instanceof CurrencyModel);
-        
-        $this->assertTrue(property_exists($currencyMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($currencyMapper->objectsArray[0], 'currency'));
-        
-        $this->assertTrue(isset($currencyMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($currencyMapper->objectsArray[0]->currency));
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->deleteDb();
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->currency));
     }
 }

@@ -2,10 +2,8 @@
 
 namespace app\tests\factories;
 
+use app\tests\MockObject;
 use app\factories\UsersObjectsFactory;
-use app\tests\DbManager;
-use app\mappers\UsersByLoginMapper;
-use app\queries\UsersByLoginQueryCreator;
 use app\models\UsersModel;
 
 /**
@@ -13,61 +11,38 @@ use app\models\UsersModel;
  */
 class UsersObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
-    }
-    
     /**
-     * Тестирует метод UsersObjectsFactory::getOne()
+     * Тестирует метод UsersObjectsFactory::getObjects()
      */
-    public function testGetOne()
+    public function testGetObjects()
     {
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[users.login]]=:login');
-        $command->bindValue(':login', 'user');
-        $command->execute();
-        
-        $modelUserModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-        $modelUserModel->attributes = ['login'=>'user', 'name'=>'Some', 'surname'=>'Some'];
-        
-        $usersByLoginMapper = new UsersByLoginMapper([
-            'tableName'=>'users',
-            'fields'=>['login', 'name', 'surname'],
-            'model'=>$modelUserModel,
+        $mockObject = new MockObject([
+            'DbArray'=>[
+                ['id'=>1, 'login'=>'Something 1', 'password'=>'Something 1', 'name'=>'Something 1', 'surname'=>'Something 1'],
+                ['id'=>2, 'login'=>'Something 2', 'password'=>'Something 2', 'name'=>'Something 2', 'surname'=>'Something 2'],
+                ['id'=>3, 'login'=>'Something 3', 'password'=>'Something 3', 'name'=>'Something 3', 'surname'=>'Something 3'],
+                ['id'=>4, 'login'=>'Something 4', 'password'=>'Something 4', 'name'=>'Something 4', 'surname'=>'Something 4'],
+            ],
         ]);
         
-        $this->assertEmpty($usersByLoginMapper->DbArray);
-        $this->assertEmpty($usersByLoginMapper->objectsArray);
+        $objectsCreator = new UsersObjectsFactory();
+        $objectsCreator->update($mockObject);
         
-        $usersByLoginMapper->visit(new UsersByLoginQueryCreator());
+        $this->assertFalse(empty($mockObject->objectsArray));
+        $this->assertEquals(4, count($mockObject->objectsArray));
+        $this->assertTrue(is_object($mockObject->objectsArray[0]));
+        $this->assertTrue($mockObject->objectsArray[0] instanceof UsersModel);
         
-        $command = \Yii::$app->db->createCommand($usersByLoginMapper->query);
-        $command->bindValue(':login', 'user');
-        $usersByLoginMapper->DbArray = $command->queryAll();
+        //$this->assertTrue(property_exists($mockObject->objectsArray[0], 'id'));
+        //$this->assertTrue(property_exists($mockObject->objectsArray[0], 'login'));
+        //$this->assertTrue(property_exists($mockObject->objectsArray[0], 'password'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'name'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'surname'));
         
-        $this->assertFalse(empty($usersByLoginMapper->DbArray));
-        
-        $usersByLoginMapper->visit(new UsersObjectsFactory());
-        
-        $this->assertFalse(empty($usersByLoginMapper->objectsArray));
-        $this->assertTrue(is_object($usersByLoginMapper->objectsArray[0]));
-        $this->assertTrue($usersByLoginMapper->objectsArray[0] instanceof UsersModel);
-        
-        $this->assertTrue(property_exists($usersByLoginMapper->objectsArray[0], 'name'));
-        $this->assertTrue(property_exists($usersByLoginMapper->objectsArray[0], 'surname'));
-        
-        $this->assertTrue(isset($usersByLoginMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($usersByLoginMapper->objectsArray[0]->login));
-        $this->assertTrue(isset($usersByLoginMapper->objectsArray[0]->password));
-        $this->assertTrue(isset($usersByLoginMapper->objectsArray[0]->name));
-        $this->assertTrue(isset($usersByLoginMapper->objectsArray[0]->name));
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->deleteDb();
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->login));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->password));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->name));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->surname));
     }
 }

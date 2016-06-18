@@ -2,10 +2,8 @@
 
 namespace app\tests\factories;
 
+use app\tests\MockObject;
 use app\factories\RulesObjectsFactory;
-use app\tests\DbManager;
-use app\mappers\RulesMapper;
-use app\queries\RulesQueryCreator;
 use app\models\RulesModel;
 
 /**
@@ -13,49 +11,32 @@ use app\models\RulesModel;
  */
 class RulesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
-    }
-    
     /**
      * Тестирует метод RulesObjectsFactory::getObjects()
      */
     public function testGetObjects()
     {
-        $rulesMapper = new RulesMapper([
-            'tableName'=>'rules',
-            'fields'=>['id', 'rule'],
-            'orderByField'=>'rule',
+        $mockObject = new MockObject([
+            'DbArray'=>[
+                ['id'=>1, 'rule'=>'Something 1'],
+                ['id'=>2, 'rule'=>'Something 2'],
+                ['id'=>3, 'rule'=>'Something 3'],
+                ['id'=>4, 'rule'=>'Something 4'],
+            ],
         ]);
         
-        $this->assertEmpty($rulesMapper->DbArray);
-        $this->assertEmpty($rulesMapper->objectsArray);
+        $objectsCreator = new RulesObjectsFactory();
+        $objectsCreator->update($mockObject);
         
-        $rulesMapper->visit(new RulesQueryCreator());
+        $this->assertFalse(empty($mockObject->objectsArray));
+        $this->assertEquals(4, count($mockObject->objectsArray));
+        $this->assertTrue(is_object($mockObject->objectsArray[0]));
+        $this->assertTrue($mockObject->objectsArray[0] instanceof RulesModel);
         
-        $rulesMapper->DbArray = \Yii::$app->db->createCommand($rulesMapper->query)->queryAll();
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'rule'));
         
-        $this->assertFalse(empty($rulesMapper->DbArray));
-        
-        $rulesMapper->visit(new RulesObjectsFactory());
-        
-        $this->assertTrue(is_array($rulesMapper->objectsArray));
-        $this->assertFalse(empty($rulesMapper->objectsArray));
-        $this->assertTrue($rulesMapper->objectsArray[0] instanceof RulesModel);
-        
-        $this->assertTrue(property_exists($rulesMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($rulesMapper->objectsArray[0], 'rule'));
-        
-        $this->assertTrue(isset($rulesMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($rulesMapper->objectsArray[0]->rule));
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->deleteDb();
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->rule));
     }
 }

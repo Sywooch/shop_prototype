@@ -19,7 +19,9 @@ class CommentsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'comments',
             'fields'=>['text', 'name', 'email', 'id_products'],
-            'objectsArray'=>[new MockModel(['text'=>'some', 'name'=>'some', 'email'=>'some@some.com', 'id_products'=>'some'])],
+            'objectsArray'=>[
+                new MockModel(['text'=>'some', 'name'=>'some', 'email'=>'some@some.com', 'id_products'=>'some'])
+            ],
         ]);
         
         $queryCreator = new CommentsInsertQueryCreator();

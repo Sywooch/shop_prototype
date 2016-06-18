@@ -25,8 +25,15 @@ class SimilarProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
             ],
             'model'=>new MockModel([
                 'id'=>1, 
-                'colors'=>[new MockModel(['id'=>7]), new MockModel(['id'=>1])],
-                'sizes'=>[new MockModel(['id'=>12]), new MockModel(['id'=>7]), new MockModel(['id'=>2])],
+                'colors'=>[
+                    new MockModel(['id'=>7]),
+                    new MockModel(['id'=>1]),
+                ],
+                'sizes'=>[
+                    new MockModel(['id'=>12]),
+                    new MockModel(['id'=>7]),
+                    new MockModel(['id'=>2]),
+                ],
             ]),
         ]);
         

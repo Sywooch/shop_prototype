@@ -2,76 +2,50 @@
 
 namespace app\tests\factories;
 
+use app\tests\MockObject;
 use app\factories\CommentsObjectsFactory;
-use app\tests\DbManager;
 use app\models\CommentsModel;
-use app\mappers\CommentsForProductMapper;
-use app\queries\CommentsForProductQueryCreator;
-use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\factories\CommentsObjectsFactory
  */
 class CommentsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
-    }
-    
     /**
      * Тестирует метод CommentsObjectsFactory::getObjects()
      */
     public function testGetObjects()
     {
-        $commentArray = ['text'=>'Some text', 'name'=>'Some Name', 'id_emails'=>1, 'id_products'=>1];
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{comments}} SET [[text]]=:text, [[name]]=:name, [[id_emails]]=:id_emails, [[id_products]]=:id_products');
-        $command->bindValues([':text'=>$commentArray['text'], ':name'=>$commentArray['name'], ':id_emails'=>$commentArray['id_emails'], ':id_products'=>$commentArray['id_products']]);
-        $command->execute();
-        
-        $commentsForProductMapper = new CommentsForProductMapper([
-            'tableName'=>'comments',
-            'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
-            'model'=>new ProductsModel(['id'=>1]),
+        $mockObject = new MockObject([
+            'DbArray'=>[
+                ['id'=>1, 'text'=>'Something 1', 'name'=>'Something 1', 'id_emails'=>23, 'id_products'=>19, 'active'=>0],
+                ['id'=>2, 'text'=>'Something 2', 'name'=>'Something 2', 'id_emails'=>2, 'id_products'=>12, 'active'=>0],
+                ['id'=>3, 'text'=>'Something 3', 'name'=>'Something 3', 'id_emails'=>15, 'id_products'=>45, 'active'=>0],
+                ['id'=>4, 'text'=>'Something 4', 'name'=>'Something 4', 'id_emails'=>76, 'id_products'=>23, 'active'=>0],
+                ['id'=>5, 'text'=>'Something 5', 'name'=>'Something 5', 'id_emails'=>8, 'id_products'=>9, 'active'=>0],
+            ],
         ]);
         
-        $this->assertEmpty($commentsForProductMapper->objectsArray);
-        $this->assertEmpty($commentsForProductMapper->DbArray);
+        $objectsCreator = new CommentsObjectsFactory();
+        $objectsCreator->update($mockObject);
         
-        $commentsForProductMapper->visit(new CommentsForProductQueryCreator());
+        $this->assertFalse(empty($mockObject->objectsArray));
+        $this->assertEquals(5, count($mockObject->objectsArray));
+        $this->assertTrue(is_object($mockObject->objectsArray[0]));
+        $this->assertTrue($mockObject->objectsArray[0] instanceof CommentsModel);
         
-        $command = \Yii::$app->db->createCommand($commentsForProductMapper->query);
-        $command->bindValue(':id_products', $commentArray['id_products']);
-        $commentsForProductMapper->DbArray = $command->queryAll();
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'text'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'name'));
+        //$this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_emails'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_products'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'active'));
         
-        $this->assertFalse(empty($commentsForProductMapper->DbArray));
-        
-        $commentsForProductMapper->visit(new CommentsObjectsFactory());
-        
-        $this->assertFalse(empty($commentsForProductMapper->objectsArray));
-        $this->assertTrue(is_object($commentsForProductMapper->objectsArray[0]));
-        $this->assertTrue($commentsForProductMapper->objectsArray[0] instanceof CommentsModel);
-        
-        $this->assertTrue(property_exists($commentsForProductMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($commentsForProductMapper->objectsArray[0], 'text'));
-        $this->assertTrue(property_exists($commentsForProductMapper->objectsArray[0], 'name'));
-        //$this->assertTrue(property_exists($commentsForProductMapper->objectsArray[0], 'id_emails'));
-        $this->assertTrue(property_exists($commentsForProductMapper->objectsArray[0], 'id_products'));
-        $this->assertTrue(property_exists($commentsForProductMapper->objectsArray[0], 'active'));
-        
-        $this->assertTrue(isset($commentsForProductMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($commentsForProductMapper->objectsArray[0]->text));
-        $this->assertTrue(isset($commentsForProductMapper->objectsArray[0]->name));
-        $this->assertTrue(isset($commentsForProductMapper->objectsArray[0]->id_emails));
-        $this->assertTrue(isset($commentsForProductMapper->objectsArray[0]->id_products));
-        $this->assertTrue(isset($commentsForProductMapper->objectsArray[0]->active));
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->deleteDb();
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->text));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->name));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id_emails));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id_products));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->active));
     }
 }

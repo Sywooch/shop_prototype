@@ -10,6 +10,7 @@ class MockObject extends Object
     public $tableName;
     public $fields;
     public $params;
+    public $DbArray;
     public $objectsArray;
     public $otherTablesFields;
     public $orderByField;

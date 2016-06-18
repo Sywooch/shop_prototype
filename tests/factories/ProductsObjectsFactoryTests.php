@@ -2,10 +2,8 @@
 
 namespace app\tests\factories;
 
+use app\tests\MockObject;
 use app\factories\ProductsObjectsFactory;
-use app\tests\DbManager;
-use app\mappers\ProductsListMapper;
-use app\queries\ProductsListQueryCreator;
 use app\models\ProductsModel;
 
 /**
@@ -13,59 +11,41 @@ use app\models\ProductsModel;
  */
 class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
-    }
-    
     /**
      * Тестирует метод ProductsObjectsFactory::getObjects()
      */
     public function testGetObjects()
     {
-        $productsMapper = new ProductsListMapper([
-            'tableName'=>'products',
-            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-            'orderByField'=>'price'
+        $mockObject = new MockObject([
+            'DbArray'=>[
+                ['id'=>1, 'date'=>'Something 1', 'code'=>'Something 1', 'name'=>'Something 1', 'description'=>'Something 1', 'price'=>23, 'images'=>'Something 1'],
+                ['id'=>2, 'date'=>'Something 2', 'code'=>'Something 2', 'name'=>'Something 2', 'description'=>'Something 2', 'price'=>23, 'images'=>'Something 2'],
+                ['id'=>3, 'date'=>'Something 3', 'code'=>'Something 3', 'name'=>'Something 3', 'description'=>'Something 3', 'price'=>23, 'images'=>'Something 3'],
+            ],
         ]);
         
-        $this->assertEmpty($productsMapper->objectsArray);
-        $this->assertEmpty($productsMapper->DbArray);
+        $objectsCreator = new ProductsObjectsFactory();
+        $objectsCreator->update($mockObject);
         
-        $_GET = array();
+        $this->assertFalse(empty($mockObject->objectsArray));
+        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertTrue(is_object($mockObject->objectsArray[0]));
+        $this->assertTrue($mockObject->objectsArray[0] instanceof ProductsModel);
         
-        $productsMapper->visit(new ProductsListQueryCreator());
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'date'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'code'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'name'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'description'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'price'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'images'));
         
-        $productsMapper->DbArray = \Yii::$app->db->createCommand($productsMapper->query)->queryAll();
-        
-        $this->assertFalse(empty($productsMapper->DbArray));
-        
-        $productsMapper->visit(new ProductsObjectsFactory());
-        
-        $this->assertFalse(empty($productsMapper->objectsArray));
-        $this->assertTrue(is_object($productsMapper->objectsArray[0]));
-        $this->assertTrue($productsMapper->objectsArray[0] instanceof ProductsModel);
-        
-        $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'id'));
-        $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'code'));
-        $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'name'));
-        $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'description'));
-        $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'price'));
-        $this->assertTrue(property_exists($productsMapper->objectsArray[0], 'images'));
-        
-        $this->assertTrue(isset($productsMapper->objectsArray[0]->id));
-        $this->assertTrue(isset($productsMapper->objectsArray[0]->code));
-        $this->assertTrue(isset($productsMapper->objectsArray[0]->name));
-        $this->assertTrue(isset($productsMapper->objectsArray[0]->description));
-        $this->assertTrue(isset($productsMapper->objectsArray[0]->price));
-        $this->assertTrue(isset($productsMapper->objectsArray[0]->images));
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->deleteDb();
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->date));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->code));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->name));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->description));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->price));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->images));
     }
 }
