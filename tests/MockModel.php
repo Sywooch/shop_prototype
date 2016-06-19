@@ -19,4 +19,5 @@ class MockModel extends Object
     public $id_rules;
     public $login;
     public $password;
+    public $rulesFromForm;
 }

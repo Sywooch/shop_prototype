@@ -11,12 +11,30 @@ use app\models\UsersEmailsModel;
  */
 class UsersEmailsByUsersEmailsMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_id = 1;
+    private static $_login = 'Somelogin';
+    private static $_password = 'Somepassword';
+    private static $_name = 'Some Name';
+    private static $_surname = 'Some Surname';
+    private static $_email = 'some@some.com';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[password]]=:password, [[name]]=:name, [[surname]]=:surname');
+        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':password'=>self::$_password, ':name'=>self::$_name, ':surname'=>self::$_surname]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
+        $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users_emails}} SET [[id_users]]=:id_users, [[id_emails]]=:id_emails');
+        $command->bindValues([':id_users'=>self::$_id, ':id_emails'=>self::$_id]);
+        $command->execute();
     }
     
     /**
@@ -24,24 +42,13 @@ class UsersEmailsByUsersEmailsMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetOneFromGroup()
     {
-        $config = ['id_users'=>178, 'id_emails'=>56];
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id');
-        $command->bindValues([':id'=>$config['id_users']]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
-        $command->bindValues([':id'=>$config['id_emails'], ':email'=>'some@some.com']);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{users_emails}} SET [[id_users]]=:id_users, [[id_emails]]=:id_emails');
-        $command->bindValues([':id_users'=>$config['id_users'], ':id_emails'=>$config['id_emails']]);
-        $command->execute();
-        
         $usersEmailsByUsersEmailsMapper = new UsersEmailsByUsersEmailsMapper([
             'tableName'=>'users_emails',
             'fields'=>['id_users', 'id_emails'],
-            'params'=>[':id_users'=>$config['id_users'], ':id_emails'=>$config['id_emails']]
+            'params'=>[
+                ':id_users'=>self::$_id, 
+                ':id_emails'=>self::$_id,
+            ]
         ]);
         $usersEmailsByUsersEmailsModel = $usersEmailsByUsersEmailsMapper->getOneFromGroup();
         
@@ -54,12 +61,12 @@ class UsersEmailsByUsersEmailsMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($usersEmailsByUsersEmailsModel->id_users));
         $this->assertTrue(isset($usersEmailsByUsersEmailsModel->id_emails));
         
-        $this->assertEquals($config['id_users'], $usersEmailsByUsersEmailsModel->id_users);
-        $this->assertEquals($config['id_emails'], $usersEmailsByUsersEmailsModel->id_emails);
+        $this->assertEquals(self::$_id, $usersEmailsByUsersEmailsModel->id_users);
+        $this->assertEquals(self::$_id, $usersEmailsByUsersEmailsModel->id_emails);
     }
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

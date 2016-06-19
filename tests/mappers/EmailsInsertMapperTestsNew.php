@@ -18,10 +18,6 @@ class EmailsInsertMapperTests extends \PHPUnit_Framework_TestCase
     {
         self::$_dbClass = new DbManager();
         self::$_dbClass->createDb();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[email]]=:email');
-        $command->bindValues([':email'=>self::$_email]);
-        $command->execute();
     }
     
     /**
