@@ -2,8 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\mappers\RulesMapper;
 use app\tests\DbManager;
+use app\mappers\RulesMapper;
 use app\models\RulesModel;
 
 /**
@@ -11,12 +11,18 @@ use app\models\RulesModel;
  */
 class RulesMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_id = 1;
+    private static $_rule = 'Some Rule';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{rules}} SET [[id]]=:id, [[rule]]=:rule');
+        $command->bindValues([':id'=>self::$_id, ':rule'=>self::$_rule]);
+        $command->execute();
     }
     
     /**
@@ -27,7 +33,6 @@ class RulesMapperTests extends \PHPUnit_Framework_TestCase
         $rulesMapper = new RulesMapper([
             'tableName'=>'rules',
             'fields'=>['id', 'rule'],
-            'orderByField'=>'rule',
         ]);
         $objectsArray = $rulesMapper->getGroup();
         
@@ -45,6 +50,6 @@ class RulesMapperTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

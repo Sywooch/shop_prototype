@@ -2,8 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\mappers\ColorsMapper;
 use app\tests\DbManager;
+use app\mappers\ColorsMapper;
 use app\models\ColorsModel;
 
 /**
@@ -11,12 +11,37 @@ use app\models\ColorsModel;
  */
 class ColorsMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_id = 1;
+    private static $_name = 'Some Name';
+    private static $_color = 'Some Color';
+    private static $_categorySeocode = 'mensfootwear';
+    private static $_subcategorySeocode = 'boots';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
+        $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
+        $command->bindValues([':id_products'=>self::$_id, ':id_colors'=>self::$_id]);
+        $command->execute();
     }
     
     /**
@@ -29,7 +54,6 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
         $colorsMapper = new ColorsMapper([
             'tableName'=>'colors',
             'fields'=>['id', 'color'],
-            'orderByField'=>'color'
         ]);
         $colorsList = $colorsMapper->getGroup();
         
@@ -55,7 +79,6 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
         $colorsMapper = new ColorsMapper([
             'tableName'=>'colors',
             'fields'=>['id', 'color'],
-            'orderByField'=>'color'
         ]);
         $colorsList = $colorsMapper->getGroup();
         
@@ -81,7 +104,6 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
         $colorsMapper = new ColorsMapper([
             'tableName'=>'colors',
             'fields'=>['id', 'color'],
-            'orderByField'=>'color'
         ]);
         $colorsList = $colorsMapper->getGroup();
         
@@ -99,6 +121,6 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

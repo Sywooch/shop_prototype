@@ -2,22 +2,26 @@
 
 namespace app\tests\mappers;
 
-use app\mappers\EmailsInsertMapper;
 use app\tests\DbManager;
-use app\models\UsersModel;
-use app\models\EmailsModel;
+use app\tests\MockModel;
+use app\mappers\EmailsInsertMapper;
 
 /**
  * Тестирует класс app\mappers\EmailsInsertMapper
  */
 class EmailsInsertMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_email = 'some@some.com';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[email]]=:email');
+        $command->bindValues([':email'=>self::$_email]);
+        $command->execute();
     }
     
     /**
@@ -25,21 +29,21 @@ class EmailsInsertMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetGroup()
     {
-        $emailArray = ['email'=>'test@test.com'];
-        $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-        $emailsModel->attributes = $emailArray;
-        
         $emailsInsertMapper = new EmailsInsertMapper([
             'tableName'=>'emails',
             'fields'=>['email'],
-            'objectsArray'=>[$emailsModel],
+            'objectsArray'=>[
+                new MockModel([
+                    'email'=>self::$_email,
+                ]),
+            ],
         ]);
         $result = $emailsInsertMapper->setGroup();
         
         $this->assertEquals(1, $result);
         
         $command = \Yii::$app->db->createCommand('SELECT * FROM {{emails}} WHERE [[emails.email]]=:email');
-        $command->bindValue(':email', $emailArray['email']);
+        $command->bindValue(':email', self::$_email);
         $result = $command->queryOne();
         
         $this->assertTrue(is_array($result));
@@ -48,11 +52,11 @@ class EmailsInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('id', $result);
         $this->assertArrayHasKey('email', $result);
         
-        $this->assertEquals($emailArray['email'], $result['email']);
+        $this->assertEquals(self::$_email, $result['email']);
     }
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

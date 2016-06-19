@@ -2,8 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\mappers\ProductDetailMapper;
 use app\tests\DbManager;
+use app\mappers\ProductDetailMapper;
 use app\models\ProductsModel;
 
 /**
@@ -11,18 +11,34 @@ use app\models\ProductsModel;
  */
 class ProductDetailMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_id = 1;
+    private static $_name = 'Some Name';
+    private static $_categorySeocode = 'mensfootwear';
+    private static $_subcategorySeocode = 'boots';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command->execute();
     }
     
     /**
-     * Тестирует метод ProductDetailMapper::getOne
+     * Тестирует метод ProductDetailMapper::getGroup
      */
-    public function testGetOne()
+    public function testGetGroup()
     {
         $_GET = ['id'=>1];
         
@@ -32,6 +48,8 @@ class ProductDetailMapperTests extends \PHPUnit_Framework_TestCase
         ]);
         $objectProductsArray = $productMapper->getGroup();
         
+        $this->assertTrue(is_array($objectProductsArray));
+        $this->assertFalse(empty($objectProductsArray));
         $this->assertTrue(is_object($objectProductsArray[0]));
         $this->assertTrue($objectProductsArray[0] instanceof ProductsModel);
         
@@ -52,6 +70,6 @@ class ProductDetailMapperTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

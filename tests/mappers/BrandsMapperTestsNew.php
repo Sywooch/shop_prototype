@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\mappers;
+namespace app\tests\some;
 
-use app\mappers\BrandsMapper;
 use app\tests\DbManager;
+use app\mappers\BrandsMapper;
 use app\models\BrandsModel;
 
 /**
@@ -11,15 +11,36 @@ use app\models\BrandsModel;
  */
 class BrandsMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_id = 1;
+    private static $_brand = 'Some Brand';
+    private static $_name = 'Some Name';
+    private static $_categorySeocode = 'mensfootwear';
+    private static $_subcategorySeocode = 'boots';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{brands}} SET [[id]]=:id, [[brand]]=:brand');
-        $command->bindValues([':id'=>143, ':brand'=>'Some Brand']);
+        $command->bindValues([':id'=>self::$_id, ':brand'=>self::$_brand]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_brands}} SET [[id_products]]=:id_products, [[id_brands]]=:id_brands');
+        $command->bindValues([':id_products'=>self::$_id, ':id_brands'=>self::$_id]);
         $command->execute();
     }
     
@@ -33,7 +54,6 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $brandsMapper = new BrandsMapper([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            //'orderByField'=>'brand'
         ]);
         $brandsList = $brandsMapper->getGroup();
         
@@ -59,7 +79,6 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $brandsMapper = new BrandsMapper([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            //'orderByField'=>'brand'
         ]);
         $brandsList = $brandsMapper->getGroup();
         
@@ -85,7 +104,6 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $brandsMapper = new BrandsMapper([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            //'orderByField'=>'brand'
         ]);
         $brandsList = $brandsMapper->getGroup();
         
@@ -103,6 +121,6 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

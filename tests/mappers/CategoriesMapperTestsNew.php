@@ -2,8 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\mappers\CategoriesMapper;
 use app\tests\DbManager;
+use app\mappers\CategoriesMapper;
 use app\models\CategoriesModel;
 
 /**
@@ -11,12 +11,19 @@ use app\models\CategoriesModel;
  */
 class CategoriesMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_id = 1;
+    private static $_name = 'Some Name';
+    private static $_categorySeocode = 'mensfootwear';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
+        $command->execute();
     }
     
     /**
@@ -44,6 +51,6 @@ class CategoriesMapperTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

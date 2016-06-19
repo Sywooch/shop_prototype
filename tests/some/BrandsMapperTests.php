@@ -2,8 +2,8 @@
 
 namespace app\tests\some;
 
-use app\mappers\BrandsMapper;
 use app\tests\DbManager;
+use app\mappers\BrandsMapper;
 use app\models\BrandsModel;
 
 /**
@@ -22,16 +22,16 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>1, ':brand'=>'Some Brand']);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name');
-        $command->bindValues([':id'=>1, ':name'=>'Some Categories']);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>1, ':name'=>'Some Categories', ':seocode'=>'mensfootwear']);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories');
-        $command->bindValues([':id'=>1, ':name'=>'Some Subcategory', ':id_categories'=>1]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>1, ':name'=>'Some Subcategory', ':id_categories'=>1, ':seocode'=>'boots']);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories');
-        $command->bindValues([':id'=>1, ':name'=>'Some Name', ':id_categories'=>1]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>1, ':name'=>'Some Name', ':id_categories'=>1, ':id_subcategory'=>1]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_brands}} SET [[id_products]]=:id_products, [[id_brands]]=:id_brands');
@@ -49,7 +49,6 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $brandsMapper = new BrandsMapper([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            //'orderByField'=>'brand'
         ]);
         $brandsList = $brandsMapper->getGroup();
         
@@ -75,7 +74,6 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $brandsMapper = new BrandsMapper([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            //'orderByField'=>'brand'
         ]);
         $brandsList = $brandsMapper->getGroup();
         
@@ -101,7 +99,6 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $brandsMapper = new BrandsMapper([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            //'orderByField'=>'brand'
         ]);
         $brandsList = $brandsMapper->getGroup();
         

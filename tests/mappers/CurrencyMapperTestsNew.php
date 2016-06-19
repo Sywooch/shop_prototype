@@ -2,8 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\mappers\CurrencyMapper;
 use app\tests\DbManager;
+use app\mappers\CurrencyMapper;
 use app\models\CurrencyModel;
 
 /**
@@ -11,12 +11,17 @@ use app\models\CurrencyModel;
  */
 class CurrencyMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_currency = 'Some Currency';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency');
+        $command->bindValues([':id'=>1, ':currency'=>self::$_currency]);
+        $command->execute();
     }
     
     /**
@@ -27,7 +32,6 @@ class CurrencyMapperTests extends \PHPUnit_Framework_TestCase
         $currencyMapper = new CurrencyMapper([
             'tableName'=>'currency',
             'fields'=>['id', 'currency'],
-            'orderByField'=>'currency'
         ]);
         $currencyList = $currencyMapper->getGroup();
         
@@ -45,6 +49,6 @@ class CurrencyMapperTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

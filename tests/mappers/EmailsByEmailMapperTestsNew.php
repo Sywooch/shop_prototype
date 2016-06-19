@@ -2,8 +2,9 @@
 
 namespace app\tests\mappers;
 
-use app\mappers\EmailsByEmailMapper;
 use app\tests\DbManager;
+use app\tests\MockModel;
+use app\mappers\EmailsByEmailMapper;
 use app\models\EmailsModel;
 
 /**
@@ -11,12 +12,18 @@ use app\models\EmailsModel;
  */
 class EmailsByEmailMapperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $dbClass;
+    private static $_dbClass;
+    private static $_id = 1;
+    private static $_email = 'some@some.com';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager();
-        self::$dbClass->createDbAndData();
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
+        $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
+        $command->execute();
     }
     
     /**
@@ -24,18 +31,12 @@ class EmailsByEmailMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetOneFromGroup()
     {
-        $modelArray = ['email'=>'test@test.com'];
-        $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-        $emailsModel->attributes = $modelArray;
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[email]]=:email');
-        $command->bindValue(':email', $emailsModel->email);
-        $command->execute();
-        
         $emailsByEmailMapper = new EmailsByEmailMapper([
             'tableName'=>'emails',
             'fields'=>['id', 'email'],
-            'model'=>$emailsModel
+            'model'=>new MockModel([
+                'email'=>self::$_email,
+            ]),
         ]);
         $emailsModel = $emailsByEmailMapper->getOneFromGroup();
         
@@ -47,11 +48,12 @@ class EmailsByEmailMapperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(isset($emailsModel->id));
         $this->assertTrue(isset($emailsModel->email));
-        $this->assertEquals($modelArray['email'], $emailsModel->email);
+        
+        $this->assertEquals(self::$_email, $emailsModel->email);
     }
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }
