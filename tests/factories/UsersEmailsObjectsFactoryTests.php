@@ -18,9 +18,9 @@ class UsersEmailsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id_users'=>1, 'id_emails'=>'something1@something.com'],
-                ['id_users'=>2, 'id_emails'=>'something2@something.com'],
-                ['id_users'=>3, 'id_emails'=>'something3@something.com']
+                ['id_users'=>1, 'id_emails'=>1],
+                ['id_users'=>2, 'id_emails'=>2],
+                ['id_users'=>3, 'id_emails'=>3]
             ],
         ]);
         

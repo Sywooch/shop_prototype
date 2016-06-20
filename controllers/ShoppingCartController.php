@@ -15,6 +15,8 @@ use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
 use app\mappers\UsersEmailsInsertMapper;
 use app\mappers\UsersEmailsByUsersEmailsMapper;
+use app\mappers\AddressByAddressMapper;
+use app\mappers\AddressInsertMapper;
 
 /**
  * Управляет процессом добавления комментария
@@ -149,7 +151,7 @@ class ShoppingCartController extends AbstractBaseController
             $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
             $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
             
-            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post())) {
+            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
                     $usersInsertMapper = new UsersInsertMapper([
                         'tableName'=>'users',
@@ -162,6 +164,10 @@ class ShoppingCartController extends AbstractBaseController
                 if ($emailsModel->validate()) {
                     $usersModel->emails = $this->getEmailsModel($emailsModel);
                     $this->setUsersEmailsModel($usersModel, $emailsModel);
+                }
+                
+                if ($addressModel->validate()) {
+                    $usersModel->address = $this->getAddressModel($addressModel);
                 }
             }
             
@@ -178,7 +184,8 @@ class ShoppingCartController extends AbstractBaseController
      * Получает EmailsModel для переданного в форму email
      * Проверяет, существет ли запись в БД для такого email, если да, возвращает ее,
      * если нет, создает новую запись в БД
-     * @param object $emailsModel экземпляр EmailsModel, для которого надо получит Id из БД
+     * @param object $emailsModel экземпляр EmailsModel
+     * @return object
      */
     private function getEmailsModel(EmailsModel $emailsModel)
     {
@@ -208,7 +215,8 @@ class ShoppingCartController extends AbstractBaseController
     /**
      * Проверяет, существет ли запись в БД для user and email, если да, прекращает выполнение,
      * если нет, создает новую запись в БД
-     * @param object $emailsModel экземпляр EmailsModel, для которого надо получит Id из БД
+     * @param object $emailsModel экземпляр EmailsModel
+     * @return boolean
      */
     private function setUsersEmailsModel(UsersModel $usersModel, EmailsModel $emailsModel)
     {
@@ -232,4 +240,35 @@ class ShoppingCartController extends AbstractBaseController
         }
         return true;
     }
+    
+     /**
+     * Проверяет, существет ли запись в БД для address, если да, прекращает выполнение,
+     * если нет, создает новую запись в БД
+     * @param object $addressModel экземпляр AddressModel
+     * @return object
+     */
+     private function getAddressModel(AddressModel $addressModel)
+     {
+        try {
+            $addressByAddressMapper = new AddressByAddressMapper([
+                'tableName'=>'address',
+                'fields'=>['id', 'address', 'city', 'country', 'postcode'],
+                'model'=>$addressModel
+            ]);
+            if ($result = $addressByAddressMapper->getOneFromGroup()) {
+                $addressModel = $result;
+            } else {
+                $addressInsertMapper = new AddressInsertMapper([
+                    'tableName'=>'address',
+                    'fields'=>['address', 'city', 'country', 'postcode'],
+                    'objectsArray'=>[$addressModel],
+                ]);
+                $addressInsertMapper->setGroup();
+            }
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return $addressModel;
+     }
 }
