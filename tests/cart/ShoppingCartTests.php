@@ -2,14 +2,27 @@
 
 namespace app\tests\cart;
 
-use app\cart\ShoppingCart;
 use app\models\ProductsModel;
+use app\cart\ShoppingCart;
 
 /**
  * Тестирует класс app\cart\ShoppingCart
  */
 class ShoppingCartTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_name = 'Some name';
+    private static $_description = 'Some description';
+    private static $_price = 234.78;
+    private static $_colorToCart = 1;
+    private static $_colorToCart2 = 12;
+    private static $_sizeToCart = 3;
+    private static $_sizeToCart2 = 1;
+    private static $_quantity = 2;
+    private static $_quantity2 = 1;
+    private static $_categories = 'mensfootwear';
+    private static $_subcategory = 'snickers';
+    
     /**
     * Тестирует метод app\cart\ShoppingCart::addProduct()
     */
@@ -17,8 +30,17 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     {
         ShoppingCart::clearProductsArray();
         
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model->attributes = ['id'=>1, 'name'=>'Some name', 'description'=>'Some description', 'price'=>234.78, 'colorToCart'=>1, 'sizeToCart'=>3, 'quantity'=>2, 'categories'=>'mensfootwear', 'subcategory'=>'snickers'];
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
         $this->assertTrue(empty(ShoppingCart::getProductsArray()));
         
@@ -59,8 +81,17 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     {
         ShoppingCart::clearProductsArray();
         
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model->attributes = ['id'=>1, 'name'=>'Some name', 'description'=>'Some description', 'price'=>234.78, 'colorToCart'=>1, 'sizeToCart'=>3, 'quantity'=>2, 'categories'=>'mensfootwear', 'subcategory'=>'snickers'];
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
         $this->assertTrue(empty(ShoppingCart::getProductsArray()));
         
@@ -80,13 +111,29 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     {
         ShoppingCart::clearProductsArray();
         
-        $firstConfig = ['id'=>1, 'name'=>'Some name', 'description'=>'Some description', 'price'=>234.78, 'colorToCart'=>1, 'sizeToCart'=>3, 'quantity'=>2, 'categories'=>'mensfootwear', 'subcategory'=>'snickers'];
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model->attributes = $firstConfig;
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
-        $secondConfig = ['id'=>1, 'name'=>'Some name 2', 'description'=>'Some description 2', 'price'=>434.78, 'colorToCart'=>2, 'sizeToCart'=>2, 'quantity'=>1, 'categories'=>'mensfootwear', 'subcategory'=>'snickers'];
-        $model2 = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model2->attributes = $secondConfig;
+        $model2 = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart2,
+            'sizeToCart'=>self::$_sizeToCart2,
+            'quantity'=>self::$_quantity2,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
         $this->assertTrue(empty(ShoppingCart::getProductsArray()));
         
@@ -96,27 +143,27 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         
         $productsArray = ShoppingCart::getProductsArray();
         
-        $this->assertEquals($firstConfig['id'], $productsArray[0]->id);
-        $this->assertEquals($firstConfig['name'], $productsArray[0]->name);
-        $this->assertEquals($firstConfig['description'], $productsArray[0]->description);
-        $this->assertEquals($firstConfig['price'], $productsArray[0]->price);
-        $this->assertEquals($firstConfig['colorToCart'], $productsArray[0]->colorToCart);
-        $this->assertEquals($firstConfig['sizeToCart'], $productsArray[0]->sizeToCart);
-        $this->assertEquals($firstConfig['quantity'], $productsArray[0]->quantity);
-        $this->assertEquals($firstConfig['categories'], $productsArray[0]->categories);
-        $this->assertEquals($firstConfig['subcategory'], $productsArray[0]->subcategory);
+        $this->assertEquals(self::$_id, $productsArray[0]->id);
+        $this->assertEquals(self::$_name, $productsArray[0]->name);
+        $this->assertEquals(self::$_description, $productsArray[0]->description);
+        $this->assertEquals(self::$_price, $productsArray[0]->price);
+        $this->assertEquals(self::$_colorToCart, $productsArray[0]->colorToCart);
+        $this->assertEquals(self::$_sizeToCart, $productsArray[0]->sizeToCart);
+        $this->assertEquals(self::$_quantity, $productsArray[0]->quantity);
+        $this->assertEquals(self::$_categories, $productsArray[0]->categories);
+        $this->assertEquals(self::$_subcategory, $productsArray[0]->subcategory);
         
         ShoppingCart::updateProduct($model2);
         
-        $this->assertEquals($secondConfig['id'], $productsArray[0]->id);
-        $this->assertEquals($secondConfig['name'], $productsArray[0]->name);
-        $this->assertEquals($secondConfig['description'], $productsArray[0]->description);
-        $this->assertEquals($secondConfig['price'], $productsArray[0]->price);
-        $this->assertEquals($secondConfig['colorToCart'], $productsArray[0]->colorToCart);
-        $this->assertEquals($secondConfig['sizeToCart'], $productsArray[0]->sizeToCart);
-        $this->assertEquals($secondConfig['quantity'], $productsArray[0]->quantity);
-        $this->assertEquals($secondConfig['categories'], $productsArray[0]->categories);
-        $this->assertEquals($secondConfig['subcategory'], $productsArray[0]->subcategory);
+        $this->assertEquals(self::$_id, $productsArray[0]->id);
+        $this->assertEquals(self::$_name, $productsArray[0]->name);
+        $this->assertEquals(self::$_description, $productsArray[0]->description);
+        $this->assertEquals(self::$_price, $productsArray[0]->price);
+        $this->assertEquals(self::$_colorToCart2, $productsArray[0]->colorToCart);
+        $this->assertEquals(self::$_sizeToCart2, $productsArray[0]->sizeToCart);
+        $this->assertEquals(self::$_quantity2, $productsArray[0]->quantity);
+        $this->assertEquals(self::$_categories, $productsArray[0]->categories);
+        $this->assertEquals(self::$_subcategory, $productsArray[0]->subcategory);
     }
     
     /**
@@ -126,19 +173,33 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     {
         ShoppingCart::clearProductsArray();
         
-        $firstConfig = ['id'=>1, 'name'=>'Some name', 'description'=>'Some description', 'price'=>234.78, 'colorToCart'=>1, 'sizeToCart'=>3, 'quantity'=>2, 'categories'=>'mensfootwear', 'subcategory'=>'snickers'];
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model->attributes = $firstConfig;
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
-        $secondConfig = ['id'=>1, 'name'=>'Some name 2', 'description'=>'Some description 2', 'price'=>434.78, 'colorToCart'=>2, 'sizeToCart'=>2, 'quantity'=>1, 'categories'=>'mensfootwear', 'subcategory'=>'snickers'];
-        $model2 = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model2->attributes = $secondConfig;
+        $model2 = new ProductsModel([
+            'id'=>self::$_id + 1,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart2,
+            'sizeToCart'=>self::$_sizeToCart2,
+            'quantity'=>self::$_quantity2,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
         $this->assertTrue(empty(ShoppingCart::getProductsArray()));
         
-        $arrayToInsert = [$model, $model2];
-        
-        ShoppingCart::setProductsArray($arrayToInsert);
+        ShoppingCart::setProductsArray([$model, $model2]);
         
         $this->assertFalse(empty(ShoppingCart::getProductsArray()));
         $this->assertEquals(2, count(ShoppingCart::getProductsArray()));
@@ -151,26 +212,42 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     {
         ShoppingCart::clearProductsArray();
         
-        $firstConfig = ['id'=>1, 'name'=>'Some name', 'description'=>'Some description', 'price'=>234.78, 'colorToCart'=>1, 'sizeToCart'=>3, 'quantity'=>2, 'categories'=>'mensfootwear', 'subcategory'=>'snickers'];
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model->attributes = $firstConfig;
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
         ShoppingCart::addProduct($model);
         
         ShoppingCart::getShortData();
         
-        $this->assertEquals(($firstConfig['price'] * $firstConfig['quantity']), ShoppingCart::getTotalCost());
-        $this->assertEquals(($firstConfig['quantity']), ShoppingCart::getTotalProducts());
+        $this->assertEquals((self::$_price * self::$_quantity), ShoppingCart::getTotalCost());
+        $this->assertEquals(self::$_quantity, ShoppingCart::getTotalProducts());
         
-        $secondConfig = ['id'=>2, 'name'=>'Some name 2', 'description'=>'Some description 2', 'price'=>56.06, 'colorToCart'=>2, 'sizeToCart'=>2, 'quantity'=>1, 'categories'=>'mensfootwear', 'subcategory'=>'snickers'];
-        $model2 = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model2->attributes = $secondConfig;
+        $model2 = new ProductsModel([
+            'id'=>self::$_id + 1,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart2,
+            'sizeToCart'=>self::$_sizeToCart2,
+            'quantity'=>self::$_quantity2,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
         ShoppingCart::addProduct($model2);
         
         ShoppingCart::getShortData();
         
-        $this->assertEquals((($firstConfig['price'] * $firstConfig['quantity']) + ($secondConfig['price'] * $secondConfig['quantity'])), ShoppingCart::getTotalCost());
-        $this->assertEquals(($firstConfig['quantity']) + ($secondConfig['quantity']), ShoppingCart::getTotalProducts());
+        $this->assertEquals(self::$_price * (self::$_quantity + self::$_quantity2), ShoppingCart::getTotalCost());
+        $this->assertEquals((self::$_quantity + self::$_quantity2), ShoppingCart::getTotalProducts());
     }
 }

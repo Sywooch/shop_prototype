@@ -20,4 +20,11 @@ class MockModel extends Object
     public $login;
     public $password;
     public $rulesFromForm;
+    public $description;
+    public $price;
+    public $colorToCart;
+    public $sizeToCart;
+    public $quantity;
+    public $categories;
+    public $subcategory;
 }

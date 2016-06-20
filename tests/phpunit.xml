@@ -17,8 +17,8 @@
             <directory suffix="Tests.php">queries</directory>
             <directory suffix="Tests.php">factories</directory>
             <directory suffix="TestsNew.php">mappers</directory>
-            <!--<directory suffix="Tests.php">helpers</directory>
-            <directory suffix="Tests.php">cart</directory>-->
+            <directory suffix="Tests.php">helpers</directory>
+            <directory suffix="Tests.php">cart</directory>
         </testsuite>
         
     </testsuites>
