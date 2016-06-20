@@ -2,14 +2,14 @@
 
 namespace app\controllers;
 
+use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
+use app\cart\ShoppingCart;
 use app\models\ProductsModel;
 use app\models\UsersModel;
 use app\models\EmailsModel;
 use app\models\AddressModel;
 use app\models\PhonesModel;
-use yii\helpers\Url;
-use app\cart\ShoppingCart;
 use app\mappers\UsersInsertMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
@@ -161,7 +161,7 @@ class ShoppingCartController extends AbstractBaseController
                 
                 if ($emailsModel->validate()) {
                     $usersModel->emails = $this->getEmailsModel($emailsModel);
-                    
+                    $this->setUsersEmailsModel($usersModel, $emailsModel);
                 }
             }
             
@@ -213,12 +213,19 @@ class ShoppingCartController extends AbstractBaseController
     private function setUsersEmailsModel(UsersModel $usersModel, EmailsModel $emailsModel)
     {
         try {
-            $usersEmailsInsertMapper = new UsersEmailsInsertMapper([ # С начала попробовать получить запись юзер/мейл
+            $usersEmailsByUsersEmailsMapper = new UsersEmailsByUsersEmailsMapper([
                 'tableName'=>'users_emails',
                 'fields'=>['id_users', 'id_emails'],
-                'DbArray'=>[['id_users'=>$usersModel->id, 'id_emails'=>$emailsModel->id]],
+                'params'=>[':id_users'=>$usersModel->id, ':id_emails'=>$emailsModel->id],
             ]);
-            $usersEmailsInsertMapper->setGroup();
+            if (!$usersEmailsByUsersEmailsMapper->getOneFromGroup()) {
+                $usersEmailsInsertMapper = new UsersEmailsInsertMapper([
+                    'tableName'=>'users_emails',
+                    'fields'=>['id_users', 'id_emails'],
+                    'DbArray'=>[['id_users'=>$usersModel->id, 'id_emails'=>$emailsModel->id]],
+                ]);
+                $usersEmailsInsertMapper->setGroup();
+            }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

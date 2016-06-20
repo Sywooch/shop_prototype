@@ -149,7 +149,8 @@ class UsersModel extends AbstractBaseModel
         try {
             if (is_null($this->_login)) {
                 if (isset($this->name)) {
-                    $this->_login = TransliterationHelper::getTransliteration($this->name);
+                    $login = TransliterationHelper::getTransliteration($this->name);
+                    $this->_login = $login . substr(md5($login . time()), 0, 5);
                 }
             }
         } catch (\Exception $e) {

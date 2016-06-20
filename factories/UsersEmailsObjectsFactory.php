@@ -16,7 +16,7 @@ class UsersEmailsObjectsFactory extends AbstractGetObjectsFactory
         
         try {
             if (!isset($this->model)) {
-                $this->model = new UsersEmailsModel(['scenario'=>UsersEmailsModel::GET_FROM_FORM]);
+                $this->model = new UsersEmailsModel(['scenario'=>UsersEmailsModel::GET_FROM_DB]);
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

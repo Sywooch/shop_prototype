@@ -27,4 +27,8 @@ class MockModel extends Object
     public $quantity;
     public $categories;
     public $subcategory;
+    public $address;
+    public $city;
+    public $country;
+    public $postcode;
 }

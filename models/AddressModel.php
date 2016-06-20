@@ -12,7 +12,11 @@ class AddressModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы
      */
-    const GET_FROM_FORM = 'getFromBd';
+    const GET_FROM_FORM = 'getFromForm';
+    /**
+     * Сценарий загрузки данных из формы
+     */
+    const GET_FROM_DB = 'getFromDb';
     
     public $address;
     public $city;
@@ -25,6 +29,7 @@ class AddressModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_FORM=>['address', 'city', 'country', 'postcode'],
+            self::GET_FROM_DB=>['id', 'address', 'city', 'country', 'postcode'],
         ];
     }
     
