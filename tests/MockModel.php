@@ -33,4 +33,5 @@ class MockModel extends Object
     public $postcode;
     public $id_address;
     public $phone;
+    public $id_phones;
 }

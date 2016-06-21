@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\mappers\PhonesByPhoneMapper;
 
 /**
  * Представляет данные таблицы phones
@@ -20,7 +21,7 @@ class PhonesModel extends AbstractBaseModel
     
     public $phone;
     
-    private $_id;
+    private $_id = NULL;
     
     public function scenarios()
     {
@@ -42,6 +43,18 @@ class PhonesModel extends AbstractBaseModel
      */
     public function getId()
     {
+        if (is_null($this->_id)) {
+            if (isset($this->phone)) {
+                $phonesByPhoneMapper = new PhonesByPhoneMapper([
+                    'tableName'=>'phones',
+                    'fields'=>['id', 'phone'],
+                    'model'=>$this
+                ]);
+                if ($objectPhones = $phonesByPhoneMapper->getOneFromGroup()) {
+                    $this->_id = $objectPhones->id;
+                }
+            }
+        }
         return $this->_id;
     }
     

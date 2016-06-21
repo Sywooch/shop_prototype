@@ -6,6 +6,7 @@ use yii\base\ErrorException;
 use app\models\AbstractBaseModel;
 use app\models\EmailsModel;
 use app\models\AddressModel;
+use app\models\PhonesModel;
 use app\mappers\RulesMapper;
 use app\mappers\UsersByLoginMapper;
 use app\helpers\TransliterationHelper;
@@ -43,6 +44,7 @@ class UsersModel extends AbstractBaseModel
     private $_allRules = NULL;
     private $_emails = NULL;
     private $_address = NULL;
+    private $_phones = NULL;
     
     public function scenarios()
     {
@@ -200,10 +202,27 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_address
-     * @param string $value значение email
+     * @param string $value значение address
      */
     public function setAddress(AddressModel $value)
     {
         $this->_address[] = $value;
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_phones
+     */
+    public function getPhones()
+    {
+        return $this->_phones;
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_phones
+     * @param string $value значение phone
+     */
+    public function setPhones(PhonesModel $value)
+    {
+        $this->_phones[] = $value;
     }
 }

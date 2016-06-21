@@ -30,7 +30,7 @@ class ShoppingCart extends Object
     /**
      * @var object объект пользователя, связанного с заказами в корзине
      */
-    public $user;
+    private $_user;
     
     /**
      * Добавляет продукт в массив выбранных к покупке
@@ -169,5 +169,23 @@ class ShoppingCart extends Object
     public function getTotalProducts()
     {
         return $this->_totalProducts;
+    }
+    
+    /**
+     * Возвращает значение $this->_user
+     * @return object
+     */
+    public function getUser()
+    {
+        return $this->_user;
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_user
+     * @param object $user экземпляр UsersModel
+     */
+    public function setUser(UsersModel $user)
+    {
+        $this->_user = $user;
     }
 }

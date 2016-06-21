@@ -19,6 +19,9 @@ use app\mappers\AddressInsertMapper;
 use app\mappers\UsersAddressByUsersAddressMapper;
 use app\mappers\UsersAddressInsertMapper;
 use app\mappers\PhonesByPhoneMapper;
+use app\mappers\PhonesInsertMapper;
+use app\mappers\UsersPhonesByUsersPhonesMapper;
+use app\mappers\UsersPhonesInsertMapper;
 
 /**
  * Управляет процессом добавления комментария
@@ -153,7 +156,7 @@ class ShoppingCartController extends AbstractBaseController
             $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
             $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
             
-            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post())) {
+            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
                     \Yii::$app->cart->user = $this->getUsersModel($usersModel);
                 }
@@ -166,6 +169,11 @@ class ShoppingCartController extends AbstractBaseController
                 if ($addressModel->validate()) {
                     \Yii::$app->cart->user->address = $this->getAddressModel($addressModel);
                     $this->setUsersAddressModel($usersModel, $addressModel);
+                }
+                
+                if ($phonesModel->validate()) {
+                    \Yii::$app->cart->user->phones = $this->getPhonesModel($phonesModel);
+                    $this->setUsersPhonesModel($usersModel, $phonesModel);
                 }
             }
             
@@ -342,11 +350,48 @@ class ShoppingCartController extends AbstractBaseController
             ]);
             if ($result = $phonesByPhoneMapper->getOneFromGroup()) {
                 $phonesModel = $result;
+            } else {
+                $phonesInsertMapper = new PhonesInsertMapper([
+                    'tableName'=>'phones',
+                    'fields'=>['phone'],
+                    'objectsArray'=>[$phonesModel],
+                ]);
+                $phonesInsertMapper->setGroup();
             }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
         return $phonesModel;
+    }
+    
+    /**
+     * Проверяет, существет ли запись в БД для user and phones, если да, прекращает выполнение,
+     * если нет, создает новую запись в БД
+     * @param object $usersModel экземпляр UsersModel
+     * @param object $phonesModel экземпляр PhonesModel
+     * @return boolean
+     */
+    private function setUsersPhonesModel(UsersModel $usersModel, PhonesModel $phonesModel)
+    {
+        try {
+            $usersPhonesByUsersPhonesMapper = new UsersPhonesByUsersPhonesMapper([
+                'tableName'=>'users_phones',
+                'fields'=>['id_users', 'id_phones'],
+                'params'=>[':id_users'=>$usersModel->id, ':id_phones'=>$phonesModel->id]
+            ]);
+            if (!$usersPhonesByUsersPhonesMapper->getOneFromGroup()) {
+                $usersPhonesInsertMapper = new UsersPhonesInsertMapper([
+                    'tableName'=>'users_phones',
+                    'fields'=>['id_users', 'id_phones'],
+                    'DbArray'=>[['id_users'=>$usersModel->id, 'id_phones'=>$phonesModel->id]],
+                ]);
+                $usersPhonesInsertMapper->setGroup();
+            }
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return true;
     }
 }
