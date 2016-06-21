@@ -3,7 +3,6 @@
 namespace app\tests\cart;
 
 use app\models\ProductsModel;
-use app\cart\ShoppingCart;
 
 /**
  * Тестирует класс app\cart\ShoppingCart
@@ -24,11 +23,11 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     private static $_subcategory = 'snickers';
     
     /**
-    * Тестирует метод app\cart\ShoppingCart::addProduct()
+    * Тестирует метод app\cart\\Yii::$app->cart->addProduct()
     */
     public function testAddProduct()
     {
-        ShoppingCart::clearProductsArray();
+        \Yii::$app->cart->clearProductsArray();
         
         $model = new ProductsModel([
             'id'=>self::$_id,
@@ -42,13 +41,13 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             'subcategory'=>self::$_subcategory,
         ]);
         
-        $this->assertTrue(empty(ShoppingCart::getProductsArray()));
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
         
-        ShoppingCart::addProduct($model);
+        \Yii::$app->cart->addProduct($model);
         
-        $this->assertFalse(empty(ShoppingCart::getProductsArray()));
+        $this->assertFalse(empty(\Yii::$app->cart->getProductsArray()));
         
-        $productsArray = ShoppingCart::getProductsArray();
+        $productsArray = \Yii::$app->cart->getProductsArray();
         
         $this->assertTrue(is_object($productsArray[0]));
         $this->assertTrue($productsArray[0] instanceof ProductsModel);
@@ -75,11 +74,11 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-    * Тестирует метод app\cart\ShoppingCart::removeProduct()
+    * Тестирует метод app\cart\\Yii::$app->cart->removeProduct()
     */
     public function testRemoveProduct()
     {
-        ShoppingCart::clearProductsArray();
+        \Yii::$app->cart->clearProductsArray();
         
         $model = new ProductsModel([
             'id'=>self::$_id,
@@ -93,23 +92,23 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             'subcategory'=>self::$_subcategory,
         ]);
         
-        $this->assertTrue(empty(ShoppingCart::getProductsArray()));
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
         
-        ShoppingCart::addProduct($model);
+        \Yii::$app->cart->addProduct($model);
         
-        $this->assertFalse(empty(ShoppingCart::getProductsArray()));
+        $this->assertFalse(empty(\Yii::$app->cart->getProductsArray()));
         
-        ShoppingCart::removeProduct($model);
+        \Yii::$app->cart->removeProduct($model);
         
-        $this->assertTrue(empty(ShoppingCart::getProductsArray()));
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
     }
     
     /**
-    * Тестирует метод app\cart\ShoppingCart::updateProduct()
+    * Тестирует метод app\cart\\Yii::$app->cart->updateProduct()
     */
     public function testUpdateProduct()
     {
-        ShoppingCart::clearProductsArray();
+        \Yii::$app->cart->clearProductsArray();
         
         $model = new ProductsModel([
             'id'=>self::$_id,
@@ -135,13 +134,13 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             'subcategory'=>self::$_subcategory,
         ]);
         
-        $this->assertTrue(empty(ShoppingCart::getProductsArray()));
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
         
-        ShoppingCart::addProduct($model);
+        \Yii::$app->cart->addProduct($model);
         
-        $this->assertFalse(empty(ShoppingCart::getProductsArray()));
+        $this->assertFalse(empty(\Yii::$app->cart->getProductsArray()));
         
-        $productsArray = ShoppingCart::getProductsArray();
+        $productsArray = \Yii::$app->cart->getProductsArray();
         
         $this->assertEquals(self::$_id, $productsArray[0]->id);
         $this->assertEquals(self::$_name, $productsArray[0]->name);
@@ -153,7 +152,7 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_categories, $productsArray[0]->categories);
         $this->assertEquals(self::$_subcategory, $productsArray[0]->subcategory);
         
-        ShoppingCart::updateProduct($model2);
+        \Yii::$app->cart->updateProduct($model2);
         
         $this->assertEquals(self::$_id, $productsArray[0]->id);
         $this->assertEquals(self::$_name, $productsArray[0]->name);
@@ -167,11 +166,11 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-    * Тестирует метод app\cart\ShoppingCart::setProductsArray()
+    * Тестирует метод app\cart\\Yii::$app->cart->setProductsArray()
     */
     public function testSetProductsArray()
     {
-        ShoppingCart::clearProductsArray();
+        \Yii::$app->cart->clearProductsArray();
         
         $model = new ProductsModel([
             'id'=>self::$_id,
@@ -197,20 +196,20 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             'subcategory'=>self::$_subcategory,
         ]);
         
-        $this->assertTrue(empty(ShoppingCart::getProductsArray()));
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
         
-        ShoppingCart::setProductsArray([$model, $model2]);
+        \Yii::$app->cart->setProductsArray([$model, $model2]);
         
-        $this->assertFalse(empty(ShoppingCart::getProductsArray()));
-        $this->assertEquals(2, count(ShoppingCart::getProductsArray()));
+        $this->assertFalse(empty(\Yii::$app->cart->getProductsArray()));
+        $this->assertEquals(2, count(\Yii::$app->cart->getProductsArray()));
     }
     
     /**
-    * Тестирует метод app\cart\ShoppingCart::getShortData()
+    * Тестирует метод app\cart\\Yii::$app->cart->getShortData()
     */
     public function testGetShortData()
     {
-        ShoppingCart::clearProductsArray();
+        \Yii::$app->cart->clearProductsArray();
         
         $model = new ProductsModel([
             'id'=>self::$_id,
@@ -224,12 +223,12 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             'subcategory'=>self::$_subcategory,
         ]);
         
-        ShoppingCart::addProduct($model);
+        \Yii::$app->cart->addProduct($model);
         
-        ShoppingCart::getShortData();
+        \Yii::$app->cart->getShortData();
         
-        $this->assertEquals((self::$_price * self::$_quantity), ShoppingCart::getTotalCost());
-        $this->assertEquals(self::$_quantity, ShoppingCart::getTotalProducts());
+        $this->assertEquals((self::$_price * self::$_quantity), \Yii::$app->cart->getTotalCost());
+        $this->assertEquals(self::$_quantity, \Yii::$app->cart->getTotalProducts());
         
         $model2 = new ProductsModel([
             'id'=>self::$_id + 1,
@@ -243,11 +242,11 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             'subcategory'=>self::$_subcategory,
         ]);
         
-        ShoppingCart::addProduct($model2);
+        \Yii::$app->cart->addProduct($model2);
         
-        ShoppingCart::getShortData();
+        \Yii::$app->cart->getShortData();
         
-        $this->assertEquals(self::$_price * (self::$_quantity + self::$_quantity2), ShoppingCart::getTotalCost());
-        $this->assertEquals((self::$_quantity + self::$_quantity2), ShoppingCart::getTotalProducts());
+        $this->assertEquals(self::$_price * (self::$_quantity + self::$_quantity2), \Yii::$app->cart->getTotalCost());
+        $this->assertEquals((self::$_quantity + self::$_quantity2), \Yii::$app->cart->getTotalProducts());
     }
 }

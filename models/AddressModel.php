@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\mappers\AddressByAddressMapper;
 
 /**
  * Представляет данные таблицы address
@@ -45,6 +46,22 @@ class AddressModel extends AbstractBaseModel
      */
     public function getId()
     {
+        try {
+            if (is_null($this->_id)) {
+                if (isset($this->address, $this->city, $this->country, $this->postcode)) {
+                    $addressByAddressMapper = new AddressByAddressMapper([
+                        'tableName'=>'address',
+                        'fields'=>['id', 'address', 'city', 'country', 'postcode'],
+                        'model'=>$this,
+                    ]);
+                    if ($addressModel = $addressByAddressMapper->getOneFromGroup()) {
+                        $this->_id = $addressModel->id;
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
         return $this->_id;
     }
     

@@ -120,13 +120,16 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_id)) {
-                $usersByLoginMapper = new UsersByLoginMapper([
-                    'tableName'=>'users',
-                    'fields'=>['id'],
-                    'model'=>$this,
-                ]);
-                $objectUser = $usersByLoginMapper->getOneFromGroup();
-                $this->_id = $objectUser->id;
+                if (isset($this->login)) {
+                    $usersByLoginMapper = new UsersByLoginMapper([
+                        'tableName'=>'users',
+                        'fields'=>['id'],
+                        'model'=>$this,
+                    ]);
+                    if ($objectUser = $usersByLoginMapper->getOneFromGroup()) {
+                        $this->_id = $objectUser->id;
+                    }
+                }
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -45,13 +45,16 @@ class EmailsModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_id)) {
-                $emailsByEmailMapper = new EmailsByEmailMapper([
-                    'tableName'=>'emails',
-                    'fields'=>['id'],
-                    'model'=>$this
-                ]);
-                $emailsModel = $emailsByEmailMapper->getOneFromGroup();
-                $this->_id = $emailsModel->id;
+                if (isset($this->email)) {
+                    $emailsByEmailMapper = new EmailsByEmailMapper([
+                        'tableName'=>'emails',
+                        'fields'=>['id'],
+                        'model'=>$this
+                    ]);
+                    if ($emailsModel = $emailsByEmailMapper->getOneFromGroup()) {
+                        $this->_id = $emailsModel->id;
+                    }
+                }
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

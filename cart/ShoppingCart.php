@@ -3,8 +3,9 @@
 namespace app\cart;
 
 use yii\base\Object;
-use app\models\ProductsModel;
 use app\traits\ExceptionsTrait;
+use app\models\ProductsModel;
+use app\models\UsersModel;
 
 /**
  * Предоставляет свойства и методы для работы с корзиной покупок
@@ -17,27 +18,35 @@ class ShoppingCart extends Object
      * @var array массив объектов, описывающих выбранные продукты
      * название, артикул, стоимость, кол-во, цвет, размер и т.д.
      */
-    private static $_productsArray = array();
+    private $_productsArray = array();
     /**
      * @var float общая сумма покупок
      */
-    private static $_totalCost = 0.00;
+    private $_totalCost = 0.00;
     /**
      * @var int общее кол-во товаров в корзине
      */
-    private static $_totalProducts = 0;
+    private $_totalProducts = 0;
+    /**
+     * @var object объект пользователя, связанного с заказами в корзине
+     */
+    public $user;
     
     /**
      * Добавляет продукт в массив выбранных к покупке
      * @param object $object объект модели, представляющий продукт
      * @return boolean
      */
-    public static function addProduct(ProductsModel $object)
+    public function addProduct(ProductsModel $object)
     {
         try {
-            if (!in_array($object, self::$_productsArray)) {
-                self::$_productsArray[] = $object;
+            foreach ($this->_productsArray as $objectInArray) {
+                if ($objectInArray->id == $object->id) {
+                    $objectInArray->quantity++;
+                    return false;
+                }
             }
+            $this->_productsArray[] = $object;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -49,10 +58,10 @@ class ShoppingCart extends Object
      * @param object $object объект модели, представляющий продукт
      * @return boolean
      */
-    public static function removeProduct(ProductsModel $object)
+    public function removeProduct(ProductsModel $object)
     {
         try {
-            self::$_productsArray = array_udiff(self::$_productsArray, [$object], function($obj_a, $obj_b) {
+            $this->_productsArray = array_udiff($this->_productsArray, [$object], function($obj_a, $obj_b) {
                 return $obj_a->id - $obj_b->id;
             });
         } catch (\Exception $e) {
@@ -66,14 +75,14 @@ class ShoppingCart extends Object
      * @param object $object объект модели, представляющий продукт
      * @return boolean
      */
-    public static function updateProduct(ProductsModel $object)
+    public function updateProduct(ProductsModel $object)
     {
         try {
-            foreach (self::$_productsArray as $element) {
-                if ($element->id == $object->id) {
+            foreach ($this->_productsArray as $objectInArray) {
+                if ($objectInArray->id == $object->id) {
                     foreach ($object as $key=>$value) {
                         if (!empty($value)) {
-                            $element->$key = $value;
+                            $objectInArray->$key = $value;
                         }
                     }
                     break;
@@ -86,23 +95,23 @@ class ShoppingCart extends Object
     }
     
     /**
-     * Возвращает значения self::$_productsArray
+     * Возвращает значения $this->_productsArray
      * @return array
      */
-    public static function getProductsArray()
+    public function getProductsArray()
     {
-        return self::$_productsArray;
+        return $this->_productsArray;
     }
     
     /**
-     * Присваивает восстановленный из сесии массив объектов свойству self::$_productsArray
+     * Присваивает восстановленный из сесии массив объектов свойству $this->_productsArray
      * @param array $productsArray массив объектов модели, представляющей продукт
      * @return boolean
      */
-    public static function setProductsArray(Array $productsArray)
+    public function setProductsArray(Array $productsArray)
     {
         try {
-            self::$_productsArray = $productsArray;
+            $this->_productsArray = $productsArray;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -110,13 +119,13 @@ class ShoppingCart extends Object
     }
     
     /**
-     * Очищает массив объектов self::$_productsArray, удаляя все товары из корзины
+     * Очищает массив объектов $this->_productsArray, удаляя все товары из корзины
      * @return boolean
      */
-    public static function clearProductsArray()
+    public function clearProductsArray()
     {
         try {
-            self::$_productsArray = array();
+            $this->_productsArray = array();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -127,15 +136,15 @@ class ShoppingCart extends Object
      * Заполняет свойства класса краткими данными о товарах в корзине
      * @return boolean
      */
-    public static function getShortData()
+    public function getShortData()
     {
         try {
-            if (!empty(self::$_productsArray)) {
-                self::$_totalCost = 0.00;
-                self::$_totalProducts = 0;
-                foreach (self::$_productsArray as $product) {
-                    self::$_totalCost += ($product->price * $product->quantity);
-                    self::$_totalProducts += $product->quantity;
+            if (!empty($this->_productsArray)) {
+                $this->_totalCost = 0.00;
+                $this->_totalProducts = 0;
+                foreach ($this->_productsArray as $objectInArray) {
+                    $this->_totalCost += ($objectInArray->price * $objectInArray->quantity);
+                    $this->_totalProducts += $objectInArray->quantity;
                 }
             }
         } catch (\Exception $e) {
@@ -145,18 +154,20 @@ class ShoppingCart extends Object
     }
     
     /**
-     * Возвращает значение self::$_totalCost
+     * Возвращает значение $this->_totalCost
+     * @return int
      */
-    public static function getTotalCost()
+    public function getTotalCost()
     {
-        return self::$_totalCost;
+        return $this->_totalCost;
     }
     
     /**
-     * Возвращает значение self::$t_totalProducts
+     * Возвращает значение $this->t_totalProducts
+     * @return int
      */
-    public static function getTotalProducts()
+    public function getTotalProducts()
     {
-        return self::$_totalProducts;
+        return $this->_totalProducts;
     }
 }

@@ -12,7 +12,11 @@ class PhonesModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы
      */
-    const GET_FROM_FORM = 'getFromBd';
+    const GET_FROM_FORM = 'getFromForm';
+    /**
+     * Сценарий загрузки данных из БД
+     */
+    const GET_FROM_DB = 'getFromDb';
     
     public $phone;
     
@@ -22,6 +26,7 @@ class PhonesModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_FORM=>['phone'],
+            self::GET_FROM_DB=>['id', 'phone'],
         ];
     }
     
