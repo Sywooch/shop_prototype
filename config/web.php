@@ -21,6 +21,8 @@ $config = [
         'idKey'=>'id', # Ключ, по которому в $_REQUEST доступно значение id продукта
         'fixSentRequests'=>0, #Количество запросов к БД при выполнении скрипта
         'cartKeyInSession'=>'cart', # Ключ, по которому в $_SESSION доступена переменная, хранящая купленные товары
+        'productsFiltersArray'=>['colors'=>array(), 'sizes'=>array(), 'brands'=>array(), 'categories'=>'', 'subcategory'=>''], # Массив данных фильтров, примененных к списку продуктов
+        'productsFiltersKeyInSession'=>'filters', # Ключ, по которому в $_SESSION доступена переменная, хранящая выбранные фильтры
     ],
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),
@@ -73,6 +75,7 @@ $config = [
                 'products/<categories>/<subcategory>'=>'products-list/index',
                 'products/<categories>'=>'products-list/index',
                 'products'=>'products-list/index',
+                'add-filters'=>'filter/add-filters',
                 'search'=>'products-list/search',
                 'join'=>'users/add-user',
                 'add-comment'=>'comments/add-comment',
@@ -92,7 +95,8 @@ $config = [
             'timeout'=>60*60*24*7
         ],
     ],
-    'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter']
+    'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],
+    'as productsListFilter'=>['class'=>'app\filters\ProductsListFilter'],
 ];
 
 if (YII_DEBUG) {

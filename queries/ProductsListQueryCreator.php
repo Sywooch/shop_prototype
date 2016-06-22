@@ -38,7 +38,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
             'firstTableFieldOn'=>'id_colors',
             'secondTableName'=>'colors',
             'secondTableFieldOn'=>'id',
-            'secondTableFieldWhere'=>'color',
+            'secondTableFieldWhere'=>'id',
         ],
         'products_sizes'=>[ # Данные для выборки из таблицы products_sizes
             'firstTableName'=>'products',
@@ -51,7 +51,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
             'firstTableFieldOn'=>'id_sizes',
             'secondTableName'=>'sizes',
             'secondTableFieldOn'=>'id',
-            'secondTableFieldWhere'=>'size',
+            'secondTableFieldWhere'=>'id',
         ],
         'products_brands'=>[ # Данные для выборки из таблицы products_brands
             'firstTableName'=>'products',
@@ -64,7 +64,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
             'firstTableFieldOn'=>'id_brands',
             'secondTableName'=>'brands',
             'secondTableFieldOn'=>'id',
-            'secondTableFieldWhere'=>'brand',
+            'secondTableFieldWhere'=>'id',
         ],
     ];
     
@@ -172,7 +172,8 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     protected function addFilters()
     {
         try {
-            $getArrayKeys = array_keys(\Yii::$app->request->get());
+            $getArrayKeys = array_keys(array_filter(\Yii::$app->params['productsFiltersArray']));
+            $filtersKeys = array();
             
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if (in_array($filter, $getArrayKeys)) {
@@ -188,15 +189,20 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
                         $this->categoriesArrayFilters[$filter]['secondTableName'],
                         $this->categoriesArrayFilters[$filter]['secondTableFieldOn']
                     );
-                    $this->_mapperObject->params[':' . $filter] = \Yii::$app->request->get($filter);
+                    $filterData = \Yii::$app->params['productsFiltersArray'][$filter];
+                    foreach ($filterData as $key=>$val) {
+                        $filterKey = $key . $filter . '_' . \Yii::$app->params['idKey'];
+                        $this->_mapperObject->params[':' . $filterKey] = $val;
+                        $filtersKeys[$filter][] = $filterKey;
+                    }
                 }
             }
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if (in_array($filter, $getArrayKeys)) {
-                    $this->_mapperObject->query .= $this->getWhere(
+                    $this->_mapperObject->query .= $this->getWhereIn(
                         $this->categoriesArrayFilters[$filter]['secondTableName'],
                         $this->categoriesArrayFilters[$filter]['secondTableFieldWhere'],
-                        $filter
+                        implode(',:', $filtersKeys[$filter])
                     );
                 }
             }
