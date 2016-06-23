@@ -1,5 +1,5 @@
 
-{{ use('yii/widgets/ActiveForm') }}
+{{ use('/yii/widgets/ActiveForm') }}
 
 {% include '@app/views/parts/user-buttons.twig' %}
 
@@ -8,6 +8,7 @@
 {% include '@app/views/parts/menu.twig' %}
 
 {% set form=active_form_begin({'id':'address-contacts-form', 'action':'', 'method':'POST'}) %}
+    {{ form.field(deliveriesModel, 'id').radioList(deliveryArrayHelper.getArray(deliveriesModel.allDeliveries)).label('Delivery types') | raw }}
     {{ form.field(emailsModel, 'email') | raw }}
     {{ form.field(phonesModel, 'phone') | raw }}
     {{ form.field(usersModel, 'name') | raw }}

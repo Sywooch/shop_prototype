@@ -9,6 +9,7 @@ use app\models\UsersModel;
 use app\models\EmailsModel;
 use app\models\AddressModel;
 use app\models\PhonesModel;
+use app\models\DeliveriesModel;
 use app\mappers\UsersInsertMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
@@ -155,6 +156,7 @@ class ShoppingCartController extends AbstractBaseController
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
             $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
             $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+            $deliveriesModel = new DeliveriesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
@@ -178,7 +180,7 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             $dataForRender = $this->getDataForRender();
-            $dataForRender = array_merge($dataForRender, ['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel, 'addressModel'=>$addressModel, 'phonesModel'=>$phonesModel]);
+            $dataForRender = array_merge($dataForRender, ['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel, 'addressModel'=>$addressModel, 'phonesModel'=>$phonesModel, 'deliveriesModel'=>$deliveriesModel]);
             return $this->render('address-contacts-form.twig', $dataForRender);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
