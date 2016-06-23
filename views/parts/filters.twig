@@ -10,3 +10,5 @@
     {{ form.field(filtersModel, 'search').hiddenInput({'value':app.request.get(app.params['searchKey'])}).label(false) | raw }}
     <input type="submit" value="Apply" />
 {{ active_form_end() }}
+
+{% include '@app/views/parts/clean-filters.twig' %}

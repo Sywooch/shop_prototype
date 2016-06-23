@@ -41,7 +41,7 @@ class ShoppingCartController extends AbstractBaseController
                 if ($model->validate()) {
                     \Yii::$app->cart->addProduct($model);
                     $productData = \Yii::$app->request->post('ProductsModel');
-                    $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['id']]));
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['id']]));
                 }
             }
         } catch (\Exception $e) {
@@ -64,7 +64,7 @@ class ShoppingCartController extends AbstractBaseController
                     \Yii::$app->cart->clearProductsArray();
                     $productData = \Yii::$app->request->post('ProductsModel');
                     if (!empty($productData['productId'])) {
-                        $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['productId']]));
+                        return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['productId']]));
                     } else {
                         $urlArray = ['products-list/index'];
                         if (!empty($productData['categories'])) {
@@ -73,7 +73,7 @@ class ShoppingCartController extends AbstractBaseController
                         if (!empty($productData['subcategory'])) {
                             $urlArray = array_merge($urlArray, ['subcategory'=>$productData['subcategory']]);
                         }
-                        $this->redirect(Url::to($urlArray));
+                        return $this->redirect(Url::to($urlArray));
                     }
                 }
             }
@@ -111,9 +111,9 @@ class ShoppingCartController extends AbstractBaseController
                 if ($model->validate()) {
                     \Yii::$app->cart->removeProduct($model);
                     if (!empty(\Yii::$app->cart->getProductsArray())) {
-                        $this->redirect(Url::to(['shopping-cart/index']));
+                        return $this->redirect(Url::to(['shopping-cart/index']));
                     } else {
-                        $this->redirect(Url::to(['products-list/index']));
+                        return $this->redirect(Url::to(['products-list/index']));
                     }
                 }
             }
@@ -135,7 +135,7 @@ class ShoppingCartController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {
                     \Yii::$app->cart->updateProduct($model);
-                    $this->redirect(Url::to(['shopping-cart/index']));
+                    return $this->redirect(Url::to(['shopping-cart/index']));
                 }
             }
         } catch (\Exception $e) {

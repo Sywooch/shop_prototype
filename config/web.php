@@ -75,6 +75,7 @@ $config = [
                 'products/<categories>'=>'products-list/index',
                 'products'=>'products-list/index',
                 'add-filters'=>'filter/add-filters',
+                'clean-filters'=>'filter/clean-filters',
                 'search'=>'products-list/search',
                 'join'=>'users/add-user',
                 'add-comment'=>'comments/add-comment',

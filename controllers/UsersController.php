@@ -39,8 +39,7 @@ class UsersController extends AbstractBaseController
                 }
             }
             
-            $dataForRender = $this->getDataForRender();
-            $resultArray = array_merge(['model'=>$model], $dataForRender);
+            $resultArray = array_merge(['model'=>$model], $this->getDataForRender());
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

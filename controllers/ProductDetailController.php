@@ -19,14 +19,12 @@ class ProductDetailController extends AbstractBaseProductsController
     public function actionIndex()
     {
         try {
-            # Получаю массив объектов товаров
             $productMapper = new ProductDetailMapper([
                 'tableName'=>'products',
                 'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
             ]);
             $productsObject = $productMapper->getOneFromGroup();
-            $dataForRender = $this->getDataForRender();
-            $resultArray = array_merge(['productsObject'=>$productsObject], $dataForRender);
+            $resultArray = array_merge(['productsObject'=>$productsObject], $this->getDataForRender());
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

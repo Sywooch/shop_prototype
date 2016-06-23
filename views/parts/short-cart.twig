@@ -3,5 +3,5 @@
 
 {% if app.cart.getProductsArray() %}
     <a href="{{ url.to({0:'shopping-cart/index'}) }}">Go to cart</a>
-    {% include '@app/views/parts/clear-cart-form.twig' %}
+    {% include '@app/views/parts/clean-cart-form.twig' %}
 {% endif %}

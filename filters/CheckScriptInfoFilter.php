@@ -23,7 +23,7 @@ class CheckScriptInfoFilter extends ActionFilter
         $memoryUsage = memory_get_usage(true);
         $sentRequests = \Yii::$app->params['fixSentRequests'];
         
-        if (strpos($result, '</body>')) {
+        if (is_string($result) && strpos($result, '</body>')) {
             $string = '<p>Page generated: ' . round($pageGenerated, 3) . ' sec. / Memory usage: ' . ($memoryUsage / (1024 * 1024)) . ' Mb / Sent Requests: ' . $sentRequests . '</p>';
             $result = str_replace('</body>', $string . '</body>', $result);
         }

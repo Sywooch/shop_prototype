@@ -31,11 +31,9 @@ class ProductsListController extends AbstractBaseProductsController
     public function actionIndex()
     {
         try {
-            # Получаю массив объектов товаров
             $productsMapper = new ProductsListMapper($this->_config);
             $productsList = $productsMapper->getGroup();
             $resultArray = array_merge(['productsList'=>$productsList], $this->getDataForRender());
-            print_r(\Yii::$app->filters->attributes);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -51,11 +49,9 @@ class ProductsListController extends AbstractBaseProductsController
     {
         try {
             $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
-            # Получаю массив объектов товаров
             $productsMapper = new ProductsListMapper($this->_config);
             $productsList = $productsMapper->getGroup();
             $resultArray = array_merge(['productsList'=>$productsList], $this->getDataForRender());
-            print_r(\Yii::$app->filters->attributes);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
