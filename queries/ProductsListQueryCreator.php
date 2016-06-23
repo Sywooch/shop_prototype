@@ -3,6 +3,7 @@
 namespace app\queries;
 
 use app\queries\AbstractSeletcQueryCreator;
+use yii\helpers\ArrayHelper;
 
 /**
  * Конструирует запрос к БД для получения списка строк
@@ -172,7 +173,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     protected function addFilters()
     {
         try {
-            $getArrayKeys = array_keys(array_filter(\Yii::$app->params['productsFiltersArray']));
+            $getArrayKeys = array_keys(array_filter(\Yii::$app->filters->attributes));
             $filtersKeys = array();
             
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
@@ -189,7 +190,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
                         $this->categoriesArrayFilters[$filter]['secondTableName'],
                         $this->categoriesArrayFilters[$filter]['secondTableFieldOn']
                     );
-                    $filterData = \Yii::$app->params['productsFiltersArray'][$filter];
+                    $filterData = \Yii::$app->filters->$filter;
                     foreach ($filterData as $key=>$val) {
                         $filterKey = $key . $filter . '_' . \Yii::$app->params['idKey'];
                         $this->_mapperObject->params[':' . $filterKey] = $val;

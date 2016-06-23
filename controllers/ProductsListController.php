@@ -7,7 +7,6 @@ use app\mappers\ProductsListMapper;
 use app\mappers\ColorsMapper;
 use app\mappers\SizesMapper;
 use app\mappers\BrandsMapper;
-use app\models\FiltersModel;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -35,9 +34,8 @@ class ProductsListController extends AbstractBaseProductsController
             # Получаю массив объектов товаров
             $productsMapper = new ProductsListMapper($this->_config);
             $productsList = $productsMapper->getGroup();
-            $dataForRender = $this->getDataForRender();
-            $resultArray = array_merge(['productsList'=>$productsList], $dataForRender);
-            print_r(\Yii::$app->params['productsFiltersArray']);
+            $resultArray = array_merge(['productsList'=>$productsList], $this->getDataForRender());
+            print_r(\Yii::$app->filters->attributes);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -56,8 +54,8 @@ class ProductsListController extends AbstractBaseProductsController
             # Получаю массив объектов товаров
             $productsMapper = new ProductsListMapper($this->_config);
             $productsList = $productsMapper->getGroup();
-            $dataForRender = $this->getDataForRender();
-            $resultArray = array_merge(['productsList'=>$productsList], $dataForRender);
+            $resultArray = array_merge(['productsList'=>$productsList], $this->getDataForRender());
+            print_r(\Yii::$app->filters->attributes);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -98,13 +96,18 @@ class ProductsListController extends AbstractBaseProductsController
             ]);
             $result['brandsList'] = $brandsMapper->getGroup();
             
-            $filtersModel = new FiltersModel(['scenario'=>FiltersModel::GET_FROM_FORM]);
-            $filtersModel->attributes = \Yii::$app->params['productsFiltersArray'];
-            $result['filtersModel'] = $filtersModel;
+            $result['filtersModel'] = \Yii::$app->filters;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
         return $result;
+    }
+    
+    public function behaviors()
+    {
+        return [
+            ['class'=>'app\filters\ProductsListFilter'],
+        ];
     }
 }

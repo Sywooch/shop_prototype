@@ -3,7 +3,6 @@
 namespace app\filters;
 
 use yii\base\ActionFilter;
-use yii\helpers\Url;
 
 /**
  * Заполняет объект корзины данными сесии
@@ -13,9 +12,14 @@ class ProductsListFilter extends ActionFilter
     public function beforeAction($action)
     {
         $session = \Yii::$app->session;
-        if ($session->has(\Yii::$app->params['productsFiltersKeyInSession'])) {
+        if ($session->has(\Yii::$app->params['filtersKeyInSession'])) {
             $session->open();
-            \Yii::$app->params['productsFiltersArray'] = $session->get(\Yii::$app->params['productsFiltersKeyInSession']);
+            
+            $attributes = $session->get(\Yii::$app->params['filtersKeyInSession']);
+            if ($attributes[\Yii::$app->params['categoryKey']] == \Yii::$app->request->get(\Yii::$app->params['categoryKey']) && $attributes[\Yii::$app->params['subCategoryKey']] == \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']) && $attributes[\Yii::$app->params['searchKey']] == \Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
+                \Yii::$app->filters->attributes = $attributes;
+            }
+            
             $session->close();
         }
         return parent::beforeAction($action);
@@ -25,7 +29,7 @@ class ProductsListFilter extends ActionFilter
     {
         $session = \Yii::$app->session;
         $session->open();
-        $session->set(\Yii::$app->params['productsFiltersKeyInSession'], \Yii::$app->params['productsFiltersArray']);
+        $session->set(\Yii::$app->params['filtersKeyInSession'], \Yii::$app->filters->attributes);
         $session->close();
         return parent::afterAction($action, $result);
     }

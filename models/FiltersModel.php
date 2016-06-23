@@ -9,21 +9,17 @@ use app\models\AbstractBaseModel;
  */
 class FiltersModel extends AbstractBaseModel
 {
-    /**
-     * Сценарий загрузки данных из формы
-    */
-    const GET_FROM_FORM = 'getFromForm';
-    
     public $colors = array();
     public $sizes = array();
     public $brands = array();
     public $categories = '';
     public $subcategory = '';
+    public $search = '';
     
-    public function scenarios()
+    public function rules()
     {
         return [
-            self::GET_FROM_FORM=>['colors', 'sizes', 'brands', 'categories', 'subcategory'],
+            [['colors', 'sizes', 'brands', 'categories', 'subcategory', 'search'], 'safe'],
         ];
     }
 }
