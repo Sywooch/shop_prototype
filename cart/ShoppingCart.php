@@ -4,6 +4,7 @@ namespace app\cart;
 
 use yii\base\Object;
 use app\traits\ExceptionsTrait;
+use app\helpers\SessionHelper;
 use app\models\ProductsModel;
 use app\models\UsersModel;
 
@@ -30,7 +31,7 @@ class ShoppingCart extends Object
     /**
      * @var object объект пользователя, связанного с заказами в корзине
      */
-    private $_user;
+    public $user;
     
     /**
      * Добавляет продукт в массив выбранных к покупке
@@ -64,6 +65,9 @@ class ShoppingCart extends Object
             $this->_productsArray = array_udiff($this->_productsArray, [$object], function($obj_a, $obj_b) {
                 return $obj_a->id - $obj_b->id;
             });
+            if (empty($this->_productsArray)) {
+                $this->clearProductsArray();
+            }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -126,6 +130,8 @@ class ShoppingCart extends Object
     {
         try {
             $this->_productsArray = array();
+            $this->user = NULL;
+            SessionHelper::removeVarFromSession([\Yii::$app->params['cartKeyInSession'], \Yii::$app->params['cartKeyInSession'] . '.user']);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -169,23 +175,5 @@ class ShoppingCart extends Object
     public function getTotalProducts()
     {
         return $this->_totalProducts;
-    }
-    
-    /**
-     * Возвращает значение $this->_user
-     * @return object
-     */
-    public function getUser()
-    {
-        return $this->_user;
-    }
-    
-    /**
-     * Присваивает значение свойству $this->_user
-     * @param object $user экземпляр UsersModel
-     */
-    public function setUser(UsersModel $user)
-    {
-        $this->_user = $user;
     }
 }

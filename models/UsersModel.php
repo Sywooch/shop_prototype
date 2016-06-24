@@ -7,6 +7,8 @@ use app\models\AbstractBaseModel;
 use app\models\EmailsModel;
 use app\models\AddressModel;
 use app\models\PhonesModel;
+use app\models\DeliveriesModel;
+use app\models\PaymentsModel;
 use app\mappers\RulesMapper;
 use app\mappers\UsersByLoginMapper;
 use app\helpers\TransliterationHelper;
@@ -45,6 +47,8 @@ class UsersModel extends AbstractBaseModel
     private $_emails = NULL;
     private $_address = NULL;
     private $_phones = NULL;
+    private $_deliveries = NULL;
+    private $_payments = NULL;
     
     public function scenarios()
     {
@@ -189,7 +193,7 @@ class UsersModel extends AbstractBaseModel
      */
     public function setEmails(EmailsModel $value)
     {
-        $this->_emails[] = $value;
+        $this->_emails = $value;
     }
     
     /**
@@ -206,7 +210,7 @@ class UsersModel extends AbstractBaseModel
      */
     public function setAddress(AddressModel $value)
     {
-        $this->_address[] = $value;
+        $this->_address = $value;
     }
     
     /**
@@ -223,6 +227,40 @@ class UsersModel extends AbstractBaseModel
      */
     public function setPhones(PhonesModel $value)
     {
-        $this->_phones[] = $value;
+        $this->_phones = $value;
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_deliveries
+     */
+    public function getDeliveries()
+    {
+        return $this->_deliveries;
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_deliveries
+     * @param string $value значение delivery
+     */
+    public function setDeliveries(DeliveriesModel $value)
+    {
+        $this->_deliveries = $value;
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_payments
+     */
+    public function getPayments()
+    {
+        return $this->_payments;
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_payments
+     * @param string $value значение payments
+     */
+    public function setPayments(PaymentsModel $value)
+    {
+        $this->_payments = $value;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace app\tests\cart;
 
+use app\tests\DbManager;
 use app\models\ProductsModel;
 
 /**
@@ -9,6 +10,7 @@ use app\models\ProductsModel;
  */
 class ShoppingCartTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
     private static $_id = 1;
     private static $_name = 'Some name';
     private static $_description = 'Some description';
@@ -21,6 +23,12 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     private static $_quantity2 = 1;
     private static $_categories = 'mensfootwear';
     private static $_subcategory = 'snickers';
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
     * Тестирует метод app\cart\\Yii::$app->cart->addProduct()
@@ -248,5 +256,10 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(self::$_price * (self::$_quantity + self::$_quantity2), \Yii::$app->cart->getTotalCost());
         $this->assertEquals((self::$_quantity + self::$_quantity2), \Yii::$app->cart->getTotalProducts());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

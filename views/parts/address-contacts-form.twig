@@ -1,0 +1,16 @@
+
+{{ use('/yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'id':'address-contacts-form', 'action':'', 'method':'POST'}) %}
+    {{ form.field(emailsModel, 'email') | raw }}
+    {{ form.field(usersModel, 'name').label('First Name') | raw }}
+    {{ form.field(usersModel, 'surname').label('Last Name') | raw }}
+    {{ form.field(phonesModel, 'phone') | raw }}<br>
+    {{ form.field(deliveriesModel, 'id').radioList(deliveryArrayHelper.getDeliveriesArray(deliveriesModel.allDeliveries)).label('Delivery types') | raw }}<br>
+    {{ form.field(addressModel, 'address') | raw }}
+    {{ form.field(addressModel, 'city') | raw }}
+    {{ form.field(addressModel, 'postcode') | raw }}
+    {{ form.field(addressModel, 'country') | raw }}<br>
+    {{ form.field(paymentsModel, 'id').radioList(deliveryArrayHelper.getPaymentsArray(paymentsModel.allPayments)).label('Payments types') | raw }}<br>
+    <input type="submit" value="Check and pay" />
+{{ active_form_end() }}

@@ -15,22 +15,38 @@ class DeliveryArrayHelper
     private static $_result = array();
     
     /**
-     * Конструирует массив данных для форм
+     * Конструирует массив данных для формы DeliveriesModel
+     * @param array $arrayObjects массив объектов DeliveriesModel
      * @return array
      */
-    public static function getArray($arrayObjects)
+    public static function getDeliveriesArray($arrayObjects)
     {
         try {
             foreach ($arrayObjects as $object) {
+                self::$_result[$object->id] = $object->name . '. ' . $object->description;
                 if ($object->price > 0) {
-                    $price = 'Стоимость: ' . $object->price;
-                } else {
-                    $price = 'Стоимость уточнит менеджер.';
+                    self::$_result[$object->id] .= ' Стоимость доставки: ' . $object->price;
                 }
-                self::$_result[$object->id] = $object->name . '. ' . $object->description . '. ' . $price;
             }
         } catch (\Exception $e) {
-            self::throwStaticException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+        return self::$_result;
+    }
+    
+    /**
+     * Конструирует массив данных для формы PaymentsModel
+     * @param array $arrayObjects массив объектов PaymentsModel
+     * @return array
+     */
+    public static function getPaymentsArray($arrayObjects)
+    {
+        try {
+            foreach ($arrayObjects as $object) {
+                self::$_result[$object->id] = $object->name . '. ' . $object->description;
+            }
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
         return self::$_result;
     }

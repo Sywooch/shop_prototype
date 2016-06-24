@@ -29,7 +29,7 @@ class PasswordHelper
                 self::$_outputArray[] = $element[mt_rand(0, count($element) - 1)];
             }
         } catch (\Exception $e) {
-            self::throwStaticException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
         return implode('', self::$_outputArray);
     }

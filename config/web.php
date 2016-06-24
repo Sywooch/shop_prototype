@@ -85,7 +85,7 @@ $config = [
                 'shopping-cart'=>'shopping-cart/index',
                 'remove-product'=>'shopping-cart/remove-product',
                 'update-product'=>'shopping-cart/update-product',
-                'address-contacts'=>'shopping-cart/address-contacts',
+                'shopping-cart-checkout'=>'shopping-cart/address-contacts',
             ],
         ],
         'cart'=>[
@@ -93,6 +93,9 @@ $config = [
         ],
         'filters'=>[
             'class'=>'app\models\FiltersModel',
+        ],
+        'user'=>[
+            'class'=>'app\models\UsersModel',
         ],
         'session'=>[
             'class'=>'yii\web\DbSession',

@@ -62,7 +62,7 @@ class TransliterationHelper
                 self::$_outputArray[] = self::$_matrix[mb_strtolower($letter, 'UTF-8')];
             }
         } catch (\Exception $e) {
-            self::throwStaticException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
         return implode('', self::$_outputArray);
     }

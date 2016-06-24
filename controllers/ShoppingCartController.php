@@ -10,6 +10,7 @@ use app\models\EmailsModel;
 use app\models\AddressModel;
 use app\models\PhonesModel;
 use app\models\DeliveriesModel;
+use app\models\PaymentsModel;
 use app\mappers\UsersInsertMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
@@ -23,6 +24,9 @@ use app\mappers\PhonesByPhoneMapper;
 use app\mappers\PhonesInsertMapper;
 use app\mappers\UsersPhonesByUsersPhonesMapper;
 use app\mappers\UsersPhonesInsertMapper;
+use app\mappers\DeliveriesByIdMapper;
+use app\mappers\PaymentsMapper;
+use app\mappers\PaymentsByIdMapper;
 
 /**
  * Управляет процессом добавления комментария
@@ -91,8 +95,7 @@ class ShoppingCartController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            $dataForRender = $this->getDataForRender();
-            return $this->render('shopping-cart.twig', $dataForRender);
+            return $this->render('shopping-cart.twig', $this->getDataForRender());
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -152,36 +155,101 @@ class ShoppingCartController extends AbstractBaseController
     public function actionAddressContacts()
     {
         try {
-            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
-            $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-            $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
-            $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
-            $deliveriesModel = new DeliveriesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+            if (isset(\Yii::$app->cart->user)) {
+                $usersModel = \Yii::$app->cart->user;
+            } else {
+                $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
+            }
+            if (isset(\Yii::$app->cart->user->emails)) {
+                $emailsModel = \Yii::$app->cart->user->emails;
+            } else {
+                $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+            }
+            if (isset(\Yii::$app->cart->user->address)) {
+                $addressModel = \Yii::$app->cart->user->address;
+            } else {
+                $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+            }
+            if (isset(\Yii::$app->cart->user->phones)) {
+                $phonesModel = \Yii::$app->cart->user->phones;
+            } else {
+                $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+            }
+            if (isset(\Yii::$app->cart->user->deliveries)) {
+                $deliveriesModel = \Yii::$app->cart->user->deliveries;
+            } else {
+                $deliveriesModel = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_FORM]);
+            }
+            if (isset(\Yii::$app->cart->user->payments)) {
+                $paymentsModel = \Yii::$app->cart->user->payments;
+            } else {
+                $paymentsModel = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_FORM]);
+            }
             
-            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post())) {
+            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $deliveriesModel->load(\Yii::$app->request->post()) && $paymentsModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
-                    \Yii::$app->cart->user = $this->getUsersModel($usersModel);
+                    //\Yii::$app->cart->user = $this->getUsersModel($usersModel);
+                    if (!isset(\Yii::$app->cart->user)) {
+                        \Yii::$app->cart->user = $usersModel;
+                    }
                 }
                 
                 if ($emailsModel->validate()) {
-                    \Yii::$app->cart->user->emails = $this->getEmailsModel($emailsModel);
-                    $this->setUsersEmailsModel($usersModel, $emailsModel);
+                    /*\Yii::$app->cart->user->emails = $this->getEmailsModel($emailsModel);
+                    $this->setUsersEmailsModel($usersModel, $emailsModel);*/
+                    if (!isset(\Yii::$app->cart->user->emails)) {
+                        \Yii::$app->cart->user->emails = $emailsModel;
+                    }
                 }
                 
                 if ($addressModel->validate()) {
-                    \Yii::$app->cart->user->address = $this->getAddressModel($addressModel);
-                    $this->setUsersAddressModel($usersModel, $addressModel);
+                    /*\Yii::$app->cart->user->address = $this->getAddressModel($addressModel);
+                    $this->setUsersAddressModel($usersModel, $addressModel);*/
+                    if (!isset(\Yii::$app->cart->user->address)) {
+                        \Yii::$app->cart->user->address = $addressModel;
+                    }
                 }
                 
                 if ($phonesModel->validate()) {
-                    \Yii::$app->cart->user->phones = $this->getPhonesModel($phonesModel);
-                    $this->setUsersPhonesModel($usersModel, $phonesModel);
+                    /*\Yii::$app->cart->user->phones = $this->getPhonesModel($phonesModel);
+                    $this->setUsersPhonesModel($usersModel, $phonesModel);*/
+                    if (!isset(\Yii::$app->cart->user->phones)) {
+                        \Yii::$app->cart->user->phones = $phonesModel;
+                    }
+                }
+                
+                if ($deliveriesModel->validate()) {
+                    //\Yii::$app->cart->user->deliveries = $this->getDeliveriesModel($deliveriesModel);
+                    if (!isset(\Yii::$app->cart->user->deliveries)) {
+                        \Yii::$app->cart->user->deliveries = $deliveriesModel;
+                    }
+                }
+                
+                if ($paymentsModel->validate()) {
+                    //\Yii::$app->cart->user->payments = $this->getPaymentsModel($paymentsModel);
+                    if (!isset(\Yii::$app->cart->user->payments)) {
+                        \Yii::$app->cart->user->payments = $paymentsModel;
+                    }
                 }
             }
             
             $dataForRender = $this->getDataForRender();
-            $dataForRender = array_merge($dataForRender, ['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel, 'addressModel'=>$addressModel, 'phonesModel'=>$phonesModel, 'deliveriesModel'=>$deliveriesModel]);
-            return $this->render('address-contacts-form.twig', $dataForRender);
+            $dataForRender = array_merge($dataForRender, ['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel, 'addressModel'=>$addressModel, 'phonesModel'=>$phonesModel, 'deliveriesModel'=>$deliveriesModel, 'paymentsModel'=>$paymentsModel]);
+            return $this->render('address-contacts.twig', $dataForRender);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет процессом подтверждения заказа
+     * @return string
+     */
+    public function actionCheckPay()
+    {
+        try {
+            return $this->render('shopping-cart.twig', $this->getDataForRender());
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -395,5 +463,51 @@ class ShoppingCartController extends AbstractBaseController
             $this->throwException($e, __METHOD__);
         }
         return true;
+    }
+    
+    /**
+      * Получает DeliveriesModel для переданного в форму id
+     * @param object $deliveriesModel экземпляр DeliveriesModel
+     * @return object
+     */
+    private function getDeliveriesModel(DeliveriesModel $deliveriesModel)
+    {
+        try {
+            $deliveriesByIdMapper = new DeliveriesByIdMapper([
+                'tableName'=>'deliveries',
+                'fields'=>['id', 'name', 'description', 'price'],
+                'model'=>$deliveriesModel,
+            ]);
+            if ($result = $deliveriesByIdMapper->getOneFromGroup()) {
+                $deliveriesModel = $result;
+            }
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return $deliveriesModel;
+    }
+    
+    /**
+      * Получает PaymentsModel для переданного в форму id
+     * @param object $paymentsModel экземпляр PaymentsModel
+     * @return object
+     */
+    private function getPaymentsModel(PaymentsModel $paymentsModel)
+    {
+        try {
+            $paymentsByIdMapper = new PaymentsByIdMapper([
+                'tableName'=>'payments',
+                'fields'=>['id', 'name', 'description'],
+                'model'=>$paymentsModel,
+            ]);
+            if ($result = $paymentsByIdMapper->getOneFromGroup()) {
+                $paymentsModel = $result;
+            }
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+        return $paymentsModel;
     }
 }

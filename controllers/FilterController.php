@@ -40,7 +40,7 @@ class FilterController extends AbstractBaseProductsController
         try {
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
-                    SessionHelper::removeVarFromSession(\Yii::$app->params['filtersKeyInSession']);
+                    SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession']]);
                     $urlArray = $this->getRedirectUrl();
                 }
             }

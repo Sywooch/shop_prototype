@@ -1,0 +1,12 @@
+
+{{ use('/yii/widgets/ActiveForm') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/search.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+{% include '@app/views/parts/address-contacts-form.twig' %}
+
+<p><a href="{{ url.to({0:'shopping-cart/index'}) }}">Return to cart</a></p>

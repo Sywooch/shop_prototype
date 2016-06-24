@@ -15,6 +15,9 @@ class ShoppingCartFilter extends ActionFilter
         if ($session->has(\Yii::$app->params['cartKeyInSession'])) {
             $session->open();
             \Yii::$app->cart->setProductsArray($session->get(\Yii::$app->params['cartKeyInSession']));
+            if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user')) {
+                \Yii::$app->cart->user = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user');
+            }
             $session->close();
             \Yii::$app->cart->getShortData();
         }
@@ -25,7 +28,12 @@ class ShoppingCartFilter extends ActionFilter
     {
         $session = \Yii::$app->session;
         $session->open();
-        $session->set(\Yii::$app->params['cartKeyInSession'], \Yii::$app->cart->getProductsArray());
+        if (!empty(\Yii::$app->cart->getProductsArray())) {
+            $session->set(\Yii::$app->params['cartKeyInSession'], \Yii::$app->cart->getProductsArray());
+        }
+        if (isset(\Yii::$app->cart->user)) {
+            $session->set(\Yii::$app->params['cartKeyInSession'] . '.user', \Yii::$app->cart->user);
+        }
         $session->close();
         return parent::afterAction($action, $result);
     }
