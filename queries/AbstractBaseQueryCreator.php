@@ -211,6 +211,26 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     }
     
     /**
+     * Формирует часть запроса к БД, перечисляющие имена столбцов, которые будут обновлены
+     * @return string
+    */
+    protected function addFieldsToUpdate()
+    {
+        try {
+            $result = array();
+            if (empty($this->_mapperObject->fields)) {
+                throw new ErrorException('Отсутсвуют данные для конструирования запроса!');
+            }
+            foreach ($this->_mapperObject->fields as $field) {
+                $result[] = '[[' . $field . ']]=:' . $field;
+            }
+            return ' ' . implode(',', $result);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Формирует часть запроса для подстановки данных
      * @return string
     */

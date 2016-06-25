@@ -34,6 +34,9 @@ class UsersModel extends AbstractBaseModel
     
     public $name;
     public $surname;
+    public $id_emails;
+    public $id_phones;
+    public $id_address;
     
     /**
      * @var array массив ID rules, выбранных пользователем в форме
@@ -54,7 +57,7 @@ class UsersModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_FORM=>['login', 'password', 'name', 'surname', 'rulesFromForm'],
-            self::GET_FROM_DB=>['id', 'login', 'name', 'surname'],
+            self::GET_FROM_DB=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
             self::GET_FROM_CART_FORM=>['name', 'surname'],
         ];
     }
