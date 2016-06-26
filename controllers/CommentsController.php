@@ -24,15 +24,17 @@ class CommentsController extends AbstractBaseController
                         'fields'=>['text', 'name', 'id_emails', 'id_products'],
                         'objectsArray'=>[$model],
                     ]);
-                    $commentsInsertMapper->setGroup();
-                    
-                    $productData = \Yii::$app->request->post('CommentsModel');
+                    if (!$commentsInsertMapper->setGroup()) {
+                        throw new ErrorException('Не удалось обновить данные в БД!');
+                    }
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$model->categories, 'subcategory'=>$model->subcategory, 'id'=>$model->id_products]));
                 }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
             }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['id_products']]));
     }
 }

@@ -34,4 +34,6 @@ class MockModel extends Object
     public $id_address;
     public $phone;
     public $id_phones;
+    public $id_deliveries;
+    public $id_payments;
 }

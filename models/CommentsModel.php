@@ -29,13 +29,15 @@ class CommentsModel extends AbstractBaseModel
     public $active;
     
     public $email;
+    public $categories;
+    public $subcategory;
     
     private $_id_emails = NULL;
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['text', 'name', 'email', 'id_products'],
+            self::GET_FROM_FORM=>['text', 'name', 'email', 'id_products', 'categories', 'subcategory'],
             self::GET_FROM_DB=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
         ];
     }

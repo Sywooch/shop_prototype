@@ -82,10 +82,12 @@ $config = [
                 'add-comment'=>'comments/add-comment',
                 'add-to-cart'=>'shopping-cart/add-to-cart',
                 'clear-cart'=>'shopping-cart/clear-cart',
-                'shopping-cart'=>'shopping-cart/index',
                 'remove-product'=>'shopping-cart/remove-product',
                 'update-product'=>'shopping-cart/update-product',
+                'shopping-cart'=>'shopping-cart/index',
                 'shopping-cart-checkout'=>'shopping-cart/address-contacts',
+                'shopping-cart-check-pay'=>'shopping-cart/check-pay',
+                'shopping-cart-pay'=>'shopping-cart/pay',
             ],
         ],
         'cart'=>[

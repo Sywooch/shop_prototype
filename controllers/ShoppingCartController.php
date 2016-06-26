@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\helpers\Url;
+use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\models\ProductsModel;
 use app\models\UsersModel;
@@ -11,22 +12,18 @@ use app\models\AddressModel;
 use app\models\PhonesModel;
 use app\models\DeliveriesModel;
 use app\models\PaymentsModel;
+use app\models\UsersPurchasesModel;
 use app\mappers\UsersInsertMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
-use app\mappers\UsersEmailsInsertMapper;
-use app\mappers\UsersEmailsByUsersEmailsMapper;
 use app\mappers\AddressByAddressMapper;
 use app\mappers\AddressInsertMapper;
-use app\mappers\UsersAddressByUsersAddressMapper;
-use app\mappers\UsersAddressInsertMapper;
 use app\mappers\PhonesByPhoneMapper;
 use app\mappers\PhonesInsertMapper;
-use app\mappers\UsersPhonesByUsersPhonesMapper;
-use app\mappers\UsersPhonesInsertMapper;
 use app\mappers\DeliveriesByIdMapper;
 use app\mappers\PaymentsMapper;
 use app\mappers\PaymentsByIdMapper;
+use app\mappers\UsersPurchasesInsertMapper;
 
 /**
  * Управляет процессом добавления комментария
@@ -44,10 +41,14 @@ class ShoppingCartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {
-                    \Yii::$app->cart->addProduct($model);
+                    if (!\Yii::$app->cart->addProduct($model)) {
+                        throw new ErrorException('Ошибка при добавлении товара в корзину!');
+                    }
                     $productData = \Yii::$app->request->post('ProductsModel');
                     return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['id']]));
                 }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
             }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -66,7 +67,9 @@ class ShoppingCartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {
-                    \Yii::$app->cart->clearProductsArray();
+                    if (!\Yii::$app->cart->clearProductsArray()) {
+                        throw new ErrorException('Ошибка при очистке корзины!');
+                    }
                     $productData = \Yii::$app->request->post('ProductsModel');
                     if (!empty($productData['productId'])) {
                         return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['productId']]));
@@ -81,6 +84,8 @@ class ShoppingCartController extends AbstractBaseController
                         return $this->redirect(Url::to($urlArray));
                     }
                 }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
             }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -113,13 +118,17 @@ class ShoppingCartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {
-                    \Yii::$app->cart->removeProduct($model);
+                    if (!\Yii::$app->cart->removeProduct($model)) {
+                        throw new ErrorException('Ошибка при удалении товара из корзины!');
+                    }
                     if (!empty(\Yii::$app->cart->getProductsArray())) {
                         return $this->redirect(Url::to(['shopping-cart/index']));
                     } else {
                         return $this->redirect(Url::to(['products-list/index']));
                     }
                 }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
             }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -138,9 +147,13 @@ class ShoppingCartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {
-                    \Yii::$app->cart->updateProduct($model);
+                    if (!\Yii::$app->cart->updateProduct($model)) {
+                        throw new ErrorException('Ошибка при обновлении данных о товаре в корзине!');
+                    }
                     return $this->redirect(Url::to(['shopping-cart/index']));
                 }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
             }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -155,6 +168,10 @@ class ShoppingCartController extends AbstractBaseController
     public function actionAddressContacts()
     {
         try {
+            if (empty(\Yii::$app->cart->getProductsArray())) {
+                return $this->redirect(Url::to(['products-list/index']));
+            }
+            
             if (isset(\Yii::$app->cart->user)) {
                 $usersModel = \Yii::$app->cart->user;
             } else {
@@ -188,49 +205,36 @@ class ShoppingCartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $deliveriesModel->load(\Yii::$app->request->post()) && $paymentsModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
-                    //\Yii::$app->cart->user = $this->getUsersModel($usersModel);
                     if (!isset(\Yii::$app->cart->user)) {
                         \Yii::$app->cart->user = $usersModel;
                     }
                 }
-                
                 if ($emailsModel->validate()) {
-                    /*\Yii::$app->cart->user->emails = $this->getEmailsModel($emailsModel);
-                    $this->setUsersEmailsModel($usersModel, $emailsModel);*/
                     if (!isset(\Yii::$app->cart->user->emails)) {
                         \Yii::$app->cart->user->emails = $emailsModel;
                     }
                 }
-                
                 if ($addressModel->validate()) {
-                    /*\Yii::$app->cart->user->address = $this->getAddressModel($addressModel);
-                    $this->setUsersAddressModel($usersModel, $addressModel);*/
                     if (!isset(\Yii::$app->cart->user->address)) {
                         \Yii::$app->cart->user->address = $addressModel;
                     }
                 }
-                
                 if ($phonesModel->validate()) {
-                    /*\Yii::$app->cart->user->phones = $this->getPhonesModel($phonesModel);
-                    $this->setUsersPhonesModel($usersModel, $phonesModel);*/
                     if (!isset(\Yii::$app->cart->user->phones)) {
                         \Yii::$app->cart->user->phones = $phonesModel;
                     }
                 }
-                
                 if ($deliveriesModel->validate()) {
-                    //\Yii::$app->cart->user->deliveries = $this->getDeliveriesModel($deliveriesModel);
                     if (!isset(\Yii::$app->cart->user->deliveries)) {
                         \Yii::$app->cart->user->deliveries = $deliveriesModel;
                     }
                 }
-                
                 if ($paymentsModel->validate()) {
-                    //\Yii::$app->cart->user->payments = $this->getPaymentsModel($paymentsModel);
                     if (!isset(\Yii::$app->cart->user->payments)) {
                         \Yii::$app->cart->user->payments = $paymentsModel;
                     }
                 }
+                return $this->redirect(Url::to(['shopping-cart/check-pay']));
             }
             
             $dataForRender = $this->getDataForRender();
@@ -249,7 +253,7 @@ class ShoppingCartController extends AbstractBaseController
     public function actionCheckPay()
     {
         try {
-            return $this->render('shopping-cart.twig', $this->getDataForRender());
+            return $this->render('check-pay.twig', $this->getDataForRender());
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -257,26 +261,81 @@ class ShoppingCartController extends AbstractBaseController
     }
     
     /**
-     * Получает UsersModel для переданного в форму users
+     * Управляет процессом загрузки данных в БД после подтверждения покупки,
+     * отправки сообщений покупателю и менеджеру магазина,
+     * оплаты в случае, если выбрана онлайн-оплата
+     * @return string
+     */
+    public function actionPay()
+    {
+        try {
+            if (empty(\Yii::$app->cart->getProductsArray())) {
+                return $this->redirect(Url::to(['products-list/index']));
+            }
+            
+            if (!isset(\Yii::$app->cart->user)) {
+                throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
+            }
+            if (isset(\Yii::$app->cart->user->emails)) {
+                $emailsModel = $this->getEmailsModel(\Yii::$app->cart->user->emails);
+                \Yii::$app->cart->user->id_emails = $emailsModel->id;
+            } else {
+                throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
+            }
+            if (isset(\Yii::$app->cart->user->address)) {
+                $addressModel = $this->getAddressModel(\Yii::$app->cart->user->address);
+                \Yii::$app->cart->user->id_address = $addressModel->id;
+            } else {
+                throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
+            }
+            if (isset(\Yii::$app->cart->user->phones)) {
+                $phonesModel = $this->getPhonesModel(\Yii::$app->cart->user->phones);
+                \Yii::$app->cart->user->id_phones = $phonesModel->id;
+            } else {
+                throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
+            }
+            if ($this->setUsersModel(\Yii::$app->cart->user)) {
+                if ($this->setUsersPurchasesModel(\Yii::$app->cart->user->id, \Yii::$app->cart->getProductsArray(), \Yii::$app->cart->user->deliveries->id, \Yii::$app->cart->user->payments->id)) {
+                    if (!\Yii::$app->cart->clearProductsArray()) {
+                        throw new ErrorException('Ошибка при очистке корзины!');
+                    }
+                } else {
+                    throw new ErrorException('Ошибка при сохранении связи пользователя с покупкой в процессе оформления заказа!');
+                }
+            } else {
+                throw new ErrorException('Ошибка при сохранении данных пользователя в процессе оформления покупки!');
+            }
+            return 'SAVED!';
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет или создает UsersModel
      * Проверяет, авторизирован ли user в системе, если да, обновляет данные,
      * если нет, создает новую запись в БД
      * @param object $usersModel экземпляр UsersModel
      * @return object
      */
-    private function getUsersModel(UsersModel $usersModel)
+    private function setUsersModel(UsersModel $usersModel)
     {
         try {
             $usersInsertMapper = new UsersInsertMapper([
                 'tableName'=>'users',
-                'fields'=>['login', 'password', 'name', 'surname'],
+                'fields'=>['login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
                 'objectsArray'=>[$usersModel],
             ]);
-            $usersInsertMapper->setGroup();
+            $result = $usersInsertMapper->setGroup();
+            if (!$result) {
+                throw new ErrorException('Не удалось обновить данные в БД!');
+            }
+            return $result;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $usersModel;
     }
     
     /**
@@ -302,43 +361,15 @@ class ShoppingCartController extends AbstractBaseController
                     'fields'=>['email'],
                     'objectsArray'=>[$emailsModel],
                 ]);
-                $emailsInsertMapper->setGroup();
+                if (!$emailsInsertMapper->setGroup()) {
+                    throw new ErrorException('Не удалось обновить данные в БД!');
+                }
             }
+            return $emailsModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $emailsModel;
-    }
-    
-    /**
-     * Проверяет, существет ли запись в БД для user and email, если да, прекращает выполнение,
-     * если нет, создает новую запись в БД
-     * @param object $usersModel экземпляр UsersModel
-     * @param object $emailsModel экземпляр EmailsModel
-     * @return boolean
-     */
-    private function setUsersEmailsModel(UsersModel $usersModel, EmailsModel $emailsModel)
-    {
-        try {
-            $usersEmailsByUsersEmailsMapper = new UsersEmailsByUsersEmailsMapper([
-                'tableName'=>'users_emails',
-                'fields'=>['id_users', 'id_emails'],
-                'params'=>[':id_users'=>$usersModel->id, ':id_emails'=>$emailsModel->id],
-            ]);
-            if (!$usersEmailsByUsersEmailsMapper->getOneFromGroup()) {
-                $usersEmailsInsertMapper = new UsersEmailsInsertMapper([
-                    'tableName'=>'users_emails',
-                    'fields'=>['id_users', 'id_emails'],
-                    'DbArray'=>[['id_users'=>$usersModel->id, 'id_emails'=>$emailsModel->id]],
-                ]);
-                $usersEmailsInsertMapper->setGroup();
-            }
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-        return true;
     }
     
      /**
@@ -364,45 +395,17 @@ class ShoppingCartController extends AbstractBaseController
                     'fields'=>['address', 'city', 'country', 'postcode'],
                     'objectsArray'=>[$addressModel],
                 ]);
-                $addressInsertMapper->setGroup();
+                if (!$addressInsertMapper->setGroup()) {
+                    throw new ErrorException('Не удалось обновить данные в БД!');
+                }
             }
+            return $addressModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $addressModel;
      }
      
-    /**
-     * Проверяет, существет ли запись в БД для user and address, если да, прекращает выполнение,
-     * если нет, создает новую запись в БД
-     * @param object $usersModel экземпляр UsersModel
-     * @param object $addressModel экземпляр AddressModel
-     * @return boolean
-     */
-    private function setUsersAddressModel(UsersModel $usersModel, AddressModel $addressModel)
-    {
-        try {
-            $usersAddressByUsersAddressMapper = new UsersAddressByUsersAddressMapper([
-                'tableName'=>'users_address',
-                'fields'=>['id_users', 'id_address'],
-                'params'=>[':id_users'=>$usersModel->id, ':id_address'=>$addressModel->id],
-            ]);
-            if (!$usersAddressByUsersAddressMapper->getOneFromGroup()) {
-                $usersAddressInsertMapper = new UsersAddressInsertMapper([
-                    'tableName'=>'users_address',
-                    'fields'=>['id_users', 'id_address'],
-                    'DbArray'=>[['id_users'=>$usersModel->id, 'id_address'=>$addressModel->id]],
-                ]);
-                $usersAddressInsertMapper->setGroup();
-            }
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-        return true;
-    }
-    
     /**
       * Получает PhonesModel для переданного в форму phone
      * Проверяет, существет ли запись в БД для phones, если да, прекращает выполнение,
@@ -426,43 +429,15 @@ class ShoppingCartController extends AbstractBaseController
                     'fields'=>['phone'],
                     'objectsArray'=>[$phonesModel],
                 ]);
-                $phonesInsertMapper->setGroup();
+                if (!$phonesInsertMapper->setGroup()) {
+                    throw new ErrorException('Не удалось обновить данные в БД!');
+                }
             }
+            return $phonesModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $phonesModel;
-    }
-    
-    /**
-     * Проверяет, существет ли запись в БД для user and phones, если да, прекращает выполнение,
-     * если нет, создает новую запись в БД
-     * @param object $usersModel экземпляр UsersModel
-     * @param object $phonesModel экземпляр PhonesModel
-     * @return boolean
-     */
-    private function setUsersPhonesModel(UsersModel $usersModel, PhonesModel $phonesModel)
-    {
-        try {
-            $usersPhonesByUsersPhonesMapper = new UsersPhonesByUsersPhonesMapper([
-                'tableName'=>'users_phones',
-                'fields'=>['id_users', 'id_phones'],
-                'params'=>[':id_users'=>$usersModel->id, ':id_phones'=>$phonesModel->id]
-            ]);
-            if (!$usersPhonesByUsersPhonesMapper->getOneFromGroup()) {
-                $usersPhonesInsertMapper = new UsersPhonesInsertMapper([
-                    'tableName'=>'users_phones',
-                    'fields'=>['id_users', 'id_phones'],
-                    'DbArray'=>[['id_users'=>$usersModel->id, 'id_phones'=>$phonesModel->id]],
-                ]);
-                $usersPhonesInsertMapper->setGroup();
-            }
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-        return true;
     }
     
     /**
@@ -481,11 +456,11 @@ class ShoppingCartController extends AbstractBaseController
             if ($result = $deliveriesByIdMapper->getOneFromGroup()) {
                 $deliveriesModel = $result;
             }
+            return $deliveriesModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $deliveriesModel;
     }
     
     /**
@@ -504,10 +479,45 @@ class ShoppingCartController extends AbstractBaseController
             if ($result = $paymentsByIdMapper->getOneFromGroup()) {
                 $paymentsModel = $result;
             }
+            return $paymentsModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $paymentsModel;
+    }
+    
+    /**
+     * Создает UsersPurchasesModel
+     * создает новую запись в БД, вязывающую пользователя с купленным товаром
+     * @param object $usersPurchasesModel экземпляр UsersPurchasesModel
+     * @return object
+     */
+    private function setUsersPurchasesModel($id_users, Array $productsArray, $id_deliveries, $id_payments)
+    {
+        try {
+            $arrayToDb = [];
+            foreach ($productsArray as $product) {
+                $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments];
+            }
+            $usersPurchasesInsertMapper = new UsersPurchasesInsertMapper([
+                'tableName'=>'users_purchases',
+                'fields'=>['id_users', 'id_products', 'id_deliveries', 'id_payments'],
+                'DbArray'=>$arrayToDb,
+            ]);
+            if (!$result = $usersPurchasesInsertMapper->setGroup()) {
+                throw new ErrorException('Не удалось сохранить данные в БД!');
+            }
+            return $result;
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    public function behaviors()
+    {
+        return [
+            ['class'=>'app\filters\ProductsListFilter'],
+        ];
     }
 }

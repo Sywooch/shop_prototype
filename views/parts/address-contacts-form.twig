@@ -1,7 +1,7 @@
 
 {{ use('/yii/widgets/ActiveForm') }}
 
-{% set form=active_form_begin({'id':'address-contacts-form', 'action':'', 'method':'POST'}) %}
+{% set form=active_form_begin({'id':'address-contacts-form', 'action':url.to({0:'shopping-cart/address-contacts'}), 'method':'POST'}) %}
     {{ form.field(emailsModel, 'email') | raw }}
     {{ form.field(usersModel, 'name').label('First Name') | raw }}
     {{ form.field(usersModel, 'surname').label('Last Name') | raw }}
