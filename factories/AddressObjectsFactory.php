@@ -15,7 +15,7 @@ class AddressObjectsFactory extends AbstractGetObjectsFactory
         parent::init();
         
         try {
-            if (!isset($this->model)) {
+            if (empty($this->model)) {
                 $this->model = new AddressModel(['scenario'=>AddressModel::GET_FROM_DB]);
             }
         } catch (\Exception $e) {

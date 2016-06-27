@@ -3,7 +3,6 @@
 namespace app\factories;
 
 use yii\base\Object;
-use yii\base\ErrorException;
 use app\mappers\AbstractBaseMapper;
 use app\traits\ExceptionsTrait;
 use app\interfaces\VisitorInterface;
@@ -18,12 +17,12 @@ abstract class AbstractBaseFactory extends Object implements VisitorInterface
     /**
      * @var object объект класса модели для создания экземпляров
      */
-    public $model;
+    public $model = NULL;
     /**
      * @var object объект на основании данных которого создаются объекты данных,
      * объекты данных сохраняются в свойство objectsArray этого объекта
      */
-    protected $_mapperObject;
+    protected $_mapperObject = NULL;
     
     /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
@@ -31,15 +30,9 @@ abstract class AbstractBaseFactory extends Object implements VisitorInterface
      * @param $object
      * @return boolean
      */
-    public function update($object)
+    public function update(AbstractBaseMapper $object)
     {
         try {
-            if (!is_object($object)) {
-                throw new ErrorException('Переденный аргумент не является объектом!');
-            }
-            if (!$object instanceof AbstractBaseMapper) {
-                throw new ErrorException('Переденный аргумент должен принадлежать к типу AbstractBaseMapper!');
-            }
             $this->_mapperObject = $object;
             return true;
         } catch (\Exception $e) {

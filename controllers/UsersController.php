@@ -11,6 +11,7 @@ use app\factories\UsersRulesAutonomicFactory;
 
 /**
  * Управляет работой с пользователями
+ * @return string
  */
 class UsersController extends AbstractBaseController
 {

@@ -4,6 +4,7 @@ namespace app\queries;
 
 use yii\base\Object;
 use yii\base\ErrorException;
+use app\mappers\AbstractBaseMapper;
 use app\traits\ExceptionsTrait;
 use app\interfaces\VisitorInterface;
 
@@ -25,7 +26,7 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
      * запускает процесс
      * @param $object
      */
-    public function update($object)
+    public function update(AbstractBaseMapper $object)
     {
         try {
             $this->_mapperObject = $object;

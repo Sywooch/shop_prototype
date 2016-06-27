@@ -110,7 +110,7 @@ class ShoppingCartController extends AbstractBaseController
     
     /**
      * Управляет процессом удаления из корзины определенного продукта
-     * @return string
+     * @return redirect
      */
     public function actionRemoveProduct()
     {
@@ -139,7 +139,7 @@ class ShoppingCartController extends AbstractBaseController
     
     /**
      * Управляет процессом обновления данных определенного продукта
-     * @return string
+     * @return redirect
      */
     public function actionUpdateProduct()
     {
@@ -323,7 +323,7 @@ class ShoppingCartController extends AbstractBaseController
      * Проверяет, авторизирован ли user в системе, если да, обновляет данные,
      * если нет, создает новую запись в БД
      * @param object $usersModel экземпляр UsersModel
-     * @return object
+     * @return int
      */
     private function setUsersModel(UsersModel $usersModel)
     {

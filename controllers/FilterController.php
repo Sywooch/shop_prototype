@@ -60,7 +60,7 @@ class FilterController extends AbstractBaseProductsController
     
     /**
      * Формирует URL для редиректа
-     * @return string
+     * @return string URI
      */
     private function getRedirectUrl()
     {

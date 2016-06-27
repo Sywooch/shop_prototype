@@ -13,6 +13,10 @@ use app\mappers\CommentsInsertMapper;
  */
 class CommentsController extends AbstractBaseController
 {
+    /**
+     * Добавляет комментарий к товару
+     * @return redirect
+     */
     public function actionAddComment()
     {
         try {

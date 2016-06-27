@@ -15,7 +15,7 @@ class UsersPurchasesObjectsFactory extends AbstractGetObjectsFactory
         parent::init();
         
         try {
-            if (!isset($this->model)) {
+            if (empty($this->model)) {
                 $this->model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_DB]);
             }
         } catch (\Exception $e) {

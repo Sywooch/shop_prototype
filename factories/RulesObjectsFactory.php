@@ -15,7 +15,7 @@ class RulesObjectsFactory extends AbstractGetObjectsFactory
         parent::init();
         
         try {
-            if (!isset($this->model)) {
+            if (empty($this->model)) {
                 $this->model = new RulesModel(['scenario'=>RulesModel::GET_FROM_DB]);
             }
         } catch (\Exception $e) {

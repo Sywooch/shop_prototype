@@ -3,6 +3,7 @@
 namespace app\queries;
 
 use app\queries\AbstractBaseQueryCreator;
+use app\mappers\AbstractBaseMapper;
 
 abstract class AbstractInsertQueryCreator extends AbstractBaseQueryCreator
 {
@@ -11,7 +12,7 @@ abstract class AbstractInsertQueryCreator extends AbstractBaseQueryCreator
      * запускает процесс
      * @param $object
      */
-    public function update($object)
+    public function update(AbstractBaseMapper $object)
     {
         try {
             parent::update($object);

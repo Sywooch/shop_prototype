@@ -3,7 +3,10 @@
 namespace app\helpers;
 
 use app\traits\ExceptionsTrait;
+use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
+use app\models\DeliveriesModel;
+use app\models\PaymentsModel;
 
 /**
  * Предоставляет методы для транслитерации
@@ -19,19 +22,22 @@ class DeliveryArrayHelper
      * @param array $arrayObjects массив объектов DeliveriesModel
      * @return array
      */
-    public static function getDeliveriesArray($arrayObjects)
+    public static function getDeliveriesArray(Array $arrayObjects)
     {
         try {
+            if (empty($arrayObjects) || !is_object($arrayObjects[0]) || !$arrayObjects[0] instanceof DeliveriesModel) {
+                throw new ErrorException('Переданы неверные данные!');
+            }
             foreach ($arrayObjects as $object) {
                 self::$_result[$object->id] = $object->name . '. ' . $object->description;
                 if ($object->price > 0) {
                     self::$_result[$object->id] .= ' Стоимость доставки: ' . $object->price;
                 }
             }
+            return self::$_result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
-        return self::$_result;
     }
     
     /**
@@ -39,15 +45,18 @@ class DeliveryArrayHelper
      * @param array $arrayObjects массив объектов PaymentsModel
      * @return array
      */
-    public static function getPaymentsArray($arrayObjects)
+    public static function getPaymentsArray(Array $arrayObjects)
     {
         try {
+            if (empty($arrayObjects) || !is_object($arrayObjects[0]) || !$arrayObjects[0] instanceof PaymentsModel) {
+                throw new ErrorException('Переданы неверные данные!');
+            }
             foreach ($arrayObjects as $object) {
                 self::$_result[$object->id] = $object->name . '. ' . $object->description;
             }
+            return self::$_result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
-        return self::$_result;
     }
 }

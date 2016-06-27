@@ -3,6 +3,7 @@
 namespace app\factories;
 
 use app\factories\AbstractBaseFactory;
+use app\mappers\AbstractBaseMapper;
 use yii\base\ErrorException;
 
 /**
@@ -16,10 +17,12 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
      * @param $object
      * @return boolean
      */
-    public function update($object)
+    public function update(AbstractBaseMapper $object)
     {
         try {
-            parent::update($object);
+            if (!parent::update($object)) {
+                throw new ErrorException('Ошибка при сохранении объекта, для которого выполняются действия!');
+            }
             if (!$this->getObjects()) {
                 throw new ErrorException('Ошибка при постороении объектов!');
             }
@@ -31,6 +34,7 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
     
     /**
      * Создает на основе массива строк массив объектов
+     * @return boolean
      */
     public function getObjects()
     {
@@ -39,7 +43,7 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
                 return false;
             }
             
-            if (!isset($this->model)) {
+            if (empty($this->model)) {
                 throw new ErrorException('Не задан объект класса модели для создания экземпляров!');
             }
                 
@@ -48,9 +52,9 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
                 $model->attributes = $entry;
                 $this->_mapperObject->objectsArray[] = $model;
             }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return true;
     }
 }
