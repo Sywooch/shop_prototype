@@ -5,6 +5,7 @@ namespace app\controllers;
 use yii\web\Controller;
 use app\mappers\CategoriesMapper;
 use app\traits\ExceptionsTrait;
+use yii\base\ErrorException;
 use app\models\ProductsModel;
 
 /**
@@ -29,12 +30,16 @@ abstract class AbstractBaseController extends Controller
                 'fields'=>['id', 'name', 'seocode'],
                 'orderByField'=>'name'
             ]);
-            $result['categoriesList'] = $categoriesMapper->getGroup();
+            $categoriesArray = $categoriesMapper->getGroup();
+            if (!is_array($categoriesArray) || empty($categoriesArray)) {
+                throw new ErrorException('Ошибка при получении данных для рендеринга!');
+            }
+            $result['categoriesList'] = $categoriesArray;
             $result['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
+            return $result;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $result;
     }
 }

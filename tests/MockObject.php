@@ -2,9 +2,9 @@
 
 namespace app\tests;
 
-use yii\base\Object;
+use app\mappers\AbstractBaseMapper;
 
-class MockObject extends Object
+class MockObject extends AbstractBaseMapper
 {
     public $query;
     public $tableName;

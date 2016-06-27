@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
+use yii\helpers\Url;
+use yii\base\ErrorException;
+use app\helpers\SessionHelper;
 use app\controllers\AbstractBaseProductsController;
 use app\models\FiltersModel;
-use yii\helpers\Url;
-use app\helpers\SessionHelper;
 
 /**
  * Обрабатывает запросы данных, к которым необходимо применить фильтры
@@ -23,12 +24,14 @@ class FilterController extends AbstractBaseProductsController
                 if (\Yii::$app->filters->validate()) {
                     $urlArray = $this->getRedirectUrl();
                 }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
             }
+            return $this->redirect(Url::to($urlArray));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->redirect(Url::to($urlArray));
     }
     
     /**
@@ -40,15 +43,19 @@ class FilterController extends AbstractBaseProductsController
         try {
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
-                    SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession']]);
+                    if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession']])) {
+                        throw new ErrorException('Ошибка при удалении переменной из сесии!');
+                    }
                     $urlArray = $this->getRedirectUrl();
                 }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
             }
+            return $this->redirect(Url::to($urlArray));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-        return $this->redirect(Url::to($urlArray));
     }
     
     /**
@@ -69,10 +76,10 @@ class FilterController extends AbstractBaseProductsController
                     $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>\Yii::$app->filters->subcategory]);
                 }
             }
+            return $urlArray;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $urlArray;
     }
     
     public function behaviors()

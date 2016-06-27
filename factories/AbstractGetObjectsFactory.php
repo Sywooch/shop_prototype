@@ -14,12 +14,16 @@ abstract class AbstractGetObjectsFactory extends AbstractBaseFactory
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,
      * запускает процесс
      * @param $object
+     * @return boolean
      */
     public function update($object)
     {
         try {
             parent::update($object);
-            $this->getObjects();
+            if (!$this->getObjects()) {
+                throw new ErrorException('Ошибка при постороении объектов!');
+            }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

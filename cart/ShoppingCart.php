@@ -3,6 +3,7 @@
 namespace app\cart;
 
 use yii\base\Object;
+use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 use app\helpers\SessionHelper;
 use app\models\ProductsModel;
@@ -31,7 +32,7 @@ class ShoppingCart extends Object
     /**
      * @var object объект пользователя, связанного с заказами в корзине
      */
-    public $user;
+    public $user = NULL;
     
     /**
      * Добавляет продукт в массив выбранных к покупке
@@ -48,10 +49,10 @@ class ShoppingCart extends Object
                 }
             }
             $this->_productsArray[] = $object;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return true;
     }
     
     /**
@@ -66,12 +67,14 @@ class ShoppingCart extends Object
                 return $obj_a->id - $obj_b->id;
             });
             if (empty($this->_productsArray)) {
-                $this->clearProductsArray();
+                if (!$this->clearProductsArray()) {
+                    throw new ErrorException('Не удалось очистить корзину!');
+                }
             }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return true;
     }
     
     /**
@@ -92,10 +95,10 @@ class ShoppingCart extends Object
                     break;
                 }
             }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return true;
     }
     
     /**
@@ -104,7 +107,11 @@ class ShoppingCart extends Object
      */
     public function getProductsArray()
     {
-        return $this->_productsArray;
+        try {
+            return $this->_productsArray;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
@@ -116,10 +123,10 @@ class ShoppingCart extends Object
     {
         try {
             $this->_productsArray = $productsArray;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return true;
     }
     
     /**
@@ -131,11 +138,13 @@ class ShoppingCart extends Object
         try {
             $this->_productsArray = array();
             $this->user = NULL;
-            SessionHelper::removeVarFromSession([\Yii::$app->params['cartKeyInSession'], \Yii::$app->params['cartKeyInSession'] . '.user']);
+            if (!SessionHelper::removeVarFromSession([\Yii::$app->params['cartKeyInSession'], \Yii::$app->params['cartKeyInSession'] . '.user'])) {
+                throw new ErrorException('Ошибка при удалении переменной из сесии!');
+            }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return true;
     }
     
     /**
@@ -153,10 +162,10 @@ class ShoppingCart extends Object
                     $this->_totalProducts += $objectInArray->quantity;
                 }
             }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return true;
     }
     
     /**
@@ -165,7 +174,11 @@ class ShoppingCart extends Object
      */
     public function getTotalCost()
     {
-        return $this->_totalCost;
+        try {
+            return $this->_totalCost;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
@@ -174,6 +187,10 @@ class ShoppingCart extends Object
      */
     public function getTotalProducts()
     {
-        return $this->_totalProducts;
+        try {
+            return $this->_totalProducts;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

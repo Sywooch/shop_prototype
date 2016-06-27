@@ -2,10 +2,11 @@
 
 namespace app\controllers;
 
+use yii\helpers\Url;
+use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\models\CommentsModel;
 use app\mappers\CommentsInsertMapper;
-use yii\helpers\Url;
 
 /**
  * Управляет процессом добавления комментария

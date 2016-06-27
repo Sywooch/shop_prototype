@@ -44,8 +44,7 @@ class ShoppingCartController extends AbstractBaseController
                     if (!\Yii::$app->cart->addProduct($model)) {
                         throw new ErrorException('Ошибка при добавлении товара в корзину!');
                     }
-                    $productData = \Yii::$app->request->post('ProductsModel');
-                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['id']]));
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$model->categories, 'subcategory'=>$model->subcategory, 'id'=>$model->id]));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
@@ -70,16 +69,15 @@ class ShoppingCartController extends AbstractBaseController
                     if (!\Yii::$app->cart->clearProductsArray()) {
                         throw new ErrorException('Ошибка при очистке корзины!');
                     }
-                    $productData = \Yii::$app->request->post('ProductsModel');
-                    if (!empty($productData['productId'])) {
-                        return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productData['categories'], 'subcategory'=>$productData['subcategory'], 'id'=>$productData['productId']]));
+                    if (!empty($model->id)) {
+                        return $this->redirect(Url::to(['product-detail/index', 'categories'=>$model->categories, 'subcategory'=>$model->subcategory, 'id'=>$model->id]));
                     } else {
                         $urlArray = ['products-list/index'];
-                        if (!empty($productData['categories'])) {
-                            $urlArray = array_merge($urlArray, ['categories'=>$productData['categories']]);
+                        if (!empty($model->categories)) {
+                            $urlArray = array_merge($urlArray, ['categories'=>$model->categories]);
                         }
-                        if (!empty($productData['subcategory'])) {
-                            $urlArray = array_merge($urlArray, ['subcategory'=>$productData['subcategory']]);
+                        if (!empty($model->subcategory)) {
+                            $urlArray = array_merge($urlArray, ['subcategory'=>$model->subcategory]);
                         }
                         return $this->redirect(Url::to($urlArray));
                     }
@@ -100,7 +98,10 @@ class ShoppingCartController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            return $this->render('shopping-cart.twig', $this->getDataForRender());
+            if (!is_array($dataForRender = $this->getDataForRender())) {
+                throw new ErrorException('Ошибка при формировании массива данных!');
+            }
+            return $this->render('shopping-cart.twig', $dataForRender);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -172,32 +173,32 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
-            if (isset(\Yii::$app->cart->user)) {
+            if (!empty(\Yii::$app->cart->user)) {
                 $usersModel = \Yii::$app->cart->user;
             } else {
                 $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
             }
-            if (isset(\Yii::$app->cart->user->emails)) {
+            if (!empty(\Yii::$app->cart->user->emails)) {
                 $emailsModel = \Yii::$app->cart->user->emails;
             } else {
                 $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
             }
-            if (isset(\Yii::$app->cart->user->address)) {
+            if (!empty(\Yii::$app->cart->user->address)) {
                 $addressModel = \Yii::$app->cart->user->address;
             } else {
                 $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
             }
-            if (isset(\Yii::$app->cart->user->phones)) {
+            if (!empty(\Yii::$app->cart->user->phones)) {
                 $phonesModel = \Yii::$app->cart->user->phones;
             } else {
                 $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
             }
-            if (isset(\Yii::$app->cart->user->deliveries)) {
+            if (!empty(\Yii::$app->cart->user->deliveries)) {
                 $deliveriesModel = \Yii::$app->cart->user->deliveries;
             } else {
                 $deliveriesModel = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_FORM]);
             }
-            if (isset(\Yii::$app->cart->user->payments)) {
+            if (!empty(\Yii::$app->cart->user->payments)) {
                 $paymentsModel = \Yii::$app->cart->user->payments;
             } else {
                 $paymentsModel = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_FORM]);
@@ -205,39 +206,41 @@ class ShoppingCartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $deliveriesModel->load(\Yii::$app->request->post()) && $paymentsModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
-                    if (!isset(\Yii::$app->cart->user)) {
+                    if (empty(\Yii::$app->cart->user)) {
                         \Yii::$app->cart->user = $usersModel;
                     }
                 }
                 if ($emailsModel->validate()) {
-                    if (!isset(\Yii::$app->cart->user->emails)) {
+                    if (empty(\Yii::$app->cart->user->emails)) {
                         \Yii::$app->cart->user->emails = $emailsModel;
                     }
                 }
                 if ($addressModel->validate()) {
-                    if (!isset(\Yii::$app->cart->user->address)) {
+                    if (empty(\Yii::$app->cart->user->address)) {
                         \Yii::$app->cart->user->address = $addressModel;
                     }
                 }
                 if ($phonesModel->validate()) {
-                    if (!isset(\Yii::$app->cart->user->phones)) {
+                    if (empty(\Yii::$app->cart->user->phones)) {
                         \Yii::$app->cart->user->phones = $phonesModel;
                     }
                 }
                 if ($deliveriesModel->validate()) {
-                    if (!isset(\Yii::$app->cart->user->deliveries)) {
+                    if (empty(\Yii::$app->cart->user->deliveries)) {
                         \Yii::$app->cart->user->deliveries = $deliveriesModel;
                     }
                 }
                 if ($paymentsModel->validate()) {
-                    if (!isset(\Yii::$app->cart->user->payments)) {
+                    if (empty(\Yii::$app->cart->user->payments)) {
                         \Yii::$app->cart->user->payments = $paymentsModel;
                     }
                 }
                 return $this->redirect(Url::to(['shopping-cart/check-pay']));
             }
             
-            $dataForRender = $this->getDataForRender();
+            if (!is_array($dataForRender = $this->getDataForRender())) {
+                throw new ErrorException('Ошибка при получении данных для рендеринга!');
+            }
             $dataForRender = array_merge($dataForRender, ['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel, 'addressModel'=>$addressModel, 'phonesModel'=>$phonesModel, 'deliveriesModel'=>$deliveriesModel, 'paymentsModel'=>$paymentsModel]);
             return $this->render('address-contacts.twig', $dataForRender);
         } catch (\Exception $e) {
@@ -253,7 +256,10 @@ class ShoppingCartController extends AbstractBaseController
     public function actionCheckPay()
     {
         try {
-            return $this->render('check-pay.twig', $this->getDataForRender());
+            if (!is_array($dataForRender = $this->getDataForRender())) {
+                throw new ErrorException('Ошибка при получении данных для рендеринга!');
+            }
+            return $this->render('check-pay.twig', $dataForRender);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -273,22 +279,22 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
-            if (!isset(\Yii::$app->cart->user)) {
+            if (empty(\Yii::$app->cart->user) || !is_object(\Yii::$app->cart->user)) {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
-            if (isset(\Yii::$app->cart->user->emails)) {
+            if (!empty(\Yii::$app->cart->user->emails) && is_object(\Yii::$app->cart->user->emails)) {
                 $emailsModel = $this->getEmailsModel(\Yii::$app->cart->user->emails);
                 \Yii::$app->cart->user->id_emails = $emailsModel->id;
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
-            if (isset(\Yii::$app->cart->user->address)) {
+            if (!empty(\Yii::$app->cart->user->address) && is_object(\Yii::$app->cart->user->address)) {
                 $addressModel = $this->getAddressModel(\Yii::$app->cart->user->address);
                 \Yii::$app->cart->user->id_address = $addressModel->id;
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
-            if (isset(\Yii::$app->cart->user->phones)) {
+            if (!empty(\Yii::$app->cart->user->phones) && is_object(\Yii::$app->cart->user->phones)) {
                 $phonesModel = $this->getPhonesModel(\Yii::$app->cart->user->phones);
                 \Yii::$app->cart->user->id_phones = $phonesModel->id;
             } else {
@@ -353,7 +359,8 @@ class ShoppingCartController extends AbstractBaseController
                 'fields'=>['id', 'email'],
                 'model'=>$emailsModel
             ]);
-            if ($result = $emailsByEmailMapper->getOneFromGroup()) {
+            $result = $emailsByEmailMapper->getOneFromGroup();
+            if (is_object($result) && $result instanceof EmailsModel) {
                 $emailsModel = $result;
             } else {
                 $emailsInsertMapper = new EmailsInsertMapper([
@@ -387,7 +394,8 @@ class ShoppingCartController extends AbstractBaseController
                 'fields'=>['id', 'address', 'city', 'country', 'postcode'],
                 'model'=>$addressModel
             ]);
-            if ($result = $addressByAddressMapper->getOneFromGroup()) {
+            $result = $addressByAddressMapper->getOneFromGroup();
+            if (is_object($result) && $result instanceof AddressModel) {
                 $addressModel = $result;
             } else {
                 $addressInsertMapper = new AddressInsertMapper([
@@ -421,7 +429,8 @@ class ShoppingCartController extends AbstractBaseController
                 'fields'=>['id', 'phone'],
                 'model'=>$phonesModel
             ]);
-            if ($result = $phonesByPhoneMapper->getOneFromGroup()) {
+            $result = $phonesByPhoneMapper->getOneFromGroup();
+            if (is_object($result) && $result instanceof PhonesModel) {
                 $phonesModel = $result;
             } else {
                 $phonesInsertMapper = new PhonesInsertMapper([
@@ -453,9 +462,11 @@ class ShoppingCartController extends AbstractBaseController
                 'fields'=>['id', 'name', 'description', 'price'],
                 'model'=>$deliveriesModel,
             ]);
-            if ($result = $deliveriesByIdMapper->getOneFromGroup()) {
-                $deliveriesModel = $result;
+            $result = $deliveriesByIdMapper->getOneFromGroup();
+            if (!is_object($result) || !$result instanceof DeliveriesModel) {
+                throw new ErrorException('Ошибка при получении данных из БД!');
             }
+            $deliveriesModel = $result;
             return $deliveriesModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -476,9 +487,11 @@ class ShoppingCartController extends AbstractBaseController
                 'fields'=>['id', 'name', 'description'],
                 'model'=>$paymentsModel,
             ]);
-            if ($result = $paymentsByIdMapper->getOneFromGroup()) {
-                $paymentsModel = $result;
+            $result = $paymentsByIdMapper->getOneFromGroup();
+            if (!is_object($result) || !$result instanceof PaymentsModel) {
+                throw new ErrorException('Ошибка при получении данных из БД!');
             }
+            $paymentsModel = $result;
             return $paymentsModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -495,6 +508,12 @@ class ShoppingCartController extends AbstractBaseController
     private function setUsersPurchasesModel($id_users, Array $productsArray, $id_deliveries, $id_payments)
     {
         try {
+            if (!is_numeric($id_users) || !is_numeric($id_deliveries) || !is_numeric($id_payments)) {
+                throw new ErrorException('Ошибка в типе переданных аргументов!');
+            }
+            if (!is_array($productsArray) || empty($productsArray)) {
+                throw new ErrorException('Ошибка в типе переданных аргументов!');
+            }
             $arrayToDb = [];
             foreach ($productsArray as $product) {
                 $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments];
