@@ -4,6 +4,7 @@ namespace app\mappers;
 
 use app\mappers\AbstractGetMapper;
 use yii\base\ErrorException;
+use app\models\ProductsModel;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
@@ -24,7 +25,7 @@ class CommentsForProductMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model)) {
+            if (empty($this->model) || !$this->model instanceof ProductsModel) {
                 throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
             }
             

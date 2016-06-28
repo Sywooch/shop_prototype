@@ -14,8 +14,8 @@ class SizesModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromBd';
     
-    public $id;
-    public $size;
+    public $id = '';
+    public $size = '';
     
     public function scenarios()
     {

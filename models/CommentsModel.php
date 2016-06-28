@@ -22,15 +22,15 @@ class CommentsModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     
-    public $id;
-    public $text;
-    public $name;
-    public $id_products;
-    public $active;
+    public $id = '';
+    public $text = '';
+    public $name = '';
+    public $id_products = '';
+    public $active = '';
     
-    public $email;
-    public $categories;
-    public $subcategory;
+    public $email = '';
+    public $categories = '';
+    public $subcategory = '';
     
     private $_id_emails = NULL;
     
@@ -51,27 +51,28 @@ class CommentsModel extends AbstractBaseModel
     }
     
     /**
-     * Если не инициировано свойство $this->_id_emails, выполняет поиск при помощи ображения к БД,
-     * если возникает ошибка, добавляет запись в БД и возвращает ID добавленной
+     * Если не инициировано свойство $this->_id_emails, выполняет поиск при помощи обращения к БД,
+     * если возникает ошибка, добавляет запись в БД и возвращает ID добавленной записи
      * @return int
      */
     public function getId_emails()
     {
         try {
             if (is_null($this->_id_emails)) {
+                if (empty($this->email)) {
+                    throw new ErrorException('Не определены данные для обращения к БД!');
+                }
+                $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+                $emailsModel->email = $this->email;
                 $emailsByCommentsMapper = new EmailsByEmailMapper([
                     'tableName'=>'emails',
                     'fields'=>['id'],
-                    'model'=>$this
+                    'model'=>$emailsModel
                 ]);
-                $emailsModel = $emailsByCommentsMapper->getOneFromGroup();
-                
-                if (!$emailsModel) {
-                    if (!isset($this->email)) {
-                        throw new ErrorException('Не задан email для создания объекта!');
-                    }
-                    $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-                    $emailsModel->attributes = ['email'=>$this->email];
+                $result = $emailsByCommentsMapper->getOneFromGroup();
+                if (is_object($result) || $result instanceof EmailsModel) {
+                    $emailsModel = $result;
+                } else {
                     $emailsInsertMapper = new EmailsInsertMapper([
                         'tableName'=>'emails',
                         'fields'=>['email'],
@@ -82,21 +83,29 @@ class CommentsModel extends AbstractBaseModel
                         throw new ErrorException('Не удалось добавить строку в БД!');
                     }
                 }
-                
                 $this->_id_emails = $emailsModel->id;
             }
+            return $this->_id_emails;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_id_emails;
     }
     
     /**
      * Присваивает значение свойству $this->_id_emails
      * @param int $value
+     * @return boolean
      */
     public function setId_emails($value)
     {
-        $this->_id_emails = $value;
+        try {
+            if (is_numeric($value)) {
+                $this->_id_emails = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

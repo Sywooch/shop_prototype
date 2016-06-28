@@ -30,11 +30,7 @@ abstract class AbstractBaseController extends Controller
                 'fields'=>['id', 'name', 'seocode'],
                 'orderByField'=>'name'
             ]);
-            $categoriesArray = $categoriesMapper->getGroup();
-            if (!is_array($categoriesArray) || empty($categoriesArray)) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
-            $result['categoriesList'] = $categoriesArray;
+            $result['categoriesList'] = $categoriesMapper->getGroup();
             $result['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
             return $result;
         } catch (\Exception $e) {

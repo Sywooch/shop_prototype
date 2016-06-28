@@ -6,6 +6,7 @@ use app\tests\DbManager;
 use app\tests\MockModel;
 use app\mappers\SizesForProductMapper;
 use app\models\SizesModel;
+use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\mappers\SizesForProductMapper
@@ -53,7 +54,7 @@ class SizesForProductMapperTests extends \PHPUnit_Framework_TestCase
         $sizesForProductMapper = new SizesForProductMapper([
             'tableName'=>'sizes',
             'fields'=>['id', 'size'],
-            'model'=>new MockModel([
+            'model'=>new ProductsModel([
                 'id'=>self::$_id,
             ]),
         ]);

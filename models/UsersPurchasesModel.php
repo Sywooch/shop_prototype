@@ -18,11 +18,11 @@ class UsersPurchasesModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     
-    public $id;
-    public $id_users;
-    public $id_products;
-    public $id_deliveries;
-    public $id_payments;
+    public $id = '';
+    public $id_users = '';
+    public $id_products = '';
+    public $id_deliveries = '';
+    public $id_payments = '';
     
     public function scenarios()
     {

@@ -2,9 +2,9 @@
 
 namespace app\tests;
 
-use yii\base\Object;
+use app\models\AbstractBaseModel;
 
-class MockModel extends Object
+class MockModel extends AbstractBaseModel
 {
     public $id;
     public $text;

@@ -19,8 +19,8 @@ class PaymentsModel extends AbstractBaseModel
      */
     const GET_FROM_DB = 'getFromDb';
     
-    public $name;
-    public $description;
+    public $name = '';
+    public $description = '';
     
     private $_id = NULL;
     private $_allPayments = NULL;
@@ -51,10 +51,19 @@ class PaymentsModel extends AbstractBaseModel
     /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
+     * @return boolean
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
@@ -69,11 +78,15 @@ class PaymentsModel extends AbstractBaseModel
                     'tableName'=>'payments',
                     'fields'=>['id', 'name', 'description'],
                 ]);
-                $this->_allPayments = $paymentsMapper->getGroup();
+                $paymentsArray = $paymentsMapper->getGroup();
+                if (!is_array($paymentsArray) || empty($paymentsArray)) {
+                    return false;
+                }
+                $this->_allPayments = $paymentsArray;
             }
+            return $this->_allPayments;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_allPayments;
     }
 }

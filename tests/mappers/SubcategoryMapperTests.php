@@ -6,6 +6,7 @@ use app\tests\DbManager;
 use app\tests\MockModel;
 use app\mappers\SubcategoryMapper;
 use app\models\SubcategoryModel;
+use app\models\CategoriesModel;
 
 /**
  * Тестирует класс app\mappers\SubcategoryMapper
@@ -40,7 +41,7 @@ class SubcategoryMapperTests extends \PHPUnit_Framework_TestCase
         $subcategoryMapper = new SubcategoryMapper([
             'tableName'=>'subcategory',
             'fields'=>['id', 'name'],
-            'model'=>new MockModel([
+            'model'=>new CategoriesModel([
                 'id'=>self::$_id,
             ]),
         ]);

@@ -1,7 +1,9 @@
 
-<p>Sizes</p>
-<ul>
-{% for size in productsObject.sizes %}
-    <li>{{ size.size }}</li>
-{% endfor %}
-</ul>
+{% if productsObject.sizes %}
+    <p>Sizes</p>
+    <ul>
+        {% for size in productsObject.sizes %}
+            <li>{{ size.size }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}

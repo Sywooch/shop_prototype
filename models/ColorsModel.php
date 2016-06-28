@@ -14,8 +14,8 @@ class ColorsModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromBd';
     
-    public $id;
-    public $color;
+    public $id = '';
+    public $color = '';
     
     public function scenarios()
     {

@@ -32,28 +32,28 @@ class ProductsModel extends AbstractBaseModel
     */
     const GET_FROM_FORM_FOR_CLEAR_CART = 'getFromFormForClearCart';
     
-    public $id;
-    public $date;
-    public $code;
-    public $name;
-    public $description;
-    public $price;
-    public $images;
-    public $id_categories;
-    public $id_subcategory;
+    public $id = '';
+    public $date = '';
+    public $code = '';
+    public $name = '';
+    public $description = '';
+    public $price = '';
+    public $images = '';
+    public $id_categories = '';
+    public $id_subcategory = '';
     
     /**
      * Свойства получаемые при выборке связанных и похожих продуктов, например, для построения ссылок
      */
-    public $categories;
-    public $subcategory;
+    public $categories = '';
+    public $subcategory = '';
     
     /**
      * Свойства получаемые из формы добавления в корзину
      */
-    public $colorToCart;
-    public $sizeToCart;
-    public $quantity;
+    public $colorToCart = '';
+    public $sizeToCart = '';
+    public $quantity = '';
     
     private $_colors = NULL;
     private $_sizes = NULL;
@@ -79,7 +79,7 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_colors)) {
-                if (!isset($this->id)) {
+                if (empty($this->id)) {
                     throw new ErrorException('Не определен id продукта, для которого необходимо получить цвета!');
                 }
                 $colorsMapper = new ColorsForProductMapper([
@@ -88,12 +88,16 @@ class ProductsModel extends AbstractBaseModel
                     'orderByField'=>'color',
                     'model'=>$this,
                 ]);
-                $this->_colors = $colorsMapper->getGroup();
+                $colorsArray = $colorsMapper->getGroup();
+                if (!is_array($colorsArray) || empty($colorsArray)) {
+                    return false;
+                }
+                $this->_colors = $colorsArray;
             }
+            return $this->_colors;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_colors;
     }
     
     /**
@@ -104,7 +108,7 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_sizes)) {
-                if (!isset($this->id)) {
+                if (empty($this->id)) {
                     throw new ErrorException('Не определен id продукта, для которого необходимо получить размеры!');
                 }
                 $sizesMapper = new SizesForProductMapper([
@@ -113,12 +117,16 @@ class ProductsModel extends AbstractBaseModel
                     'orderByField'=>'size',
                     'model'=>$this,
                 ]);
-                $this->_sizes = $sizesMapper->getGroup();
+                $sizesArray = $sizesMapper->getGroup();
+                if (!is_array($sizesArray) || empty($sizesArray)) {
+                    return false;
+                }
+                $this->_sizes = $sizesArray;
             }
+            return $this->_sizes;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_sizes;
     }
     
     /**
@@ -129,7 +137,7 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_similar)) {
-                if (!isset($this->id)) {
+                if (empty($this->id)) {
                     throw new ErrorException('Не определен id продукта, для которого необходимо получить похожие продукты!');
                 }
                 $similarProductsMapper = new SimilarProductsMapper([
@@ -142,12 +150,16 @@ class ProductsModel extends AbstractBaseModel
                     ],
                     'model'=>$this,
                 ]);
-                $this->_similar = $similarProductsMapper->getGroup();
+                $similarsArray = $similarProductsMapper->getGroup();
+                if (!is_array($similarsArray) || empty($similarsArray)) {
+                    return false;
+                }
+                $this->_similar = $similarsArray;
             }
+            return $this->_similar;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_similar;
     }
     
     /**
@@ -158,7 +170,7 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_related)) {
-                if (!isset($this->id)) {
+                if (empty($this->id)) {
                     throw new ErrorException('Не определен id продукта, для которого необходимо получить похожие продукты!');
                 }
                 $relatedProductsMapper = new RelatedProductsMapper([
@@ -171,12 +183,17 @@ class ProductsModel extends AbstractBaseModel
                     'orderByField'=>'date',
                     'model'=>$this,
                 ]);
-                $this->_related = $relatedProductsMapper->getGroup();
+                $relatedArray = $relatedProductsMapper->getGroup();
+                if (!is_array($relatedArray) || empty($relatedArray)) {
+                    return false;
+                }
+                $this->_related = $relatedArray;
             }
+            return $this->_related;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_related;
+        
     }
     
     /**
@@ -187,7 +204,7 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_comments)) {
-                if (!isset($this->id)) {
+                if (empty($this->id)) {
                     throw new ErrorException('Не определен id продукта, для которого необходимо получить комментарии!');
                 }
                 $commentsForProductMapper = new CommentsForProductMapper([
@@ -195,11 +212,15 @@ class ProductsModel extends AbstractBaseModel
                     'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
                     'model'=>$this,
                 ]);
-                $this->_comments = $commentsForProductMapper->getGroup();
+                $commentsArray = $commentsForProductMapper->getGroup();
+                if (!is_array($commentsArray) || empty($commentsArray)) {
+                    return false;
+                }
+                $this->_comments = $commentsArray;
             }
+            return $this->_comments;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_comments;
     }
 }

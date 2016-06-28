@@ -18,8 +18,8 @@ class UsersRulesModel extends AbstractBaseModel
     */
     const GET_FROM_FORM = 'getFromForm';
     
-    public $id_users;
-    public $id_rules;
+    public $id_users = '';
+    public $id_rules = '';
     
     public function scenarios()
     {

@@ -19,9 +19,9 @@ class DeliveriesModel extends AbstractBaseModel
      */
     const GET_FROM_DB = 'getFromDb';
     
-    public $name;
-    public $description;
-    public $price;
+    public $name = '';
+    public $description = '';
+    public $price = '';
     
     private $_id = NULL;
     private $_allDeliveries = NULL;
@@ -52,10 +52,19 @@ class DeliveriesModel extends AbstractBaseModel
     /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
+     * @return boolean
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
@@ -70,11 +79,15 @@ class DeliveriesModel extends AbstractBaseModel
                     'tableName'=>'deliveries',
                     'fields'=>['id', 'name', 'description', 'price'],
                 ]);
-                $this->_allDeliveries = $deliveriesMapper->getGroup();
+                $deliveriesArray = $deliveriesMapper->getGroup();
+                if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
+                    return false;
+                }
+                $this->_allDeliveries = $deliveriesArray;
             }
+            return $this->_allDeliveries;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_allDeliveries;
     }
 }

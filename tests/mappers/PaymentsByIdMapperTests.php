@@ -35,7 +35,7 @@ class PaymentsByIdMapperTests extends \PHPUnit_Framework_TestCase
         $paymentsByIdMapper = new PaymentsByIdMapper([
             'tableName'=>'payments',
             'fields'=>['id', 'name', 'description'],
-            'model'=>new MockModel([
+            'model'=>new PaymentsModel([
                 'id'=>self::$_id,
             ]),
         ]);

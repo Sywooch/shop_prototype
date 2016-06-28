@@ -6,6 +6,7 @@ use app\tests\DbManager;
 use app\tests\MockModel;
 use app\mappers\CommentsForProductMapper;
 use app\models\CommentsModel;
+use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\mappers\CommentsForProductMapper
@@ -54,7 +55,7 @@ class CommentsForProductMapperTests extends \PHPUnit_Framework_TestCase
         $commentsForProductMapper = new CommentsForProductMapper([
             'tableName'=>'comments',
             'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
-            'model'=>new MockModel([
+            'model'=>new ProductsModel([
                 'id'=>self::$_id,
             ]),
         ]);

@@ -36,7 +36,7 @@ class DeliveriesByIdMapperTests extends \PHPUnit_Framework_TestCase
         $deliveriesByIdMapper = new DeliveriesByIdMapper([
             'tableName'=>'deliveries',
             'fields'=>['id', 'name', 'description', 'price'],
-            'model'=>new MockModel([
+            'model'=>new DeliveriesModel([
                 'id'=>self::$_id,
             ]),
         ]);

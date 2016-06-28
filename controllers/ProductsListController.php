@@ -34,9 +34,6 @@ class ProductsListController extends AbstractBaseProductsController
         try {
             $productsMapper = new ProductsListMapper($this->_config);
             $productsArray = $productsMapper->getGroup();
-            if (!is_array($productsArray) || empty($productsArray)) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
             if (!is_array($dataForRender = $this->getDataForRender())) {
                 throw new ErrorException('Ошибка при формировании массива данных!');
             }
@@ -58,9 +55,6 @@ class ProductsListController extends AbstractBaseProductsController
             $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
             $productsMapper = new ProductsListMapper($this->_config);
             $productsArray = $productsMapper->getGroup();
-            if (!is_array($productsArray) || empty($productsArray)) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
             if (!is_array($dataForRender = $this->getDataForRender())) {
                 throw new ErrorException('Ошибка при формировании массива данных!');
             }
@@ -89,11 +83,7 @@ class ProductsListController extends AbstractBaseProductsController
                 'fields'=>['id', 'color'],
                 'orderByField'=>'color',
             ]);
-            $colorsArray = $colorsMapper->getGroup();
-            if (!is_array($colorsArray) || empty($colorsArray)) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
-            $result['colorsList'] = $colorsArray;
+            $result['colorsList'] = $colorsMapper->getGroup();
             
             # Получаю массив объектов размеров для фильтра
             $sizesMapper = new SizesMapper([
@@ -101,11 +91,7 @@ class ProductsListController extends AbstractBaseProductsController
                 'fields'=>['id', 'size'],
                 'orderByField'=>'size'
             ]);
-            $sizesArray = $sizesMapper->getGroup();
-            if (!is_array($sizesArray) || empty($sizesArray)) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
-            $result['sizesList'] = $sizesArray;
+            $result['sizesList'] = $sizesMapper->getGroup();
             
             # Получаю массив brands для фильтра
             $brandsMapper = new BrandsMapper([
@@ -113,11 +99,7 @@ class ProductsListController extends AbstractBaseProductsController
                 'fields'=>['id', 'brand'],
                 'orderByField'=>'brand'
             ]);
-            $brandsArray = $brandsMapper->getGroup();
-            if (!is_array($brandsArray) || empty($brandsArray)) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
-            $result['brandsList'] = $brandsArray;
+            $result['brandsList'] = $brandsMapper->getGroup();
             
             if (!isset(\Yii::$app->filters)) {
                 throw new ErrorException('Не определен объект фильтров!');

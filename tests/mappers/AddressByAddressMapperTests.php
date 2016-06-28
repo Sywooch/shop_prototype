@@ -37,7 +37,7 @@ class AddressByAddressMapperTests extends \PHPUnit_Framework_TestCase
         $addressByAddressMapper = new AddressByAddressMapper([
             'tableName'=>'address',
             'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-            'model'=>new MockModel([
+            'model'=>new AddressModel([
                 'address'=>self::$_address,
                 'city'=>self::$_city,
                 'country'=>self::$_country,

@@ -4,6 +4,7 @@ namespace app\mappers;
 
 use app\mappers\AbstractInsertMapper;
 use yii\base\ErrorException;
+use app\models\UsersModel;
 
 /**
  * Добавляет записи в БД
@@ -43,12 +44,12 @@ class UsersRulesInsertMapper extends AbstractInsertMapper
     private function getUsersRulesDbArray()
     {
         try {
-            if (empty($this->model)) {
+            if (empty($this->model) || !$this->model instanceof UsersModel) {
                 throw new ErrorException('Не передана модель!');
             }
             $result = array();
             $rulesForUser = $this->model->rulesFromForm;
-            if (!is_array($rulesForUser)) {
+            if (!is_array($rulesForUser) || empty($rulesForUser)) {
                 throw new ErrorException('Данные получены в неверном формате!');
             }
             foreach ($rulesForUser as $rule) {

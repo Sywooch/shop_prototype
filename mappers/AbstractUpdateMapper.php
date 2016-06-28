@@ -26,7 +26,9 @@ abstract class AbstractUpdateMapper extends AbstractInsertMapper
                 foreach ($this->fields as $field) {
                     $this->params[':' . $field] = $this->model->$field;
                 }
-                $this->params[':id'] = $this->model->id;
+                if (!array_key_exists(':id', $this->params)) {
+                    $this->params[':id'] = $this->model->id;
+                }
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

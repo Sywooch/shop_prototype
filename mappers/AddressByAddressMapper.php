@@ -4,6 +4,7 @@ namespace app\mappers;
 
 use app\mappers\AbstractGetMapper;
 use yii\base\ErrorException;
+use app\models\AddressModel;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
@@ -24,7 +25,7 @@ class AddressByAddressMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model)) {
+            if (empty($this->model) || !$this->model instanceof AddressModel) {
                 throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
             }
             

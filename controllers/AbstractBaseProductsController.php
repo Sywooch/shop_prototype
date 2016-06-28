@@ -28,11 +28,7 @@ abstract class AbstractBaseProductsController extends AbstractBaseController
                 'fields'=>['id', 'currency'],
                 'orderByField'=>'currency'
             ]);
-            $currencyArray = $currencyMapper->getGroup();
-            if (!is_array($currencyArray) || empty($currencyArray)) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
-            $result['currencyList'] = $currencyArray;
+            $result['currencyList'] = $currencyMapper->getGroup();
             return $result;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

@@ -4,6 +4,8 @@ namespace app\models;
 
 use app\models\AbstractBaseModel;
 use app\mappers\AddressByAddressMapper;
+use app\mappers\AddressInsertMapper;
+use yii\base\ErrorException;
 
 /**
  * Представляет данные таблицы address
@@ -19,10 +21,10 @@ class AddressModel extends AbstractBaseModel
      */
     const GET_FROM_DB = 'getFromDb';
     
-    public $address;
-    public $city;
-    public $country;
-    public $postcode;
+    public $address = '';
+    public $city = '';
+    public $country = '';
+    public $postcode = '';
     
     private $_id = NULL;
     
@@ -43,34 +45,47 @@ class AddressModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_id
+     * @return boolean/int
      */
     public function getId()
     {
         try {
             if (is_null($this->_id)) {
-                if (isset($this->address, $this->city, $this->country, $this->postcode)) {
-                    $addressByAddressMapper = new AddressByAddressMapper([
-                        'tableName'=>'address',
-                        'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-                        'model'=>$this,
-                    ]);
-                    if ($addressModel = $addressByAddressMapper->getOneFromGroup()) {
-                        $this->_id = $addressModel->id;
-                    }
+                if (empty($this->address) || empty($this->city) || empty($this->country) || empty($this->postcode)) {
+                    throw new ErrorException('Не определены данные для обращения к БД!');
                 }
+                $addressByAddressMapper = new AddressByAddressMapper([
+                    'tableName'=>'address',
+                    'fields'=>['id', 'address', 'city', 'country', 'postcode'],
+                    'model'=>$this,
+                ]);
+                $addressModel = $addressByAddressMapper->getOneFromGroup();
+                if (!is_object($addressModel) || !$addressModel instanceof $this) {
+                    return false;
+                }
+                $this->_id = $addressModel->id;
             }
+            return $this->_id;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_id;
     }
     
     /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
+     * @return boolean
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

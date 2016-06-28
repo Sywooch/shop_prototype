@@ -14,8 +14,8 @@ class BrandsModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromBd';
     
-    public $id;
-    public $brand;
+    public $id = '';
+    public $brand = '';
     
     public function scenarios()
     {

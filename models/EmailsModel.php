@@ -19,7 +19,7 @@ class EmailsModel extends AbstractBaseModel
     */
     const GET_FROM_FORM = 'getFromForm';
     
-    public $email;
+    public $email = '';
     private $_id = NULL;
     
     public function scenarios()
@@ -40,34 +40,47 @@ class EmailsModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_id
+     * @return int
      */
     public function getId()
     {
         try {
             if (is_null($this->_id)) {
-                if (isset($this->email)) {
-                    $emailsByEmailMapper = new EmailsByEmailMapper([
-                        'tableName'=>'emails',
-                        'fields'=>['id'],
-                        'model'=>$this
-                    ]);
-                    if ($emailsModel = $emailsByEmailMapper->getOneFromGroup()) {
-                        $this->_id = $emailsModel->id;
-                    }
+                if (empty($this->email)) {
+                    throw new ErrorException('Не определены данные для обращения к БД!');
                 }
+                $emailsByEmailMapper = new EmailsByEmailMapper([
+                    'tableName'=>'emails',
+                    'fields'=>['id'],
+                    'model'=>$this
+                ]);
+                $emailsModel = $emailsByEmailMapper->getOneFromGroup();
+                if (!is_object($emailsModel) || !$emailsModel instanceof $this) {
+                    return false;
+                }
+                $this->_id = $emailsModel->id;
             }
+            return $this->_id;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_id;
     }
     
     /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
+     * @return boolean
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

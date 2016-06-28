@@ -37,10 +37,10 @@ class AddressObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'country'));
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'postcode'));
         
-        $this->assertTrue(isset($mockObject->objectsArray[0]->id));
-        $this->assertTrue(isset($mockObject->objectsArray[0]->address));
-        $this->assertTrue(isset($mockObject->objectsArray[0]->city));
-        $this->assertTrue(isset($mockObject->objectsArray[0]->country));
-        $this->assertTrue(isset($mockObject->objectsArray[0]->postcode));
+        $this->assertTrue(!empty($mockObject->objectsArray[0]->id));
+        $this->assertTrue(!empty($mockObject->objectsArray[0]->address));
+        $this->assertTrue(!empty($mockObject->objectsArray[0]->city));
+        $this->assertTrue(!empty($mockObject->objectsArray[0]->country));
+        $this->assertTrue(!empty($mockObject->objectsArray[0]->postcode));
     }
 }

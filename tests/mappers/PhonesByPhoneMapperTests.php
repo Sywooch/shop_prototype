@@ -34,7 +34,7 @@ class PhonesByPhoneMapperTests extends \PHPUnit_Framework_TestCase
         $phonesByPhoneMapper = new PhonesByPhoneMapper([
             'tableName'=>'phones',
             'fields'=>['id', 'phone'],
-            'model'=>new MockModel([
+            'model'=>new PhonesModel([
                 'phone'=>self::$_phone,
             ]),
         ]);

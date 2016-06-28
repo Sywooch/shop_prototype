@@ -5,6 +5,7 @@ namespace app\tests\mappers;
 use app\tests\DbManager;
 use app\tests\MockModel;
 use app\mappers\UsersRulesInsertMapper;
+use app\models\UsersModel;
 
 /**
  * Тестирует класс app\mappers\UsersRulesInsertMapper
@@ -63,7 +64,7 @@ class UsersRulesInsertMapperTests extends \PHPUnit_Framework_TestCase
         $usersRulesInsertMapper = new UsersRulesInsertMapper([
             'tableName'=>'users_rules',
             'fields'=>['id_users', 'id_rules'],
-            'model'=>new MockModel([
+            'model'=>new UsersModel([
                 'id'=>self::$_id,
                 'rulesFromForm'=>[self::$_id, self::$_id + 1],
             ]),

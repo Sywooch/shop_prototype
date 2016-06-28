@@ -19,7 +19,7 @@ abstract class AbstractGetMapper extends AbstractBaseMapper
     {
         try {
             if (!$this->run()) {
-                throw new ErrorException('Ошибка при выполнении метода run!');
+                return false;
             }
             return $this->objectsArray;
         } catch (\Exception $e) {
@@ -35,13 +35,11 @@ abstract class AbstractGetMapper extends AbstractBaseMapper
     {
         try {
             $groupArray = $this->getGroup();
-            if (!is_array($groupArray)) {
-                throw new ErrorException('Ожидался массив объектов, получен не массив!');
+            if (!is_array($groupArray) || empty($groupArray)) {
+                return false;
             }
             if (count($groupArray) > 1) {
                 throw new ErrorException('Ожидался 1 объект, получено более 1 объекта');
-            } elseif (empty($groupArray)) {
-                return false;
             }
             return $groupArray[0];
         } catch (\Exception $e) {

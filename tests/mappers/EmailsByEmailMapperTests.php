@@ -34,7 +34,7 @@ class EmailsByEmailMapperTests extends \PHPUnit_Framework_TestCase
         $emailsByEmailMapper = new EmailsByEmailMapper([
             'tableName'=>'emails',
             'fields'=>['id', 'email'],
-            'model'=>new MockModel([
+            'model'=>new EmailsModel([
                 'email'=>self::$_email,
             ]),
         ]);

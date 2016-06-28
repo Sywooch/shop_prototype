@@ -16,9 +16,9 @@ class CategoriesModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromBd';
     
-    public $id;
-    public $name;
-    public $seocode;
+    public $id = '';
+    public $name = '';
+    public $seocode = '';
     
     private $_subcategory = NULL;
     
@@ -37,7 +37,7 @@ class CategoriesModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_subcategory)) {
-                if (!isset($this->id)) {
+                if (empty($this->id)) {
                     throw new ErrorException('Не определен id категории, для которой необходимо получить подкатегории!');
                 }
                 $subcategoryMapper = new SubcategoryMapper([
@@ -45,11 +45,15 @@ class CategoriesModel extends AbstractBaseModel
                     'fields'=>['id', 'name', 'seocode'],
                     'model'=>$this
                 ]);
-                $this->_subcategory = $subcategoryMapper->getGroup();
+                $subcategoryArray = $subcategoryMapper->getGroup();
+                if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
+                    return false;
+                }
+                $this->_subcategory = $subcategoryArray;
             }
+            return $this->_subcategory;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_subcategory;
     }
 }

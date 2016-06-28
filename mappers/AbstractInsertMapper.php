@@ -32,10 +32,10 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
                 throw new ErrorException('Ошибка при вызове конструктора запроса к БД!');
             }
             
-            if (!$this->setData()) {
-                throw new ErrorException('Ошибка при сохранении данных в БД!');
+            if (!$result = $this->setData()) {
+                return false;
             }
-            return true;
+            return $result;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -48,10 +48,10 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
     public function setGroup()
     {
         try {
-            if (!$this->run()) {
-                throw new ErrorException('Ошибка при выполнении метода run!');
+            if (!$result = $this->run()) {
+                return false;
             }
-            return true;
+            return $result;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -67,18 +67,19 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
             if (empty($this->query)) {
                 throw new ErrorException('Не определена строка запроса к БД!');
             }
+            
             $command = \Yii::$app->db->createCommand($this->query);
             if (!empty($this->params)) {
                 $command->bindValues($this->params);
             }
             $result = $command->execute();
-            if (!$result) {
-                throw new ErrorException('Не удалось обновить данные в БД!');
-            }
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
             }
-            return true;
+            if (!$result) {
+                return false;
+            }
+            return $result;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

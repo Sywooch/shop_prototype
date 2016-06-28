@@ -32,11 +32,11 @@ class UsersModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDB';
     
-    public $name;
-    public $surname;
-    public $id_emails;
-    public $id_phones;
-    public $id_address;
+    public $name = '';
+    public $surname = '';
+    public $id_emails = '';
+    public $id_phones = '';
+    public $id_address = '';
     
     /**
      * @var array массив ID rules, выбранных пользователем в форме

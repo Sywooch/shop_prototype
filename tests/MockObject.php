@@ -22,13 +22,13 @@ class MockObject extends AbstractBaseMapper
     {
         parent::init();
         
-        if (!isset($this->limit)) {
+        if (empty($this->limit)) {
             $this->limit = \Yii::$app->params['limit'];
         }
         
         if (!is_null(\Yii::$app->request->get(\Yii::$app->params['orderTypePointer']))) {
             $this->orderByType = \Yii::$app->request->get(\Yii::$app->params['orderTypePointer']);
-        } elseif (!isset($this->orderByType)) {
+        } elseif (empty($this->orderByType)) {
             $this->orderByType = \Yii::$app->params['orderByType'];
         }
         

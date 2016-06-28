@@ -6,6 +6,7 @@ use app\tests\DbManager;
 use app\tests\MockModel;
 use app\mappers\ColorsForProductMapper;
 use app\models\ColorsModel;
+use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\mappers\ColorsForProductMapper
@@ -53,7 +54,7 @@ class ColorsForProductMapperTests extends \PHPUnit_Framework_TestCase
         $colorsForProductMapper = new ColorsForProductMapper([
             'tableName'=>'colors',
             'fields'=>['id', 'color'],
-            'model'=>new MockModel([
+            'model'=>new ProductsModel([
                 'id'=>self::$_id,
             ]),
         ]);

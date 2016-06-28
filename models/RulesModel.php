@@ -14,8 +14,8 @@ class RulesModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     
-    public $id;
-    public $rule;
+    public $id = '';
+    public $rule = '';
     
     public function scenarios()
     {

@@ -19,7 +19,7 @@ class PhonesModel extends AbstractBaseModel
      */
     const GET_FROM_DB = 'getFromDb';
     
-    public $phone;
+    public $phone = '';
     
     private $_id = NULL;
     
@@ -40,30 +40,47 @@ class PhonesModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_id
+     * @return int
      */
     public function getId()
     {
-        if (is_null($this->_id)) {
-            if (isset($this->phone)) {
+        try {
+            if (is_null($this->_id)) {
+                if (empty($this->phone)) {
+                    throw new ErrorException('Не определены данные для обращения к БД!');
+                }
                 $phonesByPhoneMapper = new PhonesByPhoneMapper([
                     'tableName'=>'phones',
                     'fields'=>['id', 'phone'],
                     'model'=>$this
                 ]);
-                if ($objectPhones = $phonesByPhoneMapper->getOneFromGroup()) {
-                    $this->_id = $objectPhones->id;
+                $objectModel = $phonesByPhoneMapper->getOneFromGroup();
+                if (!is_object($objectModel) || !$objectModel instanceof $this) {
+                    return false;
                 }
+                $this->_id = $objectModel->id;
             }
+            return $this->_id;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
-        return $this->_id;
     }
     
     /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
+     * @return boolean
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

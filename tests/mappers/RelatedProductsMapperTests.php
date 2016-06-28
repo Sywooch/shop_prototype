@@ -55,7 +55,7 @@ class RelatedProductsMapperTests extends \PHPUnit_Framework_TestCase
                 ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
             ],
             'orderByField'=>'date',
-            'model'=>new MockModel([
+            'model'=>new ProductsModel([
                 'id'=>self::$_id
             ]),
         ]);

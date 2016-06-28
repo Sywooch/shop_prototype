@@ -404,7 +404,7 @@ class ShoppingCartController extends AbstractBaseController
                     'objectsArray'=>[$addressModel],
                 ]);
                 if (!$addressInsertMapper->setGroup()) {
-                    throw new ErrorException('Не удалось обновить данные в БД!');
+                    throw new ErrorException('Не удалось сохранить данные в БД!');
                 }
             }
             return $addressModel;

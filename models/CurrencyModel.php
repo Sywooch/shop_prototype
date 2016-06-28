@@ -14,8 +14,8 @@ class CurrencyModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromBd';
     
-    public $id;
-    public $currency;
+    public $id = '';
+    public $currency = '';
     
     public function scenarios()
     {

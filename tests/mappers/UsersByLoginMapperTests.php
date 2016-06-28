@@ -54,7 +54,7 @@ class UsersByLoginMapperTests extends \PHPUnit_Framework_TestCase
         $usersByLoginMapper = new UsersByLoginMapper([
             'tableName'=>'users',
             'fields'=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-            'model'=>new MockModel([
+            'model'=>new UsersModel([
                 'login'=>self::$_login,
             ]),
         ]);
