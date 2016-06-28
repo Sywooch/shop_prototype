@@ -20,6 +20,7 @@ class PasswordHelper
     
     /**
      * Конструирует случайный пароль
+     * @return string
      */
     public static function getPassword()
     {
@@ -28,9 +29,9 @@ class PasswordHelper
                 $element = self::$_matrix[mt_rand(0, count(self::$_matrix) - 1)];
                 self::$_outputArray[] = $element[mt_rand(0, count($element) - 1)];
             }
+            return implode('', self::$_outputArray);
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
-        return implode('', self::$_outputArray);
     }
 }

@@ -13,7 +13,8 @@ class SessionHelper
     
     /**
      * Удаляет из сессии переменную, имя которой передано в качестве параметра
-     * @param string $var имя переменной
+     * @param array $varsArray массив имен переменных
+     * @return boolean
      */
     public static function removeVarFromSession(Array $varsArray)
     {
@@ -26,9 +27,9 @@ class SessionHelper
                 }
             }
             $session->close();
+            return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
-        return true;
     }
 }

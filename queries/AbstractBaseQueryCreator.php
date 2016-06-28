@@ -30,6 +30,7 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     {
         try {
             $this->_mapperObject = $object;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

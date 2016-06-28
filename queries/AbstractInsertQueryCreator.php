@@ -17,6 +17,7 @@ abstract class AbstractInsertQueryCreator extends AbstractBaseQueryCreator
         try {
             parent::update($object);
             $this->getInsertQuery();
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -17,18 +17,25 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
     {
         try {
             if (!empty($this->DbArray)) {
-                if (!isset($this->objectsClass)) {
+                if (empty($this->objectsClass)) {
                     throw new ErrorException('Не задано имя класа, формирующего объекты!');
                 }
-                $this->visit(new $this->objectsClass());
+                if (!$this->visit(new $this->objectsClass())) {
+                    throw new ErrorException('Ошибка при вызове конструктора объектов!');
+                }
             }
             
-            if (!isset($this->queryClass)) {
+            if (empty($this->queryClass)) {
                 throw new ErrorException('Не задано имя класа, формирующего строку!');
             }
-            $this->visit(new $this->queryClass());
+            if (!$this->visit(new $this->queryClass())) {
+                throw new ErrorException('Ошибка при вызове конструктора запроса к БД!');
+            }
             
-            $this->setData();
+            if (!$this->setData()) {
+                throw new ErrorException('Ошибка при сохранении данных в БД!');
+            }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -41,11 +48,13 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
     public function setGroup()
     {
         try {
-            $this->run();
+            if (!$this->run()) {
+                throw new ErrorException('Ошибка при выполнении метода run!');
+            }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return true;
     }
     
     /**
@@ -55,6 +64,9 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
     protected function setData()
     {
         try {
+            if (empty($this->query)) {
+                throw new ErrorException('Не определена строка запроса к БД!');
+            }
             $command = \Yii::$app->db->createCommand($this->query);
             if (!empty($this->params)) {
                 $command->bindValues($this->params);
@@ -66,6 +78,7 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
             }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

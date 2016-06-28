@@ -18,11 +18,13 @@ abstract class AbstractGetMapper extends AbstractBaseMapper
     public function getGroup()
     {
         try {
-            $this->run();
+            if (!$this->run()) {
+                throw new ErrorException('Ошибка при выполнении метода run!');
+            }
+            return $this->objectsArray;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->objectsArray;
     }
     
     /**
@@ -33,24 +35,30 @@ abstract class AbstractGetMapper extends AbstractBaseMapper
     {
         try {
             $groupArray = $this->getGroup();
+            if (!is_array($groupArray)) {
+                throw new ErrorException('Ожидался массив объектов, получен не массив!');
+            }
             if (count($groupArray) > 1) {
                 throw new ErrorException('Ожидался 1 объект, получено более 1 объекта');
             } elseif (empty($groupArray)) {
                 return false;
             }
+            return $groupArray[0];
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $groupArray[0];
     }
     
     /**
      * Выполняет запрос к базе данных
-     * @return array
+     * @return boolean
      */
     protected function getData()
     {
         try {
+            if (empty($this->query)) {
+                throw new ErrorException('Не определена строка запроса к БД!');
+            }
             $command = \Yii::$app->db->createCommand($this->query);
             if (!empty($this->params)) {
                 $command->bindValues($this->params);
@@ -63,6 +71,7 @@ abstract class AbstractGetMapper extends AbstractBaseMapper
                 ArrayHelper::multisort($result, [$this->orderByField], [SORT_ASC]);
             }
             $this->DbArray = $result;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

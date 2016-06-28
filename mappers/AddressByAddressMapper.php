@@ -3,6 +3,7 @@
 namespace app\mappers;
 
 use app\mappers\AbstractGetMapper;
+use yii\base\ErrorException;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
@@ -20,19 +21,23 @@ class AddressByAddressMapper extends AbstractGetMapper
     
     public function init()
     {
-        parent::init();
-        
-        if (!isset($this->model)) {
-            throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-        }
-        
-        if (empty($this->params)) {
-            $this->params = [
-                ':address'=>$this->model->address,
-                ':city'=>$this->model->city,
-                ':country'=>$this->model->country,
-                ':postcode'=>$this->model->postcode,
-            ];
+        try {
+            parent::init();
+            
+            if (empty($this->model)) {
+                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
+            }
+            
+            if (empty($this->params)) {
+                $this->params = [
+                    ':address'=>$this->model->address,
+                    ':city'=>$this->model->city,
+                    ':country'=>$this->model->country,
+                    ':postcode'=>$this->model->postcode,
+                ];
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
     }
 }

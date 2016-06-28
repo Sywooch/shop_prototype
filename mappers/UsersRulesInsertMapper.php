@@ -21,12 +21,16 @@ class UsersRulesInsertMapper extends AbstractInsertMapper
     
     /**
      * Формирует запрос к БД и выполняет его
+     * @return boolean;
      */
     protected function run()
     {
         try {
-            $this->getUsersRulesDbArray();
+            if (!$this->getUsersRulesDbArray()) {
+                throw new ErrorException('Ошибка при создании DbArray!');
+            }
             parent::run();
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -34,20 +38,24 @@ class UsersRulesInsertMapper extends AbstractInsertMapper
     
     /**
      * Создает массивы для создания строк таблицы users_rules из данных модели UsersModel
-     * @return array
+     * @return boolean
      */
     private function getUsersRulesDbArray()
     {
         try {
-            if (!isset($this->model)) {
+            if (empty($this->model)) {
                 throw new ErrorException('Не передана модель!');
             }
             $result = array();
             $rulesForUser = $this->model->rulesFromForm;
+            if (!is_array($rulesForUser)) {
+                throw new ErrorException('Данные получены в неверном формате!');
+            }
             foreach ($rulesForUser as $rule) {
                 $result[] = ['id_users'=>$this->model->id, 'id_rules'=>$rule];
             }
             $this->DbArray = $result;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

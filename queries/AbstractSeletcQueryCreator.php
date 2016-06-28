@@ -17,6 +17,7 @@ abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator
         try {
             parent::update($object);
             $this->getSelectQuery();
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

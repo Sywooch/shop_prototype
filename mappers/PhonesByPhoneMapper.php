@@ -3,6 +3,7 @@
 namespace app\mappers;
 
 use app\mappers\AbstractGetMapper;
+use yii\base\ErrorException;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных
@@ -20,14 +21,18 @@ class PhonesByPhoneMapper extends AbstractGetMapper
     
     public function init()
     {
-        parent::init();
-        
-        if (!isset($this->model)) {
-            throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-        }
-        
-        if (empty($this->params)) {
-            $this->params = [':phone'=>$this->model->phone];
+        try {
+            parent::init();
+            
+            if (empty($this->model)) {
+                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
+            }
+            
+            if (empty($this->params)) {
+                $this->params = [':phone'=>$this->model->phone];
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
     }
 }

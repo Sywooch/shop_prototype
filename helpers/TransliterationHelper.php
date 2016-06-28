@@ -61,9 +61,9 @@ class TransliterationHelper
             foreach (self::$_inputArray as $letter) {
                 self::$_outputArray[] = self::$_matrix[mb_strtolower($letter, 'UTF-8')];
             }
+            return implode('', self::$_outputArray);
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
-        return implode('', self::$_outputArray);
     }
 }
