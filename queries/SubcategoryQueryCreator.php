@@ -3,6 +3,7 @@
 namespace app\queries;
 
 use app\queries\AbstractSeletcQueryCreator;
+use yii\base\ErrorException;
 
 /**
  * Конструирует запрос к БД для получения списка строк
@@ -24,22 +25,41 @@ class SubcategoryQueryCreator extends AbstractSeletcQueryCreator
     
     /**
      * Инициирует создание SELECT запроса
+     * @return boolean
      */
     public function getSelectQuery()
     {
         try {
-            parent::getSelectQuery();
-            $this->_mapperObject->query .= $this->getJoin(
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не поределен categoryKey!');
+            }
+            
+            if (!parent::getSelectQuery()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            
+            $join = $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
-            $this->_mapperObject->query .= $this->getWhere(
+            if (!is_string($join)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $join;
+            
+            $where = $this->getWhere(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
                 \Yii::$app->params['idKey']
             );
+            if (!is_string($where)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $where;
+            
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

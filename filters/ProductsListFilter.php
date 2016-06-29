@@ -21,6 +21,18 @@ class ProductsListFilter extends ActionFilter
     public function beforeAction($action)
     {
         try {
+            if (empty(\Yii::$app->params['filtersKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная filtersKeyInSession!');
+            }
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не установлена переменная categoryKey!');
+            }
+            if (empty(\Yii::$app->params['subCategoryKey'])) {
+                throw new ErrorException('Не установлена переменная subCategoryKey!');
+            }
+            if (empty(\Yii::$app->params['searchKey'])) {
+                throw new ErrorException('Не установлена переменная searchKey!');
+            }
             $session = \Yii::$app->session;
             if ($session->has(\Yii::$app->params['filtersKeyInSession'])) {
                 $session->open();
@@ -52,6 +64,9 @@ class ProductsListFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         try {
+            if (empty(\Yii::$app->params['filtersKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная filtersKeyInSession!');
+            }
             $session = \Yii::$app->session;
             $session->open();
             $session->set(\Yii::$app->params['filtersKeyInSession'], \Yii::$app->filters->attributes);

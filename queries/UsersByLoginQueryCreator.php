@@ -3,6 +3,7 @@
 namespace app\queries;
 
 use app\queries\AbstractSeletcQueryCreator;
+use yii\base\ErrorException;
 
 /**
  * Конструирует запрос к БД для получения списка строк
@@ -21,16 +22,26 @@ class UsersByLoginQueryCreator extends AbstractSeletcQueryCreator
     
     /**
      * Инициирует создание SELECT запроса
+     * @return boolean
      */
     public function getSelectQuery()
     {
         try {
-            parent::getSelectQuery();
-            $this->_mapperObject->query .= $this->getWhere(
+            if (!parent::getSelectQuery()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            
+            $where = $this->getWhere(
                 $this->categoriesArrayFilters['users']['tableName'],
                 $this->categoriesArrayFilters['users']['tableFieldWhere'],
                 $this->categoriesArrayFilters['users']['tableFieldWhere']
             );
+            if (!is_string($where)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $where;
+            
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

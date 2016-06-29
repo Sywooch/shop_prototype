@@ -136,6 +136,9 @@ class ShoppingCart extends Object
     public function clearProductsArray()
     {
         try {
+            if (empty(\Yii::$app->params['cartKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная cartKeyInSession!');
+            }
             $this->_productsArray = array();
             $this->user = NULL;
             if (!SessionHelper::removeVarFromSession([\Yii::$app->params['cartKeyInSession'], \Yii::$app->params['cartKeyInSession'] . '.user'])) {

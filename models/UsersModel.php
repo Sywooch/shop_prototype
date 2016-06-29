@@ -39,13 +39,18 @@ class UsersModel extends AbstractBaseModel
     public $id_address = '';
     
     /**
+     * @var string пароль, сконструированный при автоматическом создании пользователя
+     */
+    public $rawPassword = '';
+    
+    /**
      * @var array массив ID rules, выбранных пользователем в форме
      */
     public $rulesFromForm = array();
     
     private $_login = NULL;
     private $_id = NULL;
-    private $_password;
+    private $_password = NULL;
     private $_allRules = NULL;
     private $_emails = NULL;
     private $_address = NULL;
@@ -74,11 +79,13 @@ class UsersModel extends AbstractBaseModel
     /**
      * Хэширует пароль перед присвоением значения свойству $this->_password
      * @param string $value значение пароля
+     * @return boolean
      */
     public function setPassword($value)
     {
         try {
             $this->_password = password_hash($value, PASSWORD_DEFAULT);
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -86,19 +93,26 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_password
+     * @return string
      */
     public function getPassword()
     {
         try {
             if (is_null($this->_password)) {
-                if (isset($this->name)) {
-                    $this->_password = PasswordHelper::getPassword();
+                if (!empty($this->name)) {
+                    $this->rawPassword = PasswordHelper::getPassword();
+                    if (!is_string($this->rawPassword)) {
+                        throw new ErrorException('Неверный формат данных!');
+                    }
+                    if (!$this->password = $this->rawPassword) {
+                        throw new ErrorException('Ошибка при хэшировании пароля!');
+                    }
                 }
             }
+            return $this->_password;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_password;
     }
     
     /**
@@ -114,36 +128,44 @@ class UsersModel extends AbstractBaseModel
                     'fields'=>['id', 'rule'],
                     'orderByField'=>'rule',
                 ]);
-                $this->_allRules = $rulesMapper->getGroup();
+                $rulesArray = $rulesMapper->getGroup();
+                if (!is_array($rulesArray) || empty($rulesArray)) {
+                    return false;
+                }
+                $this->_allRules = $rulesArray;
             }
+            return $this->_allRules;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_allRules;
     }
     
     /**
      * Возвращает значение свойства $this->_id
+     * @return int
      */
     public function getId()
     {
         try {
             if (is_null($this->_id)) {
-                if (isset($this->login)) {
-                    $usersByLoginMapper = new UsersByLoginMapper([
-                        'tableName'=>'users',
-                        'fields'=>['id'],
-                        'model'=>$this,
-                    ]);
-                    if ($objectUser = $usersByLoginMapper->getOneFromGroup()) {
-                        $this->_id = $objectUser->id;
-                    }
+                if (empty($this->login)) {
+                    throw new ErrorException('Не определены данные для обращения к БД!');
                 }
+                $usersByLoginMapper = new UsersByLoginMapper([
+                    'tableName'=>'users',
+                    'fields'=>['id'],
+                    'model'=>$this,
+                ]);
+                $objectUser = $usersByLoginMapper->getOneFromGroup();
+                if (!is_object($objectUser) || !$objectUser instanceof $this) {
+                    return false;
+                }
+                $this->_id = $objectUser->id;
             }
+            return $this->_id;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_id;
     }
     
     /**
@@ -152,38 +174,57 @@ class UsersModel extends AbstractBaseModel
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
      * Возвращает значение свойства $this->_login
+     * @return string
      */
     public function getLogin()
     {
         try {
             if (is_null($this->_login)) {
-                if (isset($this->name)) {
+                if (!empty($this->name)) {
                     $login = TransliterationHelper::getTransliteration($this->name);
+                    if (!is_string($login)) {
+                        throw new ErrorException('Неверный формат данных!');
+                    }
                     $this->_login = $login . substr(md5($login . time()), 0, 5);
                 }
             }
+            return $this->_login;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $this->_login;
     }
     
     /**
      * Присваивает значение свойству $this->_login
      * @param string $value значение login
+     * @return boolean
      */
     public function setLogin($value)
     {
-        $this->_login = $value;
+        try {
+            $this->_login = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
      * Возвращает значение свойства $this->_emails
+     * @return object
      */
     public function getEmails()
     {
@@ -192,15 +233,22 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_emails
-     * @param string $value значение email
+     * @param object $value
+     * @return boolean
      */
     public function setEmails(EmailsModel $value)
     {
-        $this->_emails = $value;
+        try {
+            $this->_emails = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
      * Возвращает значение свойства $this->_address
+     * @return object
      */
     public function getAddress()
     {
@@ -209,15 +257,22 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_address
-     * @param string $value значение address
+     * @param object $value
+     * @return boolean
      */
     public function setAddress(AddressModel $value)
     {
-        $this->_address = $value;
+        try {
+            $this->_address = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
      * Возвращает значение свойства $this->_phones
+     * @return object
      */
     public function getPhones()
     {
@@ -227,14 +282,21 @@ class UsersModel extends AbstractBaseModel
     /**
      * Присваивает значение свойству $this->_phones
      * @param string $value значение phone
+     * @return boolean
      */
     public function setPhones(PhonesModel $value)
     {
-        $this->_phones = $value;
+        try {
+            $this->_phones = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
      * Возвращает значение свойства $this->_deliveries
+     * @return object
      */
     public function getDeliveries()
     {
@@ -244,14 +306,21 @@ class UsersModel extends AbstractBaseModel
     /**
      * Присваивает значение свойству $this->_deliveries
      * @param string $value значение delivery
+     * @return boolean
      */
     public function setDeliveries(DeliveriesModel $value)
     {
-        $this->_deliveries = $value;
+        try {
+            $this->_deliveries = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
      * Возвращает значение свойства $this->_payments
+     * @return object
      */
     public function getPayments()
     {
@@ -261,9 +330,15 @@ class UsersModel extends AbstractBaseModel
     /**
      * Присваивает значение свойству $this->_payments
      * @param string $value значение payments
+     * @return boolean
      */
     public function setPayments(PaymentsModel $value)
     {
-        $this->_payments = $value;
+        try {
+            $this->_payments = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

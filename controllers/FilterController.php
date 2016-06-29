@@ -41,6 +41,9 @@ class FilterController extends AbstractBaseProductsController
     public function actionCleanFilters()
     {
         try {
+            if (empty(\Yii::$app->params['filtersKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная filtersKeyInSession!');
+            }
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
                     if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession']])) {
@@ -65,6 +68,15 @@ class FilterController extends AbstractBaseProductsController
     private function getRedirectUrl()
     {
         try {
+            if (empty(\Yii::$app->params['searchKey'])) {
+                throw new ErrorException('Не установлена переменная searchKey!');
+            }
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не установлена переменная categoryKey!');
+            }
+            if (empty(\Yii::$app->params['subCategoryKey'])) {
+                throw new ErrorException('Не установлена переменная subCategoryKey!');
+            }
             if (!empty(\Yii::$app->filters->search)) {
                 $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>\Yii::$app->filters->search];
             } else {

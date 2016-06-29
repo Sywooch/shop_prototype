@@ -98,6 +98,9 @@ class ShoppingCartController extends AbstractBaseController
     public function actionIndex()
     {
         try {
+            if (empty(\Yii::$app->cart)) {
+                return $this->redirect(Url::to(['products-list/index']));
+            }
             if (!is_array($dataForRender = $this->getDataForRender())) {
                 throw new ErrorException('Ошибка при формировании массива данных!');
             }
@@ -169,7 +172,7 @@ class ShoppingCartController extends AbstractBaseController
     public function actionAddressContacts()
     {
         try {
-            if (empty(\Yii::$app->cart->getProductsArray())) {
+            if (empty(\Yii::$app->cart)) {
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
@@ -256,6 +259,11 @@ class ShoppingCartController extends AbstractBaseController
     public function actionCheckPay()
     {
         try {
+            if (empty(\Yii::$app->cart)) {
+                return $this->redirect(Url::to(['products-list/index']));
+            } elseif (empty(\Yii::$app->cart->user)) {
+                return $this->redirect(Url::to(['shopping-cart/address-contacts']));
+            }
             if (!is_array($dataForRender = $this->getDataForRender())) {
                 throw new ErrorException('Ошибка при получении данных для рендеринга!');
             }
@@ -275,8 +283,10 @@ class ShoppingCartController extends AbstractBaseController
     public function actionPay()
     {
         try {
-            if (empty(\Yii::$app->cart->getProductsArray())) {
+            if (empty(\Yii::$app->cart)) {
                 return $this->redirect(Url::to(['products-list/index']));
+            } elseif (empty(\Yii::$app->cart->user)) {
+                return $this->redirect(Url::to(['shopping-cart/address-contacts']));
             }
             
             if (empty(\Yii::$app->cart->user) || !is_object(\Yii::$app->cart->user)) {

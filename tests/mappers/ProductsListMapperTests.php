@@ -16,6 +16,15 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
     private static $_name = 'Some Name';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
+    private static $_config = [
+        'tableName'=>'products',
+        'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+        'otherTablesFields'=>[
+            ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+            ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+        ],
+        'orderByField'=>'date'
+    ];
     
     public static function setUpBeforeClass()
     {
@@ -42,11 +51,7 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
     {
         \Yii::$app->filters->attributes = ['colors'=>[], 'sizes'=>[], 'brands'=>[]];
         
-        $productsMapper = new ProductsListMapper([
-            'tableName'=>'products',
-            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-            'orderByField'=>'date'
-        ]);
+        $productsMapper = new ProductsListMapper(self::$_config);
         $productsList = $productsMapper->getGroup();
         
         $this->assertTrue(is_array($productsList));
@@ -74,19 +79,13 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testOrderByType()
     {
-        $config = [
-            'tableName'=>'products',
-            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-            'orderByField'=>'date'
-        ];
-        
-        $productsMapper = new ProductsListMapper($config);
+        $productsMapper = new ProductsListMapper(self::$_config);
         
         $this->assertEquals(\Yii::$app->params['orderByType'], $productsMapper->orderByType);
         
         $_GET = [\Yii::$app->params['orderTypePointer']=>'ASC'];
         
-        $productsMapper = new ProductsListMapper($config);
+        $productsMapper = new ProductsListMapper(self::$_config);
         
         $this->assertEquals('ASC', $productsMapper->orderByType);
     }
@@ -96,19 +95,13 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testOrderByField()
     {
-        $config = [
-            'tableName'=>'products',
-            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-            'orderByField'=>'date'
-        ];
-        
-        $productsMapper = new ProductsListMapper($config);
+        $productsMapper = new ProductsListMapper(self::$_config);
         
         $this->assertEquals('date', $productsMapper->orderByField);
         
         $_GET = [\Yii::$app->params['orderFieldPointer']=>'price'];
         
-        $productsMapper = new ProductsListMapper($config);
+        $productsMapper = new ProductsListMapper(self::$_config);
         
         $this->assertEquals('price', $productsMapper->orderByField);
     }
@@ -118,19 +111,13 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryClass()
     {
-        $config = [
-            'tableName'=>'products',
-            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-            'orderByField'=>'date'
-        ];
-        
-        $productsMapper = new ProductsListMapper($config);
+        $productsMapper = new ProductsListMapper(self::$_config);
         
         $this->assertEquals('app\queries\ProductsListQueryCreator', $productsMapper->queryClass);
         
-        $config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
+        self::$_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
         
-        $productsMapper = new ProductsListMapper($config);
+        $productsMapper = new ProductsListMapper(self::$_config);
         
         $this->assertEquals('app\queries\ProductsListSearchQueryCreator', $productsMapper->queryClass);
     }

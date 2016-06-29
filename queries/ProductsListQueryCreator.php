@@ -4,6 +4,7 @@ namespace app\queries;
 
 use app\queries\AbstractSeletcQueryCreator;
 use yii\helpers\ArrayHelper;
+use yii\base\ErrorException;
 
 /**
  * Конструирует запрос к БД для получения списка строк
@@ -71,21 +72,40 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     
     /**
      * Инициирует создание SELECT запроса, выбирая сценарий на основе данных из объекта Yii::$app->request
+     * @return boolean
      */
     public function getSelectQuery()
     {
         try {
-            $this->addSelectHead();
-            $this->addFilters();
-            
-            if (in_array(\Yii::$app->params['categoryKey'], array_keys(\Yii::$app->request->get()))) {
-                $this->queryForCategory();
-            } 
-            if (in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get()))) {
-                $this->queryForSubCategory();
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не поределен categoryKey!');
+            }
+            if (empty(\Yii::$app->params['subCategoryKey'])) {
+                throw new ErrorException('Не поределен subCategoryKey!');
             }
             
-            $this->addSelectEnd();
+            if (!$this->addSelectHead()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            if (!$this->addFilters()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            
+            if (in_array(\Yii::$app->params['categoryKey'], array_keys(\Yii::$app->request->get()))) {
+                if (!$this->queryForCategory()) {
+                    throw new ErrorException('Ошибка при построении запроса!');
+                }
+            } 
+            if (in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get()))) {
+                if (!$this->queryForSubCategory()) {
+                    throw new ErrorException('Ошибка при построении запроса!');
+                }
+            }
+            
+            if (!$this->addSelectEnd()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -93,62 +113,116 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     
     /**
      * Формирует строку запроса к БД, фильруя по категории
-     * @return string
+     * @return boolean
      */
     protected function queryForCategory()
     {
         try {
-            $this->_mapperObject->query .= $this->getWhere(
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не поределен categoryKey!');
+            }
+            
+            $where = $this->getWhere(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
                 \Yii::$app->params['categoryKey']
             );
+            if (!is_string($where)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $where;
+            
+            $this->_mapperObject->params[':' . \Yii::$app->params['categoryKey']] = \Yii::$app->request->get(\Yii::$app->params['categoryKey']);
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        $this->_mapperObject->params[':' . \Yii::$app->params['categoryKey']] = \Yii::$app->request->get(\Yii::$app->params['categoryKey']);
     }
     
     /**
      * Формирует строку запроса к БД, фильруя по подкатегории
-     * @return string
+     * @return boolean
      */
     protected function queryForSubCategory()
     {
         try {
-            $this->_mapperObject->query .= $this->getWhere(
+            if (empty(\Yii::$app->params['subCategoryKey'])) {
+                throw new ErrorException('Не поределен subCategoryKey!');
+            }
+            
+            $where = $this->getWhere(
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldWhere'],
                 \Yii::$app->params['subCategoryKey']
             );
+            if (!is_string($where)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $where;
+            
+            $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']);
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']);
     }
     
     /**
      * Формирует начальную часть строки запроса к БД
+     * @return true
      */
     protected function addSelectHead()
     {
         try {
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не поределен categoryKey!');
+            }
+            if (empty(\Yii::$app->params['subCategoryKey'])) {
+                throw new ErrorException('Не поределен subCategoryKey!');
+            }
+            
             $this->_mapperObject->query = 'SELECT ';
-            $this->_mapperObject->query .= $this->addFields();
-            $this->_mapperObject->query .= $this->addOtherFields();
-            $this->_mapperObject->query .= $this->addTableName();
-            $this->_mapperObject->query .= $this->getJoin(
+            
+            $fields = $this->addFields();
+            if (!is_string($fields)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $fields;
+            
+            $otherFields = $this->addOtherFields();
+            if (!is_string($otherFields)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $otherFields;
+            
+            $name = $this->addTableName();
+            if (!is_string($name)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $name;
+            
+            $join = $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
-            $this->_mapperObject->query .= $this->getJoin(
+            if (!is_string($join)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $join;
+            
+            $join = $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
             );
+            if (!is_string($join)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $join;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -156,12 +230,20 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     
     /**
      * Формирует финальную часть строки запроса к БД
+     * @return boolean
      */
     protected function addSelectEnd()
     {
         try {
-            $this->addOrder();
-            $this->_mapperObject->query .= $this->addLimit();
+            if (!$this->addOrder()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $limit = $this->addLimit();
+            if (!$limit) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $limit;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -169,27 +251,45 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     
     /**
      * Формирует часть запроса к БД, добавляющую фильтры
+     * @return boolean
      */
     protected function addFilters()
     {
         try {
+            if (empty(\Yii::$app->params['filterKeys'])) {
+                throw new ErrorException('Не поределен filterKeys!');
+            }
+            if (empty(\Yii::$app->params['idKey'])) {
+                throw new ErrorException('Не поределен idKey!');
+            }
+            
             $getArrayKeys = array_keys(array_filter(\Yii::$app->filters->attributes));
             $filtersKeys = array();
             
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if (in_array($filter, $getArrayKeys)) {
-                    $this->_mapperObject->query .= $this->getJoin(
+                    $join = $this->getJoin(
                         $this->categoriesArrayFilters[$this->_mapperObject->tableName . '_' . $filter]['firstTableName'],
                         $this->categoriesArrayFilters[$this->_mapperObject->tableName . '_' . $filter]['firstTableFieldOn'],
                         $this->categoriesArrayFilters[$this->_mapperObject->tableName . '_' . $filter]['secondTableName'],
                         $this->categoriesArrayFilters[$this->_mapperObject->tableName . '_' . $filter]['secondTableFieldOn']
                     );
-                    $this->_mapperObject->query .= $this->getJoin(
+                    if (!is_string($join)) {
+                        throw new ErrorException('Ошибка при построении запроса!');
+                    }
+                    $this->_mapperObject->query .= $join;
+            
+                    $join = $this->getJoin(
                         $this->categoriesArrayFilters[$filter]['firstTableName'],
                         $this->categoriesArrayFilters[$filter]['firstTableFieldOn'],
                         $this->categoriesArrayFilters[$filter]['secondTableName'],
                         $this->categoriesArrayFilters[$filter]['secondTableFieldOn']
                     );
+                    if (!is_string($join)) {
+                        throw new ErrorException('Ошибка при построении запроса!');
+                    }
+                    $this->_mapperObject->query .= $join;
+                    
                     $filterData = \Yii::$app->filters->$filter;
                     foreach ($filterData as $key=>$val) {
                         $filterKey = $key . $filter . '_' . \Yii::$app->params['idKey'];
@@ -200,13 +300,18 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
             }
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if (in_array($filter, $getArrayKeys)) {
-                    $this->_mapperObject->query .= $this->getWhereIn(
+                    $where = $this->getWhereIn(
                         $this->categoriesArrayFilters[$filter]['secondTableName'],
                         $this->categoriesArrayFilters[$filter]['secondTableFieldWhere'],
                         implode(',:', $filtersKeys[$filter])
                     );
+                    if (!is_string($where)) {
+                        throw new ErrorException('Ошибка при построении запроса!');
+                    }
+                    $this->_mapperObject->query .= $where;
                 }
             }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -214,18 +319,26 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     
     /**
      * Формирует часть запроса к БД, задающую порядок сортировки
-     * @return string
+     * @return boolean
      */
     private function addOrder()
     {
         try {
-            if (!isset($this->_mapperObject->orderByField)) {
+            if (empty($this->_mapperObject->orderByField)) {
                 throw new ErrorException('Не задано имя столбца для сортировки!');
             }
+            if (empty($this->_mapperObject->tableName)) {
+                throw new ErrorException('Не задано имя таблицы!');
+            }
+            if (empty($this->_mapperObject->orderByType)) {
+                throw new ErrorException('Не задан тип сортировки!');
+            }
+            
+            $this->_mapperObject->query .= ' ORDER BY [[' . $this->_mapperObject->tableName . '.' . $this->_mapperObject->orderByField . ']] ' . $this->_mapperObject->orderByType;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        $this->_mapperObject->query .= ' ORDER BY [[' . $this->_mapperObject->tableName . '.' . $this->_mapperObject->orderByField . ']] ' . $this->_mapperObject->orderByType;
     }
     
     /**
@@ -235,12 +348,19 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
     private function addLimit()
     {
         try {
+            if (empty(\Yii::$app->params['pagePointer'])) {
+                throw new ErrorException('Не поределен pagePointer!');
+            }
+            if (empty($this->_mapperObject->limit)) {
+                throw new ErrorException('Отсутствуют данные для построения запроса!');
+            }
+            
             if (in_array(\Yii::$app->params['pagePointer'], array_keys(\Yii::$app->request->get()))) {
                 return ' LIMIT ' . (\Yii::$app->request->get(\Yii::$app->params['pagePointer']) * $this->_mapperObject->limit) . ', ' . $this->_mapperObject->limit;
             }
+            return ' LIMIT 0, ' . $this->_mapperObject->limit;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return ' LIMIT 0, ' . $this->_mapperObject->limit;
     }
 }

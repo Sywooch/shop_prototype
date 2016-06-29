@@ -4,6 +4,7 @@ namespace app\queries;
 
 use app\queries\ProductsListQueryCreator;
 use yii\helpers\ArrayHelper;
+use yii\base\ErrorException;
 
 /**
  * Формирует строку запроса к БД
@@ -39,67 +40,137 @@ class SimilarProductsQueryCreator extends ProductsListQueryCreator
     
     /**
      * Инициирует создание SELECT запроса
+     * @return boolean
      */
     public function getSelectQuery()
     {
         try {
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не поределен categoryKey!');
+            }
+            if (empty(\Yii::$app->params['subCategoryKey'])) {
+                throw new ErrorException('Не поределен subCategoryKey!');
+            }
+            if (empty(\Yii::$app->params['filterKeys'])) {
+                throw new ErrorException('Не поределен filterKeys!');
+            }
+            if (empty(\Yii::$app->params['idKey'])) {
+                throw new ErrorException('Не поределен idKey!');
+            }
+            
             $this->_mapperObject->query = 'SELECT DISTINCT ';
-            $this->_mapperObject->query .= $this->addFields();
-            $this->_mapperObject->query .= $this->addOtherFields();
-            $this->_mapperObject->query .= $this->addTableName();
-            $this->_mapperObject->query .= $this->getJoin(
+            
+            $fields = $this->addFields();
+            if (!is_string($fields)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $fields;
+            
+            $otherFields = $this->addOtherFields();
+            if (!is_string($otherFields)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $otherFields;
+            
+            $name = $this->addTableName();
+            if (!is_string($name)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $name;
+            
+            $join = $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
-           $this->_mapperObject->query .= $this->getJoin(
+            if (!is_string($join)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $join;
+            
+           $join = $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
             );
+            if (!is_string($join)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $join;
+            
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if ($filter != 'brands') {
-                    $this->_mapperObject->query .= $this->getJoin(
+                    $join = $this->getJoin(
                         $this->categoriesArrayFilters[$this->_mapperObject->tableName . '_' . $filter]['firstTableName'],
                         $this->categoriesArrayFilters[$this->_mapperObject->tableName . '_' . $filter]['firstTableFieldOn'],
                         $this->categoriesArrayFilters[$this->_mapperObject->tableName . '_' . $filter]['secondTableName'],
                         $this->categoriesArrayFilters[$this->_mapperObject->tableName . '_' . $filter]['secondTableFieldOn']
                     );
-                    $this->_mapperObject->query .= $this->getJoin(
+                    if (!is_string($join)) {
+                        throw new ErrorException('Ошибка при построении запроса!');
+                    }
+                    $this->_mapperObject->query .= $join;
+                    
+                    $join = $this->getJoin(
                         $this->categoriesArrayFilters[$filter]['firstTableName'],
                         $this->categoriesArrayFilters[$filter]['firstTableFieldOn'],
                         $this->categoriesArrayFilters[$filter]['secondTableName'],
                         $this->categoriesArrayFilters[$filter]['secondTableFieldOn']
                     );
+                    if (!is_string($join)) {
+                        throw new ErrorException('Ошибка при построении запроса!');
+                    }
+                    $this->_mapperObject->query .= $join;
                 }
             }
-            $this->_mapperObject->query .= $this->getWhereNotEqual(
+            $where = $this->getWhereNotEqual(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
-            $this->_mapperObject->query .= $this->getWhere(
+            if (!is_string($where)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $where;
+            
+            $where = $this->getWhere(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName']
             );
-            $this->_mapperObject->query .= $this->getWhere(
+            if (!is_string($where)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $where;
+            
+            $where = $this->getWhere(
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldWhere'],
                 $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName']
             );
+            if (!is_string($where)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $where;
             foreach (\Yii::$app->params['filterKeys'] as $filter) {
                 if ($filter != 'brands') {
-                    $this->_mapperObject->query .= $this->getWhereIn(
+                    $where = $this->getWhereIn(
                         $this->categoriesArrayFilters[$filter]['secondTableName'],
                         $this->categoriesArrayFilters[$filter]['secondTableFieldWhere'],
                         $filter . implode(",:{$filter}", (array_keys(ArrayHelper::getColumn($this->_mapperObject->model->$filter, \Yii::$app->params['idKey']))))
                     );
-                    $this->addFilter($filter);
+                    if (!is_string($where)) {
+                        throw new ErrorException('Ошибка при построении запроса!');
+                    }
+                    $this->_mapperObject->query .= $where;
+                    if (!$this->addFilter($filter)) {
+                        throw new ErrorException('Ошибка при построении запроса!');
+                    }
                 }
             }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -107,9 +178,14 @@ class SimilarProductsQueryCreator extends ProductsListQueryCreator
     
     private function addFilter($filter)
     {
-        $array = ArrayHelper::getColumn($this->_mapperObject->model->$filter, \Yii::$app->params['idKey']);
-        foreach ($array as $key=>$val) {
-            $this->_mapperObject->params[':' . $filter . $key] = $val;
+        try {
+            $array = ArrayHelper::getColumn($this->_mapperObject->model->$filter, \Yii::$app->params['idKey']);
+            foreach ($array as $key=>$val) {
+                $this->_mapperObject->params[':' . $filter . $key] = $val;
+            }
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
     }
 }

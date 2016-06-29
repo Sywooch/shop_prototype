@@ -21,7 +21,7 @@ class FixSentRequests
     {
         try {
             if (!isset(\Yii::$app->params['fixSentRequests'])) {
-                throw new ErrorException('Не установлена переменная, содержащая значение!');
+                throw new ErrorException('Не установлена переменная fixSentRequests!');
             }
             \Yii::$app->params['fixSentRequests'] += 1;
             return true;

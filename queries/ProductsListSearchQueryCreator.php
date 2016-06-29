@@ -3,6 +3,7 @@
 namespace app\queries;
 
 use app\queries\ProductsListQueryCreator;
+use yii\base\ErrorException;
 
 /**
  * Конструирует запрос к БД для получения списка строк
@@ -28,13 +29,21 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     
     /**
      * Инициирует создание SELECT запроса
+     * @return boolean
      */
     public function getSelectQuery()
     {
         try {
-            $this->addSelectHead();
-            $this->addFilters();
-            $this->addSelectEnd();
+            if (!$this->addSelectHead()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            if (!$this->addFilters()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            if (!$this->addSelectEnd()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -42,19 +51,32 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     
     /**
      * Формирует часть запроса к БД, добавляющую фильтры
+     * @return boolean
      */
     protected function addFilters()
     {
         try {
-            parent::addFilters();
+            if (empty(\Yii::$app->params['searchKey'])) {
+                throw new ErrorException('Не поределен searchKey!');
+            }
+            
+            if (!parent::addFilters()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
             
             if (\Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
-                $this->_mapperObject->query .= $this->getWhereLike(
+                $where = $this->getWhereLike(
                     $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableName'],
                     $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableFieldWhere'],
                     \Yii::$app->params['searchKey']
                 );
+                if (!is_string($where)) {
+                    throw new ErrorException('Ошибка при построении запроса!');
+                }
+                $this->_mapperObject->query .= $where;
+                
                 $this->_mapperObject->params[':' . \Yii::$app->params['searchKey']] = '%' . \Yii::$app->request->get(\Yii::$app->params['searchKey']) . '%';
+                return true;
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

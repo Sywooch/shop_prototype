@@ -25,6 +25,7 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве, реализуя VisitorInterface
      * запускает процесс
      * @param $object
+     * @return boolean
      */
     public function update(AbstractBaseMapper $object)
     {
@@ -43,18 +44,20 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function addFields()
     {
         try {
+            if (empty($this->_mapperObject->fields) || empty($this->_mapperObject->tableName)) {
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
+            }
             $result = [];
             foreach ($this->_mapperObject->fields as $field) {
                 $result[] = '[[' . $this->_mapperObject->tableName . '.' . $field . ']]';
             }
+            if (!empty($result)) {
+                return implode(',', $result);
+            }
+            return '*';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        
-        if (!empty($result)) {
-            return implode(',', $result);
-        }
-        return '*';
     }
     
     /**
@@ -64,25 +67,26 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function addOtherFields()
     {
         try {
-            if (!empty($this->_mapperObject->otherTablesFields)) {
-                $result = [];
-                foreach ($this->_mapperObject->otherTablesFields as $set) {
-                    foreach ($set['fields'] as $field) {
-                        $string = '[[' . $set['table'] . '.' . $field['field'] . ']]';
-                        if (isset($field['as'])) {
-                            $string .= ' AS [['. $field['as'] . ']]';
-                        }
-                        $result[] = $string;
+            if (empty($this->_mapperObject->otherTablesFields)) {
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
+            }
+            $result = [];
+            foreach ($this->_mapperObject->otherTablesFields as $set) {
+                foreach ($set['fields'] as $field) {
+                    $string = '[[' . $set['table'] . '.' . $field['field'] . ']]';
+                    if (!empty($field['as'])) {
+                        $string .= ' AS [['. $field['as'] . ']]';
                     }
+                    $result[] = $string;
                 }
             }
+            if (!empty($result)) {
+                return ',' . implode(',', $result);
+            }
+            return '';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        if (!empty($result)) {
-            return ',' . implode(',', $result);
-        }
-        return '';
     }
     
     /**
@@ -92,13 +96,13 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function addTableName()
     {
         try {
-            if (!isset($this->_mapperObject->tableName)) {
+            if (empty($this->_mapperObject->tableName)) {
                 throw new ErrorException('Не задано имя таблицы!');
             }
+            return ' FROM {{' . $this->_mapperObject->tableName . '}}';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return ' FROM {{' . $this->_mapperObject->tableName . '}}';
     }
     
     /**
@@ -108,13 +112,13 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function addTableNameToInsert()
     {
         try {
-            if (!isset($this->_mapperObject->tableName)) {
+            if (empty($this->_mapperObject->tableName)) {
                 throw new ErrorException('Не задано имя таблицы!');
             }
+            return ' {{' . $this->_mapperObject->tableName . '}}';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return ' {{' . $this->_mapperObject->tableName . '}}';
     }
     
     /**
@@ -137,7 +141,9 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function getWhere($tableName, $tableField, $key)
     {
         try {
-            $string = $this->getWhereStart();
+            if (!is_string($string = $this->getWhereStart())) {
+                throw new ErrorException('Неверный формат данных!');
+            }
             return $string . ' [[' . $tableName . '.' . $tableField . ']]=:' . $key;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -151,7 +157,9 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function getWhereLike($tableName, $tableField, $key)
     {
         try {
-            $string = $this->getWhereStart();
+            if (!is_string($string = $this->getWhereStart())) {
+                throw new ErrorException('Неверный формат данных!');
+            }
             return $string . ' [[' . $tableName . '.' . $tableField . ']] LIKE :' . $key;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -165,7 +173,9 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function getWhereIn($tableName, $tableField, $key)
     {
         try {
-            $string = $this->getWhereStart();
+            if (!is_string($string = $this->getWhereStart())) {
+                throw new ErrorException('Неверный формат данных!');
+            }
             return $string . ' [[' . $tableName . '.' . $tableField . ']] IN (:' . $key . ')';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -179,7 +189,9 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function getWhereNotEqual($tableName, $tableField, $key)
     {
         try {
-            $string = $this->getWhereStart();
+            if (!is_string($string = $this->getWhereStart())) {
+                throw new ErrorException('Неверный формат данных!');
+            }
             return $string . ' [[' . $tableName . '.' . $tableField . ']]!=:' . $key;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -206,6 +218,9 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function addFieldsToInsert()
     {
         try {
+            if (empty($this->_mapperObject->fields)) {
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
+            }
             return ' (' . implode(',', $this->_mapperObject->fields) . ')';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -219,10 +234,10 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     protected function addFieldsToUpdate()
     {
         try {
-            $result = array();
             if (empty($this->_mapperObject->fields)) {
-                throw new ErrorException('Отсутсвуют данные для конструирования запроса!');
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
             }
+            $result = array();
             foreach ($this->_mapperObject->fields as $field) {
                 $result[] = '[[' . $field . ']]=:' . $field;
             }
@@ -236,51 +251,39 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
      * Формирует часть запроса для подстановки данных
      * @return string
     */
-    protected function addValuesToInsert()
-    {
-        $string = ' VALUES';
-        try {
-            if (isset($this->_mapperObject->objectsOne)) {
-                $string .= ' (:' . implode(',:', $this->_mapperObject->fields) . ')';
-            } else {
-                throw new ErrorException('Отсутсвуют данные для конструирования запроса!');
-            }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-        return $string;
-    }
-    
-    /**
-     * Формирует часть запроса для подстановки данных
-     * @return string
-    */
     protected function addGroupValuesToInsert()
     {
-        $string = ' VALUES ';
-        $arrayValues = array();
+        
         try {
-            if (!empty($this->_mapperObject->objectsArray)) {
-                foreach ($this->_mapperObject->objectsArray as $keyobject=>$object) {
-                    $objectGroup = array();
-                    foreach ($this->_mapperObject->fields as $field) {
-                        $objectGroup[] = ':' . $keyobject . '_' . $field;
-                        $this->_mapperObject->params[':' . $keyobject . '_' . $field] = $object->$field;
-                    }
-                    $arrayValues[] = '(' . implode(',', $objectGroup) . ')';
-                }
-            } else {
-                throw new ErrorException('Отсутсвуют данные для конструирования запроса!');
+            if (empty($this->_mapperObject->objectsArray) || empty($this->_mapperObject->fields)) {
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
             }
+            $string = ' VALUES ';
+            $arrayValues = array();
+            foreach ($this->_mapperObject->objectsArray as $keyobject=>$object) {
+                $objectGroup = array();
+                foreach ($this->_mapperObject->fields as $field) {
+                    $objectGroup[] = ':' . $keyobject . '_' . $field;
+                    $this->_mapperObject->params[':' . $keyobject . '_' . $field] = $object->$field;
+                }
+                $arrayValues[] = '(' . implode(',', $objectGroup) . ')';
+            }
+            return $string . implode(',', $arrayValues);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-        return $string . implode(',', $arrayValues);
     }
     
     protected function getWhereStart()
     {
-        $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
-        return $string;
+        try {
+            if (empty($this->_mapperObject->query)) {
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
+            }
+            $string = strpos($this->_mapperObject->query, 'WHERE') ? ' AND' : ' WHERE';
+            return $string;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

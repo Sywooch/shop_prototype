@@ -21,6 +21,9 @@ class ShoppingCartFilter extends ActionFilter
     public function beforeAction($action)
     {
         try {
+            if (empty(\Yii::$app->params['cartKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная cartKeyInSession!');
+            }
             $session = \Yii::$app->session;
             if ($session->has(\Yii::$app->params['cartKeyInSession'])) {
                 $session->open();
@@ -54,6 +57,9 @@ class ShoppingCartFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         try {
+            if (empty(\Yii::$app->params['cartKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная cartKeyInSession!');
+            }
             $session = \Yii::$app->session;
             $session->open();
             if (!empty(\Yii::$app->cart->getProductsArray())) {

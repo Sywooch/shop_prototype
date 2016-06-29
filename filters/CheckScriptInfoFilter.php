@@ -48,8 +48,8 @@ class CheckScriptInfoFilter extends ActionFilter
                 $pageGenerated = microtime(true) - $this->_startTime;
                 $memoryUsage = memory_get_usage(true);
                 
-                if (!isset(\Yii::$app->params['fixSentRequests'])) {
-                    throw new ErrorException('Не установлена переменная, содержащая значение!');
+                if (empty(\Yii::$app->params['fixSentRequests'])) {
+                    throw new ErrorException('Не установлена переменная fixSentRequests!');
                 }
                 $sentRequests = \Yii::$app->params['fixSentRequests'];
                 
