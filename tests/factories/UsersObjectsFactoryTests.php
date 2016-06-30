@@ -11,6 +11,15 @@ use app\models\UsersModel;
  */
 class UsersObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_login = 'some';
+    private static $_password = 'password';
+    private static $_name = 'name';
+    private static $_surname = 'surname';
+    private static $_id_emails = 2;
+    private static $_id_phones = 3;
+    private static $_id_address = 5;
+    
     /**
      * Тестирует метод UsersObjectsFactory::getObjects()
      */
@@ -18,10 +27,7 @@ class UsersObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'login'=>'Something 1', 'password'=>'Something 1', 'name'=>'Something 1', 'surname'=>'Something 1'],
-                ['id'=>2, 'login'=>'Something 2', 'password'=>'Something 2', 'name'=>'Something 2', 'surname'=>'Something 2'],
-                ['id'=>3, 'login'=>'Something 3', 'password'=>'Something 3', 'name'=>'Something 3', 'surname'=>'Something 3'],
-                ['id'=>4, 'login'=>'Something 4', 'password'=>'Something 4', 'name'=>'Something 4', 'surname'=>'Something 4'],
+                ['id'=>self::$_id, 'login'=>self::$_login, 'password'=>self::$_password, 'name'=>self::$_name, 'surname'=>self::$_surname, 'id_emails'=>self::$_id_emails, 'id_phones'=>self::$_id_phones, 'id_address'=>self::$_id_address],
             ],
         ]);
         
@@ -29,7 +35,7 @@ class UsersObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(4, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof UsersModel);
         
@@ -38,11 +44,17 @@ class UsersObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         //$this->assertTrue(property_exists($mockObject->objectsArray[0], 'password'));
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'name'));
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'surname'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_emails'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_phones'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_address'));
         
         $this->assertTrue(isset($mockObject->objectsArray[0]->id));
         $this->assertTrue(isset($mockObject->objectsArray[0]->login));
         $this->assertTrue(isset($mockObject->objectsArray[0]->password));
         $this->assertTrue(isset($mockObject->objectsArray[0]->name));
         $this->assertTrue(isset($mockObject->objectsArray[0]->surname));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id_emails));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id_phones));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->id_address));
     }
 }

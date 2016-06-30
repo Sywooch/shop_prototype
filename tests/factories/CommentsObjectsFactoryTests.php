@@ -11,6 +11,13 @@ use app\models\CommentsModel;
  */
 class CommentsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_text = 'Some';
+    private static $_name = 'Some';
+    private static $_id_emails = 1;
+    private static $_id_products = 1;
+    private static $_active = 0;
+    
     /**
      * Тестирует метод CommentsObjectsFactory::getObjects()
      */
@@ -18,11 +25,7 @@ class CommentsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'text'=>'Something 1', 'name'=>'Something 1', 'id_emails'=>23, 'id_products'=>19, 'active'=>0],
-                ['id'=>2, 'text'=>'Something 2', 'name'=>'Something 2', 'id_emails'=>2, 'id_products'=>12, 'active'=>0],
-                ['id'=>3, 'text'=>'Something 3', 'name'=>'Something 3', 'id_emails'=>15, 'id_products'=>45, 'active'=>0],
-                ['id'=>4, 'text'=>'Something 4', 'name'=>'Something 4', 'id_emails'=>76, 'id_products'=>23, 'active'=>0],
-                ['id'=>5, 'text'=>'Something 5', 'name'=>'Something 5', 'id_emails'=>8, 'id_products'=>9, 'active'=>0],
+                ['id'=>self::$_id, 'text'=>self::$_text, 'name'=>self::$_name, 'id_emails'=>self::$_id_emails, 'id_products'=>self::$_id_products, 'active'=>self::$_active],
             ],
         ]);
         
@@ -30,7 +33,7 @@ class CommentsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(5, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof CommentsModel);
         

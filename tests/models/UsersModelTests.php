@@ -4,6 +4,12 @@ namespace app\test\models;
 
 use app\tests\DbManager;
 use app\models\UsersModel;
+use app\models\RulesModel;
+use app\models\EmailsModel;
+use app\models\AddressModel;
+use app\models\PhonesModel;
+use app\models\DeliveriesModel;
+use app\models\PaymentsModel;
 
 /**
  * Тестирует UsersModel
@@ -28,6 +34,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     private static $_city = 'Some city';
     private static $_country = 'Some country';
     private static $_postcode = 'F12345';
+    private static $_rule = 'Some Rule';
     
     public static function setUpBeforeClass()
     {
@@ -49,6 +56,10 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
         $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{rules}} SET [[id]]=:id, [[rule]]=:rule');
+        $command->bindValues([':id'=>self::$_id, ':rule'=>self::$_rule]);
         $command->execute();
     }
     
@@ -121,10 +132,11 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_rulesFromForm, $model->rulesFromForm);
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'login'=>self::$_login, 'name'=>self::$_name, 'surname'=>self::$_surname, 'id_emails'=>self::$_id_emails, 'id_phones'=>self::$_id_phones, 'id_address'=>self::$_id_address, 'rulesFromForm'=>self::$_rulesFromForm];
+        $model->attributes = ['id'=>self::$_id, 'login'=>self::$_login, 'password'=>self::$_password, 'name'=>self::$_name, 'surname'=>self::$_surname, 'id_emails'=>self::$_id_emails, 'id_phones'=>self::$_id_phones, 'id_address'=>self::$_id_address, 'rulesFromForm'=>self::$_rulesFromForm];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->login));
+        $this->assertFalse(empty($model->password));
         $this->assertFalse(empty($model->name));
         $this->assertFalse(empty($model->surname));
         $this->assertFalse(empty($model->id_emails));
@@ -134,6 +146,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_login, $model->login);
+        $this->assertTrue(password_verify(self::$_password, $model->password));
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_surname, $model->surname);
         $this->assertEquals(self::$_id_emails, $model->id_emails);
@@ -194,41 +207,238 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод UsersModel::setPassword
+     */
+    public function testSetPassword()
+    {
+        $model = new UsersModel();
+        $model->password = self::$_password;
+        
+        $this->assertTrue(password_verify(self::$_password, $model->password));
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getPassword
+     */
+    public function testGetPassword()
+    {
+        $model = new UsersModel();
+        $model->name = self::$_name;
+        
+        $createdPassword = $model->password;
+        
+        $this->assertTrue(empty($createdPassword));
+        $this->assertTrue(empty($model->rawPassword));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
+        $model->name = self::$_name;
+        
+        $createdPassword = $model->password;
+        
+        $this->assertFalse(empty($createdPassword));
+        $this->assertFalse(empty($model->rawPassword));
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getAllRules
+     */
+    public function testGetAllRules()
+    {
+        $model = new UsersModel();
+        
+        $rulesArray = $model->allRules;
+        
+        $this->assertTrue(is_array($rulesArray));
+        $this->assertFalse(empty($rulesArray));
+        $this->assertTrue(is_object($rulesArray[0]));
+        $this->assertTrue($rulesArray[0] instanceof RulesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setId
+     */
+    public function testSetId()
+    {
+        $model = new UsersModel();
+        $model->id = self::$_id + 14;
+        
+        $this->assertEquals(self::$_id + 14, $model->id);
+    }
+    
+    /**
      * Тестирует метод UsersModel::getId
      */
-    /*public function testGetId()
+    public function testGetId()
     {
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-        $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
+        $model = new UsersModel();
+        $model->login = self::$_login;
         
         $this->assertEquals(self::$_id, $model->id);
-    }*/
+    }
     
     /**
      * Тестирует выброс исключения в методе UsersModel::getId
      * @expectedException ErrorException
      */
-    /*public function testExcGetId()
+    public function testExcGetId()
     {
         $model = new UsersModel();
-        //$model->address = self::$_address;
-        //$model->city = self::$_city;
-        //$model->country = self::$_country;
-        //$model->postcode = self::$_postcode;
+        //$model->login = self::$_login;
         
-        $model->id;
-    }*/
+        $this->assertEquals(self::$_id, $model->id);
+    }
     
     /**
-     * Тестирует метод UsersModel::setId
+     * Тестирует метод UsersModel::setLogin
      */
-    /*public function testSetId()
+    public function testSetLogin()
     {
         $model = new UsersModel();
-        $model->id = self::$_id + 3;
         
-        $this->assertEquals(self::$_id + 3, $model->id);
-    }*/
+        $model->login = self::$_login . 'now';
+        
+        $this->assertEquals(self::$_login . 'now', $model->login);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getLogin
+     */
+    public function testGetLogin()
+    {
+        $model = new UsersModel();
+        $model->name = self::$_name;
+        
+        $createdLogin = $model->login;
+        
+        $this->assertTrue(empty($createdLogin));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
+        $model->name = self::$_name;
+        
+        $createdLogin = $model->login;
+        
+        $this->assertFalse(empty($createdLogin));
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setEmails
+     */
+    public function testSetEmails()
+    {
+        $model = new UsersModel();
+        $model->emails = new EmailsModel();
+        
+        $this->assertTrue(is_object($model->emails));
+        $this->assertTrue($model->emails instanceof EmailsModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getEmails
+     */
+    public function testGetEmails()
+    {
+        $model = new UsersModel();
+        $model->emails = new EmailsModel();
+        
+        $this->assertTrue(is_object($model->emails));
+        $this->assertTrue($model->emails instanceof EmailsModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setAddress
+     */
+    public function testSetAddress()
+    {
+        $model = new UsersModel();
+        $model->address = new AddressModel();
+        
+        $this->assertTrue(is_object($model->address));
+        $this->assertTrue($model->address instanceof AddressModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getAddress
+     */
+    public function testGetAddress()
+    {
+        $model = new UsersModel();
+        $model->address = new AddressModel();
+        
+        $this->assertTrue(is_object($model->address));
+        $this->assertTrue($model->address instanceof AddressModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setPhones
+     */
+    public function testSetPhones()
+    {
+        $model = new UsersModel();
+        $model->phones = new PhonesModel();
+        
+        $this->assertTrue(is_object($model->phones));
+        $this->assertTrue($model->phones instanceof PhonesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getPhones
+     */
+    public function testGetPhones()
+    {
+        $model = new UsersModel();
+        $model->phones = new PhonesModel();
+        
+        $this->assertTrue(is_object($model->phones));
+        $this->assertTrue($model->phones instanceof PhonesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setDeliveries
+     */
+    public function testSetDeliveries()
+    {
+        $model = new UsersModel();
+        $model->deliveries = new DeliveriesModel();
+        
+        $this->assertTrue(is_object($model->deliveries));
+        $this->assertTrue($model->deliveries instanceof DeliveriesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getDeliveries
+     */
+    public function testGetDeliveries()
+    {
+        $model = new UsersModel();
+        $model->deliveries = new DeliveriesModel();
+        
+        $this->assertTrue(is_object($model->deliveries));
+        $this->assertTrue($model->deliveries instanceof DeliveriesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setPayments
+     */
+    public function testSetPayments()
+    {
+        $model = new UsersModel();
+        $model->payments = new PaymentsModel();
+        
+        $this->assertTrue(is_object($model->payments));
+        $this->assertTrue($model->payments instanceof PaymentsModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getPayments
+     */
+    public function testGetPayments()
+    {
+        $model = new UsersModel();
+        $model->payments = new PaymentsModel();
+        
+        $this->assertTrue(is_object($model->payments));
+        $this->assertTrue($model->payments instanceof PaymentsModel);
+    }
     
     public static function tearDownAfterClass()
     {

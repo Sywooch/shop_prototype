@@ -11,6 +11,12 @@ use app\models\AddressModel;
  */
 class AddressObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_address = 'address';
+    private static $_city = 'city';
+    private static $_country = 'country';
+    private static $_postcode = 'postcode';
+    
     /**
      * Тестирует метод AddressObjectsFactory::getObjects()
      */
@@ -18,8 +24,7 @@ class AddressObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'address'=>'Some Address', 'city'=>'Some city', 'country'=>'Some country', 'postcode'=>'12345'],
-                ['id'=>2, 'address'=>'Some Address Next', 'city'=>'Some city Next', 'country'=>'Some country Next', 'postcode'=>'F12345'],
+                ['id'=>self::$_id, 'address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode],
             ],
         ]);
         
@@ -27,7 +32,7 @@ class AddressObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(2, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof AddressModel);
         

@@ -11,6 +11,9 @@ use app\models\BrandsModel;
  */
 class BrandsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_brand = 'Some';
+    
     /**
      * Тестирует метод BrandsObjectsFactory::getObjects()
      */
@@ -18,9 +21,7 @@ class BrandsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'brand'=>'Something 1'],
-                ['id'=>2, 'brand'=>'Something 2'],
-                ['id'=>3, 'brand'=>'Something 3'],
+                ['id'=>self::$_id, 'brand'=>self::$_brand],
             ],
         ]);
         
@@ -28,7 +29,7 @@ class BrandsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof BrandsModel);
         

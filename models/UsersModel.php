@@ -62,7 +62,7 @@ class UsersModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_FORM=>['login', 'password', 'name', 'surname', 'rulesFromForm'],
-            self::GET_FROM_DB=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+            self::GET_FROM_DB=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
             self::GET_FROM_CART_FORM=>['name', 'surname'],
         ];
     }
@@ -141,6 +141,23 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
+     * Присваивает значение свойству $this->_id
+     * @param string $value значение ID
+     */
+    public function setId($value)
+    {
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает значение свойства $this->_id
      * @return int
      */
@@ -169,17 +186,15 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
-     * Присваивает значение свойству $this->_id
-     * @param string $value значение ID
+     * Присваивает значение свойству $this->_login
+     * @param string $value значение login
+     * @return boolean
      */
-    public function setId($value)
+    public function setLogin($value)
     {
         try {
-            if (is_numeric($value)) {
-                $this->_id = $value;
-                return true;
-            }
-            return false;
+            $this->_login = $value;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -208,30 +223,6 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
-     * Присваивает значение свойству $this->_login
-     * @param string $value значение login
-     * @return boolean
-     */
-    public function setLogin($value)
-    {
-        try {
-            $this->_login = $value;
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает значение свойства $this->_emails
-     * @return object
-     */
-    public function getEmails()
-    {
-        return $this->_emails;
-    }
-    
-    /**
      * Присваивает значение свойству $this->_emails
      * @param object $value
      * @return boolean
@@ -247,12 +238,12 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает значение свойства $this->_address
+     * Возвращает значение свойства $this->_emails
      * @return object
      */
-    public function getAddress()
+    public function getEmails()
     {
-        return $this->_address;
+        return $this->_emails;
     }
     
     /**
@@ -271,12 +262,12 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает значение свойства $this->_phones
+     * Возвращает значение свойства $this->_address
      * @return object
      */
-    public function getPhones()
+    public function getAddress()
     {
-        return $this->_phones;
+        return $this->_address;
     }
     
     /**
@@ -295,12 +286,12 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает значение свойства $this->_deliveries
+     * Возвращает значение свойства $this->_phones
      * @return object
      */
-    public function getDeliveries()
+    public function getPhones()
     {
-        return $this->_deliveries;
+        return $this->_phones;
     }
     
     /**
@@ -319,12 +310,12 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает значение свойства $this->_payments
+     * Возвращает значение свойства $this->_deliveries
      * @return object
      */
-    public function getPayments()
+    public function getDeliveries()
     {
-        return $this->_payments;
+        return $this->_deliveries;
     }
     
     /**
@@ -341,4 +332,14 @@ class UsersModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает значение свойства $this->_payments
+     * @return object
+     */
+    public function getPayments()
+    {
+        return $this->_payments;
+    }
+    
 }

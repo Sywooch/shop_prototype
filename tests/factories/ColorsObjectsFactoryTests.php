@@ -11,6 +11,9 @@ use app\models\ColorsModel;
  */
 class ColorsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_color = 'some';
+    
     /**
      * Тестирует метод ColorsObjectsFactory::getObjects()
      */
@@ -18,9 +21,7 @@ class ColorsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'color'=>'Something 1'],
-                ['id'=>2, 'color'=>'Something 2'],
-                ['id'=>3, 'color'=>'Something 3']
+                ['id'=>self::$_id, 'color'=>self::$_color],
             ],
         ]);
         
@@ -28,7 +29,7 @@ class ColorsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof ColorsModel);
         

@@ -59,7 +59,11 @@ class TransliterationHelper
         try {
             self::$_inputArray = preg_split('//u', preg_replace('/ /', '', $string), -1, PREG_SPLIT_NO_EMPTY);
             foreach (self::$_inputArray as $letter) {
-                self::$_outputArray[] = self::$_matrix[mb_strtolower($letter, 'UTF-8')];
+                if (in_array(mb_strtolower($letter, 'UTF-8'), array_keys(self::$_matrix))) {
+                    self::$_outputArray[] = self::$_matrix[mb_strtolower($letter, 'UTF-8')];
+                    continue;
+                }
+                self::$_outputArray[] = mb_strtolower($letter, 'UTF-8');
             }
             return implode('', self::$_outputArray);
         } catch (\Exception $e) {
