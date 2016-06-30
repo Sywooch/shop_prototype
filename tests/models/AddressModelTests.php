@@ -113,9 +113,6 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
-        $this->assertFalse(array_key_exists('address', $model->errors));
-        $this->assertFalse(array_key_exists('city', $model->errors));
-        $this->assertFalse(array_key_exists('country', $model->errors));
     }
     
     /**
@@ -127,6 +124,21 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
         
         $this->assertEquals(self::$_id, $model->id);
+    }
+    
+    /**
+     * Тестирует выброс исключения в методе AddressModel::getId
+     * @expectedException ErrorException
+     */
+    public function testExcGetId()
+    {
+        $model = new AddressModel();
+        //$model->address = self::$_address;
+        //$model->city = self::$_city;
+        //$model->country = self::$_country;
+        //$model->postcode = self::$_postcode;
+        
+        $model->id;
     }
     
     /**

@@ -83,6 +83,18 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($subcategoryArray[0] instanceof SubcategoryModel);
     }
     
+    /**
+     * Тестирует выброс исключения в методе CategoriesModel::getSubcategory
+     * @expectedException ErrorException
+     */
+    public function testExcGetSubcategory()
+    {
+        $model = new CategoriesModel();
+        //$model->id = self::$_id;
+        
+        $model->subcategory;
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();

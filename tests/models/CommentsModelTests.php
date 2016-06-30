@@ -119,8 +119,6 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
-        $this->assertFalse(array_key_exists('text', $model->errors));
-        $this->assertFalse(array_key_exists('email', $model->errors));
         
         $model = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
         $model->attributes = ['text'=>self::$_text, 'email'=>self::$_notEmail];
@@ -150,6 +148,18 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $result = \Yii::$app->db->createCommand('SELECT COUNT(*) FROM {{emails}}')->queryScalar();
         
         $this->assertEquals(2, $result);
+    }
+    
+    /**
+     * Тестирует выброс исключения в методе CommentsModel::getId_emails
+     * @expectedException ErrorException
+     */
+    public function testExcGetId_emails()
+    {
+        $model = new CommentsModel();
+        //$model->email = self::$_email;
+        
+       $model->id_emails;
     }
     
     /**

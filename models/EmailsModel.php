@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\models\AbstractBaseModel;
 use app\mappers\EmailsByEmailMapper;
+use yii\base\ErrorException;
 
 /**
  * Представляет данные таблицы currency

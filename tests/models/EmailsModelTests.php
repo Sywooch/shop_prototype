@@ -86,7 +86,6 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
-        $this->assertFalse(array_key_exists('id', $model->errors));
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
         $model->attributes = ['email'=>self::$_notEmail];
@@ -105,6 +104,18 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         $model->email = self::$_email;
         
         $this->assertEquals(self::$_id, $model->id);
+    }
+    
+    /**
+     * Тестирует выброс исключения в методе EmailsModel::getId
+     * @expectedException ErrorException
+     */
+    public function testExcGetId()
+    {
+        $model = new EmailsModel();
+        //$model->email = self::$_email;
+        
+       $model->id;
     }
     
     /**

@@ -30,7 +30,7 @@ class UsersModel extends AbstractBaseModel
     /**
      * Сценарий сохранения данных из БД
     */
-    const GET_FROM_DB = 'getFromDB';
+    const GET_FROM_DB = 'getFromDb';
     
     public $name = '';
     public $surname = '';
@@ -99,7 +99,7 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_password)) {
-                if (!empty($this->name)) {
+                if (!empty($this->name) && $this->scenario == self::GET_FROM_CART_FORM) {
                     $this->rawPassword = PasswordHelper::getPassword();
                     if (!is_string($this->rawPassword)) {
                         throw new ErrorException('Неверный формат данных!');
@@ -193,7 +193,7 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_login)) {
-                if (!empty($this->name)) {
+                if (!empty($this->name) && $this->scenario == self::GET_FROM_CART_FORM) {
                     $login = TransliterationHelper::getTransliteration($this->name);
                     if (!is_string($login)) {
                         throw new ErrorException('Неверный формат данных!');
