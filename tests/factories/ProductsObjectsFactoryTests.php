@@ -11,6 +11,13 @@ use app\models\ProductsModel;
  */
 class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_date = 'some';
+    private static $_code = 'some';
+    private static $_name = 'some';
+    private static $_description = 'some';
+    private static $_price = 14.56;
+    private static $_images = 'images/';
     /**
      * Тестирует метод ProductsObjectsFactory::getObjects()
      */
@@ -18,9 +25,7 @@ class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'date'=>'Something 1', 'code'=>'Something 1', 'name'=>'Something 1', 'description'=>'Something 1', 'price'=>23, 'images'=>'Something 1'],
-                ['id'=>2, 'date'=>'Something 2', 'code'=>'Something 2', 'name'=>'Something 2', 'description'=>'Something 2', 'price'=>23, 'images'=>'Something 2'],
-                ['id'=>3, 'date'=>'Something 3', 'code'=>'Something 3', 'name'=>'Something 3', 'description'=>'Something 3', 'price'=>23, 'images'=>'Something 3'],
+                ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images],
             ],
         ]);
         
@@ -28,7 +33,7 @@ class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof ProductsModel);
         

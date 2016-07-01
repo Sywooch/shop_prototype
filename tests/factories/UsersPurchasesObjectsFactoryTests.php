@@ -11,6 +11,12 @@ use app\models\UsersPurchasesModel;
  */
 class UsersPurchasesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_id_users =45;
+    private static $_id_products = 1;
+    private static $_id_deliveries = 3;
+    private static $_id_payments = 1;
+    
     /**
      * Тестирует метод UsersPurchasesObjectsFactory::getObjects()
      */
@@ -18,7 +24,7 @@ class UsersPurchasesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'id_users'=>2, 'id_products'=>3, 'id_deliveries'=>23, 'id_payments'=>19],
+                ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments],
             ],
         ]);
         

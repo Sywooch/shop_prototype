@@ -11,6 +11,9 @@ use app\models\PhonesModel;
  */
 class PhonesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_phone = '+380526548978';
+    
     /**
      * Тестирует метод PhonesObjectsFactory::getObjects()
      */
@@ -18,8 +21,7 @@ class PhonesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'phone'=>'0569878974'],
-                ['id'=>2, 'phone'=>'+380987899654'],
+                ['id'=>self::$_id, 'phone'=>self::$_phone],
             ],
         ]);
         
@@ -27,7 +29,7 @@ class PhonesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(2, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof PhonesModel);
         

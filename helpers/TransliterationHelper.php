@@ -70,4 +70,18 @@ class TransliterationHelper
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Удаляет данные из массива, содержащего транслитерированные строки
+     * @return boolean
+     */
+    public static function clean()
+    {
+        try {
+            self::$_outputArray = array();
+            return true;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
 }

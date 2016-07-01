@@ -11,6 +11,9 @@ use app\models\CurrencyModel;
  */
 class CurrencyObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_currency = 'some';
+    
     /**
      * Тестирует метод CurrencyObjectsFactory::getObjects()
      */
@@ -18,8 +21,7 @@ class CurrencyObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'currency'=>'Something 1'],
-                ['id'=>2, 'currency'=>'Something 2'],
+                ['id'=>self::$_id, 'currency'=>self::$_currency],
             ],
         ]);
         
@@ -27,7 +29,7 @@ class CurrencyObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(2, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof CurrencyModel);
         

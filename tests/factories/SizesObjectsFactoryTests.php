@@ -11,6 +11,9 @@ use app\models\SizesModel;
  */
 class SizesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_size = 'some';
+    
     /**
      * Тестирует метод SizesObjectsFactory::getObjects()
      */
@@ -18,8 +21,7 @@ class SizesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'size'=>'Something 1'],
-                ['id'=>2, 'size'=>'Something 2'],
+                ['id'=>self::$_id, 'size'=>self::$_size],
             ],
         ]);
         
@@ -27,7 +29,7 @@ class SizesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(2, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof SizesModel);
         

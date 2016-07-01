@@ -11,6 +11,9 @@ use app\models\SubcategoryModel;
  */
 class SubcategoryObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_name = 'some';
+    
     /**
      * Тестирует метод SubcategoryObjectsFactory::getObjects()
      */
@@ -18,9 +21,7 @@ class SubcategoryObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'name'=>'Something 1'],
-                ['id'=>2, 'name'=>'Something 2'],
-                ['id'=>3, 'name'=>'Something 3']
+                ['id'=>self::$_id, 'name'=>self::$_name],
             ],
         ]);
         
@@ -28,7 +29,7 @@ class SubcategoryObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof SubcategoryModel);
         

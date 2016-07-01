@@ -11,6 +11,9 @@ use app\models\UsersRulesModel;
  */
 class UsersRulesFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id_users =45;
+    private static $_id_rules = 1;
+    
     /**
      * Тестирует метод UsersRulesFactory::getObjects()
      */
@@ -18,9 +21,7 @@ class UsersRulesFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id_users'=>1, 'id_rules'=>'Something 1'],
-                ['id_users'=>2, 'id_rules'=>'Something 2'],
-                ['id_users'=>3, 'id_rules'=>'Something 3'],
+                ['id_users'=>self::$_id_users, 'id_rules'=>self::$_id_rules],
             ],
         ]);
         
@@ -28,7 +29,7 @@ class UsersRulesFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof UsersRulesModel);
         

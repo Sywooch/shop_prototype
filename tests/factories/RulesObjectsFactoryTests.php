@@ -11,6 +11,9 @@ use app\models\RulesModel;
  */
 class RulesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_rule = 'some';
+    
     /**
      * Тестирует метод RulesObjectsFactory::getObjects()
      */
@@ -18,10 +21,7 @@ class RulesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'rule'=>'Something 1'],
-                ['id'=>2, 'rule'=>'Something 2'],
-                ['id'=>3, 'rule'=>'Something 3'],
-                ['id'=>4, 'rule'=>'Something 4'],
+                ['id'=>self::$_id, 'rule'=>self::$_rule],
             ],
         ]);
         
@@ -29,7 +29,7 @@ class RulesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(4, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof RulesModel);
         

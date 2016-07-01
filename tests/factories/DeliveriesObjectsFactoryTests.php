@@ -11,6 +11,11 @@ use app\models\DeliveriesModel;
  */
 class DeliveriesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_name = 'some';
+    private static $_description = 'some';
+    private static $_price = 1345.45;
+    
     /**
      * Тестирует метод DeliveriesObjectsFactory::getObjects()
      */
@@ -18,8 +23,7 @@ class DeliveriesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'name'=>'Some name', 'description'=>'Some description', 'price'=>12.34],
-                ['id'=>2, 'name'=>'Some name', 'description'=>'Some description', 'price'=>312.34],
+                ['id'=>self::$_id, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price],
             ],
         ]);
         
@@ -27,7 +31,7 @@ class DeliveriesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(2, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof DeliveriesModel);
         

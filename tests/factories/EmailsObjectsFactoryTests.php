@@ -11,6 +11,9 @@ use app\models\EmailsModel;
  */
 class EmailsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_email = 'something1@something.com';
+    
     /**
      * Тестирует метод EmailsObjectsFactory::getObjects()
      */
@@ -18,9 +21,7 @@ class EmailsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'email'=>'something1@something.com'],
-                ['id'=>2, 'email'=>'something2@something.com'],
-                ['id'=>3, 'email'=>'something3@something.com']
+                ['id'=>self::$_id, 'email'=>self::$_email],
             ],
         ]);
         
@@ -28,7 +29,7 @@ class EmailsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(3, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof EmailsModel);
         

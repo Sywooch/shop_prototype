@@ -11,6 +11,10 @@ use app\models\PaymentsModel;
  */
 class PaymentsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    private static $_name = 'Some name';
+    private static $_description = 'Some description';
+    
     /**
      * Тестирует метод PaymentsObjectsFactory::getObjects()
      */
@@ -18,8 +22,7 @@ class PaymentsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>1, 'name'=>'Some name', 'description'=>'Some description'],
-                ['id'=>2, 'name'=>'Some name', 'description'=>'Some description'],
+                ['id'=>self::$_id, 'name'=>self::$_name, 'description'=>self::$_description],
             ],
         ]);
         
@@ -27,7 +30,7 @@ class PaymentsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
-        $this->assertEquals(2, count($mockObject->objectsArray));
+        $this->assertEquals(1, count($mockObject->objectsArray));
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof PaymentsModel);
         
