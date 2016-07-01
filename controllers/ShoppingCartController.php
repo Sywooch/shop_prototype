@@ -321,7 +321,11 @@ class ShoppingCartController extends AbstractBaseController
             } else {
                 throw new ErrorException('Ошибка при сохранении данных пользователя в процессе оформления покупки!');
             }
-            return 'SAVED!';
+            if (!is_array($dataForRender = $this->getDataForRender())) {
+                throw new ErrorException('Ошибка при формировании массива данных!');
+            }
+            $resultArray = array_merge(['email'=>$emailsModel], $dataForRender);
+            return $this->render('thank.twig', $resultArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

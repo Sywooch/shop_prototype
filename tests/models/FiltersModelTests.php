@@ -59,4 +59,23 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_subcategory, $model->subcategory);
         $this->assertEquals(self::$_search, $model->search);
     }
+    
+    /**
+     * Тестирует метод FiltersModel::clean
+     */
+    public function testClean()
+    {
+        $model = new FiltersModel();
+        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands];
+        
+        $this->assertFalse(empty($model->colors));
+        $this->assertFalse(empty($model->sizes));
+        $this->assertFalse(empty($model->brands));
+        
+        $model->clean();
+        
+        $this->assertTrue(empty($model->colors));
+        $this->assertTrue(empty($model->sizes));
+        $this->assertTrue(empty($model->brands));
+    }
 }

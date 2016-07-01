@@ -49,6 +49,9 @@ class FilterController extends AbstractBaseProductsController
                     if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession']])) {
                         throw new ErrorException('Ошибка при удалении переменной из сесии!');
                     }
+                    if (!\Yii::$app->filters->clean()) {
+                        throw new ErrorException('Ошибка при очистке фильтров!');
+                    }
                     $urlArray = $this->getRedirectUrl();
                 }
             } else {

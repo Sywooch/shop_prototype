@@ -22,4 +22,20 @@ class FiltersModel extends AbstractBaseModel
             [['colors', 'sizes', 'brands', 'categories', 'subcategory', 'search'], 'safe'],
         ];
     }
+    
+    /**
+     * Обнуляет значение всех свойств, очищая фильтры
+     * @return boolean
+     */
+    public function clean()
+    {
+        try {
+            $this->colors = array();
+            $this->sizes = array();
+            $this->brands = array();
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }
