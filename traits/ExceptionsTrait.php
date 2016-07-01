@@ -16,12 +16,18 @@ trait ExceptionsTrait
      */
     public function throwException(\Exception $e, $method)
     {
-        throw new ErrorException("Ошибка при вызове метода {$method}\n" . $e->getMessage());
+        throw new ErrorException("Ошибка при вызове метода {$method}: " . $e->getMessage() . "\n");
     }
     
+    /**
+     * Статический метод
+     * Принимает любое исключение, маркирует и выбрасывает как yii\base\ErrorException
+     * @param $e экзкмпляр \Exception
+     * @param $method полностью определенное имя метода, поймавшего исключение
+     */
     public static function throwStaticException(\Exception $e, $method)
     {
-        throw new ErrorException("Ошибка при вызове метода {$method}\n" . $e->getMessage());
+        throw new ErrorException("Ошибка при вызове метода {$method}: " . $e->getMessage() . "\n");
     }
     
     /**
@@ -31,6 +37,6 @@ trait ExceptionsTrait
      */
     public function writeErrorInLogs(\Exception $e, $method)
     {
-        \Yii::error("Ошибка при вызове метода {$method}\n" . $e->getMessage(), $method);
+        \Yii::error("Ошибка при вызове метода {$method}: " . $e->getMessage() . "\n", $method);
     }
 }

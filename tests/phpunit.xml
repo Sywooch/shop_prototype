@@ -20,6 +20,8 @@
             <directory suffix="Tests.php">helpers</directory>
             <directory suffix="Tests.php">cart</directory>
             <directory suffix="Tests.php">models</directory>
+            <directory suffix="Tests.php">traits</directory>
+            <directory suffix="Tests.php">validators</directory>
         </testsuite>
         
     </testsuites>
