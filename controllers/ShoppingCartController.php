@@ -311,7 +311,7 @@ class ShoppingCartController extends AbstractBaseController
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             if ($this->setUsersModel(\Yii::$app->cart->user)) {
-                if ($this->setUsersPurchasesModel(\Yii::$app->cart->user->id, \Yii::$app->cart->getProductsArray(), \Yii::$app->cart->user->deliveries->id, \Yii::$app->cart->user->payments->id)) {
+                if ($this->setUsersPurchasesModel()) {
                     if (!\Yii::$app->cart->clearProductsArray()) {
                         throw new ErrorException('Ошибка при очистке корзины!');
                     }
@@ -516,25 +516,37 @@ class ShoppingCartController extends AbstractBaseController
     /**
      * Создает UsersPurchasesModel
      * создает новую запись в БД, вязывающую пользователя с купленным товаром
-     * @param object $usersPurchasesModel экземпляр UsersPurchasesModel
-     * @return object
+     * @return boolean
      */
-    private function setUsersPurchasesModel($id_users, Array $productsArray, $id_deliveries, $id_payments)
+    private function setUsersPurchasesModel()
     {
         try {
-            if (!is_numeric($id_users) || !is_numeric($id_deliveries) || !is_numeric($id_payments)) {
-                throw new ErrorException('Ошибка в типе переданных аргументов!');
+            $id_users = \Yii::$app->cart->user->id;
+            $productsArray = \Yii::$app->cart->getProductsArray();
+            $id_deliveries = \Yii::$app->cart->user->deliveries->id;
+            $id_payments = \Yii::$app->cart->user->payments->id;
+            
+            if (empty($id_users)) {
+                throw new ErrorException('Отсутствует cart->user->id!');
             }
             if (!is_array($productsArray) || empty($productsArray)) {
-                throw new ErrorException('Ошибка в типе переданных аргументов!');
+                throw new ErrorException('Отсутствуют данные в массиве cart->productsArray!');
             }
+            if (empty($id_deliveries)) {
+                throw new ErrorException('Отсутствует user->deliveries->id!');
+            }
+            if (empty($id_payments)) {
+                throw new ErrorException('Отсутствует user->payments->id!');
+            }
+            
             $arrayToDb = [];
             foreach ($productsArray as $product) {
                 $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments];
             }
+            
             $usersPurchasesInsertMapper = new UsersPurchasesInsertMapper([
                 'tableName'=>'users_purchases',
-                'fields'=>['id_users', 'id_products', 'id_deliveries', 'id_payments'],
+                'fields'=>['id_users', 'id_products', 'id_deliveries', 'id_payments', 'received', 'received_date'],
                 'DbArray'=>$arrayToDb,
             ]);
             if (!$result = $usersPurchasesInsertMapper->setGroup()) {

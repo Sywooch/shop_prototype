@@ -18,6 +18,8 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
     private static $_received = 1;
     private static $_received_date = 1462453595;
     private static $_processed = 1;
+    private static $_canceled = 1;
+    private static $_shipped = 1;
     
     public static function setUpBeforeClass()
     {
@@ -42,6 +44,8 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, '_received'));
         $this->assertTrue(property_exists($model, '_received_date'));
         $this->assertTrue(property_exists($model, '_processed'));
+        $this->assertTrue(property_exists($model, '_canceled'));
+        $this->assertTrue(property_exists($model, '_shipped'));
         
         $this->assertTrue(method_exists($model, 'setReceived'));
         $this->assertTrue(method_exists($model, 'getReceived'));
@@ -49,6 +53,10 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(method_exists($model, 'getReceived_date'));
         $this->assertTrue(method_exists($model, 'setProcessed'));
         $this->assertTrue(method_exists($model, 'getProcessed'));
+        $this->assertTrue(method_exists($model, 'setCanceled'));
+        $this->assertTrue(method_exists($model, 'getCanceled'));
+        $this->assertTrue(method_exists($model, 'setShipped'));
+        $this->assertTrue(method_exists($model, 'getShipped'));
     }
     
     /**
@@ -71,7 +79,7 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id_payments, $model->id_payments);
         
         $model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments, 'received'=>self::$_received, 'received_date'=>self::$_received_date];
+        $model->attributes = ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments, 'received'=>self::$_received, 'received_date'=>self::$_received_date, 'processed'=>self::$_processed, 'canceled'=>self::$_canceled, 'shipped'=>self::$_shipped];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->id_users));
@@ -80,6 +88,9 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->id_payments));
         $this->assertFalse(empty($model->received));
         $this->assertFalse(empty($model->received_date));
+        $this->assertFalse(empty($model->processed));
+        $this->assertFalse(empty($model->canceled));
+        $this->assertFalse(empty($model->shipped));
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_id_users, $model->id_users);
@@ -88,6 +99,9 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id_payments, $model->id_payments);
         $this->assertEquals(self::$_received, $model->received);
         $this->assertEquals(self::$_received_date, $model->received_date);
+        $this->assertEquals(self::$_processed, $model->processed);
+        $this->assertEquals(self::$_canceled, $model->canceled);
+        $this->assertEquals(self::$_shipped, $model->shipped);
     }
     
     /**
@@ -173,5 +187,47 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $model = new UsersPurchasesModel();
         
         $this->assertEquals(0, $model->processed);
+    }
+    
+    /**
+     * Тестирует метод UsersPurchasesModel::setCanceled
+     */
+    public function testSetCanceled()
+    {
+        $model = new UsersPurchasesModel();
+        $model->canceled = self::$_canceled;
+        
+        $this->assertEquals(self::$_canceled, $model->canceled);
+    }
+    
+    /**
+     * Тестирует метод UsersPurchasesModel::getCanceled
+     */
+    public function testGetCanceled()
+    {
+        $model = new UsersPurchasesModel();
+        
+        $this->assertEquals(0, $model->canceled);
+    }
+    
+    /**
+     * Тестирует метод UsersPurchasesModel::setShipped
+     */
+    public function testSetShipped()
+    {
+        $model = new UsersPurchasesModel();
+        $model->shipped = self::$_shipped;
+        
+        $this->assertEquals(self::$_shipped, $model->shipped);
+    }
+    
+    /**
+     * Тестирует метод UsersPurchasesModel::getShipped
+     */
+    public function testGetShipped()
+    {
+        $model = new UsersPurchasesModel();
+        
+        $this->assertEquals(0, $model->shipped);
     }
 }

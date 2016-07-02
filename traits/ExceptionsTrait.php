@@ -16,7 +16,7 @@ trait ExceptionsTrait
      */
     public function throwException(\Exception $e, $method)
     {
-        throw new ErrorException("Ошибка при вызове метода {$method}: " . $e->getMessage() . "\n");
+        throw new ErrorException("Ошибка при вызове метода {$method}\n" . $e->getMessage());
     }
     
     /**
@@ -27,7 +27,7 @@ trait ExceptionsTrait
      */
     public static function throwStaticException(\Exception $e, $method)
     {
-        throw new ErrorException("Ошибка при вызове метода {$method}: " . $e->getMessage() . "\n");
+        throw new ErrorException("Ошибка при вызове метода {$method}\n" . $e->getMessage());
     }
     
     /**
@@ -37,6 +37,6 @@ trait ExceptionsTrait
      */
     public function writeErrorInLogs(\Exception $e, $method)
     {
-        \Yii::error("Ошибка при вызове метода {$method}: " . $e->getMessage() . "\n", $method);
+        \Yii::error("Ошибка при вызове метода {$method}\n" . $e->getMessage(), $method);
     }
 }

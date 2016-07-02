@@ -5,6 +5,7 @@ namespace app\tests\mappers;
 use app\tests\DbManager;
 use app\tests\MockModel;
 use app\mappers\UsersPurchasesInsertMapper;
+use app\models\UsersPurchasesModel;
 
 /**
  * Тестирует класс app\mappers\UsersPurchasesInsertMapper
@@ -26,6 +27,11 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
     private static $_subcategorySeocode = 'boots';
     private static $_description = 'Some description';
     private static $_price = 12.34;
+    private static $_received = 1;
+    private static $_received_date = 1462453595;
+    private static $_processed = 0;
+    private static $_canceled = 0;
+    private static $_shipped = 0;
     
     public static function setUpBeforeClass()
     {
@@ -74,17 +80,18 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetGroup()
     {
+        $usersPurchasesModel = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
+        $usersPurchasesModel->attributes = [
+            'id_users'=>self::$_id, 
+            'id_products'=>self::$_id, 
+            'id_deliveries'=>self::$_id, 
+            'id_payments'=>self::$_id,
+        ];
+        
         $usersPurchasesInsertMapper = new UsersPurchasesInsertMapper([
             'tableName'=>'users_purchases',
-            'fields'=>['id_users', 'id_products', 'id_deliveries', 'id_payments'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id_users'=>self::$_id, 
-                    'id_products'=>self::$_id, 
-                    'id_deliveries'=>self::$_id, 
-                    'id_payments'=>self::$_id
-                ]),
-            ],
+            'fields'=>['id_users', 'id_products', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
+            'objectsArray'=>[$usersPurchasesModel],
         ]);
         
         $result = $usersPurchasesInsertMapper->setGroup();
@@ -102,12 +109,22 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('id_products', $result);
         $this->assertArrayHasKey('id_deliveries', $result);
         $this->assertArrayHasKey('id_payments', $result);
+        $this->assertArrayHasKey('received', $result);
+        $this->assertArrayHasKey('received_date', $result);
+        $this->assertArrayHasKey('processed', $result);
+        $this->assertArrayHasKey('canceled', $result);
+        $this->assertArrayHasKey('shipped', $result);
         
-        //$this->assertEquals(self::$_id, $result['id']);
+        $this->assertFalse(empty($result['received']));
+        $this->assertFalse(empty($result['received_date']));
+        
         $this->assertEquals(self::$_id, $result['id_users']);
         $this->assertEquals(self::$_id, $result['id_products']);
         $this->assertEquals(self::$_id, $result['id_deliveries']);
         $this->assertEquals(self::$_id, $result['id_payments']);
+        $this->assertEquals(0, $result['processed']);
+        $this->assertEquals(0, $result['canceled']);
+        $this->assertEquals(0, $result['shipped']);
     }
     
     public static function tearDownAfterClass()

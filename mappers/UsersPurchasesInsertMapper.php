@@ -16,5 +16,5 @@ class UsersPurchasesInsertMapper extends AbstractInsertMapper
     /**
      * @var string имя класса, который создает объекты из данных БД
      */
-    public $objectsClass = 'app\factories\UsersPurchasesObjectsFactory';
+    public $objectsClass = 'app\factories\UsersPurchasesInsertObjectsFactory';
 }

@@ -36,4 +36,9 @@ class MockModel extends AbstractBaseModel
     public $id_phones;
     public $id_deliveries;
     public $id_payments;
+    public $received;
+    public $received_date;
+    public $processed;
+    public $canceled;
+    public $shipped;
 }

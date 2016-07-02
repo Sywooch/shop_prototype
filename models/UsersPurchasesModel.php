@@ -27,12 +27,14 @@ class UsersPurchasesModel extends AbstractBaseModel
     private $_received = 0;
     private $_received_date = NULL;
     private $_processed = 0;
+    private $_canceled = 0;
+    private $_shipped = 0;
     
     public function scenarios()
     {
         return [
             self::GET_FROM_FORM=>['id_users', 'id_products', 'id_deliveries', 'id_payments'],
-            self::GET_FROM_DB=>['id', 'id_users', 'id_products', 'id_deliveries', 'id_payments', 'received', 'received_date'],
+            self::GET_FROM_DB=>['id', 'id_users', 'id_products', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
         ];
     }
     
@@ -127,6 +129,66 @@ class UsersPurchasesModel extends AbstractBaseModel
     {
         try {
             return $this->_processed;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_canceled
+     * @param string $value значение canceled
+     * @return boolean
+     */
+    public function setCanceled($value)
+    {
+        try {
+            if ($value) {
+                $this->_canceled = 1;
+            }
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_canceled
+     * @return int
+     */
+    public function getCanceled()
+    {
+        try {
+            return $this->_canceled;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_shipped
+     * @param string $value значение shipped
+     * @return boolean
+     */
+    public function setShipped($value)
+    {
+        try {
+            if ($value) {
+                $this->_shipped = 1;
+            }
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_shipped
+     * @return int
+     */
+    public function getShipped()
+    {
+        try {
+            return $this->_shipped;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
