@@ -1,0 +1,57 @@
+
+<h1>Привет! Это информация о вашем заказе!</h2>
+
+<p>Вы можете отслеживать его в персональном кабинете. Временные логин и пароль, которые мы создали для вас:<br>логин: {{ app.cart.user.login }}<br>пароль: {{ app.cart.user.rawPassword }}</p>
+
+{% set products = app.cart.getProductsArray() %}
+
+{% set user = app.cart.user %}
+
+<p><strong>Purchased products</strong></p>
+
+{% for product in products %}
+    <p>
+        Code: {{ product.code }}</br>
+        Name: <a href="{{ url.to({0:'product-detail/index', 'categories':product.categories, 'subcategory':product.subcategory, 'id':product.id}, true) }}">{{ product.name }}</a></br>
+        Color: {{ array.map(product.colors, 'id', 'color')[product.colorToCart] }}<br>
+        Size: {{ array.map(product.sizes, 'id', 'size')[product.sizeToCart] }}<br>
+        Price: {{ product.price | number_format(2, '.', ' ') }}</br>
+        Quantity: {{ product.quantity }}<br>
+        Total price: {{ (product.price * product.quantity) | number_format(2, '.', ' ') }}
+    </p>
+{% endfor %}
+
+<p><strong>Customer</strong></p>
+
+<p>
+    First Name: {{ user.name }}<br>
+    Last Name: {{ user.surname }}<br>
+    Email: {{user.emails.email }}<br>
+    Phone: {{user.phones.phone }}
+</p>
+
+<p><strong>Delivery type</strong></p>
+
+<p>
+    {{ array.map(user.deliveries.allDeliveries, 'id', 'name')[user.deliveries.id] }}<br>
+    {{ array.map(user.deliveries.allDeliveries, 'id', 'description')[user.deliveries.id] }}<br>
+    Cost: {{ array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id] }}
+</p>
+
+<p><strong>Delivery address</strong></p>
+
+<p>
+    Country: {{user.address.country }}<br>
+    City: {{user.address.city }}<br>
+    Address: {{user.address.address }}<br>
+    Postcode: {{user.address.postcode }}<br>
+</p>
+
+<p><strong>Payments</strong></p>
+
+<p>
+    {{ array.map(user.payments.allPayments, 'id', 'name')[user.payments.id] }}<br>
+    {{ array.map(user.payments.allPayments, 'id', 'description')[user.payments.id] }}
+</p
+
+<p><strong>Total cost including delivery: {{ (app.cart.getTotalCost() + array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id]) | number_format(2, '.', ' ') }}</strong></p>

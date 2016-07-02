@@ -53,7 +53,9 @@ class CheckScriptInfoFilter extends ActionFilter
                 }
                 $sentRequests = \Yii::$app->params['fixSentRequests'];
                 
-                $string = '<p>Page generated: ' . round($pageGenerated, 3) . ' sec. / Memory usage: ' . ($memoryUsage / (1024 * 1024)) . ' Mb / Sent Requests: ' . $sentRequests . '</p>';
+                $yiiVersion = \Yii::getVersion();
+                
+                $string = '<p>Page generated: ' . round($pageGenerated, 3) . ' sec. / Memory usage: ' . ($memoryUsage / (1024 * 1024)) . ' Mb / Sent Requests: ' . $sentRequests . ' / Yii version: ' . $yiiVersion . '</p>';
                 $result = str_replace('</body>', $string . '</body>', $result);
             }
             return $result;

@@ -5,6 +5,7 @@ namespace app\controllers;
 use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
+use app\helpers\MailHelper;
 use app\models\ProductsModel;
 use app\models\UsersModel;
 use app\models\EmailsModel;
@@ -312,6 +313,9 @@ class ShoppingCartController extends AbstractBaseController
             }
             if ($this->setUsersModel(\Yii::$app->cart->user)) {
                 if ($this->setUsersPurchasesModel()) {
+                    if (!MailHelper::send([['template'=>'@app/views/mail/customer.twig', 'setFrom'=>['test@test.com'=>'John'], 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 'setSubject'=>'Hello!']])) {
+                        throw new ErrorException('Ошибка при отправке E-mail сообщения!');
+                    }
                     if (!\Yii::$app->cart->clearProductsArray()) {
                         throw new ErrorException('Ошибка при очистке корзины!');
                     }
@@ -321,6 +325,7 @@ class ShoppingCartController extends AbstractBaseController
             } else {
                 throw new ErrorException('Ошибка при сохранении данных пользователя в процессе оформления покупки!');
             }
+            
             if (!is_array($dataForRender = $this->getDataForRender())) {
                 throw new ErrorException('Ошибка при формировании массива данных!');
             }

@@ -103,6 +103,10 @@ $config = [
             'class'=>'yii\web\DbSession',
             'timeout'=>60*60*24*7
         ],
+        'mailer'=>[
+            'class'=>'yii\swiftmailer\Mailer',
+            'viewPath'=>'@app/views/mail',
+        ],
     ],
     'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],
 ];
