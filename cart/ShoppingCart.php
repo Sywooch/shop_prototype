@@ -44,8 +44,13 @@ class ShoppingCart extends Object
         try {
             foreach ($this->_productsArray as $objectInArray) {
                 if ($objectInArray->id == $object->id) {
+                    foreach ($objectInArray as $property=>$value) {
+                        if ($objectInArray->$property != $object->$property) {
+                            break 2;
+                        }
+                    }
                     $objectInArray->quantity++;
-                    return false;
+                    return true;
                 }
             }
             $this->_productsArray[] = $object;

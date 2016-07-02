@@ -19,7 +19,7 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     private static $_colorToCart2 = 12;
     private static $_sizeToCart = 3;
     private static $_sizeToCart2 = 1;
-    private static $_quantity = 2;
+    private static $_quantity = 1;
     private static $_quantity2 = 1;
     private static $_categories = 'mensfootwear';
     private static $_subcategory = 'snickers';
@@ -31,12 +31,10 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-    * Тестирует метод app\cart\\Yii::$app->cart->addProduct()
+    * Тестирует метод app\cart\ShoppingCart::addProduct
     */
     public function testAddProduct()
     {
-        \Yii::$app->cart->clearProductsArray();
-        
         $model = new ProductsModel([
             'id'=>self::$_id,
             'name'=>self::$_name,
@@ -82,7 +80,93 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-    * Тестирует метод app\cart\\Yii::$app->cart->removeProduct()
+    * Тестирует метод app\cart\ShoppingCart::clearProductsArray
+    */
+    public function testClearProductsArray()
+    {
+        $this->assertFalse(empty(\Yii::$app->cart->getProductsArray()));
+        
+        \Yii::$app->cart->clearProductsArray();
+        
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
+    }
+    
+    /**
+    * Тестирует метод app\cart\ShoppingCart::addProduct
+    * при повторном добавлении того же продукта
+    */
+    public function testDoubleAddProduct()
+    {
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
+        
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        $this->assertEquals(1, \Yii::$app->cart->getProductsArray()[0]->quantity);
+        
+        \Yii::$app->cart->addProduct($model);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        $this->assertEquals(2, \Yii::$app->cart->getProductsArray()[0]->quantity);
+    }
+    
+    /**
+    * Тестирует метод app\cart\ShoppingCart::addProduct
+    * при повторном добавлении того же продукта c другими характеристиками
+    */
+    public function testDoubleDiffAddProduct()
+    {
+        \Yii::$app->cart->clearProductsArray();
+        
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
+        
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart + 2,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model);
+        
+        $this->assertEquals(2, count(\Yii::$app->cart->getProductsArray()));
+    }
+    
+    /**
+    * Тестирует метод app\cart\ShoppingCart::removeProduct
     */
     public function testRemoveProduct()
     {
@@ -112,7 +196,7 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-    * Тестирует метод app\cart\\Yii::$app->cart->updateProduct()
+    * Тестирует метод app\cart\ShoppingCart::updateProduct
     */
     public function testUpdateProduct()
     {
@@ -174,7 +258,7 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-    * Тестирует метод app\cart\\Yii::$app->cart->setProductsArray()
+    * Тестирует метод app\cart\ShoppingCart::setProductsArray
     */
     public function testSetProductsArray()
     {
@@ -213,7 +297,7 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-    * Тестирует метод app\cart\\Yii::$app->cart->getShortData()
+    * Тестирует метод app\cart\ShoppingCart::getShortData
     */
     public function testGetShortData()
     {
