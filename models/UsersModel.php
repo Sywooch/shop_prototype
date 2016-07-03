@@ -34,9 +34,9 @@ class UsersModel extends AbstractBaseModel
     
     public $name = '';
     public $surname = '';
-    public $id_emails = '';
-    public $id_phones = '';
-    public $id_address = '';
+    public $id_emails = 0;
+    public $id_phones = 0;
+    public $id_address = 0;
     
     /**
      * @var string пароль, сконструированный при автоматическом создании пользователя

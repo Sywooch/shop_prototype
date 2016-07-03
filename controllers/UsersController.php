@@ -22,24 +22,23 @@ class UsersController extends AbstractBaseController
     public function actionAddUser()
     {
         try {
-            $modelUsers = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-            $modelEmails = new EmailsModel(['scenario'=>UsersModel::GET_FROM_FORM]);
+            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
+            $emailsModel = new EmailsModel(['scenario'=>UsersModel::GET_FROM_FORM]);
             
-            if (\Yii::$app->request->isPost && $modelUsers->load(\Yii::$app->request->post()) && $modelEmails->load(\Yii::$app->request->post())) {
-                if ($modelUsers->validate() && $modelEmails->validate()) {
-                    $usersInsertMapper = new UsersInsertMapper([
-                        'tableName'=>'users',
-                        'fields'=>['login', 'password', 'name', 'surname'],
-                        'objectsArray'=>[$modelUsers],
-                    ]);
-                    if (!$result = $usersInsertMapper->setGroup()) {
-                        throw new ErrorException('Не удалось добавить данные в БД!');
+            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post())) {
+                if ($usersModel->validate() && $emailsModel->validate()) {
+                    if (!$emailsModel = $this->getEmailsModel($emailsModel)) {
+                        throw new ErrorException('Ошибка при сохранении E-mail!');
+                    }
+                    $usersModel->id_emails = $emailsModel->id;
+                    if (!$this->setUsersModel($usersModel)) {
+                        throw new ErrorException('Ошибка при сохранении данных пользователя!');
                     }
                     
                     /*$usersRulesInsertMapper = new UsersRulesInsertMapper([
                         'tableName'=>'users_rules',
                         'fields'=>['id_users', 'id_rules'],
-                        'model'=>$modelUsers
+                        'model'=>$usersModel
                     ]);
                     if (!$result = $usersRulesInsertMapper->setGroup()) {
                         throw new ErrorException('Не удалось добавить данные в БД!');
@@ -50,7 +49,7 @@ class UsersController extends AbstractBaseController
             if (!is_array($dataForRender = $this->getDataForRender())) {
                 throw new ErrorException('Ошибка при формировании массива данных!');
             }
-            $resultArray = array_merge(['model'=>$modelUsers], $dataForRender);
+            $resultArray = array_merge(['model'=>$usersModel], $dataForRender);
             return $this->render('add-user.twig', $resultArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

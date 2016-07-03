@@ -14,9 +14,6 @@ use app\models\PhonesModel;
 use app\models\DeliveriesModel;
 use app\models\PaymentsModel;
 use app\models\UsersPurchasesModel;
-use app\mappers\UsersInsertMapper;
-use app\mappers\EmailsByEmailMapper;
-use app\mappers\EmailsInsertMapper;
 use app\mappers\AddressByAddressMapper;
 use app\mappers\AddressInsertMapper;
 use app\mappers\PhonesByPhoneMapper;
@@ -284,19 +281,25 @@ class ShoppingCartController extends AbstractBaseController
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             if (!empty(\Yii::$app->cart->user->emails) && is_object(\Yii::$app->cart->user->emails)) {
-                $emailsModel = $this->getEmailsModel(\Yii::$app->cart->user->emails);
+                if (!$emailsModel = $this->getEmailsModel(\Yii::$app->cart->user->emails)) {
+                    throw new ErrorException('Ошибка при сохранении E-mail!');
+                }
                 \Yii::$app->cart->user->id_emails = $emailsModel->id;
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             if (!empty(\Yii::$app->cart->user->address) && is_object(\Yii::$app->cart->user->address)) {
-                $addressModel = $this->getAddressModel(\Yii::$app->cart->user->address);
+                if (!$addressModel = $this->getAddressModel(\Yii::$app->cart->user->address)) {
+                    throw new ErrorException('Ошибка при сохранении address!');
+                }
                 \Yii::$app->cart->user->id_address = $addressModel->id;
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             if (!empty(\Yii::$app->cart->user->phones) && is_object(\Yii::$app->cart->user->phones)) {
-                $phonesModel = $this->getPhonesModel(\Yii::$app->cart->user->phones);
+                if (!$phonesModel = $this->getPhonesModel(\Yii::$app->cart->user->phones)) {
+                    throw new ErrorException('Ошибка при сохранении phones!');
+                }
                 \Yii::$app->cart->user->id_phones = $phonesModel->id;
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
@@ -321,67 +324,6 @@ class ShoppingCartController extends AbstractBaseController
             }
             $resultArray = array_merge(['email'=>$emailsModel], $dataForRender);
             return $this->render('thank.twig', $resultArray);
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Обновляет или создает UsersModel
-     * Проверяет, авторизирован ли user в системе, если да, обновляет данные,
-     * если нет, создает новую запись в БД
-     * @param object $usersModel экземпляр UsersModel
-     * @return int
-     */
-    private function setUsersModel(UsersModel $usersModel)
-    {
-        try {
-            $usersInsertMapper = new UsersInsertMapper([
-                'tableName'=>'users',
-                'fields'=>['login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-                'objectsArray'=>[$usersModel],
-            ]);
-            $result = $usersInsertMapper->setGroup();
-            if (!$result) {
-                throw new ErrorException('Не удалось обновить данные в БД!');
-            }
-            return $result;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает EmailsModel для переданного в форму email
-     * Проверяет, существет ли запись в БД для такого email, если да, возвращает ее,
-     * если нет, создает новую запись в БД
-     * @param object $emailsModel экземпляр EmailsModel
-     * @return object
-     */
-    private function getEmailsModel(EmailsModel $emailsModel)
-    {
-        try {
-            $emailsByEmailMapper = new EmailsByEmailMapper([
-                'tableName'=>'emails',
-                'fields'=>['id', 'email'],
-                'model'=>$emailsModel
-            ]);
-            $result = $emailsByEmailMapper->getOneFromGroup();
-            if (is_object($result) && $result instanceof EmailsModel) {
-                $emailsModel = $result;
-            } else {
-                $emailsInsertMapper = new EmailsInsertMapper([
-                    'tableName'=>'emails',
-                    'fields'=>['email'],
-                    'objectsArray'=>[$emailsModel],
-                ]);
-                if (!$emailsInsertMapper->setGroup()) {
-                    throw new ErrorException('Не удалось обновить данные в БД!');
-                }
-            }
-            return $emailsModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
