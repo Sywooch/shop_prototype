@@ -49,6 +49,11 @@ class ProductsModel extends AbstractBaseModel
     public $subcategory = '';
     
     /**
+     * @var string хэш сумма для продукта, мспользуется для идентификации в массиве продуктов класса корзины
+     */
+    public $hash = '';
+    
+    /**
      * Свойства получаемые из формы добавления в корзину
      */
     public $colorToCart = array();
@@ -65,8 +70,8 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'price', 'images', 'categories', 'subcategory'],
-            self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory'],
-            self::GET_FROM_FORM_FOR_REMOVE=>['id'],
+            self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
+            self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
         ];
     }

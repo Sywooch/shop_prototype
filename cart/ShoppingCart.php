@@ -42,13 +42,11 @@ class ShoppingCart extends Object
     public function addProduct(ProductsModel $object)
     {
         try {
+            if (!$this->getHash($object)) {
+                throw new ErrorException('Не удалось создать хэш для объекта!');
+            }
             foreach ($this->_productsArray as $objectInArray) {
-                if ($objectInArray->id == $object->id) {
-                    foreach ($objectInArray as $property=>$value) {
-                        if ($objectInArray->$property != $object->$property) {
-                            break 2;
-                        }
-                    }
+                if ($objectInArray->hash == $object->hash) {
                     $objectInArray->quantity++;
                     return true;
                 }
@@ -68,9 +66,14 @@ class ShoppingCart extends Object
     public function removeProduct(ProductsModel $object)
     {
         try {
-            $this->_productsArray = array_udiff($this->_productsArray, [$object], function($obj_a, $obj_b) {
-                return $obj_a->id - $obj_b->id;
-            });
+            $result = array();
+            foreach ($this->_productsArray as $product) {
+                if ($product->hash != $object->hash) {
+                    $result[] = $product;
+                }
+            }
+            $this->_productsArray = $result;
+            
             if (empty($this->_productsArray)) {
                 if (!$this->clearProductsArray()) {
                     throw new ErrorException('Не удалось очистить корзину!');
@@ -91,7 +94,7 @@ class ShoppingCart extends Object
     {
         try {
             foreach ($this->_productsArray as $objectInArray) {
-                if ($objectInArray->id == $object->id) {
+                if ($objectInArray->hash == $object->hash) {
                     foreach ($object as $key=>$value) {
                         if (!empty($value)) {
                             $objectInArray->$key = $value;
@@ -197,6 +200,27 @@ class ShoppingCart extends Object
     {
         try {
             return $this->_totalProducts;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает md5 hash из значений свойств, однозначно идентифицируя объект
+     * @param object объект для которого необходимо создать хэш
+     * @return boolean
+     */
+    private function getHash($object)
+    {
+        try {
+            $stringToHash = '';
+            foreach ($object as $property=>$value) {
+                $stringToHash .= $value;
+            }
+            if (!$object->hash = md5($stringToHash)) {
+                return false;
+            }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

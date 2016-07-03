@@ -196,11 +196,14 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-    * Тестирует метод app\cart\ShoppingCart::updateProduct
+    * Тестирует метод app\cart\ShoppingCart::removeProduct
+    * при удалении одного из нескольких продуктов с разными id
     */
-    public function testUpdateProduct()
+    public function testRemoveOneOfTwoProduct()
     {
         \Yii::$app->cart->clearProductsArray();
+        
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
         
         $model = new ProductsModel([
             'id'=>self::$_id,
@@ -214,23 +217,107 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             'subcategory'=>self::$_subcategory,
         ]);
         
+        \Yii::$app->cart->addProduct($model);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        
+        $model2 = new ProductsModel([
+            'id'=>self::$_id + 1,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model2);
+        
+        $this->assertEquals(2, count(\Yii::$app->cart->getProductsArray()));
+        
+        \Yii::$app->cart->removeProduct($model);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        
+        $this->assertEquals(self::$_id + 1, \Yii::$app->cart->getProductsArray()[0]->id);
+    }
+    
+    /**
+    * Тестирует метод app\cart\ShoppingCart::removeProduct
+    * при удалении одного из нескольких продуктов с одинаковыми id, но разными значениями свойств
+    */
+    public function testRemoveOneOfTwoIfEqualIdProduct()
+    {
+        \Yii::$app->cart->clearProductsArray();
+        
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
+        
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        
         $model2 = new ProductsModel([
             'id'=>self::$_id,
             'name'=>self::$_name,
             'description'=>self::$_description,
             'price'=>self::$_price,
-            'colorToCart'=>self::$_colorToCart2,
-            'sizeToCart'=>self::$_sizeToCart2,
-            'quantity'=>self::$_quantity2,
+            'colorToCart'=>self::$_colorToCart + 1,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
             'categories'=>self::$_categories,
             'subcategory'=>self::$_subcategory,
         ]);
         
+        \Yii::$app->cart->addProduct($model2);
+        
+        $this->assertEquals(2, count(\Yii::$app->cart->getProductsArray()));
+        
+        \Yii::$app->cart->removeProduct($model2);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        
+        $this->assertEquals(self::$_id, \Yii::$app->cart->getProductsArray()[0]->id);
+        $this->assertEquals(self::$_colorToCart, \Yii::$app->cart->getProductsArray()[0]->colorToCart);
+    }
+    
+    /**
+    * Тестирует метод app\cart\ShoppingCart::updateProduct
+    */
+    public function testUpdateProduct()
+    {
+        \Yii::$app->cart->clearProductsArray();
+        
         $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
         
-        \Yii::$app->cart->addProduct($model);
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
         
-        $this->assertFalse(empty(\Yii::$app->cart->getProductsArray()));
+         \Yii::$app->cart->addProduct($model);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
         
         $productsArray = \Yii::$app->cart->getProductsArray();
         
@@ -244,7 +331,24 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_categories, $productsArray[0]->categories);
         $this->assertEquals(self::$_subcategory, $productsArray[0]->subcategory);
         
+        $model2 = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart2,
+            'sizeToCart'=>self::$_sizeToCart2,
+            'quantity'=>self::$_quantity2,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+            'hash'=>$model->hash,
+        ]);
+        
         \Yii::$app->cart->updateProduct($model2);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        
+        $this->assertEquals($model->hash, $productsArray[0]->hash);
         
         $this->assertEquals(self::$_id, $productsArray[0]->id);
         $this->assertEquals(self::$_name, $productsArray[0]->name);
@@ -255,6 +359,81 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_quantity2, $productsArray[0]->quantity);
         $this->assertEquals(self::$_categories, $productsArray[0]->categories);
         $this->assertEquals(self::$_subcategory, $productsArray[0]->subcategory);
+    }
+    
+    /**
+    * Тестирует метод app\cart\ShoppingCart::updateProduct
+    * при обновлении одного из продуктов с одинаковыми id, но разными hash
+    */
+    public function testUpdateProductIfEqualIdDiffHash()
+    {
+        \Yii::$app->cart->clearProductsArray();
+        
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
+        
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model);
+        
+        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        
+        $model2 = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart + 3,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model2);
+        
+        $this->assertEquals(2, count(\Yii::$app->cart->getProductsArray()));
+        
+        $model3 = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart2,
+            'sizeToCart'=>self::$_sizeToCart2,
+            'quantity'=>self::$_quantity2,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+            'hash'=>$model->hash,
+        ]);
+        
+        \Yii::$app->cart->updateProduct($model3);
+        
+        $this->assertEquals(2, count(\Yii::$app->cart->getProductsArray()));
+        
+        foreach (\Yii::$app->cart->getProductsArray() as $product) {
+            if ($product->hash == $model->hash) {
+                $this->assertEquals(self::$_id, $product->id);
+                $this->assertEquals(self::$_name, $product->name);
+                $this->assertEquals(self::$_description, $product->description);
+                $this->assertEquals(self::$_price, $product->price);
+                $this->assertEquals(self::$_colorToCart2, $product->colorToCart);
+                $this->assertEquals(self::$_sizeToCart2, $product->sizeToCart);
+                $this->assertEquals(self::$_quantity2, $product->quantity);
+                $this->assertEquals(self::$_categories, $product->categories);
+                $this->assertEquals(self::$_subcategory, $product->subcategory);
+            }
+            break;
+        }
     }
     
     /**
