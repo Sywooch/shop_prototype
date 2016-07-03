@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\AbstractBaseController;
 use yii\base\ErrorException;
 use app\models\UsersModel;
+use app\models\EmailsModel;
 use app\mappers\UsersInsertMapper;
 use app\mappers\UsersRulesInsertMapper;
 use app\factories\UsersRulesAutonomicFactory;
@@ -21,34 +22,35 @@ class UsersController extends AbstractBaseController
     public function actionAddUser()
     {
         try {
-            $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
+            $modelUsers = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
+            $modelEmails = new EmailsModel(['scenario'=>UsersModel::GET_FROM_FORM]);
             
-            if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
-                if ($model->validate()) {
+            if (\Yii::$app->request->isPost && $modelUsers->load(\Yii::$app->request->post()) && $modelEmails->load(\Yii::$app->request->post())) {
+                if ($modelUsers->validate() && $modelEmails->validate()) {
                     $usersInsertMapper = new UsersInsertMapper([
                         'tableName'=>'users',
                         'fields'=>['login', 'password', 'name', 'surname'],
-                        'objectsArray'=>[$model],
+                        'objectsArray'=>[$modelUsers],
                     ]);
                     if (!$result = $usersInsertMapper->setGroup()) {
                         throw new ErrorException('Не удалось добавить данные в БД!');
                     }
                     
-                    $usersRulesInsertMapper = new UsersRulesInsertMapper([
+                    /*$usersRulesInsertMapper = new UsersRulesInsertMapper([
                         'tableName'=>'users_rules',
                         'fields'=>['id_users', 'id_rules'],
-                        'model'=>$model
+                        'model'=>$modelUsers
                     ]);
                     if (!$result = $usersRulesInsertMapper->setGroup()) {
                         throw new ErrorException('Не удалось добавить данные в БД!');
-                    }
+                    }*/
                 }
             }
             
             if (!is_array($dataForRender = $this->getDataForRender())) {
                 throw new ErrorException('Ошибка при формировании массива данных!');
             }
-            $resultArray = array_merge(['model'=>$model], $dataForRender);
+            $resultArray = array_merge(['model'=>$modelUsers], $dataForRender);
             return $this->render('add-user.twig', $resultArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

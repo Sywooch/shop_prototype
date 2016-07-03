@@ -100,8 +100,21 @@ class ShoppingCart extends Object
                             $objectInArray->$key = $value;
                         }
                     }
+                    if (!$this->getHash($objectInArray)) {
+                        throw new ErrorException('Не удалось создать хэш для объекта!');
+                    }
                     break;
                 }
+            }
+            $prevObject;
+            $prevHash = '';
+            foreach ($this->_productsArray as $key=>$objectInArray) {
+                if ($objectInArray->hash == $prevHash) {
+                    $prevObject->quantity += $objectInArray->quantity;
+                    unset($this->_productsArray[$key]);
+                }
+                $prevObject = $objectInArray;
+                $prevHash = $objectInArray->hash;
             }
             return true;
         } catch (\Exception $e) {
@@ -207,15 +220,19 @@ class ShoppingCart extends Object
     
     /**
      * Создает md5 hash из значений свойств, однозначно идентифицируя объект
+     * $safeProperties - массив свойств, га основании которых создается хэш
      * @param object объект для которого необходимо создать хэш
      * @return boolean
      */
     private function getHash($object)
     {
         try {
+            $safeProperties = ['id', 'code', 'colorToCart', 'sizeToCart'];
             $stringToHash = '';
             foreach ($object as $property=>$value) {
-                $stringToHash .= $value;
+                if (in_array($property, $safeProperties)) {
+                    $stringToHash .= $value;
+                }
             }
             if (!$object->hash = md5($stringToHash)) {
                 return false;

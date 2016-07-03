@@ -316,10 +316,12 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         ]);
         
          \Yii::$app->cart->addProduct($model);
-        
-        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+         
+        $modelOldHash = $model->hash;
         
         $productsArray = \Yii::$app->cart->getProductsArray();
+        
+        $this->assertEquals(1, count($productsArray));
         
         $this->assertEquals(self::$_id, $productsArray[0]->id);
         $this->assertEquals(self::$_name, $productsArray[0]->name);
@@ -341,14 +343,16 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             'quantity'=>self::$_quantity2,
             'categories'=>self::$_categories,
             'subcategory'=>self::$_subcategory,
-            'hash'=>$model->hash,
+            'hash'=>$modelOldHash,
         ]);
         
         \Yii::$app->cart->updateProduct($model2);
         
-        $this->assertEquals(1, count(\Yii::$app->cart->getProductsArray()));
+        $productsArray = \Yii::$app->cart->getProductsArray();
         
-        $this->assertEquals($model->hash, $productsArray[0]->hash);
+        $this->assertEquals(1, count($productsArray));
+        
+        $this->assertNotEquals($modelOldHash, $productsArray[0]->hash);
         
         $this->assertEquals(self::$_id, $productsArray[0]->id);
         $this->assertEquals(self::$_name, $productsArray[0]->name);
@@ -434,6 +438,72 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
             }
             break;
         }
+    }
+    
+    /**
+    * Тестирует метод app\cart\ShoppingCart::updateProduct
+    * при обновлении одного из продуктов с одинаковыми id, но разными hash, когда у одного из продуктов 
+    * выставляются характеристики, идентичные первому. 
+    * Ожидается объединение с увеличением quantity
+    */
+    public function testReverseUpdateProductIfEqualIdDiffHash()
+    {
+        \Yii::$app->cart->clearProductsArray();
+        
+        $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
+        
+        $model = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model);
+        
+        $productsArray = \Yii::$app->cart->getProductsArray();
+        $this->assertEquals(1, count($productsArray));
+        $this->assertEquals(self::$_quantity, $productsArray[0]->quantity);
+        
+        $model2 = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart + 3,
+            'quantity'=>self::$_quantity + 2,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+        ]);
+        
+        \Yii::$app->cart->addProduct($model2);
+        
+        $this->assertEquals(2, count(\Yii::$app->cart->getProductsArray()));
+        
+        $model3 = new ProductsModel([
+            'id'=>self::$_id,
+            'name'=>self::$_name,
+            'description'=>self::$_description,
+            'price'=>self::$_price,
+            'colorToCart'=>self::$_colorToCart,
+            'sizeToCart'=>self::$_sizeToCart,
+            'quantity'=>self::$_quantity + 2,
+            'categories'=>self::$_categories,
+            'subcategory'=>self::$_subcategory,
+            'hash'=>$model2->hash,
+        ]);
+        
+        \Yii::$app->cart->updateProduct($model3);
+        
+        $productsArray = \Yii::$app->cart->getProductsArray();
+        $this->assertEquals(1, count($productsArray));
+        $this->assertEquals(self::$_quantity + 3, $productsArray[0]->quantity);
     }
     
     /**

@@ -209,32 +209,22 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $deliveriesModel->load(\Yii::$app->request->post()) && $paymentsModel->load(\Yii::$app->request->post())) {
-                if ($usersModel->validate()) {
+                if ($usersModel->validate() && $emailsModel->validate() && $addressModel->validate() && $phonesModel->validate() && $deliveriesModel->validate() && $paymentsModel->validate()) {
                     if (empty(\Yii::$app->cart->user)) {
                         \Yii::$app->cart->user = $usersModel;
                     }
-                }
-                if ($emailsModel->validate()) {
                     if (empty(\Yii::$app->cart->user->emails)) {
                         \Yii::$app->cart->user->emails = $emailsModel;
                     }
-                }
-                if ($addressModel->validate()) {
                     if (empty(\Yii::$app->cart->user->address)) {
                         \Yii::$app->cart->user->address = $addressModel;
                     }
-                }
-                if ($phonesModel->validate()) {
                     if (empty(\Yii::$app->cart->user->phones)) {
                         \Yii::$app->cart->user->phones = $phonesModel;
                     }
-                }
-                if ($deliveriesModel->validate()) {
                     if (empty(\Yii::$app->cart->user->deliveries)) {
                         \Yii::$app->cart->user->deliveries = $deliveriesModel;
                     }
-                }
-                if ($paymentsModel->validate()) {
                     if (empty(\Yii::$app->cart->user->payments)) {
                         \Yii::$app->cart->user->payments = $paymentsModel;
                     }
