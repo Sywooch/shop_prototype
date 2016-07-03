@@ -20,6 +20,9 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
     private static $_processed = 1;
     private static $_canceled = 1;
     private static $_shipped = 1;
+    private static $_id_colors = 4;
+    private static $_id_sizes = 5;
+    private static $_quantity = 2;
     
     public static function setUpBeforeClass()
     {
@@ -39,6 +42,9 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'id_users'));
         $this->assertTrue(property_exists($model, 'id_products'));
+        $this->assertTrue(property_exists($model, 'quantity'));
+        $this->assertTrue(property_exists($model, 'id_colors'));
+        $this->assertTrue(property_exists($model, 'id_sizes'));
         $this->assertTrue(property_exists($model, 'id_deliveries'));
         $this->assertTrue(property_exists($model, 'id_payments'));
         $this->assertTrue(property_exists($model, '_received'));
@@ -65,25 +71,34 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments];
+        $model->attributes = ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_colors'=>self::$_id_colors, 'id_sizes'=>self::$_id_sizes, 'quantity'=>self::$_quantity, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments];
         
         $this->assertTrue(empty($model->id));
         $this->assertFalse(empty($model->id_users));
         $this->assertFalse(empty($model->id_products));
+        $this->assertFalse(empty($model->quantity));
+        $this->assertFalse(empty($model->id_colors));
+        $this->assertFalse(empty($model->id_sizes));
         $this->assertFalse(empty($model->id_deliveries));
         $this->assertFalse(empty($model->id_payments));
         
         $this->assertEquals(self::$_id_users, $model->id_users);
         $this->assertEquals(self::$_id_products, $model->id_products);
+        $this->assertEquals(self::$_quantity, $model->quantity);
+        $this->assertEquals(self::$_id_colors, $model->id_colors);
+        $this->assertEquals(self::$_id_sizes, $model->id_sizes);
         $this->assertEquals(self::$_id_deliveries, $model->id_deliveries);
         $this->assertEquals(self::$_id_payments, $model->id_payments);
         
         $model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments, 'received'=>self::$_received, 'received_date'=>self::$_received_date, 'processed'=>self::$_processed, 'canceled'=>self::$_canceled, 'shipped'=>self::$_shipped];
+        $model->attributes = ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_colors'=>self::$_id_colors, 'id_sizes'=>self::$_id_sizes, 'quantity'=>self::$_quantity, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments, 'received'=>self::$_received, 'received_date'=>self::$_received_date, 'processed'=>self::$_processed, 'canceled'=>self::$_canceled, 'shipped'=>self::$_shipped];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->id_users));
         $this->assertFalse(empty($model->id_products));
+        $this->assertFalse(empty($model->quantity));
+        $this->assertFalse(empty($model->id_colors));
+        $this->assertFalse(empty($model->id_sizes));
         $this->assertFalse(empty($model->id_deliveries));
         $this->assertFalse(empty($model->id_payments));
         $this->assertFalse(empty($model->received));
@@ -95,6 +110,9 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_id_users, $model->id_users);
         $this->assertEquals(self::$_id_products, $model->id_products);
+        $this->assertEquals(self::$_quantity, $model->quantity);
+        $this->assertEquals(self::$_id_colors, $model->id_colors);
+        $this->assertEquals(self::$_id_sizes, $model->id_sizes);
         $this->assertEquals(self::$_id_deliveries, $model->id_deliveries);
         $this->assertEquals(self::$_id_payments, $model->id_payments);
         $this->assertEquals(self::$_received, $model->received);

@@ -32,11 +32,24 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
     private static $_processed = 0;
     private static $_canceled = 0;
     private static $_shipped = 0;
+    private static $_id_colors = 4;
+    private static $_id_sizes = 5;
+    private static $_color = 'color';
+    private static $_size = 'size';
+    private static $_quantity = 2;
     
     public static function setUpBeforeClass()
     {
         self::$_dbClass = new DbManager();
         self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
+        $command->bindValues([':id'=>self::$_id_colors, ':color'=>self::$_color]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
+        $command->bindValues([':id'=>self::$_id_sizes, ':size'=>self::$_size]);
+        $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
         $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
@@ -83,14 +96,17 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
         $usersPurchasesModel = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
         $usersPurchasesModel->attributes = [
             'id_users'=>self::$_id, 
-            'id_products'=>self::$_id, 
+            'id_products'=>self::$_id,
+            'quantity'=>self::$_quantity,
+            'id_colors'=>self::$_id_colors,
+            'id_sizes'=>self::$_id_sizes,
             'id_deliveries'=>self::$_id, 
             'id_payments'=>self::$_id,
         ];
         
         $usersPurchasesInsertMapper = new UsersPurchasesInsertMapper([
             'tableName'=>'users_purchases',
-            'fields'=>['id_users', 'id_products', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
+            'fields'=>['id_users', 'id_products', 'quantity', 'id_colors', 'id_sizes', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
             'objectsArray'=>[$usersPurchasesModel],
         ]);
         
@@ -107,6 +123,9 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('id', $result);
         $this->assertArrayHasKey('id_users', $result);
         $this->assertArrayHasKey('id_products', $result);
+        $this->assertArrayHasKey('quantity', $result);
+        $this->assertArrayHasKey('id_colors', $result);
+        $this->assertArrayHasKey('id_sizes', $result);
         $this->assertArrayHasKey('id_deliveries', $result);
         $this->assertArrayHasKey('id_payments', $result);
         $this->assertArrayHasKey('received', $result);
@@ -120,6 +139,9 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(self::$_id, $result['id_users']);
         $this->assertEquals(self::$_id, $result['id_products']);
+        $this->assertEquals(self::$_quantity, $result['quantity']);
+        $this->assertEquals(self::$_id_colors, $result['id_colors']);
+        $this->assertEquals(self::$_id_sizes, $result['id_sizes']);
         $this->assertEquals(self::$_id, $result['id_deliveries']);
         $this->assertEquals(self::$_id, $result['id_payments']);
         $this->assertEquals(0, $result['processed']);

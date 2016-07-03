@@ -56,8 +56,8 @@ class ProductsModel extends AbstractBaseModel
     /**
      * Свойства получаемые из формы добавления в корзину
      */
-    public $colorToCart = array();
-    public $sizeToCart = array();
+    public $colorToCart = '';
+    public $sizeToCart = '';
     public $quantity = '';
     
     private $_colors = NULL;

@@ -21,6 +21,9 @@ class UsersPurchasesModel extends AbstractBaseModel
     public $id = '';
     public $id_users = '';
     public $id_products = '';
+    public $id_colors = '';
+    public $id_sizes = '';
+    public $quantity = '';
     public $id_deliveries = '';
     public $id_payments = '';
     
@@ -33,8 +36,8 @@ class UsersPurchasesModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['id_users', 'id_products', 'id_deliveries', 'id_payments'],
-            self::GET_FROM_DB=>['id', 'id_users', 'id_products', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
+            self::GET_FROM_FORM=>['id_users', 'id_products', 'id_colors', 'id_sizes', 'quantity', 'id_deliveries', 'id_payments'],
+            self::GET_FROM_DB=>['id', 'id_users', 'id_products', 'id_colors', 'id_sizes', 'quantity', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
         ];
     }
     

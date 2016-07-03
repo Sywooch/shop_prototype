@@ -546,12 +546,12 @@ class ShoppingCartController extends AbstractBaseController
             
             $arrayToDb = [];
             foreach ($productsArray as $product) {
-                $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments];
+                $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'quantity'=>$product->quantity, 'id_colors'=>$product->colorToCart, 'id_sizes'=>$product->sizeToCart, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments];
             }
             
             $usersPurchasesInsertMapper = new UsersPurchasesInsertMapper([
                 'tableName'=>'users_purchases',
-                'fields'=>['id_users', 'id_products', 'id_deliveries', 'id_payments', 'received', 'received_date'],
+                'fields'=>['id_users', 'id_products', 'quantity', 'id_colors', 'id_sizes', 'id_deliveries', 'id_payments', 'received', 'received_date'],
                 'DbArray'=>$arrayToDb,
             ]);
             if (!$result = $usersPurchasesInsertMapper->setGroup()) {
