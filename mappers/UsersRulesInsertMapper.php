@@ -18,7 +18,7 @@ class UsersRulesInsertMapper extends AbstractInsertMapper
     /**
      * @var string имя класса, который создает объекты из переданных данных
      */
-    public $objectsClass = 'app\factories\UsersRulesFactory';
+    public $objectsClass = 'app\factories\UsersRulesObjectsFactory';
     
     /**
      * Формирует запрос к БД и выполняет его

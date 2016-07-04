@@ -49,7 +49,7 @@ class UsersController extends AbstractBaseController
             if (!is_array($dataForRender = $this->getDataForRender())) {
                 throw new ErrorException('Ошибка при формировании массива данных!');
             }
-            $resultArray = array_merge(['model'=>$usersModel], $dataForRender);
+            $resultArray = array_merge(['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel], $dataForRender);
             return $this->render('add-user.twig', $resultArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

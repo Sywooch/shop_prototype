@@ -3,19 +3,19 @@
 namespace app\tests\factories;
 
 use app\tests\MockObject;
-use app\factories\UsersRulesFactory;
+use app\factories\UsersRulesObjectsFactory;
 use app\models\UsersRulesModel;
 
 /**
- * Тестирует класс app\factories\UsersRulesFactory
+ * Тестирует класс app\factories\UsersRulesObjectsFactory
  */
-class UsersRulesFactoryTests extends \PHPUnit_Framework_TestCase
+class UsersRulesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
     private static $_id_users =45;
     private static $_id_rules = 1;
     
     /**
-     * Тестирует метод UsersRulesFactory::getObjects()
+     * Тестирует метод UsersRulesObjectsFactory::getObjects()
      */
     public function testGetObjects()
     {
@@ -25,7 +25,7 @@ class UsersRulesFactoryTests extends \PHPUnit_Framework_TestCase
             ],
         ]);
         
-        $objectsCreator = new UsersRulesFactory();
+        $objectsCreator = new UsersRulesObjectsFactory();
         $objectsCreator->update($mockObject);
         
         $this->assertFalse(empty($mockObject->objectsArray));
@@ -33,7 +33,7 @@ class UsersRulesFactoryTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($mockObject->objectsArray[0]));
         $this->assertTrue($mockObject->objectsArray[0] instanceof UsersRulesModel);
         
-        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_users'));
+        //$this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_users'));
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'id_rules'));
         
         $this->assertTrue(isset($mockObject->objectsArray[0]->id_users));

@@ -40,6 +40,24 @@ class EmailsModel extends AbstractBaseModel
     }
     
     /**
+     * Присваивает значение свойству $this->_id
+     * @param string/int $value значение ID
+     * @return boolean
+     */
+    public function setId($value)
+    {
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает значение свойства $this->_id
      * @return int
      */
@@ -62,24 +80,6 @@ class EmailsModel extends AbstractBaseModel
                 $this->_id = $emailsModel->id;
             }
             return $this->_id;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает значение свойству $this->_id
-     * @param string $value значение ID
-     * @return boolean
-     */
-    public function setId($value)
-    {
-        try {
-            if (is_numeric($value)) {
-                $this->_id = $value;
-                return true;
-            }
-            return false;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

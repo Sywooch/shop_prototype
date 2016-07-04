@@ -46,7 +46,7 @@ class UsersModel extends AbstractBaseModel
     /**
      * @var array массив ID rules, выбранных пользователем в форме
      */
-    public $rulesFromForm = array();
+    private $_rulesFromForm = array();
     
     private $_login = NULL;
     private $_id = NULL;
@@ -142,7 +142,8 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_id
-     * @param string $value значение ID
+     * @param string/int $value значение ID
+     * @return boolean
      */
     public function setId($value)
     {
@@ -342,4 +343,37 @@ class UsersModel extends AbstractBaseModel
         return $this->_payments;
     }
     
+    /**
+     * Присваивает значение свойству $this->_rulesFromForm
+     * @param array $value
+     * @return boolean
+     */
+    public function setRulesFromForm(Array $value)
+    {
+        try {
+            $this->_rulesFromForm = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_rulesFromForm
+     * @return array
+     */
+    public function getRulesFromForm()
+    {
+        try {
+            if (empty($this->_rulesFromForm)) {
+                if (empty(\Yii::$app->params['defaultRulesId'])) {
+                    throw new ErrorException('Отсутствует значение defaultRulesId!');
+                }
+                $this->_rulesFromForm = \Yii::$app->params['defaultRulesId'];
+            }
+            return $this->_rulesFromForm;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

@@ -8,7 +8,7 @@ use app\models\UsersRulesModel;
 /**
  * Создает объекты на оснований данных
  */
-class UsersRulesFactory extends AbstractGetObjectsFactory
+class UsersRulesObjectsFactory extends AbstractGetObjectsFactory
 {
     public function init()
     {

@@ -24,7 +24,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     private static $_password = 'ghht4de';
     private static $_name = 'Some';
     private static $_surname = 'Some';
-    private static $_rulesFromForm = [1,2];
+    private static $_rulesFromForm = [14,22];
     private static $_id_emails = 2;
     private static $_id_phones = 3;
     private static $_id_address = 5;
@@ -80,7 +80,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'id_phones'));
         $this->assertTrue(property_exists($model, 'id_address'));
         $this->assertTrue(property_exists($model, 'rawPassword'));
-        $this->assertTrue(property_exists($model, 'rulesFromForm'));
+        $this->assertTrue(property_exists($model, '_rulesFromForm'));
         $this->assertTrue(property_exists($model, '_login'));
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, '_password'));
@@ -108,6 +108,8 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(method_exists($model, 'setDeliveries'));
         $this->assertTrue(method_exists($model, 'getPayments'));
         $this->assertTrue(method_exists($model, 'setPayments'));
+        $this->assertTrue(method_exists($model, 'setRulesFromForm'));
+        $this->assertTrue(method_exists($model, 'getRulesFromForm'));
     }
     
     /**
@@ -132,7 +134,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_rulesFromForm, $model->rulesFromForm);
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'login'=>self::$_login, 'password'=>self::$_password, 'name'=>self::$_name, 'surname'=>self::$_surname, 'id_emails'=>self::$_id_emails, 'id_phones'=>self::$_id_phones, 'id_address'=>self::$_id_address, 'rulesFromForm'=>self::$_rulesFromForm];
+        $model->attributes = ['id'=>self::$_id, 'login'=>self::$_login, 'password'=>self::$_password, 'name'=>self::$_name, 'surname'=>self::$_surname, 'id_emails'=>self::$_id_emails, 'id_phones'=>self::$_id_phones, 'id_address'=>self::$_id_address];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->login));
@@ -142,7 +144,6 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->id_emails));
         $this->assertFalse(empty($model->id_phones));
         $this->assertFalse(empty($model->id_address));
-        $this->assertTrue(empty($model->rulesFromForm));
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_login, $model->login);
@@ -173,10 +174,9 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertEquals(3, count($model->errors));
+        $this->assertEquals(2, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
         $this->assertTrue(array_key_exists('password', $model->errors));
-        $this->assertTrue(array_key_exists('rulesFromForm', $model->errors));
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
         $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password, 'rulesFromForm'=>self::$_rulesFromForm];
@@ -438,6 +438,36 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_object($model->payments));
         $this->assertTrue($model->payments instanceof PaymentsModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setRulesFromForm
+     */
+    public function testSetRulesFromForm()
+    {
+        $model = new UsersModel();
+        $model->rulesFromForm = self::$_rulesFromForm;
+        
+        $this->assertTrue(is_array($model->rulesFromForm));
+        $this->assertFalse(empty($model->rulesFromForm));
+        $this->assertEquals(count(self::$_rulesFromForm), count($model->rulesFromForm));
+        $this->assertTrue(in_array(self::$_rulesFromForm[0], $model->rulesFromForm));
+        $this->assertTrue(in_array(self::$_rulesFromForm[1], $model->rulesFromForm));
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getRulesFromForm
+     */
+    public function testGetRulesFromForm()
+    {
+        $model = new UsersModel();
+        //$model->rulesFromForm = self::$_rulesFromForm;
+        
+        $this->assertTrue(is_array($model->rulesFromForm));
+        $this->assertFalse(empty($model->rulesFromForm));
+        $this->assertEquals(count(\Yii::$app->params['defaultRulesId']), count($model->rulesFromForm));
+        $this->assertTrue(in_array(\Yii::$app->params['defaultRulesId'][0], $model->rulesFromForm));
+        $this->assertTrue(in_array(\Yii::$app->params['defaultRulesId'][1], $model->rulesFromForm));
     }
     
     public static function tearDownAfterClass()
