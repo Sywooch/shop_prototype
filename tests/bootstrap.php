@@ -13,5 +13,8 @@ $config['components']['db'] = new \yii\db\Connection([
     'charset'=>'utf8'
 ]);
 
+$config['components']['mailer']['useFileTransport'] = true;
+$config['components']['mailer']['fileTransportPath'] = '@app/tests/source/mail/letters';
+
 (new yii\web\Application($config));
 
