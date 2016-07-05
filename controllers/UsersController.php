@@ -35,14 +35,14 @@ class UsersController extends AbstractBaseController
                         throw new ErrorException('Ошибка при сохранении данных пользователя!');
                     }
                     
-                    /*$usersRulesInsertMapper = new UsersRulesInsertMapper([
+                    $usersRulesInsertMapper = new UsersRulesInsertMapper([
                         'tableName'=>'users_rules',
                         'fields'=>['id_users', 'id_rules'],
                         'model'=>$usersModel
                     ]);
                     if (!$result = $usersRulesInsertMapper->setGroup()) {
                         throw new ErrorException('Не удалось добавить данные в БД!');
-                    }*/
+                    }
                 }
             }
             
