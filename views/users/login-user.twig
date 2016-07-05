@@ -1,5 +1,13 @@
 
+{% include '@app/views/parts/user-buttons.twig' %}
+
 {% include '@app/views/parts/menu.twig' %}
+
+<p><strong>Login</strong></p>
+
+{% if app.request.get('added') %}
+    <p>Вы успешно зарегистрированы! И теперь можете испытать логин и пароль в действии!</p>
+{% endif %}
 
 {% include '@app/views/parts/login-user-form.twig' %}
 

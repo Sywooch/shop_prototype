@@ -17,29 +17,11 @@ class UsersInsertMapperTests extends \PHPUnit_Framework_TestCase
     private static $_password = 'somepassword';
     private static $_name = 'Some Name';
     private static $_surname = 'Some Surname';
-    private static $_email = 'some@some.com';
-    private static $_phone = '+396548971203';
-    private static $_address = 'Some Address';
-    private static $_city = 'Some city';
-    private static $_country = 'Some country';
-    private static $_postcode = 'F12345';
     
     public static function setUpBeforeClass()
     {
         self::$_dbClass = new DbManager();
         self::$_dbClass->createDb();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
-        $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{phones}} SET [[id]]=:id, [[phone]]=:phone');
-        $command->bindValues([':id'=>self::$_id, ':phone'=>self::$_phone]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{address}} SET [[id]]=:id, [[address]]=:address, [[city]]=:city, [[country]]=:country, [[postcode]]=:postcode');
-        $command->bindValues([':id'=>self::$_id, ':address'=>self::$_address, ':city'=>self::$_city, ':country'=>self::$_country, ':postcode'=>self::$_postcode]);
-        $command->execute();
     }
     
     /**

@@ -1,5 +1,13 @@
 
+{% include '@app/views/parts/user-buttons.twig' %}
+
 {% include '@app/views/parts/menu.twig' %}
+
+{% if app.request.get('notexists') %}
+    <p>Никаких следов пользователя {{ app.request.get('notexists') }}! Но вы можете это исправить прямо сейчас!</p>
+{% endif %}
+
+<p><strong>Join to us</strong></p>
 
 {% include '@app/views/parts/add-user-form.twig' %}
 

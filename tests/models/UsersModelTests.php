@@ -22,18 +22,13 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     private static $_login = 'some';
     private static $_login2 = 'some next';
     private static $_password = 'ghht4de';
+    private static $_password2 = 'Ghyooo';
     private static $_name = 'Some';
     private static $_surname = 'Some';
     private static $_rulesFromForm = [14,22];
     private static $_id_emails = 2;
     private static $_id_phones = 3;
     private static $_id_address = 5;
-    private static $_email = 'some@some.com';
-    private static $_phone = '+3806589785645';
-    private static $_address = 'Some Address';
-    private static $_city = 'Some city';
-    private static $_country = 'Some country';
-    private static $_postcode = 'F12345';
     private static $_rule = 'Some Rule';
     
     public static function setUpBeforeClass()
@@ -42,20 +37,10 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         self::$_dbClass->createDb();
         self::$_reflectionClass = new \ReflectionClass('app\models\UsersModel');
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
-        $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
-        $command->execute();
+        $hashPass = password_hash(self::$_password, PASSWORD_DEFAULT);
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{phones}} SET [[id]]=:id, [[phone]]=:phone');
-        $command->bindValues([':id'=>self::$_id, ':phone'=>self::$_phone]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{address}} SET [[id]]=:id, [[address]]=:address, [[city]]=:city, [[country]]=:country, [[postcode]]=:postcode');
-        $command->bindValues([':id'=>self::$_id, ':address'=>self::$_address, ':city'=>self::$_city, ':country'=>self::$_country, ':postcode'=>self::$_postcode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
-        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[password]]=:password, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
+        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':password'=>$hashPass, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{rules}} SET [[id]]=:id, [[rule]]=:rule');
@@ -73,6 +58,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_CART_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
+         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_LOGIN_FORM'));
         
         $this->assertTrue(property_exists($model, 'name'));
         $this->assertTrue(property_exists($model, 'surname'));
@@ -163,6 +149,15 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_surname, $model->surname);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password];
+        
+        $this->assertFalse(empty($model->login));
+        $this->assertFalse(empty($model->password));
+        
+        $this->assertEquals(self::$_login, $model->login);
+        $this->assertEquals(self::$_password, $model->password);
     }
     
     /**
@@ -204,6 +199,34 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(2, count($model->errors));
+        $this->assertTrue(array_key_exists('login', $model->errors));
+        $this->assertTrue(array_key_exists('password', $model->errors));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['login'=>self::$_login2, 'password'=>self::$_password];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('login', $model->errors));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password2];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('password', $model->errors));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
     
     /**
@@ -215,6 +238,18 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $model->password = self::$_password;
         
         $this->assertTrue(password_verify(self::$_password, $model->password));
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setPassword
+     * в рамках сценария GET_FROM_LOGIN_FORM
+     */
+    public function testSetPasswordFromCartForm()
+    {
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
+        $model->password = self::$_password;
+        
+        $this->assertEquals(self::$_password, $model->password);
     }
     
     /**

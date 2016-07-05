@@ -2,12 +2,14 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
 use yii\base\ErrorException;
+use yii\helpers\Url;
+use app\controllers\AbstractBaseController;
 use app\models\UsersModel;
 use app\models\EmailsModel;
 use app\mappers\UsersInsertMapper;
 use app\mappers\UsersRulesInsertMapper;
+use app\mappers\UsersByLoginMapper;
 use app\factories\UsersRulesAutonomicFactory;
 
 /**
@@ -18,6 +20,7 @@ class UsersController extends AbstractBaseController
 {
     /**
      * Управляет процессом создания учетной записи
+     * @return string
      */
     public function actionAddUser()
     {
@@ -43,6 +46,7 @@ class UsersController extends AbstractBaseController
                     if (!$result = $usersRulesInsertMapper->setGroup()) {
                         throw new ErrorException('Не удалось добавить данные в БД!');
                     }
+                    return $this->redirect(Url::to(['users/login-user', 'added'=>1]));
                 }
             }
             
@@ -51,6 +55,59 @@ class UsersController extends AbstractBaseController
             }
             $resultArray = array_merge(['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel], $dataForRender);
             return $this->render('add-user.twig', $resultArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет процессом авторизации
+     * @return string
+     */
+    public function actionLoginUser()
+    {
+        try {
+            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
+            
+            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post())) {
+                if ($usersModel->validate()) {
+                    if(!$fullUsersModel = $this->getUsersModel($usersModel)) {
+                        //return $this->redirect(Url::to(['users/add-user', 'notexists'=>$usersModel->login]));
+                    }
+                    //\Yii::$app->user = $fullUsersModel;
+                }
+            }
+            
+            if (!is_array($dataForRender = $this->getDataForRender())) {
+                throw new ErrorException('Ошибка при формировании массива данных!');
+            }
+            $resultArray = array_merge(['usersModel'=>$usersModel], $dataForRender);
+            return $this->render('login-user.twig', $resultArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает UsersModel для переданного в форму login
+     * @param object $usersModel экземпляр UsersModel
+     * @return object
+     */
+    private function getUsersModel(UsersModel $usersModel)
+    {
+        try {
+            $usersByLoginMapper = new UsersByLoginMapper([
+                'tableName'=>'users',
+                'fields'=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                'model'=>$usersModel
+            ]);
+            $usersModel = $usersByLoginMapper->getOneFromGroup();
+            if (!is_object($usersModel) && !$usersModel instanceof UsersModel) {
+                return false;
+            }
+            return $usersModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

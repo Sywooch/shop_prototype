@@ -24,6 +24,10 @@ class UsersModel extends AbstractBaseModel
     */
     const GET_FROM_FORM = 'getFromForm';
     /**
+     * Сценарий сохранения данных из формы авторизации
+    */
+    const GET_FROM_LOGIN_FORM = 'getFromLoginForm';
+    /**
      * Сценарий сохранения данных из формы заказа
     */
     const GET_FROM_CART_FORM = 'getFromCartForm';
@@ -64,6 +68,7 @@ class UsersModel extends AbstractBaseModel
             self::GET_FROM_FORM=>['login', 'password', 'name', 'surname', 'rulesFromForm'],
             self::GET_FROM_DB=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
             self::GET_FROM_CART_FORM=>['name', 'surname'],
+            self::GET_FROM_LOGIN_FORM=>['login', 'password'],
         ];
     }
     
@@ -73,6 +78,8 @@ class UsersModel extends AbstractBaseModel
             [['login', 'password', 'rulesFromForm'], 'required', 'on'=>self::GET_FROM_FORM],
             ['login', 'app\validators\ExistUserValidator', 'on'=>self::GET_FROM_FORM],
             [['name', 'surname'], 'required', 'on'=>self::GET_FROM_CART_FORM],
+            [['login', 'password'], 'required', 'on'=>self::GET_FROM_LOGIN_FORM],
+            ['password', 'app\validators\LoginPassExistsValidator', 'on'=>self::GET_FROM_LOGIN_FORM], # проверят и login и password
         ];
     }
     
@@ -84,6 +91,10 @@ class UsersModel extends AbstractBaseModel
     public function setPassword($value)
     {
         try {
+            if ($this->scenario == self::GET_FROM_LOGIN_FORM) {
+                $this->_password = $value;
+                return true;
+            }
             $this->_password = password_hash($value, PASSWORD_DEFAULT);
             return true;
         } catch (\Exception $e) {

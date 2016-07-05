@@ -80,6 +80,7 @@ $config = [
                 'clean-filters'=>'filter/clean-filters',
                 'search'=>'products-list/search',
                 'join'=>'users/add-user',
+                'login'=>'users/login-user',
                 'add-comment'=>'comments/add-comment',
                 'add-to-cart'=>'shopping-cart/add-to-cart',
                 'clear-cart'=>'shopping-cart/clear-cart',
