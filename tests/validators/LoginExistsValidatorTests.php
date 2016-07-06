@@ -3,22 +3,22 @@
 namespace app\tests\validators;
 
 use app\tests\DbManager;
-use app\validators\ExistUserValidator;
+use app\validators\LoginExistsValidator;
 use app\models\UsersModel;
 
 /**
- * Тестирует валидатор ExistUserValidator
+ * Тестирует валидатор LoginExistsValidator
  */
-class ExistUserValidatorTests extends \PHPUnit_Framework_TestCase
+class LoginExistsValidatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
     private static $_login = 'somelogin';
     private static $_login2 = 'notexists';
-    private static $_password = 'somepassword';
+    private static $_rawPassword = 'somepassword';
     private static $_name = 'Some Name';
     private static $_surname = 'Some Surname';
-    private static $_rulesFromForm = [1,2];
+    
     private static $_registartionMessage = 'Пользователь с таким логином уже существует!';
     private static $_loginMessage = 'Пользователя с таким логином не существует!';
     
@@ -33,12 +33,12 @@ class ExistUserValidatorTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод ExistUserValidator::validateAttribute
+     * Тестирует метод LoginExistsValidator::validateAttribute
      */
     public function testValidateAttribute()
     {
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-        $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password, 'rulesFromForm'=>self::$_rulesFromForm];
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword,];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
@@ -47,7 +47,7 @@ class ExistUserValidatorTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_registartionMessage, $model->errors['login'][0]);
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
-        $model->attributes = ['login'=>self::$_login2, 'password'=>self::$_password];
+        $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));

@@ -79,7 +79,7 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>'menswear', 'subcategory'=>'coats'];
         
-        \Yii::$app->filters->attributes = ['colors'=>[1]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[1]]);
         
         $mockObject = new MockObject(self::$_config);
         
@@ -99,7 +99,7 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>'mensfootwear', 'subcategory'=>'boots'];
         
-        \Yii::$app->filters->attributes = ['colors'=>[1], 'sizes'=>[2]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[1], 'sizes'=>[2]]);
         
         $mockObject = new MockObject(self::$_config);
         
@@ -118,7 +118,7 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = [];
         
-        \Yii::$app->filters->attributes = ['colors'=>[1], 'sizes'=>[]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[1], 'sizes'=>[]]);
         
         $mockObject = new MockObject(self::$_config);
         
@@ -138,7 +138,7 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = [];
         
-        \Yii::$app->filters->attributes = ['colors'=>[1], 'sizes'=>[3]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[1], 'sizes'=>[3]]);
         
         $mockObject = new MockObject(self::$_config);
         
@@ -157,7 +157,7 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>'menswear'];
         
-        \Yii::$app->filters->attributes = ['colors'=>[], 'sizes'=>[3]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[], 'sizes'=>[3]]);
         
         $mockObject = new MockObject(self::$_config);
         
@@ -177,7 +177,7 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>'menswear'];
         
-        \Yii::$app->filters->attributes = ['colors'=>[2,4], 'sizes'=>[3]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[2,4], 'sizes'=>[3]]);
         
         $mockObject = new MockObject(self::$_config);
         

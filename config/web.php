@@ -36,7 +36,7 @@ $config = [
                         'html'=>'yii\helpers\Html',
                         'array'=>'yii\helpers\ArrayHelper',
                         'url'=>'yii\helpers\Url',
-                        'deliveryArrayHelper'=>'app\helpers\DeliveryArrayHelper',
+                        'objectsToArrayHelper'=>'app\helpers\ObjectsToArrayHelper',
                     ],
                 ]
             ],

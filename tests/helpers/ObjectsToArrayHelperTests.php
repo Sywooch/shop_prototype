@@ -2,14 +2,14 @@
 
 namespace app\tests\helpers;
 
-use app\helpers\DeliveryArrayHelper;
+use app\helpers\ObjectsToArrayHelper;
 use app\models\DeliveriesModel;
 use app\models\PaymentsModel;
 
 /**
- * Тестирует app\helpers\DeliveryArrayHelper
+ * Тестирует app\helpers\ObjectsToArrayHelper
  */
-class DeliveryArrayHelperTests extends \PHPUnit_Framework_TestCase
+class ObjectsToArrayHelperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_id = 1;
     private static $_name = 'Some name';
@@ -19,7 +19,7 @@ class DeliveryArrayHelperTests extends \PHPUnit_Framework_TestCase
     private static $_expectedForPayments = 'Some name. Some description.';
     
     /**
-     * Тестирует метод DeliveryArrayHelper::getDeliveriesArray
+     * Тестирует метод ObjectsToArrayHelper::getDeliveriesArray
      */
     public function testGetDeliveriesArray()
     {
@@ -29,7 +29,7 @@ class DeliveryArrayHelperTests extends \PHPUnit_Framework_TestCase
         $model->description = self::$_description;
         $model->price = self::$_price;
         
-        $result = DeliveryArrayHelper::getDeliveriesArray([$model]);
+        $result = ObjectsToArrayHelper::getDeliveriesArray([$model]);
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
@@ -39,37 +39,37 @@ class DeliveryArrayHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе DeliveryArrayHelper::getDeliveriesArray
+     * Тестирует выброс исключения в методе ObjectsToArrayHelper::getDeliveriesArray
      * если аргумент - пустой массив
      * @expectedException ErrorException
      */
     public function testExcGetDeliveriesArray()
     {
-        $result = DeliveryArrayHelper::getDeliveriesArray([]);
+        $result = ObjectsToArrayHelper::getDeliveriesArray([]);
     }
     
     /**
-     * Тестирует выброс исключения в методе DeliveryArrayHelper::getDeliveriesArray
+     * Тестирует выброс исключения в методе ObjectsToArrayHelper::getDeliveriesArray
      * если аргумент не объект
      * @expectedException ErrorException
      */
     public function testExcTwoGetDeliveriesArray()
     {
-        $result = DeliveryArrayHelper::getDeliveriesArray(['some']);
+        $result = ObjectsToArrayHelper::getDeliveriesArray(['some']);
     }
     
     /**
-     * Тестирует выброс исключения в методе DeliveryArrayHelper::getDeliveriesArray
+     * Тестирует выброс исключения в методе ObjectsToArrayHelper::getDeliveriesArray
      * если аргумент объект не объект класса DeliveriesModel
      * @expectedException ErrorException
      */
     public function testExcThreeGetDeliveriesArray()
     {
-        $result = DeliveryArrayHelper::getDeliveriesArray([new PaymentsModel()]);
+        $result = ObjectsToArrayHelper::getDeliveriesArray([new PaymentsModel()]);
     }
     
     /**
-     * Тестирует метод DeliveryArrayHelper::getPaymentsArray
+     * Тестирует метод ObjectsToArrayHelper::getPaymentsArray
      */
     public function testGetPaymentsArray()
     {
@@ -78,7 +78,7 @@ class DeliveryArrayHelperTests extends \PHPUnit_Framework_TestCase
         $model->name = self::$_name;
         $model->description = self::$_description;
         
-        $result = DeliveryArrayHelper::getPaymentsArray([$model]);
+        $result = ObjectsToArrayHelper::getPaymentsArray([$model]);
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
@@ -88,32 +88,32 @@ class DeliveryArrayHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе DeliveryArrayHelper::getPaymentsArray
+     * Тестирует выброс исключения в методе ObjectsToArrayHelper::getPaymentsArray
      * если аргумент - пустой массив
      * @expectedException ErrorException
      */
     public function testExcGetPaymentsArray()
     {
-        $result = DeliveryArrayHelper::getPaymentsArray([]);
+        $result = ObjectsToArrayHelper::getPaymentsArray([]);
     }
     
     /**
-     * Тестирует выброс исключения в методе DeliveryArrayHelper::getPaymentsArray
+     * Тестирует выброс исключения в методе ObjectsToArrayHelper::getPaymentsArray
      * если аргумент не объект
      * @expectedException ErrorException
      */
     public function testExcTwoGetPaymentsArray()
     {
-        $result = DeliveryArrayHelper::getPaymentsArray(['some']);
+        $result = ObjectsToArrayHelper::getPaymentsArray(['some']);
     }
     
     /**
-     * Тестирует выброс исключения в методе DeliveryArrayHelper::getPaymentsArray
+     * Тестирует выброс исключения в методе ObjectsToArrayHelper::getPaymentsArray
      * если аргумент объект не объект класса PaymentsModel
      * @expectedException ErrorException
      */
     public function testExcThreeGetPaymentsArray()
     {
-        $result = DeliveryArrayHelper::getPaymentsArray([new DeliveriesModel()]);
+        $result = ObjectsToArrayHelper::getPaymentsArray([new DeliveriesModel()]);
     }
 }

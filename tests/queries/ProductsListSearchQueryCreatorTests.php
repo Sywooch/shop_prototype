@@ -27,7 +27,7 @@ class ProductsListSearchQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['search'=>'пиджак'];
         
-        \Yii::$app->filters->attributes = ['colors'=>[], 'sizes'=>[]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[], 'sizes'=>[]]);
         
         $mockObject = new MockObject(self::$_config);
         
@@ -47,7 +47,7 @@ class ProductsListSearchQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['search'=>'пиджак', 'colors'=>'black'];
         
-        \Yii::$app->filters->attributes = ['colors'=>[2,4,1]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[2,4,1]]);
         
         $mockObject = new MockObject(self::$_config);
         
@@ -67,7 +67,7 @@ class ProductsListSearchQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['search'=>'пиджак', 'colors'=>'black', 'sizes'=>45];
         
-        \Yii::$app->filters->attributes = ['colors'=>[2,4], 'sizes'=>[1,2]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[2,4], 'sizes'=>[1,2]]);
         
         $mockObject = new MockObject(self::$_config);
         

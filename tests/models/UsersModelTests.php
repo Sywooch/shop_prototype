@@ -21,8 +21,9 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     private static $_id = 1;
     private static $_login = 'some';
     private static $_login2 = 'some next';
-    private static $_password = 'ghht4de';
-    private static $_password2 = 'Ghyooo';
+    private static $_rawPassword = 'Fghdje4';
+    private static $_notExistsRawPassword = 'notexists';
+    private static $_hashPassword;
     private static $_name = 'Some';
     private static $_surname = 'Some';
     private static $_rulesFromForm = [14,22];
@@ -37,10 +38,10 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         self::$_dbClass->createDb();
         self::$_reflectionClass = new \ReflectionClass('app\models\UsersModel');
         
-        $hashPass = password_hash(self::$_password, PASSWORD_DEFAULT);
+        self::$_hashPassword = password_hash(self::$_rawPassword, PASSWORD_DEFAULT);
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[password]]=:password, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
-        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':password'=>$hashPass, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
+        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':password'=>self::$_hashPassword, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{rules}} SET [[id]]=:id, [[rule]]=:rule');
@@ -55,10 +56,10 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     {
         $model = new UsersModel();
         
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_LOGIN_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_CART_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_LOGIN_FORM'));
         
         $this->assertTrue(property_exists($model, 'name'));
         $this->assertTrue(property_exists($model, 'surname'));
@@ -80,22 +81,22 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(method_exists($model, 'setPassword'));
         $this->assertTrue(method_exists($model, 'getPassword'));
         $this->assertTrue(method_exists($model, 'getAllRules'));
-        $this->assertTrue(method_exists($model, 'getId'));
         $this->assertTrue(method_exists($model, 'setId'));
-        $this->assertTrue(method_exists($model, 'getLogin'));
+        $this->assertTrue(method_exists($model, 'getId'));
         $this->assertTrue(method_exists($model, 'setLogin'));
-        $this->assertTrue(method_exists($model, 'getEmails'));
+        $this->assertTrue(method_exists($model, 'getLogin'));
         $this->assertTrue(method_exists($model, 'setEmails'));
-        $this->assertTrue(method_exists($model, 'getAddress'));
+        $this->assertTrue(method_exists($model, 'getEmails'));
         $this->assertTrue(method_exists($model, 'setAddress'));
-        $this->assertTrue(method_exists($model, 'getPhones'));
+        $this->assertTrue(method_exists($model, 'getAddress'));
         $this->assertTrue(method_exists($model, 'setPhones'));
-        $this->assertTrue(method_exists($model, 'getDeliveries'));
+        $this->assertTrue(method_exists($model, 'getPhones'));
         $this->assertTrue(method_exists($model, 'setDeliveries'));
-        $this->assertTrue(method_exists($model, 'getPayments'));
+        $this->assertTrue(method_exists($model, 'getDeliveries'));
         $this->assertTrue(method_exists($model, 'setPayments'));
-        $this->assertTrue(method_exists($model, 'setRulesFromForm'));
+        $this->assertTrue(method_exists($model, 'getPayments'));
         $this->assertTrue(method_exists($model, 'getRulesFromForm'));
+        $this->assertTrue(method_exists($model, 'setRulesFromForm'));
     }
     
     /**
@@ -103,24 +104,17 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testScenarios()
     {
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'login'=>self::$_login2, 'password'=>self::$_password, 'name'=>self::$_name, 'surname'=>self::$_surname, 'rulesFromForm'=>self::$_rulesFromForm];
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];
         
-        $this->assertTrue(empty($model->id));
         $this->assertFalse(empty($model->login));
-        $this->assertFalse(empty($model->password));
-        $this->assertFalse(empty($model->name));
-        $this->assertFalse(empty($model->surname));
-        $this->assertFalse(empty($model->rulesFromForm));
+        $this->assertFalse(empty($model->rawPassword));
         
         $this->assertEquals(self::$_login2, $model->login);
-        $this->assertTrue(password_verify(self::$_password, $model->password));
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_surname, $model->surname);
-        $this->assertEquals(self::$_rulesFromForm, $model->rulesFromForm);
+        $this->assertEquals(self::$_rawPassword, $model->rawPassword);
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'login'=>self::$_login, 'password'=>self::$_password, 'name'=>self::$_name, 'surname'=>self::$_surname, 'id_emails'=>self::$_id_emails, 'id_phones'=>self::$_id_phones, 'id_address'=>self::$_id_address];
+        $model->attributes = ['id'=>self::$_id, 'login'=>self::$_login, 'password'=>self::$_hashPassword, 'name'=>self::$_name, 'surname'=>self::$_surname, 'id_emails'=>self::$_id_emails, 'id_phones'=>self::$_id_phones, 'id_address'=>self::$_id_address];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->login));
@@ -133,7 +127,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_login, $model->login);
-        $this->assertTrue(password_verify(self::$_password, $model->password));
+        $this->assertTrue(password_verify(self::$_rawPassword, $model->password));
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_surname, $model->surname);
         $this->assertEquals(self::$_id_emails, $model->id_emails);
@@ -141,23 +135,22 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id_address, $model->id_address);
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
-        $model->attributes = ['name'=>self::$_name, 'surname'=>self::$_surname, 'id_emails'=>self::$_id_emails];
+        $model->attributes = ['name'=>self::$_name, 'surname'=>self::$_surname];
         
         $this->assertFalse(empty($model->name));
         $this->assertFalse(empty($model->surname));
-        $this->assertTrue(empty($model->id_emails));
         
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_surname, $model->surname);
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
-        $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password];
+        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword];
         
         $this->assertFalse(empty($model->login));
-        $this->assertFalse(empty($model->password));
+        $this->assertFalse(empty($model->rawPassword));
         
         $this->assertEquals(self::$_login, $model->login);
-        $this->assertEquals(self::$_password, $model->password);
+        $this->assertEquals(self::$_rawPassword, $model->rawPassword);
     }
     
     /**
@@ -165,23 +158,23 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(2, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
-        $this->assertTrue(array_key_exists('password', $model->errors));
+        $this->assertTrue(array_key_exists('rawPassword', $model->errors));
         
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-        $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password, 'rulesFromForm'=>self::$_rulesFromForm];
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
         
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-        $model->attributes = ['login'=>self::$_login2, 'password'=>self::$_password, 'rulesFromForm'=>self::$_rulesFromForm];
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
@@ -206,24 +199,24 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(2, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
-        $this->assertTrue(array_key_exists('password', $model->errors));
+        $this->assertTrue(array_key_exists('rawPassword', $model->errors));
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
-        $model->attributes = ['login'=>self::$_login2, 'password'=>self::$_password];
+        $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
-        $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password2];
+        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_notExistsRawPassword];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('password', $model->errors));
+        $this->assertTrue(array_key_exists('rawPassword', $model->errors));
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
-        $model->attributes = ['login'=>self::$_login, 'password'=>self::$_password];
+        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
@@ -235,43 +228,51 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     public function testSetPassword()
     {
         $model = new UsersModel();
-        $model->password = self::$_password;
+        $model->password = password_hash(self::$_rawPassword, PASSWORD_DEFAULT);
         
-        $this->assertTrue(password_verify(self::$_password, $model->password));
-    }
-    
-    /**
-     * Тестирует метод UsersModel::setPassword
-     * в рамках сценария GET_FROM_LOGIN_FORM
-     */
-    public function testSetPasswordFromCartForm()
-    {
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
-        $model->password = self::$_password;
-        
-        $this->assertEquals(self::$_password, $model->password);
+        $this->assertTrue(password_verify(self::$_rawPassword, $model->password));
     }
     
     /**
      * Тестирует метод UsersModel::getPassword
+     * при условии $this->_password IS NULL, $this->rawPassword EMPTY
      */
     public function testGetPassword()
     {
         $model = new UsersModel();
-        $model->name = self::$_name;
+        $password = $model->password;
         
-        $createdPassword = $model->password;
-        
-        $this->assertTrue(empty($createdPassword));
-        $this->assertTrue(empty($model->rawPassword));
-        
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
-        $model->name = self::$_name;
-        
-        $createdPassword = $model->password;
-        
-        $this->assertFalse(empty($createdPassword));
         $this->assertFalse(empty($model->rawPassword));
+        $this->assertFalse(empty($model->password));
+        $this->assertEquals($password, $model->password);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getPassword
+     * при условии $this->_password IS NULL, $this->rawPassword NOT EMPTY
+     */
+    public function testGetPasswordTwo()
+    {
+        $model = new UsersModel();
+        $model->rawPassword = self::$_rawPassword;
+        $password = $model->password;
+        
+        $this->assertFalse(empty($model->password));
+        $this->assertTrue(password_verify(self::$_rawPassword, $model->password));
+        $this->assertEquals($password, $model->password);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getPassword
+     * при условии $this->_password NOT NULL
+     */
+    public function testGetPasswordThree()
+    {
+        $model = new UsersModel();
+        $model->password = password_hash(self::$_rawPassword, PASSWORD_DEFAULT);
+        
+        $this->assertFalse(empty($model->password));
+        $this->assertTrue(password_verify(self::$_rawPassword, $model->password));
     }
     
     /**

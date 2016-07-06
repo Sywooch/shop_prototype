@@ -43,7 +43,7 @@ class ProductsListFilter extends ActionFilter
                 }
                 
                 if ($attributes[\Yii::$app->params['categoryKey']] == \Yii::$app->request->get(\Yii::$app->params['categoryKey']) && $attributes[\Yii::$app->params['subCategoryKey']] == \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']) && $attributes[\Yii::$app->params['searchKey']] == \Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
-                    \Yii::$app->filters->attributes = $attributes;
+                    \Yii::configure(\Yii::$app->filters, $attributes);
                 }
                 
                 $session->close();

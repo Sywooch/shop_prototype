@@ -3,6 +3,6 @@
 
 {% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:''}), method: 'POST'}) %}
     {{ form.field(usersModel, 'login') | raw }}
-    {{ form.field(usersModel, 'password').passwordInput() | raw }}
+    {{ form.field(usersModel, 'rawPassword').passwordInput() | raw }}
     <input type="submit" value="Login" />
 {{ active_form_end() }}

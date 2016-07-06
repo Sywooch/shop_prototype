@@ -49,7 +49,7 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetGroup()
     {
-        \Yii::$app->filters->attributes = ['colors'=>[], 'sizes'=>[], 'brands'=>[]];
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[], 'sizes'=>[], 'brands'=>[]]);
         
         $productsMapper = new ProductsListMapper(self::$_config);
         $productsList = $productsMapper->getGroup();

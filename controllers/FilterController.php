@@ -6,7 +6,6 @@ use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\helpers\SessionHelper;
 use app\controllers\AbstractBaseProductsController;
-use app\models\FiltersModel;
 
 /**
  * Обрабатывает запросы данных, к которым необходимо применить фильтры

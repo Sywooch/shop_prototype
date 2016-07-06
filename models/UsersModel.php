@@ -22,7 +22,7 @@ class UsersModel extends AbstractBaseModel
     /**
      * Сценарий сохранения данных из формы регистрации
     */
-    const GET_FROM_FORM = 'getFromForm';
+    const GET_FROM_REGISTRATION_FORM = 'getFromForm';
     /**
      * Сценарий сохранения данных из формы авторизации
     */
@@ -43,7 +43,7 @@ class UsersModel extends AbstractBaseModel
     public $id_address = 0;
     
     /**
-     * @var string пароль, сконструированный при автоматическом создании пользователя
+     * @var string хранить пароль в незахэшированном виде
      */
     public $rawPassword = '';
     
@@ -65,37 +65,35 @@ class UsersModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['login', 'password', 'name', 'surname', 'rulesFromForm'],
+            self::GET_FROM_REGISTRATION_FORM=>['login', 'rawPassword'],
             self::GET_FROM_DB=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
             self::GET_FROM_CART_FORM=>['name', 'surname'],
-            self::GET_FROM_LOGIN_FORM=>['login', 'password'],
+            self::GET_FROM_LOGIN_FORM=>['login', 'rawPassword'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['login', 'password', 'rulesFromForm'], 'required', 'on'=>self::GET_FROM_FORM],
-            ['login', 'app\validators\ExistUserValidator', 'on'=>self::GET_FROM_FORM],
+            [['login', 'rawPassword'], 'required', 'on'=>self::GET_FROM_REGISTRATION_FORM],
             [['name', 'surname'], 'required', 'on'=>self::GET_FROM_CART_FORM],
-            [['login', 'password'], 'required', 'on'=>self::GET_FROM_LOGIN_FORM],
-            ['password', 'app\validators\LoginPassExistsValidator', 'on'=>self::GET_FROM_LOGIN_FORM], # проверят и login и password
+            [['login', 'rawPassword'], 'required', 'on'=>self::GET_FROM_LOGIN_FORM],
+            ['login', 'app\validators\LoginExistsValidator'],
+            ['rawPassword', 'app\validators\PasswordExistsValidator', 'on'=>self::GET_FROM_LOGIN_FORM, 'when'=>function($model) {
+                return empty($model->errors) ? true : false;
+            }],
         ];
     }
     
     /**
-     * Хэширует пароль перед присвоением значения свойству $this->_password
+     * Присваивает значение свойству $this->_password
      * @param string $value значение пароля
      * @return boolean
      */
     public function setPassword($value)
     {
         try {
-            if ($this->scenario == self::GET_FROM_LOGIN_FORM) {
-                $this->_password = $value;
-                return true;
-            }
-            $this->_password = password_hash($value, PASSWORD_DEFAULT);
+            $this->_password = $value;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -110,14 +108,14 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_password)) {
-                if (!empty($this->name) && $this->scenario == self::GET_FROM_CART_FORM) {
+                if (empty($this->rawPassword)) {
                     $this->rawPassword = PasswordHelper::getPassword();
                     if (!is_string($this->rawPassword)) {
                         throw new ErrorException('Неверный формат данных!');
                     }
-                    if (!$this->password = $this->rawPassword) {
-                        throw new ErrorException('Ошибка при хэшировании пароля!');
-                    }
+                }
+                if (!$this->_password = password_hash($this->rawPassword, PASSWORD_DEFAULT)) {
+                    throw new ErrorException('Ошибка при хэшировании пароля!');
                 }
             }
             return $this->_password;
@@ -159,7 +157,7 @@ class UsersModel extends AbstractBaseModel
     public function setId($value)
     {
         try {
-            if (is_numeric($value)) {
+            if (is_numeric($value) || is_null($value)) {
                 $this->_id = $value;
                 return true;
             }

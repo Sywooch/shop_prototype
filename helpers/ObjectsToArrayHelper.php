@@ -9,9 +9,9 @@ use app\models\DeliveriesModel;
 use app\models\PaymentsModel;
 
 /**
- * Предоставляет методы для транслитерации
+ * Предоставляет методы для конструирования строк из данных БД
  */
-class DeliveryArrayHelper
+class ObjectsToArrayHelper
 {
     use ExceptionsTrait;
     

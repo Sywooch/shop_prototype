@@ -10,15 +10,14 @@ use app\models\UsersModel;
 /**
  * Проверяет атрибуты модели UsersModel
  */
-class ExistUserValidator extends Validator
+class PasswordExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
-    private static $_registartionMessage = 'Пользователь с таким логином уже существует!';
-    private static $_loginMessage = 'Пользователя с таким логином не существует!';
+    private static $_passwordMessage = 'Неверный пароль!';
     
     /**
-     * Проверяет, существует ли учетная запись с таким логином
+     * Проверяет идентичность введенного и хранящегося в БД пароля для существующей записи
      * @param object $model текущий экземпляр модели, атрибут которой проверяется
      * @param string $attribute имя атрибута, значение которого проверяется
      */
@@ -27,15 +26,13 @@ class ExistUserValidator extends Validator
         try {
             $usersByLoginMapper = new UsersByLoginMapper([
                 'tableName'=>'users',
-                'fields'=>['id'],
+                'fields'=>['password'],
                 'model'=>$model
             ]);
             $usersModel = $usersByLoginMapper->getOneFromGroup();
             
-            if ($model->scenario == UsersModel::GET_FROM_FORM) {
-                if (is_object($usersModel) && $usersModel instanceof UsersModel) {
-                    $this->addError($model, $attribute, self::$_registartionMessage);
-                }
+            if (!is_object($usersModel) || !$usersModel instanceof UsersModel || !password_verify($model->rawPassword, $usersModel->password)) {
+                $this->addError($model, $attribute, self::$_passwordMessage);
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
+use app\helpers\UserAuthenticationHelper;
 use app\controllers\AbstractBaseController;
 use app\models\UsersModel;
 use app\models\EmailsModel;
@@ -25,8 +26,8 @@ class UsersController extends AbstractBaseController
     public function actionAddUser()
     {
         try {
-            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-            $emailsModel = new EmailsModel(['scenario'=>UsersModel::GET_FROM_FORM]);
+            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
+            $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate() && $emailsModel->validate()) {
@@ -72,10 +73,11 @@ class UsersController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
-                    if(!$fullUsersModel = $this->getUsersModel($usersModel)) {
-                        //return $this->redirect(Url::to(['users/add-user', 'notexists'=>$usersModel->login]));
+                    if (!UserAuthenticationHelper::fill($usersModel)) {
+                        throw new ErrorException('Ошибка при обновлении свойств \Yii::$app->user');
                     }
-                    //\Yii::$app->user = $fullUsersModel;
+                    print_r(\Yii::$app->user);
+                    //echo \Yii::$app->user->login;
                 }
             }
             
@@ -84,30 +86,6 @@ class UsersController extends AbstractBaseController
             }
             $resultArray = array_merge(['usersModel'=>$usersModel], $dataForRender);
             return $this->render('login-user.twig', $resultArray);
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает UsersModel для переданного в форму login
-     * @param object $usersModel экземпляр UsersModel
-     * @return object
-     */
-    private function getUsersModel(UsersModel $usersModel)
-    {
-        try {
-            $usersByLoginMapper = new UsersByLoginMapper([
-                'tableName'=>'users',
-                'fields'=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-                'model'=>$usersModel
-            ]);
-            $usersModel = $usersByLoginMapper->getOneFromGroup();
-            if (!is_object($usersModel) && !$usersModel instanceof UsersModel) {
-                return false;
-            }
-            return $usersModel;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
