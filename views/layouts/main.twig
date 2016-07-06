@@ -11,10 +11,12 @@
     </head>
     
     {{ this.beginBody() }}
-        <body>
-        
+        <body>  
+            
+            <p>Hello, {{ app.user.login }}!</p>
+            
             {{ content|raw }}
-        
+            
         </body>
     {{ this.endBody() }}
     

@@ -45,21 +45,24 @@ class UserAuthenticationHelper
     public static function fill(UsersModel $userFromForm)
     {
         try {
-            $usersByLoginMapper = new UsersByLoginMapper([
-                'tableName'=>'users',
-                'fields'=>self::$_filedsFromDb,
-                'model'=>$userFromForm
-            ]);
-            $usersModel = $usersByLoginMapper->getOneFromGroup();
+            if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
+                $usersByLoginMapper = new UsersByLoginMapper([
+                    'tableName'=>'users',
+                    'fields'=>self::$_filedsFromDb,
+                    'model'=>$userFromForm
+                ]);
+                \Yii::$app->params['userFromFormForAuthentication'] = $usersByLoginMapper->getOneFromGroup();
+            }
             
-            if (is_object($usersModel) && $usersModel instanceof UsersModel) {
-                if ($userFromForm->login == $usersModel->login && password_verify($userFromForm->rawPassword, $usersModel->password)) {
+            if (is_object(\Yii::$app->params['userFromFormForAuthentication']) && \Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel) {
+                if ($userFromForm->login == \Yii::$app->params['userFromFormForAuthentication']->login && password_verify($userFromForm->rawPassword, \Yii::$app->params['userFromFormForAuthentication']->password)) {
                     foreach (self::$_filedsToUser as $field) {
-                        \Yii::$app->user->$field = $usersModel->$field;
+                        \Yii::$app->user->$field = \Yii::$app->params['userFromFormForAuthentication']->$field;
                     }
                 }
+                return true;
             }
-            return true;
+            return false;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

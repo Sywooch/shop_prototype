@@ -44,6 +44,8 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         
         UserAuthenticationHelper::clean();
         
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
         UserAuthenticationHelper::fill($usersModel);
         
         $this->assertEquals(self::$_id, \Yii::$app->user->id);
@@ -55,6 +57,8 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
         
         UserAuthenticationHelper::clean();
+        
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
         
         UserAuthenticationHelper::$_filedsToUser[] = 'password';
         UserAuthenticationHelper::fill($usersModel);
@@ -70,10 +74,37 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод UserAuthenticationHelper::fill
+     * после сохранения запроса к БД в \Yii::$app->params['userFromFormForAuthentication']
+     */
+    public function testFillFromParams()
+    {
+        $this->assertFalse(empty(\Yii::$app->params['userFromFormForAuthentication']));
+        
+        $usersModel = new UsersModel();
+        $usersModel->login = self::$_login;
+        $usersModel->rawPassword = self::$_rawPassword;
+        
+        UserAuthenticationHelper::clean();
+        
+        UserAuthenticationHelper::fill($usersModel);
+        
+        $this->assertEquals(self::$_id, \Yii::$app->user->id);
+        $this->assertEquals(self::$_login, \Yii::$app->user->login);
+        $this->assertEquals(self::$_name, \Yii::$app->user->name);
+        $this->assertEquals(self::$_surname, \Yii::$app->user->surname);
+        $this->assertEquals(self::$_id, \Yii::$app->user->id_emails);
+        $this->assertEquals(self::$_id, \Yii::$app->user->id_phones);
+        $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
+    }
+    
+    /**
      * Тестирует метод UserAuthenticationHelper::clean
      */
     public function testClean()
     {
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
         $usersModel = new UsersModel();
         $usersModel->login = self::$_login;
         $usersModel->rawPassword = self::$_rawPassword;
@@ -92,14 +123,22 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         
         UserAuthenticationHelper::clean();
         
-        //$this->assertEquals(UserAuthenticationHelper::$_cleanArray['id'], \Yii::$app->user->id);
+        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id'], \Yii::$app->user->id);
+        $this->assertTrue(is_null(\Yii::$app->user->id));
         $this->assertEquals(UserAuthenticationHelper::$_cleanArray['login'], \Yii::$app->user->login);
+        $this->assertTrue(is_null(\Yii::$app->user->login));
         $this->assertEquals(UserAuthenticationHelper::$_cleanArray['rawPassword'], \Yii::$app->user->rawPassword);
+        $this->assertTrue(is_string(\Yii::$app->user->rawPassword));
         $this->assertEquals(UserAuthenticationHelper::$_cleanArray['name'], \Yii::$app->user->name);
+        $this->assertTrue(is_string(\Yii::$app->user->name));
         $this->assertEquals(UserAuthenticationHelper::$_cleanArray['surname'], \Yii::$app->user->surname);
+        $this->assertTrue(is_string(\Yii::$app->user->surname));
         $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_emails'], \Yii::$app->user->id_emails);
+        $this->assertTrue(is_int(\Yii::$app->user->id_emails));
         $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_phones'], \Yii::$app->user->id_phones);
+        $this->assertTrue(is_int(\Yii::$app->user->id_phones));
         $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_address'], \Yii::$app->user->id_address);
+        $this->assertTrue(is_int(\Yii::$app->user->id_address));
     }
     
     public static function tearDownAfterClass()

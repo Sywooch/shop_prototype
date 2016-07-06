@@ -39,6 +39,26 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttribute()
     {
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_notExistsRawPassword];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('rawPassword', $model->errors));
+        $this->assertEquals(1, count($model->errors['rawPassword']));
+        $this->assertEquals(self::$_passwordMessage, $model->errors['rawPassword'][0]);
+    }
+    
+    /**
+     * Тестирует метод PasswordExistsValidator::validateAttribute
+     * после сохранения запроса к БД в \Yii::$app->params['userFromFormForAuthentication']
+     */
+    public function testValidateAttributeFromParams()
+    {
+        $this->assertFalse(empty(\Yii::$app->params['userFromFormForAuthentication']));
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_notExistsRawPassword];
         $model->validate();

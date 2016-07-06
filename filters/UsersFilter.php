@@ -7,25 +7,30 @@ use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
 
 /**
- * Заполняет объект \Yii::$app->cart данными сесии
+ * Заполняет объект \Yii::$app->user данными сесии
  */
-class ShoppingCartFilter extends ActionFilter
+class UsersFilter extends ActionFilter
 {
     use ExceptionsTrait;
     
     /**
-     * Восстанавливает из сессионного хранилища объект, хранящий данные корзины и заказа
+     * @var array список полей, которые необходимо обновить для \Yii::$app->user
+     */
+    public static $_filedsToUser = ['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'];
+    
+    /**
+     * Восстанавливает из сессионного хранилища объект, хранящий данные юзера
      * @param $action выполняемое в данный момент действие
      * @return parent result
      */
     public function beforeAction($action)
     {
         try {
-            if (empty(\Yii::$app->params['cartKeyInSession'])) {
-                throw new ErrorException('Не установлена переменная cartKeyInSession!');
+            if (empty(\Yii::$app->params['usersKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная usersKeyInSession!');
             }
             $session = \Yii::$app->session;
-            if ($session->has(\Yii::$app->params['cartKeyInSession'])) {
+            if ($session->has(\Yii::$app->params['usersKeyInSession'])) {
                 $session->open();
                 if (!\Yii::$app->cart->setProductsArray($session->get(\Yii::$app->params['cartKeyInSession'])) || empty(\Yii::$app->cart->getProductsArray())) {
                     throw new ErrorException('Ошибка при восстановлении данных из сессии!');

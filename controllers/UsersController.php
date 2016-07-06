@@ -74,10 +74,9 @@ class UsersController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
                     if (!UserAuthenticationHelper::fill($usersModel)) {
-                        throw new ErrorException('Ошибка при обновлении свойств \Yii::$app->user');
+                        return $this->redirect(Url::to(['users/add-user', 'notexists'=>$usersModel->login]));
                     }
-                    print_r(\Yii::$app->user);
-                    //echo \Yii::$app->user->login;
+                    return $this->redirect(Url::to(['products-list/index']));
                 }
             }
             

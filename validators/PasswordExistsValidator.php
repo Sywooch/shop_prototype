@@ -14,6 +14,11 @@ class PasswordExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
+    /**
+     * @var array список полей, которые необходимо получит из БД
+     */
+    public static $_filedsFromDb = ['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'];
+    
     private static $_passwordMessage = 'Неверный пароль!';
     
     /**
@@ -24,14 +29,16 @@ class PasswordExistsValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $usersByLoginMapper = new UsersByLoginMapper([
-                'tableName'=>'users',
-                'fields'=>['password'],
-                'model'=>$model
-            ]);
-            $usersModel = $usersByLoginMapper->getOneFromGroup();
+            if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
+                $usersByLoginMapper = new UsersByLoginMapper([
+                    'tableName'=>'users',
+                    'fields'=>self::$_filedsFromDb,
+                    'model'=>$model
+                ]);
+                \Yii::$app->params['userFromFormForAuthentication'] = $usersByLoginMapper->getOneFromGroup();
+            }
             
-            if (!is_object($usersModel) || !$usersModel instanceof UsersModel || !password_verify($model->rawPassword, $usersModel->password)) {
+            if (!is_object(\Yii::$app->params['userFromFormForAuthentication']) || !\Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel || !password_verify($model->rawPassword, \Yii::$app->params['userFromFormForAuthentication']->password)) {
                 $this->addError($model, $attribute, self::$_passwordMessage);
             }
         } catch (\Exception $e) {

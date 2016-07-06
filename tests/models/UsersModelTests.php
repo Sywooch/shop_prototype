@@ -158,6 +158,8 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = [];
         $model->validate();
@@ -166,12 +168,16 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('login', $model->errors));
         $this->assertTrue(array_key_exists('rawPassword', $model->errors));
         
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
+        
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];
@@ -193,6 +199,8 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(0, count($model->errors));
         
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = [];
         $model->validate();
@@ -201,6 +209,8 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('login', $model->errors));
         $this->assertTrue(array_key_exists('rawPassword', $model->errors));
         
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];
         $model->validate();
@@ -208,12 +218,16 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
         
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_notExistsRawPassword];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('rawPassword', $model->errors));
+        
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword];
@@ -301,25 +315,24 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id + 14, $model->id);
     }
     
-    /**
+     /**
      * Тестирует метод UsersModel::getId
      */
     public function testGetId()
     {
         $model = new UsersModel();
-        $model->login = self::$_login;
         
-        $this->assertEquals(self::$_id, $model->id);
+        $this->assertTrue(is_null($model->id));
     }
     
     /**
-     * Тестирует выброс исключения в методе UsersModel::getId
-     * @expectedException ErrorException
+     * Тестирует метод UsersModel::getId
+     * при условии, что UsersModel::login not empty
      */
-    public function testExcGetId()
+    public function testGetIdIfLogin()
     {
         $model = new UsersModel();
-        //$model->login = self::$_login;
+        $model->login = self::$_login;
         
         $this->assertEquals(self::$_id, $model->id);
     }

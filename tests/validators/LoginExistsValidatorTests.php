@@ -34,9 +34,12 @@ class LoginExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод LoginExistsValidator::validateAttribute
+     * для сценария UsersModel::GET_FROM_REGISTRATION_FORM
      */
-    public function testValidateAttribute()
+    public function testValidateAttributeRegistration()
     {
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword,];
         $model->validate();
@@ -45,6 +48,34 @@ class LoginExistsValidatorTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('login', $model->errors));
         $this->assertEquals(1, count($model->errors['login']));
         $this->assertEquals(self::$_registartionMessage, $model->errors['login'][0]);
+    }
+    
+     /**
+     * Тестирует метод LoginExistsValidator::validateAttribute
+     * для сценария UsersModel::GET_FROM_REGISTRATION_FORM
+     * после сохранения запроса к БД в \Yii::$app->params['userFromFormForAuthentication']
+     */
+    public function testValidateAttributeRegistrationFromParams()
+    {
+        $this->assertFalse(empty(\Yii::$app->params['userFromFormForAuthentication']));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword,];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('login', $model->errors));
+        $this->assertEquals(1, count($model->errors['login']));
+        $this->assertEquals(self::$_registartionMessage, $model->errors['login'][0]);
+    }
+    
+    /**
+     * Тестирует метод LoginExistsValidator::validateAttribute
+     * для сценария UsersModel::GET_FROM_LOGIN_FORM
+     */
+    public function testValidateAttributeLogin()
+    {
+        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];

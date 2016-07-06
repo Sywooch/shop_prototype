@@ -175,19 +175,18 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_id)) {
-                if (empty($this->login)) {
-                    throw new ErrorException('Не определены данные для обращения к БД!');
+                if (!empty($this->login)) {
+                    $usersByLoginMapper = new UsersByLoginMapper([
+                        'tableName'=>'users',
+                        'fields'=>['id'],
+                        'model'=>$this,
+                    ]);
+                    $objectUser = $usersByLoginMapper->getOneFromGroup();
+                    if (!is_object($objectUser) || !$objectUser instanceof $this) {
+                        return false;
+                    }
+                    $this->_id = $objectUser->id;
                 }
-                $usersByLoginMapper = new UsersByLoginMapper([
-                    'tableName'=>'users',
-                    'fields'=>['id'],
-                    'model'=>$this,
-                ]);
-                $objectUser = $usersByLoginMapper->getOneFromGroup();
-                if (!is_object($objectUser) || !$objectUser instanceof $this) {
-                    return false;
-                }
-                $this->_id = $objectUser->id;
             }
             return $this->_id;
         } catch (\Exception $e) {

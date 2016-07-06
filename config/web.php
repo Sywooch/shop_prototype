@@ -23,6 +23,8 @@ $config = [
         'cartKeyInSession'=>'cart', # Ключ, по которому в $_SESSION доступена переменная, хранящая купленные товары
         'filtersKeyInSession'=>'filters', # Ключ, по которому в $_SESSION доступена переменная, хранящая выбранные фильтры
         'defaultRulesId'=>[1, 4], # Id прав доступа, назначаемых при регистрации пользователя по-умолчанию
+        'userFromFormForAuthentication'=>NULL, # Объект пользователя в процессе аутентификации
+        'usersKeyInSession'=>'user', # Ключ, по которому в $_SESSION доступена переменная, пользователя
     ],
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),
@@ -100,6 +102,7 @@ $config = [
         ],
         'user'=>[
             'class'=>'app\models\UsersModel',
+            'login'=>'Guest',
         ],
         'session'=>[
             'class'=>'yii\web\DbSession',
