@@ -11,6 +11,8 @@ use app\models\DeliveriesModel;
 use app\models\PaymentsModel;
 use app\mappers\RulesMapper;
 use app\mappers\UsersByLoginMapper;
+use app\mappers\EmailsByIdMapper;
+use app\mappers\PhonesByIdMapper;
 use app\helpers\TransliterationHelper;
 use app\helpers\PasswordHelper;
 
@@ -257,7 +259,28 @@ class UsersModel extends AbstractBaseModel
      */
     public function getEmails()
     {
-        return $this->_emails;
+        try {
+            if (is_null($this->_emails)) {
+                if (!empty($this->id_emails)) {
+                    $emailsByIdMapper = new EmailsByIdMapper([
+                        'tableName'=>'emails',
+                        'fields'=>['id', 'email'],
+                        'model'=>new EmailsModel([
+                            'id'=>$this->id_emails,
+                        ]),
+                    ]);
+                    $emailsModel = $emailsByIdMapper->getOneFromGroup();
+                    
+                    if (!is_object($emailsModel) || !$emailsModel instanceof EmailsModel) {
+                        return NULL;
+                    }
+                    $this->_emails = $emailsModel;
+                }
+            }
+            return $this->_emails;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
@@ -305,7 +328,28 @@ class UsersModel extends AbstractBaseModel
      */
     public function getPhones()
     {
-        return $this->_phones;
+        try {
+            if (is_null($this->_phones)) {
+                if (!empty($this->id_phones)) {
+                    $phonesByIdMapper = new PhonesByIdMapper([
+                        'tableName'=>'phones',
+                        'fields'=>['id', 'phone'],
+                        'model'=>new PhonesModel([
+                            'id'=>$this->id_phones,
+                        ]),
+                    ]);
+                    $phonesModel = $phonesByIdMapper->getOneFromGroup();
+                    
+                    if (!is_object($phonesModel) || !$phonesModel instanceof PhonesModel) {
+                        return NULL;
+                    }
+                    $this->_phones = $phonesModel;
+                }
+            }
+            return $this->_phones;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
