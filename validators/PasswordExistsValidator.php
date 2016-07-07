@@ -14,11 +14,6 @@ class PasswordExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
-    /**
-     * @var array список полей, которые необходимо получит из БД
-     */
-    public static $_filedsFromDb = ['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'];
-    
     private static $_passwordMessage = 'Неверный пароль!';
     
     /**
@@ -32,7 +27,7 @@ class PasswordExistsValidator extends Validator
             if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
                 $usersByLoginMapper = new UsersByLoginMapper([
                     'tableName'=>'users',
-                    'fields'=>self::$_filedsFromDb,
+                    'fields'=>\Yii::$app->params['filedsFromDb'],
                     'model'=>$model
                 ]);
                 \Yii::$app->params['userFromFormForAuthentication'] = $usersByLoginMapper->getOneFromGroup();

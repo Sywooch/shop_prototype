@@ -25,6 +25,9 @@ $config = [
         'defaultRulesId'=>[1, 4], # Id прав доступа, назначаемых при регистрации пользователя по-умолчанию
         'userFromFormForAuthentication'=>NULL, # Объект пользователя в процессе аутентификации
         'usersKeyInSession'=>'user', # Ключ, по которому в $_SESSION доступена переменная, пользователя
+        'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->user по умолчанию
+        'filedsFromDb'=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'], # список полей, которые необходимо получит из БД при аутентификации, используется объектами UserAuthenticationHelper, LoginExistsValidator, PasswordExistsValidator
+        'filedsToUser'=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'], # список полей, которые необходимо обновить для \Yii::$app->user при аутентификации, используется объектами UserAuthenticationHelper
     ],
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),
@@ -83,6 +86,7 @@ $config = [
                 'search'=>'products-list/search',
                 'join'=>'users/add-user',
                 'login'=>'users/login-user',
+                'logout'=>'users/logout-user',
                 'add-comment'=>'comments/add-comment',
                 'add-to-cart'=>'shopping-cart/add-to-cart',
                 'clear-cart'=>'shopping-cart/clear-cart',
@@ -102,7 +106,6 @@ $config = [
         ],
         'user'=>[
             'class'=>'app\models\UsersModel',
-            'login'=>'Guest',
         ],
         'session'=>[
             'class'=>'yii\web\DbSession',
@@ -114,6 +117,7 @@ $config = [
         ],
     ],
     'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],
+    'as usersFilter'=>['class'=>'app\filters\UsersFilter'],
 ];
 
 if (YII_DEBUG) {

@@ -1,2 +1,17 @@
 
-<p><a href="{{ url.to({0:'users/add-user'}) }}">Присоедениться</a> <a href="{{ url.to({0:'users/login-user'}) }}">Войти</a></p>
+{{ use('yii/widgets/ActiveForm') }}
+
+<p>Hello, {{ app.user.login }}!</p>
+
+{% if app.user.login == app.params['nonAuthenticatedUserLogin'] %}
+    <p><a href="{{ url.to({0:'users/add-user'}) }}">Присоедениться</a> <a href="{{ url.to({0:'users/login-user'}) }}">Войти</a></p>
+{% else %}
+    {% set form = active_form_begin({'id':'logout-form', 'action':url.to({0:'users/logout-user'}), 'method':'POST'}) %}
+        {{ form.field(usersModelForLogout, 'id').hiddenInput({'value':app.user.id}).label(false) | raw }}
+        <input type="submit" value="Выйти">
+    {{ active_form_end() }}
+{% endif %}
+
+
+
+

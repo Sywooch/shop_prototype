@@ -5,6 +5,7 @@ namespace app\filters;
 use yii\base\ActionFilter;
 use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
+use app\helpers\UserAuthenticationHelper;
 
 /**
  * Заполняет объект \Yii::$app->user данными сесии
@@ -12,11 +13,6 @@ use yii\base\ErrorException;
 class UsersFilter extends ActionFilter
 {
     use ExceptionsTrait;
-    
-    /**
-     * @var array список полей, которые необходимо обновить для \Yii::$app->user
-     */
-    public static $_filedsToUser = ['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'];
     
     /**
      * Восстанавливает из сессионного хранилища объект, хранящий данные юзера
@@ -29,23 +25,18 @@ class UsersFilter extends ActionFilter
             if (empty(\Yii::$app->params['usersKeyInSession'])) {
                 throw new ErrorException('Не установлена переменная usersKeyInSession!');
             }
+            
             $session = \Yii::$app->session;
             if ($session->has(\Yii::$app->params['usersKeyInSession'])) {
                 $session->open();
-                if (!\Yii::$app->cart->setProductsArray($session->get(\Yii::$app->params['cartKeyInSession'])) || empty(\Yii::$app->cart->getProductsArray())) {
-                    throw new ErrorException('Ошибка при восстановлении данных из сессии!');
-                }
-                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user')) {
-                    \Yii::$app->cart->user = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user');
-                    if (empty(\Yii::$app->cart->user) || !is_object(\Yii::$app->cart->user)) {
-                        throw new ErrorException('Ошибка при восстановлении данных из сессии!');
-                    }
+                if (!UserAuthenticationHelper::fill($session->get(\Yii::$app->params['usersKeyInSession']))) {
+                    throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
                 }
                 $session->close();
-                if (!\Yii::$app->cart->getShortData()) {
-                    throw new ErrorException('Ошибка при восстановлении текущих данных корзины!');
-                }
+            } else {
+                \Yii::configure(\Yii::$app->user, ['login'=>\Yii::$app->params['nonAuthenticatedUserLogin']]);
             }
+            
             return parent::beforeAction($action);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -54,7 +45,7 @@ class UsersFilter extends ActionFilter
     }
     
     /**
-     * Сохраняет текущее состояние корзины и данных заказа
+     * Сохраняет текущее состояние \Yii::$app->user
      * @param $action выполняемое в данный момент действие
      * @param $result результирующая строка перед отправкой в браузер клиента
      * @return parent result
@@ -62,18 +53,17 @@ class UsersFilter extends ActionFilter
     public function afterAction($action, $result)
     {
         try {
-            if (empty(\Yii::$app->params['cartKeyInSession'])) {
-                throw new ErrorException('Не установлена переменная cartKeyInSession!');
+            if (empty(\Yii::$app->params['usersKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная usersKeyInSession!');
             }
+            
             $session = \Yii::$app->session;
-            $session->open();
-            if (!empty(\Yii::$app->cart->getProductsArray())) {
-                $session->set(\Yii::$app->params['cartKeyInSession'], \Yii::$app->cart->getProductsArray());
+            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) {
+                $session->open();
+                $session->set(\Yii::$app->params['usersKeyInSession'], \Yii::$app->user);
+                $session->close();
             }
-            if (!empty(\Yii::$app->cart->user)) {
-                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user', \Yii::$app->cart->user);
-            }
-            $session->close();
+            
             return parent::afterAction($action, $result);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

@@ -1,11 +1,11 @@
 
-{{ use('yii/widgets/ActiveForm') }}
-
 {% include '@app/views/parts/user-buttons.twig' %}
 
 {% include '@app/views/parts/search.twig' %}
 
 {% include '@app/views/parts/menu.twig' %}
+
+{{ use('yii/widgets/ActiveForm') }}
 
 {% for product in app.cart.getProductsArray() %}<p></p>
     Code: {{ product.code }}</br>

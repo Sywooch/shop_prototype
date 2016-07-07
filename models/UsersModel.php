@@ -28,6 +28,10 @@ class UsersModel extends AbstractBaseModel
     */
     const GET_FROM_LOGIN_FORM = 'getFromLoginForm';
     /**
+     * Сценарий выхода из аккаунта
+    */
+    const GET_FROM_LOGOUT_FORM = 'getFromLogoutForm';
+    /**
      * Сценарий сохранения данных из формы заказа
     */
     const GET_FROM_CART_FORM = 'getFromCartForm';
@@ -69,6 +73,7 @@ class UsersModel extends AbstractBaseModel
             self::GET_FROM_DB=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
             self::GET_FROM_CART_FORM=>['name', 'surname'],
             self::GET_FROM_LOGIN_FORM=>['login', 'rawPassword'],
+            self::GET_FROM_LOGOUT_FORM=>['id'],
         ];
     }
     
@@ -183,7 +188,7 @@ class UsersModel extends AbstractBaseModel
                     ]);
                     $objectUser = $usersByLoginMapper->getOneFromGroup();
                     if (!is_object($objectUser) || !$objectUser instanceof $this) {
-                        return false;
+                        return NULL;
                     }
                     $this->_id = $objectUser->id;
                 }

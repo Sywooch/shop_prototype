@@ -14,11 +14,6 @@ class LoginExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
-    /**
-     * @var array список полей, которые необходимо получит из БД
-     */
-    public static $_filedsFromDb = ['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'];
-    
     private static $_registartionMessage = 'Пользователь с таким логином уже существует!';
     private static $_loginMessage = 'Пользователя с таким логином не существует!';
     
@@ -33,7 +28,7 @@ class LoginExistsValidator extends Validator
             if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
                 $usersByLoginMapper = new UsersByLoginMapper([
                     'tableName'=>'users',
-                    'fields'=>self::$_filedsFromDb,
+                    'fields'=>\Yii::$app->params['filedsFromDb'],
                     'model'=>$model
                 ]);
                 \Yii::$app->params['userFromFormForAuthentication'] = $usersByLoginMapper->getOneFromGroup();

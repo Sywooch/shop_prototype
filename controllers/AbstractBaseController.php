@@ -37,6 +37,7 @@ abstract class AbstractBaseController extends Controller
             ]);
             $result['categoriesList'] = $categoriesMapper->getGroup();
             $result['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
+            $result['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
             return $result;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

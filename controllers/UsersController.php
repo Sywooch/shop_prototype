@@ -5,13 +5,11 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\helpers\UserAuthenticationHelper;
+use app\helpers\SessionHelper;
 use app\controllers\AbstractBaseController;
 use app\models\UsersModel;
 use app\models\EmailsModel;
-use app\mappers\UsersInsertMapper;
 use app\mappers\UsersRulesInsertMapper;
-use app\mappers\UsersByLoginMapper;
-use app\factories\UsersRulesAutonomicFactory;
 
 /**
  * Управляет работой с пользователями
@@ -73,7 +71,7 @@ class UsersController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
-                    if (!UserAuthenticationHelper::fill($usersModel)) {
+                    if (!UserAuthenticationHelper::fillFromForm($usersModel)) {
                         return $this->redirect(Url::to(['users/add-user', 'notexists'=>$usersModel->login]));
                     }
                     return $this->redirect(Url::to(['products-list/index']));
@@ -85,6 +83,34 @@ class UsersController extends AbstractBaseController
             }
             $resultArray = array_merge(['usersModel'=>$usersModel], $dataForRender);
             return $this->render('login-user.twig', $resultArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет процессом выхода из аккаунта
+     * @return string
+     */
+    public function actionLogoutUser()
+    {
+        try {
+            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
+            
+            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post())) {
+                if ($usersModel->validate()) {
+                    if ($usersModel->id == \Yii::$app->user->id) {
+                        if (!UserAuthenticationHelper::clean()) {
+                            throw new ErrorException('Ошибка при попытку выхода из аккаунта!');
+                        }
+                        if (!SessionHelper::removeVarFromSession([\Yii::$app->params['usersKeyInSession']])) {
+                            throw new ErrorException('Ошибка удалении переменной сессии!');
+                        }
+                    }
+                }
+            }
+            return $this->redirect(Url::to(['products-list/index']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

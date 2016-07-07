@@ -58,6 +58,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_LOGIN_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_LOGOUT_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_CART_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         
@@ -151,6 +152,11 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(self::$_login, $model->login);
         $this->assertEquals(self::$_rawPassword, $model->rawPassword);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
+        $model->attributes = ['id'=>self::$_id];
+        
+        $this->assertFalse(empty($model->id));
     }
     
     /**
