@@ -151,15 +151,14 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе CommentsModel::getId_emails
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе CommentsModel::getId_emails
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetId_emails()
+    public function testNullGetId_emails()
     {
         $model = new CommentsModel();
-        //$model->email = self::$_email;
         
-       $model->id_emails;
+       $this->assertTrue(is_null($model->id_emails));
     }
     
     /**

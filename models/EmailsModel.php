@@ -65,19 +65,18 @@ class EmailsModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_id)) {
-                if (empty($this->email)) {
-                    throw new ErrorException('Не определены данные для обращения к БД!');
+                if (!empty($this->email)) {
+                    $emailsByEmailMapper = new EmailsByEmailMapper([
+                        'tableName'=>'emails',
+                        'fields'=>['id'],
+                        'model'=>$this
+                    ]);
+                    $emailsModel = $emailsByEmailMapper->getOneFromGroup();
+                    if (!is_object($emailsModel) || !$emailsModel instanceof $this) {
+                        return NULL;
+                    }
+                    $this->_id = $emailsModel->id;
                 }
-                $emailsByEmailMapper = new EmailsByEmailMapper([
-                    'tableName'=>'emails',
-                    'fields'=>['id'],
-                    'model'=>$this
-                ]);
-                $emailsModel = $emailsByEmailMapper->getOneFromGroup();
-                if (!is_object($emailsModel) || !$emailsModel instanceof $this) {
-                    return false;
-                }
-                $this->_id = $emailsModel->id;
             }
             return $this->_id;
         } catch (\Exception $e) {

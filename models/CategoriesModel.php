@@ -37,19 +37,18 @@ class CategoriesModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_subcategory)) {
-                if (empty($this->id)) {
-                    throw new ErrorException('Не определен id категории, для которой необходимо получить подкатегории!');
+                if (!empty($this->id)) {
+                    $subcategoryMapper = new SubcategoryMapper([
+                        'tableName'=>'subcategory',
+                        'fields'=>['id', 'name', 'seocode'],
+                        'model'=>$this
+                    ]);
+                    $subcategoryArray = $subcategoryMapper->getGroup();
+                    if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
+                        return NULL;
+                    }
+                    $this->_subcategory = $subcategoryArray;
                 }
-                $subcategoryMapper = new SubcategoryMapper([
-                    'tableName'=>'subcategory',
-                    'fields'=>['id', 'name', 'seocode'],
-                    'model'=>$this
-                ]);
-                $subcategoryArray = $subcategoryMapper->getGroup();
-                if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
-                    return false;
-                }
-                $this->_subcategory = $subcategoryArray;
             }
             return $this->_subcategory;
         } catch (\Exception $e) {

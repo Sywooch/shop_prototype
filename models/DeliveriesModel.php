@@ -42,14 +42,6 @@ class DeliveriesModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает значение свойства $this->_id
-     */
-    public function getId()
-    {
-        return $this->_id;
-    }
-    
-    /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
      * @return boolean
@@ -68,6 +60,14 @@ class DeliveriesModel extends AbstractBaseModel
     }
     
     /**
+     * Возвращает значение свойства $this->_id
+     */
+    public function getId()
+    {
+        return $this->_id;
+    }
+    
+    /**
      * Возвращает массив объектов всех доступных deliveries
      * @return array
      */
@@ -81,7 +81,7 @@ class DeliveriesModel extends AbstractBaseModel
                 ]);
                 $deliveriesArray = $deliveriesMapper->getGroup();
                 if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
-                    return false;
+                    return NULL;
                 }
                 $this->_allDeliveries = $deliveriesArray;
             }

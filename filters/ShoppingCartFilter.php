@@ -5,6 +5,12 @@ namespace app\filters;
 use yii\base\ActionFilter;
 use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
+use app\models\UsersModel;
+use app\models\EmailsModel;
+use app\models\AddressModel;
+use app\models\PhonesModel;
+use app\models\DeliveriesModel;
+use app\models\PaymentsModel;
 
 /**
  * Заполняет объект \Yii::$app->cart данными сесии
@@ -26,16 +32,60 @@ class ShoppingCartFilter extends ActionFilter
             }
             $session = \Yii::$app->session;
             if ($session->has(\Yii::$app->params['cartKeyInSession'])) {
+                
+                $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
+                $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+                $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+                $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+                $deliveriesModel = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_FORM]);
+                $paymentsModel = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_FORM]);
+            
                 $session->open();
-                if (!\Yii::$app->cart->setProductsArray($session->get(\Yii::$app->params['cartKeyInSession'])) || empty(\Yii::$app->cart->getProductsArray())) {
-                    throw new ErrorException('Ошибка при восстановлении данных из сессии!');
+                
+                \Yii::$app->cart->setProductsArray($session->get(\Yii::$app->params['cartKeyInSession']));
+                
+                \Yii::$app->cart->user = $usersModel;
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.name')) {
+                    \Yii::$app->cart->user->name = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.name');
                 }
-                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user')) {
-                    \Yii::$app->cart->user = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user');
-                    if (empty(\Yii::$app->cart->user) || !is_object(\Yii::$app->cart->user)) {
-                        throw new ErrorException('Ошибка при восстановлении данных из сессии!');
-                    }
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.surname')) {
+                    \Yii::$app->cart->user->surname = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.surname');
                 }
+                
+                \Yii::$app->cart->user->emails = $emailsModel;
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.emails.email')) {
+                    \Yii::$app->cart->user->emails->email = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.emails.email');
+                }
+                
+                \Yii::$app->cart->user->phones = $phonesModel;
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.phones.phone')) {
+                    \Yii::$app->cart->user->phones->phone = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.phones.phone');
+                }
+                
+                \Yii::$app->cart->user->address = $addressModel;
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.address.address')) {
+                    \Yii::$app->cart->user->address->address = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.address.address');
+                }
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.address.city')) {
+                    \Yii::$app->cart->user->address->city = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.address.city');
+                }
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.address.postcode')) {
+                    \Yii::$app->cart->user->address->postcode = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.address.postcode');
+                }
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.address.country')) {
+                    \Yii::$app->cart->user->address->country = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.address.country');
+                }
+                
+                \Yii::$app->cart->user->deliveries = $deliveriesModel;
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.deliveries.id')) {
+                    \Yii::$app->cart->user->deliveries->id = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.deliveries.id');
+                }
+                
+                \Yii::$app->cart->user->payments = $paymentsModel;
+                if ($session->has(\Yii::$app->params['cartKeyInSession'] . '.user.payments.id')) {
+                    \Yii::$app->cart->user->payments->id = $session->get(\Yii::$app->params['cartKeyInSession'] . '.user.payments.id');
+                }
+                
                 $session->close();
                 if (!\Yii::$app->cart->getShortData()) {
                     throw new ErrorException('Ошибка при восстановлении текущих данных корзины!');
@@ -66,7 +116,26 @@ class ShoppingCartFilter extends ActionFilter
                 $session->set(\Yii::$app->params['cartKeyInSession'], \Yii::$app->cart->getProductsArray());
             }
             if (!empty(\Yii::$app->cart->user)) {
-                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user', \Yii::$app->cart->user);
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.name', \Yii::$app->cart->user->name);
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.surname', \Yii::$app->cart->user->surname);
+            }
+            if (!empty(\Yii::$app->cart->user->emails)) {
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.emails.email', \Yii::$app->cart->user->emails->email);
+            }
+            if (!empty(\Yii::$app->cart->user->phones)) {
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.phones.phone', \Yii::$app->cart->user->phones->phone);
+            }
+            if (!empty(\Yii::$app->cart->user->address)) {
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.address.address', \Yii::$app->cart->user->address->address);
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.address.city', \Yii::$app->cart->user->address->city);
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.address.postcode', \Yii::$app->cart->user->address->postcode);
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.address.country', \Yii::$app->cart->user->address->country);
+            }
+            if (!empty(\Yii::$app->cart->user->deliveries)) {
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.deliveries.id', \Yii::$app->cart->user->deliveries->id);
+            }
+            if (!empty(\Yii::$app->cart->user->payments)) {
+                $session->set(\Yii::$app->params['cartKeyInSession'] . '.user.payments.id', \Yii::$app->cart->user->payments->id);
             }
             $session->close();
             return parent::afterAction($action, $result);

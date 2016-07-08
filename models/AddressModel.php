@@ -44,34 +44,6 @@ class AddressModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает значение свойства $this->_id
-     * @return boolean/int
-     */
-    public function getId()
-    {
-        try {
-            if (is_null($this->_id)) {
-                if (empty($this->address) || empty($this->city) || empty($this->country) || empty($this->postcode)) {
-                    throw new ErrorException('Не определены данные для обращения к БД!');
-                }
-                $addressByAddressMapper = new AddressByAddressMapper([
-                    'tableName'=>'address',
-                    'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-                    'model'=>$this,
-                ]);
-                $addressModel = $addressByAddressMapper->getOneFromGroup();
-                if (!is_object($addressModel) || !$addressModel instanceof $this) {
-                    return false;
-                }
-                $this->_id = $addressModel->id;
-            }
-            return $this->_id;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
      * @return boolean
@@ -84,6 +56,33 @@ class AddressModel extends AbstractBaseModel
                 return true;
             }
             return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_id
+     * @return boolean/int
+     */
+    public function getId()
+    {
+        try {
+            if (is_null($this->_id)) {
+                if (!empty($this->address) && !empty($this->city) && !empty($this->country) && !empty($this->postcode)) {
+                    $addressByAddressMapper = new AddressByAddressMapper([
+                        'tableName'=>'address',
+                        'fields'=>['id', 'address', 'city', 'country', 'postcode'],
+                        'model'=>$this,
+                    ]);
+                    $addressModel = $addressByAddressMapper->getOneFromGroup();
+                    if (!is_object($addressModel) || !$addressModel instanceof $this) {
+                        return NULL;
+                    }
+                    $this->_id = $addressModel->id;
+                }
+            }
+            return $this->_id;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

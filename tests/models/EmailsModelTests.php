@@ -107,15 +107,14 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе EmailsModel::getId
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе EmailsModel::getId
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetId()
+    public function testNullGetId()
     {
         $model = new EmailsModel();
-        //$model->email = self::$_email;
         
-       $model->id;
+       $this->assertTrue(is_null($model->id));
     }
     
     /**

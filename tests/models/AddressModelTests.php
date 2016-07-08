@@ -127,18 +127,14 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе AddressModel::getId
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе AddressModel::getId
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetId()
+    public function testNullGetId()
     {
         $model = new AddressModel();
-        //$model->address = self::$_address;
-        //$model->city = self::$_city;
-        //$model->country = self::$_country;
-        //$model->postcode = self::$_postcode;
         
-        $model->id;
+        $this->assertTrue(is_null($model->id));
     }
     
     /**

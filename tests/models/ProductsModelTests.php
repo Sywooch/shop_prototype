@@ -228,15 +228,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе ProductsModel::getColors
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе ProductsModel::getColors
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetColors()
+    public function testNullGetColors()
     {
         $model = new ProductsModel();
-        //$model->id = self::$_id;
         
-        $model->colors;
+        $this->assertTrue(is_null($model->colors));
     }
     
     /**
@@ -256,15 +255,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе ProductsModel::getSizes
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе ProductsModel::getSizes
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetSizes()
+    public function testNullGetSizes()
     {
         $model = new ProductsModel();
-        //$model->id = self::$_id;
         
-        $model->sizes;
+        $this->assertTrue(is_null($model->sizes));
     }
     
     /**
@@ -286,15 +284,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе ProductsModel::getSimilar
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе ProductsModel::getSimilar
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetSimilar()
+    public function testNullGetSimilar()
     {
         $model = new ProductsModel();
-        //$model->id = self::$_id;
         
-        $model->similar;
+        $this->assertTrue(is_null($model->similar));
     }
     
     /**
@@ -314,15 +311,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе ProductsModel::getRelated
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе ProductsModel::getRelated
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetRelated()
+    public function testNullGetRelated()
     {
         $model = new ProductsModel();
-        //$model->id = self::$_id;
         
-        $model->related;
+        $this->assertTrue(is_null($model->related));
     }
     
     /**
@@ -342,15 +338,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе ProductsModel::getComments
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе ProductsModel::getComments
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetComments()
+    public function testNullGetComments()
     {
         $model = new ProductsModel();
-        //$model->id = self::$_id;
         
-        $model->comments;
+        $this->assertTrue(is_null($model->comments));
     }
     
     public static function tearDownAfterClass()

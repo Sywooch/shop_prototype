@@ -183,57 +183,87 @@ class ShoppingCartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $deliveriesModel->load(\Yii::$app->request->post()) && $paymentsModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate() && $emailsModel->validate() && $addressModel->validate() && $phonesModel->validate() && $deliveriesModel->validate() && $paymentsModel->validate()) {
-                    \Yii::$app->cart->user = $usersModel;
-                    \Yii::$app->cart->user->emails = $emailsModel;
-                    \Yii::$app->cart->user->address = $addressModel;
-                    \Yii::$app->cart->user->phones = $phonesModel;
-                    \Yii::$app->cart->user->deliveries = $deliveriesModel;
-                    \Yii::$app->cart->user->payments = $paymentsModel;
+                    if (empty(\Yii::$app->cart->user)) {
+                        \Yii::$app->cart->user = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
+                    }
+                    \Yii::$app->cart->user->attributes = $usersModel->attributes;
+                    
+                    if (empty(\Yii::$app->cart->user->emails)) {
+                        \Yii::$app->cart->user->emails = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+                    }
+                    \Yii::$app->cart->user->emails->attributes = $emailsModel->attributes;
+                    
+                    if (empty(\Yii::$app->cart->user->address)) {
+                        \Yii::$app->cart->user->address = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);;
+                    }
+                    \Yii::$app->cart->user->address->attributes = $addressModel->attributes;
+                    
+                    if (empty(\Yii::$app->cart->user->phones)) {
+                        \Yii::$app->cart->user->phones = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+                    }
+                    \Yii::$app->cart->user->phones->attributes = $phonesModel->attributes;
+                    
+                    if (empty(\Yii::$app->cart->user->deliveries)) {
+                        \Yii::$app->cart->user->deliveries = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_FORM]);
+                    }
+                    \Yii::$app->cart->user->deliveries->attributes = $deliveriesModel->attributes;
+                    
+                    if (empty(\Yii::$app->cart->user->payments)) {
+                        \Yii::$app->cart->user->payments = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_FORM]);
+                    }
+                    \Yii::$app->cart->user->payments->attributes = $paymentsModel->attributes;
                 }
+                
+                /*print_r(\Yii::$app->cart->user->deliveries);
+                exit();*/
+                
                 return $this->redirect(Url::to(['shopping-cart/check-pay']));
             }
             
-            if (!empty(\Yii::$app->cart->user->id)) {
-                $usersModel = \Yii::$app->cart->user;
+            if (!empty(\Yii::$app->cart->user)) {
+                \Yii::configure($usersModel, \Yii::$app->cart->user->attributes);
             } else {
                 if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin']) {
-                    $usersModel = \Yii::$app->user;
+                    //\Yii::configure($usersModel, \Yii::$app->user->attributes);
+                    $usersModel->attributes = \Yii::$app->user->attributes;
                 }
             }
-            if (!empty(\Yii::$app->cart->user->emails->id)) {
-                $emailsModel = \Yii::$app->cart->user->emails;
+            
+            if (!empty(\Yii::$app->cart->user->emails)) {
+                \Yii::configure($emailsModel, \Yii::$app->cart->user->emails->attributes);
             } else {
                 if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->emails)) {
-                    $emailsModel = \Yii::$app->user->emails;
+                    \Yii::configure($emailsModel, \Yii::$app->user->emails->attributes);
                 }
             }
-            if (!empty(\Yii::$app->cart->user->address->id)) {
-                $addressModel = \Yii::$app->cart->user->address;
+            
+            if (!empty(\Yii::$app->cart->user->address)) {
+                \Yii::configure($addressModel, \Yii::$app->cart->user->address->attributes);
             } else {
                 if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->address)) {
-                    $addressModel = \Yii::$app->user->address;
+                    \Yii::configure($addressModel, \Yii::$app->user->address->attributes);
                 }
             }
-            if (!empty(\Yii::$app->cart->user->phones->id)) {
-                $phonesModel = \Yii::$app->cart->user->phones;
+            
+            if (!empty(\Yii::$app->cart->user->phones)) {
+                \Yii::configure($phonesModel, \Yii::$app->cart->user->phones->attributes);
             } else {
                 if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->phones)) {
-                    $phonesModel = \Yii::$app->user->phones;
+                    \Yii::configure($phonesModel, \Yii::$app->user->phones->attributes);
                 }
             }
-            if (!empty(\Yii::$app->cart->user->deliveries->id)) {
-                $deliveriesModel = \Yii::$app->cart->user->deliveries;
+            
+            if (!empty(\Yii::$app->cart->user->deliveries)) {
+                //\Yii::configure($deliveriesModel, \Yii::$app->cart->user->deliveries->attributes);
+                $deliveriesModel->attributes = \Yii::$app->cart->user->deliveries->attributes;
             } else {
                 if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->deliveries)) {
-                    $deliveriesModel = \Yii::$app->user->deliveries;
+                    \Yii::configure($deliveriesModel, \Yii::$app->user->deliveries->attributes);
                 }
             }
-            if (!empty(\Yii::$app->cart->user->payments->id)) {
-                $paymentsModel = \Yii::$app->cart->user->payments;
-            } else {
-                if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->payments)) {
-                    $paymentsModel = \Yii::$app->user->payments;
-                }
+            
+            if (!empty(\Yii::$app->cart->user->payments)) {
+                \Yii::configure($paymentsModel, \Yii::$app->cart->user->payments->attributes);
             }
             
             if (!is_array($dataForRender = $this->getDataForRender())) {

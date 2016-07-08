@@ -8,14 +8,14 @@ use yii\base\ErrorException;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class EmailsByIdQueryCreator extends AbstractSeletcQueryCreator
+class AddressByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
      * @var array массив для выборки данных
      */
     public $categoriesArrayFilters = [
-        'emails'=>[ 
-            'tableName'=>'emails', 
+        'address'=>[
+            'tableName'=>'address', 
             'tableFieldWhere'=>'id', 
         ],
     ];
@@ -32,9 +32,9 @@ class EmailsByIdQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['emails']['tableName'],
-                $this->categoriesArrayFilters['emails']['tableFieldWhere'],
-                $this->categoriesArrayFilters['emails']['tableFieldWhere']
+                $this->categoriesArrayFilters['address']['tableName'],
+                $this->categoriesArrayFilters['address']['tableFieldWhere'],
+                $this->categoriesArrayFilters['address']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

@@ -84,15 +84,14 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует выброс исключения в методе CategoriesModel::getSubcategory
-     * @expectedException ErrorException
+     * Тестирует возврат NULL в методе CategoriesModel::getSubcategory
+     * при условии, что необходимые для выполнения свойства пусты
      */
-    public function testExcGetSubcategory()
+    public function testNullGetSubcategory()
     {
         $model = new CategoriesModel();
-        //$model->id = self::$_id;
         
-        $model->subcategory;
+        $this->assertTrue(is_null($model->subcategory));
     }
     
     public static function tearDownAfterClass()

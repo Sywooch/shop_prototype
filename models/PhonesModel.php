@@ -39,35 +39,7 @@ class PhonesModel extends AbstractBaseModel
         ];
     }
     
-    /**
-     * Возвращает значение свойства $this->_id
-     * @return int
-     */
-    public function getId()
-    {
-        try {
-            if (is_null($this->_id)) {
-                if (empty($this->phone)) {
-                    throw new ErrorException('Не определены данные для обращения к БД!');
-                }
-                $phonesByPhoneMapper = new PhonesByPhoneMapper([
-                    'tableName'=>'phones',
-                    'fields'=>['id', 'phone'],
-                    'model'=>$this
-                ]);
-                $objectModel = $phonesByPhoneMapper->getOneFromGroup();
-                if (!is_object($objectModel) || !$objectModel instanceof $this) {
-                    return false;
-                }
-                $this->_id = $objectModel->id;
-            }
-            return $this->_id;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
+     /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
      * @return boolean
@@ -80,6 +52,33 @@ class PhonesModel extends AbstractBaseModel
                 return true;
             }
             return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_id
+     * @return int
+     */
+    public function getId()
+    {
+        try {
+            if (is_null($this->_id)) {
+                if (!empty($this->phone)) {
+                    $phonesByPhoneMapper = new PhonesByPhoneMapper([
+                        'tableName'=>'phones',
+                        'fields'=>['id', 'phone'],
+                        'model'=>$this
+                    ]);
+                    $objectModel = $phonesByPhoneMapper->getOneFromGroup();
+                    if (!is_object($objectModel) || !$objectModel instanceof $this) {
+                        return NULL;
+                    }
+                    $this->_id = $objectModel->id;
+                }
+            }
+            return $this->_id;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

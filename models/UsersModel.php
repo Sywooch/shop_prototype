@@ -13,6 +13,7 @@ use app\mappers\RulesMapper;
 use app\mappers\UsersByLoginMapper;
 use app\mappers\EmailsByIdMapper;
 use app\mappers\PhonesByIdMapper;
+use app\mappers\AddressByIdMapper;
 use app\helpers\TransliterationHelper;
 use app\helpers\PasswordHelper;
 
@@ -118,11 +119,11 @@ class UsersModel extends AbstractBaseModel
                 if (empty($this->rawPassword)) {
                     $this->rawPassword = PasswordHelper::getPassword();
                     if (!is_string($this->rawPassword)) {
-                        throw new ErrorException('Неверный формат данных!');
+                        return NULL;
                     }
                 }
                 if (!$this->_password = password_hash($this->rawPassword, PASSWORD_DEFAULT)) {
-                    throw new ErrorException('Ошибка при хэшировании пароля!');
+                    return NULL;
                 }
             }
             return $this->_password;
@@ -146,7 +147,7 @@ class UsersModel extends AbstractBaseModel
                 ]);
                 $rulesArray = $rulesMapper->getGroup();
                 if (!is_array($rulesArray) || empty($rulesArray)) {
-                    return false;
+                    return NULL;
                 }
                 $this->_allRules = $rulesArray;
             }
@@ -227,7 +228,7 @@ class UsersModel extends AbstractBaseModel
                 if (!empty($this->name) && $this->scenario == self::GET_FROM_CART_FORM) {
                     $login = TransliterationHelper::getTransliteration($this->name);
                     if (!is_string($login)) {
-                        throw new ErrorException('Неверный формат данных!');
+                        return NULL;
                     }
                     $this->_login = $login . substr(md5($login . time()), 0, 5);
                 }
@@ -270,7 +271,6 @@ class UsersModel extends AbstractBaseModel
                         ]),
                     ]);
                     $emailsModel = $emailsByIdMapper->getOneFromGroup();
-                    
                     if (!is_object($emailsModel) || !$emailsModel instanceof EmailsModel) {
                         return NULL;
                     }
@@ -304,7 +304,27 @@ class UsersModel extends AbstractBaseModel
      */
     public function getAddress()
     {
-        return $this->_address;
+         try {
+            if (is_null($this->_address)) {
+                if (!empty($this->id_address)) {
+                    $addressByIdMapper = new AddressByIdMapper([
+                        'tableName'=>'address',
+                        'fields'=>['id', 'address', 'city', 'country', 'postcode'],
+                        'model'=>new AddressModel([
+                            'id'=>$this->id_address,
+                        ]),
+                    ]);
+                    $addressModel = $addressByIdMapper->getOneFromGroup();
+                    if (!is_object($addressModel) || !$addressModel instanceof AddressModel) {
+                        return NULL;
+                    }
+                    $this->_address = $addressModel;
+                }
+            }
+            return $this->_address;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**
@@ -339,7 +359,6 @@ class UsersModel extends AbstractBaseModel
                         ]),
                     ]);
                     $phonesModel = $phonesByIdMapper->getOneFromGroup();
-                    
                     if (!is_object($phonesModel) || !$phonesModel instanceof PhonesModel) {
                         return NULL;
                     }

@@ -41,14 +41,6 @@ class PaymentsModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает значение свойства $this->_id
-     */
-    public function getId()
-    {
-        return $this->_id;
-    }
-    
-    /**
      * Присваивает значение свойству $this->_id
      * @param string $value значение ID
      * @return boolean
@@ -67,6 +59,14 @@ class PaymentsModel extends AbstractBaseModel
     }
     
     /**
+     * Возвращает значение свойства $this->_id
+     */
+    public function getId()
+    {
+        return $this->_id;
+    }
+    
+    /**
      * Возвращает массив объектов всех доступных payments
      * @return array
      */
@@ -80,7 +80,7 @@ class PaymentsModel extends AbstractBaseModel
                 ]);
                 $paymentsArray = $paymentsMapper->getGroup();
                 if (!is_array($paymentsArray) || empty($paymentsArray)) {
-                    return false;
+                    return NULL;
                 }
                 $this->_allPayments = $paymentsArray;
             }
