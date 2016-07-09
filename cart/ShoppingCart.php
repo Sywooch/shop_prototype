@@ -160,9 +160,26 @@ class ShoppingCart extends Object
             if (empty(\Yii::$app->params['cartKeyInSession'])) {
                 throw new ErrorException('Не установлена переменная cartKeyInSession!');
             }
+            if (empty(\Yii::$app->params['usersKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная usersKeyInSession!');
+            }
+            
             $this->_productsArray = array();
             $this->user = NULL;
-            if (!SessionHelper::removeVarFromSession([\Yii::$app->params['cartKeyInSession'], \Yii::$app->params['cartKeyInSession'] . '.user'])) {
+            $cleanResult = SessionHelper::removeVarFromSession([
+                \Yii::$app->params['cartKeyInSession'],
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.name',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.surname',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.emails.email',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.phones.phone',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.address.address',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.address.city',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.address.postcode',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.address.country',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.deliveries.id',
+                \Yii::$app->params['cartKeyInSession'] . '.' .\Yii::$app->params['usersKeyInSession'] . '.payments.id',
+            ]);
+            if (!$cleanResult) {
                 throw new ErrorException('Ошибка при удалении переменной из сесии!');
             }
             return true;

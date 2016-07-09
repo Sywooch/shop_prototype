@@ -174,66 +174,45 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
-            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
-            $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-            $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
-            $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
-            $deliveriesModel = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_FORM]);
-            $paymentsModel = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_FORM]);
+            $usersModel = \Yii::$app->cart->user;
+            $emailsModel = \Yii::$app->cart->user->emails;
+            $addressModel = \Yii::$app->cart->user->address;
+            $phonesModel = \Yii::$app->cart->user->phones;
+            $deliveriesModel = \Yii::$app->cart->user->deliveries;
+            $paymentsModel = \Yii::$app->cart->user->payments;
+            
+            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) {
+                if (empty(\Yii::$app->cart->user->name) && !empty(\Yii::$app->user->name)) {
+                    $usersModel->name = \Yii::$app->user->name;
+                }
+                if (empty(\Yii::$app->cart->user->surname) && !empty(\Yii::$app->user->surname)) {
+                    $usersModel->surname = \Yii::$app->user->surname;
+                }
+                if (empty(\Yii::$app->cart->user->emails->email) && !empty(\Yii::$app->user->emails->email)) {
+                    $emailsModel->email = \Yii::$app->user->emails->email;
+                }
+                if (empty(\Yii::$app->cart->user->phones->phone) && !empty(\Yii::$app->user->phones->phone)) {
+                    $phonesModel->phone = \Yii::$app->user->phones->phone;
+                }
+                if (empty(\Yii::$app->cart->user->address->address) && !empty(\Yii::$app->user->address->address)) {
+                    $addressModel->address = \Yii::$app->user->address->address;
+                }
+                if (empty(\Yii::$app->cart->user->address->city) && !empty(\Yii::$app->user->address->city)) {
+                    $addressModel->city = \Yii::$app->user->address->city;
+                }
+                if (empty(\Yii::$app->cart->user->address->postcode) && !empty(\Yii::$app->user->address->postcode)) {
+                    $addressModel->postcode = \Yii::$app->user->address->postcode;
+                }
+                if (empty(\Yii::$app->cart->user->address->country) && !empty(\Yii::$app->user->address->country)) {
+                    $addressModel->country = \Yii::$app->user->address->country;
+                }
+            }
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $deliveriesModel->load(\Yii::$app->request->post()) && $paymentsModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate() && $emailsModel->validate() && $addressModel->validate() && $phonesModel->validate() && $deliveriesModel->validate() && $paymentsModel->validate()) {
-                    \Yii::$app->cart->user = $usersModel;
-                    \Yii::$app->cart->user->emails = $emailsModel;
-                    \Yii::$app->cart->user->address = $addressModel;
-                    \Yii::$app->cart->user->phones = $phonesModel;
-                    \Yii::$app->cart->user->deliveries = $deliveriesModel;
-                    \Yii::$app->cart->user->payments = $paymentsModel;
+                    
                 }
                 return $this->redirect(Url::to(['shopping-cart/check-pay']));
-            }
-            
-            if (!empty(\Yii::$app->cart->user->id)) {
-                $usersModel = \Yii::$app->cart->user;
-            } else {
-                if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin']) {
-                    $usersModel = \Yii::$app->user;
-                }
-            }
-            if (!empty(\Yii::$app->cart->user->emails->id)) {
-                $emailsModel = \Yii::$app->cart->user->emails;
-            } else {
-                if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->emails)) {
-                    $emailsModel = \Yii::$app->user->emails;
-                }
-            }
-            if (!empty(\Yii::$app->cart->user->address->id)) {
-                $addressModel = \Yii::$app->cart->user->address;
-            } else {
-                if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->address)) {
-                    $addressModel = \Yii::$app->user->address;
-                }
-            }
-            if (!empty(\Yii::$app->cart->user->phones->id)) {
-                $phonesModel = \Yii::$app->cart->user->phones;
-            } else {
-                if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->phones)) {
-                    $phonesModel = \Yii::$app->user->phones;
-                }
-            }
-            if (!empty(\Yii::$app->cart->user->deliveries->id)) {
-                $deliveriesModel = \Yii::$app->cart->user->deliveries;
-            } else {
-                if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->deliveries)) {
-                    $deliveriesModel = \Yii::$app->user->deliveries;
-                }
-            }
-            if (!empty(\Yii::$app->cart->user->payments->id)) {
-                $paymentsModel = \Yii::$app->cart->user->payments;
-            } else {
-                if (\Yii::$app->user != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->payments)) {
-                    $paymentsModel = \Yii::$app->user->payments;
-                }
             }
             
             if (!is_array($dataForRender = $this->getDataForRender())) {
