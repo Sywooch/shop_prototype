@@ -104,10 +104,6 @@ class UsersController extends AbstractBaseController
                         if (!UserAuthenticationHelper::clean()) {
                             throw new ErrorException('Ошибка при попытку выхода из аккаунта!');
                         }
-                        /*$sessionKeysForDelete = array();
-                        foreach (\Yii::$app->params['sessionKeysForUser'] as $key) {
-                            $sessionKeys[] = \Yii::$app->params['usersKeyInSession'] . '.' . $key;
-                        }*/
                         if (!SessionHelper::removeVarFromSession([\Yii::$app->params['usersKeyInSession']])) {
                             throw new ErrorException('Ошибка удалении переменной сессии!');
                         }

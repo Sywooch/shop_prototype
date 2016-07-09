@@ -83,4 +83,17 @@ class PhonesModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив данных для сохранения в сессии
+     * @return array
+     */
+    public function getDataForSession()
+    {
+        try {
+            return ['phone'=>$this->phone];
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

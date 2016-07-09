@@ -457,13 +457,10 @@ class UsersModel extends AbstractBaseModel
      * Возвращает массив данных авторизированного пользователя для сохранения в сессии
      * @return array
      */
-    public function getUserDataForSession()
+    public function getDataForSession()
     {
         try {
-            if ($this->login != \Yii::$app->params['nonAuthenticatedUserLogin']) {
-                return ['id'=>$this->id, 'login'=>$this->login, 'name'=>$this->name, 'surname'=>$this->surname, 'id_emails'=>$this->id_emails, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address];
-            }
-            return false;
+            return ['id'=>$this->id, 'login'=>$this->login, 'name'=>$this->name, 'surname'=>$this->surname, 'id_emails'=>$this->id_emails, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address];
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
