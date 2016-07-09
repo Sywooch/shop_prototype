@@ -148,6 +148,31 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id + 3, $model->id);
     }
     
+    /**
+     * Тестирует метод AddressModel::getDataForSession
+     */
+    public function testGetDataForSession()
+    {
+        $model = new AddressModel();
+        $model->address = self::$_address;
+        $model->city = self::$_city;
+        $model->country = self::$_country;
+        $model->postcode = self::$_postcode;
+        
+        $array = $model->getDataForSession();
+        
+        $this->assertTrue(is_array($array));
+        $this->assertTrue(array_key_exists('address', $array));
+        $this->assertTrue(array_key_exists('city', $array));
+        $this->assertTrue(array_key_exists('country', $array));
+        $this->assertTrue(array_key_exists('postcode', $array));
+        
+        $this->assertEquals(self::$_address, $array['address']);
+        $this->assertEquals(self::$_city, $array['city']);
+        $this->assertEquals(self::$_country, $array['country']);
+        $this->assertEquals(self::$_postcode, $array['postcode']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();

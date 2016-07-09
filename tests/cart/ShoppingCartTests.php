@@ -89,6 +89,7 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->cart->clearProductsArray();
         
         $this->assertTrue(empty(\Yii::$app->cart->getProductsArray()));
+        $this->assertTrue(is_null(\Yii::$app->cart->user));
     }
     
     /**

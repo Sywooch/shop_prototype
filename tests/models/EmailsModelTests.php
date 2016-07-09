@@ -96,6 +96,17 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод EmailsModel::setId
+     */
+    public function testSetId()
+    {
+        $model = new EmailsModel();
+        $model->id = self::$_id + 3;
+        
+        $this->assertEquals(self::$_id + 3, $model->id);
+    }
+    
+    /**
      * Тестирует метод EmailsModel::getId
      */
     public function testGetId()
@@ -118,14 +129,18 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод EmailsModel::setId
+     * Тестирует метод EmailsModel::getDataForSession
      */
-    public function testSetId()
+    public function testGetDataForSession()
     {
         $model = new EmailsModel();
-        $model->id = self::$_id + 3;
+        $model->email = self::$_email;
         
-        $this->assertEquals(self::$_id + 3, $model->id);
+        $array = $model->getDataForSession();
+        
+        $this->assertTrue(is_array($array));
+        $this->assertTrue(array_key_exists('email', $array));
+        $this->assertEquals(self::$_email, $array['email']);
     }
     
     public static function tearDownAfterClass()

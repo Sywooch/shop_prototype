@@ -454,7 +454,7 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает массив данных авторизированного пользователя для сохранения в сессии
+     * Возвращает массив данных для сохранения в сессии
      * @return array
      */
     public function getDataForSession()

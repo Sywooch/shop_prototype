@@ -31,15 +31,11 @@ class UsersFilter extends ActionFilter
             }
             
             $session = \Yii::$app->session;
-                
             $session->open();
-            
             $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB, 'login'=>\Yii::$app->params['nonAuthenticatedUserLogin']]);
-            
             if ($session->has(\Yii::$app->params['usersKeyInSession'])) {
                 $usersModel->attributes = $session->get(\Yii::$app->params['usersKeyInSession']);
             }
-            
             $session->close();
             
             if (!UserAuthenticationHelper::fill($usersModel)) {
@@ -72,9 +68,7 @@ class UsersFilter extends ActionFilter
             $session = \Yii::$app->session;
             if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) {
                 $session->open();
-                
                 $session->set(\Yii::$app->params['usersKeyInSession'], \Yii::$app->user->getDataForSession());
-                
                 $session->close();
             }
             

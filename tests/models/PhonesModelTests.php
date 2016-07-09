@@ -120,6 +120,21 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id + 3, $model->id);
     }
     
+    /**
+     * Тестирует метод PhonesModel::getDataForSession
+     */
+    public function testGetDataForSession()
+    {
+        $model = new PhonesModel();
+        $model->phone = self::$_phone;
+        
+        $array = $model->getDataForSession();
+        
+        $this->assertTrue(is_array($array));
+        $this->assertTrue(array_key_exists('phone', $array));
+        $this->assertEquals(self::$_phone, $array['phone']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();
