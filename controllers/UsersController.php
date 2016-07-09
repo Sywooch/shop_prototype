@@ -104,19 +104,13 @@ class UsersController extends AbstractBaseController
                         if (!UserAuthenticationHelper::clean()) {
                             throw new ErrorException('Ошибка при попытку выхода из аккаунта!');
                         }
-                        $cleanResult = SessionHelper::removeVarFromSession([
-                            \Yii::$app->params['usersKeyInSession'] . '.id',
-                            \Yii::$app->params['usersKeyInSession'] . '.login',
-                            \Yii::$app->params['usersKeyInSession'] . '.name',
-                            \Yii::$app->params['usersKeyInSession'] . '.surname',
-                            \Yii::$app->params['usersKeyInSession'] . '.id_emails',
-                            \Yii::$app->params['usersKeyInSession'] . '.id_phones',
-                            \Yii::$app->params['usersKeyInSession'] . '.id_address',
-                        ]);
-                        if (!$cleanResult) {
+                        /*$sessionKeysForDelete = array();
+                        foreach (\Yii::$app->params['sessionKeysForUser'] as $key) {
+                            $sessionKeys[] = \Yii::$app->params['usersKeyInSession'] . '.' . $key;
+                        }*/
+                        if (!SessionHelper::removeVarFromSession([\Yii::$app->params['usersKeyInSession']])) {
                             throw new ErrorException('Ошибка удалении переменной сессии!');
                         }
-                        echo \Yii::$app->session->get(\Yii::$app->params['usersKeyInSession'] . '.login');
                     }
                 }
             }

@@ -36,7 +36,17 @@ class UsersFilter extends ActionFilter
             
             $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB, 'login'=>\Yii::$app->params['nonAuthenticatedUserLogin']]);
             
-            if ($session->has(\Yii::$app->params['usersKeyInSession'] . '.id')) {
+            /*foreach (\Yii::$app->params['sessionKeysForUser'] as $key) {
+                if ($session->has(\Yii::$app->params['usersKeyInSession'] . '.' . $key)) {
+                    $usersModel->$key = $session->get(\Yii::$app->params['usersKeyInSession'] . '.' . $key);
+                }
+            }*/
+            
+            if ($session->has(\Yii::$app->params['usersKeyInSession'])) {
+                $usersModel->attributes = $session->get(\Yii::$app->params['usersKeyInSession']);
+            }
+            
+            /*if ($session->has(\Yii::$app->params['usersKeyInSession'] . '.id')) {
                 $usersModel->id = $session->get(\Yii::$app->params['usersKeyInSession'] . '.id');
             }
             if ($session->has(\Yii::$app->params['usersKeyInSession'] . '.login')) {
@@ -56,7 +66,7 @@ class UsersFilter extends ActionFilter
             }
             if ($session->has(\Yii::$app->params['usersKeyInSession'] . '.id_address')) {
                 $usersModel->id_address = $session->get(\Yii::$app->params['usersKeyInSession'] . '.id_address');
-            }
+            }*/
             
             $session->close();
             
@@ -88,7 +98,15 @@ class UsersFilter extends ActionFilter
             if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) {
                 $session->open();
                 
-                if (!empty(\Yii::$app->user->id)) {
+                /*foreach (\Yii::$app->params['sessionKeysForUser'] as $key) {
+                    if (!empty(\Yii::$app->user->$key)) {
+                        $session->set(\Yii::$app->params['usersKeyInSession'] . '.' . $key, \Yii::$app->user->$key);
+                    }
+                }*/
+                
+                $session->set(\Yii::$app->params['usersKeyInSession'], \Yii::$app->user->getUserDataForSession());
+                
+                /*if (!empty(\Yii::$app->user->id)) {
                     $session->set(\Yii::$app->params['usersKeyInSession'] . '.id', \Yii::$app->user->id);
                 }
                 if (!empty(\Yii::$app->user->login)) {
@@ -108,7 +126,7 @@ class UsersFilter extends ActionFilter
                 }
                 if (!empty(\Yii::$app->user->id_address)) {
                     $session->set(\Yii::$app->params['usersKeyInSession'] . '.id_address', \Yii::$app->user->id_address);
-                }
+                }*/
                 
                 $session->close();
             }
