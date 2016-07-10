@@ -83,7 +83,9 @@ class UserAuthenticationHelper
     {
         try {
             foreach (\Yii::$app->params['filedsToUser'] as $field) {
-                \Yii::$app->user->$field = $userModel->$field;
+                if (!empty($userModel->$field)) {
+                    \Yii::$app->user->$field = $userModel->$field;
+                }
             }
             return true;
         } catch (\Exception $e) {

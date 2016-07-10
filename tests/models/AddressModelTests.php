@@ -127,6 +127,18 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод AddressModel::getId
+     * при условии отсутствия postcode
+     */
+    public function testGetIdWithoutPostcode()
+    {
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+        $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country];
+        
+        $this->assertEquals(self::$_id, $model->id);
+    }
+    
+    /**
      * Тестирует возврат NULL в методе AddressModel::getId
      * при условии, что необходимые для выполнения свойства пусты
      */

@@ -69,7 +69,7 @@ class AddressModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_id)) {
-                if (!empty($this->address) && !empty($this->city) && !empty($this->country) && !empty($this->postcode)) {
+                if (!empty($this->address) && !empty($this->city) && !empty($this->country)) {
                     $addressByAddressMapper = new AddressByAddressMapper([
                         'tableName'=>'address',
                         'fields'=>['id', 'address', 'city', 'country', 'postcode'],

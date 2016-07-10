@@ -62,6 +62,39 @@ class AddressByAddressMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($objectAddress->postcode));
     }
     
+    /**
+     * Тестирует метод AddressByAddressMapper::getGroup
+     * при условии отсутствия postcode
+     */
+    public function testGetGroupWithoutPostcode()
+    {
+        $addressByAddressMapper = new AddressByAddressMapper([
+            'tableName'=>'address',
+            'fields'=>['id', 'address', 'city', 'country', 'postcode'],
+            'model'=>new AddressModel([
+                'address'=>self::$_address,
+                'city'=>self::$_city,
+                'country'=>self::$_country,
+            ]),
+        ]);
+        $objectAddress = $addressByAddressMapper->getOneFromGroup();
+        
+        $this->assertTrue(is_object($objectAddress));
+        $this->assertTrue($objectAddress instanceof AddressModel);
+        
+        //$this->assertTrue(property_exists($objectAddress, 'id'));
+        $this->assertTrue(property_exists($objectAddress, 'address'));
+        $this->assertTrue(property_exists($objectAddress, 'city'));
+        $this->assertTrue(property_exists($objectAddress, 'country'));
+        $this->assertTrue(property_exists($objectAddress, 'postcode'));
+        
+        $this->assertTrue(isset($objectAddress->id));
+        $this->assertTrue(isset($objectAddress->address));
+        $this->assertTrue(isset($objectAddress->city));
+        $this->assertTrue(isset($objectAddress->country));
+        $this->assertTrue(isset($objectAddress->postcode));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();

@@ -1,7 +1,7 @@
 
 <h1>Привет! Это информация о вашем заказе!</h2>
 
-<p>Вы можете отслеживать его в персональном кабинете. Временные логин и пароль, которые мы создали для вас:<br>логин: {{ app.cart.user.login }}<br>пароль: {{ app.cart.user.rawPassword }}</p>
+<p>Вы можете отслеживать его в <a href="{{ url.to({0:'users/login-user'}, true) }}">вашем персональном кабинете</a>. {% if app.cart.user.login and app.cart.user.rawPassword %}Временные логин и пароль, которые мы создали для вас:<br>логин: {{ app.cart.user.login }}<br>пароль: {{ app.cart.user.rawPassword }} {% endif %}</p>
 
 {% set products = app.cart.getProductsArray() %}
 
@@ -41,10 +41,12 @@
 <p><strong>Delivery address</strong></p>
 
 <p>
-    Country: {{user.address.country }}<br>
-    City: {{user.address.city }}<br>
-    Address: {{user.address.address }}<br>
-    Postcode: {{user.address.postcode }}<br>
+    Country: {{ user.address.country }}<br>
+    City: {{ user.address.city }}<br>
+    Address: {{ user.address.address }}<br>
+    {% if user.address.postcode %}
+        Postcode: {{ user.address.postcode }}<br>
+    {% endif %}
 </p>
 
 <p><strong>Payments</strong></p>

@@ -50,7 +50,9 @@
     Country: {{user.address.country }}<br>
     City: {{user.address.city }}<br>
     Address: {{user.address.address }}<br>
-    Postcode: {{user.address.postcode }}<br>
+    {% if user.address.postcode %}
+        Postcode: {{user.address.postcode }}<br>
+    {% endif %}
 </p>
 
 <p><strong>Payments</strong></p>
@@ -65,3 +67,5 @@
 <p><strong>Total cost including delivery: {{ (app.cart.getTotalCost() + array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id]) | number_format(2, '.', ' ') }}</strong></p>
 
 <p><a href="{{ url.to({0:'shopping-cart/pay'}) }}">Pay</a></p>
+
+<p>{% include '@app/views/parts/clean-cart-form.twig' %}</p>

@@ -65,15 +65,18 @@ class AddressByAddressQueryCreator extends AbstractSeletcQueryCreator
             }
             $this->_mapperObject->query .= $where;
             
-            $where = $this->getWhere(
-                $this->categoriesArrayFilters['address']['tableName'],
-                $this->categoriesArrayFilters['address']['tableFieldWherePostcode'],
-                $this->categoriesArrayFilters['address']['tableFieldWherePostcode']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (array_key_exists(':' . $this->categoriesArrayFilters['address']['tableFieldWherePostcode'], $this->_mapperObject->params)) {
+                $where = $this->getWhere(
+                    $this->categoriesArrayFilters['address']['tableName'],
+                    $this->categoriesArrayFilters['address']['tableFieldWherePostcode'],
+                    $this->categoriesArrayFilters['address']['tableFieldWherePostcode']
+                );
+                if (!is_string($where)) {
+                    throw new ErrorException('Ошибка при построении запроса!');
+                }
+                $this->_mapperObject->query .= $where;
             }
-            $this->_mapperObject->query .= $where;
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

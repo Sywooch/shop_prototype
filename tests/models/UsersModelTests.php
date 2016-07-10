@@ -3,6 +3,7 @@
 namespace app\test\models;
 
 use app\tests\DbManager;
+use app\helpers\UserAuthenticationHelper;
 use app\models\UsersModel;
 use app\models\RulesModel;
 use app\models\EmailsModel;
@@ -47,6 +48,11 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{rules}} SET [[id]]=:id, [[rule]]=:rule');
         $command->bindValues([':id'=>self::$_id, ':rule'=>self::$_rule]);
         $command->execute();
+        
+        $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB, 'login'=>\Yii::$app->params['nonAuthenticatedUserLogin']]);
+        if (!UserAuthenticationHelper::fill($usersModel)) {
+            throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
+        }
     }
     
     /**

@@ -263,9 +263,6 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['shopping-cart/address-contacts']));
             }
             
-            if (empty(\Yii::$app->cart->user) || !is_object(\Yii::$app->cart->user)) {
-                throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
-            }
             if (!empty(\Yii::$app->cart->user->emails) && is_object(\Yii::$app->cart->user->emails)) {
                 if (!$emailsModel = $this->getEmailsModel(\Yii::$app->cart->user->emails)) {
                     throw new ErrorException('Ошибка при сохранении E-mail!');
@@ -274,6 +271,7 @@ class ShoppingCartController extends AbstractBaseController
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
+            
             if (!empty(\Yii::$app->cart->user->address) && is_object(\Yii::$app->cart->user->address)) {
                 if (!$addressModel = $this->getAddressModel(\Yii::$app->cart->user->address)) {
                     throw new ErrorException('Ошибка при сохранении address!');
@@ -282,6 +280,7 @@ class ShoppingCartController extends AbstractBaseController
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
+            
             if (!empty(\Yii::$app->cart->user->phones) && is_object(\Yii::$app->cart->user->phones)) {
                 if (!$phonesModel = $this->getPhonesModel(\Yii::$app->cart->user->phones)) {
                     throw new ErrorException('Ошибка при сохранении phones!');
@@ -290,6 +289,7 @@ class ShoppingCartController extends AbstractBaseController
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
+            
             if ($this->setUsersModel(\Yii::$app->cart->user)) {
                 if ($this->setUsersPurchasesModel()) {
                     if (!MailHelper::send([['template'=>'@app/views/mail/customer.twig', 'setFrom'=>['test@test.com'=>'John'], 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 'setSubject'=>'Hello!']])) {

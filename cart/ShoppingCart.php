@@ -42,7 +42,7 @@ class ShoppingCart extends Object
     public function addProduct(ProductsModel $object)
     {
         try {
-            if (!$this->getHash($object)) {
+            if (!$object->getHash()) {
                 throw new ErrorException('Не удалось создать хэш для объекта!');
             }
             foreach ($this->_productsArray as $objectInArray) {
@@ -100,7 +100,7 @@ class ShoppingCart extends Object
                             $objectInArray->$key = $value;
                         }
                     }
-                    if (!$this->getHash($objectInArray)) {
+                    if (!$objectInArray->getHash()) {
                         throw new ErrorException('Не удалось создать хэш для объекта!');
                     }
                     break;
@@ -216,38 +216,13 @@ class ShoppingCart extends Object
     }
     
     /**
-     * Возвращает значение $this->t_totalProducts
+     * Возвращает значение $this->_totalProducts
      * @return int
      */
     public function getTotalProducts()
     {
         try {
             return $this->_totalProducts;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Создает md5 hash из значений свойств, однозначно идентифицируя объект
-     * $safeProperties - массив свойств, га основании которых создается хэш
-     * @param object объект для которого необходимо создать хэш
-     * @return boolean
-     */
-    private function getHash($object)
-    {
-        try {
-            $safeProperties = ['id', 'code', 'colorToCart', 'sizeToCart'];
-            $stringToHash = '';
-            foreach ($object as $property=>$value) {
-                if (in_array($property, $safeProperties)) {
-                    $stringToHash .= $value;
-                }
-            }
-            if (!$object->hash = md5($stringToHash)) {
-                return false;
-            }
-            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

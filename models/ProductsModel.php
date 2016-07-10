@@ -52,6 +52,10 @@ class ProductsModel extends AbstractBaseModel
      * @var string хэш сумма для продукта, мспользуется для идентификации в массиве продуктов класса корзины
      */
     public $hash = '';
+    /**
+     * @var array массив свойств, на основании которых создается хэш
+     */
+    public $safeProperties = ['id', 'code', 'colorToCart', 'sizeToCart'];
     
     /**
      * Свойства получаемые из формы добавления в корзину
@@ -219,6 +223,26 @@ class ProductsModel extends AbstractBaseModel
                 }
             }
             return $this->_comments;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает md5 hash из значений свойств, однозначно идентифицируя объект
+     * @return boolean
+     */
+    public function getHash()
+    {
+        try {
+            $stringToHash = '';
+            foreach ($this->safeProperties as $property) {
+                $stringToHash .= $this->$property;
+            }
+            if (!$this->hash = md5($stringToHash)) {
+                return false;
+            }
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

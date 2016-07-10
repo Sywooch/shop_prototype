@@ -7,11 +7,13 @@ use app\mappers\CategoriesMapper;
 use app\mappers\UsersInsertMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
+use app\mappers\UsersUpdateMapper;
 use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
 use app\models\ProductsModel;
 use app\models\UsersModel;
 use app\models\EmailsModel;
+use app\helpers\UserAuthenticationHelper;
 
 /**
  * Определяет функции, общие для разных типов контроллеров
@@ -55,13 +57,27 @@ abstract class AbstractBaseController extends Controller
     protected function setUsersModel(UsersModel $usersModel)
     {
         try {
-            $usersInsertMapper = new UsersInsertMapper([
-                'tableName'=>'users',
-                'fields'=>['login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-                'objectsArray'=>[$usersModel],
-            ]);
-            if (!$usersInsertMapper->setGroup()) {
-                throw new ErrorException('Не удалось обновить данные в БД!');
+            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) { # обновление при условии идентичности свойств
+                $usersUpdateMapper = new UsersUpdateMapper([
+                    'tableName'=>'users',
+                    'fields'=>['name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                    'model'=>\Yii::configure($usersModel, ['id'=>\Yii::$app->user->id]),
+                ]);
+                if (!$result = $usersUpdateMapper->setGroup()) {
+                    throw new ErrorException('Не удалось обновить данные в БД!');
+                }
+                if (!UserAuthenticationHelper::fill($usersModel)) {
+                    throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
+                }
+            } else {
+                $usersInsertMapper = new UsersInsertMapper([
+                    'tableName'=>'users',
+                    'fields'=>['login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                    'objectsArray'=>[$usersModel],
+                ]);
+                if (!$usersInsertMapper->setGroup()) {
+                    throw new ErrorException('Не удалось добавить данные в БД!');
+                }
             }
             return $usersModel;
         } catch (\Exception $e) {

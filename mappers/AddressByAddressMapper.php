@@ -34,8 +34,10 @@ class AddressByAddressMapper extends AbstractGetMapper
                     ':address'=>$this->model->address,
                     ':city'=>$this->model->city,
                     ':country'=>$this->model->country,
-                    ':postcode'=>$this->model->postcode,
                 ];
+                if (!empty($this->model->postcode)) {
+                    $this->params[':postcode'] = $this->model->postcode;
+                }
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

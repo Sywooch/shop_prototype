@@ -348,6 +348,24 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_null($model->comments));
     }
     
+    /**
+     * Тестирует метод ProductsModel::getHash
+     */
+    public function testGetHash()
+    {
+        $model = new ProductsModel();
+        $model->id = self::$_id;
+        $model->code = self::$_code;
+        $model->colorToCart = self::$_colorToCart;
+        $model->sizeToCart = self::$_sizeToCart;
+        
+        $this->assertTrue(empty($model->hash));
+        
+        $model->getHash();
+        
+        $this->assertFalse(empty($model->hash));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();

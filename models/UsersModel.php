@@ -115,7 +115,7 @@ class UsersModel extends AbstractBaseModel
     public function getPassword()
     {
         try {
-            if (is_null($this->_password)) {
+            if (is_null($this->_password) && \Yii::$app->user->login == \Yii::$app->params['nonAuthenticatedUserLogin']) {
                 if (empty($this->rawPassword)) {
                     $this->rawPassword = PasswordHelper::getPassword();
                     if (!is_string($this->rawPassword)) {
@@ -224,7 +224,7 @@ class UsersModel extends AbstractBaseModel
     public function getLogin()
     {
         try {
-            if (is_null($this->_login)) {
+            if (is_null($this->_login) && \Yii::$app->user->login == \Yii::$app->params['nonAuthenticatedUserLogin']) {
                 if (!empty($this->name) && $this->scenario == self::GET_FROM_CART_FORM) {
                     $login = TransliterationHelper::getTransliteration($this->name);
                     if (!is_string($login)) {
