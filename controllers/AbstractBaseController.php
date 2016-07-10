@@ -8,6 +8,7 @@ use app\mappers\UsersInsertMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
 use app\mappers\UsersUpdateMapper;
+use app\mappers\UsersRulesInsertMapper;
 use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
 use app\models\ProductsModel;
@@ -57,17 +58,20 @@ abstract class AbstractBaseController extends Controller
     protected function setUsersModel(UsersModel $usersModel)
     {
         try {
-            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) { # обновление при условии идентичности свойств
-                $usersUpdateMapper = new UsersUpdateMapper([
-                    'tableName'=>'users',
-                    'fields'=>['name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-                    'model'=>\Yii::configure($usersModel, ['id'=>\Yii::$app->user->id]),
-                ]);
-                if (!$result = $usersUpdateMapper->setGroup()) {
-                    throw new ErrorException('Не удалось обновить данные в БД!');
-                }
-                if (!UserAuthenticationHelper::fill($usersModel)) {
-                    throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
+            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->id)) {
+                \Yii::configure($usersModel, ['id'=>\Yii::$app->user->id]);
+                if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {
+                    $usersUpdateMapper = new UsersUpdateMapper([
+                        'tableName'=>'users',
+                        'fields'=>['name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                        'model'=>$usersModel,
+                    ]);
+                    if (!$result = $usersUpdateMapper->setGroup()) {
+                        throw new ErrorException('Не удалось обновить данные в БД!');
+                    }
+                    if (!UserAuthenticationHelper::fill($usersModel)) {
+                        throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
+                    }
                 }
             } else {
                 $usersInsertMapper = new UsersInsertMapper([
@@ -77,6 +81,9 @@ abstract class AbstractBaseController extends Controller
                 ]);
                 if (!$usersInsertMapper->setGroup()) {
                     throw new ErrorException('Не удалось добавить данные в БД!');
+                }
+                if (!$this->setUsersRulesModel($usersModel)) {
+                    throw new ErrorException('Ошибка при сохранении связи пользователя с правами доступа!');
                 }
             }
             return $usersModel;
@@ -115,6 +122,29 @@ abstract class AbstractBaseController extends Controller
                 }
             }
             return $emailsModel;
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись в БД, мвязывающую пользователя с правами доступа
+     * @param object $usersModel экземпляр UsersModel
+     * @return int
+     */
+    protected function setUsersRulesModel(UsersModel $usersModel)
+    {
+        try {
+            $usersRulesInsertMapper = new UsersRulesInsertMapper([
+                'tableName'=>'users_rules',
+                'fields'=>['id_users', 'id_rules'],
+                'model'=>$usersModel
+            ]);
+            if (!$result = $usersRulesInsertMapper->setGroup()) {
+                throw new ErrorException('Не удалось добавить данные в БД!');
+            }
+            return $result;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

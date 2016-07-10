@@ -9,7 +9,6 @@ use app\helpers\SessionHelper;
 use app\controllers\AbstractBaseController;
 use app\models\UsersModel;
 use app\models\EmailsModel;
-use app\mappers\UsersRulesInsertMapper;
 
 /**
  * Управляет работой с пользователями
@@ -36,16 +35,7 @@ class UsersController extends AbstractBaseController
                     if (!$this->setUsersModel($usersModel)) {
                         throw new ErrorException('Ошибка при сохранении данных пользователя!');
                     }
-                    
-                    $usersRulesInsertMapper = new UsersRulesInsertMapper([
-                        'tableName'=>'users_rules',
-                        'fields'=>['id_users', 'id_rules'],
-                        'model'=>$usersModel
-                    ]);
-                    if (!$result = $usersRulesInsertMapper->setGroup()) {
-                        throw new ErrorException('Не удалось добавить данные в БД!');
-                    }
-                    return $this->redirect(Url::to(['users/login-user', 'added'=>1]));
+                    return $this->redirect(Url::to(['users/login-user', 'added'=>true]));
                 }
             }
             

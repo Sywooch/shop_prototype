@@ -566,6 +566,34 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id_address, $array['id_address']);
     }
     
+    /**
+     * Тестирует метод UsersModel::getDataForСomparison
+     */
+    public function testGetDataForСomparison()
+    {
+        $model = new UsersModel();
+        $model->name = self::$_name;
+        $model->surname = self::$_surname;
+        $model->id_emails = self::$_id_emails;
+        $model->id_phones = self::$_id_phones;
+        $model->id_address = self::$_id_address;
+        
+        $array = $model->getDataForСomparison();
+        
+        $this->assertTrue(is_array($array));
+        $this->assertTrue(array_key_exists('name', $array));
+        $this->assertTrue(array_key_exists('surname', $array));
+        $this->assertTrue(array_key_exists('id_emails', $array));
+        $this->assertTrue(array_key_exists('id_phones', $array));
+        $this->assertTrue(array_key_exists('id_address', $array));
+        
+        $this->assertEquals(self::$_name, $array['name']);
+        $this->assertEquals(self::$_surname, $array['surname']);
+        $this->assertEquals(self::$_id_emails, $array['id_emails']);
+        $this->assertEquals(self::$_id_phones, $array['id_phones']);
+        $this->assertEquals(self::$_id_address, $array['id_address']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();

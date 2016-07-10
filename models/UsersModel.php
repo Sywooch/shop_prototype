@@ -465,4 +465,17 @@ class UsersModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив данных для сравнения двух моделей
+     * @return array
+     */
+    public function getDataForСomparison()
+    {
+        try {
+            return ['name'=>$this->name, 'surname'=>$this->surname, 'id_emails'=>$this->id_emails, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address];
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }
