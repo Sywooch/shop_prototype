@@ -3,10 +3,14 @@
 namespace app\helpers;
 
 use yii\base\ErrorException;
-use yii\traits\ExceptionsTrait;
+use app\traits\ExceptionsTrait;
+use app\models\ProductsModel;
+use app\models\UsersModel;
+use app\models\CurrencyModel;
+use app\models\CommentsModel;
 
 /**
- * Предоставляет методы для работы с моделями
+ * Предоставляет методы для создания экземпляров моделей
  */
 class ModelsInstancesHelper
 {
@@ -20,10 +24,9 @@ class ModelsInstancesHelper
     public static function getInstancesArray()
     {
         try {
-            if (!isset(\Yii::$app->filters)) {
-                throw new ErrorException('Не определен объект фильтров!');
+            if (!empty(\Yii::$app->filters)) {
+                self::$_instancesArray['filtersModel'] = \Yii::$app->filters;
             }
-            self::$_instancesArray['filtersModel'] = \Yii::$app->filters;
             self::$_instancesArray['productsModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
             self::$_instancesArray['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
             self::$_instancesArray['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
@@ -31,7 +34,7 @@ class ModelsInstancesHelper
             self::$_instancesArray['commentsModel'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
             return self::$_instancesArray;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
 }

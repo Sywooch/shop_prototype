@@ -5,23 +5,10 @@ namespace app\controllers;
 use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
+use app\helpers\ModelsInstancesHelper;
+use app\helpers\MappersHelper;
 use app\helpers\MailHelper;
 use app\models\ProductsModel;
-use app\models\UsersModel;
-use app\models\EmailsModel;
-use app\models\AddressModel;
-use app\models\PhonesModel;
-use app\models\DeliveriesModel;
-use app\models\PaymentsModel;
-use app\models\UsersPurchasesModel;
-use app\mappers\AddressByAddressMapper;
-use app\mappers\AddressInsertMapper;
-use app\mappers\PhonesByPhoneMapper;
-use app\mappers\PhonesInsertMapper;
-use app\mappers\DeliveriesByIdMapper;
-use app\mappers\PaymentsMapper;
-use app\mappers\PaymentsByIdMapper;
-use app\mappers\UsersPurchasesInsertMapper;
 
 /**
  * Управляет процессом добавления комментария
@@ -99,10 +86,10 @@ class ShoppingCartController extends AbstractBaseController
             if (empty(\Yii::$app->cart)) {
                 return $this->redirect(Url::to(['products-list/index']));
             }
-            if (!is_array($dataForRender = $this->getDataForRender())) {
-                throw new ErrorException('Ошибка при формировании массива данных!');
-            }
-            return $this->render('shopping-cart.twig', $dataForRender);
+            $renderArray = array();
+            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('shopping-cart.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -215,11 +202,16 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['shopping-cart/check-pay']));
             }
             
-            if (!is_array($dataForRender = $this->getDataForRender())) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
-            $dataForRender = array_merge($dataForRender, ['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel, 'addressModel'=>$addressModel, 'phonesModel'=>$phonesModel, 'deliveriesModel'=>$deliveriesModel, 'paymentsModel'=>$paymentsModel]);
-            return $this->render('address-contacts.twig', $dataForRender);
+            $renderArray = array();
+            $renderArray['usersModel'] = $usersModel;
+            $renderArray['emailsModel'] = $emailsModel;
+            $renderArray['addressModel'] = $addressModel;
+            $renderArray['phonesModel'] = $phonesModel;
+            $renderArray['deliveriesModel'] = $deliveriesModel;
+            $renderArray['paymentsModel'] = $paymentsModel;
+            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('address-contacts.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -238,10 +230,10 @@ class ShoppingCartController extends AbstractBaseController
             } elseif (empty(\Yii::$app->cart->user)) {
                 return $this->redirect(Url::to(['shopping-cart/address-contacts']));
             }
-            if (!is_array($dataForRender = $this->getDataForRender())) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
-            return $this->render('check-pay.twig', $dataForRender);
+            $renderArray = array();
+            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('check-pay.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -264,7 +256,7 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (!empty(\Yii::$app->cart->user->emails) && is_object(\Yii::$app->cart->user->emails)) {
-                if (!$emailsModel = $this->getEmailsModel(\Yii::$app->cart->user->emails)) {
+                if (!$emailsModel = MappersHelper::getEmailsModel(\Yii::$app->cart->user->emails)) {
                     throw new ErrorException('Ошибка при сохранении E-mail!');
                 }
                 \Yii::$app->cart->user->id_emails = $emailsModel->id;
@@ -273,7 +265,7 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (!empty(\Yii::$app->cart->user->address) && is_object(\Yii::$app->cart->user->address)) {
-                if (!$addressModel = $this->getAddressModel(\Yii::$app->cart->user->address)) {
+                if (!$addressModel = MappersHelper::getAddressModel(\Yii::$app->cart->user->address)) {
                     throw new ErrorException('Ошибка при сохранении address!');
                 }
                 \Yii::$app->cart->user->id_address = $addressModel->id;
@@ -282,7 +274,7 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (!empty(\Yii::$app->cart->user->phones) && is_object(\Yii::$app->cart->user->phones)) {
-                if (!$phonesModel = $this->getPhonesModel(\Yii::$app->cart->user->phones)) {
+                if (!$phonesModel = MappersHelper::getPhonesModel(\Yii::$app->cart->user->phones)) {
                     throw new ErrorException('Ошибка при сохранении phones!');
                 }
                 \Yii::$app->cart->user->id_phones = $phonesModel->id;
@@ -290,8 +282,8 @@ class ShoppingCartController extends AbstractBaseController
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             
-            if ($this->setUsersModel(\Yii::$app->cart->user)) {
-                if ($this->setUsersPurchasesModel()) {
+            if (MappersHelper::setOrUpdateUsers(\Yii::$app->cart->user)) {
+                if (MappersHelper::setUsersPurchases()) {
                     if (!MailHelper::send([['template'=>'@app/views/mail/customer.twig', 'setFrom'=>['test@test.com'=>'John'], 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 'setSubject'=>'Hello!']])) {
                         throw new ErrorException('Ошибка при отправке E-mail сообщения!');
                     }
@@ -305,182 +297,16 @@ class ShoppingCartController extends AbstractBaseController
                 throw new ErrorException('Ошибка при сохранении данных пользователя в процессе оформления покупки!');
             }
             
-            if (!is_array($dataForRender = $this->getDataForRender())) {
-                throw new ErrorException('Ошибка при формировании массива данных!');
-            }
-            $resultArray = array_merge(['email'=>$emailsModel], $dataForRender);
-            return $this->render('thank.twig', $resultArray);
+            $renderArray = array();
+            $renderArray['email'] = $emailsModel;
+            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('thank.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
     }
-    
-     /**
-      * Получает AddressModel для переданного в форму address
-     * Проверяет, существет ли запись в БД для address, если да, прекращает выполнение,
-     * если нет, создает новую запись в БД
-     * @param object $addressModel экземпляр AddressModel
-     * @return object
-     */
-     /*private function getAddressModel(AddressModel $addressModel)
-     {
-        try {
-            $addressByAddressMapper = new AddressByAddressMapper([
-                'tableName'=>'address',
-                'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-                'model'=>$addressModel
-            ]);
-            $result = $addressByAddressMapper->getOneFromGroup();
-            if (is_object($result) && $result instanceof AddressModel) {
-                $addressModel = $result;
-            } else {
-                $addressInsertMapper = new AddressInsertMapper([
-                    'tableName'=>'address',
-                    'fields'=>['address', 'city', 'country', 'postcode'],
-                    'objectsArray'=>[$addressModel],
-                ]);
-                if (!$addressInsertMapper->setGroup()) {
-                    throw new ErrorException('Не удалось сохранить данные в БД!');
-                }
-            }
-            return $addressModel;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-     }*/
-     
-    /**
-      * Получает PhonesModel для переданного в форму phone
-     * Проверяет, существет ли запись в БД для phones, если да, прекращает выполнение,
-     * если нет, создает новую запись в БД
-     * @param object $phonesModel экземпляр PhonesModel
-     * @return object
-     */
-    /*private function getPhonesModel(PhonesModel $phonesModel)
-    {
-        try {
-            $phonesByPhoneMapper = new PhonesByPhoneMapper([
-                'tableName'=>'phones',
-                'fields'=>['id', 'phone'],
-                'model'=>$phonesModel
-            ]);
-            $result = $phonesByPhoneMapper->getOneFromGroup();
-            if (is_object($result) && $result instanceof PhonesModel) {
-                $phonesModel = $result;
-            } else {
-                $phonesInsertMapper = new PhonesInsertMapper([
-                    'tableName'=>'phones',
-                    'fields'=>['phone'],
-                    'objectsArray'=>[$phonesModel],
-                ]);
-                if (!$phonesInsertMapper->setGroup()) {
-                    throw new ErrorException('Не удалось обновить данные в БД!');
-                }
-            }
-            return $phonesModel;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }*/
-    
-    /**
-      * Получает DeliveriesModel для переданного в форму id
-     * @param object $deliveriesModel экземпляр DeliveriesModel
-     * @return object
-     */
-    /*private function getDeliveriesModel(DeliveriesModel $deliveriesModel)
-    {
-        try {
-            $deliveriesByIdMapper = new DeliveriesByIdMapper([
-                'tableName'=>'deliveries',
-                'fields'=>['id', 'name', 'description', 'price'],
-                'model'=>$deliveriesModel,
-            ]);
-            $result = $deliveriesByIdMapper->getOneFromGroup();
-            if (!is_object($result) || !$result instanceof DeliveriesModel) {
-                throw new ErrorException('Ошибка при получении данных из БД!');
-            }
-            $deliveriesModel = $result;
-            return $deliveriesModel;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }*/
-    
-    /**
-      * Получает PaymentsModel для переданного в форму id
-     * @param object $paymentsModel экземпляр PaymentsModel
-     * @return object
-     */
-    /*private function getPaymentsModel(PaymentsModel $paymentsModel)
-    {
-        try {
-            $paymentsByIdMapper = new PaymentsByIdMapper([
-                'tableName'=>'payments',
-                'fields'=>['id', 'name', 'description'],
-                'model'=>$paymentsModel,
-            ]);
-            $result = $paymentsByIdMapper->getOneFromGroup();
-            if (!is_object($result) || !$result instanceof PaymentsModel) {
-                throw new ErrorException('Ошибка при получении данных из БД!');
-            }
-            $paymentsModel = $result;
-            return $paymentsModel;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }*/
-    
-    /**
-     * Создает UsersPurchasesModel
-     * создает новую запись в БД, вязывающую пользователя с купленным товаром
-     * @return boolean
-     */
-    /*private function setUsersPurchasesModel()
-    {
-        try {
-            $id_users = \Yii::$app->cart->user->id;
-            $productsArray = \Yii::$app->cart->getProductsArray();
-            $id_deliveries = \Yii::$app->cart->user->deliveries->id;
-            $id_payments = \Yii::$app->cart->user->payments->id;
-            
-            if (empty($id_users)) {
-                throw new ErrorException('Отсутствует cart->user->id!');
-            }
-            if (!is_array($productsArray) || empty($productsArray)) {
-                throw new ErrorException('Отсутствуют данные в массиве cart->productsArray!');
-            }
-            if (empty($id_deliveries)) {
-                throw new ErrorException('Отсутствует user->deliveries->id!');
-            }
-            if (empty($id_payments)) {
-                throw new ErrorException('Отсутствует user->payments->id!');
-            }
-            
-            $arrayToDb = [];
-            foreach ($productsArray as $product) {
-                $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'quantity'=>$product->quantity, 'id_colors'=>$product->colorToCart, 'id_sizes'=>$product->sizeToCart, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments];
-            }
-            
-            $usersPurchasesInsertMapper = new UsersPurchasesInsertMapper([
-                'tableName'=>'users_purchases',
-                'fields'=>['id_users', 'id_products', 'quantity', 'id_colors', 'id_sizes', 'id_deliveries', 'id_payments', 'received', 'received_date'],
-                'DbArray'=>$arrayToDb,
-            ]);
-            if (!$result = $usersPurchasesInsertMapper->setGroup()) {
-                throw new ErrorException('Не удалось сохранить данные в БД!');
-            }
-            return $result;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }*/
     
     public function behaviors()
     {

@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
+use app\controllers\AbstractBaseController;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\helpers\UserAuthenticationHelper;
+use app\helpers\MappersHelper;
+use app\helpers\ModelsInstancesHelper;
 use app\helpers\SessionHelper;
-use app\controllers\AbstractBaseController;
 use app\models\UsersModel;
 use app\models\EmailsModel;
 
@@ -28,22 +30,22 @@ class UsersController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate() && $emailsModel->validate()) {
-                    if (!$emailsModel = $this->getEmailsModel($emailsModel)) {
+                    if (!$emailsModel = MappersHelper::getEmailsModel($emailsModel)) {
                         throw new ErrorException('Ошибка при сохранении E-mail!');
                     }
                     $usersModel->id_emails = $emailsModel->id;
-                    if (!$this->setUsersModel($usersModel)) {
+                    if (!MappersHelper::setOrUpdateUsers($usersModel)) {
                         throw new ErrorException('Ошибка при сохранении данных пользователя!');
                     }
                     return $this->redirect(Url::to(['users/login-user', 'added'=>true]));
                 }
             }
-            
-            if (!is_array($dataForRender = $this->getDataForRender())) {
-                throw new ErrorException('Ошибка при формировании массива данных!');
-            }
-            $resultArray = array_merge(['usersModel'=>$usersModel, 'emailsModel'=>$emailsModel], $dataForRender);
-            return $this->render('add-user.twig', $resultArray);
+            $renderArray = array();
+            $renderArray['usersModel'] = $usersModel;
+            $renderArray['emailsModel'] = $emailsModel;
+            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('add-user.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -67,12 +69,11 @@ class UsersController extends AbstractBaseController
                     return $this->redirect(Url::to(['products-list/index']));
                 }
             }
-            
-            if (!is_array($dataForRender = $this->getDataForRender())) {
-                throw new ErrorException('Ошибка при формировании массива данных!');
-            }
-            $resultArray = array_merge(['usersModel'=>$usersModel], $dataForRender);
-            return $this->render('login-user.twig', $resultArray);
+            $renderArray = array();
+            $renderArray['usersModel'] = $usersModel;
+            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('login-user.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

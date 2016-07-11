@@ -3,7 +3,30 @@
 namespace app\helpers;
 
 use yii\base\ErrorException;
-use yii\traits\ExceptionsTrait;
+use app\traits\ExceptionsTrait;
+use app\mappers\ColorsMapper;
+use app\mappers\SizesMapper;
+use app\mappers\BrandsMapper;
+use app\mappers\CurrencyMapper;
+use app\mappers\CategoriesMapper;
+use app\mappers\EmailsByEmailMapper;
+use app\mappers\EmailsInsertMapper;
+use app\mappers\AddressByAddressMapper;
+use app\mappers\AddressInsertMapper;
+use app\mappers\DeliveriesByIdMapper;
+use app\mappers\PaymentsByIdMapper;
+use app\mappers\PhonesByPhoneMapper;
+use app\mappers\PhonesInsertMapper;
+use app\mappers\UsersUpdateMapper;
+use app\mappers\UsersInsertMapper;
+use app\mappers\UsersPurchasesInsertMapper;
+use app\mappers\UsersRulesInsertMapper;
+use app\models\AddressModel;
+use app\models\EmailsModel;
+use app\models\PaymentsModel;
+use app\models\PhonesModel;
+use app\models\UsersModel;
+use app\models\DeliveriesModel;
 
 /**
  * Коллекция методов, которые взаимодействуют с БД посредством мапперов
@@ -84,7 +107,7 @@ class MappersHelper
             }
             return self::$_categoriesList;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -109,7 +132,7 @@ class MappersHelper
             }
             return self::$_currencyList;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -134,7 +157,7 @@ class MappersHelper
             }
             return self::$_colorsList;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -159,7 +182,7 @@ class MappersHelper
             }
             return self::$_sizesList;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -184,7 +207,7 @@ class MappersHelper
             }
             return self::$_brandsList;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -220,8 +243,7 @@ class MappersHelper
             }
             return self::$_addressModel;
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -257,8 +279,7 @@ class MappersHelper
             }
             return self::$_phonesModel;
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -284,8 +305,7 @@ class MappersHelper
             }
             return self::$_deliveriesModel;
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -311,8 +331,7 @@ class MappersHelper
             }
             return self::$_paymentsModel;
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -356,8 +375,7 @@ class MappersHelper
             }
             return $result;
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -394,14 +412,13 @@ class MappersHelper
                 if (!$usersInsertMapper->setGroup()) {
                     throw new ErrorException('Не удалось добавить данные UsersModel в БД!');
                 }
-                if (!$this->setUsersRulesModel($usersModel)) {
+                if (!self::setUsersRules($usersModel)) {
                     throw new ErrorException('Ошибка при сохранении связи пользователя с правами доступа!');
                 }
             }
             return $usersModel;
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -415,7 +432,7 @@ class MappersHelper
     {
         try {
             if (empty(self::$_emailsModel)) {
-                self::$_emailsModel = $phonesModel;
+                self::$_emailsModel = $emailsModel;
                 $emailsByEmailMapper = new EmailsByEmailMapper([
                     'tableName'=>'emails',
                     'fields'=>['id', 'email'],
@@ -437,7 +454,7 @@ class MappersHelper
             }
             return self::$_emailsModel;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
@@ -459,7 +476,7 @@ class MappersHelper
             }
             return $result;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
 }

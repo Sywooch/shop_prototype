@@ -5,12 +5,12 @@ namespace app\controllers;
 use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\helpers\SessionHelper;
-use app\controllers\AbstractBaseProductsController;
+use app\controllers\AbstractBaseController;
 
 /**
  * Обрабатывает запросы данных, к которым необходимо применить фильтры
  */
-class FilterController extends AbstractBaseProductsController
+class FilterController extends AbstractBaseController
 {
     /**
      * Обрабатывает запрос на применение фильтров
