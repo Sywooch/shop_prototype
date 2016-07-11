@@ -1,7 +1,11 @@
 
+<p><strong>Sorting</strong></p>
+
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form=active_form_begin({'id':'filters-form', 'action':url.to({0:'filter/add-filters'}), 'method':'POST'}) %}
+    {{ form.field(filtersModel, 'sortingField').dropDownList({'':'По дате добавления', 'price':'По цене'}) | raw }}
+    {{ form.field(filtersModel, 'sortingType').dropDownList({'DESC':'По убыванию', 'ASC':'По возростанию'}) | raw }}
     {{ form.field(filtersModel, 'colors').checkboxList(array.map(colorsList, 'id', 'color')) | raw }}
     {{ form.field(filtersModel, 'sizes').checkboxList(array.map(sizesList, 'id', 'size')) | raw }}
     {{ form.field(filtersModel, 'brands').checkboxList(array.map(brandsList, 'id', 'brand')) | raw }}

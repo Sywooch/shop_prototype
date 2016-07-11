@@ -26,14 +26,14 @@ class MockObject extends AbstractBaseMapper
             $this->limit = \Yii::$app->params['limit'];
         }
         
-        if (!is_null(\Yii::$app->request->get(\Yii::$app->params['orderTypePointer']))) {
-            $this->orderByType = \Yii::$app->request->get(\Yii::$app->params['orderTypePointer']);
+        if (!empty(\Yii::$app->filters->sortingType)) {
+            $this->orderByType = \Yii::$app->filters->sortingType;
         } elseif (empty($this->orderByType)) {
-            $this->orderByType = \Yii::$app->params['orderByType'];
+            $this->orderByType = \Yii::$app->params['defaultOrderByType'];
         }
         
-        if (!is_null(\Yii::$app->request->get(\Yii::$app->params['orderFieldPointer']))) {
-            $this->orderByField = \Yii::$app->request->get(\Yii::$app->params['orderFieldPointer']);
+        if (!empty(\Yii::$app->filters->sortingField)) {
+            $this->orderByField = \Yii::$app->filters->sortingField;
         }
     }
 }

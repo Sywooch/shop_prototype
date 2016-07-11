@@ -81,9 +81,7 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
     {
         $productsMapper = new ProductsListMapper(self::$_config);
         
-        $this->assertEquals(\Yii::$app->params['orderByType'], $productsMapper->orderByType);
-        
-        $_GET = [\Yii::$app->params['orderTypePointer']=>'ASC'];
+        \Yii::$app->filters->sortingType = 'ASC';
         
         $productsMapper = new ProductsListMapper(self::$_config);
         
@@ -99,7 +97,7 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals('date', $productsMapper->orderByField);
         
-        $_GET = [\Yii::$app->params['orderFieldPointer']=>'price'];
+        \Yii::$app->filters->sortingField = 'price';
         
         $productsMapper = new ProductsListMapper(self::$_config);
         

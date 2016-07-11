@@ -13,6 +13,8 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     private static $_colors = [1];
     private static $_sizes = [1,3];
     private static $_brands = [2,3];
+    private static $_sortingField = 'price';
+    private static $_sortingType = 'ASC';
     private static $_categories = 'Some categories';
     private static $_subcategory = 'Some subcategory';
     private static $_search = 'Some search';
@@ -32,6 +34,8 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'colors'));
         $this->assertTrue(property_exists($model, 'sizes'));
         $this->assertTrue(property_exists($model, 'brands'));
+        $this->assertTrue(property_exists($model, 'sortingField'));
+        $this->assertTrue(property_exists($model, 'sortingType'));
         $this->assertTrue(property_exists($model, 'categories'));
         $this->assertTrue(property_exists($model, 'subcategory'));
         $this->assertTrue(property_exists($model, 'search'));
@@ -43,11 +47,13 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     public function testRules()
     {
         $model = new FiltersModel();
-        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'categories'=>self::$_categories, 'subcategory'=>self::$_subcategory, 'search'=>self::$_search];
+        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType, 'categories'=>self::$_categories, 'subcategory'=>self::$_subcategory, 'search'=>self::$_search];
         
         $this->assertFalse(empty($model->colors));
         $this->assertFalse(empty($model->sizes));
         $this->assertFalse(empty($model->brands));
+        $this->assertFalse(empty($model->sortingField));
+        $this->assertFalse(empty($model->sortingType));
         $this->assertFalse(empty($model->categories));
         $this->assertFalse(empty($model->subcategory));
         $this->assertFalse(empty($model->search));
@@ -55,6 +61,8 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_colors, $model->colors);
         $this->assertEquals(self::$_sizes, $model->sizes);
         $this->assertEquals(self::$_brands, $model->brands);
+        $this->assertEquals(self::$_sortingField, $model->sortingField);
+        $this->assertEquals(self::$_sortingType, $model->sortingType);
         $this->assertEquals(self::$_categories, $model->categories);
         $this->assertEquals(self::$_subcategory, $model->subcategory);
         $this->assertEquals(self::$_search, $model->search);
@@ -66,16 +74,20 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     public function testClean()
     {
         $model = new FiltersModel();
-        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands];
+        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType];
         
         $this->assertFalse(empty($model->colors));
         $this->assertFalse(empty($model->sizes));
         $this->assertFalse(empty($model->brands));
+        $this->assertFalse(empty($model->sortingField));
+        $this->assertFalse(empty($model->sortingType));
         
         $model->clean();
         
         $this->assertTrue(empty($model->colors));
         $this->assertTrue(empty($model->sizes));
         $this->assertTrue(empty($model->brands));
+        $this->assertTrue(empty($model->sortingField));
+        $this->assertTrue(empty($model->sortingType));
     }
 }

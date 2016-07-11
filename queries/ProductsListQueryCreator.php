@@ -181,7 +181,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Не поределен subCategoryKey!');
             }
             
-            $this->_mapperObject->query = 'SELECT ';
+            $this->_mapperObject->query = 'SELECT DISTINCT ';
             
             $fields = $this->addFields();
             if (!is_string($fields)) {
