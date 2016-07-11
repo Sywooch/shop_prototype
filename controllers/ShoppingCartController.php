@@ -323,7 +323,7 @@ class ShoppingCartController extends AbstractBaseController
      * @param object $addressModel экземпляр AddressModel
      * @return object
      */
-     private function getAddressModel(AddressModel $addressModel)
+     /*private function getAddressModel(AddressModel $addressModel)
      {
         try {
             $addressByAddressMapper = new AddressByAddressMapper([
@@ -349,7 +349,7 @@ class ShoppingCartController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-     }
+     }*/
      
     /**
       * Получает PhonesModel для переданного в форму phone
@@ -358,7 +358,7 @@ class ShoppingCartController extends AbstractBaseController
      * @param object $phonesModel экземпляр PhonesModel
      * @return object
      */
-    private function getPhonesModel(PhonesModel $phonesModel)
+    /*private function getPhonesModel(PhonesModel $phonesModel)
     {
         try {
             $phonesByPhoneMapper = new PhonesByPhoneMapper([
@@ -384,14 +384,14 @@ class ShoppingCartController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     /**
       * Получает DeliveriesModel для переданного в форму id
      * @param object $deliveriesModel экземпляр DeliveriesModel
      * @return object
      */
-    private function getDeliveriesModel(DeliveriesModel $deliveriesModel)
+    /*private function getDeliveriesModel(DeliveriesModel $deliveriesModel)
     {
         try {
             $deliveriesByIdMapper = new DeliveriesByIdMapper([
@@ -409,14 +409,14 @@ class ShoppingCartController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     /**
       * Получает PaymentsModel для переданного в форму id
      * @param object $paymentsModel экземпляр PaymentsModel
      * @return object
      */
-    private function getPaymentsModel(PaymentsModel $paymentsModel)
+    /*private function getPaymentsModel(PaymentsModel $paymentsModel)
     {
         try {
             $paymentsByIdMapper = new PaymentsByIdMapper([
@@ -434,14 +434,14 @@ class ShoppingCartController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Создает UsersPurchasesModel
      * создает новую запись в БД, вязывающую пользователя с купленным товаром
      * @return boolean
      */
-    private function setUsersPurchasesModel()
+    /*private function setUsersPurchasesModel()
     {
         try {
             $id_users = \Yii::$app->cart->user->id;
@@ -480,7 +480,7 @@ class ShoppingCartController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     public function behaviors()
     {

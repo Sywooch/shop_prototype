@@ -1,8 +1,9 @@
 
-<p>Currency</p>
+<p><strong>Currency</strong></p>
 
-<ul>
-    {% for currency in currencyList %}
-        <li>{{ currency.currency }}</li>
-    {% endfor %}
-</ul>
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'id':'currency-form', 'action':'', 'method':'POST'}) %}
+    {{ form.field(currencyModel, 'id').dropDownList(array.map(currencyList, 'id', 'currency')) | raw }}
+    <input type="submit" value="Change currency">
+{{ active_form_end() }}

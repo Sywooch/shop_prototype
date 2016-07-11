@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\controllers\AbstractBaseProductsController;
 use yii\base\ErrorException;
+use app\helpers\MappersHelper;
 use app\mappers\ProductsListMapper;
 use app\mappers\ColorsMapper;
 use app\mappers\SizesMapper;
@@ -70,7 +71,7 @@ class ProductsListController extends AbstractBaseProductsController
      * Получает данные, необходимые в нескольких типах контроллеров 
      * @return array
      */
-    protected function getDataForRender()
+    /*protected function getDataForRender()
     {
         try {
             if (!is_array($result = parent::getDataForRender())) {
@@ -110,7 +111,7 @@ class ProductsListController extends AbstractBaseProductsController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     public function behaviors()
     {

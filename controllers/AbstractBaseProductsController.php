@@ -15,7 +15,7 @@ abstract class AbstractBaseProductsController extends AbstractBaseController
      * Получает данные, необходимые в нескольких типах контроллеров 
      * @return array
      */
-    protected function getDataForRender()
+    /*protected function getDataForRender()
     {
         try {
             if (!is_array($result = parent::getDataForRender())) {
@@ -34,5 +34,5 @@ abstract class AbstractBaseProductsController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
 }

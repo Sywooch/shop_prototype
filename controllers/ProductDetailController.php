@@ -43,7 +43,7 @@ class ProductDetailController extends AbstractBaseProductsController
      * Получает данные, необходимые в нескольких типах контроллеров 
      * @return array
      */
-    protected function getDataForRender()
+    /*protected function getDataForRender()
     {
         try {
             if (!is_array($result = parent::getDataForRender())) {
@@ -56,5 +56,5 @@ class ProductDetailController extends AbstractBaseProductsController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
 }

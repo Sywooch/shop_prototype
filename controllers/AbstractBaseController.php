@@ -3,18 +3,20 @@
 namespace app\controllers;
 
 use yii\web\Controller;
+use app\traits\ExceptionsTrait;
+use yii\base\ErrorException;
+use app\helpers\UserAuthenticationHelper;
 use app\mappers\CategoriesMapper;
 use app\mappers\UsersInsertMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
 use app\mappers\UsersUpdateMapper;
 use app\mappers\UsersRulesInsertMapper;
-use app\traits\ExceptionsTrait;
-use yii\base\ErrorException;
 use app\models\ProductsModel;
 use app\models\UsersModel;
 use app\models\EmailsModel;
-use app\helpers\UserAuthenticationHelper;
+use app\models\CurrencyModel;
+
 
 /**
  * Определяет функции, общие для разных типов контроллеров
@@ -27,7 +29,7 @@ abstract class AbstractBaseController extends Controller
      * Получает данные, необходимые в нескольких типах контроллеров 
      * @return array
      */
-    protected function getDataForRender()
+    /*protected function getDataForRender()
     {
         try {
             $result = array();
@@ -41,12 +43,13 @@ abstract class AbstractBaseController extends Controller
             $result['categoriesList'] = $categoriesMapper->getGroup();
             $result['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
             $result['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
+            $result['currencyModel'] = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM_SET]);
             return $result;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Обновляет или создает UsersModel
@@ -55,7 +58,7 @@ abstract class AbstractBaseController extends Controller
      * @param object $usersModel экземпляр UsersModel
      * @return int
      */
-    protected function setUsersModel(UsersModel $usersModel)
+    /*protected function setUsersModel(UsersModel $usersModel)
     {
         try {
             if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->id)) {
@@ -91,7 +94,7 @@ abstract class AbstractBaseController extends Controller
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Получает EmailsModel для переданного в форму email
@@ -100,7 +103,7 @@ abstract class AbstractBaseController extends Controller
      * @param object $emailsModel экземпляр EmailsModel
      * @return object
      */
-    protected function getEmailsModel(EmailsModel $emailsModel)
+    /*protected function getEmailsModel(EmailsModel $emailsModel)
     {
         try {
             $emailsByEmailMapper = new EmailsByEmailMapper([
@@ -126,14 +129,14 @@ abstract class AbstractBaseController extends Controller
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Создает новую запись в БД, мвязывающую пользователя с правами доступа
      * @param object $usersModel экземпляр UsersModel
      * @return int
      */
-    protected function setUsersRulesModel(UsersModel $usersModel)
+    /*protected function setUsersRulesModel(UsersModel $usersModel)
     {
         try {
             $usersRulesInsertMapper = new UsersRulesInsertMapper([
@@ -149,5 +152,5 @@ abstract class AbstractBaseController extends Controller
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
 }
