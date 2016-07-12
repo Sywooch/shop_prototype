@@ -75,6 +75,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'id_address'));
         $this->assertTrue(property_exists($model, 'rawPassword'));
         $this->assertTrue(property_exists($model, '_rulesFromForm'));
+        $this->assertTrue(property_exists($model, 'currency'));
         $this->assertTrue(property_exists($model, '_login'));
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, '_password'));

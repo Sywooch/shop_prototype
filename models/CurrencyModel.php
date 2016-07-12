@@ -20,11 +20,13 @@ class CurrencyModel extends AbstractBaseModel
     
     public $id = '';
     public $currency = '';
+    public $exchange_rate = '';
+    public $main = '';
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'currency'],
+            self::GET_FROM_DB=>['id', 'currency', 'exchange_rate', 'main'],
             self::GET_FROM_FORM_SET=>['id'],
         ];
     }

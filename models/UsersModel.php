@@ -9,11 +9,13 @@ use app\models\AddressModel;
 use app\models\PhonesModel;
 use app\models\DeliveriesModel;
 use app\models\PaymentsModel;
+use app\models\CurrencyModel;
 use app\mappers\RulesMapper;
 use app\mappers\UsersByLoginMapper;
 use app\mappers\EmailsByIdMapper;
 use app\mappers\PhonesByIdMapper;
 use app\mappers\AddressByIdMapper;
+use app\mappers\CurrencyByMainMapper;
 use app\helpers\TransliterationHelper;
 use app\helpers\PasswordHelper;
 
@@ -58,6 +60,11 @@ class UsersModel extends AbstractBaseModel
      * @var array массив ID rules, выбранных пользователем в форме
      */
     private $_rulesFromForm = array();
+    
+    /**
+     * @var object объект валюты, назначенные по умолчанию или добавленный при авторизации из сессии
+     */
+    private $_currency = NULL;
     
     private $_login = NULL;
     private $_id = NULL;
@@ -241,13 +248,13 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_emails
-     * @param object $value
+     * @param object $emailsModel EmailsModel
      * @return boolean
      */
-    public function setEmails(EmailsModel $value)
+    public function setEmails(EmailsModel $emailsModel)
     {
         try {
-            $this->_emails = $value;
+            $this->_emails = $emailsModel;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -285,13 +292,13 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_address
-     * @param object $value
+     * @param object $addressModel AddressModel
      * @return boolean
      */
-    public function setAddress(AddressModel $value)
+    public function setAddress(AddressModel $addressModel)
     {
         try {
-            $this->_address = $value;
+            $this->_address = $addressModel;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -329,13 +336,13 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_phones
-     * @param string $value значение phone
+     * @param object $phonesModel PhonesModel
      * @return boolean
      */
-    public function setPhones(PhonesModel $value)
+    public function setPhones(PhonesModel $phonesModel)
     {
         try {
-            $this->_phones = $value;
+            $this->_phones = $phonesModel;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -373,13 +380,13 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_deliveries
-     * @param string $value значение delivery
+     * @param object $deliveriesModel DeliveriesModel
      * @return boolean
      */
-    public function setDeliveries(DeliveriesModel $value)
+    public function setDeliveries(DeliveriesModel $deliveriesModel)
     {
         try {
-            $this->_deliveries = $value;
+            $this->_deliveries = $deliveriesModel;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -397,13 +404,13 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Присваивает значение свойству $this->_payments
-     * @param string $value значение payments
+     * @param object $paymentsModel PaymentsModel
      * @return boolean
      */
-    public function setPayments(PaymentsModel $value)
+    public function setPayments(PaymentsModel $paymentsModel)
     {
         try {
-            $this->_payments = $value;
+            $this->_payments = $paymentsModel;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -474,6 +481,20 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             return ['name'=>$this->name, 'surname'=>$this->surname, 'id_emails'=>$this->id_emails, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address];
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_currency
+     * @param object $currencyModel CurrencyModel
+     * @return boolean
+     */
+    public function setCurrency(CurrencyModel $currencyModel)
+    {
+        try {
+            
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
