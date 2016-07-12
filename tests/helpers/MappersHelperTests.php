@@ -7,6 +7,15 @@ use app\helpers\MappersHelper;
 use app\models\CategoriesModel;
 use app\models\CurrencyModel;
 use app\models\ColorsModel;
+use app\models\SizesModel;
+use app\models\BrandsModel;
+use app\models\AddressModel;
+use app\models\PhonesModel;
+use app\models\DeliveriesModel;
+use app\models\PaymentsModel;
+use app\models\ProductsModel;
+use app\models\UsersModel;
+use app\models\EmailsModel;
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -18,8 +27,24 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_id = 1;
     private static $_name = 'Some Name';
     private static $_categorySeocode = 'mensfootwear';
+    private static $_subcategorySeocode = 'boots';
     private static $_currency = 'EUR';
     private static $_color = 'gray';
+    private static $_size = '46';
+    private static $_brand = 'Some Brand';
+    private static $_address = 'Some address';
+    private static $_city = 'Some city';
+    private static $_country = 'Some country';
+    private static $_postcode = '06589';
+    private static $_phone = '+396548971203';
+    private static $_description = 'Some description';
+    private static $_price = 12.34;
+    private static $_login = 'Somelogin';
+    private static $_password = 'iJ7gdJ';
+    private static $_surname = 'Some Surname';
+    private static $_quantity = 1;
+    private static $_rule = 'rule';
+    private static $_email = 'some@some.com';
     
     public static function setUpBeforeClass()
     {
@@ -108,6 +133,18 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
         $command->execute();
         
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
+        $command->bindValues([':id_products'=>self::$_id, ':id_colors'=>self::$_id]);
+        $command->execute();
+        
         $result = MappersHelper::getColorsList();
         
         $this->assertTrue(is_array($result));
@@ -116,6 +153,338 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result[0] instanceof ColorsModel);
         $this->assertEquals(self::$_id, $result[0]->id);
         $this->assertEquals(self::$_color, $result[0]->color);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getSizesList
+     */
+    public function testGetSizesList()
+    {
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
+        $command->bindValues([':id'=>self::$_id, ':size'=>self::$_size]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_sizes}} SET [[id_products]]=:id_products, [[id_sizes]]=:id_sizes');
+        $command->bindValues([':id_products'=>self::$_id, ':id_sizes'=>self::$_id]);
+        $command->execute();
+        
+        $result = MappersHelper::getSizesList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof SizesModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_size, $result[0]->size);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getBrandsList
+     */
+    public function testGetBrandsList()
+    {
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{brands}} SET [[id]]=:id, [[brand]]=:brand');
+        $command->bindValues([':id'=>self::$_id, ':brand'=>self::$_brand]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_brands}} SET [[id_products]]=:id_products, [[id_brands]]=:id_brands');
+        $command->bindValues([':id_products'=>self::$_id, ':id_brands'=>self::$_id]);
+        $command->execute();
+        
+        $result = MappersHelper::getBrandsList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof BrandsModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_brand, $result[0]->brand);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getAddressModel
+     * в процессе создания записи в БД
+     */
+    public function testGetAddressModelOne()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{address}}')->queryAll()));
+        
+        $addressModel = new AddressModel();
+        $addressModel->address = self::$_address;
+        $addressModel->city = self::$_city;
+        $addressModel->country = self::$_country;
+        $addressModel->postcode = self::$_postcode;
+        
+        MappersHelper::getAddressModel($addressModel);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{address}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(self::$_address, $result[0]['address']);
+        $this->assertEquals(self::$_city, $result[0]['city']);
+        $this->assertEquals(self::$_country, $result[0]['country']);
+        $this->assertEquals(self::$_postcode, $result[0]['postcode']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getAddressModel
+     * в процессе получения существующей записи из БД
+     */
+    public function testGetAddressModelTwo()
+    {
+        $addressModel = new AddressModel();
+        $addressModel->address = self::$_address;
+        $addressModel->city = self::$_city;
+        $addressModel->country = self::$_country;
+        $addressModel->postcode = self::$_postcode;
+        
+        $result = MappersHelper::getAddressModel($addressModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof AddressModel);
+        $this->assertEquals(self::$_address, $result->address);
+        $this->assertEquals(self::$_city, $result->city);
+        $this->assertEquals(self::$_country, $result->country);
+        $this->assertEquals(self::$_postcode, $result->postcode);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getPhonesModel
+     * в процессе создания записи в БД
+     */
+    public function testGetPhonesModelOne()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{phones}}')->queryAll()));
+        
+        $phonesModel = new PhonesModel();
+        $phonesModel->phone = self::$_phone;
+        
+        MappersHelper::getPhonesModel($phonesModel);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{phones}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(self::$_phone, $result[0]['phone']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getPhonesModel
+     * в процессе получения существующей записи из БД
+     */
+    public function testGetPhonesModelTwo()
+    {
+        $phonesModel = new PhonesModel();
+        $phonesModel->phone = self::$_phone;
+        
+        $result = MappersHelper::getPhonesModel($phonesModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof PhonesModel);
+        $this->assertEquals(self::$_phone, $result->phone);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getDeliveriesModel
+     */
+    public function testGetDeliveriesModel()
+    {
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{deliveries}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description, [[price]]=:price');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price]);
+        $command->execute();
+        
+        $deliveriesModel = new DeliveriesModel();
+        $deliveriesModel->id = self::$_id;
+        
+        $result = MappersHelper::getDeliveriesModel($deliveriesModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof DeliveriesModel);
+        $this->assertEquals(self::$_id, $result->id);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_description, $result->description);
+        $this->assertEquals(self::$_price, $result->price);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getPaymentsModel
+     */
+    public function testGetPaymentsModel()
+    {
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{payments}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':description'=>self::$_description]);
+        $command->execute();
+        
+        $paymentsModel = new PaymentsModel();
+        $paymentsModel->id = self::$_id;
+        
+        $result = MappersHelper::getPaymentsModel($paymentsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof PaymentsModel);
+        $this->assertEquals(self::$_id, $result->id);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_description, $result->description);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setUsersPurchases
+     */
+    public function testSetUsersPurchases()
+    {
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
+        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
+        $command->execute();
+        
+        \Yii::$app->cart->user = new UsersModel();
+        \Yii::$app->cart->user->id = self::$_id;
+        \Yii::$app->cart->setProductsArray([new ProductsModel(['id'=>self::$_id, 'quantity'=>self::$_quantity, 'colorToCart'=>self::$_id, 'sizeToCart'=>self::$_id])]);
+        \Yii::$app->cart->user->deliveries = new DeliveriesModel();
+        \Yii::$app->cart->user->deliveries->id = self::$_id;
+        \Yii::$app->cart->user->payments = new PaymentsModel();
+        \Yii::$app->cart->user->payments->id = self::$_id;
+        
+        $result = MappersHelper::setUsersPurchases();
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users_purchases}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(self::$_id, $result[0]['id_users']);
+        $this->assertEquals(self::$_id, $result[0]['id_products']);
+        $this->assertEquals(self::$_quantity, $result[0]['quantity']);
+        $this->assertEquals(self::$_id, $result[0]['id_colors']);
+        $this->assertEquals(self::$_id, $result[0]['id_sizes']);
+        $this->assertEquals(self::$_id, $result[0]['id_deliveries']);
+        $this->assertEquals(self::$_id, $result[0]['id_payments']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setOrUpdateUsers
+     * в процессе создания записи в БД
+     */
+    public function testSetOrUpdateUsersOne()
+    {
+        \Yii::$app->user->login = \Yii::$app->params['nonAuthenticatedUserLogin'];
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{rules}} ([[id]],[[rule]]) VALUES (:id1, :rule1), (:id2, :rule2)');
+        $command->bindValues([':id1'=>1, ':rule1'=>self::$_rule, ':id2'=>4, ':rule2'=>self::$_rule . self::$_rule]);
+        $command->execute();
+        
+        \Yii::$app->db->createCommand('TRUNCATE TABLE {{users_purchases}}')->execute();
+        \Yii::$app->db->createCommand('DELETE FROM {{users}}')->execute();
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll()));
+        
+        $usersModel = new UsersModel();
+        $usersModel->login = self::$_login;
+        $usersModel->rawPassword = self::$_password;
+        $usersModel->name = self::$_name;
+        $usersModel->surname = self::$_surname;
+        $usersModel->id_emails = self::$_id;
+        $usersModel->id_phones = self::$_id;
+        $usersModel->id_address = self::$_id;
+        
+        MappersHelper::setOrUpdateUsers($usersModel);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(self::$_login, $result[0]['login']);
+        $this->assertTrue(password_verify(self::$_password, $result[0]['password']));
+        $this->assertEquals(self::$_name, $result[0]['name']);
+        $this->assertEquals(self::$_surname, $result[0]['surname']);
+        $this->assertEquals(self::$_id, $result[0]['id_emails']);
+        $this->assertEquals(self::$_id, $result[0]['id_phones']);
+        $this->assertEquals(self::$_id, $result[0]['id_address']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setOrUpdateUsers
+     * в процессе обновления существующей записи из БД
+     */
+    public function testSetOrUpdateUsersTwo()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll()));
+        
+        \Yii::$app->user->login = self::$_login;
+        \Yii::$app->user->id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}}')->queryScalar();
+        
+        $usersModel = new UsersModel();
+        $usersModel->name = self::$_name;
+        $usersModel->surname = self::$_surname;
+        $usersModel->id_emails = self::$_id + 12;
+        $usersModel->id_phones = self::$_id + 3;
+        $usersModel->id_address = self::$_id + 6;
+        
+        MappersHelper::setOrUpdateUsers($usersModel);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(self::$_login, $result[0]['login']);
+        $this->assertTrue(password_verify(self::$_password, $result[0]['password']));
+        $this->assertEquals(self::$_name, $result[0]['name']);
+        $this->assertEquals(self::$_surname, $result[0]['surname']);
+        $this->assertEquals(self::$_id + 12, $result[0]['id_emails']);
+        $this->assertEquals(self::$_id + 3, $result[0]['id_phones']);
+        $this->assertEquals(self::$_id + 6, $result[0]['id_address']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getEmailsModel
+     * в процессе создания записи в БД
+     */
+    public function testGetEmailsModelOne()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryAll()));
+        
+        $emailsModel = new EmailsModel();
+        $emailsModel->email = self::$_email;
+        
+        MappersHelper::getEmailsModel($emailsModel);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(self::$_email, $result[0]['email']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getEmailsModel
+     * в процессе получения существующей записи из БД
+     */
+    public function testGetEmailsModelTwo()
+    {
+        $emailsModel = new EmailsModel();
+        $emailsModel->email = self::$_email;
+        
+        $result = MappersHelper::getEmailsModel($emailsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof EmailsModel);
+        $this->assertEquals(self::$_email, $result->email);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setUsersRules
+     */
+    public function testSetUsersRules()
+    {
+        \Yii::$app->db->createCommand('DELETE FROM {{users_rules}}')->execute();
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users_rules}}')->queryAll()));
+        
+        $usersModel = new UsersModel();
+        $usersModel->id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}}')->queryScalar();
+        
+        $result = MappersHelper::setUsersRules($usersModel);
+        
+        $this->assertEquals(2, $result);
     }
     
     public static function tearDownAfterClass()
