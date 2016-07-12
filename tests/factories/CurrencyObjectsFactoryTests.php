@@ -12,7 +12,7 @@ use app\models\CurrencyModel;
 class CurrencyObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
     private static $_id = 1;
-    private static $_currency = 'some';
+    private static $_currency = 'EUR';
     
     /**
      * Тестирует метод CurrencyObjectsFactory::getObjects()

@@ -12,7 +12,8 @@ use app\models\CurrencyModel;
 class CurrencyMapperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_currency = 'Some Currency';
+    private static $_id = 1;
+    private static $_currency = 'EUR';
     
     public static function setUpBeforeClass()
     {
@@ -20,7 +21,7 @@ class CurrencyMapperTests extends \PHPUnit_Framework_TestCase
         self::$_dbClass->createDb();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency');
-        $command->bindValues([':id'=>1, ':currency'=>self::$_currency]);
+        $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency]);
         $command->execute();
     }
     

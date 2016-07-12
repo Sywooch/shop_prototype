@@ -11,7 +11,7 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
 {
     private static $_reflectionClass;
     private static $_id = 1;
-    private static $_size = 'Some size';
+    private static $_size = '46';
     
     public static function setUpBeforeClass()
     {

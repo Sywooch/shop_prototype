@@ -88,7 +88,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов категорий
-     * @return array
+     * @return array of objects
      */
     public static function getCategoriesList()
     {
@@ -113,7 +113,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов валют
-     * @return array
+     * @return array of objects
      */
     public static function getСurrencyList()
     {
@@ -138,7 +138,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов colors
-     * @return array
+     * @return array of objects
      */
     public static function getColorsList()
     {
@@ -163,7 +163,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов sizes
-     * @return array
+     * @return array of objects
      */
     public static function getSizesList()
     {
@@ -188,7 +188,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов brands
-     * @return array
+     * @return array of objects
      */
     public static function getBrandsList()
     {

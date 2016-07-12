@@ -27,8 +27,8 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_quantity = 1;
     private static $_sizeToCart = 23;
     private static $_colorToCart = 2;
-    private static $_color = 'some';
-    private static $_size = 'some';
+    private static $_color = 'gray';
+    private static $_size = '46';
     private static $_text = 'Some text';
     private static $_email = 'some@some.com';
     private static $_hash = '34acc7564bb9997b72462bcfff0c15a0';

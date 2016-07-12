@@ -11,7 +11,7 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
 {
     private static $_reflectionClass;
     private static $_id = 1;
-    private static $_currency = 'Some currency';
+    private static $_currency = 'EUR';
     
     public static function setUpBeforeClass()
     {

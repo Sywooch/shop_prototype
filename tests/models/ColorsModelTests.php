@@ -11,7 +11,7 @@ class ColorsModelTests extends \PHPUnit_Framework_TestCase
 {
     private static $_reflectionClass;
     private static $_id = 1;
-    private static $_color = 'Some Color';
+    private static $_color = 'gray';
     
     public static function setUpBeforeClass()
     {

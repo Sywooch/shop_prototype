@@ -14,7 +14,7 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
     private static $_dbClass;
     private static $_id = 1;
     private static $_name = 'Some Name';
-    private static $_color = 'Some Color';
+    private static $_color = 'gray';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
     

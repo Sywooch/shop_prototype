@@ -17,8 +17,8 @@ class SimilarProductsMapperTests extends \PHPUnit_Framework_TestCase
     private static $_name = 'Some Name';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
-    private static $_color = 'Some Color';
-    private static $_size = 'Some Size';
+    private static $_color = 'gray';
+    private static $_size = '46';
     
     public static function setUpBeforeClass()
     {

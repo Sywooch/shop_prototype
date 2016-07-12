@@ -28,8 +28,8 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
     private static $_shipped = 0;
     private static $_id_colors = 4;
     private static $_id_sizes = 5;
-    private static $_color = 'color';
-    private static $_size = 'size';
+    private static $_color = 'gray';
+    private static $_size = '46';
     private static $_quantity = 2;
     
     public static function setUpBeforeClass()

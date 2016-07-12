@@ -12,7 +12,7 @@ use app\models\SizesModel;
 class SizesObjectsFactoryTests extends \PHPUnit_Framework_TestCase
 {
     private static $_id = 1;
-    private static $_size = 'some';
+    private static $_size = '46';
     
     /**
      * Тестирует метод SizesObjectsFactory::getObjects()

@@ -15,7 +15,7 @@ class SizesForProductMapperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
-    private static $_size = 'Some Size';
+    private static $_size = '46';
     private static $_name = 'Some Name';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
