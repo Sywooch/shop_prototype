@@ -3,6 +3,7 @@
 namespace app\helpers;
 
 use yii\base\ErrorException;
+use app\exceptions\EmptyListException;
 use app\traits\ExceptionsTrait;
 use app\mappers\ColorsMapper;
 use app\mappers\SizesMapper;
@@ -23,6 +24,8 @@ use app\mappers\UsersPurchasesInsertMapper;
 use app\mappers\UsersRulesInsertMapper;
 use app\mappers\CurrencyByIdMapper;
 use app\mappers\CommentsInsertMapper;
+use app\mappers\ProductDetailMapper;
+use app\mappers\ProductsListMapper;
 use app\models\AddressModel;
 use app\models\EmailsModel;
 use app\models\PaymentsModel;
@@ -31,6 +34,7 @@ use app\models\UsersModel;
 use app\models\DeliveriesModel;
 use app\models\CurrencyModel;
 use app\models\CommentsModel;
+use app\models\ProductsModel;
 
 /**
  * Коллекция методов, которые взаимодействуют с БД посредством мапперов
@@ -531,6 +535,48 @@ class MappersHelper
                 throw new ErrorException('Не удалось обновить данные в БД!');
             }
             return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект ProductsModel по id, взятому из $_GET
+     * @return objects ProductsModel
+     */
+    public static function getProductDetail()
+    {
+        try {
+            $productMapper = new ProductDetailMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+            ]);
+            $productsObject = $productMapper->getOneFromGroup();
+            if (!is_object($productsObject) || !$productsObject instanceof ProductsModel) {
+                throw new ErrorException('Ошибка при получении данных ProductsModel!');
+            }
+            return $productsObject;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив ProductsModel
+     * @param array $config массив настроек для маппера
+     * @return array of objects ProductsModel
+     */
+    public static function getProductsList($config)
+    {
+        try {
+            $productsMapper = new ProductsListMapper($config);
+            $productsArray = $productsMapper->getGroup();
+            if (!is_array($productsArray) || empty($productsArray) || !$productsArray[0] instanceof ProductsModel) {
+                throw new EmptyListException('Ошибка при получении данных ProductsModel!');
+            }
+            return $productsArray;
+        } catch (EmptyListException $e) {
+            throw $e;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

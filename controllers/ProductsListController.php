@@ -4,9 +4,9 @@ namespace app\controllers;
 
 use app\controllers\AbstractBaseController;
 use yii\base\ErrorException;
+use app\exceptions\EmptyListException;
 use app\helpers\MappersHelper;
 use app\helpers\ModelsInstancesHelper;
-use app\mappers\ProductsListMapper;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -31,10 +31,8 @@ class ProductsListController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            $productsMapper = new ProductsListMapper($this->_config);
-            $productsArray = $productsMapper->getGroup();
             $renderArray = array();
-            $renderArray['productsList'] = $productsArray;
+            $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();
@@ -56,10 +54,12 @@ class ProductsListController extends AbstractBaseController
     {
         try {
             $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
-            $productsMapper = new ProductsListMapper($this->_config);
-            $productsArray = $productsMapper->getGroup();
             $renderArray = array();
-            $renderArray['productsList'] = $productsArray;
+            try {
+                $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
+            } catch (EmptyListException $e) {
+                $this->writeErrorInLogs($e, __METHOD__);
+            }
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();

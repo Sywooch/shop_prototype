@@ -5,7 +5,6 @@ namespace app\controllers;
 use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\helpers\SessionHelper;
-use app\helpers\RedirectHelper;
 use app\controllers\AbstractBaseController;
 
 /**
@@ -22,9 +21,16 @@ class FilterController extends AbstractBaseController
         try {
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
-                    $urlArray = RedirectHelper::getRedirectUrl(\Yii::$app->filters);
-                    if (!is_array($urlArray) || empty($urlArray)) {
-                        throw new ErrorException('Ошибка при получении данных для редиректа!');
+                    if (!empty(\Yii::$app->filters->search)) {
+                        $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>\Yii::$app->filters->search];
+                    } else {
+                        $urlArray = ['products-list/index'];
+                        if (!empty(\Yii::$app->filters->categories)) {
+                            $urlArray = array_merge($urlArray, [\Yii::$app->params['categoryKey']=>\Yii::$app->filters->categories]);
+                        }
+                        if (!empty(\Yii::$app->filters->subcategory)) {
+                            $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>\Yii::$app->filters->subcategory]);
+                        }
                     }
                 }
             } else {
@@ -55,9 +61,16 @@ class FilterController extends AbstractBaseController
                     if (!\Yii::$app->filters->clean()) {
                         throw new ErrorException('Ошибка при очистке фильтров!');
                     }
-                    $urlArray = RedirectHelper::getRedirectUrl(\Yii::$app->filters);
-                    if (!is_array($urlArray) || empty($urlArray)) {
-                        throw new ErrorException('Ошибка при получении данных для редиректа!');
+                    if (!empty(\Yii::$app->filters->search)) {
+                        $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>\Yii::$app->filters->search];
+                    } else {
+                        $urlArray = ['products-list/index'];
+                        if (!empty(\Yii::$app->filters->categories)) {
+                            $urlArray = array_merge($urlArray, [\Yii::$app->params['categoryKey']=>\Yii::$app->filters->categories]);
+                        }
+                        if (!empty(\Yii::$app->filters->subcategory)) {
+                            $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>\Yii::$app->filters->subcategory]);
+                        }
                     }
                 }
             } else {

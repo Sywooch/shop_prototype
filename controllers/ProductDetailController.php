@@ -6,7 +6,6 @@ use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\helpers\MappersHelper;
 use app\helpers\ModelsInstancesHelper;
-use app\mappers\ProductDetailMapper;
 use app\models\ProductsModel;
 
 /**
@@ -21,16 +20,8 @@ class ProductDetailController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            $productMapper = new ProductDetailMapper([
-                'tableName'=>'products',
-                'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
-            ]);
-            $productsObject = $productMapper->getOneFromGroup();
-            if (!is_object($productsObject) || !$productsObject instanceof ProductsModel) {
-                throw new ErrorException('Ошибка при получении данных для рендеринга!');
-            }
             $renderArray = array();
-            $renderArray['productsObject'] = $productsObject;
+            $renderArray['productsObject'] = MappersHelper::getProductDetail();
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['currencyList'] = MappersHelper::getСurrencyList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());

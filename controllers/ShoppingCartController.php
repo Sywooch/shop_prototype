@@ -22,14 +22,14 @@ class ShoppingCartController extends AbstractBaseController
     public function actionAddToCart()
     {
         try {
-            $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
             
-            if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
-                if ($model->validate()) {
-                    if (!\Yii::$app->cart->addProduct($model)) {
+            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
+                if ($productsModel->validate()) {
+                    if (!\Yii::$app->cart->addProduct($productsModel)) {
                         throw new ErrorException('Ошибка при добавлении товара в корзину!');
                     }
-                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$model->categories, 'subcategory'=>$model->subcategory, 'id'=>$model->id]));
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModel->categories, 'subcategory'=>$productsModel->subcategory, 'id'=>$productsModel->id]));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
@@ -47,25 +47,25 @@ class ShoppingCartController extends AbstractBaseController
     public function actionClearCart()
     {
         try {
-            $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
             
-            if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
-                if ($model->validate()) {
+            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
+                if ($productsModel->validate()) {
                     if (!\Yii::$app->cart->clearProductsArray()) {
                         throw new ErrorException('Ошибка при очистке корзины!');
                     }
-                    if (!empty($model->id)) {
-                        return $this->redirect(Url::to(['product-detail/index', 'categories'=>$model->categories, 'subcategory'=>$model->subcategory, 'id'=>$model->id]));
+                    if (!empty($productsModel->id)) {
+                        $urlArray = ['product-detail/index', 'categories'=>$productsModel->categories, 'subcategory'=>$productsModel->subcategory, 'id'=>$productsModel->id];
                     } else {
                         $urlArray = ['products-list/index'];
-                        if (!empty($model->categories)) {
-                            $urlArray = array_merge($urlArray, ['categories'=>$model->categories]);
+                        if (!empty($productsModel->categories)) {
+                            $urlArray = array_merge($urlArray, [\Yii::$app->params['categoryKey']=>$productsModel->categories]);
                         }
-                        if (!empty($model->subcategory)) {
-                            $urlArray = array_merge($urlArray, ['subcategory'=>$model->subcategory]);
+                        if (!empty($productsModel->subcategory)) {
+                            $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>$productsModel->subcategory]);
                         }
-                        return $this->redirect(Url::to($urlArray));
                     }
+                    return $this->redirect(Url::to($urlArray));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));

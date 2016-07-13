@@ -26,10 +26,12 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_dbClass;
     private static $_reflectionClass;
     private static $_id = 1;
+    private static $_images = 'images';
     private static $_name = 'Some Name';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
     private static $_color = 'gray';
+    private static $_code = 'Fghr8';
     private static $_size = '46';
     private static $_brand = 'Some Brand';
     private static $_address = 'Some address';
@@ -49,6 +51,17 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_exchange_rate = '12.456';
     private static $_main = '1';
     private static $_text = 'Some Text';
+    
+    private static $_config = [
+        'tableName'=>'products',
+        'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+        'otherTablesFields'=>[
+            ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+            ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+        ],
+        'orderByField'=>'date',
+        'getDataSorting'=>false,
+    ];
     
     public static function setUpBeforeClass()
     {
@@ -143,8 +156,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
@@ -559,6 +572,58 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_name, $result[0]['name']);
         $this->assertEquals($id_emails, $result[0]['id_emails']);
         $this->assertEquals($id_products, $result[0]['id_products']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getProductDetail
+     */
+    public function testGetProductDetail()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
+        
+        $id_products = \Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryScalar();
+        $_GET = ['id'=>$id_products];
+        
+        $result = MappersHelper::getProductDetail();
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof ProductsModel);
+        
+        $this->assertEquals($id_products, $result->id);
+        $this->assertEquals(self::$_code, $result->code);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_description, $result->description);
+        $this->assertEquals(self::$_price, $result->price);
+        $this->assertEquals(self::$_images, $result->images);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getProductsList
+     */
+    public function testGetProductsList()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
+        
+        $result = MappersHelper::getProductsList(self::$_config);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0]  instanceof ProductsModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getProductsList
+     * при условии возврата пустого массива
+     * @expectedException app\exceptions\EmptyListException
+     */
+    public function testGetProductsListExc()
+    {
+        \Yii::$app->db->createCommand('DELETE FROM {{comments}}')->execute();
+        \Yii::$app->db->createCommand('DELETE FROM {{products}}')->execute();
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
+        
+        $result = MappersHelper::getProductsList(self::$_config);
     }
     
     public static function tearDownAfterClass()
