@@ -21,12 +21,16 @@ use app\mappers\UsersUpdateMapper;
 use app\mappers\UsersInsertMapper;
 use app\mappers\UsersPurchasesInsertMapper;
 use app\mappers\UsersRulesInsertMapper;
+use app\mappers\CurrencyByIdMapper;
+use app\mappers\CommentsInsertMapper;
 use app\models\AddressModel;
 use app\models\EmailsModel;
 use app\models\PaymentsModel;
 use app\models\PhonesModel;
 use app\models\UsersModel;
 use app\models\DeliveriesModel;
+use app\models\CurrencyModel;
+use app\models\CommentsModel;
 
 /**
  * Коллекция методов, которые взаимодействуют с БД посредством мапперов
@@ -61,30 +65,35 @@ class MappersHelper
      */
     private static $_brandsList = array();
     /**
-     * @var object объект AddressModel
+     * @var object AddressModel
      * @see MappersHelper::getAddressModel()
      */
     private static $_addressModel = NULL;
     /**
-     * @var object объект PhonesModel
+     * @var object PhonesModel
      * @see MappersHelper::getPhonesModel()
      */
     private static $_phonesModel = NULL;
     /**
-     * @var object объект DeliveriesModel
+     * @var object DeliveriesModel
      * @see MappersHelper::getDeliveriesModel()
      */
     private static $_deliveriesModel = NULL;
     /**
-     * @var object объект PaymentsModel
+     * @var object PaymentsModel
      * @see MappersHelper::getPaymentsModel()
      */
     private static $_paymentsModel = NULL;
     /**
-     * @var object объект EmailsModel
+     * @var object EmailsModel
      * @see MappersHelper::getEmailsModel()
      */
     private static $_emailsModel = NULL;
+    /**
+     * @var object CurrencyModel
+     * @see MappersHelper::getCurrencyModel()
+     */
+    private static $_currencyModel = NULL;
     
     /**
      * Получает массив объектов категорий
@@ -121,7 +130,7 @@ class MappersHelper
             if (empty(self::$_currencyList)) {
                 $currencyMapper = new CurrencyMapper([
                     'tableName'=>'currency',
-                    'fields'=>['id', 'currency'],
+                    'fields'=>['id', 'currency', 'exchange_rate', 'main'],
                     'orderByField'=>'currency'
                 ]);
                 $currencyArray = $currencyMapper->getGroup();
@@ -473,6 +482,53 @@ class MappersHelper
             ]);
             if (!$result = $usersRulesInsertMapper->setGroup()) {
                 throw new ErrorException('Не удалось добавить данные UsersRules в БД!');
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект CurrencyModel по id
+     * @param object $currencyModel экземпляр CurrencyModel
+     * @return objects CurrencyModel
+     */
+    public static function getCurrencyModelById(CurrencyModel $currencyModel)
+    {
+        try {
+            if (empty(self::$_currencyModel)) {
+                $currencyByIdMapper = new CurrencyByIdMapper([
+                    'tableName'=>'currency',
+                    'fields'=>['id', 'currency', 'exchange_rate', 'main'],
+                    'model'=>$currencyModel,
+                ]);
+                $currencyModel = $currencyByIdMapper->getOneFromGroup();
+                if (is_object($currencyModel) && $currencyModel instanceof CurrencyModel) {
+                    self::$_currencyModel = $currencyModel;
+                }
+            }
+            return self::$_currencyModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись комментария в БД
+     * @param object $commentsModel экземпляр CommentsModel
+     * @return int
+     */
+    public static function setCommentsModel(CommentsModel $commentsModel)
+    {
+        try {
+            $commentsInsertMapper = new CommentsInsertMapper([
+                'tableName'=>'comments',
+                'fields'=>['text', 'name', 'id_emails', 'id_products'],
+                'objectsArray'=>[$commentsModel],
+            ]);
+            if (!$result = $commentsInsertMapper->setGroup()) {
+                throw new ErrorException('Не удалось обновить данные в БД!');
             }
             return $result;
         } catch (\Exception $e) {

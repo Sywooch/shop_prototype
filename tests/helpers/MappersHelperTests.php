@@ -16,6 +16,7 @@ use app\models\PaymentsModel;
 use app\models\ProductsModel;
 use app\models\UsersModel;
 use app\models\EmailsModel;
+use app\models\CommentsModel;
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -28,7 +29,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_name = 'Some Name';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
-    private static $_currency = 'EUR';
     private static $_color = 'gray';
     private static $_size = '46';
     private static $_brand = 'Some Brand';
@@ -45,6 +45,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_quantity = 1;
     private static $_rule = 'rule';
     private static $_email = 'some@some.com';
+    private static $_currency = 'EUR';
+    private static $_exchange_rate = '12.456';
+    private static $_main = '1';
+    private static $_text = 'Some Text';
     
     public static function setUpBeforeClass()
     {
@@ -110,8 +114,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetСurrencyList()
     {
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency');
-        $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
+        $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);
         $command->execute();
         
         $result = MappersHelper::getСurrencyList();
@@ -122,6 +126,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result[0] instanceof CurrencyModel);
         $this->assertEquals(self::$_id, $result[0]->id);
         $this->assertEquals(self::$_currency, $result[0]->currency);
+        $this->assertEquals(self::$_exchange_rate, $result[0]->exchange_rate);
+        $this->assertEquals(self::$_main, $result[0]->main);
     }
     
     /**
@@ -485,6 +491,74 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $result = MappersHelper::setUsersRules($usersModel);
         
         $this->assertEquals(2, $result);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getCurrencyModelById
+     */
+    public function testGetCurrencyModelById()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{currency}}')->queryAll()));
+        
+        $currencyModel = new CurrencyModel();
+        $currencyModel->id = self::$_id;
+        
+        $currencyModel = MappersHelper::getCurrencyModelById($currencyModel);
+        
+        $this->assertTrue(is_object($currencyModel));
+        $this->assertTrue($currencyModel instanceof CurrencyModel);
+        
+        $this->assertTrue(property_exists($currencyModel, 'id'));
+        $this->assertTrue(property_exists($currencyModel, 'currency'));
+        $this->assertTrue(property_exists($currencyModel, 'exchange_rate'));
+        $this->assertTrue(property_exists($currencyModel, 'main'));
+        
+        $this->assertFalse(empty($currencyModel->id));
+        $this->assertFalse(empty($currencyModel->currency));
+        $this->assertFalse(empty($currencyModel->exchange_rate));
+        $this->assertFalse(empty($currencyModel->main));
+        
+        $this->assertEquals(self::$_id, $currencyModel->id);
+        $this->assertEquals(self::$_currency, $currencyModel->currency);
+        $this->assertEquals(self::$_exchange_rate, $currencyModel->exchange_rate);
+        $this->assertEquals(self::$_main, $currencyModel->main);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setCommentsModel
+     */
+    public function testSetCommentsModel()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll()));
+        
+        $id_emails = \Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryScalar();
+        
+        $commentsModel = new CommentsModel();
+        $commentsModel->text = self::$_text;
+        $commentsModel->name = self::$_name;
+        $commentsModel->id_emails = $id_emails;
+        $commentsModel->id_products = $id_products;
+        
+        $result = MappersHelper::setCommentsModel($commentsModel);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        
+        $this->assertTrue(array_key_exists('id', $result[0]));
+        $this->assertTrue(array_key_exists('text', $result[0]));
+        $this->assertTrue(array_key_exists('name', $result[0]));
+        $this->assertTrue(array_key_exists('id_emails', $result[0]));
+        $this->assertTrue(array_key_exists('id_products', $result[0]));
+        
+        $this->assertEquals(self::$_text, $result[0]['text']);
+        $this->assertEquals(self::$_name, $result[0]['name']);
+        $this->assertEquals($id_emails, $result[0]['id_emails']);
+        $this->assertEquals($id_products, $result[0]['id_products']);
     }
     
     public static function tearDownAfterClass()

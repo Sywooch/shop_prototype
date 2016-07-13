@@ -3,10 +3,10 @@
 namespace app\controllers;
 
 use yii\helpers\Url;
+use app\helpers\MappersHelper;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\models\CommentsModel;
-use app\mappers\CommentsInsertMapper;
 
 /**
  * Управляет процессом добавления комментария
@@ -20,19 +20,14 @@ class CommentsController extends AbstractBaseController
     public function actionAddComment()
     {
         try {
-            $model = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
+            $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
             
-            if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
-                if ($model->validate()) {
-                    $commentsInsertMapper = new CommentsInsertMapper([
-                        'tableName'=>'comments',
-                        'fields'=>['text', 'name', 'id_emails', 'id_products'],
-                        'objectsArray'=>[$model],
-                    ]);
-                    if (!$commentsInsertMapper->setGroup()) {
+            if (\Yii::$app->request->isPost && $commentsModel->load(\Yii::$app->request->post())) {
+                if ($commentsModel->validate()) {
+                    if (!MappersHelper::setCommentsModel($commentsModel)) {
                         throw new ErrorException('Не удалось обновить данные в БД!');
                     }
-                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$model->categories, 'subcategory'=>$model->subcategory, 'id'=>$model->id_products]));
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$commentsModel->categories, 'subcategory'=>$commentsModel->subcategory, 'id'=>$commentsModel->id_products]));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));

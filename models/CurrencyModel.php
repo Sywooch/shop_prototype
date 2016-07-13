@@ -23,11 +23,25 @@ class CurrencyModel extends AbstractBaseModel
     public $exchange_rate = '';
     public $main = '';
     
+    /**
+     * Свойства содержат данные для редиректа после обработки запроса
+     */
+    public $categories = '';
+    public $subcategory = '';
+    public $search = '';
+    
     public function scenarios()
     {
         return [
             self::GET_FROM_DB=>['id', 'currency', 'exchange_rate', 'main'],
             self::GET_FROM_FORM_SET=>['id'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['id'], 'required', 'on'=>self::GET_FROM_FORM_SET],
         ];
     }
 }

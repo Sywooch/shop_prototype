@@ -11,6 +11,7 @@ use app\models\AddressModel;
 use app\models\PhonesModel;
 use app\models\DeliveriesModel;
 use app\models\PaymentsModel;
+use app\models\CurrencyModel;
 
 /**
  * Тестирует UsersModel
@@ -32,6 +33,9 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     private static $_id_phones = 3;
     private static $_id_address = 5;
     private static $_rule = 'Some Rule';
+    private static $_currency = 'EUR';
+    private static $_exchange_rate = '12.456';
+    private static $_main = '1';
     
     public static function setUpBeforeClass()
     {
@@ -53,6 +57,10 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         if (!UserAuthenticationHelper::fill($usersModel)) {
             throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
         }
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
+        $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);
+        $command->execute();
     }
     
     /**
@@ -75,7 +83,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'id_address'));
         $this->assertTrue(property_exists($model, 'rawPassword'));
         $this->assertTrue(property_exists($model, '_rulesFromForm'));
-        $this->assertTrue(property_exists($model, 'currency'));
+        $this->assertTrue(property_exists($model, '_currency'));
         $this->assertTrue(property_exists($model, '_login'));
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, '_password'));
@@ -593,6 +601,29 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id_emails, $array['id_emails']);
         $this->assertEquals(self::$_id_phones, $array['id_phones']);
         $this->assertEquals(self::$_id_address, $array['id_address']);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::setCurrency
+     */
+    public function testSetCurrency()
+    {
+        $model = new UsersModel();
+        $model->currency = new CurrencyModel();
+        
+        $this->assertTrue(is_object($model->currency));
+        $this->assertTrue($model->currency instanceof CurrencyModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getCurrency
+     */
+    public function testGetCurrency()
+    {
+        $model = new UsersModel();
+        
+        $this->assertTrue(is_object($model->currency));
+        $this->assertTrue($model->currency instanceof CurrencyModel);
     }
     
     public static function tearDownAfterClass()

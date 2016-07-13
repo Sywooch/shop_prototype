@@ -5,5 +5,8 @@
 
 {% set form=active_form_begin({'id':'currency-form', 'action':'', 'method':'POST'}) %}
     {{ form.field(currencyModel, 'id').dropDownList(array.map(currencyList, 'id', 'currency')) | raw }}
+    {{ form.field(currencyModel, 'categories').hiddenInput({'value':app.request.get(app.params['categoryKey'])}).label(false) | raw }}
+    {{ form.field(currencyModel, 'subcategory').hiddenInput({'value':app.request.get(app.params['subCategoryKey'])}).label(false) | raw }}
+    {{ form.field(currencyModel, 'search').hiddenInput({'value':app.request.get(app.params['searchKey'])}).label(false) | raw }}
     <input type="submit" value="Change currency">
 {{ active_form_end() }}

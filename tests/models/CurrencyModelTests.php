@@ -34,6 +34,10 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'currency'));
         $this->assertTrue(property_exists($model, 'exchange_rate'));
         $this->assertTrue(property_exists($model, 'main'));
+        
+        $this->assertTrue(property_exists($model, 'categories'));
+        $this->assertTrue(property_exists($model, 'subcategory'));
+        $this->assertTrue(property_exists($model, 'search'));
     }
     
     /**
@@ -58,5 +62,24 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertFalse(empty($model->id));
         $this->assertEquals(self::$_id, $model->id);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM_SET]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM_SET]);
+        $model->attributes = ['id'=>self::$_id];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
 }

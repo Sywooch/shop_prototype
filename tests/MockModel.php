@@ -27,6 +27,7 @@ class MockModel extends AbstractBaseModel
     public $quantity;
     public $categories;
     public $subcategory;
+    public $search;
     public $address;
     public $city;
     public $country;

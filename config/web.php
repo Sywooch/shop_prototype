@@ -26,7 +26,6 @@ $config = [
         'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->user по умолчанию
         'filedsFromDb'=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'], # список полей, которые необходимо получит из БД при аутентификации, используется объектами UserAuthenticationHelper, LoginExistsValidator, PasswordExistsValidator
         'filedsToUser'=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'], # список полей, которые необходимо обновить для \Yii::$app->user при аутентификации, используется объектами UserAuthenticationHelper
-        'valueDefaultCurrency'=>1 # значение, по которому можно получить из БД объект валюты, в которой указаны цены, используется объектами CurrencyByMainMapper
     ],
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),

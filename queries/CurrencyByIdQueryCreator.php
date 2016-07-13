@@ -8,15 +8,15 @@ use yii\base\ErrorException;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class CurrencyByMainQueryCreator extends AbstractSeletcQueryCreator
+class CurrencyByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
      * @var array массив для выборки данных
      */
     public $categoriesArrayFilters = [
-        'currency'=>[
-            'tableName'=>'currency', 
-            'tableFieldWhere'=>'main', 
+        'currency'=>[ # Данные для выборки из таблицы products
+            'tableName'=>'currency', # Имя таблицы участвующей в объединении
+            'tableFieldWhere'=>'id', # Имя поля таблицы, по которому делается выборка с помощью WHERE
         ],
     ];
     
@@ -31,7 +31,7 @@ class CurrencyByMainQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhereNotEqual(
+            $where = $this->getWhere(
                 $this->categoriesArrayFilters['currency']['tableName'],
                 $this->categoriesArrayFilters['currency']['tableFieldWhere'],
                 $this->categoriesArrayFilters['currency']['tableFieldWhere']

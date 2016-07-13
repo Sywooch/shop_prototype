@@ -3,12 +3,12 @@
 namespace app\tests\queries;
 
 use app\tests\MockObject;
-use app\queries\CurrencyByMainQueryCreator;
+use app\queries\CurrencyByIdQueryCreator;
 
 /**
- * Тестирует класс app\queries\CurrencyByMainQueryCreator
+ * Тестирует класс app\queries\CurrencyByIdQueryCreator
  */
-class CurrencyByMainQueryCreatorTests extends \PHPUnit_Framework_TestCase
+class CurrencyByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     /**
      * Тестирует создание строки SQL запроса
@@ -20,10 +20,10 @@ class CurrencyByMainQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'currency', 'exchange_rate', 'main'],
         ]);
         
-        $queryCreator = new CurrencyByMainQueryCreator();
+        $queryCreator = new CurrencyByIdQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[currency.id]],[[currency.currency]],[[currency.exchange_rate]],[[currency.main]] FROM {{currency}} WHERE [[currency.main]]!=:main';
+        $query = 'SELECT [[currency.id]],[[currency.currency]],[[currency.exchange_rate]],[[currency.main]] FROM {{currency}} WHERE [[currency.id]]=:id';
         
         $this->assertEquals($query, $mockObject->query);
     }

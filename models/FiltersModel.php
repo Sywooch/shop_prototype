@@ -16,6 +16,9 @@ class FiltersModel extends AbstractBaseModel
     public $sortingField = '';
     public $sortingType = '';
     
+    /**
+     * Свойства содержат данные для редиректа после обработки запроса
+     */
     public $categories = '';
     public $subcategory = '';
     public $search = '';

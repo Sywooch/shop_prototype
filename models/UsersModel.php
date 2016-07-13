@@ -263,7 +263,7 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_emails
-     * @return object
+     * @return object EmailsModel
      */
     public function getEmails()
     {
@@ -307,7 +307,7 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_address
-     * @return object
+     * @return object AddressModel
      */
     public function getAddress()
     {
@@ -351,7 +351,7 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_phones
-     * @return object
+     * @return object PhonesModel
      */
     public function getPhones()
     {
@@ -395,7 +395,7 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_deliveries
-     * @return object
+     * @return object DeliveriesModel
      */
     public function getDeliveries()
     {
@@ -419,7 +419,7 @@ class UsersModel extends AbstractBaseModel
     
     /**
      * Возвращает значение свойства $this->_payments
-     * @return object
+     * @return object PaymentsModel
      */
     public function getPayments()
     {
@@ -494,7 +494,32 @@ class UsersModel extends AbstractBaseModel
     public function setCurrency(CurrencyModel $currencyModel)
     {
         try {
-            
+            $this->_currency = $currencyModel;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_currency
+     * @return object CurrencyModel
+     */
+    public function getCurrency()
+    {
+        try {
+            if (is_null($this->_currency)) {
+                $currencyByMainMapper = new CurrencyByMainMapper([
+                    'tableName'=>'currency',
+                    'fields'=>['id', 'currency', 'exchange_rate', 'main'],
+                ]);
+                $currencyModel = $currencyByMainMapper->getOneFromGroup();
+                if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
+                    return NULL;
+                }
+                $this->_currency = $currencyModel;
+            }
+            return $this->_currency;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
