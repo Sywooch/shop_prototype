@@ -81,6 +81,7 @@ $config = [
                 'products'=>'products-list/index',
                 'add-filters'=>'filter/add-filters',
                 'clean-filters'=>'filter/clean-filters',
+                'currency-filter'=>'currency/set-currency',
                 'search'=>'products-list/search',
                 'join'=>'users/add-user',
                 'login'=>'users/login-user',

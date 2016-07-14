@@ -11,7 +11,7 @@
 
 <p>{{ productsObject.code }}</p>
 <p>{{ productsObject.description }}</p>
-<p>{{ productsObject.price }}</p>
+<p>{{ (productsObject.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</p>
 
 {% include '@app/views/parts/product-detail-colors.twig' %}
 

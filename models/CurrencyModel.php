@@ -29,12 +29,13 @@ class CurrencyModel extends AbstractBaseModel
     public $categories = '';
     public $subcategory = '';
     public $search = '';
+    public $id_products = '';
     
     public function scenarios()
     {
         return [
             self::GET_FROM_DB=>['id', 'currency', 'exchange_rate', 'main'],
-            self::GET_FROM_FORM_SET=>['id'],
+            self::GET_FROM_FORM_SET=>['id', 'id_products', 'categories', 'subcategory', 'search'],
         ];
     }
     
@@ -43,5 +44,18 @@ class CurrencyModel extends AbstractBaseModel
         return [
             [['id'], 'required', 'on'=>self::GET_FROM_FORM_SET],
         ];
+    }
+    
+    /**
+     * Возвращает массив данных для сохранения в сессии
+     * @return array
+     */
+    public function getDataForSession()
+    {
+        try {
+            return ['id'=>$this->id, 'currency'=>$this->currency, 'exchange_rate'=>$this->exchange_rate, 'main'=>$this->main];
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

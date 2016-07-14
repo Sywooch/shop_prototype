@@ -86,6 +86,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasProperty('_deliveriesModel'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_paymentsModel'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_emailsModel'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_currencyModel'));
         
         $this->assertTrue(self::$_reflectionClass->hasMethod('getCategoriesList'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getСurrencyList'));
@@ -100,6 +101,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasMethod('setOrUpdateUsers'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getEmailsModel'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersRules'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getCurrencyModelById'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('setCommentsModel'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getProductDetail'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getProductsList'));
     }
     
     /**

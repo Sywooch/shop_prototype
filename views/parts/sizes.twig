@@ -1,9 +1,0 @@
-
-<p><strong>Sizes</strong></p>
-
-<ul>
-    <li><a href="{{ url.current({'sizes':null}) }}">Все</a></li>
-    {% for size in sizesList %}
-        <li><a href="{{ url.current({'sizes':size.size}) }}">{{ size.size }}</a></li>
-    {% endfor %}
-</ul

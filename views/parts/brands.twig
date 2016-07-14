@@ -1,9 +1,0 @@
-
-<p>Brands</p>
-
-<ul>
-    <li><a href="{{ url.current({'brands':null}) }}">Все</a></li>
-    {% for brand in brandsList %}
-        <li><a href="{{ url.current({'brands':brand.brand}) }}">{{ brand.brand }}</a></li>
-    {% endfor %}
-</ul>

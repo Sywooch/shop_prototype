@@ -1,9 +1,0 @@
-
-<p><strong>Colors</strong></p>
-
-<ul>
-    <li><a href="{{ url.current({'colors':null}) }}">Все</a></li>
-    {% for color in colorsList %}
-        <li><a href="{{ url.current({'colors':color.color}) }}">{{ color.color }}</a></li>
-    {% endfor %}
-</ul>

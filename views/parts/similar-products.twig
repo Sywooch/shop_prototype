@@ -5,7 +5,7 @@
     {% for product in productsObject.similar %}
         <li>
             <strong><a href="{{ url.to({0:'product-detail/index', 'categories': product.categories, 'subcategory': product.subcategory, 'id': product.id}) }}">{{ product.name }}</a></strong><br>
-            {{ product.price }}<br>
+            {{ (product.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }} <br>
         </li>
     {% endfor %}
 </ol>

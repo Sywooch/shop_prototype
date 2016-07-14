@@ -1,5 +1,5 @@
 
-<p>Bag: {{ app.cart.getTotalProducts() | default(0) }}, Total cost: {{ app.cart.getTotalCost() | number_format(2, '.', ' ') }} 
+<p>Bag: {{ app.cart.getTotalProducts() | default(0) }}, Total cost: {{ (app.cart.getTotalCost() * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }} 
 
 {% if app.cart.getProductsArray() %}
     <a href="{{ url.to({0:'shopping-cart/index'}) }}">Go to cart</a>

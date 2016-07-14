@@ -14,6 +14,9 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
     private static $_currency = 'EUR';
     private static $_exchange_rate = '12.5698';
     private static $_main = '1';
+    private static $_categorySeocode = 'mensfootwear';
+    private static $_subcategorySeocode = 'boots';
+    private static $_search = 'пиджак';
     
     public static function setUpBeforeClass()
     {
@@ -38,6 +41,7 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'categories'));
         $this->assertTrue(property_exists($model, 'subcategory'));
         $this->assertTrue(property_exists($model, 'search'));
+        $this->assertTrue(property_exists($model, 'id_products'));
     }
     
     /**
@@ -58,10 +62,22 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_main, $model->main);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM_SET]);
-        $model->attributes = ['id'=>self::$_id];
+        $model->attributes = ['id'=>self::$_id, 'id_products'=>self::$_id, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'search'=>self::$_search];
         
         $this->assertFalse(empty($model->id));
         $this->assertEquals(self::$_id, $model->id);
+        
+        $this->assertFalse(empty($model->id_products));
+        $this->assertEquals(self::$_id, $model->id_products);
+        
+        $this->assertFalse(empty($model->categories));
+        $this->assertEquals(self::$_categorySeocode, $model->categories);
+        
+        $this->assertFalse(empty($model->subcategory));
+        $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
+        
+        $this->assertFalse(empty($model->search));
+        $this->assertEquals(self::$_search, $model->search);
     }
     
     /**
@@ -81,5 +97,27 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+    }
+    
+    /**
+     * Тестирует метод CurrencyModel::getDataForSession
+     */
+    public function testGetDataForSession()
+    {
+        $model = new CurrencyModel();
+        $model->id = self::$_id;
+        $model->currency = self::$_currency;
+        $model->exchange_rate = self::$_exchange_rate;
+        $model->main = self::$_main;
+        
+        $result = $model->getDataForSession();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        
+        $this->assertEquals(self::$_id, $result['id']);
+        $this->assertEquals(self::$_currency, $result['currency']);
+        $this->assertEquals(self::$_exchange_rate, $result['exchange_rate']);
+        $this->assertEquals(self::$_main, $result['main']);
     }
 }

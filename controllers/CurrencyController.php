@@ -39,8 +39,8 @@ class CurrencyController extends Controller
                     if (!empty(\Yii::$app->user)) {
                         \Yii::$app->user->currency = MappersHelper::getCurrencyModelById($currencyModel);
                     }
-                    if (!empty($currencyModel->id_products) {
-                        $urlArray = ['product-detail/index', 'categories'=>$commentsModel->categories, 'subcategory'=>$commentsModel->subcategory, 'id'=>$commentsModel->id_products];
+                    if (!empty($currencyModel->id_products)) {
+                        $urlArray = ['product-detail/index', 'categories'=>$currencyModel->categories, 'subcategory'=>$currencyModel->subcategory, 'id'=>$currencyModel->id_products];
                     } elseif (!empty($currencyModel->search)) {
                         $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>$currencyModel->search];
                     } else {
