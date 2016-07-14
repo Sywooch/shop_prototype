@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
-use app\mappers\DeliveriesMapper;
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы address
@@ -75,15 +75,7 @@ class DeliveriesModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_allDeliveries)) {
-                $deliveriesMapper = new DeliveriesMapper([
-                    'tableName'=>'deliveries',
-                    'fields'=>['id', 'name', 'description', 'price'],
-                ]);
-                $deliveriesArray = $deliveriesMapper->getGroup();
-                if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
-                    return NULL;
-                }
-                $this->_allDeliveries = $deliveriesArray;
+                $this->_allDeliveries = MappersHelper::getDeliveriesList();
             }
             return $this->_allDeliveries;
         } catch (\Exception $e) {

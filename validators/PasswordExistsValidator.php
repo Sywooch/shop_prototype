@@ -4,8 +4,8 @@ namespace app\validators;
 
 use yii\validators\Validator;
 use app\traits\ExceptionsTrait;
-use app\mappers\UsersByLoginMapper;
 use app\models\UsersModel;
+use app\helpers\MappersHelper;
 
 /**
  * Проверяет атрибуты модели UsersModel
@@ -25,12 +25,7 @@ class PasswordExistsValidator extends Validator
     {
         try {
             if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
-                $usersByLoginMapper = new UsersByLoginMapper([
-                    'tableName'=>'users',
-                    'fields'=>\Yii::$app->params['filedsFromDb'],
-                    'model'=>$model
-                ]);
-                \Yii::$app->params['userFromFormForAuthentication'] = $usersByLoginMapper->getOneFromGroup();
+                \Yii::$app->params['userFromFormForAuthentication'] = MappersHelper::getUsersByLogin($model);
             }
             
             if (!is_object(\Yii::$app->params['userFromFormForAuthentication']) || !\Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel || !password_verify($model->rawPassword, \Yii::$app->params['userFromFormForAuthentication']->password)) {

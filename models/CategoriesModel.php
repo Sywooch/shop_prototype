@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
-use app\mappers\SubcategoryMapper;
+use app\helpers\MappersHelper;
 use yii\base\ErrorException;
 
 /**
@@ -38,16 +38,7 @@ class CategoriesModel extends AbstractBaseModel
         try {
             if (is_null($this->_subcategory)) {
                 if (!empty($this->id)) {
-                    $subcategoryMapper = new SubcategoryMapper([
-                        'tableName'=>'subcategory',
-                        'fields'=>['id', 'name', 'seocode'],
-                        'model'=>$this
-                    ]);
-                    $subcategoryArray = $subcategoryMapper->getGroup();
-                    if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
-                        return NULL;
-                    }
-                    $this->_subcategory = $subcategoryArray;
+                    $this->_subcategory = MappersHelper::getSubcategoryForCategoryList($this);
                 }
             }
             return $this->_subcategory;

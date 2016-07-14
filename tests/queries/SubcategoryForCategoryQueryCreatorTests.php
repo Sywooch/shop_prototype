@@ -3,12 +3,12 @@
 namespace app\tests\queries;
 
 use app\tests\MockObject;
-use app\queries\SubcategoryQueryCreator;
+use app\queries\SubcategoryForCategoryQueryCreator;
 
 /**
- * Тестирует класс app\queries\SubcategoryQueryCreator
+ * Тестирует класс app\queries\SubcategoryForCategoryQueryCreator
  */
-class SubcategoryQueryCreatorTests extends \PHPUnit_Framework_TestCase
+class SubcategoryForCategoryQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     /**
      * Тестирует создание строки SQL запроса
@@ -20,7 +20,7 @@ class SubcategoryQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'name'],
         ]);
         
-        $queryCreator = new SubcategoryQueryCreator();
+        $queryCreator = new SubcategoryForCategoryQueryCreator();
         $queryCreator->update($mockObject);
         
         $query = 'SELECT [[subcategory.id]],[[subcategory.name]] FROM {{subcategory}} JOIN {{categories}} ON [[subcategory.id_categories]]=[[categories.id]] WHERE [[categories.id]]=:id';

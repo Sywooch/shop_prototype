@@ -6,6 +6,7 @@ use app\tests\DbManager;
 use app\helpers\MappersHelper;
 use app\models\CategoriesModel;
 use app\models\CurrencyModel;
+use app\models\SubcategoryModel;
 use app\models\ColorsModel;
 use app\models\SizesModel;
 use app\models\BrandsModel;
@@ -17,6 +18,7 @@ use app\models\ProductsModel;
 use app\models\UsersModel;
 use app\models\EmailsModel;
 use app\models\CommentsModel;
+use app\models\RulesModel;
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -326,6 +328,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getDeliveriesList
+     */
+    public function testGetDeliveriesList()
+    {
+        $result = MappersHelper::getDeliveriesList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof DeliveriesModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_name, $result[0]->name);
+        $this->assertEquals(self::$_description, $result[0]->description);
+        $this->assertEquals(self::$_price, $result[0]->price);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getPaymentsById
      */
     public function testGetPaymentsById()
@@ -543,8 +562,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll()));
         
-        $id_emails = \Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryScalar();
-        $id_products = \Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryScalar();
+        $id_emails = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{emails}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
         
         $commentsModel = new CommentsModel();
         $commentsModel->text = self::$_text;
@@ -609,6 +628,112 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertTrue(is_object($result[0]));
         $this->assertTrue($result[0]  instanceof ProductsModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getRulesList
+     */
+    public function testGetRulesList()
+    {
+        $result = MappersHelper::getRulesList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof RulesModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_rule, $result[0]->rule);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getEmailsById
+     */
+    public function testGetEmailsById()
+    {
+        $this->assertFalse(empty($id_emails = \Yii::$app->db->createCommand('SELECT [[emails.id]] FROM {{emails}}')->queryScalar()));
+        
+        $emailsModel = new EmailsModel();
+        $emailsModel->id = $id_emails;
+        
+        $result = MappersHelper::getEmailsById($emailsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof EmailsModel);
+        $this->assertEquals($id_emails, $result->id);
+        $this->assertEquals(self::$_email, $result->email);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getPhonesById
+     */
+    public function testGetPhonesById()
+    {
+        $this->assertFalse(empty($id_phone = \Yii::$app->db->createCommand('SELECT [[phones.id]] FROM {{phones}}')->queryScalar()));
+        
+        $phonesModel = new PhonesModel();
+        $phonesModel->id = $id_phone;
+        
+        $result = MappersHelper::getPhonesById($phonesModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof PhonesModel);
+        $this->assertEquals($id_phone, $result->id);
+        $this->assertEquals(self::$_phone, $result->phone);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getAddressById
+     */
+    public function testGetAddressById()
+    {
+        $this->assertFalse(empty($id_address = \Yii::$app->db->createCommand('SELECT [[address.id]] FROM {{address}}')->queryScalar()));
+        
+        $addressModel = new AddressModel();
+        $addressModel->id = $id_address;
+        
+        $result = MappersHelper::getAddressById($addressModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof AddressModel);
+        $this->assertEquals($id_address, $result->id);
+        $this->assertEquals(self::$_address, $result->address);
+        $this->assertEquals(self::$_city, $result->city);
+        $this->assertEquals(self::$_country, $result->country);
+        $this->assertEquals(self::$_postcode, $result->postcode);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getCurrencyByMain
+     */
+    public function testGetCurrencyByMain()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT [[main]] FROM {{currency}}')->queryScalar()));
+        
+        $result = MappersHelper::getCurrencyByMain();
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof CurrencyModel);
+        $this->assertEquals(1, $result->main);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getSubcategoryForCategoryList
+     */
+    public function testGetSubcategoryForCategoryList()
+    {
+        $categoriesModel = new CategoriesModel();
+        $categoriesModel->id = self::$_id;
+        
+        $result = MappersHelper::getSubcategoryForCategoryList($categoriesModel);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof SubcategoryModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_name, $result[0]->name);
+        $this->assertEquals(self::$_subcategorySeocode, $result[0]->seocode);
+        $this->assertEquals(self::$_id, $result[0]->id_categories);
     }
     
     public static function tearDownAfterClass()

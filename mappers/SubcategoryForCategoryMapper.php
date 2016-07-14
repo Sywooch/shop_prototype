@@ -9,12 +9,12 @@ use app\models\CategoriesModel;
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class SubcategoryMapper extends AbstractGetMapper
+class SubcategoryForCategoryMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\SubcategoryQueryCreator';
+    public $queryClass = 'app\queries\SubcategoryForCategoryQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */

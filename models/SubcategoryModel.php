@@ -17,11 +17,12 @@ class SubcategoryModel extends AbstractBaseModel
     public $id = '';
     public $name = '';
     public $seocode = '';
+    public $id_categories = '';
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'name', 'seocode'],
+            self::GET_FROM_DB=>['id', 'name', 'seocode', 'id_categories'],
         ];
     }
 }

@@ -10,14 +10,9 @@ use app\models\PhonesModel;
 use app\models\DeliveriesModel;
 use app\models\PaymentsModel;
 use app\models\CurrencyModel;
-use app\mappers\RulesMapper;
-use app\mappers\UsersByLoginMapper;
-use app\mappers\EmailsByIdMapper;
-use app\mappers\PhonesByIdMapper;
-use app\mappers\AddressByIdMapper;
-use app\mappers\CurrencyByMainMapper;
 use app\helpers\TransliterationHelper;
 use app\helpers\PasswordHelper;
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы users
@@ -147,16 +142,7 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_allRules)) {
-                $rulesMapper = new RulesMapper([
-                    'tableName'=>'rules',
-                    'fields'=>['id', 'rule'],
-                    'orderByField'=>'rule',
-                ]);
-                $rulesArray = $rulesMapper->getGroup();
-                if (!is_array($rulesArray) || empty($rulesArray)) {
-                    return NULL;
-                }
-                $this->_allRules = $rulesArray;
+                $this->_allRules =MappersHelper::getRulesList();
             }
             return $this->_allRules;
         } catch (\Exception $e) {
@@ -191,12 +177,7 @@ class UsersModel extends AbstractBaseModel
         try {
             if (is_null($this->_id)) {
                 if (!empty($this->login)) {
-                    $usersByLoginMapper = new UsersByLoginMapper([
-                        'tableName'=>'users',
-                        'fields'=>['id'],
-                        'model'=>$this,
-                    ]);
-                    $objectUser = $usersByLoginMapper->getOneFromGroup();
+                    $objectUser = MappersHelper::getUsersByLogin($this);
                     if (!is_object($objectUser) || !$objectUser instanceof $this) {
                         return NULL;
                     }
@@ -270,18 +251,7 @@ class UsersModel extends AbstractBaseModel
         try {
             if (is_null($this->_emails)) {
                 if (!empty($this->id_emails)) {
-                    $emailsByIdMapper = new EmailsByIdMapper([
-                        'tableName'=>'emails',
-                        'fields'=>['id', 'email'],
-                        'model'=>new EmailsModel([
-                            'id'=>$this->id_emails,
-                        ]),
-                    ]);
-                    $emailsModel = $emailsByIdMapper->getOneFromGroup();
-                    if (!is_object($emailsModel) || !$emailsModel instanceof EmailsModel) {
-                        return NULL;
-                    }
-                    $this->_emails = $emailsModel;
+                    $this->_emails = MappersHelper::getEmailsById(new EmailsModel(['id'=>$this->id_emails]));
                 }
             }
             return $this->_emails;
@@ -314,18 +284,7 @@ class UsersModel extends AbstractBaseModel
          try {
             if (is_null($this->_address)) {
                 if (!empty($this->id_address)) {
-                    $addressByIdMapper = new AddressByIdMapper([
-                        'tableName'=>'address',
-                        'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-                        'model'=>new AddressModel([
-                            'id'=>$this->id_address,
-                        ]),
-                    ]);
-                    $addressModel = $addressByIdMapper->getOneFromGroup();
-                    if (!is_object($addressModel) || !$addressModel instanceof AddressModel) {
-                        return NULL;
-                    }
-                    $this->_address = $addressModel;
+                    $this->_address = MappersHelper::getAddressById(ddressModel(['id'=>$this->id_address]));
                 }
             }
             return $this->_address;
@@ -358,18 +317,7 @@ class UsersModel extends AbstractBaseModel
         try {
             if (is_null($this->_phones)) {
                 if (!empty($this->id_phones)) {
-                    $phonesByIdMapper = new PhonesByIdMapper([
-                        'tableName'=>'phones',
-                        'fields'=>['id', 'phone'],
-                        'model'=>new PhonesModel([
-                            'id'=>$this->id_phones,
-                        ]),
-                    ]);
-                    $phonesModel = $phonesByIdMapper->getOneFromGroup();
-                    if (!is_object($phonesModel) || !$phonesModel instanceof PhonesModel) {
-                        return NULL;
-                    }
-                    $this->_phones = $phonesModel;
+                    $this->_phones = MappersHelper::getPhonesById(new PhonesModel(['id'=>$this->id_phones]));
                 }
             }
             return $this->_phones;
@@ -509,15 +457,7 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_currency)) {
-                $currencyByMainMapper = new CurrencyByMainMapper([
-                    'tableName'=>'currency',
-                    'fields'=>['id', 'currency', 'exchange_rate', 'main'],
-                ]);
-                $currencyModel = $currencyByMainMapper->getOneFromGroup();
-                if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
-                    return NULL;
-                }
-                $this->_currency = $currencyModel;
+                $this->_currency = MappersHelper::getCurrencyByMain();
             }
             return $this->_currency;
         } catch (\Exception $e) {

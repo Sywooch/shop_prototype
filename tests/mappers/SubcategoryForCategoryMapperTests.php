@@ -4,14 +4,14 @@ namespace app\tests\mappers;
 
 use app\tests\DbManager;
 use app\tests\MockModel;
-use app\mappers\SubcategoryMapper;
+use app\mappers\SubcategoryForCategoryMapper;
 use app\models\SubcategoryModel;
 use app\models\CategoriesModel;
 
 /**
- * Тестирует класс app\mappers\SubcategoryMapper
+ * Тестирует класс app\mappers\SubcategoryForCategoryMapper
  */
-class SubcategoryMapperTests extends \PHPUnit_Framework_TestCase
+class SubcategoryForCategoryMapperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
@@ -34,11 +34,11 @@ class SubcategoryMapperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод SubcategoryMapper::getGroup
+     * Тестирует метод SubcategoryForCategoryMapper::getGroup
      */
     public function testGetGroup()
     {
-        $subcategoryMapper = new SubcategoryMapper([
+        $subcategoryMapper = new SubcategoryForCategoryMapper([
             'tableName'=>'subcategory',
             'fields'=>['id', 'name'],
             'model'=>new CategoriesModel([

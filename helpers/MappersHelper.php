@@ -13,6 +13,7 @@ use app\mappers\CategoriesMapper;
 use app\mappers\EmailsByEmailMapper;
 use app\mappers\EmailsInsertMapper;
 use app\mappers\AddressByAddressMapper;
+use app\mappers\AddressByIdMapper;
 use app\mappers\AddressInsertMapper;
 use app\mappers\DeliveriesByIdMapper;
 use app\mappers\PaymentsByIdMapper;
@@ -27,6 +28,12 @@ use app\mappers\CommentsInsertMapper;
 use app\mappers\ProductDetailMapper;
 use app\mappers\ProductsListMapper;
 use app\mappers\UsersByLoginMapper;
+use app\mappers\DeliveriesMapper;
+use app\mappers\RulesMapper;
+use app\mappers\EmailsByIdMapper;
+use app\mappers\PhonesByIdMapper;
+use app\mappers\CurrencyByMainMapper;
+use app\mappers\SubcategoryForCategoryMapper;
 use app\models\AddressModel;
 use app\models\EmailsModel;
 use app\models\PaymentsModel;
@@ -36,6 +43,7 @@ use app\models\DeliveriesModel;
 use app\models\CurrencyModel;
 use app\models\CommentsModel;
 use app\models\ProductsModel;
+use app\models\CategoriesModel;
 
 /**
  * Коллекция методов, которые взаимодействуют с БД посредством мапперов
@@ -69,6 +77,16 @@ class MappersHelper
      * @see MappersHelper::getBrandsList()
      */
     private static $_brandsList = array();
+    /**
+     * @var array массив объектов deliveries
+     * @see MappersHelper::getDeliveriesList()
+     */
+    private static $_deliveriesList = array();
+    /**
+     * @var array массив объектов rules
+     * @see MappersHelper::getRulesList()
+     */
+    private static $_rulesList = array();
     
     /**
      * Получает массив объектов категорий
@@ -229,6 +247,29 @@ class MappersHelper
     }
     
     /**
+     * Получает объект AddressModel по id
+     * @param object $addressModel экземпляр AddressModel
+     * @return objects AddressModel
+     */
+    public static function getAddressById(AddressModel $addressModel)
+    {
+        try {
+            $addressByIdMapper = new AddressByIdMapper([
+                'tableName'=>'address',
+                'fields'=>['id', 'address', 'city', 'country', 'postcode'],
+                'model'=>$addressModel,
+            ]);
+            $addressModel = $addressByIdMapper->getOneFromGroup();
+            if (!is_object($addressModel) || !$addressModel instanceof AddressModel) {
+                return NULL;
+            }
+            return $addressModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Проверяет, существет ли запись в БД для phone, если да, прекращает выполнение,
      * если нет, создает новую запись в БД
      * @param object $phonesModel экземпляр PhonesModel
@@ -262,6 +303,29 @@ class MappersHelper
     }
     
     /**
+     * Получает PhonesModel по id
+     * @param object $phonesModel экземпляр PhonesModel
+     * @return object
+     */
+    public static function getPhonesById(PhonesModel $phonesModel)
+    {
+        try {
+            $phonesByIdMapper = new PhonesByIdMapper([
+                'tableName'=>'phones',
+                'fields'=>['id', 'phone'],
+                'model'=>$phonesModel,
+            ]);
+            $phonesModel = $phonesByIdMapper->getOneFromGroup();
+            if (!is_object($phonesModel) || !$phonesModel instanceof PhonesModel) {
+                return NULL;
+            }
+            return $phonesModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
       * Получает DeliveriesModel по id
      * @param object $deliveriesModel экземпляр DeliveriesModel
      * @return object
@@ -279,6 +343,31 @@ class MappersHelper
                 return NULL;
             }
             return $deliveriesModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов deliveries
+     * @return array of objects
+     */
+    public static function getDeliveriesList()
+    {
+        try {
+            if (empty(self::$_deliveriesList)) {
+                $deliveriesMapper = new DeliveriesMapper([
+                    'tableName'=>'deliveries',
+                    'fields'=>['id', 'name', 'description', 'price'],
+                    'orderByField'=>'id'
+                ]);
+                $deliveriesArray = $deliveriesMapper->getGroup();
+                if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
+                    return NULL;
+                }
+                self::$_deliveriesList = $deliveriesArray;
+            }
+            return self::$_deliveriesList;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -428,6 +517,29 @@ class MappersHelper
     }
     
     /**
+     * Получает EmailsModel по id
+     * @param object $emailsModel экземпляр EmailsModel
+     * @return object
+     */
+    public static function getEmailsById(EmailsModel $emailsModel)
+    {
+        try {
+            $emailsByIdMapper = new EmailsByIdMapper([
+                'tableName'=>'emails',
+                'fields'=>['id', 'email'],
+                'model'=>$emailsModel,
+            ]);
+            $emailsModel = $emailsByIdMapper->getOneFromGroup();
+            if (!is_object($emailsModel) || !$emailsModel instanceof EmailsModel) {
+                return NULL;
+            }
+            return $emailsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Создает новую запись в БД, связывающую пользователя с правами доступа
      * @param object $usersModel экземпляр UsersModel
      * @return int
@@ -464,6 +576,28 @@ class MappersHelper
             ]);
             $currencyModel = $currencyByIdMapper->getOneFromGroup();
             if (!is_object($currencyModel) && !$currencyModel instanceof CurrencyModel) {
+                return NULL;
+            }
+            return $currencyModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект CurrencyModel по main
+     * @param object $currencyModel экземпляр CurrencyModel
+     * @return objects CurrencyModel
+     */
+    public static function getCurrencyByMain()
+    {
+        try {
+            $currencyByMainMapper = new CurrencyByMainMapper([
+                'tableName'=>'currency',
+                'fields'=>['id', 'currency', 'exchange_rate', 'main'],
+            ]);
+            $currencyModel = $currencyByMainMapper->getOneFromGroup();
+            if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
                 return NULL;
             }
             return $currencyModel;
@@ -554,6 +688,53 @@ class MappersHelper
                 return NULL;
             }
             return $usersModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов rules
+     * @return array of objects
+     */
+    public static function getRulesList()
+    {
+        try {
+            if (empty(self::$_rulesList)) {
+                $rulesMapper = new RulesMapper([
+                    'tableName'=>'rules',
+                    'fields'=>['id', 'rule'],
+                    'orderByField'=>'rule',
+                ]);
+                $rulesArray = $rulesMapper->getGroup();
+                if (!is_array($rulesArray) || empty($rulesArray)) {
+                    return NULL;
+                }
+                self::$_rulesList = $rulesArray;
+            }
+            return self::$_rulesList;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов subcategory
+     * @return array of objects
+     */
+    public static function getSubcategoryForCategoryList(CategoriesModel $categoriesModel)
+    {
+        try {
+            $subcategoryMapper = new SubcategoryForCategoryMapper([
+                'tableName'=>'subcategory',
+                'fields'=>['id', 'name', 'seocode', 'id_categories'],
+                'model'=>$categoriesModel
+            ]);
+            $subcategoryArray = $subcategoryMapper->getGroup();
+            if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
+                return NULL;
+            }
+            return $subcategoryArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
