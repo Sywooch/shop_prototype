@@ -31,6 +31,10 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы, инициирующей очищающение корзины
     */
     const GET_FROM_FORM_FOR_CLEAR_CART = 'getFromFormForClearCart';
+    /**
+     * Сценарий загрузки данных из формы добавления продукта
+    */
+    const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
     public $id = '';
     public $date = '';
@@ -38,7 +42,7 @@ class ProductsModel extends AbstractBaseModel
     public $name = '';
     public $description = '';
     public $price = '';
-    public $images = '';
+    public $images = array();
     public $id_categories = '';
     public $id_subcategory = '';
     
@@ -77,6 +81,14 @@ class ProductsModel extends AbstractBaseModel
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
+            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
         ];
     }
     

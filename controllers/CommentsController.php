@@ -24,7 +24,7 @@ class CommentsController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $commentsModel->load(\Yii::$app->request->post())) {
                 if ($commentsModel->validate()) {
-                    if (!MappersHelper::setCommentsModel($commentsModel)) {
+                    if (!MappersHelper::setCommentsInsert($commentsModel)) {
                         throw new ErrorException('Не удалось обновить данные в БД!');
                     }
                     return $this->redirect(Url::to(['product-detail/index', 'categories'=>$commentsModel->categories, 'subcategory'=>$commentsModel->subcategory, 'id'=>$commentsModel->id_products]));

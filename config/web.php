@@ -95,6 +95,7 @@ $config = [
                 'shopping-cart-checkout'=>'shopping-cart/address-contacts',
                 'shopping-cart-check-pay'=>'shopping-cart/check-pay',
                 'shopping-cart-pay'=>'shopping-cart/pay',
+                'add-product'=>'products-manager/add-product',
             ],
         ],
         'cart'=>[

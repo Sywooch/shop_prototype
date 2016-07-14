@@ -22,14 +22,14 @@ class ShoppingCartController extends AbstractBaseController
     public function actionAddToCart()
     {
         try {
-            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
+            $productsModelForAddToCart = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
             
-            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
-                if ($productsModel->validate()) {
-                    if (!\Yii::$app->cart->addProduct($productsModel)) {
+            if (\Yii::$app->request->isPost && $productsModelForAddToCart->load(\Yii::$app->request->post())) {
+                if ($productsModelForAddToCart->validate()) {
+                    if (!\Yii::$app->cart->addProduct($productsModelForAddToCart)) {
                         throw new ErrorException('Ошибка при добавлении товара в корзину!');
                     }
-                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModel->categories, 'subcategory'=>$productsModel->subcategory, 'id'=>$productsModel->id]));
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModelForAddToCart->categories, 'subcategory'=>$productsModelForAddToCart->subcategory, 'id'=>$productsModelForAddToCart->id]));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
@@ -256,7 +256,7 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (!empty(\Yii::$app->cart->user->emails) && is_object(\Yii::$app->cart->user->emails)) {
-                if (!$emailsModel = MappersHelper::getEmailsModel(\Yii::$app->cart->user->emails)) {
+                if (!$emailsModel = MappersHelper::getEmailsByEmailOrSet(\Yii::$app->cart->user->emails)) {
                     throw new ErrorException('Ошибка при сохранении E-mail!');
                 }
                 \Yii::$app->cart->user->id_emails = $emailsModel->id;
@@ -265,7 +265,7 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (!empty(\Yii::$app->cart->user->address) && is_object(\Yii::$app->cart->user->address)) {
-                if (!$addressModel = MappersHelper::getAddressModel(\Yii::$app->cart->user->address)) {
+                if (!$addressModel = MappersHelper::getAddressByAddressOrSet(\Yii::$app->cart->user->address)) {
                     throw new ErrorException('Ошибка при сохранении address!');
                 }
                 \Yii::$app->cart->user->id_address = $addressModel->id;
@@ -274,7 +274,7 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (!empty(\Yii::$app->cart->user->phones) && is_object(\Yii::$app->cart->user->phones)) {
-                if (!$phonesModel = MappersHelper::getPhonesModel(\Yii::$app->cart->user->phones)) {
+                if (!$phonesModel = MappersHelper::getPhonesByPhoneOrSet(\Yii::$app->cart->user->phones)) {
                     throw new ErrorException('Ошибка при сохранении phones!');
                 }
                 \Yii::$app->cart->user->id_phones = $phonesModel->id;
@@ -282,8 +282,8 @@ class ShoppingCartController extends AbstractBaseController
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             
-            if (MappersHelper::setOrUpdateUsers(\Yii::$app->cart->user)) {
-                if (MappersHelper::setUsersPurchases()) {
+            if (MappersHelper::setUsersUpdateOrSet(\Yii::$app->cart->user)) {
+                if (MappersHelper::setUsersPurchasesInsert()) {
                     if (!MailHelper::send([['template'=>'@app/views/mail/customer.twig', 'setFrom'=>['test@test.com'=>'John'], 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 'setSubject'=>'Hello!']])) {
                         throw new ErrorException('Ошибка при отправке E-mail сообщения!');
                     }

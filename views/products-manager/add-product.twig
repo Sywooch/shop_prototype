@@ -1,0 +1,22 @@
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+{% if app.request.get('notexists') %}
+    <p>Никаких следов пользователя {{ app.request.get('notexists') }}! Но вы можете это исправить прямо сейчас! Если уверены, что с логином и паролем все в порядке, пишите в техподдержку, вам незамедлительно помогут!</p>
+{% endif %}
+
+<p><strong>Add product</strong></p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'action':'', 'method':'POST', 'options':{'id':'add-product-form', 'enctype':'multipart/form-data'}}) %}
+    {{ form.field(productsModelForAddProduct, 'code') | raw }}
+    {{ form.field(productsModelForAddProduct, 'name') | raw }}
+    {{ form.field(productsModelForAddProduct, 'description').textarea() | raw }}
+    {{ form.field(productsModelForAddProduct, 'price') | raw }}
+    {{ form.field(productsModelForAddProduct, 'images[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
+    {{ form.field(productsModelForAddProduct, 'id_categories').dropDownList(array.map(categoriesList, 'id', 'name')) | raw }}
+    <input type="submit" value="Add product" >
+{{ active_form_end() }}

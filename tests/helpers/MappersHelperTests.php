@@ -81,28 +81,22 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasProperty('_colorsList'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_sizesList'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_brandsList'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_addressModel'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_phonesModel'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_deliveriesModel'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_paymentsModel'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_emailsModel'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_currencyModel'));
         
         $this->assertTrue(self::$_reflectionClass->hasMethod('getCategoriesList'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getСurrencyList'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getColorsList'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getSizesList'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getBrandsList'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getAddressModel'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getPhonesModel'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getDeliveriesModel'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getPaymentsModel'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersPurchases'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setOrUpdateUsers'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getEmailsModel'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersRules'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getCurrencyModelById'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setCommentsModel'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getAddressByAddressOrSet'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getPhonesByPhoneOrSet'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getDeliveriesById'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getPaymentsById'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersPurchasesInsert'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersUpdateOrSet'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getEmailsByEmailOrSet'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersRulesInsert'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('getCurrencyById'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('setCommentsInsert'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getProductDetail'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getProductsList'));
     }
@@ -226,10 +220,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getAddressModel
+     * Тестирует метод MappersHelper::getAddressByAddressOrSet
      * в процессе создания записи в БД
      */
-    public function testGetAddressModelOne()
+    public function testGetAddressByAddressOrSet()
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{address}}')->queryAll()));
         
@@ -239,7 +233,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $addressModel->country = self::$_country;
         $addressModel->postcode = self::$_postcode;
         
-        MappersHelper::getAddressModel($addressModel);
+        MappersHelper::getAddressByAddressOrSet($addressModel);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{address}}')->queryAll();
         
@@ -252,10 +246,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getAddressModel
+     * Тестирует метод MappersHelper::getAddressByAddressOrSet
      * в процессе получения существующей записи из БД
      */
-    public function testGetAddressModelTwo()
+    public function testGetAddressByAddressOrSetTwo()
     {
         $addressModel = new AddressModel();
         $addressModel->address = self::$_address;
@@ -263,7 +257,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $addressModel->country = self::$_country;
         $addressModel->postcode = self::$_postcode;
         
-        $result = MappersHelper::getAddressModel($addressModel);
+        $result = MappersHelper::getAddressByAddressOrSet($addressModel);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof AddressModel);
@@ -274,17 +268,17 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getPhonesModel
+     * Тестирует метод MappersHelper::getPhonesByPhoneOrSet
      * в процессе создания записи в БД
      */
-    public function testGetPhonesModelOne()
+    public function testGetPhonesByPhoneOrSetOne()
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{phones}}')->queryAll()));
         
         $phonesModel = new PhonesModel();
         $phonesModel->phone = self::$_phone;
         
-        MappersHelper::getPhonesModel($phonesModel);
+        MappersHelper::getPhonesByPhoneOrSet($phonesModel);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{phones}}')->queryAll();
         
@@ -294,15 +288,15 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getPhonesModel
+     * Тестирует метод MappersHelper::getPhonesByPhoneOrSet
      * в процессе получения существующей записи из БД
      */
-    public function testGetPhonesModelTwo()
+    public function testGetPhonesByPhoneOrSetTwo()
     {
         $phonesModel = new PhonesModel();
         $phonesModel->phone = self::$_phone;
         
-        $result = MappersHelper::getPhonesModel($phonesModel);
+        $result = MappersHelper::getPhonesByPhoneOrSet($phonesModel);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof PhonesModel);
@@ -310,9 +304,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getDeliveriesModel
+     * Тестирует метод MappersHelper::getDeliveriesById
      */
-    public function testGetDeliveriesModel()
+    public function testGetDeliveriesById()
     {
         $command = \Yii::$app->db->createCommand('INSERT INTO {{deliveries}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description, [[price]]=:price');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price]);
@@ -321,7 +315,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $deliveriesModel = new DeliveriesModel();
         $deliveriesModel->id = self::$_id;
         
-        $result = MappersHelper::getDeliveriesModel($deliveriesModel);
+        $result = MappersHelper::getDeliveriesById($deliveriesModel);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof DeliveriesModel);
@@ -332,9 +326,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getPaymentsModel
+     * Тестирует метод MappersHelper::getPaymentsById
      */
-    public function testGetPaymentsModel()
+    public function testGetPaymentsById()
     {
         $command = \Yii::$app->db->createCommand('INSERT INTO {{payments}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':description'=>self::$_description]);
@@ -343,7 +337,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $paymentsModel = new PaymentsModel();
         $paymentsModel->id = self::$_id;
         
-        $result = MappersHelper::getPaymentsModel($paymentsModel);
+        $result = MappersHelper::getPaymentsById($paymentsModel);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof PaymentsModel);
@@ -353,9 +347,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setUsersPurchases
+     * Тестирует метод MappersHelper::setUsersPurchasesInsert
      */
-    public function testSetUsersPurchases()
+    public function testSetUsersPurchasesInsert()
     {
         $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
         $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
@@ -369,7 +363,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->cart->user->payments = new PaymentsModel();
         \Yii::$app->cart->user->payments->id = self::$_id;
         
-        $result = MappersHelper::setUsersPurchases();
+        $result = MappersHelper::setUsersPurchasesInsert();
         
         $this->assertEquals(1, $result);
         
@@ -387,10 +381,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setOrUpdateUsers
+     * Тестирует метод MappersHelper::setUsersUpdateOrSet
      * в процессе создания записи в БД
      */
-    public function testSetOrUpdateUsersOne()
+    public function testSetUsersUpdateOrSet()
     {
         \Yii::$app->user->login = \Yii::$app->params['nonAuthenticatedUserLogin'];
         
@@ -411,7 +405,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $usersModel->id_phones = self::$_id;
         $usersModel->id_address = self::$_id;
         
-        MappersHelper::setOrUpdateUsers($usersModel);
+        MappersHelper::setUsersUpdateOrSet($usersModel);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll();
         
@@ -427,10 +421,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setOrUpdateUsers
+     * Тестирует метод MappersHelper::setUsersUpdateOrSet
      * в процессе обновления существующей записи из БД
      */
-    public function testSetOrUpdateUsersTwo()
+    public function testSetUsersUpdateOrSetTwo()
     {
         $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll()));
         
@@ -444,7 +438,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $usersModel->id_phones = self::$_id + 3;
         $usersModel->id_address = self::$_id + 6;
         
-        MappersHelper::setOrUpdateUsers($usersModel);
+        MappersHelper::setUsersUpdateOrSet($usersModel);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll();
         
@@ -460,17 +454,17 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getEmailsModel
+     * Тестирует метод MappersHelper::getEmailsByEmailOrSet
      * в процессе создания записи в БД
      */
-    public function testGetEmailsModelOne()
+    public function testGetEmailsByEmailOrSetOne()
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryAll()));
         
         $emailsModel = new EmailsModel();
         $emailsModel->email = self::$_email;
         
-        MappersHelper::getEmailsModel($emailsModel);
+        MappersHelper::getEmailsByEmailOrSet($emailsModel);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryAll();
         
@@ -480,15 +474,15 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getEmailsModel
+     * Тестирует метод MappersHelper::getEmailsByEmailOrSet
      * в процессе получения существующей записи из БД
      */
-    public function testGetEmailsModelTwo()
+    public function testGetEmailsByEmailOrSetTwo()
     {
         $emailsModel = new EmailsModel();
         $emailsModel->email = self::$_email;
         
-        $result = MappersHelper::getEmailsModel($emailsModel);
+        $result = MappersHelper::getEmailsByEmailOrSet($emailsModel);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof EmailsModel);
@@ -496,9 +490,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setUsersRules
+     * Тестирует метод MappersHelper::setUsersRulesInsert
      */
-    public function testSetUsersRules()
+    public function testSetUsersRulesInsert()
     {
         \Yii::$app->db->createCommand('DELETE FROM {{users_rules}}')->execute();
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users_rules}}')->queryAll()));
@@ -506,22 +500,22 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $usersModel = new UsersModel();
         $usersModel->id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}}')->queryScalar();
         
-        $result = MappersHelper::setUsersRules($usersModel);
+        $result = MappersHelper::setUsersRulesInsert($usersModel);
         
         $this->assertEquals(2, $result);
     }
     
     /**
-     * Тестирует метод MappersHelper::getCurrencyModelById
+     * Тестирует метод MappersHelper::getCurrencyById
      */
-    public function testGetCurrencyModelById()
+    public function testGetCurrencyById()
     {
         $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{currency}}')->queryAll()));
         
         $currencyModel = new CurrencyModel();
         $currencyModel->id = self::$_id;
         
-        $currencyModel = MappersHelper::getCurrencyModelById($currencyModel);
+        $currencyModel = MappersHelper::getCurrencyById($currencyModel);
         
         $this->assertTrue(is_object($currencyModel));
         $this->assertTrue($currencyModel instanceof CurrencyModel);
@@ -543,9 +537,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setCommentsModel
+     * Тестирует метод MappersHelper::setCommentsInsert
      */
-    public function testSetCommentsModel()
+    public function testSetCommentsInsert()
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll()));
         
@@ -558,7 +552,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $commentsModel->id_emails = $id_emails;
         $commentsModel->id_products = $id_products;
         
-        $result = MappersHelper::setCommentsModel($commentsModel);
+        $result = MappersHelper::setCommentsInsert($commentsModel);
         
         $this->assertEquals(1, $result);
         
@@ -615,20 +609,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertTrue(is_object($result[0]));
         $this->assertTrue($result[0]  instanceof ProductsModel);
-    }
-    
-    /**
-     * Тестирует метод MappersHelper::getProductsList
-     * при условии возврата пустого массива
-     * @expectedException app\exceptions\EmptyListException
-     */
-    public function testGetProductsListExc()
-    {
-        \Yii::$app->db->createCommand('DELETE FROM {{comments}}')->execute();
-        \Yii::$app->db->createCommand('DELETE FROM {{products}}')->execute();
-        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
-        
-        $result = MappersHelper::getProductsList(self::$_config);
     }
     
     public static function tearDownAfterClass()

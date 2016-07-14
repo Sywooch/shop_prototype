@@ -26,6 +26,7 @@ use app\mappers\CurrencyByIdMapper;
 use app\mappers\CommentsInsertMapper;
 use app\mappers\ProductDetailMapper;
 use app\mappers\ProductsListMapper;
+use app\mappers\UsersByLoginMapper;
 use app\models\AddressModel;
 use app\models\EmailsModel;
 use app\models\PaymentsModel;
@@ -68,36 +69,6 @@ class MappersHelper
      * @see MappersHelper::getBrandsList()
      */
     private static $_brandsList = array();
-    /**
-     * @var object AddressModel
-     * @see MappersHelper::getAddressModel()
-     */
-    private static $_addressModel = NULL;
-    /**
-     * @var object PhonesModel
-     * @see MappersHelper::getPhonesModel()
-     */
-    private static $_phonesModel = NULL;
-    /**
-     * @var object DeliveriesModel
-     * @see MappersHelper::getDeliveriesModel()
-     */
-    private static $_deliveriesModel = NULL;
-    /**
-     * @var object PaymentsModel
-     * @see MappersHelper::getPaymentsModel()
-     */
-    private static $_paymentsModel = NULL;
-    /**
-     * @var object EmailsModel
-     * @see MappersHelper::getEmailsModel()
-     */
-    private static $_emailsModel = NULL;
-    /**
-     * @var object CurrencyModel
-     * @see MappersHelper::getCurrencyModel()
-     */
-    private static $_currencyModel = NULL;
     
     /**
      * Получает массив объектов категорий
@@ -114,7 +85,7 @@ class MappersHelper
                 ]);
                 $categoriesArray = $categoriesMapper->getGroup();
                 if (!is_array($categoriesArray) || empty($categoriesArray)) {
-                    throw new ErrorException('Ошибка при формировании массива категорий!');
+                    return NULL;
                 }
                 self::$_categoriesList = $categoriesArray;
             }
@@ -139,7 +110,7 @@ class MappersHelper
                 ]);
                 $currencyArray = $currencyMapper->getGroup();
                 if (!is_array($currencyArray) || empty($currencyArray)) {
-                    throw new ErrorException('Ошибка при формировании массива валют!');
+                    return NULL;
                 }
                 self::$_currencyList = $currencyArray;
             }
@@ -164,7 +135,7 @@ class MappersHelper
                 ]);
                 $colorsArray = $colorsMapper->getGroup();
                 if (!is_array($colorsArray) || empty($colorsArray)) {
-                    throw new ErrorException('Ошибка при формировании массива colors!');
+                    return NULL;
                 }
                 self::$_colorsList = $colorsArray;
             }
@@ -189,7 +160,7 @@ class MappersHelper
                 ]);
                 $sizesArray = $sizesMapper->getGroup();
                 if (!is_array($sizesArray) || empty($sizesArray)) {
-                    throw new ErrorException('Ошибка при формировании массива sizes!');
+                    return NULL;
                 }
                 self::$_sizesList = $sizesArray;
             }
@@ -214,7 +185,7 @@ class MappersHelper
                 ]);
                 $brandsArray = $brandsMapper->getGroup();
                 if (!is_array($brandsArray) || empty($brandsArray)) {
-                    throw new ErrorException('Ошибка при формировании массива sizes!');
+                    return NULL;
                 }
                 self::$_brandsList = $brandsArray;
             }
@@ -230,31 +201,28 @@ class MappersHelper
      * @param object $addressModel экземпляр AddressModel
      * @return object
      */
-    public static function getAddressModel(AddressModel $addressModel)
+    public static function getAddressByAddressOrSet(AddressModel $addressModel)
     {
         try {
-            if (empty(self::$_addressModel)) {
-                self::$_addressModel = $addressModel;
-                $addressByAddressMapper = new AddressByAddressMapper([
+            $addressByAddressMapper = new AddressByAddressMapper([
+                'tableName'=>'address',
+                'fields'=>['id', 'address', 'city', 'country', 'postcode'],
+                'model'=>$addressModel
+            ]);
+            $result = $addressByAddressMapper->getOneFromGroup();
+            if (is_object($result) && $result instanceof AddressModel) {
+                $addressModel = $result;
+            } else {
+                $addressInsertMapper = new AddressInsertMapper([
                     'tableName'=>'address',
-                    'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-                    'model'=>self::$_addressModel
+                    'fields'=>['address', 'city', 'country', 'postcode'],
+                    'objectsArray'=>[$addressModel],
                 ]);
-                $result = $addressByAddressMapper->getOneFromGroup();
-                if (is_object($result) && $result instanceof AddressModel) {
-                    self::$_addressModel = $result;
-                } else {
-                    $addressInsertMapper = new AddressInsertMapper([
-                        'tableName'=>'address',
-                        'fields'=>['address', 'city', 'country', 'postcode'],
-                        'objectsArray'=>[self::$_addressModel],
-                    ]);
-                    if (!$addressInsertMapper->setGroup()) {
-                        throw new ErrorException('Не удалось сохранить данные AddressModel!');
-                    }
+                if (!$addressInsertMapper->setGroup()) {
+                    return NULL;
                 }
             }
-            return self::$_addressModel;
+            return $addressModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -266,31 +234,28 @@ class MappersHelper
      * @param object $phonesModel экземпляр PhonesModel
      * @return object
      */
-    public static function getPhonesModel(PhonesModel $phonesModel)
+    public static function getPhonesByPhoneOrSet(PhonesModel $phonesModel)
     {
         try {
-            if (empty(self::$_phonesModel)) {
-                self::$_phonesModel = $phonesModel;
-                $phonesByPhoneMapper = new PhonesByPhoneMapper([
+            $phonesByPhoneMapper = new PhonesByPhoneMapper([
+                'tableName'=>'phones',
+                'fields'=>['id', 'phone'],
+                'model'=>$phonesModel
+            ]);
+            $result = $phonesByPhoneMapper->getOneFromGroup();
+            if (is_object($result) && $result instanceof PhonesModel) {
+                $phonesModel = $result;
+            } else {
+                $phonesInsertMapper = new PhonesInsertMapper([
                     'tableName'=>'phones',
-                    'fields'=>['id', 'phone'],
-                    'model'=>self::$_phonesModel
+                    'fields'=>['phone'],
+                    'objectsArray'=>[$phonesModel],
                 ]);
-                $result = $phonesByPhoneMapper->getOneFromGroup();
-                if (is_object($result) && $result instanceof PhonesModel) {
-                    self::$_phonesModel = $result;
-                } else {
-                    $phonesInsertMapper = new PhonesInsertMapper([
-                        'tableName'=>'phones',
-                        'fields'=>['phone'],
-                        'objectsArray'=>[self::$_phonesModel],
-                    ]);
-                    if (!$phonesInsertMapper->setGroup()) {
-                        throw new ErrorException('Не удалось сохранить данные PhonesModel!');
-                    }
+                if (!$phonesInsertMapper->setGroup()) {
+                    return NULL;
                 }
             }
-            return self::$_phonesModel;
+            return $phonesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -301,22 +266,19 @@ class MappersHelper
      * @param object $deliveriesModel экземпляр DeliveriesModel
      * @return object
      */
-    public static function getDeliveriesModel(DeliveriesModel $deliveriesModel)
+    public static function getDeliveriesById(DeliveriesModel $deliveriesModel)
     {
         try {
-            if (empty(self::$_deliveriesModel)) {
-                $deliveriesByIdMapper = new DeliveriesByIdMapper([
-                    'tableName'=>'deliveries',
-                    'fields'=>['id', 'name', 'description', 'price'],
-                    'model'=>$deliveriesModel,
-                ]);
-                $result = $deliveriesByIdMapper->getOneFromGroup();
-                if (!is_object($result) || !$result instanceof DeliveriesModel) {
-                    throw new ErrorException('Ошибка при получении данных DeliveriesModel из БД!');
-                }
-                self::$_deliveriesModel = $result;
+            $deliveriesByIdMapper = new DeliveriesByIdMapper([
+                'tableName'=>'deliveries',
+                'fields'=>['id', 'name', 'description', 'price'],
+                'model'=>$deliveriesModel,
+            ]);
+            $deliveriesModel = $deliveriesByIdMapper->getOneFromGroup();
+            if (!is_object($deliveriesModel) || !$deliveriesModel instanceof DeliveriesModel) {
+                return NULL;
             }
-            return self::$_deliveriesModel;
+            return $deliveriesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -327,22 +289,19 @@ class MappersHelper
      * @param object $paymentsModel экземпляр PaymentsModel
      * @return object
      */
-    public static function getPaymentsModel(PaymentsModel $paymentsModel)
+    public static function getPaymentsById(PaymentsModel $paymentsModel)
     {
         try {
-            if (empty(self::$_paymentsModel)) {
-                $paymentsByIdMapper = new PaymentsByIdMapper([
-                    'tableName'=>'payments',
-                    'fields'=>['id', 'name', 'description'],
-                    'model'=>$paymentsModel,
-                ]);
-                $result = $paymentsByIdMapper->getOneFromGroup();
-                if (!is_object($result) || !$result instanceof PaymentsModel) {
-                    throw new ErrorException('Ошибка при получении данных PaymentsModel из БД!');
-                }
-                self::$_paymentsModel = $result;
+            $paymentsByIdMapper = new PaymentsByIdMapper([
+                'tableName'=>'payments',
+                'fields'=>['id', 'name', 'description'],
+                'model'=>$paymentsModel,
+            ]);
+            $paymentsModel = $paymentsByIdMapper->getOneFromGroup();
+            if (!is_object($paymentsModel) || !$paymentsModel instanceof PaymentsModel) {
+                return NULL;
             }
-            return self::$_paymentsModel;
+            return $paymentsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -352,7 +311,7 @@ class MappersHelper
      * Создает новую запись UsersPurchases в БД, вязывающую пользователя с купленным товаром
      * @return boolean
      */
-    public static function setUsersPurchases()
+    public static function setUsersPurchasesInsert()
     {
         try {
             $id_users = \Yii::$app->cart->user->id;
@@ -398,7 +357,7 @@ class MappersHelper
      * @param object $usersModel экземпляр UsersModel
      * @return int
      */
-    public static function setOrUpdateUsers(UsersModel $usersModel)
+    public static function setUsersUpdateOrSet(UsersModel $usersModel)
     {
         try {
             if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->id)) {
@@ -425,7 +384,7 @@ class MappersHelper
                 if (!$usersInsertMapper->setGroup()) {
                     throw new ErrorException('Не удалось добавить данные UsersModel в БД!');
                 }
-                if (!self::setUsersRules($usersModel)) {
+                if (!self::setUsersRulesInsert($usersModel)) {
                     throw new ErrorException('Ошибка при сохранении связи пользователя с правами доступа!');
                 }
             }
@@ -441,31 +400,28 @@ class MappersHelper
      * @param object $emailsModel экземпляр EmailsModel
      * @return object
      */
-    public static function getEmailsModel(EmailsModel $emailsModel)
+    public static function getEmailsByEmailOrSet(EmailsModel $emailsModel)
     {
         try {
-            if (empty(self::$_emailsModel)) {
-                self::$_emailsModel = $emailsModel;
-                $emailsByEmailMapper = new EmailsByEmailMapper([
+            $emailsByEmailMapper = new EmailsByEmailMapper([
+                'tableName'=>'emails',
+                'fields'=>['id', 'email'],
+                'model'=>$emailsModel
+            ]);
+            $result = $emailsByEmailMapper->getOneFromGroup();
+            if (is_object($result) && $result instanceof EmailsModel) {
+                $emailsModel = $result;
+            } else {
+                $emailsInsertMapper = new EmailsInsertMapper([
                     'tableName'=>'emails',
-                    'fields'=>['id', 'email'],
-                    'model'=>self::$_emailsModel
+                    'fields'=>['email'],
+                    'objectsArray'=>[$emailsModel],
                 ]);
-                $result = $emailsByEmailMapper->getOneFromGroup();
-                if (is_object($result) && $result instanceof EmailsModel) {
-                    self::$_emailsModel = $result;
-                } else {
-                    $emailsInsertMapper = new EmailsInsertMapper([
-                        'tableName'=>'emails',
-                        'fields'=>['email'],
-                        'objectsArray'=>[self::$_emailsModel],
-                    ]);
-                    if (!$emailsInsertMapper->setGroup()) {
-                        throw new ErrorException('Не удалось обновить данные в БД!');
-                    }
+                if (!$emailsInsertMapper->setGroup()) {
+                    return NULL;
                 }
             }
-            return self::$_emailsModel;
+            return $emailsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -476,7 +432,7 @@ class MappersHelper
      * @param object $usersModel экземпляр UsersModel
      * @return int
      */
-    public static function setUsersRules(UsersModel $usersModel)
+    public static function setUsersRulesInsert(UsersModel $usersModel)
     {
         try {
             $usersRulesInsertMapper = new UsersRulesInsertMapper([
@@ -485,7 +441,7 @@ class MappersHelper
                 'model'=>$usersModel
             ]);
             if (!$result = $usersRulesInsertMapper->setGroup()) {
-                throw new ErrorException('Не удалось добавить данные UsersRules в БД!');
+                return NULL;
             }
             return $result;
         } catch (\Exception $e) {
@@ -498,21 +454,19 @@ class MappersHelper
      * @param object $currencyModel экземпляр CurrencyModel
      * @return objects CurrencyModel
      */
-    public static function getCurrencyModelById(CurrencyModel $currencyModel)
+    public static function getCurrencyById(CurrencyModel $currencyModel)
     {
         try {
-            if (empty(self::$_currencyModel)) {
-                $currencyByIdMapper = new CurrencyByIdMapper([
-                    'tableName'=>'currency',
-                    'fields'=>['id', 'currency', 'exchange_rate', 'main'],
-                    'model'=>$currencyModel,
-                ]);
-                $currencyModel = $currencyByIdMapper->getOneFromGroup();
-                if (is_object($currencyModel) && $currencyModel instanceof CurrencyModel) {
-                    self::$_currencyModel = $currencyModel;
-                }
+            $currencyByIdMapper = new CurrencyByIdMapper([
+                'tableName'=>'currency',
+                'fields'=>['id', 'currency', 'exchange_rate', 'main'],
+                'model'=>$currencyModel,
+            ]);
+            $currencyModel = $currencyByIdMapper->getOneFromGroup();
+            if (!is_object($currencyModel) && !$currencyModel instanceof CurrencyModel) {
+                return NULL;
             }
-            return self::$_currencyModel;
+            return $currencyModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -523,7 +477,7 @@ class MappersHelper
      * @param object $commentsModel экземпляр CommentsModel
      * @return int
      */
-    public static function setCommentsModel(CommentsModel $commentsModel)
+    public static function setCommentsInsert(CommentsModel $commentsModel)
     {
         try {
             $commentsInsertMapper = new CommentsInsertMapper([
@@ -532,7 +486,7 @@ class MappersHelper
                 'objectsArray'=>[$commentsModel],
             ]);
             if (!$result = $commentsInsertMapper->setGroup()) {
-                throw new ErrorException('Не удалось обновить данные в БД!');
+                return NULL;
             }
             return $result;
         } catch (\Exception $e) {
@@ -553,7 +507,7 @@ class MappersHelper
             ]);
             $productsObject = $productMapper->getOneFromGroup();
             if (!is_object($productsObject) || !$productsObject instanceof ProductsModel) {
-                throw new ErrorException('Ошибка при получении данных ProductsModel!');
+                return NULL;
             }
             return $productsObject;
         } catch (\Exception $e) {
@@ -572,11 +526,34 @@ class MappersHelper
             $productsMapper = new ProductsListMapper($config);
             $productsArray = $productsMapper->getGroup();
             if (!is_array($productsArray) || empty($productsArray) || !$productsArray[0] instanceof ProductsModel) {
-                throw new EmptyListException('Ошибка при получении данных ProductsModel!');
+                return NULL;
             }
             return $productsArray;
         } catch (EmptyListException $e) {
             throw $e;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект UsersModel по login
+     * @param object $usersModel экземпляр UsersModel
+     * @return objects UsersModel
+     */
+    public static function getUsersByLogin(UsersModel $usersModel)
+    {
+        try {
+            $usersByLoginMapper = new UsersByLoginMapper([
+                'tableName'=>'users',
+                'fields'=>\Yii::$app->params['filedsFromDb'],
+                'model'=>$usersModel
+            ]);
+            $usersModel = $usersByLoginMapper->getOneFromGroup();
+            if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
+                return NULL;
+            }
+            return $usersModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

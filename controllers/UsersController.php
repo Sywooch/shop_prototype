@@ -30,11 +30,11 @@ class UsersController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate() && $emailsModel->validate()) {
-                    if (!$emailsModel = MappersHelper::getEmailsModel($emailsModel)) {
+                    if (!$emailsModel = MappersHelper::getEmailsByEmailOrSet($emailsModel)) {
                         throw new ErrorException('Ошибка при сохранении E-mail!');
                     }
                     $usersModel->id_emails = $emailsModel->id;
-                    if (!MappersHelper::setOrUpdateUsers($usersModel)) {
+                    if (!MappersHelper::setUsersUpdateOrSet($usersModel)) {
                         throw new ErrorException('Ошибка при сохранении данных пользователя!');
                     }
                     return $this->redirect(Url::to(['users/login-user', 'added'=>true]));

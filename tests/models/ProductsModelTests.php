@@ -21,7 +21,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_name = 'Some Name';
     private static $_description = 'Some description';
     private static $_price = 123.45;
-    private static $_images = 'images/';
+    private static $_images = ['images/'];
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
     private static $_quantity = 1;
@@ -103,6 +103,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_TO_CART'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_REMOVE'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_CLEAR_CART'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'date'));
@@ -209,6 +210,42 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_categorySeocode, $model->categories);
         $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        
+        $this->assertFalse(empty($model->code));
+        $this->assertFalse(empty($model->name));
+        $this->assertFalse(empty($model->description));
+        $this->assertFalse(empty($model->price));
+        $this->assertFalse(empty($model->images));
+        $this->assertFalse(empty($model->id_categories));
+        $this->assertFalse(empty($model->id_subcategory));
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(7, count($model->errors));
+        $this->assertTrue(array_key_exists('code', $model->errors));
+        $this->assertTrue(array_key_exists('name', $model->errors));
+        $this->assertTrue(array_key_exists('description', $model->errors));
+        $this->assertTrue(array_key_exists('price', $model->errors));
+        $this->assertTrue(array_key_exists('images', $model->errors));
+        $this->assertTrue(array_key_exists('id_categories', $model->errors));
+        $this->assertTrue(array_key_exists('id_subcategory', $model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
     
     /**
