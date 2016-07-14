@@ -15,9 +15,9 @@
         Name: <a href="{{ url.to({0:'product-detail/index', 'categories':product.categories, 'subcategory':product.subcategory, 'id':product.id}, true) }}">{{ product.name }}</a></br>
         Color: {{ array.map(product.colors, 'id', 'color')[product.colorToCart] }}<br>
         Size: {{ array.map(product.sizes, 'id', 'size')[product.sizeToCart] }}<br>
-        Price: {{ product.price | number_format(2, '.', ' ') }}</br>
+        Price: {{ (product.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</br>
         Quantity: {{ product.quantity }}<br>
-        Total price: {{ (product.price * product.quantity) | number_format(2, '.', ' ') }}
+        Total price: {{ ((product.price * app.user.currency.exchange_rate) * product.quantity) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
     </p>
 {% endfor %}
 
@@ -35,7 +35,7 @@
 <p>
     {{ array.map(user.deliveries.allDeliveries, 'id', 'name')[user.deliveries.id] }}<br>
     {{ array.map(user.deliveries.allDeliveries, 'id', 'description')[user.deliveries.id] }}<br>
-    Cost: {{ array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id] }}
+    Cost: {{ (array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id] * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
 </p>
 
 <p><strong>Delivery address</strong></p>
@@ -56,4 +56,4 @@
     {{ array.map(user.payments.allPayments, 'id', 'description')[user.payments.id] }}
 </p
 
-<p><strong>Total cost including delivery: {{ (app.cart.getTotalCost() + array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id]) | number_format(2, '.', ' ') }}</strong></p>
+<p><strong>Total cost including delivery: {{ ((app.cart.getTotalCost() + array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id]) * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</strong></p>

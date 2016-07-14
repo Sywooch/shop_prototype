@@ -13,10 +13,15 @@ class ObjectsToArrayHelperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_id = 1;
     private static $_name = 'Some name';
-    private static $_description = 'Some description';
+    private static $_description = 'Some description.';
     private static $_price = 12.56;
-    private static $_expectedForDelivery = 'Some name. Some description. Стоимость доставки: 12.56';
+    private static $_expectedForDelivery = 'Some name. Some description. Стоимость доставки: ';
     private static $_expectedForPayments = 'Some name. Some description.';
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_expectedForDelivery = self::$_expectedForDelivery . number_format(self::$_price * \Yii::$app->user->currency->exchange_rate, 2, '.', ' ') . ' ' . \Yii::$app->user->currency->currency;
+    }
     
     /**
      * Тестирует метод ObjectsToArrayHelper::getDeliveriesArray
