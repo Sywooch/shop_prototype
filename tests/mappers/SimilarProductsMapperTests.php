@@ -65,7 +65,7 @@ class SimilarProductsMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetGroup()
     {
-        $_GET = ['id'=>1, 'categories'=>'mensfootwear', 'subcategory'=>'boots'];
+        $_GET = ['id'=>self::$_id, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
         
         $similarProductsMapper = new SimilarProductsMapper([
             'tableName'=>'products',

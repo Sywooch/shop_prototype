@@ -4,11 +4,7 @@ namespace app\models;
 
 use app\models\AbstractBaseModel;
 use yii\base\ErrorException;
-use app\mappers\ColorsForProductMapper;
-use app\mappers\SizesForProductMapper;
-use app\mappers\SimilarProductsMapper;
-use app\mappers\RelatedProductsMapper;
-use app\mappers\CommentsForProductMapper;
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы products
@@ -101,17 +97,7 @@ class ProductsModel extends AbstractBaseModel
         try {
             if (is_null($this->_colors)) {
                 if (!empty($this->id)) {
-                    $colorsMapper = new ColorsForProductMapper([
-                        'tableName'=>'colors',
-                        'fields'=>['id', 'color'],
-                        'orderByField'=>'color',
-                        'model'=>$this,
-                    ]);
-                    $colorsArray = $colorsMapper->getGroup();
-                    if (!is_array($colorsArray) || empty($colorsArray)) {
-                        return NULL;
-                    }
-                    $this->_colors = $colorsArray;
+                    $this->_colors = MappersHelper::getColorsForProductList($this);
                 }
             }
             return $this->_colors;
@@ -129,17 +115,7 @@ class ProductsModel extends AbstractBaseModel
         try {
             if (is_null($this->_sizes)) {
                 if (!empty($this->id)) {
-                    $sizesMapper = new SizesForProductMapper([
-                        'tableName'=>'sizes',
-                        'fields'=>['id', 'size'],
-                        'orderByField'=>'size',
-                        'model'=>$this,
-                    ]);
-                    $sizesArray = $sizesMapper->getGroup();
-                    if (!is_array($sizesArray) || empty($sizesArray)) {
-                        return NULL;
-                    }
-                    $this->_sizes = $sizesArray;
+                    $this->_sizes = MappersHelper::getSizesForProductList($this);
                 }
             }
             return $this->_sizes;
@@ -157,21 +133,7 @@ class ProductsModel extends AbstractBaseModel
         try {
             if (is_null($this->_similar)) {
                 if (!empty($this->id)) {
-                    $similarProductsMapper = new SimilarProductsMapper([
-                        'tableName'=>'products',
-                        'fields'=>['id', 'name', 'price', 'images'],
-                        'orderByField'=>'date',
-                        'otherTablesFields'=>[
-                            ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
-                            ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
-                        ],
-                        'model'=>$this,
-                    ]);
-                    $similarsArray = $similarProductsMapper->getGroup();
-                    if (!is_array($similarsArray) || empty($similarsArray)) {
-                        return NULL;
-                    }
-                    $this->_similar = $similarsArray;
+                    $this->_similar = MappersHelper::getSimilarProductsList($this);
                 }
             }
             return $this->_similar;
@@ -189,21 +151,7 @@ class ProductsModel extends AbstractBaseModel
         try {
             if (is_null($this->_related)) {
                 if (!empty($this->id)) {
-                    $relatedProductsMapper = new RelatedProductsMapper([
-                        'tableName'=>'products',
-                        'fields'=>['id', 'name', 'price', 'images'],
-                        'otherTablesFields'=>[
-                            ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
-                            ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
-                        ],
-                        'orderByField'=>'date',
-                        'model'=>$this,
-                    ]);
-                    $relatedArray = $relatedProductsMapper->getGroup();
-                    if (!is_array($relatedArray) || empty($relatedArray)) {
-                        return NULL;
-                    }
-                    $this->_related = $relatedArray;
+                    $this->_related = MappersHelper::getRelatedProductsList($this);
                 }
             }
             return $this->_related;
@@ -222,16 +170,7 @@ class ProductsModel extends AbstractBaseModel
         try {
             if (is_null($this->_comments)) {
                 if (!empty($this->id)) {
-                    $commentsForProductMapper = new CommentsForProductMapper([
-                        'tableName'=>'comments',
-                        'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
-                        'model'=>$this,
-                    ]);
-                    $commentsArray = $commentsForProductMapper->getGroup();
-                    if (!is_array($commentsArray) || empty($commentsArray)) {
-                        return NULL;
-                    }
-                    $this->_comments = $commentsArray;
+                    $this->_comments = MappersHelper::getCommentsForProductList($this);
                 }
             }
             return $this->_comments;

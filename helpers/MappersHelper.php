@@ -34,6 +34,12 @@ use app\mappers\EmailsByIdMapper;
 use app\mappers\PhonesByIdMapper;
 use app\mappers\CurrencyByMainMapper;
 use app\mappers\SubcategoryForCategoryMapper;
+use app\mappers\ColorsForProductMapper;
+use app\mappers\SizesForProductMapper;
+use app\mappers\SimilarProductsMapper;
+use app\mappers\RelatedProductsMapper;
+use app\mappers\CommentsForProductMapper;
+use app\mappers\PaymentsMapper;
 use app\models\AddressModel;
 use app\models\EmailsModel;
 use app\models\PaymentsModel;
@@ -87,10 +93,15 @@ class MappersHelper
      * @see MappersHelper::getRulesList()
      */
     private static $_rulesList = array();
+    /**
+     * @var array массив объектов payments
+     * @see MappersHelper::getPaymentsList()
+     */
+    private static $_paymentsList = array();
     
     /**
      * Получает массив объектов категорий
-     * @return array of objects
+     * @return array of objects CategoriesModel
      */
     public static function getCategoriesList()
     {
@@ -115,7 +126,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов валют
-     * @return array of objects
+     * @return array of objects CurrencyModel
      */
     public static function getСurrencyList()
     {
@@ -140,7 +151,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов colors
-     * @return array of objects
+     * @return array of objects ColorsModel
      */
     public static function getColorsList()
     {
@@ -164,8 +175,32 @@ class MappersHelper
     }
     
     /**
+     * Получает массив объектов colors для текущего products
+     * @param object $productsModel экземпляр ProductsModel
+     * @return array of objects ColorsModel
+     */
+    public static function getColorsForProductList(ProductsModel $productsModel)
+    {
+        try {
+            $colorsMapper = new ColorsForProductMapper([
+                'tableName'=>'colors',
+                'fields'=>['id', 'color'],
+                'orderByField'=>'color',
+                'model'=>$productsModel,
+            ]);
+            $colorsArray = $colorsMapper->getGroup();
+            if (!is_array($colorsArray) || empty($colorsArray)) {
+                return NULL;
+            }
+            return $colorsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив объектов sizes
-     * @return array of objects
+     * @return array of objects SizesModel
      */
     public static function getSizesList()
     {
@@ -189,8 +224,32 @@ class MappersHelper
     }
     
     /**
+     * Получает массив объектов sizes для текущего products
+     * @param object $productsModel экземпляр ProductsModel
+     * @return array of objects SizesModel
+     */
+    public static function getSizesForProductList(ProductsModel $productsModel)
+    {
+        try {
+            $sizesMapper = new SizesForProductMapper([
+                'tableName'=>'sizes',
+                'fields'=>['id', 'size'],
+                'orderByField'=>'size',
+                'model'=>$productsModel,
+            ]);
+            $sizesArray = $sizesMapper->getGroup();
+            if (!is_array($sizesArray) || empty($sizesArray)) {
+                return NULL;
+            }
+            return $sizesArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив объектов brands
-     * @return array of objects
+     * @return array of objects BrandsModel
      */
     public static function getBrandsList()
     {
@@ -214,12 +273,10 @@ class MappersHelper
     }
     
     /**
-     * Проверяет, существет ли запись в БД для address, если да, прекращает выполнение,
-     * если нет, создает новую запись в БД
-     * @param object $addressModel экземпляр AddressModel
-     * @return object
+     * Получает объект AddressModel по address
+     * @return objects AddressModel
      */
-    public static function getAddressByAddressOrSet(AddressModel $addressModel)
+    public static function getAddressByAddress(AddressModel $addressModel)
     {
         try {
             $addressByAddressMapper = new AddressByAddressMapper([
@@ -227,20 +284,34 @@ class MappersHelper
                 'fields'=>['id', 'address', 'city', 'country', 'postcode'],
                 'model'=>$addressModel
             ]);
-            $result = $addressByAddressMapper->getOneFromGroup();
-            if (is_object($result) && $result instanceof AddressModel) {
-                $addressModel = $result;
-            } else {
-                $addressInsertMapper = new AddressInsertMapper([
-                    'tableName'=>'address',
-                    'fields'=>['address', 'city', 'country', 'postcode'],
-                    'objectsArray'=>[$addressModel],
-                ]);
-                if (!$addressInsertMapper->setGroup()) {
-                    return NULL;
-                }
+            $addressModel = $addressByAddressMapper->getOneFromGroup();
+            if (!is_object($addressModel) && !$addressModel instanceof AddressModel) {
+                return NULL;
             }
             return $addressModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись AddressModel в БД
+     * @param object $addressModel экземпляр AddressModel
+     * @return int
+     */
+    public static function setAddressInsert(AddressModel $addressModel)
+    {
+        try {
+            $addressInsertMapper = new AddressInsertMapper([
+                'tableName'=>'address',
+                'fields'=>['address', 'city', 'country', 'postcode'],
+                'objectsArray'=>[$addressModel],
+            ]);
+            $result = $addressInsertMapper->setGroup();
+            if (!$result) {
+                return NULL;
+            }
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -270,12 +341,10 @@ class MappersHelper
     }
     
     /**
-     * Проверяет, существет ли запись в БД для phone, если да, прекращает выполнение,
-     * если нет, создает новую запись в БД
-     * @param object $phonesModel экземпляр PhonesModel
-     * @return object
+     * Получает объект PhonesModel по phone
+     * @return objects PhonesModel
      */
-    public static function getPhonesByPhoneOrSet(PhonesModel $phonesModel)
+    public static function getPhonesByPhone(PhonesModel $phonesModel)
     {
         try {
             $phonesByPhoneMapper = new PhonesByPhoneMapper([
@@ -283,20 +352,34 @@ class MappersHelper
                 'fields'=>['id', 'phone'],
                 'model'=>$phonesModel
             ]);
-            $result = $phonesByPhoneMapper->getOneFromGroup();
-            if (is_object($result) && $result instanceof PhonesModel) {
-                $phonesModel = $result;
-            } else {
-                $phonesInsertMapper = new PhonesInsertMapper([
-                    'tableName'=>'phones',
-                    'fields'=>['phone'],
-                    'objectsArray'=>[$phonesModel],
-                ]);
-                if (!$phonesInsertMapper->setGroup()) {
-                    return NULL;
-                }
+            $phonesModel = $phonesByPhoneMapper->getOneFromGroup();
+            if (!is_object($phonesModel) && !$phonesModel instanceof PhonesModel) {
+                return NULL;
             }
             return $phonesModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись PhonesModel в БД
+     * @param object $phonesModel экземпляр PhonesModel
+     * @return int
+     */
+    public static function setPhonesInsert(PhonesModel $phonesModel)
+    {
+        try {
+           $phonesInsertMapper = new PhonesInsertMapper([
+                'tableName'=>'phones',
+                'fields'=>['phone'],
+                'objectsArray'=>[$phonesModel],
+            ]);
+            $result = $phonesInsertMapper->setGroup();
+            if (!$result) {
+                return NULL;
+            }
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -350,7 +433,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов deliveries
-     * @return array of objects
+     * @return array of objects DeliveriesModel
      */
     public static function getDeliveriesList()
     {
@@ -391,6 +474,30 @@ class MappersHelper
                 return NULL;
             }
             return $paymentsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов payments
+     * @return array of objects PaymentsModel
+     */
+    public static function getPaymentsList()
+    {
+        try {
+            if (empty(self::$_paymentsList)) {
+                $paymentsMapper = new PaymentsMapper([
+                    'tableName'=>'payments',
+                    'fields'=>['id', 'name', 'description'],
+                ]);
+                $paymentsArray = $paymentsMapper->getGroup();
+                if (!is_array($paymentsArray) || empty($paymentsArray)) {
+                    return NULL;
+                }
+                self::$_paymentsList = $paymentsArray;
+            }
+            return self::$_paymentsList;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -441,55 +548,55 @@ class MappersHelper
     }
     
     /**
-     * Проверяет, авторизирован ли user в системе, если да, обновляет данные,
-     * если нет, создает новую запись в БД
-     * @param object $usersModel экземпляр UsersModel
-     * @return int
+     * Обновляет запись в БД объектом UsersModel
+     * @return objects UsersModel
      */
-    public static function setUsersUpdateOrSet(UsersModel $usersModel)
+    public static function setUsersUpdate(UsersModel $usersModel)
     {
         try {
-            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->id)) {
-                \Yii::configure($usersModel, ['id'=>\Yii::$app->user->id]);
-                if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {
-                    $usersUpdateMapper = new UsersUpdateMapper([
-                        'tableName'=>'users',
-                        'fields'=>['name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-                        'model'=>$usersModel,
-                    ]);
-                    if (!$result = $usersUpdateMapper->setGroup()) {
-                        throw new ErrorException('Не удалось обновить данные UsersModel в БД!');
-                    }
-                    if (!UserAuthenticationHelper::fill($usersModel)) {
-                        throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
-                    }
-                }
-            } else {
-                $usersInsertMapper = new UsersInsertMapper([
-                    'tableName'=>'users',
-                    'fields'=>['login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-                    'objectsArray'=>[$usersModel],
-                ]);
-                if (!$usersInsertMapper->setGroup()) {
-                    throw new ErrorException('Не удалось добавить данные UsersModel в БД!');
-                }
-                if (!self::setUsersRulesInsert($usersModel)) {
-                    throw new ErrorException('Ошибка при сохранении связи пользователя с правами доступа!');
-                }
+            $usersUpdateMapper = new UsersUpdateMapper([
+                'tableName'=>'users',
+                'fields'=>['name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                'model'=>$usersModel,
+            ]);
+            $result = $usersUpdateMapper->setGroup();
+            if (!$result) {
+                return NULL;
             }
-            return $usersModel;
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
     /**
-     * Проверяет, существет ли запись в БД для такого email, если да, возвращает ее,
-     * если нет, создает новую запись в БД
-     * @param object $emailsModel экземпляр EmailsModel
-     * @return object
+     * Создает новую запись UsersModel в БД
+     * @param object $usersModel экземпляр UsersModel
+     * @return int
      */
-    public static function getEmailsByEmailOrSet(EmailsModel $emailsModel)
+    public static function setUsersInsert(UsersModel $usersModel)
+    {
+        try {
+            $usersInsertMapper = new UsersInsertMapper([
+                'tableName'=>'users',
+                'fields'=>['login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                'objectsArray'=>[$usersModel],
+            ]);
+            $result = $usersInsertMapper->setGroup();
+            if (!$result) {
+                return NULL;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект EmailsModel по email
+     * @return objects EmailsModel
+     */
+    public static function getEmailsByEmail(EmailsModel $emailsModel)
     {
         try {
             $emailsByEmailMapper = new EmailsByEmailMapper([
@@ -497,20 +604,34 @@ class MappersHelper
                 'fields'=>['id', 'email'],
                 'model'=>$emailsModel
             ]);
-            $result = $emailsByEmailMapper->getOneFromGroup();
-            if (is_object($result) && $result instanceof EmailsModel) {
-                $emailsModel = $result;
-            } else {
-                $emailsInsertMapper = new EmailsInsertMapper([
-                    'tableName'=>'emails',
-                    'fields'=>['email'],
-                    'objectsArray'=>[$emailsModel],
-                ]);
-                if (!$emailsInsertMapper->setGroup()) {
-                    return NULL;
-                }
+            $emailsModel = $emailsByEmailMapper->getOneFromGroup();
+            if (!is_object($emailsModel) && !$emailsModel instanceof EmailsModel) {
+                return NULL;
             }
             return $emailsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись EmailsModel в БД
+     * @param object $emailsModel экземпляр EmailsModel
+     * @return int
+     */
+    public static function setEmailsInsert(EmailsModel $emailsModel)
+    {
+        try {
+            $emailsInsertMapper = new EmailsInsertMapper([
+                'tableName'=>'emails',
+                'fields'=>['email'],
+                'objectsArray'=>[$emailsModel],
+            ]);
+            $result = $emailsInsertMapper->setGroup();
+            if (!$result) {
+                return NULL;
+            }
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -695,7 +816,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов rules
-     * @return array of objects
+     * @return array of objects RulesModel
      */
     public static function getRulesList()
     {
@@ -720,7 +841,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов subcategory
-     * @return array of objects
+     * @return array of objects SubcategoryModel
      */
     public static function getSubcategoryForCategoryList(CategoriesModel $categoriesModel)
     {
@@ -735,6 +856,83 @@ class MappersHelper
                 return NULL;
             }
             return $subcategoryArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов products, похожих свойствами с текущим products
+     * @return array of objects ProductsModel
+     */
+    public static function getSimilarProductsList(ProductsModel $productsModel)
+    {
+        try {
+            $similarProductsMapper = new SimilarProductsMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'name', 'price', 'images'],
+                'orderByField'=>'date',
+                'otherTablesFields'=>[
+                    ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+                    ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+                ],
+                'model'=>$productsModel,
+            ]);
+            $similarsArray = $similarProductsMapper->getGroup();
+            if (!is_array($similarsArray) || empty($similarsArray)) {
+                return NULL;
+            }
+            return $similarsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов products, связанных с текущим products
+     * @return array of objects ProductsModel
+     */
+    public static function getRelatedProductsList(ProductsModel $productsModel)
+    {
+        try {
+            $relatedProductsMapper = new RelatedProductsMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'name', 'price', 'images'],
+                'otherTablesFields'=>[
+                    ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+                    ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+                ],
+                'orderByField'=>'date',
+                'model'=>$productsModel,
+            ]);
+            $relatedArray = $relatedProductsMapper->getGroup();
+            if (!is_array($relatedArray) || empty($relatedArray)) {
+                return NULL;
+            }
+            return $relatedArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов comments для текущего products
+     * @param object $productsModel экземпляр ProductsModel
+     * @return array of objects CommentsModel
+     */
+    public static function getCommentsForProductList(ProductsModel $productsModel)
+    {
+        try {
+            $commentsForProductMapper = new CommentsForProductMapper([
+                'tableName'=>'comments',
+                'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'model'=>$productsModel,
+            ]);
+            $commentsArray = $commentsForProductMapper->getGroup();
+            if (!is_array($commentsArray) || empty($commentsArray)) {
+                return NULL;
+            }
+            return $commentsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

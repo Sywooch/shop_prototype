@@ -284,7 +284,7 @@ class UsersModel extends AbstractBaseModel
          try {
             if (is_null($this->_address)) {
                 if (!empty($this->id_address)) {
-                    $this->_address = MappersHelper::getAddressById(ddressModel(['id'=>$this->id_address]));
+                    $this->_address = MappersHelper::getAddressById(new AddressModel(['id'=>$this->id_address]));
                 }
             }
             return $this->_address;

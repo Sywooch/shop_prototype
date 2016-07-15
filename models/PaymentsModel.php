@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
-use app\mappers\PaymentsMapper;
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы address
@@ -74,15 +74,7 @@ class PaymentsModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_allPayments)) {
-                $paymentsMapper = new PaymentsMapper([
-                    'tableName'=>'payments',
-                    'fields'=>['id', 'name', 'description'],
-                ]);
-                $paymentsArray = $paymentsMapper->getGroup();
-                if (!is_array($paymentsArray) || empty($paymentsArray)) {
-                    return NULL;
-                }
-                $this->_allPayments = $paymentsArray;
+                $this->_allPayments = MappersHelper::getPaymentsList();
             }
             return $this->_allPayments;
         } catch (\Exception $e) {

@@ -8,6 +8,7 @@ use app\controllers\AbstractBaseController;
 use app\helpers\ModelsInstancesHelper;
 use app\helpers\MappersHelper;
 use app\helpers\MailHelper;
+use app\helpers\UserAuthenticationHelper;
 use app\models\ProductsModel;
 
 /**
@@ -256,49 +257,74 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (!empty(\Yii::$app->cart->user->emails) && is_object(\Yii::$app->cart->user->emails)) {
-                if (!$emailsModel = MappersHelper::getEmailsByEmailOrSet(\Yii::$app->cart->user->emails)) {
-                    throw new ErrorException('Ошибка при сохранении E-mail!');
+                if ($emailsModel = MappersHelper::getEmailsByEmail(\Yii::$app->cart->user->emails)) {
+                    \Yii::$app->cart->user->emails = $emailsModel;
+                } else {
+                    if (!MappersHelper::setEmailsInsert(\Yii::$app->cart->user->emails)) {
+                        throw new ErrorException('Ошибка при сохранении E-mail!');
+                    }
                 }
-                \Yii::$app->cart->user->id_emails = $emailsModel->id;
+                \Yii::$app->cart->user->id_emails = \Yii::$app->cart->user->emails->id;
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             
             if (!empty(\Yii::$app->cart->user->address) && is_object(\Yii::$app->cart->user->address)) {
-                if (!$addressModel = MappersHelper::getAddressByAddressOrSet(\Yii::$app->cart->user->address)) {
-                    throw new ErrorException('Ошибка при сохранении address!');
+                if ($addressModel = MappersHelper::getAddressByAddress(\Yii::$app->cart->user->address)) {
+                    \Yii::$app->cart->user->address = $addressModel;
+                } else {
+                    if (!MappersHelper::setAddressInsert(\Yii::$app->cart->user->address)) {
+                        throw new ErrorException('Ошибка при сохранении address!');
+                    }
                 }
-                \Yii::$app->cart->user->id_address = $addressModel->id;
+                \Yii::$app->cart->user->id_address = \Yii::$app->cart->user->address->id;
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             
             if (!empty(\Yii::$app->cart->user->phones) && is_object(\Yii::$app->cart->user->phones)) {
-                if (!$phonesModel = MappersHelper::getPhonesByPhoneOrSet(\Yii::$app->cart->user->phones)) {
-                    throw new ErrorException('Ошибка при сохранении phones!');
+                if ($phonesModel = MappersHelper::getPhonesByPhone(\Yii::$app->cart->user->phones)) {
+                    \Yii::$app->cart->user->phones = $phonesModel;
+                } else {
+                    if (!MappersHelper::setPhonesInsert(\Yii::$app->cart->user->phones)) {
+                        throw new ErrorException('Ошибка при сохранении address!');
+                    }
                 }
-                \Yii::$app->cart->user->id_phones = $phonesModel->id;
+                \Yii::$app->cart->user->id_phones = \Yii::$app->cart->user->phones->id;
             } else {
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             
-            if (MappersHelper::setUsersUpdateOrSet(\Yii::$app->cart->user)) {
-                if (MappersHelper::setUsersPurchasesInsert()) {
-                    if (!MailHelper::send([['template'=>'@app/views/mail/customer.twig', 'setFrom'=>['test@test.com'=>'John'], 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 'setSubject'=>'Hello!']])) {
-                        throw new ErrorException('Ошибка при отправке E-mail сообщения!');
+            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->id)) {
+                \Yii::configure(\Yii::$app->cart->user, ['id'=>\Yii::$app->user->id]);
+                if (!empty(array_diff_assoc(\Yii::$app->cart->user->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {
+                    if (!MappersHelper::setUsersUpdate(\Yii::$app->cart->user)) {
+                        throw new ErrorException('Ошибка при обновлении users!');
                     }
-                    if (!\Yii::$app->cart->clearProductsArray()) {
-                        throw new ErrorException('Ошибка при очистке корзины!');
+                    if (!UserAuthenticationHelper::fill(\Yii::$app->cart->user)) {
+                        throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
                     }
-                } else {
-                    throw new ErrorException('Ошибка при сохранении связи пользователя с покупкой в процессе оформления заказа!');
                 }
             } else {
-                throw new ErrorException('Ошибка при сохранении данных пользователя в процессе оформления покупки!');
+                if (!MappersHelper::setUsersInsert(\Yii::$app->cart->user)) {
+                    throw new ErrorException('Ошибка при создании users!');
+                }
+            }
+            
+            if (MappersHelper::setUsersPurchasesInsert()) {
+                if (!MailHelper::send([['template'=>'@app/views/mail/customer.twig', 'setFrom'=>['test@test.com'=>'John'], 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 'setSubject'=>'Hello!']])) {
+                    throw new ErrorException('Ошибка при отправке E-mail сообщения!');
+                }
+                $userEmailsModel = \Yii::$app->cart->user->emails;
+                if (!\Yii::$app->cart->clearProductsArray()) {
+                    throw new ErrorException('Ошибка при очистке корзины!');
+                }
+            } else {
+                throw new ErrorException('Ошибка при сохранении связи пользователя с покупкой в процессе оформления заказа!');
             }
             
             $renderArray = array();
-            $renderArray['email'] = $emailsModel;
+            $renderArray['email'] = $userEmailsModel;
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('thank.twig', $renderArray);

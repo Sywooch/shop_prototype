@@ -3,8 +3,8 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
-use app\mappers\PhonesByPhoneMapper;
 use yii\base\ErrorException;
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы phones
@@ -66,16 +66,11 @@ class PhonesModel extends AbstractBaseModel
         try {
             if (is_null($this->_id)) {
                 if (!empty($this->phone)) {
-                    $phonesByPhoneMapper = new PhonesByPhoneMapper([
-                        'tableName'=>'phones',
-                        'fields'=>['id', 'phone'],
-                        'model'=>$this
-                    ]);
-                    $objectModel = $phonesByPhoneMapper->getOneFromGroup();
-                    if (!is_object($objectModel) || !$objectModel instanceof $this) {
+                    $phonesModel = MappersHelper::getPhonesByPhone($this);
+                    if (!is_object($phonesModel) || !$phonesModel instanceof $this) {
                         return NULL;
                     }
-                    $this->_id = $objectModel->id;
+                    $this->_id = $phonesModel->id;
                 }
             }
             return $this->_id;

@@ -3,8 +3,8 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
-use app\mappers\EmailsByEmailMapper;
 use yii\base\ErrorException;
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы currency
@@ -66,12 +66,7 @@ class EmailsModel extends AbstractBaseModel
         try {
             if (is_null($this->_id)) {
                 if (!empty($this->email)) {
-                    $emailsByEmailMapper = new EmailsByEmailMapper([
-                        'tableName'=>'emails',
-                        'fields'=>['id'],
-                        'model'=>$this
-                    ]);
-                    $emailsModel = $emailsByEmailMapper->getOneFromGroup();
+                    $emailsModel = MappersHelper::getEmailsByEmail($this);
                     if (!is_object($emailsModel) || !$emailsModel instanceof $this) {
                         return NULL;
                     }

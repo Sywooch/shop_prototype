@@ -3,10 +3,9 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
-use app\mappers\EmailsByEmailMapper;
-use app\mappers\EmailsInsertMapper;
 use app\models\EmailsModel;
 use yii\base\ErrorException;
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы currency
@@ -80,21 +79,11 @@ class CommentsModel extends AbstractBaseModel
                 if (!empty($this->email)) {
                     $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
                     $emailsModel->email = $this->email;
-                    $emailsByCommentsMapper = new EmailsByEmailMapper([
-                        'tableName'=>'emails',
-                        'fields'=>['id'],
-                        'model'=>$emailsModel
-                    ]);
-                    $result = $emailsByCommentsMapper->getOneFromGroup();
+                    $result = MappersHelper::getEmailsByEmail($emailsModel);
                     if (is_object($result) || $result instanceof EmailsModel) {
                         $emailsModel = $result;
                     } else {
-                        $emailsInsertMapper = new EmailsInsertMapper([
-                            'tableName'=>'emails',
-                            'fields'=>['email'],
-                            'objectsArray'=>[$emailsModel],
-                        ]);
-                        $result = $emailsInsertMapper->setGroup();
+                        $result = MappersHelper::setEmailsInsert($emailsModel);
                         if (!$result) {
                             return NULL;
                         }

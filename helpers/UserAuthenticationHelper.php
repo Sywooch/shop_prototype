@@ -4,7 +4,7 @@ namespace app\helpers;
 
 use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
-use app\mappers\UsersByLoginMapper;
+use app\helpers\MappersHelper;
 use app\models\UsersModel;
 
 /**
@@ -52,12 +52,7 @@ class UserAuthenticationHelper
     {
         try {
             if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
-                $usersByLoginMapper = new UsersByLoginMapper([
-                    'tableName'=>'users',
-                    'fields'=>\Yii::$app->params['filedsFromDb'],
-                    'model'=>$userFromForm
-                ]);
-                \Yii::$app->params['userFromFormForAuthentication'] = $usersByLoginMapper->getOneFromGroup();
+                \Yii::$app->params['userFromFormForAuthentication'] = MappersHelper::getUsersByLogin($userFromForm);
             }
             
             if (is_object(\Yii::$app->params['userFromFormForAuthentication']) && \Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel) {

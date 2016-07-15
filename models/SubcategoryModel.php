@@ -12,7 +12,7 @@ class SubcategoryModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из БД
     */
-    const GET_FROM_DB = 'getFromBd';
+    const GET_FROM_DB = 'getFromDb';
     
     public $id = '';
     public $name = '';
