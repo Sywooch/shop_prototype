@@ -63,7 +63,7 @@ $config = [
             'bundles'=>[
                 'yii\web\JqueryAsset'=>[
                     'sourcePath'=>null,
-                    'js'=>['https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js']
+                    'js'=>['https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js']
                 ],
             ],
             'basePath'=>'@webroot/sources/temp',
