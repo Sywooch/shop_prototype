@@ -161,9 +161,9 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод AddressModel::getDataForSession
+     * Тестирует метод AddressModel::getDataArray
      */
-    public function testGetDataForSession()
+    public function testGetData()
     {
         $model = new AddressModel();
         $model->address = self::$_address;
@@ -171,7 +171,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $model->country = self::$_country;
         $model->postcode = self::$_postcode;
         
-        $array = $model->getDataForSession();
+        $array = $model->getDataArray();
         
         $this->assertTrue(is_array($array));
         $this->assertTrue(array_key_exists('address', $array));

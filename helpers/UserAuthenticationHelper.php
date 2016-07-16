@@ -57,32 +57,11 @@ class UserAuthenticationHelper
             
             if (is_object(\Yii::$app->params['userFromFormForAuthentication']) && \Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel) {
                 if ($userFromForm->login == \Yii::$app->params['userFromFormForAuthentication']->login && password_verify($userFromForm->rawPassword, \Yii::$app->params['userFromFormForAuthentication']->password)) {
-                    foreach (\Yii::$app->params['filedsToUser'] as $field) { 
-                        \Yii::$app->user->$field = \Yii::$app->params['userFromFormForAuthentication']->$field;
-                    }
+                    \Yii::configure(\Yii::$app->user, \Yii::$app->params['userFromFormForAuthentication']->getDataArray());
                 }
                 return true;
             }
             return false;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Заполняет объект \Yii::$app->user данными
-     * @param objects $userModel объект UserModel
-     * @return boolean
-     */
-    public static function fill(UsersModel $userModel)
-    {
-        try {
-            foreach (\Yii::$app->params['filedsToUser'] as $field) {
-                if (!empty($userModel->$field)) {
-                    \Yii::$app->user->$field = $userModel->$field;
-                }
-            }
-            return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

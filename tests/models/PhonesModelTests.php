@@ -121,14 +121,14 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод PhonesModel::getDataForSession
+     * Тестирует метод PhonesModel::getDataArray
      */
-    public function testGetDataForSession()
+    public function testGetData()
     {
         $model = new PhonesModel();
         $model->phone = self::$_phone;
         
-        $array = $model->getDataForSession();
+        $array = $model->getDataArray();
         
         $this->assertTrue(is_array($array));
         $this->assertTrue(array_key_exists('phone', $array));

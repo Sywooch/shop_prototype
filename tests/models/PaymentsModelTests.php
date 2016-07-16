@@ -131,14 +131,14 @@ class PaymentsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод PaymentsModel::getDataForSession
+     * Тестирует метод PaymentsModel::getDataArray
      */
-    public function testGetDataForSession()
+    public function testGetData()
     {
         $model = new PaymentsModel();
         $model->id = self::$_id;
         
-        $array = $model->getDataForSession();
+        $array = $model->getDataArray();
         
         $this->assertTrue(is_array($array));
         $this->assertTrue(array_key_exists('id', $array));

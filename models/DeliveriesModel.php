@@ -87,7 +87,7 @@ class DeliveriesModel extends AbstractBaseModel
      * Возвращает массив данных для сохранения в сессии
      * @return array
      */
-    public function getDataForSession()
+    public function getDataArray()
     {
         try {
             return ['id'=>$this->id];

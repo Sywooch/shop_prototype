@@ -801,7 +801,7 @@ class MappersHelper
         try {
             $usersByLoginMapper = new UsersByLoginMapper([
                 'tableName'=>'users',
-                'fields'=>\Yii::$app->params['filedsFromDb'],
+                'fields'=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
                 'model'=>$usersModel
             ]);
             $usersModel = $usersByLoginMapper->getOneFromGroup();

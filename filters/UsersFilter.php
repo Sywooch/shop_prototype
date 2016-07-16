@@ -5,7 +5,6 @@ namespace app\filters;
 use yii\base\ActionFilter;
 use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
-use app\helpers\UserAuthenticationHelper;
 use app\models\UsersModel;
 use app\models\CurrencyModel;
 
@@ -27,24 +26,16 @@ class UsersFilter extends ActionFilter
             if (empty(\Yii::$app->params['usersKeyInSession'])) {
                 throw new ErrorException('Не установлена переменная usersKeyInSession!');
             }
-            if (empty(\Yii::$app->params['nonAuthenticatedUserLogin'])) {
-                throw new ErrorException('Не установлена переменная nonAuthenticatedUserLogin!');
-            }
             
             $session = \Yii::$app->session;
             $session->open();
-            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB, 'login'=>\Yii::$app->params['nonAuthenticatedUserLogin']]);
             if ($session->has(\Yii::$app->params['usersKeyInSession'])) {
-                $usersModel->attributes = $session->get(\Yii::$app->params['usersKeyInSession']);
+                \Yii::configure(\Yii::$app->user, $session->get(\Yii::$app->params['usersKeyInSession']));
             }
             if ($session->has(\Yii::$app->params['usersKeyInSession'] . '.currency')) {
                 $currencyArray = $session->get(\Yii::$app->params['usersKeyInSession'] . '.currency');
             }
             $session->close();
-            
-            if (!UserAuthenticationHelper::fill($usersModel)) {
-                throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
-            }
             
             if (!empty($currencyArray)) {
                 \Yii::$app->user->currency = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_DB]);
@@ -77,10 +68,10 @@ class UsersFilter extends ActionFilter
             $session = \Yii::$app->session;
             $session->open();
             if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) {
-                $session->set(\Yii::$app->params['usersKeyInSession'], \Yii::$app->user->getDataForSession());
+                $session->set(\Yii::$app->params['usersKeyInSession'], \Yii::$app->user->getDataArray());
             }
             if (!empty(\Yii::$app->user->currency)) {
-                $session->set(\Yii::$app->params['usersKeyInSession'] . '.currency', \Yii::$app->user->currency->getDataForSession());
+                $session->set(\Yii::$app->params['usersKeyInSession'] . '.currency', \Yii::$app->user->currency->getDataArray());
             }
             $session->close();
             

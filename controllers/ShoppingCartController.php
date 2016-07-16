@@ -8,7 +8,6 @@ use app\controllers\AbstractBaseController;
 use app\helpers\ModelsInstancesHelper;
 use app\helpers\MappersHelper;
 use app\helpers\MailHelper;
-use app\helpers\UserAuthenticationHelper;
 use app\models\ProductsModel;
 
 /**
@@ -296,14 +295,12 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->id)) {
-                \Yii::configure(\Yii::$app->cart->user, ['id'=>\Yii::$app->user->id]);
+                \Yii::configure(\Yii::$app->cart->user, ['id'=>\Yii::$app->user->id, 'login'=>\Yii::$app->user->login]);
                 if (!empty(array_diff_assoc(\Yii::$app->cart->user->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {
                     if (!MappersHelper::setUsersUpdate(\Yii::$app->cart->user)) {
                         throw new ErrorException('Ошибка при обновлении users!');
                     }
-                    if (!UserAuthenticationHelper::fill(\Yii::$app->cart->user)) {
-                        throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
-                    }
+                    \Yii::configure(\Yii::$app->user, \Yii::$app->cart->user->getDataArray());
                 }
             } else {
                 if (!MappersHelper::setUsersInsert(\Yii::$app->cart->user)) {

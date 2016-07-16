@@ -100,9 +100,9 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод CurrencyModel::getDataForSession
+     * Тестирует метод CurrencyModel::getDataArray
      */
-    public function testGetDataForSession()
+    public function testGetData()
     {
         $model = new CurrencyModel();
         $model->id = self::$_id;
@@ -110,7 +110,7 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $model->exchange_rate = self::$_exchange_rate;
         $model->main = self::$_main;
         
-        $result = $model->getDataForSession();
+        $result = $model->getDataArray();
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));

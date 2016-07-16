@@ -90,22 +90,6 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, \Yii::$app->user->id_emails);
         $this->assertEquals(self::$_id, \Yii::$app->user->id_phones);
         $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
-        
-        UserAuthenticationHelper::clean();
-        
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
-        
-        \Yii::$app->params['filedsToUser'][] = 'password';
-        UserAuthenticationHelper::fillFromForm($usersModel);
-        
-        $this->assertEquals(self::$_id, \Yii::$app->user->id);
-        $this->assertEquals(self::$_login, \Yii::$app->user->login);
-        $this->assertTrue(password_verify(self::$_rawPassword, \Yii::$app->user->password));
-        $this->assertEquals(self::$_name, \Yii::$app->user->name);
-        $this->assertEquals(self::$_surname, \Yii::$app->user->surname);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_emails);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_phones);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
     }
     
     /**
@@ -130,33 +114,6 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_surname, \Yii::$app->user->surname);
         $this->assertEquals(self::$_id, \Yii::$app->user->id_emails);
         $this->assertEquals(self::$_id, \Yii::$app->user->id_phones);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
-    }
-    
-    /**
-     * Тестирует метод UserAuthenticationHelper::fill
-     */
-    public function testFill()
-    {
-        $usersModel = new UsersModel();
-        $usersModel->id = self::$_id + 2;
-        $usersModel->login = self::$_login;
-        $usersModel->name = self::$_name;
-        $usersModel->surname = self::$_surname;
-        $usersModel->id_emails = self::$_id + 1;
-        $usersModel->id_phones = self::$_id + 23;
-        $usersModel->id_address = self::$_id;
-        
-        UserAuthenticationHelper::clean();
-        
-        UserAuthenticationHelper::fill($usersModel);
-        
-        $this->assertEquals(self::$_id + 2, \Yii::$app->user->id);
-        $this->assertEquals(self::$_login, \Yii::$app->user->login);
-        $this->assertEquals(self::$_name, \Yii::$app->user->name);
-        $this->assertEquals(self::$_surname, \Yii::$app->user->surname);
-        $this->assertEquals(self::$_id + 1, \Yii::$app->user->id_emails);
-        $this->assertEquals(self::$_id + 23, \Yii::$app->user->id_phones);
         $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
     }
     

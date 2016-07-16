@@ -137,14 +137,14 @@ class DeliveriesModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод DeliveriesModel::getDataForSession
+     * Тестирует метод DeliveriesModel::getDataArray
      */
-    public function testGetDataForSession()
+    public function testGetData()
     {
         $model = new DeliveriesModel();
         $model->id = self::$_id;
         
-        $array = $model->getDataForSession();
+        $array = $model->getDataArray();
         
         $this->assertTrue(is_array($array));
         $this->assertTrue(array_key_exists('id', $array));

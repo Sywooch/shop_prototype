@@ -92,7 +92,7 @@ class AddressModel extends AbstractBaseModel
      * Возвращает массив данных для сохранения в сессии
      * @return array
      */
-    public function getDataForSession()
+    public function getDataArray()
     {
         try {
             return ['address'=>$this->address, 'city'=>$this->city, 'country'=>$this->country, 'postcode'=>$this->postcode];

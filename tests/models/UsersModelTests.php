@@ -3,7 +3,6 @@
 namespace app\test\models;
 
 use app\tests\DbManager;
-use app\helpers\UserAuthenticationHelper;
 use app\models\UsersModel;
 use app\models\RulesModel;
 use app\models\EmailsModel;
@@ -54,9 +53,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $command->execute();
         
         $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB, 'login'=>\Yii::$app->params['nonAuthenticatedUserLogin']]);
-        if (!UserAuthenticationHelper::fill($usersModel)) {
-            throw new ErrorException('Ошибка при обновлении данных \Yii::$app->user!');
-        }
+        \Yii::configure(\Yii::$app->user, $usersModel->getDataArray());
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
         $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);
@@ -542,9 +539,9 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     }
     
      /**
-     * Тестирует метод UsersModel::getDataForSession
+     * Тестирует метод UsersModel::getDataArray
      */
-    public function testGetDataForSession()
+    public function testGetData()
     {
         $model = new UsersModel();
         $model->id = self::$_id;
@@ -555,7 +552,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $model->id_phones = self::$_id_phones;
         $model->id_address = self::$_id_address;
         
-        $array = $model->getDataForSession();
+        $array = $model->getDataArray();
         
         $this->assertTrue(is_array($array));
         $this->assertTrue(array_key_exists('id', $array));

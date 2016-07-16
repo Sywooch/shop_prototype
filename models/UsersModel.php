@@ -409,10 +409,10 @@ class UsersModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает массив данных для сохранения в сессии
+     * Возвращает массив данных, представляюших значения свойств
      * @return array
      */
-    public function getDataForSession()
+    public function getDataArray()
     {
         try {
             return ['id'=>$this->id, 'login'=>$this->login, 'name'=>$this->name, 'surname'=>$this->surname, 'id_emails'=>$this->id_emails, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address];

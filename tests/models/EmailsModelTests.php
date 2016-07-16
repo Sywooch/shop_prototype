@@ -129,14 +129,14 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод EmailsModel::getDataForSession
+     * Тестирует метод EmailsModel::getDataArray
      */
-    public function testGetDataForSession()
+    public function testGetData()
     {
         $model = new EmailsModel();
         $model->email = self::$_email;
         
-        $array = $model->getDataForSession();
+        $array = $model->getDataArray();
         
         $this->assertTrue(is_array($array));
         $this->assertTrue(array_key_exists('email', $array));

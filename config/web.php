@@ -24,8 +24,6 @@ $config = [
         'userFromFormForAuthentication'=>NULL, # Объект пользователя в процессе аутентификации
         'usersKeyInSession'=>'user', # Ключ, по которому в $_SESSION доступена переменная, пользователя
         'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->user по умолчанию
-        'filedsFromDb'=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'], # список полей, которые необходимо получит из БД при аутентификации, используется объектами UserAuthenticationHelper, LoginExistsValidator, PasswordExistsValidator
-        'filedsToUser'=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'], # список полей, которые необходимо обновить для \Yii::$app->user при аутентификации, используется объектами UserAuthenticationHelper
     ],
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),
@@ -96,6 +94,7 @@ $config = [
                 'shopping-cart-check-pay'=>'shopping-cart/check-pay',
                 'shopping-cart-pay'=>'shopping-cart/pay',
                 'add-product'=>'products-manager/add-product',
+                'get-subcategory-ajax'=>'products-manager/get-subcategory-ajax',
             ],
         ],
         'cart'=>[
@@ -106,6 +105,7 @@ $config = [
         ],
         'user'=>[
             'class'=>'app\models\UsersModel',
+            'login'=>'Guest',
         ],
         'session'=>[
             'class'=>'yii\web\DbSession',

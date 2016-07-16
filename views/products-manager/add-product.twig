@@ -1,4 +1,6 @@
 
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
 {% include '@app/views/parts/user-buttons.twig' %}
 
 {% include '@app/views/parts/menu.twig' %}
@@ -18,5 +20,6 @@
     {{ form.field(productsModelForAddProduct, 'price') | raw }}
     {{ form.field(productsModelForAddProduct, 'images[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
     {{ form.field(productsModelForAddProduct, 'id_categories').dropDownList(array.map(categoriesList, 'id', 'name')) | raw }}
+    {{ form.field(productsModelForAddProduct, 'id_subcategory').dropDownList({'':'-----------------'}) | raw }}
     <input type="submit" value="Add product" >
 {{ active_form_end() }}
