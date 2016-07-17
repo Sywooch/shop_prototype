@@ -57,7 +57,7 @@ class ProductsManagerController extends AbstractBaseController
         try {
             if (\Yii::$app->request->isAjax) {
                 if (!\Yii::$app->request->post('categoriesId')) {
-                    throw new ErrorException('Не возможно получить значение categoriesId!');
+                    throw new ErrorException('Невозможно получить значение categoriesId!');
                 }
                 $response = \Yii::$app->response;
                 $response->format = Response::FORMAT_JSON;
@@ -66,7 +66,7 @@ class ProductsManagerController extends AbstractBaseController
                 }
                 return ArrayHelper::map($subcategoriesArray, 'id', 'name');
             } else {
-                return $this->redirect(Url::to(['products-list/index']));
+                throw new ErrorException('Неверный тип запроса!');
             }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

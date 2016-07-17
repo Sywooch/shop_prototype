@@ -7,9 +7,8 @@ use app\models\ProductsModel;
 use app\models\ColorsModel;
 use app\models\SizesModel;
 use app\models\CommentsModel;
-//use GuzzleHttp\Client;
-//use GuzzleHttp\Psr7\Request;
-use yii\httpclient\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 
 /**
  * Тестирует ProductsModel
@@ -413,21 +412,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testUpload()
     {
-        //\Yii::setAlias('@productsImages', '/var/www/html/shop/tests/source/images/products');
-        
         $client = new Client();
-        $response = $client->createRequest()->setMethod('post')->setUrl('http://localhost/shop/web/add-product?csrfdisable=1')->setData([
-            'ProductsModel[code]'=>'Fgd',
-            'ProductsModel[name]'=>'some',
-            'ProductsModel[description]'=>'some',
-            'ProductsModel[price]'=>12.45,
-            'ProductsModel[id_categories]'=>1,
-            'ProductsModel[id_subcategory]'=>1,
-        ])->addFile('ProductsModel[imagesToLoad][]', '/var/www/html/shop/tests/source/images/2.jpg')->send();
-        
-        //print_r($response);
-        
-        /*$client = new Client();
         
         $response = $client->request('POST', 'localhost/shop/web/add-product', [
             'query'=>['csrfdisable'=>true],
@@ -461,11 +446,27 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
                     'name'=>'ProductsModel[imagesToLoad][]',
                     'contents'=>fopen('/var/www/html/shop/tests/source/images/2.jpg', 'r'),
                     'filename'=>'2.jpg',
+                ],
+                [
+                    'name'=>'ProductsModel[imagesToLoad][]',
+                    'contents'=>fopen('/var/www/html/shop/tests/source/images/3.jpg', 'r'),
+                    'filename'=>'3.jpg',
                 ]
             ],
         ]);
         
-        echo $response->getBody();*/
+        echo $response->getReasonPhrase();
+        
+        /*$this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('OK', $response->getReasonPhrase());
+        
+        $command = \Yii::$app->workdb->createCommand('SELECT * FROM {{channel_category}} WHERE [[name]]=:name');
+        $command->bindValue(':name', self::$channel_category_name);
+        $category = $command->queryOne();
+        
+        $this->assertEquals($category['name'], self::$channel_category_name);
+        $this->assertEquals($category['icon'], self::$channel_category_filename);
+        $this->assertTrue(file_exists(\Yii::getAlias('@images/png/' . self::$channel_category_filename)));*/
     }
     
     public static function tearDownAfterClass()
