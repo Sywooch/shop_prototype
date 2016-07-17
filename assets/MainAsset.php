@@ -2,32 +2,18 @@
 
 namespace app\assets;
 
-use yii\web\AssetBundle;
+use app\assets\AbstractAsset;
 
 /**
- * Задает основной пакет ресурстов
+ * Задает основной пакет ресурсов
  */
-class MainAsset extends AssetBundle
+class MainAsset extends AbstractAsset
 {
-    /**
-     * @var string задаёт корневую директорию содержащую файлы ресурса
-     */
-    public $basePath = '@webroot/sources';
-    /**
-     * @var string задаёт Web доступную директорию, которая содержит файлы 
-     */
-    public $baseUrl = '@web/sources';
     /**
      * @var array массив, перечисляющий CSS файлы, содержащиеся в данном комплекте
      */
     public $css = [
         'css/main.css',
-    ];
-    /**
-     * @var array массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте
-     */
-    public $js = [
-        'js/getSubcategory.js',
     ];
     /**
      * @var array зависимости пакета

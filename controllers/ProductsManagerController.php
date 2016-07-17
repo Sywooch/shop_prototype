@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\controllers\AbstractBaseController;
 use yii\base\ErrorException;
 use yii\web\Response;
+use yii\web\UploadedFile;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use app\helpers\MappersHelper;
@@ -26,8 +27,14 @@ class ProductsManagerController extends AbstractBaseController
         try {
             $productsModelForAddProduct = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
             
-            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
-                
+            if (\Yii::$app->request->isPost && $productsModelForAddProduct->load(\Yii::$app->request->post())) {
+                $productsModelForAddProduct->imagesToLoad = UploadedFile::getInstances($productsModelForAddProduct, 'imagesToLoad');
+                if ($productsModelForAddProduct->validate()) {
+                    if(!$productsModelForAddProduct->upload()) {
+                        throw new ErrorException('Ошибка при загрузке images!');
+                    }
+                    return $this->redirect(Url::to(['products-list/index']));
+                }
             }
             
             $renderArray = array();
@@ -42,19 +49,21 @@ class ProductsManagerController extends AbstractBaseController
     }
     
     /**
-     * Добавляет товар в БД
-     * @return redirect
+     * Возвращает массив объектов subcategory для category
+     * @return json
      */
     public function actionGetSubcategoryAjax()
     {
         try {
-            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM_FOR_SUBCATEGORY]);
-            
             if (\Yii::$app->request->isAjax) {
-                $categoriesModel->id = \Yii::$app->request->post('categoriesId');
+                if (!\Yii::$app->request->post('categoriesId')) {
+                    throw new ErrorException('Не возможно получить значение categoriesId!');
+                }
                 $response = \Yii::$app->response;
                 $response->format = Response::FORMAT_JSON;
-                $subcategoriesArray = MappersHelper::getSubcategoryForCategoryList($categoriesModel);
+                if (!$subcategoriesArray = MappersHelper::getSubcategoryForCategoryList(new CategoriesModel(['id'=>\Yii::$app->request->post('categoriesId')]))) {
+                    throw new ErrorException('Ошибка при получении данных!');
+                }
                 return ArrayHelper::map($subcategoriesArray, 'id', 'name');
             } else {
                 return $this->redirect(Url::to(['products-list/index']));

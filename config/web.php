@@ -116,12 +116,16 @@ $config = [
             'viewPath'=>'@app/views/mail',
         ],
     ],
+    'aliases'=>[
+        '@productsImages'=> (YII_DEBUG) ? '/var/www/html/shop/tests/source/images/products' : '/var/www/html/shop/web/sources/images/products',
+    ],
     'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],
     'as usersFilter'=>['class'=>'app\filters\UsersFilter'],
 ];
 
 if (YII_DEBUG) {
     $config['as checkScriptInfoFilter'] = ['class'=>'app\filters\CheckScriptInfoFilter'];
+    $config['as csrfSwitch'] = ['class'=>'app\filters\CsrfSwitch'];
 }
 
 return $config;

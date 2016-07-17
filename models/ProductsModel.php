@@ -5,6 +5,7 @@ namespace app\models;
 use app\models\AbstractBaseModel;
 use yii\base\ErrorException;
 use app\helpers\MappersHelper;
+use app\helpers\UploadHelper;
 
 /**
  * Представляет данные таблицы products
@@ -38,7 +39,16 @@ class ProductsModel extends AbstractBaseModel
     public $name = '';
     public $description = '';
     public $price = '';
-    public $images = array();
+    
+    /**
+     * @var array массив объектов yii\web\UploadedFile
+     */
+    public $imagesToLoad;
+    /**
+     * @var string имя каталога, по которому в БД доступны изображения текущей модели
+     */
+    public $images = '';
+    
     public $id_categories = '';
     public $id_subcategory = '';
     
@@ -77,14 +87,15 @@ class ProductsModel extends AbstractBaseModel
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'],
+            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['code', 'name', 'description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>1024*1024, 'maxFiles'=>4, 'maxWidth'=>800, 'maxHeight'=>500, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
         ];
     }
     
@@ -192,6 +203,27 @@ class ProductsModel extends AbstractBaseModel
             }
             if (!$this->hash = md5($stringToHash)) {
                 return false;
+            }
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Загружает группу изображений
+     * @return boolean
+     */
+    public function upload()
+    {
+        try {
+            if ($this->validate()) {
+                if (!UploadHelper::saveImages($this->imagesToLoad)) {
+                    return false;
+                }
+                if (!$this->images = UploadHelper::getСategoryName()) {
+                    throw new ErrorException('Ошибка при получении имени каталога!');
+                }
             }
             return true;
         } catch (\Exception $e) {

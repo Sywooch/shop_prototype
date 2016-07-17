@@ -15,10 +15,6 @@ class CategoriesModel extends AbstractBaseModel
      * Сценарий загрузки данных из БД
     */
     const GET_FROM_DB = 'getFromBd';
-    /**
-     * Сценарий загрузки данных из формы для выборки связанных подкатегорий
-    */
-    const GET_FROM_FORM_FOR_SUBCATEGORY = 'getFromFormForSubcategory';
     
     public $id = '';
     public $name = '';
@@ -30,7 +26,6 @@ class CategoriesModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'name', 'seocode'],
-            self::GET_FROM_FORM_FOR_SUBCATEGORY=>['id'],
         ];
     }
     
