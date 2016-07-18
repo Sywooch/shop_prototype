@@ -53,6 +53,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_exchange_rate = '12.456';
     private static $_main = '1';
     private static $_text = 'Some Text';
+    private static $_date = 1462453595;
     
     private static $_config = [
         'tableName'=>'products',
@@ -867,6 +868,41 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_login, $result->login);
         $this->assertEquals(self::$_name, $result->name);
         $this->assertEquals(self::$_surname, $result->surname);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setProductsInsert
+     */
+    public function testSetProductsInsert()
+    {
+        \Yii::$app->db->createCommand('DELETE FROM {{comments}}')->execute();
+        \Yii::$app->db->createCommand('DELETE FROM {{products}}')->execute();
+        
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
+        
+        $productsModel = new ProductsModel();
+        $productsModel->date = self::$_date;
+        $productsModel->code = self::$_code;
+        $productsModel->name = self::$_name;
+        $productsModel->description = self::$_description;
+        $productsModel->price = self::$_price;
+        $productsModel->images = self::$_images;
+        $productsModel->id_categories = self::$_id;
+        $productsModel->id_subcategory = self::$_id;
+        
+        MappersHelper::setProductsInsert($productsModel);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(self::$_code, $result[0]['code']);
+        $this->assertEquals(self::$_name, $result[0]['name']);
+        $this->assertEquals(self::$_description, $result[0]['description']);
+        $this->assertEquals(self::$_price, $result[0]['price']);
+        $this->assertEquals(self::$_images, $result[0]['images']);
+        $this->assertEquals(self::$_id, $result[0]['id_categories']);
+        $this->assertEquals(self::$_id, $result[0]['id_subcategory']);
     }
     
     public static function tearDownAfterClass()

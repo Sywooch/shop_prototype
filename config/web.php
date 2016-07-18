@@ -117,7 +117,7 @@ $config = [
         ],
     ],
     'aliases'=>[
-        '@productsImages'=> (YII_DEBUG) ? '/var/www/html/shop/tests/source/images/products' : '/var/www/html/shop/web/sources/images/products',
+        '@productsImages'=>'/var/www/html/shop/web/sources/images/products',
     ],
     'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],
     'as usersFilter'=>['class'=>'app\filters\UsersFilter'],

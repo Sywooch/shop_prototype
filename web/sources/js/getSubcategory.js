@@ -23,7 +23,7 @@ jQuery(function() {
             }
             $.ajax({
                 'headers': {'X-CSRF-Token': self.token},
-                'url': '/shop/web/get-subcategory-ajax',
+                'url': '/get-subcategory-ajax',
                 'type': 'POST',
                 'data': {'categoriesId':value},
                 'dataType': 'json',

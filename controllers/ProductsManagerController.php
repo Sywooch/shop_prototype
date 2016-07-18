@@ -2,12 +2,12 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\web\UploadedFile;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use app\controllers\AbstractBaseController;
 use app\helpers\MappersHelper;
 use app\helpers\ModelsInstancesHelper;
 use app\models\ProductsModel;
@@ -32,6 +32,9 @@ class ProductsManagerController extends AbstractBaseController
                 if ($productsModelForAddProduct->validate()) {
                     if(!$productsModelForAddProduct->upload()) {
                         throw new ErrorException('Ошибка при загрузке images!');
+                    }
+                    if (!MappersHelper::setProductsInsert($productsModelForAddProduct)) {
+                        throw new ErrorException('Ошибка при сохранении!');
                     }
                     return $this->redirect(Url::to(['products-list/index']));
                 }

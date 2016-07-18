@@ -2,12 +2,14 @@
 
 namespace app\test\models;
 
+use yii\helpers\Url;
 use app\tests\DbManager;
 use app\models\ProductsModel;
 use app\models\ColorsModel;
 use app\models\SizesModel;
 use app\models\CommentsModel;
-use yii\httpclient\Client;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 
 /**
  * Тестирует ProductsModel
@@ -17,12 +19,12 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_dbClass;
     private static $_reflectionClass;
     private static $_id = 1;
-    private static $_date = '1462453595';
-    private static $_code = 'GH56tg';
-    private static $_name = 'Some Name';
-    private static $_description = 'Some description';
-    private static $_price = 123.45;
-    private static $_images = 'images/';
+    private static $_date = 1462453595;
+    private static $_code = 'YU-6709';
+    private static $_name = 'name';
+    private static $_description = 'description';
+    private static $_price = 14.45;
+    private static $_images = 'images';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
     private static $_quantity = 1;
@@ -33,6 +35,10 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_text = 'Some text';
     private static $_email = 'some@some.com';
     private static $_hash = '34acc7564bb9997b72462bcfff0c15a0';
+    private static $_imagePath = '/var/www/html/shop/tests/source/images/products/[0-9]*';
+    private static $_content = 'some content';
+    private static $_file1 = '/var/www/html/shop/tests/source/images/2.jpg';
+    private static $_file2 = '/var/www/html/shop/tests/source/images/3.jpg';
     
     public static function setUpBeforeClass()
     {
@@ -48,8 +54,8 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
@@ -68,8 +74,8 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id_products'=>self::$_id, ':id_sizes'=>self::$_id]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id + 1, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id + 1, ':date'=>self::$_date, ':code'=>self::$_code . 'n', ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
@@ -106,7 +112,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_CLEAR_CART'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
         
-        $this->assertTrue(property_exists($model, 'id'));
+        $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, 'date'));
         $this->assertTrue(property_exists($model, 'code'));
         $this->assertTrue(property_exists($model, 'name'));
@@ -133,6 +139,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(method_exists($model, 'getSimilar'));
         $this->assertTrue(method_exists($model, 'getRelated'));
         $this->assertTrue(method_exists($model, 'getComments'));
+        $this->assertTrue(method_exists($model, 'getHash'));
         $this->assertTrue(method_exists($model, 'upload'));
     }
     
@@ -249,6 +256,17 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::setId
+     */
+    public function testSetId()
+    {
+        $model = new ProductsModel();
+        $model->id = self::$_id;
+        
+        $this->assertEquals(self::$_id, $model->id);
     }
     
     /**
@@ -409,30 +427,85 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     /**
      * Тестирует метод ProductsModel::upload
      */
-    public function testUpload()
+    /*public function testUpload()
     {
-        $client = new Client();
-        $response = $client->createRequest();
-        $response->setMethod('post');
-        $response->setUrl('http://localhost/shop/web/add-product');
-        $response->setData([
-            'code'=>'Fgd',
-            'name'=>'some',
-            'description'=>'some',
-            'price'=>12.45,
-            'id_categories'=>1,
-            'id_subcategory'=>1,
-        ]);
-        $response->addFile('imagesToLoad', '/home/timofey/Изображения/test/2.jpg');
-        $response->send();
+        self::cleanDir();
         
-        if ($response->isOk) {
-            $newUserId = $response->data['id'];
+        $this->assertTrue(empty(glob(self::$_imagePath)));
+        
+        $client = new Client();
+        $response = $client->request('POST', 'http://shop/add-product', [
+            'query'=>['csrfdisable'=>true],
+            'allow_redirects' => false,
+            'multipart'=>[
+                [
+                    'name'=>'ProductsModel[code]',
+                    'contents'=>self::$_name,
+                ],
+                [
+                    'name'=>'ProductsModel[name]',
+                    'contents'=>self::$_content,
+                ],
+                [
+                    'name'=>'ProductsModel[description]',
+                    'contents'=>self::$_description,
+                ],
+                [
+                    'name'=>'ProductsModel[price]',
+                    'contents'=>self::$_price,
+                ],
+                [
+                    'name'=>'ProductsModel[id_categories]',
+                    'contents'=>self::$_id,
+                ],
+                [
+                    'name'=>'ProductsModel[id_subcategory]',
+                    'contents'=>self::$_id,
+                ],
+                [
+                    'name'=>'ProductsModel[imagesToLoad][]',
+                    'contents'=>fopen(self::$_file1, 'r'),
+                ],
+                [
+                    'name'=>'ProductsModel[imagesToLoad][]',
+                    'contents'=>fopen(self::$_file2, 'r'),
+                ]
+            ],
+        ]);
+        
+        $this->assertFalse(empty($dirsArray = glob(self::$_imagePath)));
+        $this->assertEquals(1, count($dirsArray));
+        
+        foreach ($dirsArray as $dir) {
+            $filesArray = glob($dir . '/[1-9]*');
+            $this->assertEquals(2, count($filesArray));
+            foreach ($filesArray as $file) {
+                $this->assertTrue(in_array(pathinfo($file, PATHINFO_EXTENSION), ['png', 'jpg', 'gif']));
+            }
         }
     }
+    
+    private static function cleanDir()
+    {
+        if (!empty($dirsToRemove = glob(self::$_imagePath))) {
+            foreach ($dirsToRemove as $dir) {
+                if (is_dir($dir)) {
+                    if (!empty($filesToRemove = glob($dir . '/*'))) {
+                        foreach ($filesToRemove as $file) {
+                            if (file_exists($file)) {
+                                unlink($file);
+                            }
+                        }
+                    }
+                    rmdir($dir);
+                }
+            }
+        }
+    }*/
     
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();
+        //self::cleanDir();
     }
 }

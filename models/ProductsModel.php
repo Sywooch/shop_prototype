@@ -33,7 +33,8 @@ class ProductsModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    public $id = '';
+    private $_id = '';
+    
     public $date = '';
     public $code = '';
     public $name = '';
@@ -53,7 +54,8 @@ class ProductsModel extends AbstractBaseModel
     public $id_subcategory = '';
     
     /**
-     * Свойства получаемые при выборке связанных и похожих продуктов, например, для построения ссылок
+     * Свойства получаемые при выборке связанных и похожих продуктов, например, для построения ссылок,
+     * создании ссылок для карточек продуктов
      */
     public $categories = '';
     public $subcategory = '';
@@ -95,8 +97,48 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             [['code', 'name', 'description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>1024*1024, 'maxFiles'=>4, 'maxWidth'=>800, 'maxHeight'=>500, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>1024*1024, 'maxFiles'=>5, 'maxWidth'=>800, 'maxHeight'=>800, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
         ];
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_id
+     * @param string/int $value значение ID
+     * @return boolean
+     */
+    public function setId($value)
+    {
+        try {
+            if (is_numeric($value)) {
+                $this->_id = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_id
+     * @return int
+     */
+    public function getId() #!!!TEST
+    {
+        try {
+            if (is_null($this->_id)) {
+                if (!empty($this->code)) {
+                    $productsModel = MappersHelper::getProductsByCode($this);
+                    if (!is_object($productsModel) || !$productsModel instanceof $this) {
+                        return NULL;
+                    }
+                    $this->_id = $productsModel->id;
+                }
+            }
+            return $this->_id;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**

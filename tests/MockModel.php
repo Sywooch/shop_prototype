@@ -42,4 +42,10 @@ class MockModel extends AbstractBaseModel
     public $processed;
     public $canceled;
     public $shipped;
+    public $images;
+    public $imagesToLoad;
+    public $date;
+    public $code;
+    public $id_categories;
+    public $id_subcategory;
 }

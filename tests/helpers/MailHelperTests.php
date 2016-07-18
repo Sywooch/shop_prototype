@@ -69,11 +69,12 @@ class MailHelperTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        if (file_exists(\Yii::getAlias(self::$_saveDir))) {
-            $files = scandir(\Yii::getAlias(self::$_saveDir));
+        $dir = \Yii::getAlias(self::$_saveDir);
+        if (file_exists($dir) && is_dir($dir)) {
+            $files = glob($dir);
             foreach ($files as $file) {
                 if (strpos($file, '.eml')) {
-                    unlink(\Yii::getAlias(self::$_saveDir . '/' . $file));
+                    unlink($dir . '/' . $file);
                 }
             }
         }

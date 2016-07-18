@@ -792,6 +792,52 @@ class MappersHelper
     }
     
     /**
+     * Получает объект ProductsModel по code
+     * @param object $productsModel экземпляр ProductsModel
+     * @return objects ProductsModel
+     */
+    public static function getProductsByCode(ProductsModel $productsModel) #!!!TEST
+    {
+        try {
+            $productsByCodeMapper = new ProductsByCodeMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'date', 'code', 'name', 'description', 'price', 'images'],
+                'model'=>$productsModel,
+            ]);
+            $productsModel = $productsByCodeMapper->getOneFromGroup();
+            if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
+                return NULL;
+            }
+            return $productsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись ProductsModel в БД
+     * @param object $productsModel экземпляр ProductsModel
+     * @return int
+     */
+    public static function setProductsInsert(ProductsModel $productsModel)
+    {
+        try {
+            $usersInsertMapper = new UsersInsertMapper([
+                'tableName'=>'products',
+                'fields'=>['date', 'code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'],
+                'objectsArray'=>[$productsModel],
+            ]);
+            $result = $usersInsertMapper->setGroup();
+            if (!$result) {
+                return NULL;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает объект UsersModel по login
      * @param object $usersModel экземпляр UsersModel
      * @return objects UsersModel
