@@ -10,3 +10,5 @@ RewriteCond %{REQUEST_FILENAME} !-d
 # otherwise forward it to index.php
 RewriteRule . index.php
 
+RewriteRule ^$ /products [R=301,L]
+

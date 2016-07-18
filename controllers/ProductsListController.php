@@ -2,8 +2,9 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
 use yii\base\ErrorException;
+use yii\helpers\Url;
+use app\controllers\AbstractBaseController;
 use app\exceptions\EmptyListException;
 use app\helpers\MappersHelper;
 use app\helpers\ModelsInstancesHelper;
@@ -53,6 +54,10 @@ class ProductsListController extends AbstractBaseController
     public function actionSearch()
     {
         try {
+            if (!\Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
+                return $this->redirect(Url::to(['products-list/index']));
+            }
+            
             $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
             $renderArray = array();
             try {
