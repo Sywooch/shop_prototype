@@ -12,6 +12,7 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
     private static $_reflectionClass;
     private static $_id = 1;
     private static $_size = '46';
+    private static $_idArray = [1, 24];
     
     public static function setUpBeforeClass()
     {
@@ -30,6 +31,7 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'size'));
+        $this->assertTrue(property_exists($model, 'idArray'));
     }
     
     /**
@@ -46,10 +48,10 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_size, $model->size);
         
         $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
-        $model->attributes = ['id'=>self::$_id];
+        $model->attributes = ['idArray'=>self::$_idArray];
         
-        $this->assertFalse(empty($model->id));
-        $this->assertEquals(self::$_id, $model->id);
+        $this->assertFalse(empty($model->idArray));
+        $this->assertEquals(self::$_idArray, $model->idArray);
     }
     
     /**
@@ -62,10 +64,10 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('id', $model->errors));
+        $this->assertTrue(array_key_exists('idArray', $model->errors));
         
         $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
-        $model->attributes = ['id'=>self::$_id];
+        $model->attributes = ['idArray'=>self::$_idArray];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));

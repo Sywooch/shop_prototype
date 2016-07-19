@@ -44,6 +44,8 @@ use app\mappers\ProductsByCodeMapper;
 use app\mappers\CategoriesByIdMapper;
 use app\mappers\SubcategoryByIdMapper;
 use app\mappers\ProductsBrandsInsertMapper;
+use app\mappers\ProductsColorsInsertMapper;
+use app\mappers\ProductsSizesInsertMapper;
 use app\models\AddressModel;
 use app\models\EmailsModel;
 use app\models\PaymentsModel;
@@ -56,6 +58,8 @@ use app\models\ProductsModel;
 use app\models\CategoriesModel;
 use app\models\SubcategoryModel;
 use app\models\BrandsModel;
+use app\models\ColorsModel;
+use app\models\SizesModel;
 
 /**
  * Коллекция методов, которые взаимодействуют с БД посредством мапперов
@@ -533,7 +537,7 @@ class MappersHelper
     }
     
     /**
-     * Создает новую запись UsersPurchases в БД, вязывающую пользователя с купленным товаром
+     * Создает новую запись UsersPurchasesModel в БД, вязывающую пользователя с купленным товаром
      * @return boolean
      */
     public static function setUsersPurchasesInsert()
@@ -1051,6 +1055,66 @@ class MappersHelper
                 'DbArray'=>[['id_products'=>$productsModel->id, 'id_brands'=>$brandsModel->id]],
             ]);
             if (!$result = $productsBrandsInsertMapper->setGroup()) {
+                return NULL;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись ProductsColorsModel в БД, связывающую товар с colors
+     * @param object $productsModel экземпляр ProductsModel
+     * @param object $colorsModel экземпляр ColorsModel
+     * @return boolean
+     */
+    public static function setProductsColorsInsert(ProductsModel $productsModel, ColorsModel $colorsModel) #!!!TEST
+    {
+        try {
+            if (!is_array($colorsModel->idArray) || empty($colorsModel->idArray)) {
+                throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+            }
+            $arrayToDb = [];
+            foreach ($colorsModel->idArray as $colorId) {
+                $arrayToDb[] = ['id_products'=>$productsModel->id, 'id_colors'=>$colorId];
+            }
+            $productsColorsInsertMapper = new ProductsColorsInsertMapper([
+                'tableName'=>'products_colors',
+                'fields'=>['id_products', 'id_colors'],
+                'DbArray'=>$arrayToDb,
+            ]);
+            if (!$result = $productsColorsInsertMapper->setGroup()) {
+                return NULL;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+     
+     /**
+     * Создает новую запись ProductsSizesModel в БД, связывающую товар с colors
+     * @param object $productsModel экземпляр ProductsModel
+     * @param object $sizesModel экземпляр SizesModel
+     * @return boolean
+     */
+    public static function setProductsSizesInsert(ProductsModel $productsModel, SizesModel $sizesModel)
+    {
+        try {
+            if (!is_array($sizesModel->idArray) || empty($sizesModel->idArray)) {
+                throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+            }
+            $arrayToDb = [];
+            foreach ($sizesModel->idArray as $sizeId) {
+                $arrayToDb[] = ['id_products'=>$productsModel->id, 'id_sizes'=>$sizeId];
+            }
+            $productsSizesInsertMapper = new ProductsSizesInsertMapper([
+                'tableName'=>'products_sizes',
+                'fields'=>['id_products', 'id_sizes'],
+                'DbArray'=>$arrayToDb,
+            ]);
+            if (!$result = $productsSizesInsertMapper->setGroup()) {
                 return NULL;
             }
             return $result;

@@ -58,15 +58,15 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($productsArray[0]));
         $this->assertTrue($productsArray[0] instanceof ProductsModel);
         
-        //$this->assertTrue(property_exists($productsArray[0], 'id'));
+        $this->assertTrue(property_exists($productsArray[0], '_id'));
         $this->assertTrue(property_exists($productsArray[0], 'name'));
         $this->assertTrue(property_exists($productsArray[0], 'description'));
         $this->assertTrue(property_exists($productsArray[0], 'price'));
         $this->assertTrue(property_exists($productsArray[0], 'colorToCart'));
         $this->assertTrue(property_exists($productsArray[0], 'sizeToCart'));
         $this->assertTrue(property_exists($productsArray[0], 'quantity'));
-        $this->assertTrue(property_exists($productsArray[0], 'categories'));
-        $this->assertTrue(property_exists($productsArray[0], 'subcategory'));
+        $this->assertTrue(property_exists($productsArray[0], '_categories'));
+        $this->assertTrue(property_exists($productsArray[0], '_subcategory'));
         
         $this->assertTrue(isset($productsArray[0]->id));
         $this->assertTrue(isset($productsArray[0]->name));

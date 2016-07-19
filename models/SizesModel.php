@@ -20,19 +20,23 @@ class SizesModel extends AbstractBaseModel
     
     public $id = '';
     public $size = '';
+    /**
+     * @var array массив id записей из БД
+     */
+    public $idArray = array();
     
     public function scenarios()
     {
         return [
             self::GET_FROM_DB=>['id', 'size'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['id'],
+            self::GET_FROM_ADD_PRODUCT_FORM=>['idArray'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['id'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['idArray'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
         ];
     }
 }

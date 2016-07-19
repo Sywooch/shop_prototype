@@ -7,7 +7,7 @@ use app\models\AbstractBaseModel;
 /**
  * Представляет данные таблицы currency
  */
-class ColorsModel extends AbstractBaseModel
+class ProductsColorsModel extends AbstractBaseModel
 {
     /**
      * Сценарий загрузки данных из БД
@@ -18,25 +18,14 @@ class ColorsModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    public $id = '';
-    public $color = '';
-    /**
-     * @var array массив id записей из БД
-     */
-    public $idArray = array();
+    public $id_products = '';
+    public $id_colors = '';
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'color'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['idArray'],
-        ];
-    }
-    
-    public function rules()
-    {
-        return [
-            [['idArray'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            self::GET_FROM_DB=>['id_products', 'id_colors'],
+            self::GET_FROM_ADD_PRODUCT_FORM=>['id_products', 'id_colors'],
         ];
     }
 }

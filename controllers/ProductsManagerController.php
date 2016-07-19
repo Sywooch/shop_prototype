@@ -45,8 +45,13 @@ class ProductsManagerController extends AbstractBaseController
                     if (!MappersHelper::setProductsBrandsInsert($productsModelForAddProduct, $brandsModelForAddToCart)) {
                         throw new ErrorException('Ошибка при сохранении связи продукта с брендом!');
                     }
-                    print_r($productsModelForAddProduct);
-                    //return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModelForAddProduct->categories, 'subcategory'=>$productsModelForAddProduct->subcategory, 'id'=>$productsModelForAddProduct->id]));
+                    if (!MappersHelper::setProductsColorsInsert($productsModelForAddProduct, $colorsModelForAddToCart)) {
+                        throw new ErrorException('Ошибка при сохранении связи продукта с colors!');
+                    }
+                    if (!MappersHelper::setProductsSizesInsert($productsModelForAddProduct, $sizesModelForAddToCart)) {
+                        throw new ErrorException('Ошибка при сохранении связи продукта с colors!');
+                    }
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModelForAddProduct->categories, 'subcategory'=>$productsModelForAddProduct->subcategory, 'id'=>$productsModelForAddProduct->id]));
                 }
             }
             

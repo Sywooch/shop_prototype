@@ -981,6 +981,62 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals($id_brands, $result['id_brands']);
     }
     
+    /**
+     * Тестирует метод MappersHelper::setProductsColorsInsert
+     */
+    public function testSetProductsColorsInsert()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_colors}}')->queryAll()));
+        
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
+        $id_colors = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{colors}}')->queryScalar();
+        
+        $productsModel = new ProductsModel();
+        $productsModel->id = $id_products;
+        
+        $colorsModel = new ColorsModel();
+        $colorsModel->idArray = [$id_colors];
+        
+        $result = MappersHelper::setProductsColorsInsert($productsModel, $colorsModel);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{products_colors}}')->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id_products, $result['id_products']);
+        $this->assertEquals($id_colors, $result['id_colors']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setProductsSizesInsert
+     */
+    public function testSetProductsSizesInsert()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_sizes}}')->queryAll()));
+        
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
+        $id_sizes = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{sizes}}')->queryScalar();
+        
+        $productsModel = new ProductsModel();
+        $productsModel->id = $id_products;
+        
+        $sizesModel = new SizesModel();
+        $sizesModel->idArray = [$id_sizes];
+        
+        $result = MappersHelper::setProductsSizesInsert($productsModel, $sizesModel);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{products_sizes}}')->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id_products, $result['id_products']);
+        $this->assertEquals($id_sizes, $result['id_sizes']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();
