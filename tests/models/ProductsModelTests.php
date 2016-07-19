@@ -113,7 +113,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
         
         $this->assertTrue(property_exists($model, '_id'));
-        $this->assertTrue(property_exists($model, 'date'));
+        $this->assertTrue(property_exists($model, '_date'));
         $this->assertTrue(property_exists($model, 'code'));
         $this->assertTrue(property_exists($model, 'name'));
         $this->assertTrue(property_exists($model, 'description'));
@@ -122,8 +122,8 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'imagesToLoad'));
         $this->assertTrue(property_exists($model, 'id_categories'));
         $this->assertTrue(property_exists($model, 'id_subcategory'));
-        $this->assertTrue(property_exists($model, 'categories'));
-        $this->assertTrue(property_exists($model, 'subcategory'));
+        $this->assertTrue(property_exists($model, '_categories'));
+        $this->assertTrue(property_exists($model, '_subcategory'));
         $this->assertTrue(property_exists($model, 'hash'));
         $this->assertTrue(property_exists($model, 'colorToCart'));
         $this->assertTrue(property_exists($model, 'sizeToCart'));
@@ -173,7 +173,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model->attributes = ['id'=>self::$_id, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'colorToCart'=>self::$_colorToCart, 'sizeToCart'=>self::$_sizeToCart, 'quantity'=>self::$_quantity, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'date'=>self::$_date, 'hash'=>self::$_hash];
+        $model->attributes = ['id'=>self::$_id, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'colorToCart'=>self::$_colorToCart, 'sizeToCart'=>self::$_sizeToCart, 'quantity'=>self::$_quantity, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'hash'=>self::$_hash];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->code));
@@ -186,7 +186,6 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->categories));
         $this->assertFalse(empty($model->subcategory));
         $this->assertFalse(empty($model->hash));
-        $this->assertTrue(empty($model->date));
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_code, $model->code);
@@ -267,6 +266,28 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model->id = self::$_id;
         
         $this->assertEquals(self::$_id, $model->id);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getId
+     */
+    public function testGetId()
+    {
+        $model = new ProductsModel();
+        $model->code = self::$_code;
+        
+        $this->assertEquals(self::$_id, $model->id);
+    }
+    
+    /**
+     * Тестирует возврат NULL в методе ProductsModel::getId
+     * при условии, что необходимые для выполнения свойства пусты
+     */
+    public function testNullGetId()
+    {
+        $model = new ProductsModel();
+        
+       $this->assertTrue(is_null($model->id));
     }
     
     /**
@@ -422,6 +443,84 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model->getHash();
         
         $this->assertFalse(empty($model->hash));
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::setCategories
+     */
+    public function testSetCategories()
+    {
+        $model = new ProductsModel();
+        $model->categories = self::$_categorySeocode;
+        
+        $this->assertEquals(self::$_categorySeocode, $model->categories);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getCategories
+     */
+    public function testGetCategories()
+    {
+        $model = new ProductsModel();
+        $model->id_categories = self::$_id;
+        
+        $this->assertEquals(self::$_categorySeocode, $model->categories);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getCategories
+     * при условии, что необходимые для выполнения свойства пусты
+     */
+    public function testNullGetCategories()
+    {
+        $model = new ProductsModel();
+        
+       $this->assertTrue(is_null($model->categories));
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::setSubcategory
+     */
+    public function testSetSubcategory()
+    {
+        $model = new ProductsModel();
+        $model->subcategory = self::$_subcategorySeocode;
+        
+        $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getSubcategory
+     */
+    public function testGetSubcategory()
+    {
+        $model = new ProductsModel();
+        $model->id_subcategory = self::$_id;
+        
+        $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::setDate
+     */
+    public function testSetDate()
+    {
+        $date = time();
+        
+        $model = new ProductsModel();
+        $model->date = $date;
+        
+        $this->assertEquals($date, $model->date);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getDate
+     */
+    public function testGetDate()
+    {
+        $model = new ProductsModel();
+        
+        $this->assertFalse(empty($model->date));
     }
     
     /**

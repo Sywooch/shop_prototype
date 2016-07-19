@@ -40,6 +40,10 @@ use app\mappers\SimilarProductsMapper;
 use app\mappers\RelatedProductsMapper;
 use app\mappers\CommentsForProductMapper;
 use app\mappers\PaymentsMapper;
+use app\mappers\ProductsByCodeMapper;
+use app\mappers\CategoriesByIdMapper;
+use app\mappers\SubcategoryByIdMapper;
+use app\mappers\ProductsBrandsInsertMapper;
 use app\models\AddressModel;
 use app\models\EmailsModel;
 use app\models\PaymentsModel;
@@ -50,6 +54,8 @@ use app\models\CurrencyModel;
 use app\models\CommentsModel;
 use app\models\ProductsModel;
 use app\models\CategoriesModel;
+use app\models\SubcategoryModel;
+use app\models\BrandsModel;
 
 /**
  * Коллекция методов, которые взаимодействуют с БД посредством мапперов
@@ -119,6 +125,29 @@ class MappersHelper
                 self::$_categoriesList = $categoriesArray;
             }
             return self::$_categoriesList;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект CategoriesModel по id
+     * @param object $categoriesModel экземпляр CategoriesModel
+     * @return objects CategoriesModel
+     */
+    public static function getCategoriesById(CategoriesModel $categoriesModel)
+    {
+        try {
+            $categoriesByIdMapper = new CategoriesByIdMapper([
+                'tableName'=>'categories',
+                'fields'=>['id', 'name', 'seocode'],
+                'model'=>$categoriesModel,
+            ]);
+            $categoriesModel = $categoriesByIdMapper->getOneFromGroup();
+            if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
+                return NULL;
+            }
+            return $categoriesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -539,7 +568,7 @@ class MappersHelper
                 'DbArray'=>$arrayToDb,
             ]);
             if (!$result = $usersPurchasesInsertMapper->setGroup()) {
-                throw new ErrorException('Не удалось сохранить данные в БД!');
+                return NULL;
             }
             return $result;
         } catch (\Exception $e) {
@@ -796,7 +825,7 @@ class MappersHelper
      * @param object $productsModel экземпляр ProductsModel
      * @return objects ProductsModel
      */
-    public static function getProductsByCode(ProductsModel $productsModel) #!!!TEST
+    public static function getProductsByCode(ProductsModel $productsModel)
     {
         try {
             $productsByCodeMapper = new ProductsByCodeMapper([
@@ -908,6 +937,29 @@ class MappersHelper
     }
     
     /**
+     * Получает объект SubcategoryModel по id
+     * @param object $subcategoryModel экземпляр SubcategoryModel
+     * @return objects SubcategoryModel
+     */
+    public static function getSubcategoryById(SubcategoryModel $subcategoryModel)
+    {
+        try {
+            $subcategoryByIdMapper = new SubcategoryByIdMapper([
+                'tableName'=>'subcategory',
+                'fields'=>['id', 'name', 'seocode', 'id_categories'],
+                'model'=>$subcategoryModel,
+            ]);
+            $subcategoryModel = $subcategoryByIdMapper->getOneFromGroup();
+            if (!is_object($subcategoryModel) && !$subcategoryModel instanceof SubcategoryModel) {
+                return NULL;
+            }
+            return $subcategoryModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив объектов products, похожих свойствами с текущим products
      * @return array of objects ProductsModel
      */
@@ -979,6 +1031,29 @@ class MappersHelper
                 return NULL;
             }
             return $commentsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись ProductsBrandsModel в БД, связывающую товар с брендом
+     * @param object $productsModel экземпляр ProductsModel
+     * @param object $brandsModel экземпляр BrandsModel
+     * @return boolean
+     */
+    public static function setProductsBrandsInsert(ProductsModel $productsModel, BrandsModel $brandsModel)
+    {
+        try {
+            $productsBrandsInsertMapper = new ProductsBrandsInsertMapper([
+                'tableName'=>'products_brands',
+                'fields'=>['id_products', 'id_brands'],
+                'DbArray'=>[['id_products'=>$productsModel->id, 'id_brands'=>$brandsModel->id]],
+            ]);
+            if (!$result = $productsBrandsInsertMapper->setGroup()) {
+                return NULL;
+            }
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

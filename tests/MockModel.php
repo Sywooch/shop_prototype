@@ -48,4 +48,5 @@ class MockModel extends AbstractBaseModel
     public $code;
     public $id_categories;
     public $id_subcategory;
+    public $id_brands;
 }

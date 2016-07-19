@@ -33,9 +33,9 @@ class ProductsModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    private $_id = '';
+    private $_id = NULL;
+    private $_date = NULL;
     
-    public $date = '';
     public $code = '';
     public $name = '';
     public $description = '';
@@ -54,11 +54,10 @@ class ProductsModel extends AbstractBaseModel
     public $id_subcategory = '';
     
     /**
-     * Свойства получаемые при выборке связанных и похожих продуктов, например, для построения ссылок,
-     * создании ссылок для карточек продуктов
+     * @var string имена seocode категории и подкатегории продукта соответственно
      */
-    public $categories = '';
-    public $subcategory = '';
+    private $_categories = NULL;
+    private $_subcategory = NULL;
     
     /**
      * @var string хэш сумма для продукта, мспользуется для идентификации в массиве продуктов класса корзины
@@ -123,7 +122,7 @@ class ProductsModel extends AbstractBaseModel
      * Возвращает значение свойства $this->_id
      * @return int
      */
-    public function getId() #!!!TEST
+    public function getId()
     {
         try {
             if (is_null($this->_id)) {
@@ -268,6 +267,114 @@ class ProductsModel extends AbstractBaseModel
                 }
             }
             return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_categories
+     * @param string $value
+     * @return boolean
+     */
+    public function setCategories($value)
+    {
+        try {
+            $this->_categories = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_categories
+     * @return int
+     */
+    public function getCategories()
+    {
+        try {
+            if (is_null($this->_categories)) {
+                if (!empty($this->id_categories)) {
+                    $categoriesModel = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>$this->id_categories]));
+                    if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
+                        return NULL;
+                    }
+                    $this->_categories = $categoriesModel->seocode;
+                }
+            }
+            return $this->_categories;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_subcategory
+     * @param string $value
+     * @return boolean
+     */
+    public function setSubcategory($value)
+    {
+        try {
+            $this->_subcategory = $value;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_subcategory
+     * @return int
+     */
+    public function getSubcategory()
+    {
+        try {
+            if (is_null($this->_subcategory)) {
+                if (!empty($this->id_subcategory)) {
+                    $subcategoryModel = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>$this->id_subcategory]));
+                    if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
+                        return NULL;
+                    }
+                    $this->_subcategory = $subcategoryModel->seocode;
+                }
+            }
+            return $this->_subcategory;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_date
+     * @param string $value
+     * @return boolean
+     */
+    public function setDate($value)
+    {
+        try {
+            if (is_numeric($value)) {
+                $this->_date = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_date
+     * @return int
+     */
+    public function getDate()
+    {
+        try {
+            if (is_null($this->_date)) {
+                $this->_date = time();
+            }
+            return $this->_date;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

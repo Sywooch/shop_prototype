@@ -58,7 +58,7 @@ class ProductsByCodeMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($productsModel));
         $this->assertTrue($productsModel instanceof ProductsModel);
         
-        $this->assertTrue(property_exists($productsModel, 'date'));
+        //$this->assertTrue(property_exists($productsModel, 'date'));
         $this->assertTrue(property_exists($productsModel, 'code'));
         $this->assertTrue(property_exists($productsModel, 'name'));
         $this->assertTrue(property_exists($productsModel, 'description'));

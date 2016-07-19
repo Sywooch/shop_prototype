@@ -12,6 +12,9 @@ use app\helpers\MappersHelper;
 use app\helpers\ModelsInstancesHelper;
 use app\models\ProductsModel;
 use app\models\CategoriesModel;
+use app\models\BrandsModel;
+use app\models\ColorsModel;
+use app\models\SizesModel;
 
 /**
  * Управляет добавлением, удалением, обновлением товаров
@@ -26,23 +29,33 @@ class ProductsManagerController extends AbstractBaseController
     {
         try {
             $productsModelForAddProduct = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $brandsModelForAddToCart = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $colorsModelForAddToCart = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $sizesModelForAddToCart = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
             
-            if (\Yii::$app->request->isPost && $productsModelForAddProduct->load(\Yii::$app->request->post())) {
+            if (\Yii::$app->request->isPost && $productsModelForAddProduct->load(\Yii::$app->request->post()) && $brandsModelForAddToCart->load(\Yii::$app->request->post()) && $colorsModelForAddToCart->load(\Yii::$app->request->post()) && $sizesModelForAddToCart->load(\Yii::$app->request->post())) {
                 $productsModelForAddProduct->imagesToLoad = UploadedFile::getInstances($productsModelForAddProduct, 'imagesToLoad');
-                if ($productsModelForAddProduct->validate()) {
+                if ($productsModelForAddProduct->validate() && $brandsModelForAddToCart->validate() && $colorsModelForAddToCart->validate() && $sizesModelForAddToCart->validate()) {
                     if(!$productsModelForAddProduct->upload()) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }
                     if (!MappersHelper::setProductsInsert($productsModelForAddProduct)) {
                         throw new ErrorException('Ошибка при сохранении!');
                     }
-                    return $this->redirect(Url::to(['products-list/index']));
+                    if (!MappersHelper::setProductsBrandsInsert($productsModelForAddProduct, $brandsModelForAddToCart)) {
+                        throw new ErrorException('Ошибка при сохранении связи продукта с брендом!');
+                    }
+                    print_r($productsModelForAddProduct);
+                    //return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModelForAddProduct->categories, 'subcategory'=>$productsModelForAddProduct->subcategory, 'id'=>$productsModelForAddProduct->id]));
                 }
             }
             
             $renderArray = array();
             $renderArray['productsModelForAddProduct'] = $productsModelForAddProduct;
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray['brandsList'] = MappersHelper::getBrandsList();
+            $renderArray['colorsList'] = MappersHelper::getColorsList();
+            $renderArray['sizesList'] = MappersHelper::getSizesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('add-product.twig', $renderArray);
         } catch (\Exception $e) {

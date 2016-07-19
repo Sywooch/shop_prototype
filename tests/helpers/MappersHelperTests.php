@@ -789,7 +789,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     public function testGetSimilarProductsList()
     {
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id + 23, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command->bindValues([':id'=>self::$_id + 23, ':code'=>self::$_code . 'n', ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
@@ -903,6 +903,82 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_images, $result[0]['images']);
         $this->assertEquals(self::$_id, $result[0]['id_categories']);
         $this->assertEquals(self::$_id, $result[0]['id_subcategory']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getProductsByCode
+     */
+    public function testGetProductsByCode()
+    {
+        $productsModel = new ProductsModel();
+        $productsModel->code = self::$_code;
+        
+        $result = MappersHelper::getProductsByCode($productsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof ProductsModel);
+        $this->assertEquals(self::$_code, $result->code);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getCategoriesById
+     */
+    public function testGetCategoriesById()
+    {
+        $categoriesModel = new CategoriesModel();
+        $categoriesModel->id = self::$_id;
+        
+        $result = MappersHelper::getCategoriesById($categoriesModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof CategoriesModel);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_categorySeocode, $result->seocode);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getSubcategoryById
+     */
+    public function testGetSubcategoryById()
+    {
+        $subcategoryModel = new SubcategoryModel();
+        $subcategoryModel->id = self::$_id;
+        
+        $result = MappersHelper::getSubcategoryById($subcategoryModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof SubcategoryModel);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_subcategorySeocode, $result->seocode);
+        $this->assertEquals(self::$_id, $result->id_categories);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setProductsBrandsInsert
+     */
+    public function testSetProductsBrandsInsert()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_brands}}')->queryAll()));
+        
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
+        $id_brands = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{brands}}')->queryScalar();
+        
+        $productsModel = new ProductsModel();
+        $productsModel->id = $id_products;
+        
+        $brandsModel = new BrandsModel();
+        $brandsModel->id = $id_brands;
+        
+        $result = MappersHelper::setProductsBrandsInsert($productsModel, $brandsModel);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{products_brands}}')->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id_products, $result['id_products']);
+        $this->assertEquals($id_brands, $result['id_brands']);
     }
     
     public static function tearDownAfterClass()

@@ -5,9 +5,9 @@ namespace app\models;
 use app\models\AbstractBaseModel;
 
 /**
- * Представляет данные таблицы sizes
+ * Представляет данные таблицы currency
  */
-class SizesModel extends AbstractBaseModel
+class ProductsBrandsModel extends AbstractBaseModel
 {
     /**
      * Сценарий загрузки данных из БД
@@ -18,21 +18,14 @@ class SizesModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    public $id = '';
-    public $size = '';
+    public $id_products = '';
+    public $id_brands = '';
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'size'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['id'],
-        ];
-    }
-    
-    public function rules()
-    {
-        return [
-            [['id'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            self::GET_FROM_DB=>['id_products', 'id_brands'],
+            self::GET_FROM_ADD_PRODUCT_FORM=>['id_products', 'id_brands'],
         ];
     }
 }

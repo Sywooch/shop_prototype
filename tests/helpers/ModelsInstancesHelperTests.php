@@ -9,6 +9,9 @@ use app\models\ProductsModel;
 use app\models\UsersModel;
 use app\models\CurrencyModel;
 use app\models\CommentsModel;
+use app\models\BrandsModel;
+use app\models\ColorsModel;
+use app\models\SizesModel;
 
 /**
  * Тестирует класс app\helpers\ModelsInstancesHelper
@@ -47,6 +50,9 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('usersModelForLogout', $result));
         $this->assertTrue(array_key_exists('currencyModel', $result));
         $this->assertTrue(array_key_exists('commentsModel', $result));
+        $this->assertTrue(array_key_exists('brandsModelForAddToCart', $result));
+        $this->assertTrue(array_key_exists('colorsModelForAddToCart', $result));
+        $this->assertTrue(array_key_exists('sizesModelForAddToCart', $result));
         
         $this->assertTrue($result['filtersModel'] instanceof FiltersModel);
         $this->assertTrue($result['productsModelForAddToCart'] instanceof ProductsModel);
@@ -54,6 +60,9 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result['usersModelForLogout'] instanceof UsersModel);
         $this->assertTrue($result['currencyModel'] instanceof CurrencyModel);
         $this->assertTrue($result['commentsModel'] instanceof CommentsModel);
+        $this->assertTrue($result['brandsModelForAddToCart'] instanceof BrandsModel);
+        $this->assertTrue($result['colorsModelForAddToCart'] instanceof ColorsModel);
+        $this->assertTrue($result['sizesModelForAddToCart'] instanceof SizesModel);
     }
     
     public static function tearDownAfterClass()

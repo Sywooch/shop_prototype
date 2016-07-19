@@ -18,6 +18,9 @@
     {{ form.field(productsModelForAddProduct, 'name') | raw }}
     {{ form.field(productsModelForAddProduct, 'description').textarea() | raw }}
     {{ form.field(productsModelForAddProduct, 'price') | raw }}
+    {{ form.field(brandsModelForAddToCart, 'id').dropDownList(array.merge({'':'Choose brand'}, array.map(brandsList, 'id', 'brand'))) | raw }}
+    {{ form.field(colorsModelForAddToCart, 'id').dropDownList(array.merge({'':'Choose color'}, array.map(colorsList, 'id', 'color'))) | raw }}
+    {{ form.field(sizesModelForAddToCart, 'id').dropDownList(array.merge({'':'Choose size'}, array.map(sizesList, 'id', 'size'))) | raw }}
     {{ form.field(productsModelForAddProduct, 'imagesToLoad[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
     {{ form.field(productsModelForAddProduct, 'id_categories').dropDownList(array.merge({'':'Choose categoy'}, array.map(categoriesList, 'id', 'name'))) | raw }}
     {{ form.field(productsModelForAddProduct, 'id_subcategory').dropDownList({'':'Choose subcategory'}) | raw }}
