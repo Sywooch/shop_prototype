@@ -9,9 +9,8 @@ use app\helpers\MailHelper;
  */
 class MailHelperTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_saveDir = '@app/tests/source/mail/letters';
-    
-    private static $_template = '@app/tests/source/mail/test.twig';
+    private static $_saveDir;
+    private static $_template;
     private static $_setFrom = ['john@somedomain.com'=>'John Dow'];
     private static $_setTo = ['starling@somedomain.info'=>'Clarice Starling'];
     private static $_setSubject = 'Hello, how are you?';
@@ -20,14 +19,8 @@ class MailHelperTests extends \PHPUnit_Framework_TestCase
     
     public static function setUpBeforeClass()
     {
-        if (file_exists(\Yii::getAlias(self::$_saveDir))) {
-            $files = scandir(\Yii::getAlias(self::$_saveDir));
-            foreach ($files as $file) {
-                if (strpos($file, '.eml')) {
-                    unlink(\Yii::getAlias(self::$_saveDir . '/' . $file));
-                }
-            }
-        }
+        self::$_saveDir = \Yii::getAlias('@app/tests/source/mail/letters');
+        self::$_template = \Yii::getAlias('@app/tests/source/mail/test.twig');
     }
     
     /**
@@ -48,12 +41,12 @@ class MailHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
         
         $emlFiles = [];
-        $files = scandir(\Yii::getAlias(self::$_saveDir));
-        foreach ($files as $file) {
-            if (strpos($file, '.eml')) {
-                $emlFiles[] = \Yii::getAlias(self::$_saveDir . '/' . $file);
+        $files = scandir(self::$_saveDir);
+            foreach ($files as $file) {
+                if (strpos($file, '.eml')) {
+                    $emlFiles[] = self::$_saveDir . '/' . $file;
+                }
             }
-        }
         
         $this->assertFalse(empty($emlFiles));
         
@@ -67,16 +60,20 @@ class MailHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, preg_match('#<p>' . substr(self::$_dataForTemplate['data'], 0, 10) . '#', $file));
     }
     
-    public static function tearDownAfterClass()
+    private static function cleanDir()
     {
-        $dir = \Yii::getAlias(self::$_saveDir);
-        if (file_exists($dir) && is_dir($dir)) {
-            $files = glob($dir);
+        if (file_exists(self::$_saveDir)) {
+            $files = scandir(self::$_saveDir);
             foreach ($files as $file) {
                 if (strpos($file, '.eml')) {
-                    unlink($dir . '/' . $file);
+                    unlink(self::$_saveDir . '/' . $file);
                 }
             }
         }
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::cleanDir();
     }
 }

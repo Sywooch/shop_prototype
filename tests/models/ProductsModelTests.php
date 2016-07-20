@@ -8,8 +8,6 @@ use app\models\ProductsModel;
 use app\models\ColorsModel;
 use app\models\SizesModel;
 use app\models\CommentsModel;
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
 
 /**
  * Тестирует ProductsModel
@@ -35,10 +33,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_text = 'Some text';
     private static $_email = 'some@some.com';
     private static $_hash = '34acc7564bb9997b72462bcfff0c15a0';
-    private static $_imagePath = '/var/www/html/shop/tests/source/images/products/[0-9]*';
     private static $_content = 'some content';
-    private static $_file1 = '/var/www/html/shop/tests/source/images/2.jpg';
-    private static $_file2 = '/var/www/html/shop/tests/source/images/3.jpg';
     
     public static function setUpBeforeClass()
     {
@@ -523,88 +518,8 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->date));
     }
     
-    /**
-     * Тестирует метод ProductsModel::upload
-     */
-    /*public function testUpload()
-    {
-        self::cleanDir();
-        
-        $this->assertTrue(empty(glob(self::$_imagePath)));
-        
-        $client = new Client();
-        $response = $client->request('POST', 'http://shop/add-product', [
-            'query'=>['csrfdisable'=>true],
-            'allow_redirects' => false,
-            'multipart'=>[
-                [
-                    'name'=>'ProductsModel[code]',
-                    'contents'=>self::$_name,
-                ],
-                [
-                    'name'=>'ProductsModel[name]',
-                    'contents'=>self::$_content,
-                ],
-                [
-                    'name'=>'ProductsModel[description]',
-                    'contents'=>self::$_description,
-                ],
-                [
-                    'name'=>'ProductsModel[price]',
-                    'contents'=>self::$_price,
-                ],
-                [
-                    'name'=>'ProductsModel[id_categories]',
-                    'contents'=>self::$_id,
-                ],
-                [
-                    'name'=>'ProductsModel[id_subcategory]',
-                    'contents'=>self::$_id,
-                ],
-                [
-                    'name'=>'ProductsModel[imagesToLoad][]',
-                    'contents'=>fopen(self::$_file1, 'r'),
-                ],
-                [
-                    'name'=>'ProductsModel[imagesToLoad][]',
-                    'contents'=>fopen(self::$_file2, 'r'),
-                ]
-            ],
-        ]);
-        
-        $this->assertFalse(empty($dirsArray = glob(self::$_imagePath)));
-        $this->assertEquals(1, count($dirsArray));
-        
-        foreach ($dirsArray as $dir) {
-            $filesArray = glob($dir . '/[1-9]*');
-            $this->assertEquals(2, count($filesArray));
-            foreach ($filesArray as $file) {
-                $this->assertTrue(in_array(pathinfo($file, PATHINFO_EXTENSION), ['png', 'jpg', 'gif']));
-            }
-        }
-    }
-    
-    private static function cleanDir()
-    {
-        if (!empty($dirsToRemove = glob(self::$_imagePath))) {
-            foreach ($dirsToRemove as $dir) {
-                if (is_dir($dir)) {
-                    if (!empty($filesToRemove = glob($dir . '/*'))) {
-                        foreach ($filesToRemove as $file) {
-                            if (file_exists($file)) {
-                                unlink($file);
-                            }
-                        }
-                    }
-                    rmdir($dir);
-                }
-            }
-        }
-    }*/
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->deleteDb();
-        //self::cleanDir();
     }
 }
