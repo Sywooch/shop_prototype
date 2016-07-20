@@ -22,7 +22,7 @@ use app\models\SizesModel;
 class ProductsManagerController extends AbstractBaseController
 {
     /**
-     * Добавляет товар в БД
+     * Добавляет продукт в БД
      * @return redirect
      */
     public function actionAddProduct()
