@@ -2,9 +2,8 @@
 
 namespace app\tests\controllers;
 
-use app\tests\DbManager;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
+use yii\helpers\ArrayHelper;
 
 /**
  * Тестирует класс ProductsManagerController
@@ -12,14 +11,25 @@ use GuzzleHttp\Psr7\Request;
 class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_id = 1;
+    private static $_guzzleClient;
+    
+    private static $_categoriesId = 1;
+    private static $_subcategoryId = 1;
+    private static $_brandsId = 1;
+    private static $_colorsId = 1;
+    private static $_sizesId = 1;
+    
+    private static $_productId = NULL;
+    private static $_dirPath = NULL;
+    private static $_imagesInDirPath = NULL;
+    
     private static $_code = 'Nw-1234';
     private static $_name = 'Name';
     private static $_description = 'Some description';
     private static $_price = 14.45;
     private static $_file1 = '/var/www/html/shop/tests/source/images/2.jpg';
     private static $_file2 = '/var/www/html/shop/tests/source/images/3.jpg';
-    private static $_imagePath = '/var/www/html/shop/tests/source/images/products/[0-9]*';
+    private static $_imagePath;
     private static $_brand = 'Some Brand';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
@@ -28,37 +38,83 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
-        self::$_dbClass->createDb();
+        require(__DIR__ . '/../../config/db.php');
+        self::$_dbClass = new \PDO($config['dsn'] . ';charset=' . $config['charset'], $config['username'], $config['password']);
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
-        $command->execute();
+        self::$_imagePath = \Yii::getAlias('@productsImages');
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
-        $command->execute();
+        self::$_guzzleClient = new Client();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{brands}} SET [[id]]=:id, [[brand]]=:brand');
-        $command->bindValues([':id'=>self::$_id, ':brand'=>self::$_brand]);
-        $command->execute();
+        $pdoStatement = self::$_dbClass->prepare('SELECT id FROM categories LIMIT 1');
+        $pdoStatement->execute();
+        $result = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        if (is_array($result) && !empty($result) && !empty($result['id'])) {
+            self::$_categoriesId = $result['id'];
+        } else {
+            $pdoStatement = self::$_dbClass->prepare('INSERT INTO categories SET id=:id, name=:name, seocode=:seocode');
+            $pdoStatement->execute([':id'=>self::$_categoriesId, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
+        }
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
-        $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
-        $command->execute();
+        $pdoStatement = self::$_dbClass->prepare('SELECT id FROM subcategory WHERE id_categories=:id_categories LIMIT 1');
+        $pdoStatement->execute([':id_categories'=>self::$_categoriesId]);
+        $result = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        if (is_array($result) && !empty($result) && !empty($result['id'])) {
+            self::$_subcategoryId = $result['id'];
+        } else {
+            $pdoStatement = self::$_dbClass->prepare('INSERT INTO subcategory SET id=:id, name=:name, id_categories=:id_categories, seocode=:seocode');
+            $pdoStatement->execute([':id'=>self::$_subcategoryId, ':name'=>self::$_name, ':id_categories'=>self::$_categoriesId, ':seocode'=>self::$_categorySeocode]);
+        }
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
-        $command->bindValues([':id'=>self::$_id, ':size'=>self::$_size]);
-        $command->execute();
+        $pdoStatement = self::$_dbClass->prepare('SELECT id FROM brands LIMIT 1');
+        $pdoStatement->execute();
+        $result = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        if (is_array($result) && !empty($result) && !empty($result['id'])) {
+            self::$_brandsId = $result['id'];
+        } else {
+            $pdoStatement = self::$_dbClass->prepare('INSERT INTO brands SET id=:id, brand=:brand');
+            $pdoStatement->execute([':id'=>self::$_brandsId, ':brand'=>self::$_brand]);
+        }
+        
+        $pdoStatement = self::$_dbClass->prepare('SELECT id FROM colors LIMIT 1');
+        $pdoStatement->execute();
+        $result = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        if (is_array($result) && !empty($result) && !empty($result['id'])) {
+            self::$_colorsId = $result['id'];
+        } else {
+            $pdoStatement = self::$_dbClass->prepare('INSERT INTO colors SET id=:id, color=:color');
+            $pdoStatement->execute([':id'=>self::$_colorsId, ':color'=>self::$_color]);
+        }
+        
+        $pdoStatement = self::$_dbClass->prepare('SELECT id FROM sizes LIMIT 1');
+        $pdoStatement->execute();
+        $result = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        if (is_array($result) && !empty($result) && !empty($result['id'])) {
+            self::$_sizesId = $result['id'];
+        } else {
+            $pdoStatement = self::$_dbClass->prepare('INSERT INTO colors SET id=:id, size=:size');
+            $pdoStatement->execute([':id'=>self::$_sizesId, ':size'=>self::$_size]);
+        }
     }
     
     /**
      * Тестирует метод ProductsManagerController::actionAddProduct
+     * при обработке GET запроса
      */
-    public function testActionAddProduct()
+    public function testGetActionAddProduct()
     {
-        $client = new Client();
-        $response = $client->request('POST', 'http://shop.com/add-product', [
+        $response = self::$_guzzleClient->request('GET', 'http://shop.com/add-product');
+        
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals('OK', $response->getReasonPhrase());
+    }
+    
+    /**
+     * Тестирует метод ProductsManagerController::actionAddProduct
+     * при обработке POST запроса
+     */
+    public function testPostActionAddProduct()
+    {
+        $response = self::$_guzzleClient->request('POST', 'http://shop.com/add-product', [
             'query'=>['csrfdisable'=>true],
             'allow_redirects' => false,
             'multipart'=>[
@@ -80,11 +136,11 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
                 ],
                 [
                     'name'=>'ProductsModel[id_categories]',
-                    'contents'=>self::$_id,
+                    'contents'=>self::$_categoriesId,
                 ],
                 [
                     'name'=>'ProductsModel[id_subcategory]',
-                    'contents'=>self::$_id,
+                    'contents'=>self::$_subcategoryId,
                 ],
                 [
                     'name'=>'ProductsModel[imagesToLoad][]',
@@ -96,52 +152,118 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
                 ],
                 [
                     'name'=>'BrandsModel[id]',
-                    'contents'=>self::$_id,
+                    'contents'=>self::$_brandsId,
                 ],
                 [
                     'name'=>'ColorsModel[idArray][]',
-                    'contents'=>self::$_id,
+                    'contents'=>self::$_colorsId,
                 ],
                 [
                     'name'=>'SizesModel[idArray][]',
-                    'contents'=>self::$_id,
+                    'contents'=>self::$_sizesId,
                 ],
             ],
         ]);
         
+        $this->assertEquals(302, $response->getStatusCode());
+        $this->assertEquals('Found', $response->getReasonPhrase());
+        
         $array = $response->getHeaders();
         $str = explode('/', $array['Location'][0]);
-        $productID = $str[count($str) - 1];
+        self::$_productId = $str[count($str) - 1];
         
-        require(__DIR__ . '/../../config/db.php');
+        $pdoStatement = self::$_dbClass->prepare('SELECT * FROM products WHERE id=:id');
+        $pdoStatement->execute([':id'=>self::$_productId]);
+        $productArray = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
         
-        $pdo = new \PDO('mysql:host=localhost;dbname=shop', 'shopadmin', 'shopadmin');
-        $command = $pdo->prepare('SELECT * FROM products WHERE id=:id');
-        $command->execute([':id'=>$productID]);
-        print_r($command->fetchAll());
+        $this->assertFalse(empty($productArray));
+        $this->assertTrue(is_array($productArray));
+        $this->assertFalse(empty($productArray['date']));
+        $this->assertFalse(empty($productArray['images']));
+        $this->assertEquals(self::$_code, $productArray['code']);
+        $this->assertEquals(self::$_name, $productArray['name']);
+        $this->assertEquals(self::$_description, $productArray['description']);
+        $this->assertEquals(self::$_price, $productArray['price']);
+        $this->assertEquals(self::$_categoriesId, $productArray['id_categories']);
+        $this->assertEquals(self::$_subcategoryId, $productArray['id_subcategory']);
         
-        /*$db = \Yii::$app->db;
-        unset($config['class']);
-        \Yii::configure($db, $config);
-        $command = $db->createCommand('SELECT * FROM {{products}}');
-        //$command->bindValue(':id', $productID);
-        $result = $command->queryAll();
-        print_r($result);*/
+        self::$_dirPath = self::$_imagePath . '/' . $productArray['images'];
+        $this->assertTrue(file_exists(self::$_dirPath));
+        $this->assertTrue(is_dir(self::$_dirPath));
         
-        /*$this->assertFalse(empty($dirsArray = glob(self::$_imagePath)));
-        $this->assertEquals(1, count($dirsArray));
+        self::$_imagesInDirPath = glob(self::$_dirPath . '/[1-9]\.{jpg,gif,png}', GLOB_BRACE);
+        $this->assertFalse(empty(self::$_imagesInDirPath));
+        $this->assertEquals(2, count(self::$_imagesInDirPath));
         
-        foreach ($dirsArray as $dir) {
-            $filesArray = glob($dir . '/[1-9]*');
-            $this->assertEquals(2, count($filesArray));
-            foreach ($filesArray as $file) {
-                $this->assertTrue(in_array(pathinfo($file, PATHINFO_EXTENSION), ['png', 'jpg', 'gif']));
-            }
-        }*/
+        $pdoStatement = self::$_dbClass->prepare('SELECT * FROM products_brands WHERE id_products=:id_products AND id_brands=:id_brands');
+        $pdoStatement->execute([':id_products'=>self::$_productId, ':id_brands'=>self::$_brandsId]);
+        $brandsArray = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        
+        $this->assertFalse(empty($brandsArray));
+        $this->assertTrue(is_array($brandsArray));
+        $this->assertEquals(self::$_productId, $brandsArray['id_products']);
+        $this->assertEquals(self::$_brandsId, $brandsArray['id_brands']);
+        
+        $pdoStatement = self::$_dbClass->prepare('SELECT * FROM products_colors WHERE id_products=:id_products AND id_colors=:id_colors');
+        $pdoStatement->execute([':id_products'=>self::$_productId, ':id_colors'=>self::$_colorsId]);
+        $colorsArray = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        
+        $this->assertFalse(empty($colorsArray));
+        $this->assertTrue(is_array($colorsArray));
+        $this->assertEquals(self::$_productId, $colorsArray['id_products']);
+        $this->assertEquals(self::$_colorsId, $colorsArray['id_colors']);
+        
+        $pdoStatement = self::$_dbClass->prepare('SELECT * FROM products_sizes WHERE id_products=:id_products AND id_sizes=:id_sizes');
+        $pdoStatement->execute([':id_products'=>self::$_productId, ':id_sizes'=>self::$_sizesId]);
+        $sizesArray = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
+        
+        $this->assertFalse(empty($sizesArray));
+        $this->assertTrue(is_array($sizesArray));
+        $this->assertEquals(self::$_productId, $sizesArray['id_products']);
+        $this->assertEquals(self::$_sizesId, $sizesArray['id_sizes']);
+    }
+    
+    /**
+     * Тестирует метод ProductsManagerController::actionGetSubcategoryAjax
+     */
+    public function testActionGetSubcategoryAjax()
+    {
+        $response = self::$_guzzleClient->request('POST', 'http://shop.com/get-subcategory-ajax', [
+            'headers'=>['X-Requested-With'=>'XMLHttpRequest'],
+            'query'=>['csrfdisable'=>true],
+            'form_params' => [
+                'categoriesId'=>self::$_categoriesId,
+            ],
+        ]);
+        
+        $ajaxArray = json_decode($response->getBody(), TRUE);
+        
+        $pdoStatement = self::$_dbClass->prepare('SELECT * FROM subcategory WHERE id_categories=:id_categories');
+        $pdoStatement->execute([':id_categories'=>self::$_categoriesId]);
+        $subcategoryDbArray = ArrayHelper::map($pdoStatement->fetchAll(\PDO::FETCH_ASSOC), 'id', 'name');
+        
+        $this->assertEquals(count($ajaxArray), count($subcategoryDbArray));
+        
+        foreach (array_keys($ajaxArray) as $key) {
+            $this->assertEquals($ajaxArray[$key], $subcategoryDbArray[$key]);
+        }
     }
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        if (!empty(self::$_productId)) {
+            $pdoStatement = self::$_dbClass->prepare('DELETE FROM products WHERE id=:id');
+            $pdoStatement->execute([':id'=>self::$_productId]);
+        }
+        
+        if (!empty(self::$_imagesInDirPath)) {
+            foreach (self::$_imagesInDirPath as $img) {
+                unlink($img);
+            }
+        }
+        
+        if (!empty(self::$_dirPath)) {
+            rmdir(self::$_dirPath);
+        }
     }
 }
