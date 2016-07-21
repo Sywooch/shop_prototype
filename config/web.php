@@ -24,6 +24,8 @@ $config = [
         'userFromFormForAuthentication'=>NULL, # Объект пользователя в процессе аутентификации
         'usersKeyInSession'=>'user', # Ключ, по которому в $_SESSION доступена переменная, пользователя
         'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->user по умолчанию
+        'maxWidth'=>800, # максимально допустимая ширина сохраняемого изображения
+        'maxHeight'=>600, # максимально допустимая высота сохраняемого изображения
     ],
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),

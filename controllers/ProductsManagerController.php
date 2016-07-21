@@ -10,6 +10,7 @@ use yii\helpers\ArrayHelper;
 use app\controllers\AbstractBaseController;
 use app\helpers\MappersHelper;
 use app\helpers\ModelsInstancesHelper;
+use app\helpers\PicturesHelper;
 use app\models\ProductsModel;
 use app\models\CategoriesModel;
 use app\models\BrandsModel;
@@ -36,6 +37,9 @@ class ProductsManagerController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $productsModelForAddProduct->load(\Yii::$app->request->post()) && $brandsModelForAddToCart->load(\Yii::$app->request->post()) && $colorsModelForAddToCart->load(\Yii::$app->request->post()) && $sizesModelForAddToCart->load(\Yii::$app->request->post())) {
                 $productsModelForAddProduct->imagesToLoad = UploadedFile::getInstances($productsModelForAddProduct, 'imagesToLoad');
                 if ($productsModelForAddProduct->validate() && $brandsModelForAddToCart->validate() && $colorsModelForAddToCart->validate() && $sizesModelForAddToCart->validate()) {
+                    if (!PicturesHelper::thumbnail($productsModelForAddProduct->imagesToLoad)) {
+                        throw new ErrorException('Ошибка при обработке изображений!');
+                    }
                     if(!$productsModelForAddProduct->upload()) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }

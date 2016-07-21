@@ -96,7 +96,7 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             [['code', 'name', 'description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>1024*1024, 'maxFiles'=>5, 'maxWidth'=>800, 'maxHeight'=>800, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*5, 'maxFiles'=>5, 'maxWidth'=>10000, 'maxHeight'=>10000, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
         ];
     }
     
