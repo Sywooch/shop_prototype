@@ -21,7 +21,7 @@ class EmailsModel extends AbstractBaseModel
     const GET_FROM_FORM = 'getFromForm';
     
     public $email = '';
-    private $_id = NULL;
+    private $_id = null;
     
     public function scenarios()
     {
@@ -68,7 +68,7 @@ class EmailsModel extends AbstractBaseModel
                 if (!empty($this->email)) {
                     $emailsModel = MappersHelper::getEmailsByEmail($this);
                     if (!is_object($emailsModel) || !$emailsModel instanceof $this) {
-                        return NULL;
+                        return null;
                     }
                     $this->_id = $emailsModel->id;
                 }

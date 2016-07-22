@@ -33,8 +33,8 @@ class ProductsModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    private $_id = NULL;
-    private $_date = NULL;
+    private $_id = null;
+    private $_date = null;
     
     public $code = '';
     public $name = '';
@@ -56,8 +56,8 @@ class ProductsModel extends AbstractBaseModel
     /**
      * @var string имена seocode категории и подкатегории продукта соответственно
      */
-    private $_categories = NULL;
-    private $_subcategory = NULL;
+    private $_categories = null;
+    private $_subcategory = null;
     
     /**
      * @var string хэш сумма для продукта, мспользуется для идентификации в массиве продуктов класса корзины
@@ -75,11 +75,11 @@ class ProductsModel extends AbstractBaseModel
     public $sizeToCart = '';
     public $quantity = '';
     
-    private $_colors = NULL;
-    private $_sizes = NULL;
-    private $_similar = NULL;
-    private $_related = NULL;
-    private $_comments = NULL;
+    private $_colors = null;
+    private $_sizes = null;
+    private $_similar = null;
+    private $_related = null;
+    private $_comments = null;
     
     public function scenarios()
     {
@@ -129,7 +129,7 @@ class ProductsModel extends AbstractBaseModel
                 if (!empty($this->code)) {
                     $productsModel = MappersHelper::getProductsByCode($this);
                     if (!is_object($productsModel) || !$productsModel instanceof $this) {
-                        return NULL;
+                        return null;
                     }
                     $this->_id = $productsModel->id;
                 }
@@ -262,7 +262,7 @@ class ProductsModel extends AbstractBaseModel
                 if (!UploadHelper::saveImages($this->imagesToLoad)) {
                     return false;
                 }
-                if (!$this->images = UploadHelper::getСategoryName()) {
+                if (!$this->images = UploadHelper::getСatalogName()) {
                     throw new ErrorException('Ошибка при получении имени каталога!');
                 }
             }
@@ -298,7 +298,7 @@ class ProductsModel extends AbstractBaseModel
                 if (!empty($this->id_categories)) {
                     $categoriesModel = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>$this->id_categories]));
                     if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
-                        return NULL;
+                        return null;
                     }
                     $this->_categories = $categoriesModel->seocode;
                 }
@@ -335,7 +335,7 @@ class ProductsModel extends AbstractBaseModel
                 if (!empty($this->id_subcategory)) {
                     $subcategoryModel = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>$this->id_subcategory]));
                     if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
-                        return NULL;
+                        return null;
                     }
                     $this->_subcategory = $subcategoryModel->seocode;
                 }

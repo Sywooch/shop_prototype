@@ -14,7 +14,7 @@ class PasswordHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetPassword()
     {
-        $result = NULL;
+        $result = null;
         
         $result = PasswordHelper::getPassword();
         

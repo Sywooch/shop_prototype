@@ -309,7 +309,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе ProductsModel::getId
+     * Тестирует возврат null в методе ProductsModel::getId
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetId()
@@ -336,7 +336,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе ProductsModel::getColors
+     * Тестирует возврат null в методе ProductsModel::getColors
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetColors()
@@ -363,7 +363,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе ProductsModel::getSizes
+     * Тестирует возврат null в методе ProductsModel::getSizes
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetSizes()
@@ -392,7 +392,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе ProductsModel::getSimilar
+     * Тестирует возврат null в методе ProductsModel::getSimilar
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetSimilar()
@@ -419,7 +419,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе ProductsModel::getRelated
+     * Тестирует возврат null в методе ProductsModel::getRelated
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetRelated()
@@ -446,7 +446,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе ProductsModel::getComments
+     * Тестирует возврат null в методе ProductsModel::getComments
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetComments()

@@ -17,6 +17,9 @@ class MockObject extends AbstractBaseMapper
     public $orderByType;
     public $limit;
     public $model;
+    public $baseName;
+    public $extension;
+    public $tempName;
     
     public function init()
     {
@@ -35,5 +38,10 @@ class MockObject extends AbstractBaseMapper
         if (!empty(\Yii::$app->filters->sortingField)) {
             $this->orderByField = \Yii::$app->filters->sortingField;
         }
+    }
+    
+    public function saveAs($path)
+    {
+        return true;
     }
 }

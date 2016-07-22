@@ -31,7 +31,7 @@ class CommentsModel extends AbstractBaseModel
     public $categories = '';
     public $subcategory = '';
     
-    private $_id_emails = NULL;
+    private $_id_emails = null;
     
     public function scenarios()
     {
@@ -85,7 +85,7 @@ class CommentsModel extends AbstractBaseModel
                     } else {
                         $result = MappersHelper::setEmailsInsert($emailsModel);
                         if (!$result) {
-                            return NULL;
+                            return null;
                         }
                     }
                     $this->_id_emails = $emailsModel->id;

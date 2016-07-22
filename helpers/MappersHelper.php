@@ -124,7 +124,7 @@ class MappersHelper
                 ]);
                 $categoriesArray = $categoriesMapper->getGroup();
                 if (!is_array($categoriesArray) || empty($categoriesArray)) {
-                    return NULL;
+                    return null;
                 }
                 self::$_categoriesList = $categoriesArray;
             }
@@ -149,7 +149,7 @@ class MappersHelper
             ]);
             $categoriesModel = $categoriesByIdMapper->getOneFromGroup();
             if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
-                return NULL;
+                return null;
             }
             return $categoriesModel;
         } catch (\Exception $e) {
@@ -172,7 +172,7 @@ class MappersHelper
                 ]);
                 $currencyArray = $currencyMapper->getGroup();
                 if (!is_array($currencyArray) || empty($currencyArray)) {
-                    return NULL;
+                    return null;
                 }
                 self::$_currencyList = $currencyArray;
             }
@@ -197,7 +197,7 @@ class MappersHelper
                 ]);
                 $colorsArray = $colorsMapper->getGroup();
                 if (!is_array($colorsArray) || empty($colorsArray)) {
-                    return NULL;
+                    return null;
                 }
                 self::$_colorsList = $colorsArray;
             }
@@ -223,7 +223,7 @@ class MappersHelper
             ]);
             $colorsArray = $colorsMapper->getGroup();
             if (!is_array($colorsArray) || empty($colorsArray)) {
-                return NULL;
+                return null;
             }
             return $colorsArray;
         } catch (\Exception $e) {
@@ -246,7 +246,7 @@ class MappersHelper
                 ]);
                 $sizesArray = $sizesMapper->getGroup();
                 if (!is_array($sizesArray) || empty($sizesArray)) {
-                    return NULL;
+                    return null;
                 }
                 self::$_sizesList = $sizesArray;
             }
@@ -272,7 +272,7 @@ class MappersHelper
             ]);
             $sizesArray = $sizesMapper->getGroup();
             if (!is_array($sizesArray) || empty($sizesArray)) {
-                return NULL;
+                return null;
             }
             return $sizesArray;
         } catch (\Exception $e) {
@@ -295,7 +295,7 @@ class MappersHelper
                 ]);
                 $brandsArray = $brandsMapper->getGroup();
                 if (!is_array($brandsArray) || empty($brandsArray)) {
-                    return NULL;
+                    return null;
                 }
                 self::$_brandsList = $brandsArray;
             }
@@ -319,7 +319,7 @@ class MappersHelper
             ]);
             $addressModel = $addressByAddressMapper->getOneFromGroup();
             if (!is_object($addressModel) && !$addressModel instanceof AddressModel) {
-                return NULL;
+                return null;
             }
             return $addressModel;
         } catch (\Exception $e) {
@@ -342,7 +342,7 @@ class MappersHelper
             ]);
             $result = $addressInsertMapper->setGroup();
             if (!$result) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -365,7 +365,7 @@ class MappersHelper
             ]);
             $addressModel = $addressByIdMapper->getOneFromGroup();
             if (!is_object($addressModel) || !$addressModel instanceof AddressModel) {
-                return NULL;
+                return null;
             }
             return $addressModel;
         } catch (\Exception $e) {
@@ -387,7 +387,7 @@ class MappersHelper
             ]);
             $phonesModel = $phonesByPhoneMapper->getOneFromGroup();
             if (!is_object($phonesModel) && !$phonesModel instanceof PhonesModel) {
-                return NULL;
+                return null;
             }
             return $phonesModel;
         } catch (\Exception $e) {
@@ -410,7 +410,7 @@ class MappersHelper
             ]);
             $result = $phonesInsertMapper->setGroup();
             if (!$result) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -433,7 +433,7 @@ class MappersHelper
             ]);
             $phonesModel = $phonesByIdMapper->getOneFromGroup();
             if (!is_object($phonesModel) || !$phonesModel instanceof PhonesModel) {
-                return NULL;
+                return null;
             }
             return $phonesModel;
         } catch (\Exception $e) {
@@ -456,7 +456,7 @@ class MappersHelper
             ]);
             $deliveriesModel = $deliveriesByIdMapper->getOneFromGroup();
             if (!is_object($deliveriesModel) || !$deliveriesModel instanceof DeliveriesModel) {
-                return NULL;
+                return null;
             }
             return $deliveriesModel;
         } catch (\Exception $e) {
@@ -479,7 +479,7 @@ class MappersHelper
                 ]);
                 $deliveriesArray = $deliveriesMapper->getGroup();
                 if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
-                    return NULL;
+                    return null;
                 }
                 self::$_deliveriesList = $deliveriesArray;
             }
@@ -504,7 +504,7 @@ class MappersHelper
             ]);
             $paymentsModel = $paymentsByIdMapper->getOneFromGroup();
             if (!is_object($paymentsModel) || !$paymentsModel instanceof PaymentsModel) {
-                return NULL;
+                return null;
             }
             return $paymentsModel;
         } catch (\Exception $e) {
@@ -526,7 +526,7 @@ class MappersHelper
                 ]);
                 $paymentsArray = $paymentsMapper->getGroup();
                 if (!is_array($paymentsArray) || empty($paymentsArray)) {
-                    return NULL;
+                    return null;
                 }
                 self::$_paymentsList = $paymentsArray;
             }
@@ -572,7 +572,7 @@ class MappersHelper
                 'DbArray'=>$arrayToDb,
             ]);
             if (!$result = $usersPurchasesInsertMapper->setGroup()) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -594,7 +594,7 @@ class MappersHelper
             ]);
             $result = $usersUpdateMapper->setGroup();
             if (!$result) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -617,7 +617,7 @@ class MappersHelper
             ]);
             $result = $usersInsertMapper->setGroup();
             if (!$result) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -639,7 +639,7 @@ class MappersHelper
             ]);
             $emailsModel = $emailsByEmailMapper->getOneFromGroup();
             if (!is_object($emailsModel) && !$emailsModel instanceof EmailsModel) {
-                return NULL;
+                return null;
             }
             return $emailsModel;
         } catch (\Exception $e) {
@@ -662,7 +662,7 @@ class MappersHelper
             ]);
             $result = $emailsInsertMapper->setGroup();
             if (!$result) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -685,7 +685,7 @@ class MappersHelper
             ]);
             $emailsModel = $emailsByIdMapper->getOneFromGroup();
             if (!is_object($emailsModel) || !$emailsModel instanceof EmailsModel) {
-                return NULL;
+                return null;
             }
             return $emailsModel;
         } catch (\Exception $e) {
@@ -707,7 +707,7 @@ class MappersHelper
                 'model'=>$usersModel
             ]);
             if (!$result = $usersRulesInsertMapper->setGroup()) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -730,7 +730,7 @@ class MappersHelper
             ]);
             $currencyModel = $currencyByIdMapper->getOneFromGroup();
             if (!is_object($currencyModel) && !$currencyModel instanceof CurrencyModel) {
-                return NULL;
+                return null;
             }
             return $currencyModel;
         } catch (\Exception $e) {
@@ -752,7 +752,7 @@ class MappersHelper
             ]);
             $currencyModel = $currencyByMainMapper->getOneFromGroup();
             if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
-                return NULL;
+                return null;
             }
             return $currencyModel;
         } catch (\Exception $e) {
@@ -774,7 +774,7 @@ class MappersHelper
                 'objectsArray'=>[$commentsModel],
             ]);
             if (!$result = $commentsInsertMapper->setGroup()) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -795,7 +795,7 @@ class MappersHelper
             ]);
             $productsObject = $productMapper->getOneFromGroup();
             if (!is_object($productsObject) || !$productsObject instanceof ProductsModel) {
-                return NULL;
+                return null;
             }
             return $productsObject;
         } catch (\Exception $e) {
@@ -814,7 +814,7 @@ class MappersHelper
             $productsMapper = new ProductsListMapper($config);
             $productsArray = $productsMapper->getGroup();
             if (!is_array($productsArray) || empty($productsArray) || !$productsArray[0] instanceof ProductsModel) {
-                return NULL;
+                return null;
             }
             return $productsArray;
         } catch (EmptyListException $e) {
@@ -839,7 +839,7 @@ class MappersHelper
             ]);
             $productsModel = $productsByCodeMapper->getOneFromGroup();
             if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
-                return NULL;
+                return null;
             }
             return $productsModel;
         } catch (\Exception $e) {
@@ -862,7 +862,7 @@ class MappersHelper
             ]);
             $result = $usersInsertMapper->setGroup();
             if (!$result) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -885,7 +885,7 @@ class MappersHelper
             ]);
             $usersModel = $usersByLoginMapper->getOneFromGroup();
             if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
-                return NULL;
+                return null;
             }
             return $usersModel;
         } catch (\Exception $e) {
@@ -908,7 +908,7 @@ class MappersHelper
                 ]);
                 $rulesArray = $rulesMapper->getGroup();
                 if (!is_array($rulesArray) || empty($rulesArray)) {
-                    return NULL;
+                    return null;
                 }
                 self::$_rulesList = $rulesArray;
             }
@@ -932,7 +932,7 @@ class MappersHelper
             ]);
             $subcategoryArray = $subcategoryMapper->getGroup();
             if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
-                return NULL;
+                return null;
             }
             return $subcategoryArray;
         } catch (\Exception $e) {
@@ -955,7 +955,7 @@ class MappersHelper
             ]);
             $subcategoryModel = $subcategoryByIdMapper->getOneFromGroup();
             if (!is_object($subcategoryModel) && !$subcategoryModel instanceof SubcategoryModel) {
-                return NULL;
+                return null;
             }
             return $subcategoryModel;
         } catch (\Exception $e) {
@@ -982,7 +982,7 @@ class MappersHelper
             ]);
             $similarsArray = $similarProductsMapper->getGroup();
             if (!is_array($similarsArray) || empty($similarsArray)) {
-                return NULL;
+                return null;
             }
             return $similarsArray;
         } catch (\Exception $e) {
@@ -1009,7 +1009,7 @@ class MappersHelper
             ]);
             $relatedArray = $relatedProductsMapper->getGroup();
             if (!is_array($relatedArray) || empty($relatedArray)) {
-                return NULL;
+                return null;
             }
             return $relatedArray;
         } catch (\Exception $e) {
@@ -1032,7 +1032,7 @@ class MappersHelper
             ]);
             $commentsArray = $commentsForProductMapper->getGroup();
             if (!is_array($commentsArray) || empty($commentsArray)) {
-                return NULL;
+                return null;
             }
             return $commentsArray;
         } catch (\Exception $e) {
@@ -1055,7 +1055,7 @@ class MappersHelper
                 'DbArray'=>[['id_products'=>$productsModel->id, 'id_brands'=>$brandsModel->id]],
             ]);
             if (!$result = $productsBrandsInsertMapper->setGroup()) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -1085,7 +1085,7 @@ class MappersHelper
                 'DbArray'=>$arrayToDb,
             ]);
             if (!$result = $productsColorsInsertMapper->setGroup()) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {
@@ -1115,7 +1115,7 @@ class MappersHelper
                 'DbArray'=>$arrayToDb,
             ]);
             if (!$result = $productsSizesInsertMapper->setGroup()) {
-                return NULL;
+                return null;
             }
             return $result;
         } catch (\Exception $e) {

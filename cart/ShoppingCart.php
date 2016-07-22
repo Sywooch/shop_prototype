@@ -32,7 +32,7 @@ class ShoppingCart extends Object
     /**
      * @var object объект пользователя, связанного с заказами в корзине
      */
-    public $user = NULL;
+    public $user = null;
     
     /**
      * Добавляет продукт в массив выбранных к покупке
@@ -162,7 +162,7 @@ class ShoppingCart extends Object
             }
             
             $this->_productsArray = array();
-            $this->user = NULL;
+            $this->user = null;
             $cleanResult = SessionHelper::removeVarFromSession([
                 \Yii::$app->params['cartKeyInSession'],
                 \Yii::$app->params['cartKeyInSession'] . '.user',

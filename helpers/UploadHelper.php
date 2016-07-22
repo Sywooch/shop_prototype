@@ -13,10 +13,6 @@ class UploadHelper
     use ExceptionsTrait;
     
     /**
-     * @var int номер, которым будет переименовано и сохранено изображение
-     */
-    private static $_counter = 1;
-    /**
      * @var string имя категории для текущей группы файлов
      */
     private static $_catalogName = '';
@@ -33,12 +29,11 @@ class UploadHelper
     public static function saveImages(Array $imagesArray)
     {
         try {
-            if (!self::setCategoryNameAndFullPath()) {
-                throw new ErrorException('Ошибка при вызове setCategoryNameAndFullPath!');
+            if (!self::setCatalogNameAndFullPath()) {
+                throw new ErrorException('Ошибка при вызове setCatalogNameAndFullPath!');
             }
             foreach ($imagesArray as $image) {
-                $image->saveAs(self::$_fullPath . '/' . self::$_counter . '.' . $image->extension);
-                self::$_counter++;
+                $image->saveAs(self::$_fullPath . '/' . $image->baseName . '.' . $image->extension);
             }
             return true;
         } catch (\Exception $e) {
@@ -52,7 +47,7 @@ class UploadHelper
      * создает каталог
      * @return string 
      */
-    private static function setCategoryNameAndFullPath()
+    private static function setCatalogNameAndFullPath()
     {
         try {
             self::$_catalogName = time();
@@ -73,7 +68,7 @@ class UploadHelper
      * Возвращает имя каталога, по которому в БД доступны изображения
      * @return string
      */
-    public static function getСategoryName()
+    public static function getСatalogName()
     {
         try {
             return self::$_catalogName;

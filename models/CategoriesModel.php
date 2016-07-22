@@ -20,7 +20,7 @@ class CategoriesModel extends AbstractBaseModel
     public $name = '';
     public $seocode = '';
     
-    private $_subcategory = NULL;
+    private $_subcategory = null;
     
     public function scenarios()
     {

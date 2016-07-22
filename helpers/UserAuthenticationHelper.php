@@ -18,9 +18,9 @@ class UserAuthenticationHelper
      * @var array знасения для ичистки свойств \Yii::$app->user
      */
     public static $_cleanArray = [
-        'id'=>NULL,
-        'login'=>NULL,
-        'password'=>NULL,
+        'id'=>null,
+        'login'=>null,
+        'password'=>null,
         'rawPassword'=>'',
         'name'=>'',
         'surname'=>'',

@@ -84,7 +84,7 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе CategoriesModel::getSubcategory
+     * Тестирует возврат null в методе CategoriesModel::getSubcategory
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetSubcategory()

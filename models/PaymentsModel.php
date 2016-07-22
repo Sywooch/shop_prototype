@@ -22,8 +22,8 @@ class PaymentsModel extends AbstractBaseModel
     public $name = '';
     public $description = '';
     
-    private $_id = NULL;
-    private $_allPayments = NULL;
+    private $_id = null;
+    private $_allPayments = null;
     
     public function scenarios()
     {

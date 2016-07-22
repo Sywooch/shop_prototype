@@ -59,17 +59,17 @@ class UsersModel extends AbstractBaseModel
     /**
      * @var object объект валюты, назначенные по умолчанию или добавленный при авторизации из сессии
      */
-    private $_currency = NULL;
+    private $_currency = null;
     
-    private $_login = NULL;
-    private $_id = NULL;
-    private $_password = NULL;
-    private $_allRules = NULL;
-    private $_emails = NULL;
-    private $_address = NULL;
-    private $_phones = NULL;
-    private $_deliveries = NULL;
-    private $_payments = NULL;
+    private $_login = null;
+    private $_id = null;
+    private $_password = null;
+    private $_allRules = null;
+    private $_emails = null;
+    private $_address = null;
+    private $_phones = null;
+    private $_deliveries = null;
+    private $_payments = null;
     
     public function scenarios()
     {
@@ -121,11 +121,11 @@ class UsersModel extends AbstractBaseModel
                 if (empty($this->rawPassword)) {
                     $this->rawPassword = PasswordHelper::getPassword();
                     if (!is_string($this->rawPassword)) {
-                        return NULL;
+                        return null;
                     }
                 }
                 if (!$this->_password = password_hash($this->rawPassword, PASSWORD_DEFAULT)) {
-                    return NULL;
+                    return null;
                 }
             }
             return $this->_password;
@@ -179,7 +179,7 @@ class UsersModel extends AbstractBaseModel
                 if (!empty($this->login)) {
                     $objectUser = MappersHelper::getUsersByLogin($this);
                     if (!is_object($objectUser) || !$objectUser instanceof $this) {
-                        return NULL;
+                        return null;
                     }
                     $this->_id = $objectUser->id;
                 }
@@ -216,7 +216,7 @@ class UsersModel extends AbstractBaseModel
                 if (!empty($this->name) && $this->scenario == self::GET_FROM_CART_FORM) {
                     $login = TransliterationHelper::getTransliteration($this->name);
                     if (!is_string($login)) {
-                        return NULL;
+                        return null;
                     }
                     $this->_login = $login . substr(md5($login . time()), 0, 5);
                 }

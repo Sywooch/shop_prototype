@@ -176,7 +176,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = [];
@@ -186,7 +186,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('login', $model->errors));
         $this->assertTrue(array_key_exists('rawPassword', $model->errors));
         
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword];
@@ -195,7 +195,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
         
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];
@@ -217,7 +217,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(0, count($model->errors));
         
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = [];
@@ -227,7 +227,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('login', $model->errors));
         $this->assertTrue(array_key_exists('rawPassword', $model->errors));
         
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];
@@ -236,7 +236,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('login', $model->errors));
         
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_notExistsRawPassword];
@@ -245,7 +245,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('rawPassword', $model->errors));
         
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword];
@@ -267,7 +267,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод UsersModel::getPassword
-     * при условии $this->_password IS NULL, $this->rawPassword EMPTY
+     * при условии $this->_password IS null, $this->rawPassword EMPTY
      */
     public function testGetPassword()
     {
@@ -281,7 +281,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод UsersModel::getPassword
-     * при условии $this->_password IS NULL, $this->rawPassword NOT EMPTY
+     * при условии $this->_password IS null, $this->rawPassword not EMPTY
      */
     public function testGetPasswordTwo()
     {
@@ -296,7 +296,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод UsersModel::getPassword
-     * при условии $this->_password NOT NULL
+     * при условии $this->_password not null
      */
     public function testGetPasswordThree()
     {

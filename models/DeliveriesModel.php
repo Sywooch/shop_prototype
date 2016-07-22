@@ -23,8 +23,8 @@ class DeliveriesModel extends AbstractBaseModel
     public $description = '';
     public $price = '';
     
-    private $_id = NULL;
-    private $_allDeliveries = NULL;
+    private $_id = null;
+    private $_allDeliveries = null;
     
     public function scenarios()
     {

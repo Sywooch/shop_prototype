@@ -23,7 +23,7 @@ abstract class AbstractBaseMapper extends Component
     /**
      * @var string имя таблицы, источника данных
      */
-    public $tableName = NULL;
+    public $tableName = null;
     /**
      * @var array столбцы данных, которые необходимо включить в запрос
      */
@@ -36,11 +36,11 @@ abstract class AbstractBaseMapper extends Component
     /**
      * @var string поле по которому будет произведена сортировка
      */
-    public $orderByField = NULL;
+    public $orderByField = null;
     /**
      * @var string порядок сортировки ASC DESC
      */
-    public $orderByType = NULL;
+    public $orderByType = null;
     /**
      * @var boolean определяет, нужна ли сортировка результатов выборки из БД в методе getData(),
      * по умолчанию true
@@ -49,19 +49,19 @@ abstract class AbstractBaseMapper extends Component
     /**
      * @var int максимальное кол-во возвращаемых записей
      */
-    public $limit = NULL;
+    public $limit = null;
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = NULL;
+    public $queryClass = null;
     /**
      * @var string имя класса, который создает объекты из данных
      */
-    public $objectsClass = NULL;
+    public $objectsClass = null;
     /**
      * @var string результирующая строка запроса
      */
-    public $query = NULL;
+    public $query = null;
     /**
      * @var array массив данных для подстановки в запрос
      */
@@ -69,7 +69,7 @@ abstract class AbstractBaseMapper extends Component
     /**
      * @var object объект для получения данных, необходимых для построения объектов
      */
-    public $model = NULL;
+    public $model = null;
     /**
      * @var array массив результирующих данных, полученный из БД
      */

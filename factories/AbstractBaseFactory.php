@@ -17,12 +17,12 @@ abstract class AbstractBaseFactory extends Object implements VisitorInterface
     /**
      * @var object объект класса модели для создания экземпляров
      */
-    public $model = NULL;
+    public $model = null;
     /**
      * @var object объект на основании данных которого создаются объекты данных,
      * объекты данных сохраняются в свойство objectsArray этого объекта
      */
-    protected $_mapperObject = NULL;
+    protected $_mapperObject = null;
     
     /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве,

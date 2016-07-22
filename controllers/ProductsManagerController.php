@@ -37,14 +37,17 @@ class ProductsManagerController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $productsModelForAddProduct->load(\Yii::$app->request->post()) && $brandsModelForAddToCart->load(\Yii::$app->request->post()) && $colorsModelForAddToCart->load(\Yii::$app->request->post()) && $sizesModelForAddToCart->load(\Yii::$app->request->post())) {
                 $productsModelForAddProduct->imagesToLoad = UploadedFile::getInstances($productsModelForAddProduct, 'imagesToLoad');
                 if ($productsModelForAddProduct->validate() && $brandsModelForAddToCart->validate() && $colorsModelForAddToCart->validate() && $sizesModelForAddToCart->validate()) {
-                    if (!PicturesHelper::process($productsModelForAddProduct->imagesToLoad)) {
+                    if (!PicturesHelper::createPictures($productsModelForAddProduct->imagesToLoad)) {
                         throw new ErrorException('Ошибка при обработке изображений!');
                     }
                     if(!$productsModelForAddProduct->upload()) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }
+                    if(!PicturesHelper::createThumbnails($productsModelForAddProduct->images)) {
+                        throw new ErrorException('Ошибка при загрузке images!');
+                    }
                     if (!MappersHelper::setProductsInsert($productsModelForAddProduct)) {
-                        throw new ErrorException('Ошибка при сохранении!');
+                        throw new ErrorException('Ошибка при сохранении продукта!');
                     }
                     if (!MappersHelper::setProductsBrandsInsert($productsModelForAddProduct, $brandsModelForAddToCart)) {
                         throw new ErrorException('Ошибка при сохранении связи продукта с брендом!');

@@ -28,7 +28,7 @@ class UsersPurchasesModel extends AbstractBaseModel
     public $id_payments = '';
     
     private $_received = 0;
-    private $_received_date = NULL;
+    private $_received_date = null;
     private $_processed = 0;
     private $_canceled = 0;
     private $_shipped = 0;

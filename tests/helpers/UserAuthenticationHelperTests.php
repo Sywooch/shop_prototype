@@ -79,7 +79,7 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         
         UserAuthenticationHelper::clean();
         
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         UserAuthenticationHelper::fillFromForm($usersModel);
         
@@ -122,7 +122,7 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testClean()
     {
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $this->assertEquals(\Yii::$app->params['nonAuthenticatedUserLogin'], UserAuthenticationHelper::$_cleanArray['login']);
         

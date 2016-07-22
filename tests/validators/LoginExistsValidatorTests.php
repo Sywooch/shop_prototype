@@ -38,7 +38,7 @@ class LoginExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttributeRegistration()
     {
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
         $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_rawPassword,];
@@ -75,7 +75,7 @@ class LoginExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttributeLogin()
     {
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
         $model->attributes = ['login'=>self::$_login2, 'rawPassword'=>self::$_rawPassword];

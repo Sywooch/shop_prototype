@@ -99,7 +99,7 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе PhonesModel::getId
+     * Тестирует возврат null в методе PhonesModel::getId
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetId()

@@ -139,7 +139,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе AddressModel::getId
+     * Тестирует возврат null в методе AddressModel::getId
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetId()

@@ -118,7 +118,7 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе EmailsModel::getId
+     * Тестирует возврат null в методе EmailsModel::getId
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetId()

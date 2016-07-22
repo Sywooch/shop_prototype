@@ -26,7 +26,7 @@ class AddressModel extends AbstractBaseModel
     public $country = '';
     public $postcode = '';
     
-    private $_id = NULL;
+    private $_id = null;
     
     public function scenarios()
     {
@@ -77,7 +77,7 @@ class AddressModel extends AbstractBaseModel
                     ]);
                     $addressModel = $addressByAddressMapper->getOneFromGroup();
                     if (!is_object($addressModel) || !$addressModel instanceof $this) {
-                        return NULL;
+                        return null;
                     }
                     $this->_id = $addressModel->id;
                 }

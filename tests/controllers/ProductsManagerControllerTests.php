@@ -19,9 +19,9 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
     private static $_colorsId = 1;
     private static $_sizesId = 1;
     
-    private static $_productId = NULL;
-    private static $_dirPath = NULL;
-    private static $_imagesInDirPath = NULL;
+    private static $_productId = null;
+    private static $_dirPath = null;
+    private static $_imagesInDirPath = null;
     
     private static $_code = 'Nw-1234';
     private static $_name = 'Name';
@@ -169,8 +169,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Found', $response->getReasonPhrase());
         
         $array = $response->getHeaders();
-        $str = explode('/', $array['Location'][0]);
-        self::$_productId = $str[count($str) - 1];
+        self::$_productId = basename($array['Location'][0]);
         
         $pdoStatement = self::$_dbClass->prepare('SELECT * FROM products WHERE id=:id');
         $pdoStatement->execute([':id'=>self::$_productId]);
@@ -236,7 +235,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
             ],
         ]);
         
-        $ajaxArray = json_decode($response->getBody(), TRUE);
+        $ajaxArray = json_decode($response->getBody(), true);
         
         $pdoStatement = self::$_dbClass->prepare('SELECT * FROM subcategory WHERE id_categories=:id_categories');
         $pdoStatement->execute([':id_categories'=>self::$_categoriesId]);

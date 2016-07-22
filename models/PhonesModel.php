@@ -22,7 +22,7 @@ class PhonesModel extends AbstractBaseModel
     
     public $phone = '';
     
-    private $_id = NULL;
+    private $_id = null;
     
     public function scenarios()
     {
@@ -68,7 +68,7 @@ class PhonesModel extends AbstractBaseModel
                 if (!empty($this->phone)) {
                     $phonesModel = MappersHelper::getPhonesByPhone($this);
                     if (!is_object($phonesModel) || !$phonesModel instanceof $this) {
-                        return NULL;
+                        return null;
                     }
                     $this->_id = $phonesModel->id;
                 }

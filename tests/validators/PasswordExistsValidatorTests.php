@@ -39,7 +39,7 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttribute()
     {
-        \Yii::$app->params['userFromFormForAuthentication'] = NULL;
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
         $this->assertTrue(empty(\Yii::$app->params['userFromFormForAuthentication']));
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);

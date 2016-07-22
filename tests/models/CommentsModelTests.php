@@ -151,7 +151,7 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует возврат NULL в методе CommentsModel::getId_emails
+     * Тестирует возврат null в методе CommentsModel::getId_emails
      * при условии, что необходимые для выполнения свойства пусты
      */
     public function testNullGetId_emails()

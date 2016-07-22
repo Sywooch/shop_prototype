@@ -172,7 +172,7 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
     {
         $model = new UsersPurchasesModel();
         
-        $this->assertEquals(NULL, $model->received_date);
+        $this->assertEquals(null, $model->received_date);
     }
     
     /**
@@ -183,7 +183,7 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
     {
         $model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
         
-        $this->assertNotEquals(NULL, $model->received_date);
+        $this->assertNotEquals(null, $model->received_date);
     }
     
     /**
