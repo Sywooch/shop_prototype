@@ -3,6 +3,7 @@
 namespace app\test\models;
 
 use yii\helpers\Url;
+use yii\web\UploadedFile;
 use app\tests\DbManager;
 use app\models\ProductsModel;
 use app\models\ColorsModel;
@@ -34,6 +35,35 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_email = 'some@some.com';
     private static $_hash = '34acc7564bb9997b72462bcfff0c15a0';
     private static $_content = 'some content';
+    
+    private static $_filesArray = [
+        'ProductsModel' => [
+            'name' => [
+                'imagesToLoad'=>[
+                    0=>'1.jpg', 
+                    1=>'2.jpg'
+                ]
+            ],
+            'type' => [
+                'imagesToLoad'=>[
+                    0=>'image/jpeg', 
+                    1=>'image/jpeg'
+                ]
+            ],
+            'tmp_name' => [
+                'imagesToLoad'=>[
+                    0=>'/var/www/html/shop/tests/source/images/2.jpg', 
+                    1=>'/var/www/html/shop/tests/source/images/3.jpg'
+                ]
+            ],
+            'size' => [
+                'imagesToLoad' => [
+                    0=>11037,
+                    1=>(1024*1024)*3
+                ]
+            ],
+        ],
+    ];
     
     public static function setUpBeforeClass()
     {
@@ -245,11 +275,15 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('id_categories', $model->errors));
         $this->assertTrue(array_key_exists('id_subcategory', $model->errors));
         
+        $_FILES = self::$_filesArray;
+        $imagesToLoad = UploadedFile::getInstancesByName('ProductsModel[imagesToLoad]');
+        
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
-        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>self::$_images, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
         $model->validate();
         
-        $this->assertEquals(0, count($model->errors));
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('imagesToLoad', $model->errors));
     }
     
     /**

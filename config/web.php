@@ -8,25 +8,7 @@ $config = [
     'timeZone'=>'Europe/Kiev',
     'layout'=>'main.twig',
     'bootstrap'=>['log'],
-    'params'=>[
-        'filterKeys'=>['colors', 'sizes', 'brands'], # Ключи, по которым в $_REQUEST доступны значения выбранных фильтров
-        'limit'=>20, # Кол-во записей на страницу
-        'pagePointer'=>'page', # Ключ, по которому в $_REQUEST доступен номер текущей страницы
-        'defaultOrderByType'=>'DESC', # Порядок сортировки для БД по умолчанию
-        'categoryKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
-        'subCategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории
-        'searchKey'=>'search', # Ключ, по которому в $_REQUEST доступно значение для поиска
-        'idKey'=>'id', # Ключ, по которому в $_REQUEST доступно значение id продукта
-        'fixSentRequests'=>0, #Количество запросов к БД при выполнении скрипта
-        'cartKeyInSession'=>'cart', # Ключ, по которому в $_SESSION доступена переменная, хранящая купленные товары
-        'filtersKeyInSession'=>'filters', # Ключ, по которому в $_SESSION доступена переменная, хранящая выбранные фильтры
-        'defaultRulesId'=>[1, 4], # Id прав доступа, назначаемых при регистрации пользователя по-умолчанию
-        'userFromFormForAuthentication'=>NULL, # Объект пользователя в процессе аутентификации
-        'usersKeyInSession'=>'user', # Ключ, по которому в $_SESSION доступена переменная, пользователя
-        'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->user по умолчанию
-        'maxWidth'=>800, # максимально допустимая ширина сохраняемого изображения
-        'maxHeight'=>600, # максимально допустимая высота сохраняемого изображения
-    ],
+    
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),
         'view'=>[
@@ -118,11 +100,52 @@ $config = [
             'viewPath'=>'@app/views/mail',
         ],
     ],
+    
     'aliases'=>[
         '@productsImages'=>'/var/www/html/shop/web/sources/images/products',
     ],
+    
     'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],
     'as usersFilter'=>['class'=>'app\filters\UsersFilter'],
+    
+    'params'=>[
+        # Вывод записей на страницу
+        'limit'=>20, # Кол-во записей на страницу
+        'pagePointer'=>'page', # Ключ, по которому в $_REQUEST доступен номер текущей страницы
+        
+        # Фильтры
+        'filterKeys'=>['colors', 'sizes', 'brands'], # Ключи, по которым в $_REQUEST доступны значения выбранных фильтров
+        'filtersKeyInSession'=>'filters', # Ключ, по которому в $_SESSION доступена переменная, хранящая выбранные фильтры
+        
+        # Путь к товару
+        'categoryKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
+        'subCategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории
+        'idKey'=>'id', # Ключ, по которому в $_REQUEST доступно значение id продукта
+        
+        # Поиск по товарам
+        'searchKey'=>'search', # Ключ, по которому в $_REQUEST доступно значение для поиска
+        
+        # Сортировка данных СУБД
+        'defaultOrderByType'=>'DESC', # Порядок сортировки для БД по умолчанию
+        
+        # Отладка
+        'fixSentRequests'=>0, #Количество запросов к БД при выполнении скрипта
+        
+        # Корзина
+        'cartKeyInSession'=>'cart', # Ключ, по которому в $_SESSION доступена переменная, хранящая купленные товары
+        
+        # Пользователи
+        'defaultRulesId'=>[1, 4], # ID прав доступа по-умолчанию, назначаемые при регистрации
+        'userFromFormForAuthentication'=>NULL, # Объект пользователя в процессе аутентификации
+        'usersKeyInSession'=>'user', # Ключ, по которому в $_SESSION доступена переменная, пользователя
+        'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->user по умолчанию
+        
+        # Изображения
+        'maxWidth'=>1000, # максимально допустимая ширина сохраняемого изображения
+        'maxHeight'=>700, # максимально допустимая высота сохраняемого изображения
+        'maxThumbnailWidth'=>500, # максимально допустимая ширина сохраняемого эскиза изображения
+        'maxThumbnailHeight'=>500, # максимально допустимая высота сохраняемого эскиза изображения
+    ],
 ];
 
 if (YII_DEBUG) {

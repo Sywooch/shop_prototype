@@ -15,7 +15,7 @@ class PicturesHelper
     /**
      * @var object экземпляр Imagick в текущей итерации
      */
-    private static $_objectImagick;
+    private static $_objectImagick = NULL;
     
     /**
      * @var array массив объектов yii\web\UploadedFile, содержит данные:
@@ -28,14 +28,13 @@ class PicturesHelper
      * @param array of objects массив объектов yii\web\UploadedFile
      * @return boolean
      */
-    public static function thumbnail(Array $objectsArray)
+    public static function process(Array $objectsArray, $thumbnail=true)
     {
         try {
             foreach ($objectsArray as $objImg) {
                 self::$_objectImagick = new \Imagick($objImg->tempName);
                 $width = self::getWidth();
                 $height = self::getHeight();
-                
                 if ($width > \Yii::$app->params['maxWidth'] || $height > \Yii::$app->params['maxHeight']) {
                     if (!self::crop()) {
                         throw new ErrorException('Ошибка при масштабировании изображения!');
@@ -44,6 +43,7 @@ class PicturesHelper
                         throw new ErrorException('Ошибка при сохранении изображения!');
                     }
                 }
+                self::$_objectImagick = NULL;
             }
             return true;
         } catch (\Exception $e) {

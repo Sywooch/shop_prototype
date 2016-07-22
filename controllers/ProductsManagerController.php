@@ -37,7 +37,7 @@ class ProductsManagerController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $productsModelForAddProduct->load(\Yii::$app->request->post()) && $brandsModelForAddToCart->load(\Yii::$app->request->post()) && $colorsModelForAddToCart->load(\Yii::$app->request->post()) && $sizesModelForAddToCart->load(\Yii::$app->request->post())) {
                 $productsModelForAddProduct->imagesToLoad = UploadedFile::getInstances($productsModelForAddProduct, 'imagesToLoad');
                 if ($productsModelForAddProduct->validate() && $brandsModelForAddToCart->validate() && $colorsModelForAddToCart->validate() && $sizesModelForAddToCart->validate()) {
-                    if (!PicturesHelper::thumbnail($productsModelForAddProduct->imagesToLoad)) {
+                    if (!PicturesHelper::process($productsModelForAddProduct->imagesToLoad)) {
                         throw new ErrorException('Ошибка при обработке изображений!');
                     }
                     if(!$productsModelForAddProduct->upload()) {
