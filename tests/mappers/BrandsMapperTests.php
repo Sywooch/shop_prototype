@@ -65,8 +65,26 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($brandsList[0], 'id'));
         $this->assertTrue(property_exists($brandsList[0], 'brand'));
         
-        $this->assertTrue(isset($brandsList[0]->id));
-        $this->assertTrue(isset($brandsList[0]->brand));
+        $this->assertFalse(empty($brandsList[0]->id));
+        $this->assertFalse(empty($brandsList[0]->brand));
+        
+        $brandsMapper = new BrandsMapper([
+            'tableName'=>'brands',
+            'fields'=>['id', 'brand'],
+            'queryClass'=>'app\queries\BrandsQueryCreator',
+        ]);
+        $brandsList = $brandsMapper->getGroup();
+        
+        $this->assertTrue(is_array($brandsList));
+        $this->assertFalse(empty($brandsList));
+        $this->assertTrue(is_object($brandsList[0]));
+        $this->assertTrue($brandsList[0] instanceof BrandsModel);
+        
+        $this->assertTrue(property_exists($brandsList[0], 'id'));
+        $this->assertTrue(property_exists($brandsList[0], 'brand'));
+        
+        $this->assertFalse(empty($brandsList[0]->id));
+        $this->assertFalse(empty($brandsList[0]->brand));
     }
     
     /**
@@ -90,8 +108,26 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($brandsList[0], 'id'));
         $this->assertTrue(property_exists($brandsList[0], 'brand'));
         
-        $this->assertTrue(isset($brandsList[0]->id));
-        $this->assertTrue(isset($brandsList[0]->brand));
+        $this->assertFalse(empty($brandsList[0]->id));
+        $this->assertFalse(empty($brandsList[0]->brand));
+        
+        $brandsMapper = new BrandsMapper([
+            'tableName'=>'brands',
+            'fields'=>['id', 'brand'],
+            'queryClass'=>'app\queries\BrandsQueryCreator',
+        ]);
+        $brandsList = $brandsMapper->getGroup();
+        
+        $this->assertTrue(is_array($brandsList));
+        $this->assertFalse(empty($brandsList));
+        $this->assertTrue(is_object($brandsList[0]));
+        $this->assertTrue($brandsList[0] instanceof BrandsModel);
+        
+        $this->assertTrue(property_exists($brandsList[0], 'id'));
+        $this->assertTrue(property_exists($brandsList[0], 'brand'));
+        
+        $this->assertFalse(empty($brandsList[0]->id));
+        $this->assertFalse(empty($brandsList[0]->brand));
     }
     
     /**
@@ -115,8 +151,26 @@ class BrandsMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($brandsList[0], 'id'));
         $this->assertTrue(property_exists($brandsList[0], 'brand'));
         
-        $this->assertTrue(isset($brandsList[0]->id));
-        $this->assertTrue(isset($brandsList[0]->brand));
+        $this->assertFalse(empty($brandsList[0]->id));
+        $this->assertFalse(empty($brandsList[0]->brand));
+        
+        $brandsMapper = new BrandsMapper([
+            'tableName'=>'brands',
+            'fields'=>['id', 'brand'],
+            'queryClass'=>'app\queries\BrandsQueryCreator',
+        ]);
+        $brandsList = $brandsMapper->getGroup();
+        
+        $this->assertTrue(is_array($brandsList));
+        $this->assertFalse(empty($brandsList));
+        $this->assertTrue(is_object($brandsList[0]));
+        $this->assertTrue($brandsList[0] instanceof BrandsModel);
+        
+        $this->assertTrue(property_exists($brandsList[0], 'id'));
+        $this->assertTrue(property_exists($brandsList[0], 'brand'));
+        
+        $this->assertFalse(empty($brandsList[0]->id));
+        $this->assertFalse(empty($brandsList[0]->brand));
     }
     
     public static function tearDownAfterClass()

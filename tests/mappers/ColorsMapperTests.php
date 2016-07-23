@@ -65,8 +65,26 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($colorsList[0], 'id'));
         $this->assertTrue(property_exists($colorsList[0], 'color'));
         
-        $this->assertTrue(isset($colorsList[0]->id));
-        $this->assertTrue(isset($colorsList[0]->color));
+        $this->assertFalse(empty($colorsList[0]->id));
+        $this->assertFalse(empty($colorsList[0]->color));
+        
+        $colorsMapper = new ColorsMapper([
+            'tableName'=>'colors',
+            'fields'=>['id', 'color'],
+            'queryClass'=>'app\queries\ColorsQueryCreator',
+        ]);
+        $colorsList = $colorsMapper->getGroup();
+        
+        $this->assertTrue(is_array($colorsList));
+        $this->assertFalse(empty($colorsList));
+        $this->assertTrue(is_object($colorsList[0]));
+        $this->assertTrue($colorsList[0] instanceof ColorsModel);
+        
+        $this->assertTrue(property_exists($colorsList[0], 'id'));
+        $this->assertTrue(property_exists($colorsList[0], 'color'));
+        
+        $this->assertFalse(empty($colorsList[0]->id));
+        $this->assertFalse(empty($colorsList[0]->color));
     }
     
     /**
@@ -90,8 +108,26 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($colorsList[0], 'id'));
         $this->assertTrue(property_exists($colorsList[0], 'color'));
         
-        $this->assertTrue(isset($colorsList[0]->id));
-        $this->assertTrue(isset($colorsList[0]->color));
+        $this->assertFalse(empty($colorsList[0]->id));
+        $this->assertFalse(empty($colorsList[0]->color));
+        
+        $colorsMapper = new ColorsMapper([
+            'tableName'=>'colors',
+            'fields'=>['id', 'color'],
+            'queryClass'=>'app\queries\ColorsQueryCreator',
+        ]);
+        $colorsList = $colorsMapper->getGroup();
+        
+        $this->assertTrue(is_array($colorsList));
+        $this->assertFalse(empty($colorsList));
+        $this->assertTrue(is_object($colorsList[0]));
+        $this->assertTrue($colorsList[0] instanceof ColorsModel);
+        
+        $this->assertTrue(property_exists($colorsList[0], 'id'));
+        $this->assertTrue(property_exists($colorsList[0], 'color'));
+        
+        $this->assertFalse(empty($colorsList[0]->id));
+        $this->assertFalse(empty($colorsList[0]->color));
     }
     
     /**
@@ -115,8 +151,26 @@ class ColorsMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($colorsList[0], 'id'));
         $this->assertTrue(property_exists($colorsList[0], 'color'));
         
-        $this->assertTrue(isset($colorsList[0]->id));
-        $this->assertTrue(isset($colorsList[0]->color));
+        $this->assertFalse(empty($colorsList[0]->id));
+        $this->assertFalse(empty($colorsList[0]->color));
+        
+        $colorsMapper = new ColorsMapper([
+            'tableName'=>'colors',
+            'fields'=>['id', 'color'],
+            'queryClass'=>'app\queries\ColorsQueryCreator',
+        ]);
+        $colorsList = $colorsMapper->getGroup();
+        
+        $this->assertTrue(is_array($colorsList));
+        $this->assertFalse(empty($colorsList));
+        $this->assertTrue(is_object($colorsList[0]));
+        $this->assertTrue($colorsList[0] instanceof ColorsModel);
+        
+        $this->assertTrue(property_exists($colorsList[0], 'id'));
+        $this->assertTrue(property_exists($colorsList[0], 'color'));
+        
+        $this->assertFalse(empty($colorsList[0]->id));
+        $this->assertFalse(empty($colorsList[0]->color));
     }
     
     public static function tearDownAfterClass()

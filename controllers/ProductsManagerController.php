@@ -43,7 +43,7 @@ class ProductsManagerController extends AbstractBaseController
                     if(!$productsModelForAddProduct->upload()) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }
-                    if(!PicturesHelper::createThumbnails($productsModelForAddProduct->images)) {
+                    if(!PicturesHelper::createThumbnails(\Yii::getAlias('@productsImages/' . $productsModelForAddProduct->images))) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }
                     if (!MappersHelper::setProductsInsert($productsModelForAddProduct)) {
@@ -65,9 +65,9 @@ class ProductsManagerController extends AbstractBaseController
             $renderArray = array();
             $renderArray['productsModelForAddProduct'] = $productsModelForAddProduct;
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
-            $renderArray['brandsList'] = MappersHelper::getBrandsList();
-            $renderArray['colorsList'] = MappersHelper::getColorsList();
-            $renderArray['sizesList'] = MappersHelper::getSizesList();
+            $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
+            $renderArray['colorsList'] = MappersHelper::getColorsList(false);
+            $renderArray['sizesList'] = MappersHelper::getSizesList(false);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('add-product.twig', $renderArray);
         } catch (\Exception $e) {

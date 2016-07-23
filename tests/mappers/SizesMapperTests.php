@@ -65,8 +65,26 @@ class SizesMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($sizesList[0], 'id'));
         $this->assertTrue(property_exists($sizesList[0], 'size'));
         
-        $this->assertTrue(isset($sizesList[0]->id));
-        $this->assertTrue(isset($sizesList[0]->size));
+        $this->assertFalse(empty($sizesList[0]->id));
+        $this->assertFalse(empty($sizesList[0]->size));
+        
+        $sizesMapper = new SizesMapper([
+            'tableName'=>'sizes',
+            'fields'=>['id', 'size'],
+            'queryClass'=>'app\queries\SizesQueryCreator',
+        ]);
+        $sizesList = $sizesMapper->getGroup();
+        
+        $this->assertTrue(is_array($sizesList));
+        $this->assertFalse(empty($sizesList));
+        $this->assertTrue(is_object($sizesList[0]));
+        $this->assertTrue($sizesList[0] instanceof SizesModel);
+        
+        $this->assertTrue(property_exists($sizesList[0], 'id'));
+        $this->assertTrue(property_exists($sizesList[0], 'size'));
+        
+        $this->assertFalse(empty($sizesList[0]->id));
+        $this->assertFalse(empty($sizesList[0]->size));
     }
     
     /**
@@ -90,8 +108,26 @@ class SizesMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($sizesList[0], 'id'));
         $this->assertTrue(property_exists($sizesList[0], 'size'));
         
-        $this->assertTrue(isset($sizesList[0]->id));
-        $this->assertTrue(isset($sizesList[0]->size));
+        $this->assertFalse(empty($sizesList[0]->id));
+        $this->assertFalse(empty($sizesList[0]->size));
+        
+        $sizesMapper = new SizesMapper([
+            'tableName'=>'sizes',
+            'fields'=>['id', 'size'],
+            'queryClass'=>'app\queries\SizesQueryCreator',
+        ]);
+        $sizesList = $sizesMapper->getGroup();
+        
+        $this->assertTrue(is_array($sizesList));
+        $this->assertFalse(empty($sizesList));
+        $this->assertTrue(is_object($sizesList[0]));
+        $this->assertTrue($sizesList[0] instanceof SizesModel);
+        
+        $this->assertTrue(property_exists($sizesList[0], 'id'));
+        $this->assertTrue(property_exists($sizesList[0], 'size'));
+        
+        $this->assertFalse(empty($sizesList[0]->id));
+        $this->assertFalse(empty($sizesList[0]->size));
     }
     
     /**
@@ -115,8 +151,26 @@ class SizesMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($sizesList[0], 'id'));
         $this->assertTrue(property_exists($sizesList[0], 'size'));
         
-        $this->assertTrue(isset($sizesList[0]->id));
-        $this->assertTrue(isset($sizesList[0]->size));
+        $this->assertFalse(empty($sizesList[0]->id));
+        $this->assertFalse(empty($sizesList[0]->size));
+        
+        $sizesMapper = new SizesMapper([
+            'tableName'=>'sizes',
+            'fields'=>['id', 'size'],
+            'queryClass'=>'app\queries\SizesQueryCreator',
+        ]);
+        $sizesList = $sizesMapper->getGroup();
+        
+        $this->assertTrue(is_array($sizesList));
+        $this->assertFalse(empty($sizesList));
+        $this->assertTrue(is_object($sizesList[0]));
+        $this->assertTrue($sizesList[0] instanceof SizesModel);
+        
+        $this->assertTrue(property_exists($sizesList[0], 'id'));
+        $this->assertTrue(property_exists($sizesList[0], 'size'));
+        
+        $this->assertFalse(empty($sizesList[0]->id));
+        $this->assertFalse(empty($sizesList[0]->size));
     }
     
     public static function tearDownAfterClass()

@@ -12,7 +12,7 @@ class ColorsMapper extends AbstractGetMapper
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\ColorsQueryCreator';
+    public $queryClass = 'app\queries\ColorsJoinProductsQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */

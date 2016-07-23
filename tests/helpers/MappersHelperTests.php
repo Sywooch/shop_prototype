@@ -81,9 +81,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasProperty('_categoriesList'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_currencyList'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_colorsList'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_sizesList'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_brandsList'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_deliveriesList'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_paymentsList'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_rulesList'));
         
         $this->assertTrue(self::$_reflectionClass->hasMethod('getCategoriesList'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getСurrencyList'));
@@ -158,6 +158,17 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
         $command->execute();
         
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_colors}}')->queryAll()));
+        
+        $result = MappersHelper::getColorsList(false);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof ColorsModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_color, $result[0]->color);
+        
         $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
@@ -207,6 +218,17 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':size'=>self::$_size]);
         $command->execute();
         
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_sizes}}')->queryAll()));
+        
+        $result = MappersHelper::getSizesList(false);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof SizesModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_size, $result[0]->size);
+        
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_sizes}} SET [[id_products]]=:id_products, [[id_sizes]]=:id_sizes');
         $command->bindValues([':id_products'=>self::$_id, ':id_sizes'=>self::$_id]);
         $command->execute();
@@ -247,6 +269,17 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{brands}} SET [[id]]=:id, [[brand]]=:brand');
         $command->bindValues([':id'=>self::$_id, ':brand'=>self::$_brand]);
         $command->execute();
+        
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_brands}}')->queryAll()));
+        
+        $result = MappersHelper::getBrandsList(false);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof BrandsModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_brand, $result[0]->brand);
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_brands}} SET [[id_products]]=:id_products, [[id_brands]]=:id_brands');
         $command->bindValues([':id_products'=>self::$_id, ':id_brands'=>self::$_id]);

@@ -79,21 +79,6 @@ class MappersHelper
      */
     private static $_currencyList = array();
     /**
-     * @var array массив объектов colors
-     * @see MappersHelper::getColorsList()
-     */
-    private static $_colorsList = array();
-    /**
-     * @var array массив объектов sizes
-     * @see MappersHelper::getSizesList()
-     */
-    private static $_sizesList = array();
-    /**
-     * @var array массив объектов brands
-     * @see MappersHelper::getBrandsList()
-     */
-    private static $_brandsList = array();
-    /**
      * @var array массив объектов deliveries
      * @see MappersHelper::getDeliveriesList()
      */
@@ -184,24 +169,25 @@ class MappersHelper
     
     /**
      * Получает массив объектов colors
+     * @param boolean $joinProducts определяет, выбирать ли только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects ColorsModel
      */
-    public static function getColorsList()
+    public static function getColorsList($joinProducts=true)
     {
         try {
-            if (empty(self::$_colorsList)) {
-                $colorsMapper = new ColorsMapper([
-                    'tableName'=>'colors',
-                    'fields'=>['id', 'color'],
-                    'orderByField'=>'color',
-                ]);
-                $colorsArray = $colorsMapper->getGroup();
-                if (!is_array($colorsArray) || empty($colorsArray)) {
-                    return null;
-                }
-                self::$_colorsList = $colorsArray;
+            $colorsMapper = new ColorsMapper([
+                'tableName'=>'colors',
+                'fields'=>['id', 'color'],
+                'orderByField'=>'color',
+            ]);
+            if (!$joinProducts) {
+                $colorsMapper->queryClass = 'app\queries\ColorsQueryCreator';
             }
-            return self::$_colorsList;
+            $colorsArray = $colorsMapper->getGroup();
+            if (!is_array($colorsArray) || empty($colorsArray)) {
+                return null;
+            }
+            return $colorsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -233,24 +219,25 @@ class MappersHelper
     
     /**
      * Получает массив объектов sizes
+     * @param boolean $joinProducts определяет, выбирать ли только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects SizesModel
      */
-    public static function getSizesList()
+    public static function getSizesList($joinProducts=true)
     {
         try {
-            if (empty(self::$_sizesList)) {
-                $sizesMapper = new SizesMapper([
-                    'tableName'=>'sizes',
-                    'fields'=>['id', 'size'],
-                    'orderByField'=>'size'
-                ]);
-                $sizesArray = $sizesMapper->getGroup();
-                if (!is_array($sizesArray) || empty($sizesArray)) {
-                    return null;
-                }
-                self::$_sizesList = $sizesArray;
+            $sizesMapper = new SizesMapper([
+                'tableName'=>'sizes',
+                'fields'=>['id', 'size'],
+                'orderByField'=>'size'
+            ]);
+            if (!$joinProducts) {
+                $sizesMapper->queryClass = 'app\queries\SizesQueryCreator';
             }
-            return self::$_sizesList;
+            $sizesArray = $sizesMapper->getGroup();
+            if (!is_array($sizesArray) || empty($sizesArray)) {
+                return null;
+            }
+            return $sizesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -282,24 +269,25 @@ class MappersHelper
     
     /**
      * Получает массив объектов brands
+     * @param boolean $joinProducts определяет, выбирать ли только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects BrandsModel
      */
-    public static function getBrandsList()
+    public static function getBrandsList($joinProducts=true)
     {
         try {
-            if (empty(self::$_brandsList)) {
-                $brandsMapper = new BrandsMapper([
-                    'tableName'=>'brands',
-                    'fields'=>['id', 'brand'],
-                    'orderByField'=>'brand'
-                ]);
-                $brandsArray = $brandsMapper->getGroup();
-                if (!is_array($brandsArray) || empty($brandsArray)) {
-                    return null;
-                }
-                self::$_brandsList = $brandsArray;
+            $brandsMapper = new BrandsMapper([
+                'tableName'=>'brands',
+                'fields'=>['id', 'brand'],
+                'orderByField'=>'brand',
+            ]);
+            if (!$joinProducts) {
+                $brandsMapper->queryClass = 'app\queries\BrandsQueryCreator';
             }
-            return self::$_brandsList;
+            $brandsArray = $brandsMapper->getGroup();
+            if (!is_array($brandsArray) || empty($brandsArray)) {
+                return null;
+            }
+            return $brandsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

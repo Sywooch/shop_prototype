@@ -40,27 +40,27 @@ class PicturesHelper
     
     /**
      * Создает эскизы изображений
-     * @param string $folderName путь к папке, в которой необходимо создать эскизы
+     * @param string $path путь к папке, в которой необходимо создать эскизы
      * @return boolean
      */
-    public static function createThumbnails($folderName)
+    public static function createThumbnails($path)
     {
         try {
-            $fullPath = \Yii::getAlias('@productsImages/' . $folderName);
-            if (file_exists($fullPath) && is_dir($fullPath)) {
-                if (empty($imgArray = glob($fullPath . '/*.{jpg,png,gif}', GLOB_BRACE))) {
-                    return false;
+            if (!file_exists($path) && !is_dir($path)) {
+                throw new ErrorException('Каталог ' . $path . ' не существует!');
+            }
+            if (empty($imgArray = glob($path . '/*.{jpg,png,gif}', GLOB_BRACE))) {
+                return false;
+            }
+            foreach ($imgArray as $imgPath) {
+                self::$_objectImagick = new \Imagick($imgPath);
+                if (!$thumbnailPath = self::getThumbnailsPath($imgPath)) {
+                    throw new ErrorException('Ошибка при создании имени эскиза!');
                 }
-                foreach ($imgArray as $imgPath) {
-                    self::$_objectImagick = new \Imagick($imgPath);
-                    if (!$thumbnailPath = self::getThumbnailsPath($imgPath)) {
-                        throw new ErrorException('Ошибка при создании имени эскиза!');
-                    }
-                    if (!self::process(\Yii::$app->params['maxThumbnailWidth'], \Yii::$app->params['maxThumbnailHeight'], $thumbnailPath)) {
-                        throw new ErrorException('Ошибка при создании эскиза изображения!');
-                    }
-                    self::$_objectImagick = null;
+                if (!self::process(\Yii::$app->params['maxThumbnailWidth'], \Yii::$app->params['maxThumbnailHeight'], $thumbnailPath)) {
+                    throw new ErrorException('Ошибка при создании эскиза изображения!');
                 }
+                self::$_objectImagick = null;
             }
             return true;
         } catch (\Exception $e) {
