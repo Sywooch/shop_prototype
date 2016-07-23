@@ -27,13 +27,14 @@ class ProductsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'tableName'=>'products',
-            'fields'=>['date', 'code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'],
+            'fields'=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
             'objectsArray'=>[
                 new MockModel([
                     'date'=>self::$_date,
                     'code'=>self::$_code,
                     'name'=>self::$_name,
                     'description'=>self::$_description,
+                    'short_description'=>self::$_description,
                     'price'=>self::$_price,
                     'images'=>self::$_images,
                     'id_categories'=>self::$_id_categories,
@@ -45,7 +46,7 @@ class ProductsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ProductsInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{products}} (date,code,name,description,price,images,id_categories,id_subcategory) VALUES (:0_date,:0_code,:0_name,:0_description,:0_price,:0_images,:0_id_categories,:0_id_subcategory)';
+        $query = 'INSERT INTO {{products}} (date,code,name,description,short_description,price,images,id_categories,id_subcategory) VALUES (:0_date,:0_code,:0_name,:0_description,:0_short_description,:0_price,:0_images,:0_id_categories,:0_id_subcategory)';
         
         $this->assertEquals($query, $mockObject->query);
     }

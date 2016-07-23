@@ -69,6 +69,25 @@ class PicturesHelper
     }
     
     /**
+     * Возвращает путь к эскизу изображения
+     * @param string $catalogName имя каталога
+     * @return string 
+     */
+    public static function getThumbnail($catalogName)
+    {
+        try {
+            $path = \Yii::getAlias('@pic/' . $catalogName);
+            if (!file_exists($path) || !is_dir($path)) {
+                return false;
+            }
+            $imgArray = glob($path . '/' . \Yii::$app->params['thumbnailsPrefix'] . '*.{jpg,png,gif}', GLOB_BRACE);
+            return \Yii::getAlias('@wpic/' . $catalogName . '/' . basename($imgArray[array_rand($imgArray, 1)]));
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Анализирует и обрабатывает изображение
      * @param string $maxWidth максимально допустимая ширина
      * @param string $maxHeight максимально допустимая высота

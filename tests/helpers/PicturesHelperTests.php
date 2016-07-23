@@ -63,6 +63,18 @@ class PicturesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($imagick->getImageHeight() <= \Yii::$app->params['maxThumbnailHeight']);
     }
     
+    /**
+     * Тестирует метод PicturesHelper::getThumbnail
+     */
+    public function testGetThumbnail()
+    {
+        $result = PicturesHelper::getThumbnail(self::$_testCatalog);
+        
+        $this->assertTrue(is_string($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(self::$_testCatalog . '/' . \Yii::$app->params['thumbnailsPrefix'] . self::$_fileName, $result);
+    }
+    
     public static function tearDownAfterClass()
     {
         if (file_exists(self::$_testCatalog . '/' . self::$_fileName)) {

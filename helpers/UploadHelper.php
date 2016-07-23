@@ -51,7 +51,7 @@ class UploadHelper
     {
         try {
             self::$_catalogName = time();
-            self::$_fullPath = \Yii::getAlias('@productsImages/' . self::$_catalogName);
+            self::$_fullPath = \Yii::getAlias('@pic/' . self::$_catalogName);
             if (!file_exists(self::$_fullPath)) {
                 mkdir(self::$_fullPath, 0775);
             }

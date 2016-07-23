@@ -39,6 +39,7 @@ class ProductsModel extends AbstractBaseModel
     public $code = '';
     public $name = '';
     public $description = '';
+    public $short_description = '';
     public $price = '';
     
     /**
@@ -84,18 +85,18 @@ class ProductsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'price', 'images', 'categories', 'subcategory'],
+            self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'categories', 'subcategory'],
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'],
+            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['code', 'name', 'description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
         ];
     }

@@ -43,7 +43,7 @@ class ProductsManagerController extends AbstractBaseController
                     if(!$productsModelForAddProduct->upload()) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }
-                    if(!PicturesHelper::createThumbnails(\Yii::getAlias('@productsImages/' . $productsModelForAddProduct->images))) {
+                    if(!PicturesHelper::createThumbnails(\Yii::getAlias('@pic/' . $productsModelForAddProduct->images))) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }
                     if (!MappersHelper::setProductsInsert($productsModelForAddProduct)) {

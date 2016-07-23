@@ -25,7 +25,7 @@ class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'DbArray'=>[
-                ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images],
+                ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images],
             ],
         ]);
         
@@ -42,6 +42,7 @@ class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'code'));
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'name'));
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'description'));
+        $this->assertTrue(property_exists($mockObject->objectsArray[0], 'short_description'));
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'price'));
         $this->assertTrue(property_exists($mockObject->objectsArray[0], 'images'));
         
@@ -50,6 +51,7 @@ class ProductsObjectsFactoryTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($mockObject->objectsArray[0]->code));
         $this->assertTrue(isset($mockObject->objectsArray[0]->name));
         $this->assertTrue(isset($mockObject->objectsArray[0]->description));
+        $this->assertTrue(isset($mockObject->objectsArray[0]->short_description));
         $this->assertTrue(isset($mockObject->objectsArray[0]->price));
         $this->assertTrue(isset($mockObject->objectsArray[0]->images));
     }

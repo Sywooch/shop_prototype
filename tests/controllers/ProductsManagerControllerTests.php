@@ -41,7 +41,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         require(__DIR__ . '/../../config/db.php');
         self::$_dbClass = new \PDO($config['dsn'] . ';charset=' . $config['charset'], $config['username'], $config['password']);
         
-        self::$_imagePath = \Yii::getAlias('@productsImages');
+        self::$_imagePath = \Yii::getAlias('@pic');
         
         self::$_guzzleClient = new Client();
         

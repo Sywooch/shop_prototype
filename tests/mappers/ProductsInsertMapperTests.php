@@ -44,13 +44,14 @@ class ProductsInsertMapperTests extends \PHPUnit_Framework_TestCase
     {
         $usersInsertMapper = new ProductsInsertMapper([
             'tableName'=>'products',
-            'fields'=>['date', 'code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'],
+            'fields'=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
             'objectsArray'=>[
                 new MockModel([
                     'date'=>self::$_date,
                     'code'=>self::$_code,
                     'name'=>self::$_name,
                     'description'=>self::$_description,
+                    'short_description'=>self::$_description,
                     'price'=>self::$_price,
                     'images'=>self::$_images,
                     'id_categories'=>self::$_id_categories,
@@ -73,6 +74,7 @@ class ProductsInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('code', $result);
         $this->assertArrayHasKey('name', $result);
         $this->assertArrayHasKey('description', $result);
+        $this->assertArrayHasKey('short_description', $result);
         $this->assertArrayHasKey('price', $result);
         $this->assertArrayHasKey('images', $result);
         $this->assertArrayHasKey('id_categories', $result);
@@ -81,6 +83,7 @@ class ProductsInsertMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_code, $result['code']);
         $this->assertEquals(self::$_name, $result['name']);
         $this->assertEquals(self::$_description, $result['description']);
+        $this->assertEquals(self::$_description, $result['short_description']);
         $this->assertEquals(self::$_price, $result['price']);
         $this->assertEquals(self::$_images, $result['images']);
         $this->assertEquals(self::$_id_categories, $result['id_categories']);

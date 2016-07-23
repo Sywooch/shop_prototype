@@ -142,6 +142,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'code'));
         $this->assertTrue(property_exists($model, 'name'));
         $this->assertTrue(property_exists($model, 'description'));
+        $this->assertTrue(property_exists($model, 'short_description'));
         $this->assertTrue(property_exists($model, 'price'));
         $this->assertTrue(property_exists($model, 'images'));
         $this->assertTrue(property_exists($model, 'imagesToLoad'));
@@ -174,13 +175,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_LIST_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'colorToCart'=>self::$_colorToCart];
+        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'colorToCart'=>self::$_colorToCart];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->date));
         $this->assertFalse(empty($model->code));
         $this->assertFalse(empty($model->name));
         $this->assertFalse(empty($model->description));
+        $this->assertFalse(empty($model->short_description));
         $this->assertFalse(empty($model->price));
         $this->assertFalse(empty($model->images));
         $this->assertFalse(empty($model->categories));
@@ -192,6 +194,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_code, $model->code);
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_description, $model->description);
+        $this->assertEquals(self::$_description, $model->short_description);
         $this->assertEquals(self::$_price, $model->price);
         $this->assertEquals(self::$_images, $model->images);
         $this->assertEquals(self::$_categorySeocode, $model->categories);
@@ -246,11 +249,12 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
-        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>[self::$_images], 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>[self::$_images], 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
         
         $this->assertFalse(empty($model->code));
         $this->assertFalse(empty($model->name));
         $this->assertFalse(empty($model->description));
+        $this->assertFalse(empty($model->short_description));
         $this->assertFalse(empty($model->price));
         $this->assertFalse(empty($model->imagesToLoad));
         $this->assertFalse(empty($model->id_categories));
@@ -266,10 +270,11 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertEquals(7, count($model->errors));
+        $this->assertEquals(8, count($model->errors));
         $this->assertTrue(array_key_exists('code', $model->errors));
         $this->assertTrue(array_key_exists('name', $model->errors));
         $this->assertTrue(array_key_exists('description', $model->errors));
+        $this->assertTrue(array_key_exists('short_description', $model->errors));
         $this->assertTrue(array_key_exists('price', $model->errors));
         $this->assertTrue(array_key_exists('imagesToLoad', $model->errors));
         $this->assertTrue(array_key_exists('id_categories', $model->errors));
@@ -279,7 +284,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $imagesToLoad = UploadedFile::getInstancesByName('ProductsModel[imagesToLoad]');
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
-        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));

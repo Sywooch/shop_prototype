@@ -173,8 +173,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[short_description]]=:short_description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':short_description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
@@ -691,6 +691,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_code, $result->code);
         $this->assertEquals(self::$_name, $result->name);
         $this->assertEquals(self::$_description, $result->description);
+        $this->assertEquals(self::$_description, $result->short_description);
         $this->assertEquals(self::$_price, $result->price);
         $this->assertEquals(self::$_images, $result->images);
     }
@@ -918,6 +919,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $productsModel->code = self::$_code;
         $productsModel->name = self::$_name;
         $productsModel->description = self::$_description;
+        $productsModel->short_description = self::$_description;
         $productsModel->price = self::$_price;
         $productsModel->images = self::$_images;
         $productsModel->id_categories = self::$_id;
@@ -932,6 +934,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_code, $result[0]['code']);
         $this->assertEquals(self::$_name, $result[0]['name']);
         $this->assertEquals(self::$_description, $result[0]['description']);
+        $this->assertEquals(self::$_description, $result[0]['short_description']);
         $this->assertEquals(self::$_price, $result[0]['price']);
         $this->assertEquals(self::$_images, $result[0]['images']);
         $this->assertEquals(self::$_id, $result[0]['id_categories']);

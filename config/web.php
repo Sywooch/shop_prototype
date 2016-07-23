@@ -22,6 +22,7 @@ $config = [
                         'array'=>'yii\helpers\ArrayHelper',
                         'url'=>'yii\helpers\Url',
                         'objectsToArrayHelper'=>'app\helpers\ObjectsToArrayHelper',
+                        'picturesHelper'=>'app\helpers\PicturesHelper',
                     ],
                 ]
             ],
@@ -102,7 +103,8 @@ $config = [
     ],
     
     'aliases'=>[
-        '@productsImages'=>'/var/www/html/shop/web/sources/images/products',
+        '@pic'=>'/var/www/html/shop/web/sources/images/products',
+        '@wpic'=>'/sources/images/products',
     ],
     
     'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],

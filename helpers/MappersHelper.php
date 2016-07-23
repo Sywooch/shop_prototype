@@ -46,6 +46,7 @@ use app\mappers\SubcategoryByIdMapper;
 use app\mappers\ProductsBrandsInsertMapper;
 use app\mappers\ProductsColorsInsertMapper;
 use app\mappers\ProductsSizesInsertMapper;
+use app\mappers\ProductsInsertMapper;
 use app\models\AddressModel;
 use app\models\EmailsModel;
 use app\models\PaymentsModel;
@@ -779,7 +780,7 @@ class MappersHelper
         try {
             $productMapper = new ProductDetailMapper([
                 'tableName'=>'products',
-                'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+                'fields'=>['id', 'code', 'name', 'description', 'short_description', 'price', 'images'],
             ]);
             $productsObject = $productMapper->getOneFromGroup();
             if (!is_object($productsObject) || !$productsObject instanceof ProductsModel) {
@@ -843,12 +844,12 @@ class MappersHelper
     public static function setProductsInsert(ProductsModel $productsModel)
     {
         try {
-            $usersInsertMapper = new UsersInsertMapper([
+            $productsInsertMapper = new ProductsInsertMapper([
                 'tableName'=>'products',
-                'fields'=>['date', 'code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'],
+                'fields'=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
                 'objectsArray'=>[$productsModel],
             ]);
-            $result = $usersInsertMapper->setGroup();
+            $result = $productsInsertMapper->setGroup();
             if (!$result) {
                 return null;
             }
