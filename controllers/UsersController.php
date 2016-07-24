@@ -2,15 +2,11 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
 use yii\base\ErrorException;
 use yii\helpers\Url;
-use app\helpers\UserAuthenticationHelper;
-use app\helpers\MappersHelper;
-use app\helpers\ModelsInstancesHelper;
-use app\helpers\SessionHelper;
-use app\models\UsersModel;
-use app\models\EmailsModel;
+use app\controllers\AbstractBaseController;
+use app\helpers\{UserAuthenticationHelper, MappersHelper, ModelsInstancesHelper, SessionHelper};
+use app\models\{UsersModel, EmailsModel};
 
 /**
  * Управляет работой с пользователями

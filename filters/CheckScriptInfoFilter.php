@@ -2,9 +2,8 @@
 
 namespace app\filters;
 
-use yii\base\ActionFilter;
+use yii\base\{ActionFilter, ErrorException};
 use app\traits\ExceptionsTrait;
-use yii\base\ErrorException;
 
 /**
  * Фиксирует время генерации страницы, объем выделенной памяти и кол-во запросов к БД

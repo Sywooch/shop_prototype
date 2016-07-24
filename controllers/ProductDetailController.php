@@ -4,8 +4,7 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\helpers\MappersHelper;
-use app\helpers\ModelsInstancesHelper;
+use app\helpers\{MappersHelper, ModelsInstancesHelper};
 use app\models\ProductsModel;
 
 /**

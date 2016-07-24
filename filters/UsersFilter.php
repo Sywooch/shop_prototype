@@ -2,11 +2,9 @@
 
 namespace app\filters;
 
-use yii\base\ActionFilter;
+use yii\base\{ActionFilter, ErrorException};
 use app\traits\ExceptionsTrait;
-use yii\base\ErrorException;
-use app\models\UsersModel;
-use app\models\CurrencyModel;
+use app\models\{UsersModel, CurrencyModel};
 
 /**
  * Заполняет объект \Yii::$app->user данными сесии

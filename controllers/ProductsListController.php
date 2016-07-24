@@ -6,8 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\exceptions\EmptyListException;
-use app\helpers\MappersHelper;
-use app\helpers\ModelsInstancesHelper;
+use app\helpers\{MappersHelper, ModelsInstancesHelper};
 
 /**
  * Обрабатывает запросы на получение списка продуктов

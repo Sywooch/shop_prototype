@@ -3,19 +3,11 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\web\Response;
-use yii\web\UploadedFile;
-use yii\helpers\Url;
-use yii\helpers\ArrayHelper;
+use yii\web\{Response, UploadedFile};
+use yii\helpers\{Url, ArrayHelper};
 use app\controllers\AbstractBaseController;
-use app\helpers\MappersHelper;
-use app\helpers\ModelsInstancesHelper;
-use app\helpers\PicturesHelper;
-use app\models\ProductsModel;
-use app\models\CategoriesModel;
-use app\models\BrandsModel;
-use app\models\ColorsModel;
-use app\models\SizesModel;
+use app\helpers\{MappersHelper, ModelsInstancesHelper, PicturesHelper};
+use app\models\{ProductsModel, CategoriesModel, BrandsModel, ColorsModel, SizesModel};
 
 /**
  * Управляет добавлением, удалением, обновлением товаров

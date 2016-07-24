@@ -16,7 +16,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     private static $_address = 'Some address';
     private static $_city = 'Some city';
     private static $_country = 'Some country';
-    private static $_postcode = 06589;
+    private static $_postcode = '06589';
     private static $_postcode2 = 'F7895';
     
     public static function setUpBeforeClass()

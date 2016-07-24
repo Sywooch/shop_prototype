@@ -6,8 +6,7 @@ use yii\base\Object;
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 use app\helpers\SessionHelper;
-use app\models\ProductsModel;
-use app\models\UsersModel;
+use app\models\{ProductsModel, UsersModel};
 
 /**
  * Предоставляет свойства и методы для работы с корзиной покупок

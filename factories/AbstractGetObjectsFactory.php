@@ -2,9 +2,9 @@
 
 namespace app\factories;
 
+use yii\base\ErrorException;
 use app\factories\AbstractBaseFactory;
 use app\mappers\AbstractBaseMapper;
-use yii\base\ErrorException;
 
 /**
  * Конструирует массив объектов из массива строк БД

@@ -4,9 +4,9 @@ namespace app\controllers;
 
 use yii\web\Controller;
 use yii\helpers\Url;
+use yii\base\ErrorException;
 use app\helpers\MappersHelper;
 use app\traits\ExceptionsTrait;
-use yii\base\ErrorException;
 use app\models\CurrencyModel;
 
 /**

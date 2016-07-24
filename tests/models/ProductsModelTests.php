@@ -5,10 +5,7 @@ namespace app\test\models;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 use app\tests\DbManager;
-use app\models\ProductsModel;
-use app\models\ColorsModel;
-use app\models\SizesModel;
-use app\models\CommentsModel;
+use app\models\{ProductsModel, ColorsModel, SizesModel, CommentsModel};
 
 /**
  * Тестирует ProductsModel
@@ -60,6 +57,12 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
                 'imagesToLoad' => [
                     0=>11037,
                     1=>(1024*1024)*3
+                ]
+            ],
+            'error' => [
+                'imagesToLoad' => [
+                    0=>0,
+                    1=>0,
                 ]
             ],
         ],

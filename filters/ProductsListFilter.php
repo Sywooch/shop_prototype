@@ -2,9 +2,8 @@
 
 namespace app\filters;
 
-use yii\base\ActionFilter;
+use yii\base\{ActionFilter, ErrorException};
 use app\traits\ExceptionsTrait;
-use yii\base\ErrorException;
 
 /**
  * Заполняет объект корзины данными сесии

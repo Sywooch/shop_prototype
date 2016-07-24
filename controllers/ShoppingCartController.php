@@ -5,9 +5,7 @@ namespace app\controllers;
 use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\helpers\ModelsInstancesHelper;
-use app\helpers\MappersHelper;
-use app\helpers\MailHelper;
+use app\helpers\{ModelsInstancesHelper, MappersHelper, MailHelper};
 use app\models\ProductsModel;
 
 /**
