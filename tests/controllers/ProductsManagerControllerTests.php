@@ -131,6 +131,10 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
                     'contents'=>self::$_description,
                 ],
                 [
+                    'name'=>'ProductsModel[short_description]',
+                    'contents'=>self::$_description,
+                ],
+                [
                     'name'=>'ProductsModel[price]',
                     'contents'=>self::$_price,
                 ],

@@ -16,6 +16,12 @@ class PicturesHelper
      * @var object экземпляр Imagick в текущей итерации
      */
     private static $_objectImagick = null;
+    /**
+     * @var array массив путей к загружаемым изображениям, ключи:
+     * thumbnails - массив путей к эскизам изображений
+     * fullpath - массив путей к полноразмерным изображениям
+     */
+    private static $_pathImagesArray = array();
     
     /**
      * Обходит массив объектов, вызывая для каждого PicturesHelper::process()
@@ -68,20 +74,51 @@ class PicturesHelper
         }
     }
     
-    /**
-     * Возвращает путь к эскизу изображения
-     * @param string $catalogName имя каталога
-     * @return string 
+     /**
+     * Возвращает массив путей к изображениям в указанном каталоге
+     * @param string $basePath путь к базовому каталогу
+     * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
+     * @return array 
      */
-    public static function getThumbnail($catalogName)
+    public static function getPathImages($basePath, $catalogName)
     {
         try {
-            $path = \Yii::getAlias('@pic/' . $catalogName);
-            if (!file_exists($path) || !is_dir($path)) {
+            $catalogPath = \Yii::getAlias($basePath . '/' . $catalogName);
+            if (!file_exists($catalogPath) || !is_dir($catalogPath)) {
                 return false;
             }
-            $imgArray = glob($path . '/' . \Yii::$app->params['thumbnailsPrefix'] . '*.{jpg,png,gif}', GLOB_BRACE);
-            return \Yii::getAlias('@wpic/' . $catalogName . '/' . basename($imgArray[array_rand($imgArray, 1)]));
+            $imagesArray = glob($catalogPath . '/*.{jpg,png,gif}', GLOB_BRACE);
+            if (!is_array($imagesArray) || empty($imagesArray)) {
+                return false;
+            }
+            foreach ($imagesArray as $imgPath) {
+                $webPath = \Yii::getAlias('@wpic/' . $catalogName . '/' . basename($imgPath));
+                if (strpos($imgPath, \Yii::$app->params['thumbnailsPrefix'])) {
+                    self::$_pathImagesArray[\Yii::$app->params['thumbnails']][] = $webPath;
+                    continue;
+                }
+                self::$_pathImagesArray[\Yii::$app->params['fullpath']][] = $webPath;
+            }
+            return self::$_pathImagesArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } finally {
+            self::$_pathImagesArray = array();
+        }
+    }
+    
+    /**
+     * Возвращает путь к 1 случайно выбранному эскизу
+     * @param string $basePath путь к базовому каталогу
+     * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
+     * @return string 
+     */
+    public static function getOneThumbnail($basePath, $catalogName)
+    {
+        try {
+            $picturesArray = self::getPathImages($basePath, $catalogName);
+            $thumbnailsArray = $picturesArray[\Yii::$app->params['thumbnails']];
+            return $thumbnailsArray[array_rand($thumbnailsArray, 1)];
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
