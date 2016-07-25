@@ -292,6 +292,15 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('imagesToLoad', $model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model->attributes = ['code'=>'<p>' . self::$_code . '</p>', 'name'=>'<script src="/my/script.js"></script>' . self::$_name, 'description'=>'<p>' . self::$_description . '</p>', 'short_description'=>'<script src="/my/script.js"></script>' . self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->validate();
+        
+        $this->assertEquals(self::$_code, $model->code);
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_description, $model->short_description);
+        $this->assertEquals('<p>' . self::$_description . '</p>', $model->description);
     }
     
     /**

@@ -3,7 +3,6 @@
 namespace app\tests\validators;
 
 use app\tests\DbManager;
-use app\validators\LoginExistsValidator;
 use app\models\UsersModel;
 
 /**

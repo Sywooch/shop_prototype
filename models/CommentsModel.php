@@ -46,6 +46,7 @@ class CommentsModel extends AbstractBaseModel
         return [
             [['text', 'email'], 'required', 'on'=>self::GET_FROM_FORM],
             [['email'], 'email'],
+            [['text', 'name', 'email'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
         ];
     }
     

@@ -36,6 +36,7 @@ class PhonesModel extends AbstractBaseModel
     {
         return [
             [['phone'], 'required', 'on'=>self::GET_FROM_FORM],
+            [['phone'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
         ];
     }
     

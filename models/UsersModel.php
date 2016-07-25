@@ -86,7 +86,9 @@ class UsersModel extends AbstractBaseModel
     {
         return [
             [['login', 'rawPassword'], 'required', 'on'=>self::GET_FROM_REGISTRATION_FORM],
+            [['login', 'rawPassword'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_REGISTRATION_FORM],
             [['name', 'surname'], 'required', 'on'=>self::GET_FROM_CART_FORM],
+            [['name', 'surname'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_CART_FORM],
             [['login', 'rawPassword'], 'required', 'on'=>self::GET_FROM_LOGIN_FORM],
             ['login', 'app\validators\LoginExistsValidator'],
             ['rawPassword', 'app\validators\PasswordExistsValidator', 'on'=>self::GET_FROM_LOGIN_FORM, 'when'=>function($model) {

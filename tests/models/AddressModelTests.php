@@ -113,6 +113,16 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+        
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+        $model->attributes = ['address'=>'<p>'. self::$_address . '</p>', 'city'=>'<script src="/my/script.js"></script>' . self::$_city, 'country'=>'<a href="">'. self::$_country. '</a>', 'postcode'=>self::$_postcode];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        $this->assertEquals(self::$_address, $model->address);
+        $this->assertEquals(self::$_city, $model->city);
+        $this->assertEquals(self::$_country, $model->country);
+        $this->assertEquals(self::$_postcode, $model->postcode);
     }
     
     /**

@@ -126,6 +126,14 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
+        $model->attributes = ['text'=>'<p><a href="some">'. self::$_text . '</a></p>', 'email'=>self::$_email, 'name'=>'<script src="/my/script.js"></script>' . self::$_name];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        $this->assertEquals(self::$_text, $model->text);
+        $this->assertEquals(self::$_name, $model->name);
     }
     
     /**

@@ -40,6 +40,7 @@ class AddressModel extends AbstractBaseModel
     {
         return [
             [['address', 'city', 'country'], 'required', 'on'=>self::GET_FROM_FORM],
+            [['address', 'city', 'country', 'postcode'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
         ];
     }
     

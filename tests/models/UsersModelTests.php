@@ -203,6 +203,14 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(0, count($model->errors));
         
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['login'=>'<p>'. self::$_login2 . '</p>', 'rawPassword'=>'<script src="/my/script.js"></script>' . self::$_rawPassword];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        $this->assertEquals(self::$_login2, $model->login);
+        $this->assertEquals(self::$_rawPassword, $model->rawPassword);
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
         $model->attributes = [];
         $model->validate();
@@ -216,6 +224,14 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
+        $model->attributes = ['name'=>'<p>'. self::$_name . '</p>', 'surname'=>'<script src="/my/script.js"></script>' . self::$_surname];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_surname, $model->surname);
         
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         

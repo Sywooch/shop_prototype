@@ -85,6 +85,13 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+        
+        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+        $model->attributes = ['phone'=>'<script src="/my/script.js"></script>' . self::$_phone];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        $this->assertEquals(self::$_phone, $model->phone);
     }
     
     /**

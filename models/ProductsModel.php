@@ -98,6 +98,7 @@ class ProductsModel extends AbstractBaseModel
         return [
             [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
         ];
     }
     
