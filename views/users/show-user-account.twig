@@ -1,0 +1,35 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/search.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+<p><strong>User</strong></p>
+
+<p>
+    Login: {{ usersModel.login }}<br>
+    First Name: {{ usersModel.name }}<br>
+    Surname: {{ usersModel.surname }}
+</p>
+
+<p>
+    Email: {{usersModel.emails.email }}
+</p>
+
+<p>
+    Phone: {{usersModel.phones.phone }}
+</p>
+
+<p><strong>Delivery address</strong></p>
+
+<p>
+    Country: {{usersModel.address.country }}<br>
+    City: {{usersModel.address.city }}<br>
+    Address: {{usersModel.address.address }}<br>
+    {% if usersModel.address.postcode %}
+        Postcode: {{usersModel.address.postcode }}<br>
+    {% endif %}
+</p>

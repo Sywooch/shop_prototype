@@ -110,4 +110,22 @@ class UsersController extends AbstractBaseController
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Формирует суммарную информацию о действиях пользователя и состоянии его аккаунта 
+     * @return string
+     */
+    public function actionShowUserAccount()
+    {
+        try {
+            $renderArray = array();
+            $renderArray['usersModel'] = \Yii::$app->user;
+            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('show-user-account.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

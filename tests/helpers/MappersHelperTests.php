@@ -905,6 +905,26 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getUsersById
+     */
+    public function testGetUsersById()
+    {
+        $user_id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}}')->queryScalar();
+        $this->assertFalse(empty($user_id));
+        
+        $usersModel = new UsersModel();
+        $usersModel->id = $user_id;
+        
+        $result = MappersHelper::getUsersById($usersModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof UsersModel);
+        $this->assertEquals(self::$_login, $result->login);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_surname, $result->surname);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::setProductsInsert
      */
     public function testSetProductsInsert()

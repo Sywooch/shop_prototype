@@ -29,6 +29,7 @@ use app\mappers\{ColorsMapper,
     ProductDetailMapper, 
     ProductsListMapper, 
     UsersByLoginMapper, 
+    UsersByIdMapper,
     DeliveriesMapper, 
     RulesMapper, 
     EmailsByIdMapper, 
@@ -898,6 +899,29 @@ class MappersHelper
                 'model'=>$usersModel
             ]);
             $usersModel = $usersByLoginMapper->getOneFromGroup();
+            if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
+                return null;
+            }
+            return $usersModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект UsersModel по id
+     * @param object $usersModel экземпляр UsersModel
+     * @return objects UsersModel
+     */
+    public static function getUsersById(UsersModel $usersModel)
+    {
+        try {
+            $usersByIdMapper = new UsersByIdMapper([
+                'tableName'=>'users',
+                'fields'=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                'model'=>$usersModel,
+            ]);
+            $usersModel = $usersByIdMapper->getOneFromGroup();
             if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
                 return null;
             }

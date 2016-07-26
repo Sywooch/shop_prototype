@@ -69,6 +69,7 @@ $config = [
                 'join'=>'users/add-user',
                 'login'=>'users/login-user',
                 'logout'=>'users/logout-user',
+                'account'=>'users/show-user-account',
                 'add-comment'=>'comments/add-comment',
                 'add-to-cart'=>'shopping-cart/add-to-cart',
                 'clear-cart'=>'shopping-cart/clear-cart',
