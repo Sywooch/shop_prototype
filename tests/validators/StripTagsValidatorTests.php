@@ -2,6 +2,7 @@
 
 namespace app\tests\validators;
 
+use app\tests\MockModel;
 use app\validators\StripTagsValidator;
 
 /**
@@ -9,8 +10,8 @@ use app\validators\StripTagsValidator;
  */
 class StripTagsValidatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_withHtmlTags = '<p>Some Name.</p> <ul><li>First punkt</li></ul>';
-    private static $_withoutHtmlTags = 'Some Name. First punkt';
+    private static $_withHtmlTags = '<p>Some Name.</p> <ul><li>First punkt</li> </ul><strong>some.com</strong>';
+    private static $_withoutHtmlTags = 'Some Name. First punkt some.com';
     
     private static $_withHtmlHrefTags = '<a href="some.com">some.com</a>';
     private static $_withoutHtmlHrefTags = 'some.com';
@@ -48,5 +49,11 @@ class StripTagsValidatorTests extends \PHPUnit_Framework_TestCase
         $validator = new StripTagsValidator();
         $result = $validator->validate(self::$_withJavascriptRequireTags);
         $this->assertEquals(self::$_withoutJavascriptRequireTags, $result);
+        
+        $model = new MockModel(['description'=>self::$_withHtmlTags]);
+        $validator = new StripTagsValidator();
+        $validator->exceptProreties = ['app\tests\MockModel::description'];
+        $validator->validateAttribute($model, 'description');
+        $this->assertEquals(self::$_withHtmlTags, $model->description);
     }
 }

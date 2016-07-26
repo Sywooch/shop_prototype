@@ -10,6 +10,7 @@ use app\mappers\{ColorsMapper,
     BrandsMapper, 
     CurrencyMapper, 
     CategoriesMapper, 
+    CategoriesBySeocodeMapper, 
     EmailsByEmailMapper, 
     EmailsInsertMapper, 
     AddressByAddressMapper, 
@@ -43,6 +44,7 @@ use app\mappers\{ColorsMapper,
     ProductsByCodeMapper, 
     CategoriesByIdMapper, 
     SubcategoryByIdMapper, 
+    SubcategoryBySeocodeMapper, 
     ProductsBrandsInsertMapper, 
     ProductsColorsInsertMapper, 
     ProductsSizesInsertMapper, 
@@ -134,6 +136,29 @@ class MappersHelper
                 'model'=>$categoriesModel,
             ]);
             $categoriesModel = $categoriesByIdMapper->getOneFromGroup();
+            if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
+                return null;
+            }
+            return $categoriesModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект CategoriesModel по seocode
+     * @param object $categoriesModel экземпляр CategoriesModel
+     * @return objects CategoriesModel
+     */
+    public static function getCategoriesBySeocode(CategoriesModel $categoriesModel)
+    {
+        try {
+            $categoriesBySeocodeMapper = new CategoriesBySeocodeMapper([
+                'tableName'=>'categories',
+                'fields'=>['id', 'name', 'seocode'],
+                'model'=>$categoriesModel
+            ]);
+            $categoriesModel = $categoriesBySeocodeMapper->getOneFromGroup();
             if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
                 return null;
             }
@@ -943,7 +968,30 @@ class MappersHelper
                 'model'=>$subcategoryModel,
             ]);
             $subcategoryModel = $subcategoryByIdMapper->getOneFromGroup();
-            if (!is_object($subcategoryModel) && !$subcategoryModel instanceof SubcategoryModel) {
+            if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
+                return null;
+            }
+            return $subcategoryModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+     /**
+     * Получает объект SubcategoryModel по seocode
+     * @param object $subcategoryModel экземпляр SubcategoryModel
+     * @return objects SubcategoryModel
+     */
+    public static function getSubcategoryBySeocode(SubcategoryModel $subcategoryModel)
+    {
+        try {
+            $subcategoryBySeocodeMapper = new SubcategoryBySeocodeMapper([
+                'tableName'=>'subcategory',
+                'fields'=>['id', 'name', 'seocode', 'id_categories'],
+                'model'=>$subcategoryModel,
+            ]);
+            $subcategoryModel = $subcategoryBySeocodeMapper->getOneFromGroup();
+            if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
                 return null;
             }
             return $subcategoryModel;
@@ -1107,6 +1155,24 @@ class MappersHelper
                 return null;
             }
             return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обнуляет значение всех свойств класса
+     * @return boolean
+     */
+    public static function cleanProperties()
+    {
+        try {
+            self::$_categoriesList = array();
+            self::$_currencyList = array();
+            self::$_deliveriesList = array();
+            self::$_paymentsList = array();
+            self::$_rulesList = array();
+            return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

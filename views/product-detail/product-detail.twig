@@ -9,11 +9,20 @@
 
 {% include '@app/views/parts/menu.twig' %}
 
-<h1>{{ productsObject.name }}</h1>
+{{ use('app/widgets/BreadcrumbsWidget') }}
 
-<p>{{ productsObject.code }}</p>
-<p>{{ productsObject.description | raw }}</p>
-<p>{{ (productsObject.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</p>
+{{ breadcrumbs_widget_widget({'categoriesList':categoriesList, 'productName':objectsProducts.name}) }}
+
+<h1>{{ objectsProducts.name }}</h1>
+{% if objectsProducts.images %}
+    {% for picturePath in picturesHelper.getPathImages('@pic', objectsProducts.images).fullpath %}
+        <img src="{{ picturePath }}">
+    {% endfor %}
+    <br>
+{% endif %}
+<p>{{ objectsProducts.code }}</p>
+<p>{{ objectsProducts.description | raw }}</p>
+<p>{{ (objectsProducts.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</p>
 
 {% include '@app/views/parts/product-detail-colors.twig' %}
 
@@ -21,11 +30,11 @@
 
 {% include '@app/views/parts/add-to-cart-form.twig' %}
 
-{% if productsObject.similar %}
+{% if objectsProducts.similar %}
     {% include '@app/views/parts/similar-products.twig' %}
 {% endif %}
 
-{% if productsObject.related %}
+{% if objectsProducts.related %}
     {% include '@app/views/parts/related-products.twig' %}
 {% endif %}
 
@@ -33,6 +42,6 @@
 
 {% include '@app/views/parts/add-comment-form.twig' %}
 
-{% if productsObject.comments %}
+{% if objectsProducts.comments %}
     {% include '@app/views/parts/comments.twig' %}
 {% endif %}

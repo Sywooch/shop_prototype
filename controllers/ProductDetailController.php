@@ -20,7 +20,7 @@ class ProductDetailController extends AbstractBaseController
     {
         try {
             $renderArray = array();
-            $renderArray['productsObject'] = MappersHelper::getProductDetail();
+            $renderArray['objectsProducts'] = MappersHelper::getProductDetail();
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['currencyList'] = MappersHelper::getСurrencyList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());

@@ -1,8 +1,8 @@
 
-{% if productsObject.sizes %}
+{% if objectsProducts.sizes %}
     <p><strong>Sizes</strong></p>
     <ul>
-        {% for size in productsObject.sizes %}
+        {% for size in objectsProducts.sizes %}
             <li>{{ size.size }}</li>
         {% endfor %}
     </ul>

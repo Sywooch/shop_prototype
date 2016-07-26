@@ -28,7 +28,7 @@ class PasswordExistsValidator extends Validator
                 \Yii::$app->params['userFromFormForAuthentication'] = MappersHelper::getUsersByLogin($model);
             }
             
-            if (!is_object(\Yii::$app->params['userFromFormForAuthentication']) || !\Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel || !password_verify($model->rawPassword, \Yii::$app->params['userFromFormForAuthentication']->password)) {
+            if (!is_object(\Yii::$app->params['userFromFormForAuthentication']) || !\Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel || !password_verify($model->$attribute, \Yii::$app->params['userFromFormForAuthentication']->password)) {
                 $this->addError($model, $attribute, self::$_passwordMessage);
             }
         } catch (\Exception $e) {

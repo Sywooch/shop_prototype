@@ -68,7 +68,7 @@ class UserAuthenticationHelper
     }
     
     /**
-     * Обнуляет свойства объекта \Yii::$app->user данными
+     * Обнуляет свойства объекта \Yii::$app->user
      * @return boolean
      */
     public static function clean()

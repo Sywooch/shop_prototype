@@ -34,6 +34,7 @@
 
 <p>Total products: {{ app.cart.getTotalProducts() }}, Total cost: {{ (app.cart.getTotalCost() * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
 
+<p><a href="{{ url.to({0:'shopping-cart/address-contacts'}) }}">Checkout</a></p>
+
 <p>{% include '@app/views/parts/clean-cart-form.twig' %}</p>
 
-<p><a href="{{ url.to({0:'shopping-cart/address-contacts'}) }}">Checkout</a></p>

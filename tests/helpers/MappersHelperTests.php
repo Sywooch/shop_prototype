@@ -973,6 +973,22 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getCategoriesBySeocode
+     */
+    public function testGetCategoriesBySeocode()
+    {
+        $categoriesModel = new CategoriesModel();
+        $categoriesModel->seocode = self::$_categorySeocode;
+        
+        $result = MappersHelper::getCategoriesBySeocode($categoriesModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof CategoriesModel);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_categorySeocode, $result->seocode);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getSubcategoryById
      */
     public function testGetSubcategoryById()
@@ -981,6 +997,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $subcategoryModel->id = self::$_id;
         
         $result = MappersHelper::getSubcategoryById($subcategoryModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof SubcategoryModel);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_subcategorySeocode, $result->seocode);
+        $this->assertEquals(self::$_id, $result->id_categories);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getSubcategoryBySeocode
+     */
+    public function testGetSubcategoryBySeocode()
+    {
+        $subcategoryModel = new SubcategoryModel();
+        $subcategoryModel->seocode = self::$_subcategorySeocode;
+        
+        $result = MappersHelper::getSubcategoryBySeocode($subcategoryModel);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof SubcategoryModel);
@@ -1071,6 +1104,21 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertEquals($id_products, $result['id_products']);
         $this->assertEquals($id_sizes, $result['id_sizes']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::cleanProperties
+     */
+    public function testCleanProperties()
+    {
+        $result = MappersHelper::cleanProperties();
+        
+        $this->assertTrue($result);
+        $this->assertTrue(empty(MappersHelper::$_categoriesList));
+        $this->assertTrue(empty(MappersHelper::$_currencyList));
+        $this->assertTrue(empty(MappersHelper::$_deliveriesList));
+        $this->assertTrue(empty(MappersHelper::$_paymentsList));
+        $this->assertTrue(empty(MappersHelper::$_rulesList));
     }
     
     public static function tearDownAfterClass()

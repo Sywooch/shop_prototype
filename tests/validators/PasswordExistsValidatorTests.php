@@ -3,10 +3,11 @@
 namespace app\tests\validators;
 
 use app\tests\DbManager;
+use app\validators\PasswordExistsValidator;
 use app\models\UsersModel;
 
 /**
- * Тестирует валидатор PasswordExistsValidator
+ * Тестирует класс app\validators\PasswordExistsValidator
  */
 class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
 {
@@ -41,9 +42,12 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         $this->assertTrue(empty(\Yii::$app->params['userFromFormForAuthentication']));
         
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
-        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_notExistsRawPassword];
-        $model->validate();
+        $model = new UsersModel();
+        $model->login = self::$_login;
+        $model->rawPassword = self::$_notExistsRawPassword;
+        
+        $validator = new PasswordExistsValidator();
+        $validator->validateAttribute($model, 'rawPassword');
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('rawPassword', $model->errors));
@@ -59,9 +63,12 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertFalse(empty(\Yii::$app->params['userFromFormForAuthentication']));
         
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
-        $model->attributes = ['login'=>self::$_login, 'rawPassword'=>self::$_notExistsRawPassword];
-        $model->validate();
+        $model = new UsersModel();
+        $model->login = self::$_login;
+        $model->rawPassword = self::$_notExistsRawPassword;
+        
+        $validator = new PasswordExistsValidator();
+        $validator->validateAttribute($model, 'rawPassword');
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('rawPassword', $model->errors));

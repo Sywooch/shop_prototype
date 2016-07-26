@@ -19,6 +19,7 @@ class MockModel extends AbstractBaseModel
     public $id_rules;
     public $login;
     public $password;
+    public $rawPassword;
     public $rulesFromForm;
     public $description;
     public $price;

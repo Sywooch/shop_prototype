@@ -32,7 +32,7 @@ class ProductsListController extends AbstractBaseController
     {
         try {
             $renderArray = array();
-            $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
+            $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();
@@ -60,7 +60,7 @@ class ProductsListController extends AbstractBaseController
             $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
             $renderArray = array();
             try {
-                $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
+                $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
             } catch (EmptyListException $e) {
                 $this->writeErrorInLogs($e, __METHOD__);
             }
