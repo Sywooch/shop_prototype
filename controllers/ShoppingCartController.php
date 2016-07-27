@@ -306,7 +306,7 @@ class ShoppingCartController extends AbstractBaseController
                 }
             }
             
-            if (MappersHelper::setUsersPurchasesInsert()) {
+            if (MappersHelper::setPurchasesInsert()) {
                 if (!MailHelper::send([['template'=>'@app/views/mail/customer.twig', 'setFrom'=>['test@test.com'=>'John'], 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 'setSubject'=>'Hello!']])) {
                     throw new ErrorException('Ошибка при отправке E-mail сообщения!');
                 }

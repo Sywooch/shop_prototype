@@ -4,21 +4,22 @@ namespace app\tests\helpers;
 
 use app\tests\DbManager;
 use app\helpers\MappersHelper;
-use app\models\CategoriesModel;
-use app\models\CurrencyModel;
-use app\models\SubcategoryModel;
-use app\models\ColorsModel;
-use app\models\SizesModel;
-use app\models\BrandsModel;
-use app\models\AddressModel;
-use app\models\PhonesModel;
-use app\models\DeliveriesModel;
-use app\models\PaymentsModel;
-use app\models\ProductsModel;
-use app\models\UsersModel;
-use app\models\EmailsModel;
-use app\models\CommentsModel;
-use app\models\RulesModel;
+use app\models\{CategoriesModel, 
+    CurrencyModel, 
+    SubcategoryModel, 
+    ColorsModel, 
+    SizesModel, 
+    BrandsModel, 
+    AddressModel, 
+    PhonesModel, 
+    DeliveriesModel, 
+    PaymentsModel, 
+    ProductsModel, 
+    UsersModel, 
+    EmailsModel, 
+    CommentsModel, 
+    RulesModel, 
+    PurchasesModel};
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -96,7 +97,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasMethod('setPhonesInsert'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getDeliveriesById'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getPaymentsById'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersPurchasesInsert'));
+        $this->assertTrue(self::$_reflectionClass->hasMethod('setPurchasesInsert'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersUpdate'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersInsert'));
         $this->assertTrue(self::$_reflectionClass->hasMethod('getEmailsByEmail'));
@@ -449,9 +450,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setUsersPurchasesInsert
+     * Тестирует метод MappersHelper::setPurchasesInsert
      */
-    public function testSetUsersPurchasesInsert()
+    public function testSetPurchasesInsert()
     {
         $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
         $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
@@ -465,11 +466,11 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->cart->user->payments = new PaymentsModel();
         \Yii::$app->cart->user->payments->id = self::$_id;
         
-        $result = MappersHelper::setUsersPurchasesInsert();
+        $result = MappersHelper::setPurchasesInsert();
         
         $this->assertEquals(1, $result);
         
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users_purchases}}')->queryAll();
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll();
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
@@ -483,6 +484,24 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getPurchasesForUserList
+     */
+    public function testGetPurchasesForUserList()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll()));
+        
+        $model = new UsersModel();
+        $model->id = self::$_id;
+        
+        $result = MappersHelper::getPurchasesForUserList($model);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0]  instanceof PurchasesModel);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::setUsersInsert
      */
     public function testSetUsersInsert()
@@ -493,7 +512,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id1'=>1, ':rule1'=>self::$_rule, ':id2'=>4, ':rule2'=>self::$_rule . self::$_rule]);
         $command->execute();
         
-        \Yii::$app->db->createCommand('TRUNCATE TABLE {{users_purchases}}')->execute();
+        \Yii::$app->db->createCommand('TRUNCATE TABLE {{purchases}}')->execute();
         \Yii::$app->db->createCommand('DELETE FROM {{users}}')->execute();
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll()));
         

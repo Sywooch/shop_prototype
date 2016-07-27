@@ -3,12 +3,12 @@
 namespace app\factories;
 
 use app\factories\AbstractGetObjectsFactory;
-use app\models\UsersPurchasesModel;
+use app\models\PurchasesModel;
 
 /**
  * Создает объекты на оснований данных БД
  */
-class UsersPurchasesInsertObjectsFactory extends AbstractGetObjectsFactory
+class PurchasesObjectsFactory extends AbstractGetObjectsFactory
 {
     public function init()
     {
@@ -16,7 +16,7 @@ class UsersPurchasesInsertObjectsFactory extends AbstractGetObjectsFactory
         
         try {
             if (empty($this->model)) {
-                $this->model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
+                $this->model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DB]);
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

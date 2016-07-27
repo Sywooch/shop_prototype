@@ -4,13 +4,13 @@ namespace app\tests\mappers;
 
 use app\tests\DbManager;
 use app\tests\MockModel;
-use app\mappers\UsersPurchasesInsertMapper;
-use app\models\UsersPurchasesModel;
+use app\mappers\PurchasesInsertMapper;
+use app\models\PurchasesModel;
 
 /**
- * Тестирует класс app\mappers\UsersPurchasesInsertMapper
+ * Тестирует класс app\mappers\PurchasesInsertMapper
  */
-class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
+class PurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
@@ -71,11 +71,11 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод UsersPurchasesInsertMapper::setGroup
+     * Тестирует метод PurchasesInsertMapper::setGroup
      */
     public function testSetGroup()
     {
-        $usersPurchasesModel = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
+        $usersPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_FORM]);
         $usersPurchasesModel->attributes = [
             'id_users'=>self::$_id, 
             'id_products'=>self::$_id,
@@ -86,8 +86,8 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
             'id_payments'=>self::$_id,
         ];
         
-        $usersPurchasesInsertMapper = new UsersPurchasesInsertMapper([
-            'tableName'=>'users_purchases',
+        $usersPurchasesInsertMapper = new PurchasesInsertMapper([
+            'tableName'=>'purchases',
             'fields'=>['id_users', 'id_products', 'quantity', 'id_colors', 'id_sizes', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
             'objectsArray'=>[$usersPurchasesModel],
         ]);
@@ -96,7 +96,7 @@ class UsersPurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, $result);
         
-        $command = \Yii::$app->db->createCommand('SELECT * FROM {{users_purchases}}');
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}');
         $result = $command->queryOne();
         
         $this->assertTrue(is_array($result));

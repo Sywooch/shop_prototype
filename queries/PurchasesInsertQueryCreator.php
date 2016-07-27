@@ -7,7 +7,7 @@ use app\queries\AbstractInsertQueryCreator;
 /**
  * Конструирует запрос к БД
  */
-class UsersPurchasesInsertQueryCreator extends AbstractInsertQueryCreator
+class PurchasesInsertQueryCreator extends AbstractInsertQueryCreator
 {
     
 }

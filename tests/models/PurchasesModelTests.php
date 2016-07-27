@@ -2,12 +2,12 @@
 
 namespace app\test\models;
 
-use app\models\UsersPurchasesModel;
+use app\models\PurchasesModel;
 
 /**
- * Тестирует UsersPurchasesModel
+ * Тестирует PurchasesModel
  */
-class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
+class PurchasesModelTests extends \PHPUnit_Framework_TestCase
 {
     private static $_reflectionClass;
     private static $_id = 1;
@@ -26,7 +26,7 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
     
     public static function setUpBeforeClass()
     {
-        self::$_reflectionClass = new \ReflectionClass('app\models\UsersPurchasesModel');
+        self::$_reflectionClass = new \ReflectionClass('app\models\PurchasesModel');
     }
     
     /**
@@ -34,7 +34,7 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testProperties()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
@@ -70,7 +70,7 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testScenarios()
     {
-        $model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_FORM]);
         $model->attributes = ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_colors'=>self::$_id_colors, 'id_sizes'=>self::$_id_sizes, 'quantity'=>self::$_quantity, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments];
         
         $this->assertTrue(empty($model->id));
@@ -90,7 +90,7 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id_deliveries, $model->id_deliveries);
         $this->assertEquals(self::$_id_payments, $model->id_payments);
         
-        $model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_DB]);
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DB]);
         $model->attributes = ['id'=>self::$_id, 'id_users'=>self::$_id_users, 'id_products'=>self::$_id_products, 'id_colors'=>self::$_id_colors, 'id_sizes'=>self::$_id_sizes, 'quantity'=>self::$_quantity, 'id_deliveries'=>self::$_id_deliveries, 'id_payments'=>self::$_id_payments, 'received'=>self::$_received, 'received_date'=>self::$_received_date, 'processed'=>self::$_processed, 'canceled'=>self::$_canceled, 'shipped'=>self::$_shipped];
         
         $this->assertFalse(empty($model->id));
@@ -123,128 +123,117 @@ class UsersPurchasesModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::setReceived
+     * Тестирует метод PurchasesModel::setReceived
      */
     public function testSetReceived()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         $model->received = self::$_received;
         
         $this->assertEquals(self::$_received, $model->received);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::getReceived
+     * Тестирует метод PurchasesModel::getReceived
      */
     public function testGetReceived()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         
         $this->assertEquals(0, $model->received);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::getReceived
+     * Тестирует метод PurchasesModel::getReceived
      * в сценарии GET_FROM_FORM
      */
     public function testGetReceivedTwo()
     {
-        $model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_FORM]);
         
         $this->assertEquals(self::$_received, $model->received);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::setReceived_date
+     * Тестирует метод PurchasesModel::setReceived_date
      */
     public function testSetReceived_date()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         $model->received_date = self::$_received_date;
         
         $this->assertEquals(self::$_received_date, $model->received_date);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::getReceived_date
-     */
-    public function testGetReceived_date()
-    {
-        $model = new UsersPurchasesModel();
-        
-        $this->assertEquals(null, $model->received_date);
-    }
-    
-    /**
-     * Тестирует метод UsersPurchasesModel::getReceived_date
-     * в сценарии GET_FROM_FORM
+     * Тестирует метод PurchasesModel::getReceived_date
      */
     public function testGetReceived_dateTwo()
     {
-        $model = new UsersPurchasesModel(['scenario'=>UsersPurchasesModel::GET_FROM_FORM]);
+        $model = new PurchasesModel();
         
         $this->assertNotEquals(null, $model->received_date);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::setProcessed
+     * Тестирует метод PurchasesModel::setProcessed
      */
     public function testSetProcessed()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         $model->processed = self::$_processed;
         
         $this->assertEquals(self::$_processed, $model->processed);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::getProcessed
+     * Тестирует метод PurchasesModel::getProcessed
      */
     public function testGetProcessed()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         
         $this->assertEquals(0, $model->processed);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::setCanceled
+     * Тестирует метод PurchasesModel::setCanceled
      */
     public function testSetCanceled()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         $model->canceled = self::$_canceled;
         
         $this->assertEquals(self::$_canceled, $model->canceled);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::getCanceled
+     * Тестирует метод PurchasesModel::getCanceled
      */
     public function testGetCanceled()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         
         $this->assertEquals(0, $model->canceled);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::setShipped
+     * Тестирует метод PurchasesModel::setShipped
      */
     public function testSetShipped()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         $model->shipped = self::$_shipped;
         
         $this->assertEquals(self::$_shipped, $model->shipped);
     }
     
     /**
-     * Тестирует метод UsersPurchasesModel::getShipped
+     * Тестирует метод PurchasesModel::getShipped
      */
     public function testGetShipped()
     {
-        $model = new UsersPurchasesModel();
+        $model = new PurchasesModel();
         
         $this->assertEquals(0, $model->shipped);
     }

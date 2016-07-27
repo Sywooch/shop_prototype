@@ -7,7 +7,7 @@ use app\models\AbstractBaseModel;
 /**
  * Представляет данные таблицы users
  */
-class UsersPurchasesModel extends AbstractBaseModel
+class PurchasesModel extends AbstractBaseModel
 {
     /**
      * Сценарий сохранения данных из формы
@@ -21,9 +21,9 @@ class UsersPurchasesModel extends AbstractBaseModel
     public $id = '';
     public $id_users = '';
     public $id_products = '';
+    public $quantity = '';
     public $id_colors = '';
     public $id_sizes = '';
-    public $quantity = '';
     public $id_deliveries = '';
     public $id_payments = '';
     
@@ -65,7 +65,7 @@ class UsersPurchasesModel extends AbstractBaseModel
     public function getReceived()
     {
         try {
-            if ($this->scenario == UsersPurchasesModel::GET_FROM_FORM) {
+            if ($this->scenario == PurchasesModel::GET_FROM_FORM) {
                 $this->_received = 1;
             }
             return $this->_received;
@@ -97,9 +97,7 @@ class UsersPurchasesModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_received_date)) {
-                if ($this->scenario == UsersPurchasesModel::GET_FROM_FORM) {
-                    $this->_received_date = time();
-                }
+                $this->_received_date = time();
             }
             return $this->_received_date;
         } catch (\Exception $e) {

@@ -22,7 +22,8 @@ use app\mappers\{ColorsMapper,
     PhonesInsertMapper, 
     UsersUpdateMapper, 
     UsersInsertMapper, 
-    UsersPurchasesInsertMapper, 
+    PurchasesInsertMapper, 
+    PurchasesForUserMapper, 
     UsersRulesInsertMapper, 
     CurrencyByIdMapper, 
     CommentsInsertMapper, 
@@ -66,7 +67,7 @@ use app\models\{AddressModel,
     SizesModel};
 
 /**
- * Коллекция методов, которые взаимодействуют с БД посредством мапперов
+ * Коллекция методов для работы с БД
  */
 class MappersHelper
 {
@@ -552,10 +553,10 @@ class MappersHelper
     }
     
     /**
-     * Создает новую запись UsersPurchasesModel в БД, вязывающую пользователя с купленным товаром
+     * Создает новую запись PurchasesModel в БД, вязывающую пользователя с купленным товаром
      * @return boolean
      */
-    public static function setUsersPurchasesInsert()
+    public static function setPurchasesInsert()
     {
         try {
             $id_users = \Yii::$app->cart->user->id;
@@ -581,8 +582,8 @@ class MappersHelper
                 $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'quantity'=>$product->quantity, 'id_colors'=>$product->colorToCart, 'id_sizes'=>$product->sizeToCart, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments];
             }
             
-            $usersPurchasesInsertMapper = new UsersPurchasesInsertMapper([
-                'tableName'=>'users_purchases',
+            $usersPurchasesInsertMapper = new PurchasesInsertMapper([
+                'tableName'=>'purchases',
                 'fields'=>['id_users', 'id_products', 'quantity', 'id_colors', 'id_sizes', 'id_deliveries', 'id_payments', 'received', 'received_date'],
                 'DbArray'=>$arrayToDb,
             ]);
@@ -590,6 +591,30 @@ class MappersHelper
                 return null;
             }
             return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов purchases для текущего users
+     * @param object $usersModel экземпляр UsersModel
+     * @return array of objects PurchasesModel
+     */
+    public static function getPurchasesForUserList(UsersModel $usersModel)
+    {
+        try {
+            $purchasesForUserMapper = new PurchasesForUserMapper([
+                'tableName'=>'purchases',
+                'fields'=>['id', 'id_users', 'id_products', 'quantity', 'id_colors', 'id_sizes', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
+                'orderByField'=>'received_date',
+                'model'=>$usersModel,
+            ]);
+            $purchasesArray = $purchasesForUserMapper->getGroup();
+            if (!is_array($purchasesArray) || empty($purchasesArray)) {
+                return null;
+            }
+            return $purchasesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

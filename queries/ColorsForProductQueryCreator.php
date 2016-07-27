@@ -2,12 +2,12 @@
 
 namespace app\queries;
 
-use app\queries\AbstractSeletcForProductQueryCreator;
+use app\queries\AbstractSeletcForAnythingQueryCreator;
 
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class ColorsForProductQueryCreator extends AbstractSeletcForProductQueryCreator
+class ColorsForProductQueryCreator extends AbstractSeletcForAnythingQueryCreator
 {
     /**
      * @var array массив для выборки данных

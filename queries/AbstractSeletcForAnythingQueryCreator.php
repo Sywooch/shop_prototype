@@ -8,7 +8,7 @@ use yii\base\ErrorException;
 /**
  * Предоставляет функциональность, общую для всех классов SeletcForProductQueryCreator
  */
-abstract class AbstractSeletcForProductQueryCreator extends AbstractSeletcQueryCreator
+abstract class AbstractSeletcForAnythingQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
      * Инициирует создание SELECT запроса
