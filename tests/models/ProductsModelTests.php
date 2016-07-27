@@ -178,7 +178,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_LIST_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'colorToCart'=>self::$_colorToCart];
+        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'colorToCart'=>self::$_colorToCart,  'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->date));
@@ -190,7 +190,8 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->images));
         $this->assertFalse(empty($model->categories));
         $this->assertFalse(empty($model->subcategory));
-        $this->assertTrue(empty($model->colorToCart));
+        $this->assertFalse(empty($model->id_categories));
+        $this->assertFalse(empty($model->id_subcategory));
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_date, $model->date);
@@ -202,6 +203,8 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_images, $model->images);
         $this->assertEquals(self::$_categorySeocode, $model->categories);
         $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
+        $this->assertEquals(self::$_id, $model->id_categories);
+        $this->assertEquals(self::$_id, $model->id_subcategory);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
         $model->attributes = ['id'=>self::$_id, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'colorToCart'=>self::$_colorToCart, 'sizeToCart'=>self::$_sizeToCart, 'quantity'=>self::$_quantity, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'hash'=>self::$_hash];

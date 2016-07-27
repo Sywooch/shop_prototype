@@ -66,7 +66,7 @@ abstract class AbstractGetMapper extends AbstractBaseMapper
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
             }
             if ($this->getDataSorting) {
-                ArrayHelper::multisort($result, [$this->orderByField], [SORT_ASC]);
+                ArrayHelper::multisort($result, [$this->orderByField], [($this->orderByType && $this->orderByType == 'DESC') ? SORT_DESC : SORT_ASC]);
             }
             $this->DbArray = $result;
             return true;

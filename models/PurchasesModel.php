@@ -2,7 +2,10 @@
 
 namespace app\models;
 
+use yii\base\ErrorException;
 use app\models\AbstractBaseModel;
+use app\helpers\MappersHelper;
+use app\models\{ProductsModel, ColorsModel};
 
 /**
  * Представляет данные таблицы users
@@ -32,6 +35,25 @@ class PurchasesModel extends AbstractBaseModel
     private $_processed = 0;
     private $_canceled = 0;
     private $_shipped = 0;
+    
+    /**
+     * @var object экземпляр ProductsModel, представляющий продукт, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @see getProductObject()
+     */
+    private $_productsObject = null;
+    /**
+     * @var object экземпляр ColorsModel, представляющий color, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @see getColorsObject()
+     */
+    private $_colorsObject = null;
+    /**
+     * @var object экземпляр SizesModel, представляющий size, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @see getSizesObject()
+     */
+    private $_sizesObject = null;
     
     public function scenarios()
     {
@@ -190,6 +212,87 @@ class PurchasesModel extends AbstractBaseModel
     {
         try {
             return $this->_shipped;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект ProductsModel, представляющий продукт, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @return object ProductsModel
+     */
+    public function getProductsObject()
+    {
+        try {
+            if (is_null($this->_productsObject)) {
+                if (!empty($this->id_products)) {
+                    $this->_productsObject = MappersHelper::getProductsById(new ProductsModel(['id'=>$this->id_products]));
+                }
+            }
+            return $this->_productsObject;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект ColorsModel, представляющий color, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @return object ColorsModel
+     */
+    public function getColorsObject()
+    {
+        try {
+            if (is_null($this->_colorsObject)) {
+                if (!empty($this->id_colors)) {
+                    $this->_colorsObject = MappersHelper::getColorsById(new ColorsModel(['id'=>$this->id_colors]));
+                }
+            }
+            return $this->_colorsObject;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект SizesModel, представляющий size, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @return object SizesModel
+     */
+    public function getSizesObject()
+    {
+        try {
+            if (is_null($this->_sizesObject)) {
+                if (!empty($this->id_sizes)) {
+                    $this->_sizesObject = MappersHelper::getSizesById(new SizesModel(['id'=>$this->id_sizes]));
+                }
+            }
+            return $this->_sizesObject;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает текущий статус обработки заказа
+     * @return string
+     */
+    public function getDeliveryStatus()
+    {
+        try {
+            if (empty(\Yii::$app->params['deliveryStatusesArray'])) {
+                throw new ErrorException('Массив сообщений о текущем статусе доставки пуст!');
+            }
+            if (empty(\Yii::$app->params['deliveryStatusesArray']['shipped']) || empty(\Yii::$app->params['deliveryStatusesArray']['canceled']) || empty(\Yii::$app->params['deliveryStatusesArray']['processed'])) {
+                throw new ErrorException('Ошибка при получении сообщения о текущем статусе доставки!');
+            }
+            if (!empty($this->shipped)) {
+                return \Yii::$app->params['deliveryStatusesArray']['shipped'];
+            } elseif (!empty($this->canceled)) {
+                return \Yii::$app->params['deliveryStatusesArray']['canceled'];
+            }
+            return \Yii::$app->params['deliveryStatusesArray']['processed'];
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

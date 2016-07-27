@@ -85,28 +85,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasProperty('_deliveriesList'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_paymentsList'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_rulesList'));
-        
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getCategoriesList'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getСurrencyList'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getColorsList'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getSizesList'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getBrandsList'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getAddressByAddress'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setAddressInsert'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getPhonesByPhone'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setPhonesInsert'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getDeliveriesById'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getPaymentsById'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setPurchasesInsert'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersUpdate'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersInsert'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getEmailsByEmail'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setEmailsInsert'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setUsersRulesInsert'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getCurrencyById'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('setCommentsInsert'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getProductDetail'));
-        $this->assertTrue(self::$_reflectionClass->hasMethod('getProductsList'));
     }
     
     /**
@@ -197,7 +175,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetColorsForProductList()
     {
-        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
         
         $productsModel = new ProductsModel();
         $productsModel->id = $id_products;
@@ -208,6 +186,27 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertTrue(is_object($result[0]));
         $this->assertTrue($result[0] instanceof ColorsModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getColorsById
+     */
+    public function testGetColorsById()
+    {
+        $id_colors = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{colors}} LIMIT 1')->queryScalar();
+        
+        $colorsModel = new ColorsModel();
+        $colorsModel->id = $id_colors;
+        
+        $result = MappersHelper::getColorsById($colorsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof ColorsModel);
+        
+        $this->assertFalse(empty($result->id));
+        $this->assertFalse(empty($result->color));
+        
+        $this->assertEquals($id_colors, $result->id);
     }
     
     /**
@@ -245,11 +244,32 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getSizesById
+     */
+    public function testGetSizesById()
+    {
+        $id_sizes = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{sizes}} LIMIT 1')->queryScalar();
+        
+        $sizesModel = new SizesModel();
+        $sizesModel->id = $id_sizes;
+        
+        $result = MappersHelper::getSizesById($sizesModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof SizesModel);
+        
+        $this->assertFalse(empty($result->id));
+        $this->assertFalse(empty($result->size));
+        
+        $this->assertEquals($id_sizes, $result->id);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getSizesForProductList
      */
     public function testGetSizesForProductList()
     {
-        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
         
         $productsModel = new ProductsModel();
         $productsModel->id = $id_products;
@@ -547,7 +567,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll()));
         
-        $id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}}')->queryScalar();
+        $id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}} LIMIT 1')->queryScalar();
         
         $usersModel = new UsersModel();
         $usersModel->id = $id;
@@ -616,7 +636,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users_rules}}')->queryAll()));
         
         $usersModel = new UsersModel();
-        $usersModel->id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}}')->queryScalar();
+        $usersModel->id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}} LIMIT 1')->queryScalar();
         
         $result = MappersHelper::setUsersRulesInsert($usersModel);
         
@@ -638,11 +658,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($currencyModel));
         $this->assertTrue($currencyModel instanceof CurrencyModel);
         
-        $this->assertTrue(property_exists($currencyModel, 'id'));
-        $this->assertTrue(property_exists($currencyModel, 'currency'));
-        $this->assertTrue(property_exists($currencyModel, 'exchange_rate'));
-        $this->assertTrue(property_exists($currencyModel, 'main'));
-        
         $this->assertFalse(empty($currencyModel->id));
         $this->assertFalse(empty($currencyModel->currency));
         $this->assertFalse(empty($currencyModel->exchange_rate));
@@ -661,8 +676,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll()));
         
-        $id_emails = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{emails}}')->queryScalar();
-        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
+        $id_emails = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{emails}} LIMIT 1')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
         
         $commentsModel = new CommentsModel();
         $commentsModel->text = self::$_text;
@@ -698,7 +713,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
         
-        $id_products = \Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT * FROM {{products}} LIMIT 1')->queryScalar();
         $_GET = ['id'=>$id_products];
         
         $result = MappersHelper::getProductDetail();
@@ -750,7 +765,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetEmailsById()
     {
-        $this->assertFalse(empty($id_emails = \Yii::$app->db->createCommand('SELECT [[emails.id]] FROM {{emails}}')->queryScalar()));
+        $this->assertFalse(empty($id_emails = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{emails}} LIMIT 1')->queryScalar()));
         
         $emailsModel = new EmailsModel();
         $emailsModel->id = $id_emails;
@@ -768,7 +783,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetPhonesById()
     {
-        $this->assertFalse(empty($id_phone = \Yii::$app->db->createCommand('SELECT [[phones.id]] FROM {{phones}}')->queryScalar()));
+        $this->assertFalse(empty($id_phone = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{phones}} LIMIT 1')->queryScalar()));
         
         $phonesModel = new PhonesModel();
         $phonesModel->id = $id_phone;
@@ -786,7 +801,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAddressById()
     {
-        $this->assertFalse(empty($id_address = \Yii::$app->db->createCommand('SELECT [[address.id]] FROM {{address}}')->queryScalar()));
+        $this->assertFalse(empty($id_address = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{address}} LIMIT 1')->queryScalar()));
         
         $addressModel = new AddressModel();
         $addressModel->id = $id_address;
@@ -807,7 +822,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetCurrencyByMain()
     {
-        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT [[main]] FROM {{currency}}')->queryScalar()));
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT [[main]] FROM {{currency}} LIMIT 1')->queryScalar()));
         
         $result = MappersHelper::getCurrencyByMain();
         
@@ -855,7 +870,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $_GET = ['id'=>self::$_id, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
         
-        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
         
         $productsModel = new ProductsModel();
         $productsModel->id = $id_products;
@@ -893,7 +908,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetCommentsForProductList()
     {
-        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
         
         $productsModel = new ProductsModel();
         $productsModel->id = $id_products;
@@ -928,7 +943,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetUsersById()
     {
-        $user_id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}}')->queryScalar();
+        $user_id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}} LIMIT 1')->queryScalar();
         $this->assertFalse(empty($user_id));
         
         $usersModel = new UsersModel();
@@ -993,6 +1008,21 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof ProductsModel);
         $this->assertEquals(self::$_code, $result->code);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getProductsById
+     */
+    public function testGetProductsById()
+    {
+        $productsModel = new ProductsModel();
+        $productsModel->id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
+        
+        $result = MappersHelper::getProductsById($productsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof ProductsModel);
+        $this->assertEquals($productsModel->id, $result->id);
     }
     
     /**
@@ -1068,8 +1098,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_brands}}')->queryAll()));
         
-        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
-        $id_brands = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{brands}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
+        $id_brands = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{brands}} LIMIT 1')->queryScalar();
         
         $productsModel = new ProductsModel();
         $productsModel->id = $id_products;
@@ -1096,8 +1126,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_colors}}')->queryAll()));
         
-        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
-        $id_colors = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{colors}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
+        $id_colors = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{colors}} LIMIT 1')->queryScalar();
         
         $productsModel = new ProductsModel();
         $productsModel->id = $id_products;
@@ -1124,8 +1154,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_sizes}}')->queryAll()));
         
-        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}}')->queryScalar();
-        $id_sizes = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{sizes}}')->queryScalar();
+        $id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar();
+        $id_sizes = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{sizes}} LIMIT 1')->queryScalar();
         
         $productsModel = new ProductsModel();
         $productsModel->id = $id_products;

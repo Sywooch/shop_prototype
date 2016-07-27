@@ -6,7 +6,9 @@ use yii\base\ErrorException;
 use app\exceptions\EmptyListException;
 use app\traits\ExceptionsTrait;
 use app\mappers\{ColorsMapper, 
+    ColorsByIdMapper, 
     SizesMapper, 
+    SizesByIdMapper, 
     BrandsMapper, 
     CurrencyMapper, 
     CategoriesMapper, 
@@ -44,6 +46,7 @@ use app\mappers\{ColorsMapper,
     CommentsForProductMapper, 
     PaymentsMapper, 
     ProductsByCodeMapper, 
+    ProductsByIdMapper,
     CategoriesByIdMapper, 
     SubcategoryByIdMapper, 
     SubcategoryBySeocodeMapper, 
@@ -222,6 +225,29 @@ class MappersHelper
     }
     
     /**
+     * Получает ColorsModel по id
+     * @param object $colorsModel экземпляр ColorsModel
+     * @return object ColorsModel
+     */
+    public static function getColorsById(ColorsModel $colorsModel)
+    {
+        try {
+            $colorsByIdMapper = new ColorsByIdMapper([
+                'tableName'=>'colors',
+                'fields'=>['id', 'color'],
+                'model'=>$colorsModel,
+            ]);
+            $colorsModel = $colorsByIdMapper->getOneFromGroup();
+            if (!is_object($colorsModel) && !$colorsModel instanceof ColorsModel) {
+                return null;
+            }
+            return $colorsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив объектов colors для текущего products
      * @param object $productsModel экземпляр ProductsModel
      * @return array of objects ColorsModel
@@ -266,6 +292,29 @@ class MappersHelper
                 return null;
             }
             return $sizesArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает SizesModel по id
+     * @param object $sizesModel экземпляр SizesModel
+     * @return object SizesModel
+     */
+    public static function getSizesById(SizesModel $sizesModel)
+    {
+         try {
+            $sizesByIdMapper = new SizesByIdMapper([
+                'tableName'=>'sizes',
+                'fields'=>['id', 'size'],
+                'model'=>$sizesModel,
+            ]);
+            $sizesModel = $sizesByIdMapper->getOneFromGroup();
+            if (!is_object($sizesModel) && !$sizesModel instanceof SizesModel) {
+                return null;
+            }
+            return $sizesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -608,6 +657,7 @@ class MappersHelper
                 'tableName'=>'purchases',
                 'fields'=>['id', 'id_users', 'id_products', 'quantity', 'id_colors', 'id_sizes', 'id_deliveries', 'id_payments', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
                 'orderByField'=>'received_date',
+                'orderByType'=>'DESC',
                 'model'=>$usersModel,
             ]);
             $purchasesArray = $purchasesForUserMapper->getGroup();
@@ -878,6 +928,29 @@ class MappersHelper
                 'model'=>$productsModel,
             ]);
             $productsModel = $productsByCodeMapper->getOneFromGroup();
+            if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
+                return null;
+            }
+            return $productsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект ProductsModel по id
+     * @param object $productsModel экземпляр ProductsModel
+     * @return objects ProductsModel
+     */
+    public static function getProductsById(ProductsModel $productsModel)
+    {
+        try {
+            $productsByIdMapper = new ProductsByIdMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
+                'model'=>$productsModel,
+            ]);
+            $productsModel = $productsByIdMapper->getOneFromGroup();
             if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
                 return null;
             }

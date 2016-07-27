@@ -17,13 +17,13 @@ class ProductDetailQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'tableName'=>'products',
-            'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+            'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
         ]);
         
         $queryCreator = new ProductDetailQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[products.id]],[[products.code]],[[products.name]],[[products.description]],[[products.price]],[[products.images]] FROM {{products}} WHERE [[products.id]]=:id';
+        $query = 'SELECT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[products.id_categories]],[[products.id_subcategory]] FROM {{products}} WHERE [[products.id]]=:id';
         
         $this->assertEquals($query, $mockObject->query);
     }

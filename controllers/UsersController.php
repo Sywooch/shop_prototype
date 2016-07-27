@@ -120,6 +120,7 @@ class UsersController extends AbstractBaseController
         try {
             $renderArray = array();
             $renderArray['usersModel'] = \Yii::$app->user;
+            $renderArray['purchasesList'] = MappersHelper::getPurchasesForUserList(\Yii::$app->user);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-user-account.twig', $renderArray);
