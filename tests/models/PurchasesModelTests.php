@@ -6,7 +6,9 @@ use app\tests\DbManager;
 use app\models\{PurchasesModel, 
     ProductsModel, 
     ColorsModel,
-    SizesModel};
+    SizesModel,
+    DeliveriesModel,
+    PaymentsModel};
 
 /**
  * Тестирует PurchasesModel
@@ -65,6 +67,14 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
         $command->bindValues([':id'=>self::$_id_sizes, ':size'=>self::$_size]);
         $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{deliveries}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description, [[price]]=:price');
+        $command->bindValues([':id'=>self::$_id_deliveries, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{payments}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description');
+        $command->bindValues([':id'=>self::$_id_payments, ':name'=>self::$_name, ':description'=>self::$_description]);
+        $command->execute();
     }
     
     /**
@@ -93,6 +103,8 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, '_productsObject'));
         $this->assertTrue(property_exists($model, '_colorsObject'));
         $this->assertTrue(property_exists($model, '_sizesObject'));
+        $this->assertTrue(property_exists($model, '_deliveriesObject'));
+        $this->assertTrue(property_exists($model, '_paymentsObject'));
     }
     
     /**
@@ -297,6 +309,34 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof SizesModel);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getDeliveriesObject
+     */
+    public function testGetDeliveriesObject()
+    {
+        $model = new PurchasesModel();
+        $model->id_deliveries = self::$_id_deliveries;
+        
+        $result = $model->deliveriesObject;
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof DeliveriesModel);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getPaymentsObject
+     */
+    public function testGetPaymentsObject()
+    {
+        $model = new PurchasesModel();
+        $model->id_payments = self::$_id_payments;
+        
+        $result = $model->paymentsObject;
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof PaymentsModel);
     }
     
     /**

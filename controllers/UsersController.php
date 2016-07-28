@@ -129,4 +129,28 @@ class UsersController extends AbstractBaseController
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Управляет обновлением данных пользователя
+     * @return string
+     */
+    public function actionUpdateUser()
+    {
+        try {
+            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_UPDATE_FORM]);
+            $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+            $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+            $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+            
+            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post())) {
+                if ($usersModel->validate() && $emailsModel->validate() && $phonesModel->validate() && $addressModel->validate()) {
+                    
+                }
+            }
+            return $this->redirect(Url::to(['products-list/index']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

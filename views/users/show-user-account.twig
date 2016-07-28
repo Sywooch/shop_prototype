@@ -7,19 +7,16 @@
 
 {% include '@app/views/parts/menu.twig' %}
 
-<p><strong>User</strong></p>
+<p><strong>Your current personal info and contacts</strong></p>
 
     <p>
-        Login: {{ usersModel.login }}<br>
         First Name: {{ usersModel.name }}<br>
-        Surname: {{ usersModel.surname }}
+        Surname: {{ usersModel.surname }}<br>
+        Email: {{usersModel.emails.email }}<br>
+        Phone: {{usersModel.phones.phone }}
     </p>
     
-    <p>Email: {{usersModel.emails.email }}</p>
-    
-    <p>Phone: {{usersModel.phones.phone }}</p>
-
-<p><strong>Delivery address</strong></p>
+<p><strong>Your current delivery address</strong></p>
 
     <p>
         Country: {{usersModel.address.country }}<br>
@@ -30,8 +27,10 @@
         {% endif %}
     </p>
 
+{% include '@app/views/parts/user-update-form.twig' %}
+
 {% if purchasesList %}
-    <p><strong>Purchases</strong></p>
+    <p><strong>Your purchases</strong></p>
     
         <ol>
             {% for purchase in purchasesList %}
@@ -45,6 +44,8 @@
                     Quantity: {{ purchase.quantity }}</br>
                     Color: {{ purchase.colorsObject.color }}</br>
                     Size: {{ purchase.sizesObject.size }}</br>
+                    Delivery: {{ purchase.deliveriesObject.description }}</br>
+                    Payments: {{ purchase.paymentsObject.description }}</br>
                 </li>
             {% endfor %}
         </ol>

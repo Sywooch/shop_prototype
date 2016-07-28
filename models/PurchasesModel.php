@@ -5,7 +5,10 @@ namespace app\models;
 use yii\base\ErrorException;
 use app\models\AbstractBaseModel;
 use app\helpers\MappersHelper;
-use app\models\{ProductsModel, ColorsModel};
+use app\models\{ProductsModel, 
+    ColorsModel, 
+    DeliveriesModel,
+    PaymentsModel};
 
 /**
  * Представляет данные таблицы users
@@ -54,6 +57,18 @@ class PurchasesModel extends AbstractBaseModel
      * @see getSizesObject()
      */
     private $_sizesObject = null;
+    /**
+     * @var object экземпляр DeliveriesModel, представляющий delivery, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @see getDeliveriesObject()
+     */
+    private $_deliveriesObject = null;
+    /**
+     * @var object экземпляр PaymentsModel, представляющий payment, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @see getPaymentsObject()
+     */
+    private $_paymentsObject = null;
     
     public function scenarios()
     {
@@ -266,6 +281,44 @@ class PurchasesModel extends AbstractBaseModel
                 }
             }
             return $this->_sizesObject;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект DeliveriesModel, представляющий delivery, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @return object DeliveriesModel
+     */
+    public function getDeliveriesObject()
+    {
+        try {
+            if (is_null($this->_deliveriesObject)) {
+                if (!empty($this->id_deliveries)) {
+                    $this->_deliveriesObject = MappersHelper::getDeliveriesById(new DeliveriesModel(['id'=>$this->id_deliveries]));
+                }
+            }
+            return $this->_deliveriesObject;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект PaymentsModel, представляющий payment, 
+     * связанный с текущим экзкмпляром PurchasesModel
+     * @return object PaymentsModel
+     */
+    public function getPaymentsObject()
+    {
+        try {
+            if (is_null($this->_paymentsObject)) {
+                if (!empty($this->id_payments)) {
+                    $this->_paymentsObject = MappersHelper::getPaymentsById(new PaymentsModel(['id'=>$this->id_payments]));
+                }
+            }
+            return $this->_paymentsObject;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -14,7 +14,6 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     private static $_reflectionClass;
     private static $_id = 1;
     private static $_email = 'some@some.com';
-    private static $_email2 = 'another@some.com';
     private static $_notEmail = 'some';
     
     public static function setUpBeforeClass()
@@ -51,22 +50,16 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id + 1, 'email'=>self::$_email2];
-        
-        $this->assertTrue(empty($model->id));
-        $this->assertFalse(empty($model->email));
-        
-        $this->assertNotEquals(self::$_id + 1, $model->id);
-        $this->assertEquals(self::$_email2, $model->email);
-        
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id + 2, 'email'=>self::$_email2];
+        $model->attributes = ['id'=>self::$_id, 'email'=>self::$_email];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->email));
         
-        $this->assertEquals(self::$_id + 2, $model->id);
-        $this->assertEquals(self::$_email2, $model->email);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_DB]);
+        $model->attributes = ['id'=>self::$_id, 'email'=>self::$_email];
+        
+        $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->email));
     }
     
     /**

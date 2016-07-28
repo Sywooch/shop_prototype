@@ -1,0 +1,20 @@
+
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>Here you can update your personal info, contacts and delivery address</strong></p>
+
+{% set form=active_form_begin({'id':'user-update-form', 'action':'', 'method':'POST'}) %}
+    {{ form.field(usersModel, 'id').hiddenInput().label(false) | raw }}
+    {{ form.field(usersModel, 'name') | raw }}
+    {{ form.field(usersModel, 'surname') | raw }}
+    {{ form.field(usersModel.emails, 'id').hiddenInput().label(false) | raw }}
+    {{ form.field(usersModel.emails, 'email') | raw }}
+    {{ form.field(usersModel.phones, 'id').hiddenInput().label(false) | raw }}
+    {{ form.field(usersModel.phones, 'phone') | raw }}
+    {{ form.field(usersModel.address, 'id').hiddenInput().label(false) | raw }}
+    {{ form.field(usersModel.address, 'country') | raw }}
+    {{ form.field(usersModel.address, 'city') | raw }}
+    {{ form.field(usersModel.address, 'address') | raw }}
+    {{ form.field(usersModel.address, 'postcode') | raw }}
+    <input type="submit" value="Update">
+{{ active_form_end() }}

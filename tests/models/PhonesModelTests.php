@@ -14,7 +14,6 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
     private static $_reflectionClass;
     private static $_id = 1;
     private static $_phone = '+396548971203';
-    private static $_phone2 = '+380506589878';
     
     public static function setUpBeforeClass()
     {
@@ -39,9 +38,6 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, 'phone'));
-        
-        $this->assertTrue(method_exists($model, 'getId'));
-        $this->assertTrue(method_exists($model, 'setId'));
     }
     
     /**
@@ -50,22 +46,16 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id + 1, 'phone'=>self::$_phone2];
-        
-        $this->assertTrue(empty($model->id));
-        $this->assertFalse(empty($model->phone));
-        
-        $this->assertNotEquals(self::$_id + 1, $model->id);
-        $this->assertEquals(self::$_phone2, $model->phone);
-        
-        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id + 9, 'phone'=>self::$_phone2];
+        $model->attributes = ['id'=>self::$_id, 'phone'=>self::$_phone];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->phone));
         
-        $this->assertEquals(self::$_id + 9, $model->id);
-        $this->assertEquals(self::$_phone2, $model->phone);
+        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_DB]);
+        $model->attributes = ['id'=>self::$_id, 'phone'=>self::$_phone];
+        
+        $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->phone));
     }
     
     /**

@@ -144,7 +144,7 @@ $config = [
         'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->user по умолчанию
         
         # Статусы обработки заказа
-        'deliveryStatusesArray'=>['shipped'=>'Доставлен', 'canceled'=>'Отменен', 'processed'=>'Выполняется', 'received'=>'Получен'],
+        'deliveryStatusesArray'=>['shipped'=>'Отправлен', 'canceled'=>'Отменен', 'processed'=>'Выполняется', 'received'=>'Заказ получен'],
         
         # Изображения
         'maxWidth'=>1000, # максимально допустимая ширина сохраняемого изображения

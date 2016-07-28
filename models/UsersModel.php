@@ -36,6 +36,10 @@ class UsersModel extends AbstractBaseModel
     */
     const GET_FROM_CART_FORM = 'getFromCartForm';
     /**
+     * Сценарий сохранения данных из формы обновления данных
+    */
+    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
+    /**
      * Сценарий сохранения данных из БД
     */
     const GET_FROM_DB = 'getFromDb';
@@ -47,9 +51,13 @@ class UsersModel extends AbstractBaseModel
     public $id_address = 0;
     
     /**
-     * @var string хранить пароль в незахэшированном виде
+     * @var string пароль в незахэшированном виде
      */
     public $rawPassword = '';
+    /**
+     * @var string текущий пароль в незахэшированном виде, при смене пароля
+     */
+    public $currentRawPassword = '';
     
     /**
      * @var array массив ID rules, выбранных пользователем в форме
@@ -79,6 +87,7 @@ class UsersModel extends AbstractBaseModel
             self::GET_FROM_CART_FORM=>['name', 'surname'],
             self::GET_FROM_LOGIN_FORM=>['login', 'rawPassword'],
             self::GET_FROM_LOGOUT_FORM=>['id'],
+            self::GET_FROM_UPDATE_FORM=>['id', 'name', 'surname', 'currentRawPassword', 'rawPassword'],
         ];
     }
     

@@ -27,7 +27,7 @@ class EmailsModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'email'],
-            self::GET_FROM_FORM=>['email'],
+            self::GET_FROM_FORM=>['id', 'email'],
         ];
     }
     

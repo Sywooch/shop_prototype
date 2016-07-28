@@ -72,6 +72,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_LOGOUT_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_CART_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
         
         $this->assertTrue(property_exists($model, 'name'));
         $this->assertTrue(property_exists($model, 'surname'));
@@ -79,6 +80,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'id_phones'));
         $this->assertTrue(property_exists($model, 'id_address'));
         $this->assertTrue(property_exists($model, 'rawPassword'));
+        $this->assertTrue(property_exists($model, 'currentRawPassword'));
         $this->assertTrue(property_exists($model, '_rulesFromForm'));
         $this->assertTrue(property_exists($model, '_currency'));
         $this->assertTrue(property_exists($model, '_login'));
@@ -90,26 +92,6 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, '_phones'));
         $this->assertTrue(property_exists($model, '_deliveries'));
         $this->assertTrue(property_exists($model, '_payments'));
-        
-        $this->assertTrue(method_exists($model, 'setPassword'));
-        $this->assertTrue(method_exists($model, 'getPassword'));
-        $this->assertTrue(method_exists($model, 'getAllRules'));
-        $this->assertTrue(method_exists($model, 'setId'));
-        $this->assertTrue(method_exists($model, 'getId'));
-        $this->assertTrue(method_exists($model, 'setLogin'));
-        $this->assertTrue(method_exists($model, 'getLogin'));
-        $this->assertTrue(method_exists($model, 'setEmails'));
-        $this->assertTrue(method_exists($model, 'getEmails'));
-        $this->assertTrue(method_exists($model, 'setAddress'));
-        $this->assertTrue(method_exists($model, 'getAddress'));
-        $this->assertTrue(method_exists($model, 'setPhones'));
-        $this->assertTrue(method_exists($model, 'getPhones'));
-        $this->assertTrue(method_exists($model, 'setDeliveries'));
-        $this->assertTrue(method_exists($model, 'getDeliveries'));
-        $this->assertTrue(method_exists($model, 'setPayments'));
-        $this->assertTrue(method_exists($model, 'getPayments'));
-        $this->assertTrue(method_exists($model, 'getRulesFromForm'));
-        $this->assertTrue(method_exists($model, 'setRulesFromForm'));
     }
     
     /**
@@ -169,6 +151,15 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = ['id'=>self::$_id];
         
         $this->assertFalse(empty($model->id));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_UPDATE_FORM]);
+        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'surname'=>self::$_surname, 'currentRawPassword'=>self::$_rawPassword, 'rawPassword'=>self::$_rawPassword];
+        
+        $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->name));
+        $this->assertFalse(empty($model->surname));
+        $this->assertFalse(empty($model->currentRawPassword));
+        $this->assertFalse(empty($model->rawPassword));
     }
     
     /**

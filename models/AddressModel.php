@@ -31,7 +31,7 @@ class AddressModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['address', 'city', 'country', 'postcode'],
+            self::GET_FROM_FORM=>['id', 'address', 'city', 'country', 'postcode'],
             self::GET_FROM_DB=>['id', 'address', 'city', 'country', 'postcode'],
         ];
     }

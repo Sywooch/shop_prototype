@@ -17,7 +17,6 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     private static $_city = 'Some city';
     private static $_country = 'Some country';
     private static $_postcode = '06589';
-    private static $_postcode2 = 'F7895';
     
     public static function setUpBeforeClass()
     {
@@ -45,9 +44,6 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'city'));
         $this->assertTrue(property_exists($model, 'country'));
         $this->assertTrue(property_exists($model, 'postcode'));
-        
-        $this->assertTrue(method_exists($model, 'getId'));
-        $this->assertTrue(method_exists($model, 'setId'));
     }
     
     /**
@@ -56,22 +52,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id + 1, 'address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode2];
-        
-        $this->assertTrue(empty($model->id));
-        $this->assertFalse(empty($model->address));
-        $this->assertFalse(empty($model->city));
-        $this->assertFalse(empty($model->country));
-        $this->assertFalse(empty($model->postcode));
-        
-        $this->assertNotEquals(self::$_id + 1, $model->id);
-        $this->assertEquals(self::$_address, $model->address);
-        $this->assertEquals(self::$_city, $model->city);
-        $this->assertEquals(self::$_country, $model->country);
-        $this->assertEquals(self::$_postcode2, $model->postcode);
-        
-        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id + 9, 'address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode2];
+        $model->attributes = ['id'=>self::$_id, 'address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->address));
@@ -79,11 +60,14 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->country));
         $this->assertFalse(empty($model->postcode));
         
-        $this->assertEquals(self::$_id + 9, $model->id);
-        $this->assertEquals(self::$_address, $model->address);
-        $this->assertEquals(self::$_city, $model->city);
-        $this->assertEquals(self::$_country, $model->country);
-        $this->assertEquals(self::$_postcode2, $model->postcode);
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_DB]);
+        $model->attributes = ['id'=>self::$_id, 'address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
+        
+        $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->address));
+        $this->assertFalse(empty($model->city));
+        $this->assertFalse(empty($model->country));
+        $this->assertFalse(empty($model->postcode));
     }
     
     /**
