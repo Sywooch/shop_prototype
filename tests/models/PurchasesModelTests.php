@@ -153,17 +153,6 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод PurchasesModel::setReceived
-     */
-    public function testSetReceived()
-    {
-        $model = new PurchasesModel();
-        $model->received = self::$_received;
-        
-        $this->assertEquals(self::$_received, $model->received);
-    }
-    
-    /**
      * Тестирует метод PurchasesModel::getReceived
      */
     public function testGetReceived()
@@ -174,12 +163,12 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод PurchasesModel::getReceived
-     * в сценарии GET_FROM_FORM
+     * Тестирует метод PurchasesModel::setReceived
      */
-    public function testGetReceivedTwo()
+    public function testSetReceived()
     {
-        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_FORM]);
+        $model = new PurchasesModel();
+        $model->received = self::$_received;
         
         $this->assertEquals(self::$_received, $model->received);
     }
@@ -335,6 +324,12 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_string($result));
         $this->assertEquals(\Yii::$app->params['deliveryStatusesArray']['shipped'], $result);
+        
+        $model = new PurchasesModel();
+        $result = $model->getDeliveryStatus();
+        
+        $this->assertTrue(is_string($result));
+        $this->assertEquals(\Yii::$app->params['deliveryStatusesArray']['received'], $result);
     }
     
     public static function tearDownAfterClass()

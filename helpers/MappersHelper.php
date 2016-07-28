@@ -628,7 +628,7 @@ class MappersHelper
             
             $arrayToDb = [];
             foreach ($productsArray as $product) {
-                $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'quantity'=>$product->quantity, 'id_colors'=>$product->colorToCart, 'id_sizes'=>$product->sizeToCart, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments];
+                $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'quantity'=>$product->quantity, 'id_colors'=>$product->colorToCart, 'id_sizes'=>$product->sizeToCart, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments, 'received'=>true];
             }
             
             $usersPurchasesInsertMapper = new PurchasesInsertMapper([
@@ -867,27 +867,6 @@ class MappersHelper
                 return null;
             }
             return $result;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает объект ProductsModel по id, взятому из $_GET
-     * @return objects ProductsModel
-     */
-    public static function getProductDetail()
-    {
-        try {
-            $productMapper = new ProductDetailMapper([
-                'tableName'=>'products',
-                'fields'=>['id', 'code', 'name', 'description', 'short_description', 'price', 'images'],
-            ]);
-            $productsObject = $productMapper->getOneFromGroup();
-            if (!is_object($productsObject) || !$productsObject instanceof ProductsModel) {
-                return null;
-            }
-            return $productsObject;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

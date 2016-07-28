@@ -85,6 +85,7 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['products-list/index']));
             }
             $renderArray = array();
+            $renderArray['objectsProductsList'] = \Yii::$app->cart->getProductsArray();
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('shopping-cart.twig', $renderArray);
@@ -229,6 +230,7 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['shopping-cart/address-contacts']));
             }
             $renderArray = array();
+            $renderArray['objectsProductsList'] = \Yii::$app->cart->getProductsArray();
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('check-pay.twig', $renderArray);

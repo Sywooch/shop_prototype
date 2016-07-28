@@ -19,8 +19,15 @@ class ProductDetailController extends AbstractBaseController
     public function actionIndex()
     {
         try {
+            if (empty(\Yii::$app->params['idKey'])) {
+                throw new ErrorException('Не поределен idKey!');
+            }
+            if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                throw new ErrorException('Ошибка при получении ID продукта!');
+            }
+            
             $renderArray = array();
-            $renderArray['objectsProducts'] = MappersHelper::getProductDetail();
+            $renderArray['objectsProducts'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['currencyList'] = MappersHelper::getСurrencyList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());

@@ -207,13 +207,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id_subcategory);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-        $model->attributes = ['id'=>self::$_id, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'colorToCart'=>self::$_colorToCart, 'sizeToCart'=>self::$_sizeToCart, 'quantity'=>self::$_quantity, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'hash'=>self::$_hash];
+        $model->attributes = ['id'=>self::$_id, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'colorToCart'=>self::$_colorToCart, 'sizeToCart'=>self::$_sizeToCart, 'quantity'=>self::$_quantity, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'hash'=>self::$_hash];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->code));
         $this->assertFalse(empty($model->name));
         $this->assertFalse(empty($model->description));
         $this->assertFalse(empty($model->price));
+        $this->assertFalse(empty($model->images));
         $this->assertFalse(empty($model->colorToCart));
         $this->assertFalse(empty($model->sizeToCart));
         $this->assertFalse(empty($model->quantity));
@@ -226,6 +227,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_description, $model->description);
         $this->assertEquals(self::$_price, $model->price);
+        $this->assertEquals(self::$_images, $model->images);
         $this->assertEquals(self::$_colorToCart, $model->colorToCart);
         $this->assertEquals(self::$_sizeToCart, $model->sizeToCart);
         $this->assertEquals(self::$_quantity, $model->quantity);

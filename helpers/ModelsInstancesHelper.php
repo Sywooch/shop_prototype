@@ -32,7 +32,7 @@ class ModelsInstancesHelper
             self::$_instancesArray['productsModelForAddToCart'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
             self::$_instancesArray['brandsModelForAddToCart'] = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
             self::$_instancesArray['colorsModelForAddToCart'] = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            self::$_instancesArray['sizesModelForAddToCart'] = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]); #!!!TEST
+            self::$_instancesArray['sizesModelForAddToCart'] = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
             self::$_instancesArray['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
             self::$_instancesArray['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
             self::$_instancesArray['commentsModel'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);

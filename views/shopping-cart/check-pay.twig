@@ -7,14 +7,13 @@
 
 {% include '@app/views/parts/menu.twig' %}
 
-{% set products = app.cart.getProductsArray() %}
-
 <p><strong>Purchased products</strong></p>
 
-{% for product in products %}
+{% for product in objectsProductsList %}
     <p>
         Code: {{ product.code }}</br>
         Name: <a href="{{ url.to({0:'product-detail/index', 'categories':product.categories, 'subcategory':product.subcategory, 'id':product.id}) }}">{{ product.name }}</a></br>
+        <img src="{{ picturesHelper.getOneThumbnail('@pic', product.images) }}"></br>
         Color: {{ array.map(product.colors, 'id', 'color')[product.colorToCart] }}<br>
         Size: {{ array.map(product.sizes, 'id', 'size')[product.sizeToCart] }}<br>
         Price: {{ (product.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</br>

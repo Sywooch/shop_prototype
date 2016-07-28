@@ -7,6 +7,7 @@
     {{ form.field(productsModelForAddToCart, 'name').hiddenInput({'value':objectsProducts.name}).label(false) | raw }}
     {{ form.field(productsModelForAddToCart, 'description').hiddenInput({'value':objectsProducts.description}).label(false) | raw }}
     {{ form.field(productsModelForAddToCart, 'price').hiddenInput({'value':objectsProducts.price}).label(false) | raw }}
+    {{ form.field(productsModelForAddToCart, 'images').hiddenInput({'value':objectsProducts.images}).label(false) | raw }}
     {{ form.field(productsModelForAddToCart, 'colorToCart').dropDownList(array.map(objectsProducts.colors, 'id', 'color')) | raw }}
     {{ form.field(productsModelForAddToCart, 'sizeToCart').dropDownList(array.map(objectsProducts.sizes, 'id', 'size')) | raw }}
     {{ form.field(productsModelForAddToCart, 'quantity').textInput({'value':1}) | raw }}

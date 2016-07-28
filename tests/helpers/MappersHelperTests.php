@@ -707,30 +707,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getProductDetail
-     */
-    public function testGetProductDetail()
-    {
-        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
-        
-        $id_products = \Yii::$app->db->createCommand('SELECT * FROM {{products}} LIMIT 1')->queryScalar();
-        $_GET = ['id'=>$id_products];
-        
-        $result = MappersHelper::getProductDetail();
-        
-        $this->assertTrue(is_object($result));
-        $this->assertTrue($result instanceof ProductsModel);
-        
-        $this->assertEquals($id_products, $result->id);
-        $this->assertEquals(self::$_code, $result->code);
-        $this->assertEquals(self::$_name, $result->name);
-        $this->assertEquals(self::$_description, $result->description);
-        $this->assertEquals(self::$_description, $result->short_description);
-        $this->assertEquals(self::$_price, $result->price);
-        $this->assertEquals(self::$_images, $result->images);
-    }
-    
-    /**
      * Тестирует метод MappersHelper::getProductsList
      */
     public function testGetProductsList()

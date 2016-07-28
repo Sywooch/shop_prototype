@@ -14,7 +14,7 @@ class ProductsByIdMapper extends AbstractGetMapper
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\ProductDetailQueryCreator';
+    public $queryClass = 'app\queries\ProductsByIdQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */

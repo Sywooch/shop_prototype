@@ -8,7 +8,7 @@ use yii\base\ErrorException;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class ProductDetailQueryCreator extends AbstractSeletcQueryCreator
+class ProductsByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
      * @var array массив для выборки данных

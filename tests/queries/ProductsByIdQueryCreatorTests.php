@@ -3,12 +3,12 @@
 namespace app\tests\queries;
 
 use app\tests\MockObject;
-use app\queries\ProductDetailQueryCreator;
+use app\queries\ProductsByIdQueryCreator;
 
 /**
- * Тестирует класс app\queries\ProductDetailQueryCreator
+ * Тестирует класс app\queries\ProductsByIdQueryCreator
  */
-class ProductDetailQueryCreatorTests extends \PHPUnit_Framework_TestCase
+class ProductsByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     /**
      * Тестирует создание строки SQL запроса
@@ -20,7 +20,7 @@ class ProductDetailQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
         ]);
         
-        $queryCreator = new ProductDetailQueryCreator();
+        $queryCreator = new ProductsByIdQueryCreator();
         $queryCreator->update($mockObject);
         
         $query = 'SELECT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[products.id_categories]],[[products.id_subcategory]] FROM {{products}} WHERE [[products.id]]=:id';

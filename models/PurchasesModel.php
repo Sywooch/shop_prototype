@@ -87,9 +87,6 @@ class PurchasesModel extends AbstractBaseModel
     public function getReceived()
     {
         try {
-            if ($this->scenario == PurchasesModel::GET_FROM_FORM) {
-                $this->_received = 1;
-            }
             return $this->_received;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -284,15 +281,17 @@ class PurchasesModel extends AbstractBaseModel
             if (empty(\Yii::$app->params['deliveryStatusesArray'])) {
                 throw new ErrorException('Массив сообщений о текущем статусе доставки пуст!');
             }
-            if (empty(\Yii::$app->params['deliveryStatusesArray']['shipped']) || empty(\Yii::$app->params['deliveryStatusesArray']['canceled']) || empty(\Yii::$app->params['deliveryStatusesArray']['processed'])) {
+            if (empty(\Yii::$app->params['deliveryStatusesArray']['shipped']) || empty(\Yii::$app->params['deliveryStatusesArray']['canceled']) || empty(\Yii::$app->params['deliveryStatusesArray']['processed']) || empty(\Yii::$app->params['deliveryStatusesArray']['received'])) {
                 throw new ErrorException('Ошибка при получении сообщения о текущем статусе доставки!');
             }
             if (!empty($this->shipped)) {
                 return \Yii::$app->params['deliveryStatusesArray']['shipped'];
             } elseif (!empty($this->canceled)) {
                 return \Yii::$app->params['deliveryStatusesArray']['canceled'];
+            } elseif (!empty($this->processed)) {
+                return \Yii::$app->params['deliveryStatusesArray']['processed'];
             }
-            return \Yii::$app->params['deliveryStatusesArray']['processed'];
+            return \Yii::$app->params['deliveryStatusesArray']['received'];
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
