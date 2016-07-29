@@ -5,6 +5,7 @@ namespace app\tests\mappers;
 use app\tests\DbManager;
 use app\mappers\SizesMapper;
 use app\models\SizesModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\SizesMapper
@@ -42,6 +43,10 @@ class SizesMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_sizes}} SET [[id_products]]=:id_products, [[id_sizes]]=:id_sizes');
         $command->bindValues([':id_products'=>self::$_id, ':id_sizes'=>self::$_id]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

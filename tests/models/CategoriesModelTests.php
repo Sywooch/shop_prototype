@@ -3,8 +3,8 @@
 namespace app\test\models;
 
 use app\tests\DbManager;
-use app\models\CategoriesModel;
-use app\models\SubcategoryModel;
+use app\models\{CategoriesModel, SubcategoryModel};
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует CategoriesModel
@@ -31,6 +31,10 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

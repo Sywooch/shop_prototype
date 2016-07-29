@@ -4,6 +4,7 @@ namespace app\tests\controllers;
 
 use GuzzleHttp\Client;
 use yii\helpers\ArrayHelper;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс ProductsManagerController
@@ -93,6 +94,10 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         } else {
             $pdoStatement = self::$_dbClass->prepare('INSERT INTO colors SET id=:id, size=:size');
             $pdoStatement->execute([':id'=>self::$_sizesId, ':size'=>self::$_size]);
+        }
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
         }
     }
     

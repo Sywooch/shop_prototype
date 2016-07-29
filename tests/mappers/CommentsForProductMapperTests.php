@@ -2,11 +2,10 @@
 
 namespace app\tests\mappers;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager, MockModel};
 use app\mappers\CommentsForProductMapper;
-use app\models\CommentsModel;
-use app\models\ProductsModel;
+use app\models\{CommentsModel, ProductsModel};
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\CommentsForProductMapper
@@ -45,6 +44,10 @@ class CommentsForProductMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{comments}} SET [[id]]=:id, [[text]]=:text, [[name]]=:name, [[id_emails]]=:id_emails, [[id_products]]=:id_products, [[active]]=:active');
         $command->bindValues([':id'=>self::$_id, ':text'=>self::$_text, ':name'=>self::$_name, ':id_emails'=>self::$_id, ':id_products'=>self::$_id, ':active'=>self::$_id]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

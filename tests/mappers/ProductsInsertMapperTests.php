@@ -2,9 +2,9 @@
 
 namespace app\tests\mappers;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager, MockModel};
 use app\mappers\ProductsInsertMapper;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\ProductsInsertMapper
@@ -35,6 +35,10 @@ class ProductsInsertMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
         $command->bindValues([':id'=>self::$_id_subcategory, ':name'=>self::$_name, ':id_categories'=>self::$_id_categories, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

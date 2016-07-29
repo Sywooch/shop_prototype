@@ -2,9 +2,9 @@
 
 namespace app\tests\mappers;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager, MockModel};
 use app\mappers\UsersUpdateMapper;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\UsersUpdateMapper
@@ -32,6 +32,10 @@ class UsersUpdateMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_idEmails, ':id_phones'=>self::$_idPhones, ':id_address'=>self::$_idAddress]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

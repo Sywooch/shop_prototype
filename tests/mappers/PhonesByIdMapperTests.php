@@ -2,10 +2,10 @@
 
 namespace app\tests\mappers;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager, MockModel};
 use app\mappers\PhonesByIdMapper;
 use app\models\PhonesModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\PhonesByIdMapper
@@ -24,6 +24,10 @@ class PhonesByIdMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{phones}} SET [[id]]=:id, [[phone]]=:phone');
         $command->bindValues([':id'=>self::$_id, ':phone'=>self::$_phone]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

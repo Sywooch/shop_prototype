@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\web\UploadedFile;
 use app\tests\DbManager;
 use app\models\{ProductsModel, ColorsModel, SizesModel, CommentsModel};
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует ProductsModel
@@ -125,6 +126,10 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{comments}} SET [[id]]=:id, [[text]]=:text, [[name]]=:name, [[id_emails]]=:id_emails, [[id_products]]=:id_products, [[active]]=:active');
         $command->bindValues([':id'=>self::$_id, ':text'=>self::$_text, ':name'=>self::$_name, ':id_emails'=>self::$_id, ':id_products'=>self::$_id, ':active'=>self::$_id]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

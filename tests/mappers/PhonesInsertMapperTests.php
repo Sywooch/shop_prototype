@@ -2,9 +2,9 @@
 
 namespace app\tests\mappers;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager, MockModel};
 use app\mappers\PhonesInsertMapper;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\PhonesInsertMapper
@@ -18,6 +18,10 @@ class PhonesInsertMapperTests extends \PHPUnit_Framework_TestCase
     {
         self::$_dbClass = new DbManager();
         self::$_dbClass->createDb();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

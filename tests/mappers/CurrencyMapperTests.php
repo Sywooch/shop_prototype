@@ -5,6 +5,7 @@ namespace app\tests\mappers;
 use app\tests\DbManager;
 use app\mappers\CurrencyMapper;
 use app\models\CurrencyModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\CurrencyMapper
@@ -23,6 +24,10 @@ class CurrencyMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency');
         $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

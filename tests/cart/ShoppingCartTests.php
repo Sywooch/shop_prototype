@@ -4,6 +4,7 @@ namespace app\tests\cart;
 
 use app\tests\DbManager;
 use app\models\ProductsModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\cart\ShoppingCart
@@ -28,6 +29,10 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
     {
         self::$_dbClass = new DbManager();
         self::$_dbClass->createDb();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

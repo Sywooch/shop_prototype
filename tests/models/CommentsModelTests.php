@@ -3,8 +3,8 @@
 namespace app\test\models;
 
 use app\tests\DbManager;
-use app\models\CommentsModel;
-use app\models\EmailsModel;
+use app\models\{CommentsModel, EmailsModel};
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует CommentsModel
@@ -33,6 +33,10 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
         $command->bindValues([':id'=>self::$_emailId, ':email'=>self::$_email]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

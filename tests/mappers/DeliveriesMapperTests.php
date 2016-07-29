@@ -5,6 +5,7 @@ namespace app\tests\mappers;
 use app\tests\DbManager;
 use app\mappers\DeliveriesMapper;
 use app\models\DeliveriesModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\DeliveriesMapper
@@ -25,6 +26,10 @@ class DeliveriesMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{deliveries}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description, [[price]]=:price');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

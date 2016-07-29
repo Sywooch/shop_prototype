@@ -2,10 +2,10 @@
 
 namespace app\tests\mappers;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager, MockModel};
 use app\mappers\SizesByIdMapper;
 use app\models\SizesModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\SizesByIdMapper
@@ -24,6 +24,10 @@ class SizesByIdMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
         $command->bindValues([':id'=>self::$_id, ':size'=>self::$_size]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

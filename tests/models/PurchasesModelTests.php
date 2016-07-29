@@ -9,6 +9,7 @@ use app\models\{PurchasesModel,
     SizesModel,
     DeliveriesModel,
     PaymentsModel};
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует PurchasesModel
@@ -75,6 +76,10 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{payments}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description');
         $command->bindValues([':id'=>self::$_id_payments, ':name'=>self::$_name, ':description'=>self::$_description]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

@@ -5,6 +5,7 @@ namespace app\tests\validators;
 use app\tests\DbManager;
 use app\validators\PasswordExistsValidator;
 use app\models\UsersModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\validators\PasswordExistsValidator
@@ -32,6 +33,10 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[password]]=:password, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
         $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':password'=>self::$_hashRawPassword, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

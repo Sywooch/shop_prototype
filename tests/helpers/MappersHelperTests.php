@@ -76,6 +76,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         self::$_dbClass->createDb();
         
         self::$_reflectionClass = new \ReflectionClass('app\helpers\MappersHelper');
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

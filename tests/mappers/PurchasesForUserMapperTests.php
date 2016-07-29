@@ -5,6 +5,7 @@ namespace app\tests\mappers;
 use app\tests\DbManager;
 use app\mappers\PurchasesForUserMapper;
 use app\models\{UsersModel, PurchasesModel};
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\PurchasesForUserMapper
@@ -69,6 +70,10 @@ class PurchasesForUserMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{purchases}} SET [[id]]=:id, [[id_users]]=:id_users, [[id_products]]=:id_products, [[quantity]]=:quantity, [[id_colors]]=:id_colors, [[id_sizes]]=:id_sizes, [[id_deliveries]]=:id_deliveries, [[id_payments]]=:id_payments, [[received]]=:received, [[received_date]]=:received_date, [[processed]]=:processed, [[canceled]]=:canceled, [[shipped]]=:shipped');
         $command->bindValues([':id'=>self::$_id, ':id_users'=>self::$_id, ':id_products'=>self::$_id, ':quantity'=>self::$_quantity, ':id_colors'=>self::$_id, ':id_sizes'=>self::$_id, ':id_deliveries'=>self::$_id, ':id_payments'=>self::$_id, ':received'=>self::$_received, ':received_date'=>self::$_received_date, ':processed'=>self::$_processed, ':canceled'=>self::$_canceled, ':shipped'=>self::$_shipped]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

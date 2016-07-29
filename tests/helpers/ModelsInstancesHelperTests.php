@@ -3,15 +3,15 @@
 namespace app\tests\helpers;
 
 use app\tests\DbManager;
-use app\helpers\ModelsInstancesHelper;
-use app\models\FiltersModel;
-use app\models\ProductsModel;
-use app\models\UsersModel;
-use app\models\CurrencyModel;
-use app\models\CommentsModel;
-use app\models\BrandsModel;
-use app\models\ColorsModel;
-use app\models\SizesModel;
+use app\helpers\{ModelsInstancesHelper, MappersHelper};
+use app\models\{FiltersModel,
+    ProductsModel,
+    UsersModel,
+    CurrencyModel,
+    CommentsModel,
+    BrandsModel,
+    ColorsModel,
+    SizesModel};
 
 /**
  * Тестирует класс app\helpers\ModelsInstancesHelper
@@ -32,6 +32,10 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
         $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

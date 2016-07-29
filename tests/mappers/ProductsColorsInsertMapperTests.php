@@ -2,9 +2,9 @@
 
 namespace app\tests\mappers;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager, MockModel};
 use app\mappers\ProductsColorsInsertMapper;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\ProductsColorsInsertMapper
@@ -43,6 +43,10 @@ class ProductsColorsInsertMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
         $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

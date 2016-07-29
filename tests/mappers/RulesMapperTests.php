@@ -5,6 +5,7 @@ namespace app\tests\mappers;
 use app\tests\DbManager;
 use app\mappers\RulesMapper;
 use app\models\RulesModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\RulesMapper
@@ -23,6 +24,10 @@ class RulesMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{rules}} SET [[id]]=:id, [[rule]]=:rule');
         $command->bindValues([':id'=>self::$_id, ':rule'=>self::$_rule]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

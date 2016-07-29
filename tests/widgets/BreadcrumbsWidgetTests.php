@@ -36,6 +36,10 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_subcategoryName, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
+        
         self::$_categoriesList = MappersHelper::getCategoriesList();
     }
     

@@ -27,7 +27,9 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
         $command->execute();
         
-        MappersHelper::cleanProperties();
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**
@@ -42,9 +44,6 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(property_exists($model, 'email'));
         $this->assertTrue(property_exists($model, '_id'));
-        
-        $this->assertTrue(method_exists($model, 'getId'));
-        $this->assertTrue(method_exists($model, 'setId'));
     }
     
     /**
@@ -97,9 +96,9 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     public function testSetId()
     {
         $model = new EmailsModel();
-        $model->id = self::$_id + 3;
+        $model->id = self::$_id;
         
-        $this->assertEquals(self::$_id + 3, $model->id);
+        $this->assertEquals(self::$_id, $model->id);
     }
     
     /**

@@ -4,6 +4,7 @@ namespace app\test\models;
 
 use app\tests\DbManager;
 use app\models\PhonesModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует PhonesModel
@@ -24,6 +25,10 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{phones}} SET [[id]]=:id, [[phone]]=:phone');
         $command->bindValues([':id'=>self::$_id, ':phone'=>self::$_phone]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**

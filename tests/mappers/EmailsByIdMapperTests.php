@@ -2,10 +2,10 @@
 
 namespace app\tests\mappers;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager, MockModel};
 use app\mappers\EmailsByIdMapper;
 use app\models\EmailsModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует класс app\mappers\EmailsByIdMapper
@@ -24,6 +24,10 @@ class EmailsByIdMapperTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
         $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
         $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**
