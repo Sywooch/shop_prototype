@@ -77,30 +77,9 @@ class MappersHelper
     use ExceptionsTrait;
     
     /**
-     * @var array массив объектов категорий
-     * @see MappersHelper::getCategoriesList()
+     * @var array реестр загруженных объектов
      */
-    private static $_categoriesList = array();
-    /**
-     * @var array массив объектов валют
-     * @see MappersHelper::getСurrencyList()
-     */
-    private static $_currencyList = array();
-    /**
-     * @var array массив объектов deliveries
-     * @see MappersHelper::getDeliveriesList()
-     */
-    private static $_deliveriesList = array();
-    /**
-     * @var array массив объектов rules
-     * @see MappersHelper::getRulesList()
-     */
-    private static $_rulesList = array();
-    /**
-     * @var array массив объектов payments
-     * @see MappersHelper::getPaymentsList()
-     */
-    private static $_paymentsList = array();
+    private static $_objectRegistry = array();
     
     /**
      * Получает массив объектов категорий
@@ -109,19 +88,26 @@ class MappersHelper
     public static function getCategoriesList()
     {
         try {
-            if (empty(self::$_categoriesList)) {
-                $categoriesMapper = new CategoriesMapper([
-                    'tableName'=>'categories',
-                    'fields'=>['id', 'name', 'seocode'],
-                    'orderByField'=>'name'
-                ]);
-                $categoriesArray = $categoriesMapper->getGroup();
-                if (!is_array($categoriesArray) || empty($categoriesArray)) {
-                    return null;
-                }
-                self::$_categoriesList = $categoriesArray;
+            $categoriesMapper = new CategoriesMapper([
+                'tableName'=>'categories',
+                'fields'=>['id', 'name', 'seocode'],
+                'orderByField'=>'name'
+            ]);
+            $hash = self::createHash([
+                CategoriesMapper::className(), 
+                $categoriesMapper->tableName, 
+                implode('', $categoriesMapper->fields), 
+                $categoriesMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
             }
-            return self::$_categoriesList;
+            $categoriesArray = $categoriesMapper->getGroup();
+            if (!is_array($categoriesArray) || empty($categoriesArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $categoriesArray);
+            return $categoriesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -140,10 +126,20 @@ class MappersHelper
                 'fields'=>['id', 'name', 'seocode'],
                 'model'=>$categoriesModel,
             ]);
+            $hash = self::createHash([
+                CategoriesByIdMapper::className(), 
+                $categoriesByIdMapper->tableName, 
+                implode('', $categoriesByIdMapper->fields), 
+                $categoriesByIdMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $categoriesModel = $categoriesByIdMapper->getOneFromGroup();
             if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $categoriesModel);
             return $categoriesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -163,10 +159,20 @@ class MappersHelper
                 'fields'=>['id', 'name', 'seocode'],
                 'model'=>$categoriesModel
             ]);
+            $hash = self::createHash([
+                CategoriesBySeocodeMapper::className(), 
+                $categoriesBySeocodeMapper->tableName, 
+                implode('', $categoriesBySeocodeMapper->fields), 
+                $categoriesBySeocodeMapper->model->seocode,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $categoriesModel = $categoriesBySeocodeMapper->getOneFromGroup();
             if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $categoriesModel);
             return $categoriesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -180,19 +186,26 @@ class MappersHelper
     public static function getСurrencyList()
     {
         try {
-            if (empty(self::$_currencyList)) {
-                $currencyMapper = new CurrencyMapper([
-                    'tableName'=>'currency',
-                    'fields'=>['id', 'currency', 'exchange_rate', 'main'],
-                    'orderByField'=>'currency'
-                ]);
-                $currencyArray = $currencyMapper->getGroup();
-                if (!is_array($currencyArray) || empty($currencyArray)) {
-                    return null;
-                }
-                self::$_currencyList = $currencyArray;
+            $currencyMapper = new CurrencyMapper([
+                'tableName'=>'currency',
+                'fields'=>['id', 'currency', 'exchange_rate', 'main'],
+                'orderByField'=>'currency'
+            ]);
+            $hash = self::createHash([
+                CurrencyMapper::className(), 
+                $currencyMapper->tableName, 
+                implode('', $currencyMapper->fields), 
+                $currencyMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
             }
-            return self::$_currencyList;
+            $currencyArray = $currencyMapper->getGroup();
+            if (!is_array($currencyArray) || empty($currencyArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $currencyArray);
+            return $currencyArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -214,10 +227,21 @@ class MappersHelper
             if (!$joinProducts) {
                 $colorsMapper->queryClass = 'app\queries\ColorsQueryCreator';
             }
+            $hash = self::createHash([
+                ColorsMapper::className(), 
+                $colorsMapper->tableName, 
+                implode('', $colorsMapper->fields), 
+                $colorsMapper->orderByField,
+                $colorsMapper->queryClass,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $colorsArray = $colorsMapper->getGroup();
             if (!is_array($colorsArray) || empty($colorsArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $colorsArray);
             return $colorsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -237,10 +261,20 @@ class MappersHelper
                 'fields'=>['id', 'color'],
                 'model'=>$colorsModel,
             ]);
+            $hash = self::createHash([
+                ColorsByIdMapper::className(), 
+                $colorsByIdMapper->tableName, 
+                implode('', $colorsByIdMapper->fields), 
+                $colorsByIdMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $colorsModel = $colorsByIdMapper->getOneFromGroup();
             if (!is_object($colorsModel) && !$colorsModel instanceof ColorsModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $colorsModel);
             return $colorsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -248,7 +282,7 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов colors для текущего products
+     * Получает массив объектов colors для текущего ProductsModel по id
      * @param object $productsModel экземпляр ProductsModel
      * @return array of objects ColorsModel
      */
@@ -261,10 +295,21 @@ class MappersHelper
                 'orderByField'=>'color',
                 'model'=>$productsModel,
             ]);
+            $hash = self::createHash([
+                ColorsForProductMapper::className(), 
+                $colorsMapper->tableName, 
+                implode('', $colorsMapper->fields), 
+                $colorsMapper->orderByField,
+                $colorsMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $colorsArray = $colorsMapper->getGroup();
             if (!is_array($colorsArray) || empty($colorsArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $colorsArray);
             return $colorsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -287,10 +332,21 @@ class MappersHelper
             if (!$joinProducts) {
                 $sizesMapper->queryClass = 'app\queries\SizesQueryCreator';
             }
+            $hash = self::createHash([
+                SizesMapper::className(), 
+                $sizesMapper->tableName, 
+                implode('', $sizesMapper->fields), 
+                $sizesMapper->orderByField,
+                $sizesMapper->queryClass,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $sizesArray = $sizesMapper->getGroup();
             if (!is_array($sizesArray) || empty($sizesArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $sizesArray);
             return $sizesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -310,10 +366,20 @@ class MappersHelper
                 'fields'=>['id', 'size'],
                 'model'=>$sizesModel,
             ]);
+            $hash = self::createHash([
+                SizesByIdMapper::className(), 
+                $sizesByIdMapper->tableName, 
+                implode('', $sizesByIdMapper->fields), 
+                $sizesByIdMapper->model->id
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $sizesModel = $sizesByIdMapper->getOneFromGroup();
             if (!is_object($sizesModel) && !$sizesModel instanceof SizesModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $sizesModel);
             return $sizesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -321,23 +387,34 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов sizes для текущего products
+     * Получает массив объектов sizes для текущего ProductsModel по id
      * @param object $productsModel экземпляр ProductsModel
      * @return array of objects SizesModel
      */
     public static function getSizesForProductList(ProductsModel $productsModel)
     {
         try {
-            $sizesMapper = new SizesForProductMapper([
+            $sizesForProductMapper = new SizesForProductMapper([
                 'tableName'=>'sizes',
                 'fields'=>['id', 'size'],
                 'orderByField'=>'size',
                 'model'=>$productsModel,
             ]);
-            $sizesArray = $sizesMapper->getGroup();
+            $hash = self::createHash([
+                SizesForProductMapper::className(), 
+                $sizesForProductMapper->tableName, 
+                implode('', $sizesForProductMapper->fields), 
+                $sizesForProductMapper->orderByField,
+                $sizesForProductMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $sizesArray = $sizesForProductMapper->getGroup();
             if (!is_array($sizesArray) || empty($sizesArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $sizesArray);
             return $sizesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -360,10 +437,21 @@ class MappersHelper
             if (!$joinProducts) {
                 $brandsMapper->queryClass = 'app\queries\BrandsQueryCreator';
             }
+            $hash = self::createHash([
+                BrandsMapper::className(), 
+                $brandsMapper->tableName, 
+                implode('', $brandsMapper->fields), 
+                $brandsMapper->orderByField,
+                $brandsMapper->queryClass,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $brandsArray = $brandsMapper->getGroup();
             if (!is_array($brandsArray) || empty($brandsArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $brandsArray);
             return $brandsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -382,10 +470,23 @@ class MappersHelper
                 'fields'=>['id', 'address', 'city', 'country', 'postcode'],
                 'model'=>$addressModel
             ]);
+            $hash = self::createHash([
+                AddressByAddressMapper::className(), 
+                $addressByAddressMapper->tableName, 
+                implode('', $addressByAddressMapper->fields), 
+                $addressByAddressMapper->model->address,
+                $addressByAddressMapper->model->city,
+                $addressByAddressMapper->model->country,
+                $addressByAddressMapper->model->postcode,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $addressModel = $addressByAddressMapper->getOneFromGroup();
             if (!is_object($addressModel) && !$addressModel instanceof AddressModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $addressModel);
             return $addressModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -428,10 +529,20 @@ class MappersHelper
                 'fields'=>['id', 'address', 'city', 'country', 'postcode'],
                 'model'=>$addressModel,
             ]);
+            $hash = self::createHash([
+                AddressByIdMapper::className(), 
+                $addressByIdMapper->tableName, 
+                implode('', $addressByIdMapper->fields), 
+                $addressByIdMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $addressModel = $addressByIdMapper->getOneFromGroup();
             if (!is_object($addressModel) || !$addressModel instanceof AddressModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $addressModel);
             return $addressModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -450,10 +561,20 @@ class MappersHelper
                 'fields'=>['id', 'phone'],
                 'model'=>$phonesModel
             ]);
+            $hash = self::createHash([
+                PhonesByPhoneMapper::className(), 
+                $phonesByPhoneMapper->tableName, 
+                implode('', $phonesByPhoneMapper->fields), 
+                $phonesByPhoneMapper->model->phone,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $phonesModel = $phonesByPhoneMapper->getOneFromGroup();
             if (!is_object($phonesModel) && !$phonesModel instanceof PhonesModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $phonesModel);
             return $phonesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -496,10 +617,20 @@ class MappersHelper
                 'fields'=>['id', 'phone'],
                 'model'=>$phonesModel,
             ]);
+            $hash = self::createHash([
+                PhonesByIdMapper::className(), 
+                $phonesByIdMapper->tableName, 
+                implode('', $phonesByIdMapper->fields), 
+                $phonesByIdMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $phonesModel = $phonesByIdMapper->getOneFromGroup();
             if (!is_object($phonesModel) || !$phonesModel instanceof PhonesModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $phonesModel);
             return $phonesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -519,10 +650,20 @@ class MappersHelper
                 'fields'=>['id', 'name', 'description', 'price'],
                 'model'=>$deliveriesModel,
             ]);
+            $hash = self::createHash([
+                DeliveriesByIdMapper::className(), 
+                $deliveriesByIdMapper->tableName, 
+                implode('', $deliveriesByIdMapper->fields), 
+                $deliveriesByIdMapper->model->id
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $deliveriesModel = $deliveriesByIdMapper->getOneFromGroup();
             if (!is_object($deliveriesModel) || !$deliveriesModel instanceof DeliveriesModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $deliveriesModel);
             return $deliveriesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -536,19 +677,26 @@ class MappersHelper
     public static function getDeliveriesList()
     {
         try {
-            if (empty(self::$_deliveriesList)) {
-                $deliveriesMapper = new DeliveriesMapper([
-                    'tableName'=>'deliveries',
-                    'fields'=>['id', 'name', 'description', 'price'],
-                    'orderByField'=>'id'
-                ]);
-                $deliveriesArray = $deliveriesMapper->getGroup();
-                if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
-                    return null;
-                }
-                self::$_deliveriesList = $deliveriesArray;
+            $deliveriesMapper = new DeliveriesMapper([
+                'tableName'=>'deliveries',
+                'fields'=>['id', 'name', 'description', 'price'],
+                'orderByField'=>'id'
+            ]);
+            $hash = self::createHash([
+                DeliveriesMapper::className(), 
+                $deliveriesMapper->tableName, 
+                implode('', $deliveriesMapper->fields), 
+                $deliveriesMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
             }
-            return self::$_deliveriesList;
+            $deliveriesArray = $deliveriesMapper->getGroup();
+            if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $deliveriesArray);
+            return $deliveriesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -567,10 +715,20 @@ class MappersHelper
                 'fields'=>['id', 'name', 'description'],
                 'model'=>$paymentsModel,
             ]);
+            $hash = self::createHash([
+                PaymentsByIdMapper::className(), 
+                $paymentsByIdMapper->tableName, 
+                implode('', $paymentsByIdMapper->fields), 
+                $paymentsByIdMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $paymentsModel = $paymentsByIdMapper->getOneFromGroup();
             if (!is_object($paymentsModel) || !$paymentsModel instanceof PaymentsModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $paymentsModel);
             return $paymentsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -584,18 +742,24 @@ class MappersHelper
     public static function getPaymentsList()
     {
         try {
-            if (empty(self::$_paymentsList)) {
-                $paymentsMapper = new PaymentsMapper([
-                    'tableName'=>'payments',
-                    'fields'=>['id', 'name', 'description'],
-                ]);
-                $paymentsArray = $paymentsMapper->getGroup();
-                if (!is_array($paymentsArray) || empty($paymentsArray)) {
-                    return null;
-                }
-                self::$_paymentsList = $paymentsArray;
+            $paymentsMapper = new PaymentsMapper([
+                'tableName'=>'payments',
+                'fields'=>['id', 'name', 'description'],
+            ]);
+            $hash = self::createHash([
+                PaymentsMapper::className(), 
+                $paymentsMapper->tableName, 
+                implode('', $paymentsMapper->fields), 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
             }
-            return self::$_paymentsList;
+            $paymentsArray = $paymentsMapper->getGroup();
+            if (!is_array($paymentsArray) || empty($paymentsArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $paymentsArray);
+            return $paymentsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -646,7 +810,7 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов purchases для текущего users
+     * Получает массив объектов purchases для текущего UsersModel по id
      * @param object $usersModel экземпляр UsersModel
      * @return array of objects PurchasesModel
      */
@@ -660,10 +824,22 @@ class MappersHelper
                 'orderByType'=>'DESC',
                 'model'=>$usersModel,
             ]);
+            $hash = self::createHash([
+                PurchasesForUserMapper::className(), 
+                $purchasesForUserMapper->tableName, 
+                implode('', $purchasesForUserMapper->fields), 
+                $purchasesForUserMapper->orderByField, 
+                $purchasesForUserMapper->orderByType, 
+                $purchasesForUserMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $purchasesArray = $purchasesForUserMapper->getGroup();
             if (!is_array($purchasesArray) || empty($purchasesArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $purchasesArray);
             return $purchasesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -727,10 +903,20 @@ class MappersHelper
                 'fields'=>['id', 'email'],
                 'model'=>$emailsModel
             ]);
+            $hash = self::createHash([
+                EmailsByEmailMapper::className(), 
+                $emailsByEmailMapper->tableName, 
+                implode('', $emailsByEmailMapper->fields), 
+                $emailsByEmailMapper->model->email, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $emailsModel = $emailsByEmailMapper->getOneFromGroup();
             if (!is_object($emailsModel) && !$emailsModel instanceof EmailsModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $emailsModel);
             return $emailsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -773,10 +959,20 @@ class MappersHelper
                 'fields'=>['id', 'email'],
                 'model'=>$emailsModel,
             ]);
+            $hash = self::createHash([
+                EmailsByIdMapper::className(), 
+                $emailsByIdMapper->tableName, 
+                implode('', $emailsByIdMapper->fields), 
+                $emailsByIdMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $emailsModel = $emailsByIdMapper->getOneFromGroup();
             if (!is_object($emailsModel) || !$emailsModel instanceof EmailsModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $emailsModel);
             return $emailsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -818,10 +1014,20 @@ class MappersHelper
                 'fields'=>['id', 'currency', 'exchange_rate', 'main'],
                 'model'=>$currencyModel,
             ]);
+            $hash = self::createHash([
+                CurrencyByIdMapper::className(), 
+                $currencyByIdMapper->tableName, 
+                implode('', $currencyByIdMapper->fields), 
+                $currencyByIdMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $currencyModel = $currencyByIdMapper->getOneFromGroup();
             if (!is_object($currencyModel) && !$currencyModel instanceof CurrencyModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $currencyModel);
             return $currencyModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -840,10 +1046,19 @@ class MappersHelper
                 'tableName'=>'currency',
                 'fields'=>['id', 'currency', 'exchange_rate', 'main'],
             ]);
+            $hash = self::createHash([
+                CurrencyByMainMapper::className(), 
+                $currencyByMainMapper->tableName, 
+                implode('', $currencyByMainMapper->fields), 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $currencyModel = $currencyByMainMapper->getOneFromGroup();
             if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $currencyModel);
             return $currencyModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -881,10 +1096,22 @@ class MappersHelper
     {
         try {
             $productsMapper = new ProductsListMapper($config);
+            $hash = self::createHash([
+                ProductsListMapper::className(), 
+                $productsMapper->tableName, 
+                implode('', $productsMapper->fields), 
+                serialize($productsMapper->otherTablesFields), 
+                $productsMapper->orderByField, 
+                $productsMapper->getDataSorting, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $productsArray = $productsMapper->getGroup();
             if (!is_array($productsArray) || empty($productsArray) || !$productsArray[0] instanceof ProductsModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $productsArray);
             return $productsArray;
         } catch (EmptyListException $e) {
             throw $e;
@@ -906,10 +1133,20 @@ class MappersHelper
                 'fields'=>['id', 'date', 'code', 'name', 'description', 'price', 'images'],
                 'model'=>$productsModel,
             ]);
+            $hash = self::createHash([
+                ProductsByCodeMapper::className(), 
+                $productsByCodeMapper->tableName, 
+                implode('', $productsByCodeMapper->fields), 
+                $productsByCodeMapper->model->code, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $productsModel = $productsByCodeMapper->getOneFromGroup();
             if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $productsModel);
             return $productsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -929,10 +1166,20 @@ class MappersHelper
                 'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
                 'model'=>$productsModel,
             ]);
+            $hash = self::createHash([
+                ProductsByIdMapper::className(), 
+                $productsByIdMapper->tableName, 
+                implode('', $productsByIdMapper->fields), 
+                $productsByIdMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $productsModel = $productsByIdMapper->getOneFromGroup();
             if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $productsModel);
             return $productsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -975,10 +1222,20 @@ class MappersHelper
                 'fields'=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
                 'model'=>$usersModel
             ]);
+            $hash = self::createHash([
+                UsersByLoginMapper::className(), 
+                $usersByLoginMapper->tableName, 
+                implode('', $usersByLoginMapper->fields), 
+                $usersByLoginMapper->model->login, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $usersModel = $usersByLoginMapper->getOneFromGroup();
             if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $usersModel);
             return $usersModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -998,10 +1255,20 @@ class MappersHelper
                 'fields'=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
                 'model'=>$usersModel,
             ]);
+            $hash = self::createHash([
+                UsersByIdMapper::className(), 
+                $usersByIdMapper->tableName, 
+                implode('', $usersByIdMapper->fields), 
+                $usersByIdMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $usersModel = $usersByIdMapper->getOneFromGroup();
             if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $usersModel);
             return $usersModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -1015,40 +1282,57 @@ class MappersHelper
     public static function getRulesList()
     {
         try {
-            if (empty(self::$_rulesList)) {
-                $rulesMapper = new RulesMapper([
-                    'tableName'=>'rules',
-                    'fields'=>['id', 'rule'],
-                    'orderByField'=>'rule',
-                ]);
-                $rulesArray = $rulesMapper->getGroup();
-                if (!is_array($rulesArray) || empty($rulesArray)) {
-                    return null;
-                }
-                self::$_rulesList = $rulesArray;
+            $rulesMapper = new RulesMapper([
+                'tableName'=>'rules',
+                'fields'=>['id', 'rule'],
+                'orderByField'=>'rule',
+            ]);
+            $hash = self::createHash([
+                RulesMapper::className(), 
+                $rulesMapper->tableName, 
+                implode('', $rulesMapper->fields), 
+                $rulesMapper->orderByField, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
             }
-            return self::$_rulesList;
+            $rulesArray = $rulesMapper->getGroup();
+            if (!is_array($rulesArray) || empty($rulesArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $rulesArray);
+            return $rulesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
     
     /**
-     * Получает массив объектов subcategory
+     * Получает массив объектов SubcategoryModel по seocode CategoriesModel
      * @return array of objects SubcategoryModel
      */
     public static function getSubcategoryForCategoryList(CategoriesModel $categoriesModel)
     {
         try {
-            $subcategoryMapper = new SubcategoryForCategoryMapper([
+            $subcategoryForCategoryMapper = new SubcategoryForCategoryMapper([
                 'tableName'=>'subcategory',
                 'fields'=>['id', 'name', 'seocode', 'id_categories'],
                 'model'=>$categoriesModel
             ]);
-            $subcategoryArray = $subcategoryMapper->getGroup();
+            $hash = self::createHash([
+                SubcategoryForCategoryMapper::className(), 
+                $subcategoryForCategoryMapper->tableName, 
+                implode('', $subcategoryForCategoryMapper->fields), 
+                $subcategoryForCategoryMapper->model->seocode, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $subcategoryArray = $subcategoryForCategoryMapper->getGroup();
             if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $subcategoryArray);
             return $subcategoryArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -1068,10 +1352,20 @@ class MappersHelper
                 'fields'=>['id', 'name', 'seocode', 'id_categories'],
                 'model'=>$subcategoryModel,
             ]);
+            $hash = self::createHash([
+                SubcategoryByIdMapper::className(), 
+                $subcategoryByIdMapper->tableName, 
+                implode('', $subcategoryByIdMapper->fields), 
+                $subcategoryByIdMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $subcategoryModel = $subcategoryByIdMapper->getOneFromGroup();
             if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $subcategoryModel);
             return $subcategoryModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -1091,10 +1385,20 @@ class MappersHelper
                 'fields'=>['id', 'name', 'seocode', 'id_categories'],
                 'model'=>$subcategoryModel,
             ]);
+            $hash = self::createHash([
+                SubcategoryBySeocodeMapper::className(), 
+                $subcategoryBySeocodeMapper->tableName, 
+                implode('', $subcategoryBySeocodeMapper->fields), 
+                $subcategoryBySeocodeMapper->model->seocode, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $subcategoryModel = $subcategoryBySeocodeMapper->getOneFromGroup();
             if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
                 return null;
             }
+            self::createRegistryEntry($hash, $subcategoryModel);
             return $subcategoryModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -1102,7 +1406,7 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов products, похожих свойствами с текущим products
+     * Получает массив объектов products, похожих свойствами с текущим ProductsModel 
      * @return array of objects ProductsModel
      */
     public static function getSimilarProductsList(ProductsModel $productsModel)
@@ -1118,10 +1422,22 @@ class MappersHelper
                 ],
                 'model'=>$productsModel,
             ]);
+            $hash = self::createHash([
+                SimilarProductsMapper::className(), 
+                $similarProductsMapper->tableName, 
+                implode('', $similarProductsMapper->fields), 
+                $similarProductsMapper->orderByField, 
+                serialize($similarProductsMapper->otherTablesFields),
+                $similarProductsMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $similarsArray = $similarProductsMapper->getGroup();
             if (!is_array($similarsArray) || empty($similarsArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $similarsArray);
             return $similarsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -1129,7 +1445,7 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов products, связанных с текущим products
+     * Получает массив объектов ProductsModel, связанных с текущим ProductsModel по id
      * @return array of objects ProductsModel
      */
     public static function getRelatedProductsList(ProductsModel $productsModel)
@@ -1145,10 +1461,22 @@ class MappersHelper
                 'orderByField'=>'date',
                 'model'=>$productsModel,
             ]);
+            $hash = self::createHash([
+                RelatedProductsMapper::className(), 
+                $relatedProductsMapper->tableName, 
+                implode('', $relatedProductsMapper->fields), 
+                $relatedProductsMapper->orderByField, 
+                serialize($relatedProductsMapper->otherTablesFields),
+                $relatedProductsMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $relatedArray = $relatedProductsMapper->getGroup();
             if (!is_array($relatedArray) || empty($relatedArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $relatedArray);
             return $relatedArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -1156,7 +1484,7 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов comments для текущего products
+     * Получает массив объектов comments для текущего ProductsModel по id
      * @param object $productsModel экземпляр ProductsModel
      * @return array of objects CommentsModel
      */
@@ -1168,10 +1496,20 @@ class MappersHelper
                 'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
                 'model'=>$productsModel,
             ]);
+            $hash = self::createHash([
+                CommentsForProductMapper::className(), 
+                $commentsForProductMapper->tableName, 
+                implode('', $commentsForProductMapper->fields), 
+                $commentsForProductMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
             $commentsArray = $commentsForProductMapper->getGroup();
             if (!is_array($commentsArray) || empty($commentsArray)) {
                 return null;
             }
+            self::createRegistryEntry($hash, $commentsArray);
             return $commentsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -1207,7 +1545,7 @@ class MappersHelper
      * @param object $colorsModel экземпляр ColorsModel
      * @return boolean
      */
-    public static function setProductsColorsInsert(ProductsModel $productsModel, ColorsModel $colorsModel) #!!!TEST
+    public static function setProductsColorsInsert(ProductsModel $productsModel, ColorsModel $colorsModel)
     {
         try {
             if (!is_array($colorsModel->idArray) || empty($colorsModel->idArray)) {
@@ -1268,12 +1606,70 @@ class MappersHelper
     public static function cleanProperties()
     {
         try {
-            self::$_categoriesList = array();
-            self::$_currencyList = array();
-            self::$_deliveriesList = array();
-            self::$_paymentsList = array();
-            self::$_rulesList = array();
+            self::$_objectRegistry = array();
             return true;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Сравнивает хеш текущего объекта с хешами-ключами в MappersHelper::$_objectRegistry, 
+     * возвращает true, если совпадение найдено, иначе false
+     * @params string хеш
+     * @return boolean
+     */
+    private static function compareHashes(string $hash)
+    {
+        try {
+            if (!array_key_exists($hash, self::$_objectRegistry)) {
+                return false;
+            }
+            return true;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Сохраняет загруженные данные в реестре MappersHelper::$_objectRegistry
+     * @param string $hash хеш сохраняемого объекта, который станет ключом в реестре
+     * @param object $object объект, который необходимо сохранить в реестре
+     * @return boolean
+     */
+    private static function createRegistryEntry(string $hash, $object)
+    {
+        try {
+            self::$_objectRegistry[$hash] = $object;
+            return true;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Конструирует хеш с помощью функции md5
+     * @param array $inputArray массив данных для конструирования хеша
+     * @return string результирующий хеш
+     */
+    private static function createHash(Array $inputArray)
+    {
+        try {
+            $inputString = implode('-', $inputArray);
+            return md5($inputString);
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив реестра MappersHelper::$_objectRegistry
+     * @return array
+     */
+    public static function getObjectRegistry()
+    {
+        try {
+            return self::$_objectRegistry;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

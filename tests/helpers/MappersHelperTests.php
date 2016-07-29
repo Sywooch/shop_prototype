@@ -2,7 +2,7 @@
 
 namespace app\tests\helpers;
 
-use app\tests\DbManager;
+use app\tests\{DbManager, MockObject};
 use app\helpers\MappersHelper;
 use app\models\{CategoriesModel, 
     CurrencyModel, 
@@ -55,6 +55,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_main = '1';
     private static $_text = 'Some Text';
     private static $_date = 1462453595;
+    private static $_tableName = 'sometable';
+    private static $_field = 'somefield';
+    private static $_orderByType = 'DESC';
     
     private static $_config = [
         'tableName'=>'products',
@@ -80,11 +83,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_categoriesList'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_currencyList'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_deliveriesList'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_paymentsList'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_rulesList'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_objectRegistry'));
     }
     
     /**
@@ -1152,18 +1151,26 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getObjectRegistry
+     */
+    public function testGetObjectRegistry()
+    {
+        $result = MappersHelper::getObjectRegistry();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+    }
+    
+    /**
      * Тестирует метод MappersHelper::cleanProperties
      */
     public function testCleanProperties()
     {
         $result = MappersHelper::cleanProperties();
-        
         $this->assertTrue($result);
-        $this->assertTrue(empty(MappersHelper::$_categoriesList));
-        $this->assertTrue(empty(MappersHelper::$_currencyList));
-        $this->assertTrue(empty(MappersHelper::$_deliveriesList));
-        $this->assertTrue(empty(MappersHelper::$_paymentsList));
-        $this->assertTrue(empty(MappersHelper::$_rulesList));
+        
+        $result = MappersHelper::getObjectRegistry();
+        $this->assertTrue(empty($result));
     }
     
     public static function tearDownAfterClass()

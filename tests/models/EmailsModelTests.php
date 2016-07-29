@@ -4,6 +4,7 @@ namespace app\test\models;
 
 use app\tests\DbManager;
 use app\models\EmailsModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует EmailsModel
@@ -25,6 +26,8 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
         $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
         $command->execute();
+        
+        MappersHelper::cleanProperties();
     }
     
     /**
