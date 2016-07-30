@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\helpers\{UserAuthenticationHelper, MappersHelper, ModelsInstancesHelper, SessionHelper};
-use app\models\{UsersModel, EmailsModel};
+use app\models\{UsersModel, EmailsModel, PhonesModel, AddressModel};
 
 /**
  * Управляет работой с пользователями
@@ -120,6 +120,9 @@ class UsersController extends AbstractBaseController
         try {
             $renderArray = array();
             $renderArray['usersModel'] = \Yii::$app->user;
+            $renderArray['emailsModel'] = \Yii::$app->user->emails ?? new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);;
+            $renderArray['phonesModel'] = \Yii::$app->user->phones ?? new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
+            $renderArray['addressModel'] = \Yii::$app->user->address ?? new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
             $renderArray['purchasesList'] = MappersHelper::getPurchasesForUserList(\Yii::$app->user);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
@@ -145,6 +148,49 @@ class UsersController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate() && $emailsModel->validate() && $phonesModel->validate() && $addressModel->validate()) {
                     
+                    if (empty(\Yii::$app->user->emails) || \Yii::$app->user->emails->email != $emailsModel->email) {
+                         if ($result = MappersHelper::getEmailsByEmail($emailsModel)) {
+                            $emailsModel = $result;
+                        } else {
+                            if (!MappersHelper::setEmailsInsert($emailsModel)) {
+                                throw new ErrorException('Ошибка при сохранении E-mail!');
+                            }
+                        }
+                    }
+                    $usersModel->id_emails = $emailsModel->id;
+                    
+                    if (empty(\Yii::$app->user->phones) || \Yii::$app->user->phones->phone != $phonesModel->phone) {
+                        if ($result = MappersHelper::getPhonesByPhone($phonesModel)) {
+                            $phonesModel = $result;
+                        } else {
+                            if (!MappersHelper::setPhonesInsert($phonesModel)) {
+                                throw new ErrorException('Ошибка при сохранении address!');
+                            }
+                        }
+                    }
+                    $usersModel->id_phones = $phonesModel->id;
+                    
+                    if (empty(\Yii::$app->user->address) || !empty(array_diff_assoc($addressModel->getDataArray(), \Yii::$app->user->address->getDataArray()))) {
+                        if ($result = MappersHelper::getAddressByAddress($addressModel)) {
+                            $addressModel = $result;
+                        } else {
+                            if (!MappersHelper::setAddressInsert($addressModel)) {
+                                throw new ErrorException('Ошибка при сохранении address!');
+                            }
+                        }
+                    }
+                    $usersModel->id_address = $addressModel->id;
+                    
+                    if ($usersModel->login != \Yii::$app->params['nonAuthenticatedUserLogin'] && $usersModel->login == \Yii::$app->user->login) {
+                        if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {
+                            if (!MappersHelper::setUsersUpdate($usersModel)) {
+                                throw new ErrorException('Ошибка при обновлении users!');
+                            }
+                            \Yii::configure(\Yii::$app->user, $usersModel->getDataArray());
+                        }
+                    }
+                    
+                    return $this->redirect(Url::to(['users/show-user-account']));
                 }
             }
             return $this->redirect(Url::to(['products-list/index']));

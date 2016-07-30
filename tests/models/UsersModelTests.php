@@ -158,13 +158,21 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->id));
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_UPDATE_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'surname'=>self::$_surname, 'currentRawPassword'=>self::$_rawPassword, 'rawPassword'=>self::$_rawPassword];
+        $model->attributes = ['id'=>self::$_id, 'login'=>self::$_login, 'name'=>self::$_name, 'surname'=>self::$_surname, 'currentRawPassword'=>self::$_rawPassword, 'rawPassword'=>self::$_rawPassword];
         
         $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->login));
         $this->assertFalse(empty($model->name));
         $this->assertFalse(empty($model->surname));
         $this->assertFalse(empty($model->currentRawPassword));
         $this->assertFalse(empty($model->rawPassword));
+        
+        $this->assertEquals(self::$_id, $model->id);
+        $this->assertEquals(self::$_login, $model->login);
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_surname, $model->surname);
+        $this->assertEquals(self::$_rawPassword, $model->currentRawPassword);
+        $this->assertEquals(self::$_rawPassword, $model->rawPassword);
     }
     
     /**

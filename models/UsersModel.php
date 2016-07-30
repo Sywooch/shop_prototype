@@ -87,7 +87,7 @@ class UsersModel extends AbstractBaseModel
             self::GET_FROM_CART_FORM=>['name', 'surname'],
             self::GET_FROM_LOGIN_FORM=>['login', 'rawPassword'],
             self::GET_FROM_LOGOUT_FORM=>['id'],
-            self::GET_FROM_UPDATE_FORM=>['id', 'name', 'surname', 'currentRawPassword', 'rawPassword'],
+            self::GET_FROM_UPDATE_FORM=>['id', 'login', 'name', 'surname', 'currentRawPassword', 'rawPassword'],
         ];
     }
     
