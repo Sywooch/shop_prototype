@@ -15,13 +15,21 @@ class ProductsListController extends AbstractBaseController
 {
     private $_config = [
         'tableName'=>'products',
-        'fields'=>['id', 'code', 'name', 'description', 'short_description', 'price', 'images'],
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images'],
         'otherTablesFields'=>[
             ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
             ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
         ],
         'orderByField'=>'date',
         'getDataSorting'=>false,
+    ];
+    
+    private $_configSphynx = [
+        'tableName'=>'shop',
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images','categories', 'subcategory'],
+        'orderByField'=>'date',
+        'getDataSorting'=>false,
+        'queryClass'=>'app\queries\ProductsListSearchQueryCreator',
     ];
     
     /**
@@ -31,6 +39,7 @@ class ProductsListController extends AbstractBaseController
     public function actionIndex()
     {
         try {
+            #!!! Изменить подключение к БД!
             $renderArray = array();
             $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
@@ -57,10 +66,10 @@ class ProductsListController extends AbstractBaseController
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
-            $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
+            //$this->_configSphynx['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
             $renderArray = array();
             try {
-                $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
+                $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_configSphynx);
             } catch (EmptyListException $e) {
                 $this->writeErrorInLogs($e, __METHOD__);
             }
@@ -71,6 +80,13 @@ class ProductsListController extends AbstractBaseController
             $renderArray['currencyList'] = MappersHelper::getСurrencyList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('products-list.twig', $renderArray);
+            
+            /*$db = new \PDO('mysql:host=127.0.0.1;port=9306;dbname=shop', 'shopadmin', 'shopadmin');
+            $sth = $db->prepare('SELECT id,name,description FROM shop WHERE id_subcategory=2 AND MATCH(:query) ORDER BY id DESC');
+            $sth->bindValue(':query', \Yii::$app->request->get(\Yii::$app->params['searchKey']), \PDO::PARAM_STR);
+            $sth->execute();
+            print_r($sth->fetchAll(\PDO::FETCH_ASSOC));*/
+            
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

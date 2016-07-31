@@ -166,7 +166,26 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
         }
     }
     
-        /**
+    /**
+     * Формирует часть запроса к sphinx, добавляющую условия выборки WHERE MATCH 
+     * @return string
+    */
+    protected function getWhereMatchSphynx()
+    {
+        try {
+            if (empty(\Yii::$app->params['sphynxKey'])) {
+                throw new ErrorException('Не поределен sphynxKey!');
+            }
+            if (!is_string($string = $this->getWhereStart())) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            return $string . ' MATCH(:' . \Yii::$app->params['sphynxKey'] . ')';
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Формирует часть запроса к БД, добавляющую условия выборки WHERE IN
      * @return string
     */

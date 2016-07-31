@@ -121,6 +121,9 @@ $config = [
         'filterKeys'=>['colors', 'sizes', 'brands'], # Ключи, по которым в $_REQUEST доступны значения выбранных фильтров
         'filtersKeyInSession'=>'filters', # Ключ, по которому в $_SESSION доступена переменная, хранящая выбранные фильтры
         
+        # Sphynx
+        'sphynxKey'=>'sphynxquery', # Ключ для подстановки значения в подготовленный запрос к поисковой машине Sphynx
+        
         # Путь к товару
         'categoryKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
         'subCategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории

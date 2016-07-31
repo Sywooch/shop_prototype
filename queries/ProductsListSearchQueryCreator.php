@@ -20,12 +20,12 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
         ],
     ];
     
-    public function init()
+    /*public function init()
     {
         parent::init();
         
         $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
-    }
+    }*/
     
     /**
      * Инициирует создание SELECT запроса
@@ -34,7 +34,7 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     public function getSelectQuery()
     {
         try {
-            if (!$this->addSelectHead()) {
+            /*if (!$this->addSelectHead()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             if (!$this->addFilters()) {
@@ -43,6 +43,30 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
             if (!$this->addSelectEnd()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
+            
+            echo $this->clenForSphynx();
+            exit();
+            $this->_mapperObject->query =  $this->clenForSphynx(); #!!!*/
+            
+            $this->_mapperObject->query = 'SELECT ';
+            
+            if (empty($this->_mapperObject->fields) || empty($this->_mapperObject->tableName)) {
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
+            }
+            
+            $this->_mapperObject->query .= implode(',', $this->_mapperObject->fields);
+            
+            $this->_mapperObject->query .= ' FROM ' . $this->_mapperObject->tableName;
+            
+            if (!$this->addFilters()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            
+            $this->_mapperObject->query .= ' ORDER BY ' . $this->_mapperObject->orderByField . ' ' . $this->_mapperObject->orderByType;
+            
+            /*echo $this->_mapperObject->query;
+            exit();*/
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -59,23 +83,26 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
             if (empty(\Yii::$app->params['searchKey'])) {
                 throw new ErrorException('Не поределен searchKey!');
             }
-            
-            if (!parent::addFilters()) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (empty(\Yii::$app->params['sphynxKey'])) {
+                throw new ErrorException('Не поределен sphynxKey!');
             }
             
+            /*if (!parent::addFilters()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }*/
+            
             if (\Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
-                $where = $this->getWhereLike(
+                /*$where = $this->getWhereLike(
                     $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableName'],
                     $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableFieldWhere'],
                     \Yii::$app->params['searchKey']
-                );
-                if (!is_string($where)) {
+                );*/
+                if (!is_string($where = $this->getWhereMatchSphynx())) {
                     throw new ErrorException('Ошибка при построении запроса!');
                 }
                 $this->_mapperObject->query .= $where;
                 
-                $this->_mapperObject->params[':' . \Yii::$app->params['searchKey']] = '%' . \Yii::$app->request->get(\Yii::$app->params['searchKey']) . '%';
+                $this->_mapperObject->params[':' . \Yii::$app->params['sphynxKey']] = \Yii::$app->request->get(\Yii::$app->params['searchKey']);
                 return true;
             }
         } catch (\Exception $e) {
