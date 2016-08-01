@@ -170,6 +170,17 @@ class SimilarProductsQueryCreator extends ProductsListQueryCreator
                     }
                 }
             }
+            
+            if (!$this->addOrder()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            
+            $limit = $this->addLimit();
+            if (!$limit) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $limit;
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

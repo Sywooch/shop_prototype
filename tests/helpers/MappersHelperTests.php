@@ -858,8 +858,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSimilarProductsList()
     {
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id + 23, ':code'=>self::$_code . 'n', ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id + 23, ':date'=>self::$_date, ':code'=>self::$_code . 'n', ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');

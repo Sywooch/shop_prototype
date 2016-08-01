@@ -1442,8 +1442,9 @@ class MappersHelper
         try {
             $similarProductsMapper = new SimilarProductsMapper([
                 'tableName'=>'products',
-                'fields'=>['id', 'name', 'price', 'images'],
+                'fields'=>['id', 'date', 'name', 'price', 'images'],
                 'orderByField'=>'date',
+                'getDataSorting'=>false,
                 'otherTablesFields'=>[
                     ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
                     ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],

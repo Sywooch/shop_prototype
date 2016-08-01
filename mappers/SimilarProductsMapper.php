@@ -2,14 +2,14 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractGetMapper;
+use app\mappers\ProductsListMapper;
 use yii\base\ErrorException;
 use app\models\ProductsModel;
 
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class SimilarProductsMapper extends AbstractGetMapper
+class SimilarProductsMapper extends ProductsListMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса

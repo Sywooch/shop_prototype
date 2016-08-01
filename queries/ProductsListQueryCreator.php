@@ -321,7 +321,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
      * Формирует часть запроса к БД, задающую порядок сортировки
      * @return boolean
      */
-    private function addOrder()
+    protected function addOrder()
     {
         try {
             if (empty($this->_mapperObject->orderByField)) {
