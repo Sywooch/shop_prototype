@@ -13,20 +13,24 @@
 
 {{ breadcrumbs_widget_widget({'categoriesList':categoriesList}) }}
 
-<ol>
-{% for product in objectsProductsList %}
-    <li>
-        <strong><a href="{{ url.to({0:'product-detail/index', 'categories': product.categories, 'subcategory': product.subcategory, 'id': product.id}) }}">{{ product.name }}</a></strong>
-        {% if product.images %}
-            <br><img src="{{ picturesHelper.getOneThumbnail('@pic', product.images) }}">
-        {% endif %}
-        {% if product.short_description %}
-            <br>{{ product.short_description }}
-        {% endif %}
-        <br>{{ (product.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
-    </li>
-{% endfor %}
-</ol>
+{% if objectsProductsList %}
+    <ol>
+    {% for product in objectsProductsList %}
+        <li>
+            <strong><a href="{{ url.to({0:'product-detail/index', 'categories': product.categories, 'subcategory': product.subcategory, 'id': product.id}) }}">{{ product.name }}</a></strong>
+            {% if product.images %}
+                <br><img src="{{ picturesHelper.getOneThumbnail('@pic', product.images) }}">
+            {% endif %}
+            {% if product.short_description %}
+                <br>{{ product.short_description }}
+            {% endif %}
+            <br>{{ (product.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
+        </li>
+    {% endfor %}
+    </ol>
+{% else %}
+    <p>Похоже, мы пока не можем предложить эту штуку!</p>
+{% endif %}
 
 {% include '@app/views/parts/filters.twig' %}
 

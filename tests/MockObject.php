@@ -20,6 +20,7 @@ class MockObject extends AbstractBaseMapper
     public $baseName;
     public $extension;
     public $tempName;
+    public $sphynxArray;
     
     public function init()
     {

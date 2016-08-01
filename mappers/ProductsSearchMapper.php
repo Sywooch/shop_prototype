@@ -2,18 +2,18 @@
 
 namespace app\mappers;
 
-use app\mappers\ProductsListMapper;
+use app\mappers\AbstractGetMapper;
 use yii\base\ErrorException;
 
 /**
  * Получает строки с данными о товарах из БД, конструирует из каждой строки объект данных
  */
-class ProductsSearchMapper extends ProductsListMapper
+class ProductsSearchMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\ProductsListSearchQueryCreator';
+    public $queryClass = 'app\queries\ProductsSphynxQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */
@@ -37,7 +37,21 @@ class ProductsSearchMapper extends ProductsListMapper
     {
         try {
             parent::init();
+            
             $this->_db = \Yii::createObject($this->dbConfig);
+            
+            if (empty($this->params)) {
+                if (empty(\Yii::$app->params['searchKey'])) {
+                    throw new ErrorException('Не поределен searchKey!');
+                }
+                if (empty(\Yii::$app->params['sphynxKey'])) {
+                    throw new ErrorException('Не поределен sphynxKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['searchKey']))) {
+                    throw new ErrorException('Ошибка при получении данных из $_GET!');
+                }
+                $this->params[':' . \Yii::$app->params['sphynxKey']] = \Yii::$app->request->get(\Yii::$app->params['searchKey']);
+            }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

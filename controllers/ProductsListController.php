@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
+use yii\helpers\{Url, ArrayHelper};
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, ModelsInstancesHelper};
 
@@ -25,8 +25,7 @@ class ProductsListController extends AbstractBaseController
     
     private $_configSphynx = [
         'tableName'=>'shop',
-        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images','categories', 'subcategory'],
-        'orderByField'=>'date',
+        'fields'=>['id'],
     ];
     
     /**
@@ -63,7 +62,14 @@ class ProductsListController extends AbstractBaseController
             }
             
             $renderArray = array();
-            $renderArray['objectsProductsList'] = MappersHelper::getProductsSearch($this->_configSphynx);
+            
+            if (!empty($sphynxSearchArray = MappersHelper::getProductsSearch($this->_configSphynx))) {
+                $sphynxResult = ArrayHelper::getColumn($sphynxSearchArray, 'id');
+                $this->_config['sphynxArray'] = $sphynxResult;
+                $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
+                $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
+            }
+            
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();

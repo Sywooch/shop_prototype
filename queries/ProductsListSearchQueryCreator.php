@@ -11,30 +11,38 @@ use yii\base\ErrorException;
 class ProductsListSearchQueryCreator extends ProductsListQueryCreator
 {
     /**
+     * @var array массив для выборки данных
+     */
+    public $config = [
+        'search'=>[ # Данные для выборки из таблицы categories
+            'tableName'=>'products', # Имя таблицы участвующей в объединении
+            'tableFieldWhere'=>'id', # Имя поля таблицы, по которому делается выборка с помощью WHERE
+        ],
+    ];
+    
+    public function init()
+    {
+        parent::init();
+        
+        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
+    }
+    
+    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
     public function getSelectQuery()
     {
         try {
-            $this->_mapperObject->query = 'SELECT ';
-            
-            $this->_mapperObject->query .= $this->addFieldsSphynx();
-            
-            $this->_mapperObject->query .= ' FROM ' . $this->_mapperObject->tableName;
-            
+            if (!$this->addSelectHead()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
             if (!$this->addFilters()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
-            
-            $this->_mapperObject->query .= ' ORDER BY ' . $this->_mapperObject->orderByField . ' ' . $this->_mapperObject->orderByType;
-            
-            $limit = $this->addLimit();
-            if (!$limit) {
+            if (!$this->addSelectEnd()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
-            $this->_mapperObject->query .= $limit;
-            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -51,39 +59,31 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
             if (empty(\Yii::$app->params['searchKey'])) {
                 throw new ErrorException('Не поределен searchKey!');
             }
-            if (empty(\Yii::$app->params['sphynxKey'])) {
-                throw new ErrorException('Не поределен sphynxKey!');
-            }
             
-            $getArrayKeys = array_keys(array_filter(\Yii::$app->filters->attributes));
-            foreach (\Yii::$app->params['filterKeys'] as $filter) {
-                if (in_array($filter, $getArrayKeys)) {
-                    $filterData = \Yii::$app->filters->$filter;
-                    foreach ($filterData as $key=>$val) {
-                        $filterKey = $key . $filter . '_' . \Yii::$app->params['idKey'];
-                        $this->_mapperObject->params[':' . $filterKey] = $val;
-                        $filtersKeys[$filter][] = $filterKey;
-                    }
-                    $where = $this->getWhereInSphynx(
-                        $filter . '_' . \Yii::$app->params['idKey'],
-                        implode(',:', $filtersKeys[$filter])
-                    );
-                    if (!is_string($where)) {
-                        throw new ErrorException('Ошибка при построении запроса!');
-                    }
-                    $this->_mapperObject->query .= $where;
+            if (\Yii::$app->request->get(\Yii::$app->params['searchKey']) && !empty($this->_mapperObject->sphynxArray)) {
+                if (!parent::addFilters()) {
+                    throw new ErrorException('Ошибка при построении запроса!');
                 }
-            }
-            
-            if (\Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
-                if (!is_string($where = $this->getWhereMatchSphynx())) {
+                
+                $searchID = [];
+                foreach ($this->_mapperObject->sphynxArray as $key=>$val) {
+                    $data = $key . '_' . $val;
+                    $this->_mapperObject->params[':' . $data] = $val;
+                    $searchID[] = $data;
+                }
+                $where = $this->getWhereIn(
+                    $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableName'],
+                    $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableFieldWhere'],
+                    implode(',:', $searchID)
+                );
+                if (!is_string($where)) {
                     throw new ErrorException('Ошибка при построении запроса!');
                 }
                 $this->_mapperObject->query .= $where;
                 
-                $this->_mapperObject->params[':' . \Yii::$app->params['sphynxKey']] = \Yii::$app->request->get(\Yii::$app->params['searchKey']);
+                return true;
             }
-            return true;
+            return false;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -15,8 +15,7 @@ class ProductsSearchMapperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_config = [
         'tableName'=>'shop',
-        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images','categories', 'subcategory'],
-        'orderByField'=>'date',
+        'fields'=>['id'],
     ];
     private static $_search = 'усиленный мыс';
     
@@ -43,35 +42,5 @@ class ProductsSearchMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($productsList));
         $this->assertTrue(is_object($productsList[0]));
         $this->assertTrue($productsList[0] instanceof ProductsModel);
-    }
-    
-    /**
-     * Тестирую утверждение, что при передаче в $_GET типа сортировки, значение свойства ProductsSearchMapper::orderByType изменяется
-     */
-    public function testOrderByType()
-    {
-        $productsMapper = new ProductsSearchMapper(self::$_config);
-        
-        \Yii::$app->filters->sortingType = 'ASC';
-        
-        $productsMapper = new ProductsSearchMapper(self::$_config);
-        
-        $this->assertEquals('ASC', $productsMapper->orderByType);
-    }
-    
-    /**
-     * Тестирую утверждение, что при передаче в $_GET поля сортировки, значение свойства ProductsSearchMapper::orderByField изменяется
-     */
-    public function testOrderByField()
-    {
-        $productsMapper = new ProductsSearchMapper(self::$_config);
-        
-        $this->assertEquals('date', $productsMapper->orderByField);
-        
-        \Yii::$app->filters->sortingField = 'price';
-        
-        $productsMapper = new ProductsSearchMapper(self::$_config);
-        
-        $this->assertEquals('price', $productsMapper->orderByField);
     }
 }

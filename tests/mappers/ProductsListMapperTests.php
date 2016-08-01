@@ -24,7 +24,7 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
     private static $_subcategorySeocode = 'boots';
     private static $_config = [
         'tableName'=>'products',
-        'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images'],
         'otherTablesFields'=>[
             ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
             ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
@@ -45,8 +45,8 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[short_description]]=:short_description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':short_description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -69,19 +69,20 @@ class ProductsListMapperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(is_object($productsList[0]));
         $this->assertTrue($productsList[0] instanceof ProductsModel);
         
-        //$this->assertTrue(property_exists($productsList[0], 'id'));
         $this->assertTrue(property_exists($productsList[0], 'code'));
         $this->assertTrue(property_exists($productsList[0], 'name'));
         $this->assertTrue(property_exists($productsList[0], 'description'));
+        $this->assertTrue(property_exists($productsList[0], 'short_description'));
         $this->assertTrue(property_exists($productsList[0], 'price'));
         $this->assertTrue(property_exists($productsList[0], 'images'));
         
-        $this->assertTrue(isset($productsList[0]->id));
-        $this->assertTrue(isset($productsList[0]->code));
-        $this->assertTrue(isset($productsList[0]->name));
-        $this->assertTrue(isset($productsList[0]->description));
-        $this->assertTrue(isset($productsList[0]->price));
-        $this->assertTrue(isset($productsList[0]->images));
+        $this->assertFalse(empty($productsList[0]->id));
+        $this->assertFalse(empty($productsList[0]->code));
+        $this->assertFalse(empty($productsList[0]->name));
+        $this->assertFalse(empty($productsList[0]->description));
+        $this->assertFalse(empty($productsList[0]->short_description));
+        $this->assertFalse(empty($productsList[0]->price));
+        $this->assertFalse(empty($productsList[0]->images));
     }
     
     /**

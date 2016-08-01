@@ -72,8 +72,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     
     private static $_searchConfig = [
         'tableName'=>'shop',
-        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images','categories', 'subcategory'],
-        'orderByField'=>'date',
+        'fields'=>['id'],
     ];
     private static $_search = 'усиленный мыс';
     

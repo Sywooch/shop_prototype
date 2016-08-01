@@ -18,6 +18,10 @@ class ProductsListMapper extends AbstractGetMapper
      * @var string имя класса, который создает объекты из данных БД
      */
     public $objectsClass = 'app\factories\ProductsObjectsFactory';
+    /**
+     * @var array массив значений, полученный из sphynx
+     */
+    public $sphynxArray = array();
     
     public function init()
     {
