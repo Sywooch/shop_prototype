@@ -5,7 +5,6 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
-use app\exceptions\EmptyListException;
 use app\helpers\{MappersHelper, ModelsInstancesHelper};
 
 /**
@@ -28,8 +27,6 @@ class ProductsListController extends AbstractBaseController
         'tableName'=>'shop',
         'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images','categories', 'subcategory'],
         'orderByField'=>'date',
-        'getDataSorting'=>false,
-        'queryClass'=>'app\queries\ProductsListSearchQueryCreator',
     ];
     
     /**
@@ -39,7 +36,6 @@ class ProductsListController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            #!!! Изменить подключение к БД!
             $renderArray = array();
             $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
@@ -62,17 +58,12 @@ class ProductsListController extends AbstractBaseController
     public function actionSearch()
     {
         try {
-            if (!\Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
+            if (empty(\Yii::$app->request->get(\Yii::$app->params['searchKey']))) {
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
-            //$this->_configSphynx['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
             $renderArray = array();
-            try {
-                $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_configSphynx);
-            } catch (EmptyListException $e) {
-                $this->writeErrorInLogs($e, __METHOD__);
-            }
+            $renderArray['objectsProductsList'] = MappersHelper::getProductsSearch($this->_configSphynx);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();
@@ -80,13 +71,6 @@ class ProductsListController extends AbstractBaseController
             $renderArray['currencyList'] = MappersHelper::getСurrencyList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('products-list.twig', $renderArray);
-            
-            /*$db = new \PDO('mysql:host=127.0.0.1;port=9306;dbname=shop', 'shopadmin', 'shopadmin');
-            $sth = $db->prepare('SELECT id,name,description FROM shop WHERE id_subcategory=2 AND MATCH(:query) ORDER BY id DESC');
-            $sth->bindValue(':query', \Yii::$app->request->get(\Yii::$app->params['searchKey']), \PDO::PARAM_STR);
-            $sth->execute();
-            print_r($sth->fetchAll(\PDO::FETCH_ASSOC));*/
-            
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

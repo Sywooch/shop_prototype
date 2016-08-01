@@ -345,7 +345,7 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
      * Формирует часть запроса к БД, ограничивающую выборку
      * @return string
      */
-    private function addLimit()
+    protected function addLimit()
     {
         try {
             if (empty(\Yii::$app->params['pagePointer'])) {

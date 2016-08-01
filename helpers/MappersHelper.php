@@ -3,7 +3,6 @@
 namespace app\helpers;
 
 use yii\base\ErrorException;
-use app\exceptions\EmptyListException;
 use app\traits\ExceptionsTrait;
 use app\mappers\{ColorsMapper, 
     ColorsByIdMapper, 
@@ -31,6 +30,7 @@ use app\mappers\{ColorsMapper,
     CommentsInsertMapper, 
     ProductDetailMapper, 
     ProductsListMapper, 
+    ProductsSearchMapper,
     UsersByLoginMapper, 
     UsersByIdMapper,
     DeliveriesMapper, 
@@ -1113,8 +1113,36 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $productsArray);
             return $productsArray;
-        } catch (EmptyListException $e) {
-            throw $e;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив ProductsModel при поиске
+     * @param array $config массив настроек для маппера
+     * @return array of objects ProductsModel
+     */
+    public static function getProductsSearch($config)
+    {
+        try {
+            $productsSearchMapper = new ProductsSearchMapper($config);
+            $hash = self::createHash([
+                ProductsSearchMapper::className(), 
+                $productsSearchMapper->tableName, 
+                implode('', $productsSearchMapper->fields), 
+                $productsSearchMapper->orderByField, 
+                $productsSearchMapper->orderByType, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $productsArray = $productsSearchMapper->getGroup();
+            if (!is_array($productsArray) || empty($productsArray) || !$productsArray[0] instanceof ProductsModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $productsArray);
+            return $productsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

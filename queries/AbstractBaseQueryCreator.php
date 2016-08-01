@@ -61,6 +61,22 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     }
     
     /**
+     * Формирует часть запроса к sphynx, перечисляющую столбцы данных, которые необходимо включить в выборку
+     * @return string
+     */
+    protected function addFieldsSphynx()
+    {
+        try {
+            if (empty($this->_mapperObject->fields) || empty($this->_mapperObject->tableName)) {
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
+            }
+            return implode(',', $this->_mapperObject->fields);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Формирует часть запроса к БД, добавляя в выборку столбцы данных из JOIN таблиц
      * @return string
      */
@@ -196,6 +212,22 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
                 throw new ErrorException('Неверный формат данных!');
             }
             return $string . ' [[' . $tableName . '.' . $tableField . ']] IN (:' . $key . ')';
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует часть запроса к sphinx, добавляющую условия выборки WHERE IN
+     * @return string
+    */
+    protected function getWhereInSphynx($tableField, $key)
+    {
+        try {
+            if (!is_string($string = $this->getWhereStart())) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            return $string . ' ' . $tableField . ' IN (:' . $key . ')';
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

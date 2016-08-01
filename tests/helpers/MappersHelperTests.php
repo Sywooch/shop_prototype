@@ -70,6 +70,13 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         'getDataSorting'=>false,
     ];
     
+    private static $_searchConfig = [
+        'tableName'=>'shop',
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images','categories', 'subcategory'],
+        'orderByField'=>'date',
+    ];
+    private static $_search = 'усиленный мыс';
+    
     public static function setUpBeforeClass()
     {
         self::$_dbClass = new DbManager();
@@ -717,6 +724,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
         
         $result = MappersHelper::getProductsList(self::$_config);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0]  instanceof ProductsModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getProductsSearch
+     * !!!ВАЖНО Поскольку индекс sphynx получает данные из рабочей БД, для успешного прохождения теста убедитесь, 
+     * что БД содержит запись, удовлетворяющую условиям поиска из self::$_search
+     */
+    public function testGetProductsSearch()
+    {
+        $_GET = [\Yii::$app->params['searchKey']=>self::$_search];
+        
+        $result = MappersHelper::getProductsSearch(self::$_searchConfig);
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
