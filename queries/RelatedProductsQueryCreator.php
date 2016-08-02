@@ -104,6 +104,17 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $this->_mapperObject->query .= $where;
+            
+            if (!$this->addOrder()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            
+            $limit = $this->addLimit();
+            if (!$limit) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $limit;
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -168,6 +179,27 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $this->_mapperObject->query .= $join;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует часть запроса к БД, задающую порядок сортировки
+     * @return boolean
+     */
+    protected function addOrder()
+    {
+        try {
+            if (empty($this->_mapperObject->orderByField)) {
+                throw new ErrorException('Не задано имя столбца для сортировки!');
+            }
+            if (empty($this->_mapperObject->orderByType)) {
+                throw new ErrorException('Не задан тип сортировки!');
+            }
+            
+            $this->_mapperObject->query .= ' ORDER BY ' . $this->_mapperObject->orderByField . ' ' . $this->_mapperObject->orderByType;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
