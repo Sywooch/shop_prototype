@@ -12,14 +12,14 @@
 {% endif %}
 
     <p>
+        {% if emailsModel.email %}
+            Email: {{ emailsModel.email }}<br>
+        {% endif %}
         {% if usersModel.name %}
             First Name: {{ usersModel.name }}<br>
         {% endif %}
         {% if usersModel.surname %}
             Surname: {{ usersModel.surname }}<br>
-        {% endif %}
-        {% if emailsModel.email %}
-            Email: {{ emailsModel.email }}<br>
         {% endif %}
         {% if phonesModel.phone  %}
             Phone: {{ phonesModel.phone }}

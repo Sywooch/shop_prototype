@@ -5,7 +5,6 @@
 
 {% set form=active_form_begin({'id':'user-update-form', 'action':url.to({0:'users/update-user'}), 'method':'POST'}) %}
     {{ form.field(usersModel, 'id').hiddenInput().label(false) | raw }}
-    {{ form.field(usersModel, 'login').hiddenInput().label(false) | raw }}
     {{ form.field(usersModel, 'name') | raw }}
     {{ form.field(usersModel, 'surname') | raw }}
     {{ form.field(emailsModel, 'email') | raw }}

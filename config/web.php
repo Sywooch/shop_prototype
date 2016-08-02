@@ -92,7 +92,6 @@ $config = [
         ],
         'user'=>[
             'class'=>'app\models\UsersModel',
-            'login'=>'Guest',
         ],
         'session'=>[
             'class'=>'yii\web\DbSession',

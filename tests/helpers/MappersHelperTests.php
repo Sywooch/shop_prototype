@@ -546,11 +546,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll()));
         
         $usersModel = new UsersModel();
-        $usersModel->login = self::$_login;
+        $usersModel->id_emails = self::$_id;
         $usersModel->rawPassword = self::$_password;
         $usersModel->name = self::$_name;
         $usersModel->surname = self::$_surname;
-        $usersModel->id_emails = self::$_id;
         $usersModel->id_phones = self::$_id;
         $usersModel->id_address = self::$_id;
         
@@ -560,11 +559,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
-        $this->assertEquals(self::$_login, $result[0]['login']);
+        $this->assertEquals(self::$_id, $result[0]['id_emails']);
         $this->assertTrue(password_verify(self::$_password, $result[0]['password']));
         $this->assertEquals(self::$_name, $result[0]['name']);
         $this->assertEquals(self::$_surname, $result[0]['surname']);
-        $this->assertEquals(self::$_id, $result[0]['id_emails']);
         $this->assertEquals(self::$_id, $result[0]['id_phones']);
         $this->assertEquals(self::$_id, $result[0]['id_address']);
     }
@@ -924,20 +922,17 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getUsersByLogin
+     * Тестирует метод MappersHelper::getUsersByIdEmails
      */
-    public function testGetUsersByLogin()
+    public function testGetUsersByIdEmails()
     {
         $usersModel = new UsersModel();
-        $usersModel->login = self::$_login;
+        $usersModel->id_emails = self::$_id;
         
-        $result = MappersHelper::getUsersByLogin($usersModel);
+        $result = MappersHelper::getUsersByIdEmails($usersModel);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof UsersModel);
-        $this->assertEquals(self::$_login, $result->login);
-        $this->assertEquals(self::$_name, $result->name);
-        $this->assertEquals(self::$_surname, $result->surname);
     }
     
     /**

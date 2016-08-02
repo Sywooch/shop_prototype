@@ -31,7 +31,7 @@ use app\mappers\{ColorsMapper,
     ProductDetailMapper, 
     ProductsListMapper, 
     ProductsSearchMapper,
-    UsersByLoginMapper, 
+    UsersByIdEmailsMapper, 
     UsersByIdMapper,
     DeliveriesMapper, 
     RulesMapper, 
@@ -878,7 +878,7 @@ class MappersHelper
         try {
             $usersInsertMapper = new UsersInsertMapper([
                 'tableName'=>'users',
-                'fields'=>['login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                'fields'=>['id_emails', 'password', 'name', 'surname', 'id_phones', 'id_address'],
                 'objectsArray'=>[$usersModel],
             ]);
             $result = $usersInsertMapper->setGroup();
@@ -1238,23 +1238,23 @@ class MappersHelper
     }
     
     /**
-     * Получает объект UsersModel по login
+     * Получает объект UsersModel по id_emails
      * @param object $usersModel экземпляр UsersModel
      * @return objects UsersModel
      */
-    public static function getUsersByLogin(UsersModel $usersModel)
+    public static function getUsersByIdEmails(UsersModel $usersModel)
     {
         try {
-            $usersByLoginMapper = new UsersByLoginMapper([
+            $usersByLoginMapper = new UsersByIdEmailsMapper([
                 'tableName'=>'users',
-                'fields'=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                'fields'=>['id', 'id_emails', 'password', 'name', 'surname', 'id_phones', 'id_address'],
                 'model'=>$usersModel
             ]);
             $hash = self::createHash([
-                UsersByLoginMapper::className(), 
+                UsersByIdEmailsMapper::className(), 
                 $usersByLoginMapper->tableName, 
                 implode('', $usersByLoginMapper->fields), 
-                $usersByLoginMapper->model->login, 
+                $usersByLoginMapper->model->id_emails, 
             ]);
             if (self::compareHashes($hash)) {
                 return self::$_objectRegistry[$hash];

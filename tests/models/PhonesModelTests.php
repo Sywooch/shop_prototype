@@ -40,6 +40,7 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
         
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, 'phone'));
@@ -60,6 +61,11 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = ['id'=>self::$_id, 'phone'=>self::$_phone];
         
         $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->phone));
+        
+        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_UPDATE_FORM]);
+        $model->attributes = ['phone'=>self::$_phone];
+        
         $this->assertFalse(empty($model->phone));
     }
     

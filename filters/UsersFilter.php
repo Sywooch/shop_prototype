@@ -65,7 +65,7 @@ class UsersFilter extends ActionFilter
             
             $session = \Yii::$app->session;
             $session->open();
-            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) {
+            if (!empty(\Yii::$app->user->id_emails)) {
                 $session->set(\Yii::$app->params['usersKeyInSession'], \Yii::$app->user->getDataArray());
             }
             if (!empty(\Yii::$app->user->currency)) {

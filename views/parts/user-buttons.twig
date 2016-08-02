@@ -1,9 +1,9 @@
 
 {{ use('yii/widgets/ActiveForm') }}
 
-<p>Hello, {{ app.user.login }}!</p>
+<p>Hello, {{ app.user.emails.email | default(app.params['nonAuthenticatedUserLogin']) }}!</p>
 
-{% if app.user.login == app.params['nonAuthenticatedUserLogin'] %}
+{% if not app.user.emails %}
     <p><a href="{{ url.to({0:'/users/add-user'}) }}">Присоедениться</a> <a href="{{ url.to({0:'/users/login-user'}) }}">Войти</a></p>
 {% else %}
     {% set form = active_form_begin({'id':'logout-form', 'action':url.to({0:'/users/logout-user'}), 'method':'POST'}) %}

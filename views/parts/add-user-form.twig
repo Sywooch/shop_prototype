@@ -2,8 +2,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:'users/add-user'}), method: 'POST'}) %}
-    {{ form.field(usersModel, 'login') | raw }}
-    {{ form.field(usersModel, 'rawPassword').passwordInput() | raw }}
     {{ form.field(emailsModel, 'email') | raw }}
+    {{ form.field(usersModel, 'rawPassword').passwordInput() | raw }}
     <input type="submit" value="Join" />
 {{ active_form_end() }}

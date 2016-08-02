@@ -19,6 +19,10 @@ class PhonesModel extends AbstractBaseModel
      * Сценарий загрузки данных из БД
      */
     const GET_FROM_DB = 'getFromDb';
+    /**
+     * Сценарий загрузки данных из формы обновления данных
+     */
+    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
     
     public $phone = '';
     
@@ -29,6 +33,7 @@ class PhonesModel extends AbstractBaseModel
         return [
             self::GET_FROM_FORM=>['id', 'phone'],
             self::GET_FROM_DB=>['id', 'phone'],
+            self::GET_FROM_UPDATE_FORM=>['phone'], #!!!
         ];
     }
     
@@ -36,7 +41,7 @@ class PhonesModel extends AbstractBaseModel
     {
         return [
             [['phone'], 'required', 'on'=>self::GET_FROM_FORM],
-            [['phone'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
+            [['phone'], 'app\validators\StripTagsValidator'],
         ];
     }
     

@@ -3,16 +3,16 @@
 namespace app\models;
 
 use yii\base\ErrorException;
-use app\models\AbstractBaseModel;
-use app\models\EmailsModel;
-use app\models\AddressModel;
-use app\models\PhonesModel;
-use app\models\DeliveriesModel;
-use app\models\PaymentsModel;
-use app\models\CurrencyModel;
-use app\helpers\TransliterationHelper;
-use app\helpers\PasswordHelper;
-use app\helpers\MappersHelper;
+use app\models\{AbstractBaseModel,
+    EmailsModel,
+    AddressModel,
+    PhonesModel,
+    DeliveriesModel,
+    PaymentsModel,
+    CurrencyModel};
+use app\helpers\{TransliterationHelper,
+    PasswordHelper,
+    MappersHelper};
 
 /**
  * Представляет данные таблицы users
@@ -69,7 +69,6 @@ class UsersModel extends AbstractBaseModel
      */
     private $_currency = null;
     
-    private $_login = null;
     private $_id = null;
     private $_password = null;
     private $_allRules = null;
@@ -82,24 +81,23 @@ class UsersModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_REGISTRATION_FORM=>['login', 'rawPassword'],
-            self::GET_FROM_DB=>['id', 'login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+            self::GET_FROM_REGISTRATION_FORM=>['rawPassword'], 
+            self::GET_FROM_DB=>['id', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'], 
             self::GET_FROM_CART_FORM=>['name', 'surname'],
-            self::GET_FROM_LOGIN_FORM=>['login', 'rawPassword'],
+            self::GET_FROM_LOGIN_FORM=>['rawPassword'], 
             self::GET_FROM_LOGOUT_FORM=>['id'],
-            self::GET_FROM_UPDATE_FORM=>['id', 'login', 'name', 'surname', 'currentRawPassword', 'rawPassword'],
+            self::GET_FROM_UPDATE_FORM=>['id', 'name', 'surname', 'currentRawPassword', 'rawPassword'], 
         ];
     }
     
     public function rules()
     {
         return [
-            [['login', 'rawPassword'], 'required', 'on'=>self::GET_FROM_REGISTRATION_FORM],
-            [['login', 'rawPassword'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_REGISTRATION_FORM],
+            [['rawPassword'], 'required', 'on'=>self::GET_FROM_REGISTRATION_FORM], 
+            [['rawPassword'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_REGISTRATION_FORM], 
             [['name', 'surname'], 'required', 'on'=>self::GET_FROM_CART_FORM],
             [['name', 'surname'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_CART_FORM],
-            [['login', 'rawPassword'], 'required', 'on'=>self::GET_FROM_LOGIN_FORM],
-            ['login', 'app\validators\LoginExistsValidator'],
+            [['rawPassword'], 'required', 'on'=>self::GET_FROM_LOGIN_FORM], 
             ['rawPassword', 'app\validators\PasswordExistsValidator', 'on'=>self::GET_FROM_LOGIN_FORM, 'when'=>function($model) {
                 return empty($model->errors) ? true : false;
             }],
@@ -128,7 +126,7 @@ class UsersModel extends AbstractBaseModel
     public function getPassword()
     {
         try {
-            if (is_null($this->_password) && \Yii::$app->user->login == \Yii::$app->params['nonAuthenticatedUserLogin']) {
+            if (is_null($this->_password) /*&& \Yii::$app->user->login == \Yii::$app->params['nonAuthenticatedUserLogin']*/) { 
                 if (empty($this->rawPassword)) {
                     $this->rawPassword = PasswordHelper::getPassword();
                     if (!is_string($this->rawPassword)) {
@@ -187,8 +185,8 @@ class UsersModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_id)) {
-                if (!empty($this->login)) {
-                    $objectUser = MappersHelper::getUsersByLogin($this);
+                if (!empty($this->id_emails)) {
+                    $objectUser = MappersHelper::getUsersByIdEmails($this);
                     if (!is_object($objectUser) || !$objectUser instanceof $this) {
                         return null;
                     }
@@ -196,43 +194,6 @@ class UsersModel extends AbstractBaseModel
                 }
             }
             return $this->_id;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает значение свойству $this->_login
-     * @param string $value значение login
-     * @return boolean
-     */
-    public function setLogin($value)
-    {
-        try {
-            $this->_login = $value;
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает значение свойства $this->_login
-     * @return string
-     */
-    public function getLogin()
-    {
-        try {
-            if (is_null($this->_login) && \Yii::$app->user->login == \Yii::$app->params['nonAuthenticatedUserLogin']) {
-                if (!empty($this->name) && $this->scenario == self::GET_FROM_CART_FORM) {
-                    $login = TransliterationHelper::getTransliteration($this->name);
-                    if (!is_string($login)) {
-                        return null;
-                    }
-                    $this->_login = $login . substr(md5($login . time()), 0, 5);
-                }
-            }
-            return $this->_login;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -426,7 +387,7 @@ class UsersModel extends AbstractBaseModel
     public function getDataArray()
     {
         try {
-            return ['id'=>$this->id, 'login'=>$this->login, 'name'=>$this->name, 'surname'=>$this->surname, 'id_emails'=>$this->id_emails, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address];
+            return ['id'=>$this->id, 'id_emails'=>$this->id_emails, 'name'=>$this->name, 'surname'=>$this->surname, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address]; 
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -439,7 +400,7 @@ class UsersModel extends AbstractBaseModel
     public function getDataForСomparison()
     {
         try {
-            return ['name'=>$this->name, 'surname'=>$this->surname, 'id_emails'=>$this->id_emails, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address];
+            return ['id_emails'=>$this->id_emails, 'name'=>$this->name, 'surname'=>$this->surname, 'id_phones'=>$this->id_phones, 'id_address'=>$this->id_address];
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

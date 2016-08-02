@@ -9,12 +9,12 @@ use app\models\UsersModel;
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-class UsersByLoginMapper extends AbstractGetMapper
+class UsersByIdEmailsMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\UsersByLoginQueryCreator';
+    public $queryClass = 'app\queries\UsersByIdEmailsQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */
@@ -30,7 +30,7 @@ class UsersByLoginMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
-                $this->params = [':login'=>$this->model->login];
+                $this->params = [':id_emails'=>$this->model->id_emails];
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -15,11 +15,10 @@ class UserAuthenticationHelper
     use ExceptionsTrait;
     
     /**
-     * @var array знасения для ичистки свойств \Yii::$app->user
+     * @var array знасения для очистки свойств \Yii::$app->user
      */
     public static $_cleanArray = [
         'id'=>null,
-        'login'=>null,
         'password'=>null,
         'rawPassword'=>'',
         'name'=>'',
@@ -30,34 +29,20 @@ class UserAuthenticationHelper
     ];
     
     /**
-     * Инициализирует свойства класса
-     * @return boolean
-     */
-    public static function init()
-    {
-        try {
-            self::$_cleanArray['login'] = \Yii::$app->params['nonAuthenticatedUserLogin'];
-            return true;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
-        }
-    }
-    
-    /**
      * Заполняет объект \Yii::$app->user данными из БД
      * @param objects $userFromForm объект UserModel, плученный из формы
      * @return boolean
      */
-    public static function fillFromForm(UsersModel $userFromForm)
+    public static function fillFromForm(UsersModel $usersModel)
     {
         try {
-            if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
-                \Yii::$app->params['userFromFormForAuthentication'] = MappersHelper::getUsersByLogin($userFromForm);
+            if (empty(\Yii::$app->params['usersModelForAuthentication'])) {
+                \Yii::$app->params['usersModelForAuthentication'] = MappersHelper::getUsersByIdEmails($usersModel);
             }
             
-            if (is_object(\Yii::$app->params['userFromFormForAuthentication']) && \Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel) {
-                if ($userFromForm->login == \Yii::$app->params['userFromFormForAuthentication']->login && password_verify($userFromForm->rawPassword, \Yii::$app->params['userFromFormForAuthentication']->password)) {
-                    \Yii::configure(\Yii::$app->user, \Yii::$app->params['userFromFormForAuthentication']->getDataArray());
+            if (is_object(\Yii::$app->params['usersModelForAuthentication']) && \Yii::$app->params['usersModelForAuthentication'] instanceof UsersModel) {
+                if ($usersModel->id_emails == \Yii::$app->params['usersModelForAuthentication']->id_emails && password_verify($usersModel->rawPassword, \Yii::$app->params['usersModelForAuthentication']->password)) {
+                    \Yii::configure(\Yii::$app->user, \Yii::$app->params['usersModelForAuthentication']->getDataArray());
                 }
                 return true;
             }
@@ -74,9 +59,6 @@ class UserAuthenticationHelper
     public static function clean()
     {
         try {
-            if (!self::init()) {
-                throw new ErrorException('Ошибка при вызове UserAuthenticationHelper::init');
-            }
             \Yii::configure(\Yii::$app->user, self::$_cleanArray);
             return true;
         } catch (\Exception $e) {

@@ -15,7 +15,11 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     private static $_reflectionClass;
     private static $_id = 1;
     private static $_email = 'some@some.com';
+    private static $_email2 = 'some2@some2.com';
+    private static $_notAddedEmail = 'empty@some.com';
     private static $_notEmail = 'some';
+    private static $_name = 'Some Name';
+    private static $_surname = 'Some Surname';
     
     public static function setUpBeforeClass()
     {
@@ -25,6 +29,14 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
         $command->bindValues([':id'=>self::$_id, ':email'=>self::$_email]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
+        $command->bindValues([':id'=>self::$_id + 1, ':email'=>self::$_email2]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -41,6 +53,8 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_LOGIN_FORM'));
         
         $this->assertTrue(property_exists($model, 'email'));
         $this->assertTrue(property_exists($model, '_id'));
@@ -61,6 +75,16 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = ['id'=>self::$_id, 'email'=>self::$_email];
         
         $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->email));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['email'=>self::$_email];
+        
+        $this->assertFalse(empty($model->email));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['email'=>self::$_email];
+        
         $this->assertFalse(empty($model->email));
     }
     
@@ -88,6 +112,55 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['email'=>self::$_notEmail];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['email'=>self::$_notEmail];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['email'=>self::$_email];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model->attributes = ['email'=>self::$_notAddedEmail];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['email'=>self::$_notAddedEmail];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        \Yii::$app->params['userFromFormForAuthentication'] = null;
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['email'=>self::$_email2];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model->attributes = ['email'=>self::$_email];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
     
     /**

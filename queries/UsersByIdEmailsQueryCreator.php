@@ -8,7 +8,7 @@ use yii\base\ErrorException;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class UsersByLoginQueryCreator extends AbstractSeletcQueryCreator
+class UsersByIdEmailsQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
      * @var array массив для выборки данных
@@ -16,7 +16,7 @@ class UsersByLoginQueryCreator extends AbstractSeletcQueryCreator
     public $categoriesArrayFilters = [
         'users'=>[ # Данные для выборки из таблицы products
             'tableName'=>'users', # Имя таблицы участвующей в объединении
-            'tableFieldWhere'=>'login', # Имя поля таблицы, по которому делается выборка с помощью WHERE
+            'tableFieldWhere'=>'id_emails', # Имя поля таблицы, по которому делается выборка с помощью WHERE
         ],
     ];
     

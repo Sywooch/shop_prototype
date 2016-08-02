@@ -14,11 +14,19 @@ class EmailsModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из БД
     */
-    const GET_FROM_DB = 'getFromBd';
+    const GET_FROM_DB = 'getFromDb';
     /**
      * Сценарий загрузки данных из формы
     */
     const GET_FROM_FORM = 'getFromForm';
+    /**
+     * Сценарий сохранения данных из формы регистрации
+    */
+    const GET_FROM_REGISTRATION_FORM = 'getFromRegistrationForm';
+    /**
+     * Сценарий сохранения данных из формы авторизации
+    */
+    const GET_FROM_LOGIN_FORM = 'getFromLoginForm';
     
     public $email = '';
     private $_id = null;
@@ -28,6 +36,8 @@ class EmailsModel extends AbstractBaseModel
         return [
             self::GET_FROM_DB=>['id', 'email'],
             self::GET_FROM_FORM=>['id', 'email'],
+            self::GET_FROM_REGISTRATION_FORM=>['email'],
+            self::GET_FROM_LOGIN_FORM=>['email'],
         ];
     }
     
@@ -35,7 +45,10 @@ class EmailsModel extends AbstractBaseModel
     {
         return [
             [['email'], 'required', 'on'=>self::GET_FROM_FORM],
+            [['email'], 'required', 'on'=>self::GET_FROM_REGISTRATION_FORM],
+            [['email'], 'required', 'on'=>self::GET_FROM_LOGIN_FORM],
             [['email'], 'email'],
+            ['email', 'app\validators\EmailExistsValidator'],
         ];
     }
     
