@@ -2,7 +2,6 @@
 <p><strong>Menu</strong></p>
 
 <ul>
-    <li><a href="{{ url.to(['products-list/index']) }}">Главная</a></li>
     {% for category in categoriesList %}
         <li><a href="{{ url.to({0:'products-list/index', 'categories': category.seocode}) }}">{{ category.name }}</a>
             {% if category.subcategory %}

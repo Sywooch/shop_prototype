@@ -1483,7 +1483,7 @@ class MappersHelper
             $relatedProductsMapper = new RelatedProductsMapper([
                 'tableName'=>'products',
                 'fields'=>['id', 'date', 'name', 'price', 'images'],
-                'orderByField'=>'2',
+                'orderByField'=>'date',
                 'getDataSorting'=>false,
                 'otherTablesFields'=>[
                     ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],

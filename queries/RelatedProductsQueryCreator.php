@@ -74,37 +74,6 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
             }
             $this->_mapperObject->query .= $where;
             
-            $this->_mapperObject->query .= ' UNION SELECT ';
-            
-            if (!$this->addFieldsAndName()) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            
-            $join = $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['unionSecondTableFieldOn']
-            );
-            if (!is_string($join)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $join;
-            
-            if (!$this->addCategoryAndSubcategory()) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            
-            $where = $this->getWhereWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['unionSecondTableFieldWhere'],
-                \Yii::$app->params['idKey']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
-            
             if (!$this->addOrder()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
@@ -179,27 +148,6 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $this->_mapperObject->query .= $join;
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Формирует часть запроса к БД, задающую порядок сортировки
-     * @return boolean
-     */
-    protected function addOrder()
-    {
-        try {
-            if (empty($this->_mapperObject->orderByField)) {
-                throw new ErrorException('Не задано имя столбца для сортировки!');
-            }
-            if (empty($this->_mapperObject->orderByType)) {
-                throw new ErrorException('Не задан тип сортировки!');
-            }
-            
-            $this->_mapperObject->query .= ' ORDER BY ' . $this->_mapperObject->orderByField . ' ' . $this->_mapperObject->orderByType;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
