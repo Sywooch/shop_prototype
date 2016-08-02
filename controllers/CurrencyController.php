@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use yii\web\Controller;
+use app\controllers\AbstractBaseController;
 use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\helpers\MappersHelper;
@@ -12,7 +12,7 @@ use app\models\CurrencyModel;
 /**
  * Обрабатывает запросы, связанные с валютами сайта
  */
-class CurrencyController extends Controller
+class CurrencyController extends AbstractBaseController
 {
     use ExceptionsTrait;
     

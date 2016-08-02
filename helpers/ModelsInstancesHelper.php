@@ -4,13 +4,13 @@ namespace app\helpers;
 
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
-use app\models\ProductsModel;
-use app\models\UsersModel;
-use app\models\CurrencyModel;
-use app\models\CommentsModel;
-use app\models\BrandsModel;
-use app\models\ColorsModel;
-use app\models\SizesModel;
+use app\models\{ProductsModel,
+    UsersModel,
+    CurrencyModel,
+    CommentsModel,
+    BrandsModel,
+    ColorsModel,
+    SizesModel};
 
 /**
  * Предоставляет методы для создания экземпляров моделей
