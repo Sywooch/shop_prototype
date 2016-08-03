@@ -175,30 +175,30 @@ class ShoppingCartController extends AbstractBaseController
             $deliveriesModel = \Yii::$app->cart->user->deliveries;
             $paymentsModel = \Yii::$app->cart->user->payments;
             
-            if (\Yii::$app->user->id && \Yii::$app->user->id_emails) {
-                if (empty(\Yii::$app->cart->user->name) && !empty(\Yii::$app->user->name)) {
-                    $usersModel->name = \Yii::$app->user->name;
+            if (\Yii::$app->shopUser->id && \Yii::$app->shopUser->id_emails) {
+                if (empty(\Yii::$app->cart->user->name) && !empty(\Yii::$app->shopUser->name)) {
+                    $usersModel->name = \Yii::$app->shopUser->name;
                 }
-                if (empty(\Yii::$app->cart->user->surname) && !empty(\Yii::$app->user->surname)) {
-                    $usersModel->surname = \Yii::$app->user->surname;
+                if (empty(\Yii::$app->cart->user->surname) && !empty(\Yii::$app->shopUser->surname)) {
+                    $usersModel->surname = \Yii::$app->shopUser->surname;
                 }
-                if (empty(\Yii::$app->cart->user->emails->email) && !empty(\Yii::$app->user->emails->email)) {
-                    $emailsModel->email = \Yii::$app->user->emails->email;
+                if (empty(\Yii::$app->cart->user->emails->email) && !empty(\Yii::$app->shopUser->emails->email)) {
+                    $emailsModel->email = \Yii::$app->shopUser->emails->email;
                 }
-                if (empty(\Yii::$app->cart->user->phones->phone) && !empty(\Yii::$app->user->phones->phone)) {
-                    $phonesModel->phone = \Yii::$app->user->phones->phone;
+                if (empty(\Yii::$app->cart->user->phones->phone) && !empty(\Yii::$app->shopUser->phones->phone)) {
+                    $phonesModel->phone = \Yii::$app->shopUser->phones->phone;
                 }
-                if (empty(\Yii::$app->cart->user->address->address) && !empty(\Yii::$app->user->address->address)) {
-                    $addressModel->address = \Yii::$app->user->address->address;
+                if (empty(\Yii::$app->cart->user->address->address) && !empty(\Yii::$app->shopUser->address->address)) {
+                    $addressModel->address = \Yii::$app->shopUser->address->address;
                 }
-                if (empty(\Yii::$app->cart->user->address->city) && !empty(\Yii::$app->user->address->city)) {
-                    $addressModel->city = \Yii::$app->user->address->city;
+                if (empty(\Yii::$app->cart->user->address->city) && !empty(\Yii::$app->shopUser->address->city)) {
+                    $addressModel->city = \Yii::$app->shopUser->address->city;
                 }
-                if (empty(\Yii::$app->cart->user->address->postcode) && !empty(\Yii::$app->user->address->postcode)) {
-                    $addressModel->postcode = \Yii::$app->user->address->postcode;
+                if (empty(\Yii::$app->cart->user->address->postcode) && !empty(\Yii::$app->shopUser->address->postcode)) {
+                    $addressModel->postcode = \Yii::$app->shopUser->address->postcode;
                 }
-                if (empty(\Yii::$app->cart->user->address->country) && !empty(\Yii::$app->user->address->country)) {
-                    $addressModel->country = \Yii::$app->user->address->country;
+                if (empty(\Yii::$app->cart->user->address->country) && !empty(\Yii::$app->shopUser->address->country)) {
+                    $addressModel->country = \Yii::$app->shopUser->address->country;
                 }
             }
             
@@ -302,13 +302,13 @@ class ShoppingCartController extends AbstractBaseController
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             
-            if (\Yii::$app->user->id_emails && \Yii::$app->user->id) {
-                \Yii::configure(\Yii::$app->cart->user, ['id'=>\Yii::$app->user->id]);
-                if (!empty(array_diff_assoc(\Yii::$app->cart->user->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {
+            if (\Yii::$app->shopUser->id_emails && \Yii::$app->shopUser->id) {
+                \Yii::configure(\Yii::$app->cart->user, ['id'=>\Yii::$app->shopUser->id]);
+                if (!empty(array_diff_assoc(\Yii::$app->cart->user->getDataForСomparison(), \Yii::$app->shopUser->getDataForСomparison()))) {
                     if (!MappersHelper::setUsersUpdate(\Yii::$app->cart->user)) {
                         throw new ErrorException('Ошибка при обновлении users!');
                     }
-                    \Yii::configure(\Yii::$app->user, \Yii::$app->cart->user->getDataArray());
+                    \Yii::configure(\Yii::$app->shopUser, \Yii::$app->cart->user->getDataArray());
                 }
             } else {
                 if (!MappersHelper::setUsersInsert(\Yii::$app->cart->user)) {

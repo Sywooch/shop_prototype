@@ -20,7 +20,7 @@ class ObjectsToArrayHelperTests extends \PHPUnit_Framework_TestCase
     
     public static function setUpBeforeClass()
     {
-        self::$_expectedForDelivery = self::$_expectedForDelivery . number_format(self::$_price * \Yii::$app->user->currency->exchange_rate, 2, '.', ' ') . ' ' . \Yii::$app->user->currency->currency;
+        self::$_expectedForDelivery = self::$_expectedForDelivery . number_format(self::$_price * \Yii::$app->shopUser->currency->exchange_rate, 2, '.', ' ') . ' ' . \Yii::$app->shopUser->currency->currency;
     }
     
     /**

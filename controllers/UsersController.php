@@ -100,7 +100,7 @@ class UsersController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post())) {
                 if ($usersModel->validate()) {
-                    if ($usersModel->id == \Yii::$app->user->id) {
+                    if ($usersModel->id == \Yii::$app->shopUser->id) {
                         if (!UserAuthenticationHelper::clean()) {
                             throw new ErrorException('Ошибка при попытку выхода из аккаунта!');
                         }
@@ -125,23 +125,23 @@ class UsersController extends AbstractBaseController
     {
         try {
             $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_UPDATE_FORM]);
-            if (!empty(\Yii::$app->user)) {
-                \Yii::configure($usersModel, \Yii::$app->user->getDataArray());
+            if (!empty(\Yii::$app->shopUser)) {
+                \Yii::configure($usersModel, \Yii::$app->shopUser->getDataArray());
             }
             
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-            if (!empty(\Yii::$app->user->emails)) {
-                \Yii::configure($emailsModel, \Yii::$app->user->emails->getDataArray());
+            if (!empty(\Yii::$app->shopUser->emails)) {
+                \Yii::configure($emailsModel, \Yii::$app->shopUser->emails->getDataArray());
             }
             
             $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_UPDATE_FORM]);
-            if (!empty(\Yii::$app->user->phones)) {
-                \Yii::configure($phonesModel, \Yii::$app->user->phones->getDataArray());
+            if (!empty(\Yii::$app->shopUser->phones)) {
+                \Yii::configure($phonesModel, \Yii::$app->shopUser->phones->getDataArray());
             }
             
             $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_UPDATE_FORM]);
-            if (!empty(\Yii::$app->user->address)) {
-                \Yii::configure($addressModel, \Yii::$app->user->address->getDataArray());
+            if (!empty(\Yii::$app->shopUser->address)) {
+                \Yii::configure($addressModel, \Yii::$app->shopUser->address->getDataArray());
             }
             
             $renderArray = array();
@@ -149,7 +149,7 @@ class UsersController extends AbstractBaseController
             $renderArray['emailsModel'] = $emailsModel;
             $renderArray['phonesModel'] = $phonesModel;
             $renderArray['addressModel'] = $addressModel;
-            $renderArray['purchasesList'] = MappersHelper::getPurchasesForUserList(\Yii::$app->user);
+            $renderArray['purchasesList'] = MappersHelper::getPurchasesForUserList(\Yii::$app->shopUser);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-user-account.twig', $renderArray);
@@ -174,7 +174,7 @@ class UsersController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $usersModel->validate() && $phonesModel->validate() && $addressModel->validate()) {
                     
-                    if (empty(\Yii::$app->user->emails) || \Yii::$app->user->emails->email != $emailsModel->email) {
+                    if (empty(\Yii::$app->shopUser->emails) || \Yii::$app->shopUser->emails->email != $emailsModel->email) {
                         if (!empty($emailsModel->email)) {
                             if ($result = MappersHelper::getEmailsByEmail($emailsModel)) {
                                 $emailsModel = $result;
@@ -189,7 +189,7 @@ class UsersController extends AbstractBaseController
                         $usersModel->id_emails = $emailsModel->id;
                     }
                     
-                    if (empty(\Yii::$app->user->phones) || \Yii::$app->user->phones->phone != $phonesModel->phone) {
+                    if (empty(\Yii::$app->shopUser->phones) || \Yii::$app->shopUser->phones->phone != $phonesModel->phone) {
                         if (!empty($phonesModel->phone)) {
                             if ($result = MappersHelper::getPhonesByPhone($phonesModel)) {
                                 $phonesModel = $result;
@@ -204,7 +204,7 @@ class UsersController extends AbstractBaseController
                         $usersModel->id_phones = $phonesModel->id;
                     }
                     
-                    if (empty(\Yii::$app->user->address) || !empty(array_diff_assoc($addressModel->getDataArray(), \Yii::$app->user->address->getDataArray()))) {
+                    if (empty(\Yii::$app->shopUser->address) || !empty(array_diff_assoc($addressModel->getDataArray(), \Yii::$app->shopUser->address->getDataArray()))) {
                         if (!empty($addressModel->address) || !empty($addressModel->city) || !empty($addressModel->postcode) || !empty($addressModel->country)) {
                             if ($result = MappersHelper::getAddressByAddress($addressModel)) {
                                 $addressModel = $result;
@@ -219,12 +219,12 @@ class UsersController extends AbstractBaseController
                         $usersModel->id_address = $addressModel->id;
                     }
                     
-                    if ($usersModel->id_emails && $usersModel->id == \Yii::$app->user->id) {
-                        if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {
+                    if ($usersModel->id_emails && $usersModel->id == \Yii::$app->shopUser->id) {
+                        if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->shopUser->getDataForСomparison()))) {
                             if (!MappersHelper::setUsersUpdate($usersModel)) {
                                 throw new ErrorException('Ошибка при обновлении users!');
                             }
-                            \Yii::configure(\Yii::$app->user, $usersModel->getDataArray());
+                            \Yii::configure(\Yii::$app->shopUser, $usersModel->getDataArray());
                         }
                     }
                     

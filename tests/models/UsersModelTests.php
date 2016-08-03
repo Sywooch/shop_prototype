@@ -57,7 +57,7 @@ class UsersModelTests extends \PHPUnit_Framework_TestCase
         $command->execute();
         
         $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB]);
-        \Yii::configure(\Yii::$app->user, $usersModel->getDataArray());
+        \Yii::configure(\Yii::$app->shopUser, $usersModel->getDataArray());
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
         $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);

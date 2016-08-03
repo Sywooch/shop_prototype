@@ -16,13 +16,13 @@
         <img src="{{ picturesHelper.getOneThumbnail('@pic', product.images) }}"></br>
         Color: {{ array.map(product.colors, 'id', 'color')[product.colorToCart] }}<br>
         Size: {{ array.map(product.sizes, 'id', 'size')[product.sizeToCart] }}<br>
-        Price: {{ (product.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</br>
+        Price: {{ (product.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
         Quantity: {{ product.quantity }}<br>
-        Total price: {{ ((product.price * app.user.currency.exchange_rate) * product.quantity) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
+        Total price: {{ ((product.price * app.shopUser.currency.exchange_rate) * product.quantity) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
     </p>
 {% endfor %}
 
-<p>Total products: {{ app.cart.getTotalProducts() }}, Total cost: {{ (app.cart.getTotalCost() * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
+<p>Total products: {{ app.cart.getTotalProducts() }}, Total cost: {{ (app.cart.getTotalCost() * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
 
 <p><a href="{{ url.to({0:'shopping-cart/index'}) }}">Change cart</a></p>
 
@@ -41,7 +41,7 @@
 
 <p>
     {{ array.map(user.deliveries.allDeliveries, 'id', 'description')[user.deliveries.id] }}<br>
-    Cost: {{ (array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id] * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
+    Cost: {{ (array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id] * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
 </p>
 
 <p><strong>Delivery address</strong></p>
@@ -63,7 +63,7 @@
 
 <p><a href="{{ url.to({0:'shopping-cart/address-contacts'}) }}">Change checkout</a></p>
 
-<p><strong>Total cost including delivery: {{ ((app.cart.getTotalCost() + array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id]) * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</strong></p>
+<p><strong>Total cost including delivery: {{ ((app.cart.getTotalCost() + array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id]) * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</strong></p>
 
 <p><a href="{{ url.to({0:'shopping-cart/pay'}) }}">Pay</a></p>
 

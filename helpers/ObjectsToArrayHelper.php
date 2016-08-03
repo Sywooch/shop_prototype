@@ -31,7 +31,7 @@ class ObjectsToArrayHelper
             foreach ($arrayObjects as $object) {
                 self::$_result[$object->id] = $object->name . '. ' . $object->description;
                 if ($object->price > 0) {
-                    self::$_result[$object->id] .= ' Стоимость доставки: ' . number_format($object->price * \Yii::$app->user->currency->exchange_rate, 2, '.', ' ') . ' ' . \Yii::$app->user->currency->currency;
+                    self::$_result[$object->id] .= ' Стоимость доставки: ' . number_format($object->price * \Yii::$app->shopUser->currency->exchange_rate, 2, '.', ' ') . ' ' . \Yii::$app->shopUser->currency->currency;
                 }
             }
             return self::$_result;

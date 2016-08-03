@@ -27,7 +27,7 @@
             {% if product.short_description %}
                 <br>{{ product.short_description }}
             {% endif %}
-            <br>{{ (product.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
+            <br>{{ (product.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
         </li>
     {% endfor %}
     </ol>

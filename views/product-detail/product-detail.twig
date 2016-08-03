@@ -22,7 +22,7 @@
 {% endif %}
 <p>{{ objectsProducts.code }}</p>
 <p>{{ objectsProducts.description | raw }}</p>
-<p>{{ (objectsProducts.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</p>
+<p>{{ (objectsProducts.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</p>
 
 {% include '@app/views/parts/product-detail-colors.twig' %}
 

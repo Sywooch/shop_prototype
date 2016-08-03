@@ -15,7 +15,7 @@ class UserAuthenticationHelper
     use ExceptionsTrait;
     
     /**
-     * @var array знасения для очистки свойств \Yii::$app->user
+     * @var array знасения для очистки свойств \Yii::$app->shopUser
      */
     public static $_cleanArray = [
         'id'=>null,
@@ -29,7 +29,7 @@ class UserAuthenticationHelper
     ];
     
     /**
-     * Заполняет объект \Yii::$app->user данными из БД
+     * Заполняет объект \Yii::$app->shopUser данными из БД
      * @param objects $userFromForm объект UserModel, плученный из формы
      * @return boolean
      */
@@ -42,7 +42,7 @@ class UserAuthenticationHelper
             
             if (is_object(\Yii::$app->params['userFromFormForAuthentication']) && \Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel) {
                 if ($usersModel->id_emails == \Yii::$app->params['userFromFormForAuthentication']->id_emails && password_verify($usersModel->rawPassword, \Yii::$app->params['userFromFormForAuthentication']->password)) {
-                    \Yii::configure(\Yii::$app->user, \Yii::$app->params['userFromFormForAuthentication']->getDataArray());
+                    \Yii::configure(\Yii::$app->shopUser, \Yii::$app->params['userFromFormForAuthentication']->getDataArray());
                 }
                 return true;
             }
@@ -53,13 +53,13 @@ class UserAuthenticationHelper
     }
     
     /**
-     * Обнуляет свойства объекта \Yii::$app->user
+     * Обнуляет свойства объекта \Yii::$app->shopUser
      * @return boolean
      */
     public static function clean()
     {
         try {
-            \Yii::configure(\Yii::$app->user, self::$_cleanArray);
+            \Yii::configure(\Yii::$app->shopUser, self::$_cleanArray);
             return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);

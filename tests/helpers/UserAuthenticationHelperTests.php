@@ -87,12 +87,12 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         
         UserAuthenticationHelper::fillFromForm($usersModel);
         
-        $this->assertEquals(self::$_id, \Yii::$app->user->id);
-        $this->assertEquals(self::$_name, \Yii::$app->user->name);
-        $this->assertEquals(self::$_surname, \Yii::$app->user->surname);
-        $this->assertEquals(self::$_id_emails, \Yii::$app->user->id_emails);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_phones);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id);
+        $this->assertEquals(self::$_name, \Yii::$app->shopUser->name);
+        $this->assertEquals(self::$_surname, \Yii::$app->shopUser->surname);
+        $this->assertEquals(self::$_id_emails, \Yii::$app->shopUser->id_emails);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id_phones);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id_address);
     }
     
     /**
@@ -111,12 +111,12 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         
         UserAuthenticationHelper::fillFromForm($usersModel);
         
-        $this->assertEquals(self::$_id, \Yii::$app->user->id);
-        $this->assertEquals(self::$_name, \Yii::$app->user->name);
-        $this->assertEquals(self::$_surname, \Yii::$app->user->surname);
-        $this->assertEquals(self::$_id_emails, \Yii::$app->user->id_emails);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_phones);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id);
+        $this->assertEquals(self::$_name, \Yii::$app->shopUser->name);
+        $this->assertEquals(self::$_surname, \Yii::$app->shopUser->surname);
+        $this->assertEquals(self::$_id_emails, \Yii::$app->shopUser->id_emails);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id_phones);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id_address);
     }
     
     /**
@@ -134,29 +134,29 @@ class UserAuthenticationHelperTests extends \PHPUnit_Framework_TestCase
         
         UserAuthenticationHelper::fillFromForm($usersModel);
         
-        $this->assertEquals(self::$_id, \Yii::$app->user->id);
-        $this->assertEquals(self::$_name, \Yii::$app->user->name);
-        $this->assertEquals(self::$_surname, \Yii::$app->user->surname);
-        $this->assertEquals(self::$_id_emails, \Yii::$app->user->id_emails);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_phones);
-        $this->assertEquals(self::$_id, \Yii::$app->user->id_address);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id);
+        $this->assertEquals(self::$_name, \Yii::$app->shopUser->name);
+        $this->assertEquals(self::$_surname, \Yii::$app->shopUser->surname);
+        $this->assertEquals(self::$_id_emails, \Yii::$app->shopUser->id_emails);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id_phones);
+        $this->assertEquals(self::$_id, \Yii::$app->shopUser->id_address);
         
         UserAuthenticationHelper::clean();
         
-        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id'], \Yii::$app->user->id);
-        $this->assertTrue(is_null(\Yii::$app->user->id));
-        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['rawPassword'], \Yii::$app->user->rawPassword);
-        $this->assertTrue(is_string(\Yii::$app->user->rawPassword));
-        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['name'], \Yii::$app->user->name);
-        $this->assertTrue(is_string(\Yii::$app->user->name));
-        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['surname'], \Yii::$app->user->surname);
-        $this->assertTrue(is_string(\Yii::$app->user->surname));
-        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_emails'], \Yii::$app->user->id_emails);
-        $this->assertTrue(is_int(\Yii::$app->user->id_emails));
-        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_phones'], \Yii::$app->user->id_phones);
-        $this->assertTrue(is_int(\Yii::$app->user->id_phones));
-        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_address'], \Yii::$app->user->id_address);
-        $this->assertTrue(is_int(\Yii::$app->user->id_address));
+        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id'], \Yii::$app->shopUser->id);
+        $this->assertTrue(is_null(\Yii::$app->shopUser->id));
+        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['rawPassword'], \Yii::$app->shopUser->rawPassword);
+        $this->assertTrue(is_string(\Yii::$app->shopUser->rawPassword));
+        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['name'], \Yii::$app->shopUser->name);
+        $this->assertTrue(is_string(\Yii::$app->shopUser->name));
+        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['surname'], \Yii::$app->shopUser->surname);
+        $this->assertTrue(is_string(\Yii::$app->shopUser->surname));
+        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_emails'], \Yii::$app->shopUser->id_emails);
+        $this->assertTrue(is_int(\Yii::$app->shopUser->id_emails));
+        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_phones'], \Yii::$app->shopUser->id_phones);
+        $this->assertTrue(is_int(\Yii::$app->shopUser->id_phones));
+        $this->assertEquals(UserAuthenticationHelper::$_cleanArray['id_address'], \Yii::$app->shopUser->id_address);
+        $this->assertTrue(is_int(\Yii::$app->shopUser->id_address));
     }
     
     public static function tearDownAfterClass()

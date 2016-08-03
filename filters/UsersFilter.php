@@ -7,7 +7,7 @@ use app\traits\ExceptionsTrait;
 use app\models\{UsersModel, CurrencyModel};
 
 /**
- * Заполняет объект \Yii::$app->user данными сесии
+ * Заполняет объект \Yii::$app->shopUser данными сесии
  */
 class UsersFilter extends ActionFilter
 {
@@ -28,7 +28,7 @@ class UsersFilter extends ActionFilter
             $session = \Yii::$app->session;
             $session->open();
             if ($session->has(\Yii::$app->params['usersKeyInSession'])) {
-                \Yii::configure(\Yii::$app->user, $session->get(\Yii::$app->params['usersKeyInSession']));
+                \Yii::configure(\Yii::$app->shopUser, $session->get(\Yii::$app->params['usersKeyInSession']));
             }
             if ($session->has(\Yii::$app->params['usersKeyInSession'] . '.currency')) {
                 $currencyArray = $session->get(\Yii::$app->params['usersKeyInSession'] . '.currency');
@@ -36,8 +36,8 @@ class UsersFilter extends ActionFilter
             $session->close();
             
             if (!empty($currencyArray)) {
-                \Yii::$app->user->currency = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_DB]);
-                \Yii::configure(\Yii::$app->user->currency, $currencyArray);
+                \Yii::$app->shopUser->currency = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_DB]);
+                \Yii::configure(\Yii::$app->shopUser->currency, $currencyArray);
             }
             
             return parent::beforeAction($action);
@@ -48,7 +48,7 @@ class UsersFilter extends ActionFilter
     }
     
     /**
-     * Сохраняет текущее состояние \Yii::$app->user
+     * Сохраняет текущее состояние \Yii::$app->shopUser
      * @param $action выполняемое в данный момент действие
      * @param $result результирующая строка перед отправкой в браузер клиента
      * @return parent result
@@ -65,11 +65,11 @@ class UsersFilter extends ActionFilter
             
             $session = \Yii::$app->session;
             $session->open();
-            if (!empty(\Yii::$app->user->id_emails)) {
-                $session->set(\Yii::$app->params['usersKeyInSession'], \Yii::$app->user->getDataArray());
+            if (!empty(\Yii::$app->shopUser->id_emails)) {
+                $session->set(\Yii::$app->params['usersKeyInSession'], \Yii::$app->shopUser->getDataArray());
             }
-            if (!empty(\Yii::$app->user->currency)) {
-                $session->set(\Yii::$app->params['usersKeyInSession'] . '.currency', \Yii::$app->user->currency->getDataArray());
+            if (!empty(\Yii::$app->shopUser->currency)) {
+                $session->set(\Yii::$app->params['usersKeyInSession'] . '.currency', \Yii::$app->shopUser->currency->getDataArray());
             }
             $session->close();
             

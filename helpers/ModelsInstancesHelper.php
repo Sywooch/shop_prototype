@@ -28,7 +28,7 @@ class ModelsInstancesHelper
     {
         try {
             self::$_instancesArray['filtersModel'] = \Yii::$app->filters;
-            self::$_instancesArray['currencyModel'] = \Yii::$app->user->currency;
+            self::$_instancesArray['currencyModel'] = \Yii::$app->shopUser->currency;
             self::$_instancesArray['productsModelForAddToCart'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
             self::$_instancesArray['brandsModelForAddToCart'] = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
             self::$_instancesArray['colorsModelForAddToCart'] = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);

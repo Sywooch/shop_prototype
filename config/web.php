@@ -90,7 +90,7 @@ $config = [
         'filters'=>[
             'class'=>'app\models\FiltersModel',
         ],
-        'user'=>[
+        'shopUser'=>[
             'class'=>'app\models\UsersModel',
         ],
         'session'=>[
@@ -144,7 +144,7 @@ $config = [
         'defaultRulesId'=>[1, 4], # ID прав доступа по-умолчанию, назначаемые при регистрации
         'userFromFormForAuthentication'=>null, # Объект пользователя в процессе аутентификации
         'usersKeyInSession'=>'user', # Ключ, по которому в $_SESSION доступена переменная, пользователя
-        'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->user по умолчанию
+        'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->shopUser по умолчанию
         
         # Статусы обработки заказа
         'deliveryStatusesArray'=>['shipped'=>'Отправлен покупателю', 'canceled'=>'Отменен', 'processed'=>'Выполняется', 'received'=>'Принят'],

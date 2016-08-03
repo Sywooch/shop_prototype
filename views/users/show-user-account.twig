@@ -58,7 +58,7 @@
                     Delivery status: {{ purchase.getDeliveryStatus() }}</br>
                     <img src="{{ picturesHelper.getOneThumbnail('@pic', purchase.productsObject.images) }}"></br>
                     Description: {{ purchase.productsObject.short_description }}</br>
-                    Price: {{ (purchase.productsObject.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}<br>
+                    Price: {{ (purchase.productsObject.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}<br>
                     Quantity: {{ purchase.quantity }}</br>
                     Color: {{ purchase.colorsObject.color }}</br>
                     Size: {{ purchase.sizesObject.size }}</br>

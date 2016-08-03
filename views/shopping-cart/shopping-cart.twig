@@ -22,8 +22,8 @@
         {{ form.field(productsObject, 'colorToCart').dropDownList(array.map(productsObject.colors, 'id', 'color')) | raw }}
         {{ form.field(productsObject, 'sizeToCart').dropDownList(array.map(productsObject.sizes, 'id', 'size')) | raw }}
         {{ form.field(productsObject, 'price').hiddenInput().label(false) | raw }}
-        Price: {{ (productsObject.price * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</br>
-        Total price: {{ ((productsObject.price * productsObject.quantity) * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</br>
+        Price: {{ (productsObject.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
+        Total price: {{ ((productsObject.price * productsObject.quantity) * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
         <input type="submit" value="Update" />
     {{ active_form_end() }}
     {% set removeForm = active_form_begin({'id':'remove-product-%s' | format(product.id), 'action':url.to({0:'shopping-cart/remove-product'}), 'method':'POST'}) %}
@@ -33,7 +33,7 @@
     {{ active_form_end() }}
 {% endfor %}
 
-<p>Total products: {{ app.cart.getTotalProducts() }}, Total cost: {{ (app.cart.getTotalCost() * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
+<p>Total products: {{ app.cart.getTotalProducts() }}, Total cost: {{ (app.cart.getTotalCost() * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
 
 <p><a href="{{ url.to({0:'shopping-cart/address-contacts'}) }}">Checkout</a></p>
 
