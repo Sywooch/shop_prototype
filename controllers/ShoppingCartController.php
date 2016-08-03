@@ -5,7 +5,9 @@ namespace app\controllers;
 use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\helpers\{ModelsInstancesHelper, MappersHelper, MailHelper};
+use app\helpers\{ModelsInstancesHelper, 
+    MappersHelper, 
+    MailHelper};
 use app\models\{ProductsModel,
     UsersModel,
     EmailsModel,
@@ -312,10 +314,9 @@ class ShoppingCartController extends AbstractBaseController
                 if (!MappersHelper::setUsersInsert(\Yii::$app->cart->user)) {
                     throw new ErrorException('Ошибка при создании users!');
                 }
-            }
-            
-            if (!MappersHelper::setUsersRulesInsert(\Yii::$app->cart->user)) {
-                throw new ErrorException('Ошибка при сохранении данных пользователя!');
+                if (!MappersHelper::setUsersRulesInsert(\Yii::$app->cart->user)) {
+                    throw new ErrorException('Ошибка при сохранении данных пользователя!');
+                }
             }
             
             if (MappersHelper::setPurchasesInsert()) {

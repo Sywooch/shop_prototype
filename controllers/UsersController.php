@@ -175,37 +175,49 @@ class UsersController extends AbstractBaseController
                 if ($emailsModel->validate() && $usersModel->validate() && $phonesModel->validate() && $addressModel->validate()) {
                     
                     if (empty(\Yii::$app->user->emails) || \Yii::$app->user->emails->email != $emailsModel->email) {
-                         if ($result = MappersHelper::getEmailsByEmail($emailsModel)) {
-                            $emailsModel = $result;
-                        } else {
-                            if (!MappersHelper::setEmailsInsert($emailsModel)) {
-                                throw new ErrorException('Ошибка при сохранении E-mail!');
+                        if (!empty($emailsModel->email)) {
+                            if ($result = MappersHelper::getEmailsByEmail($emailsModel)) {
+                                $emailsModel = $result;
+                            } else {
+                                if (!MappersHelper::setEmailsInsert($emailsModel)) {
+                                    throw new ErrorException('Ошибка при сохранении E-mail!');
+                                }
                             }
                         }
                     }
-                    $usersModel->id_emails = $emailsModel->id;
+                    if (!empty($emailsModel->id)) {
+                        $usersModel->id_emails = $emailsModel->id;
+                    }
                     
                     if (empty(\Yii::$app->user->phones) || \Yii::$app->user->phones->phone != $phonesModel->phone) {
-                        if ($result = MappersHelper::getPhonesByPhone($phonesModel)) {
-                            $phonesModel = $result;
-                        } else {
-                            if (!MappersHelper::setPhonesInsert($phonesModel)) {
-                                throw new ErrorException('Ошибка при сохранении address!');
+                        if (!empty($phonesModel->phone)) {
+                            if ($result = MappersHelper::getPhonesByPhone($phonesModel)) {
+                                $phonesModel = $result;
+                            } else {
+                                if (!MappersHelper::setPhonesInsert($phonesModel)) {
+                                    throw new ErrorException('Ошибка при сохранении address!');
+                                }
                             }
                         }
                     }
-                    $usersModel->id_phones = $phonesModel->id;
+                    if (!empty($phonesModel->id)) {
+                        $usersModel->id_phones = $phonesModel->id;
+                    }
                     
                     if (empty(\Yii::$app->user->address) || !empty(array_diff_assoc($addressModel->getDataArray(), \Yii::$app->user->address->getDataArray()))) {
-                        if ($result = MappersHelper::getAddressByAddress($addressModel)) {
-                            $addressModel = $result;
-                        } else {
-                            if (!MappersHelper::setAddressInsert($addressModel)) {
-                                throw new ErrorException('Ошибка при сохранении address!');
+                        if (!empty($addressModel->address) || !empty($addressModel->city) || !empty($addressModel->postcode) || !empty($addressModel->country)) {
+                            if ($result = MappersHelper::getAddressByAddress($addressModel)) {
+                                $addressModel = $result;
+                            } else {
+                                if (!MappersHelper::setAddressInsert($addressModel)) {
+                                    throw new ErrorException('Ошибка при сохранении address!');
+                                }
                             }
                         }
                     }
-                    $usersModel->id_address = $addressModel->id;
+                    if (!empty($addressModel->id)) {
+                        $usersModel->id_address = $addressModel->id;
+                    }
                     
                     if ($usersModel->id_emails && $usersModel->id == \Yii::$app->user->id) {
                         if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {

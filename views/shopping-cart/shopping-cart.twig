@@ -26,7 +26,7 @@
         Total price: {{ ((productsObject.price * productsObject.quantity) * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}</br>
         <input type="submit" value="Update" />
     {{ active_form_end() }}
-    {% set removeForm = active_form_begin({'id':'remove-productsObject-%s' | format(productsObject.id), 'action':url.to({0:'shopping-cart/remove-productsObject'}), 'method':'POST'}) %}
+    {% set removeForm = active_form_begin({'id':'remove-product-%s' | format(product.id), 'action':url.to({0:'shopping-cart/remove-product'}), 'method':'POST'}) %}
         {{ removeForm.field(productsObject, 'id').hiddenInput().label(false) | raw }}
         {{ removeForm.field(productsObject, 'hash').hiddenInput().label(false) | raw }}
         <input type="submit" value="Remove" />

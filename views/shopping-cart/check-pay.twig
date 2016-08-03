@@ -31,16 +31,15 @@
 <p><strong>Customer</strong></p>
 
 <p>
+    Email: {{user.emails.email }}<br>
     First Name: {{ user.name }}<br>
     Last Name: {{ user.surname }}<br>
-    Email: {{user.emails.email }}<br>
     Phone: {{user.phones.phone }}
 </p>
 
 <p><strong>Delivery type</strong></p>
 
 <p>
-    {{ array.map(user.deliveries.allDeliveries, 'id', 'name')[user.deliveries.id] }}<br>
     {{ array.map(user.deliveries.allDeliveries, 'id', 'description')[user.deliveries.id] }}<br>
     Cost: {{ (array.map(user.deliveries.allDeliveries, 'id', 'price')[user.deliveries.id] * app.user.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.user.currency.currency }}
 </p>
@@ -59,7 +58,6 @@
 <p><strong>Payments</strong></p>
 
 <p>
-    {{ array.map(user.payments.allPayments, 'id', 'name')[user.payments.id] }}<br>
     {{ array.map(user.payments.allPayments, 'id', 'description')[user.payments.id] }}
 </p
 

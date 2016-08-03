@@ -32,13 +32,13 @@ $config = [
         ],
         'log'=>[
             'traceLevel'=>YII_DEBUG ? 3 : 0,
-            'flushInterval'=>100,
+            'flushInterval'=>1,
             'targets'=>[
                 'file'=>[
                     'class'=>'yii\log\FileTarget',
                     'logFile'=>__DIR__ . '/../logs/error.log',
                     'levels'=>['error', 'warning'],
-                    'exportInterval'=>100,
+                    'exportInterval'=>1,
                 ],
             ],
         ],
