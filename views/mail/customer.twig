@@ -1,7 +1,13 @@
 
 <h1>Привет! Это информация о вашем заказе!</h2>
 
-<p>Вы можете отслеживать его в <a href="{{ url.to({0:'users/login-user'}, true) }}">вашем персональном кабинете</a>. {% if app.cart.user.login and app.cart.user.rawPassword %}Временные логин и пароль, которые мы создали для вас:<br>логин: {{ app.cart.user.login }}<br>пароль: {{ app.cart.user.rawPassword }} {% endif %}</p>
+<p>Вы можете отслеживать его в <a href="{{ url.to({0:'users/login-user'}, true) }}">вашем персональном кабинете</a>.</p>
+{% if app.cart.user.id_emails and app.cart.user.rawPassword %}
+    <p>Ваши логин и пароль:
+        <br>логин: {{ app.cart.user.emails.email }}
+        <br>пароль: {{ app.cart.user.rawPassword }}
+    </p>
+{% endif %}
 
 {% set products = app.cart.getProductsArray() %}
 

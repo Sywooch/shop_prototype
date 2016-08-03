@@ -30,8 +30,7 @@ class UsersRulesInsertMapper extends AbstractInsertMapper
             if (!$this->getUsersRulesDbArray()) {
                 throw new ErrorException('Ошибка при создании DbArray!');
             }
-            parent::run();
-            return true;
+            return parent::run();
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

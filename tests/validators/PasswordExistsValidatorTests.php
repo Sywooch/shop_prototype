@@ -14,12 +14,13 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
-    private static $_login = 'somelogin';
+    private static $_id_emails = 21;
     private static $_rawPassword = 'somepassword';
     private static $_notExistsRawPassword = 'Hjrt6d';
     private static $_hashRawPassword;
     private static $_name = 'Some Name';
     private static $_surname = 'Some Surname';
+    private static $_email = 'some@some.com';
     
     private static $_passwordMessage = 'Неверный пароль!';
     
@@ -30,8 +31,12 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
         
         self::$_hashRawPassword = password_hash(self::$_rawPassword, PASSWORD_DEFAULT);
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[password]]=:password, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
-        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':password'=>self::$_hashRawPassword, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
+        $command->bindValues([':id'=>self::$_id_emails, ':email'=>self::$_email]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[password]]=:password, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
+        $command->bindValues([':id'=>self::$_id, ':password'=>self::$_hashRawPassword, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id_emails, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -47,8 +52,9 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         $this->assertTrue(empty(\Yii::$app->params['userFromFormForAuthentication']));
         
+        \Yii::$app->params['userFromFormForAuthentication'] = MappersHelper::getUsersByIdEmails(new UsersModel(['id_emails'=>self::$_id_emails]));
+        
         $model = new UsersModel();
-        $model->login = self::$_login;
         $model->rawPassword = self::$_notExistsRawPassword;
         
         $validator = new PasswordExistsValidator();
@@ -69,7 +75,6 @@ class PasswordExistsValidatorTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty(\Yii::$app->params['userFromFormForAuthentication']));
         
         $model = new UsersModel();
-        $model->login = self::$_login;
         $model->rawPassword = self::$_notExistsRawPassword;
         
         $validator = new PasswordExistsValidator();

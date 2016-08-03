@@ -6,7 +6,13 @@ use yii\helpers\Url;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\helpers\{ModelsInstancesHelper, MappersHelper, MailHelper};
-use app\models\ProductsModel;
+use app\models\{ProductsModel,
+    UsersModel,
+    EmailsModel,
+    PhonesModel,
+    AddressModel,
+    DeliveriesModel,
+    PaymentsModel};
 
 /**
  * Управляет процессом добавления комментария
@@ -162,12 +168,12 @@ class ShoppingCartController extends AbstractBaseController
             
             $usersModel = \Yii::$app->cart->user;
             $emailsModel = \Yii::$app->cart->user->emails;
-            $addressModel = \Yii::$app->cart->user->address;
             $phonesModel = \Yii::$app->cart->user->phones;
+            $addressModel = \Yii::$app->cart->user->address;
             $deliveriesModel = \Yii::$app->cart->user->deliveries;
             $paymentsModel = \Yii::$app->cart->user->payments;
             
-            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin']) {
+            if (\Yii::$app->user->id && \Yii::$app->user->id_emails) {
                 if (empty(\Yii::$app->cart->user->name) && !empty(\Yii::$app->user->name)) {
                     $usersModel->name = \Yii::$app->user->name;
                 }
@@ -194,8 +200,8 @@ class ShoppingCartController extends AbstractBaseController
                 }
             }
             
-            if (\Yii::$app->request->isPost && $usersModel->load(\Yii::$app->request->post()) && $emailsModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $deliveriesModel->load(\Yii::$app->request->post()) && $paymentsModel->load(\Yii::$app->request->post())) {
-                if ($usersModel->validate() && $emailsModel->validate() && $addressModel->validate() && $phonesModel->validate() && $deliveriesModel->validate() && $paymentsModel->validate()) {
+            if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $deliveriesModel->load(\Yii::$app->request->post()) && $paymentsModel->load(\Yii::$app->request->post())) {
+                if ($emailsModel->validate() && $usersModel->validate() && $addressModel->validate() && $phonesModel->validate() && $deliveriesModel->validate() && $paymentsModel->validate()) {
                     
                 }
                 return $this->redirect(Url::to(['shopping-cart/check-pay']));
@@ -294,8 +300,8 @@ class ShoppingCartController extends AbstractBaseController
                 throw new ErrorException('Недоступны данные для сохранения сведений о покупке!');
             }
             
-            if (\Yii::$app->user->login != \Yii::$app->params['nonAuthenticatedUserLogin'] && !empty(\Yii::$app->user->id)) {
-                \Yii::configure(\Yii::$app->cart->user, ['id'=>\Yii::$app->user->id, 'login'=>\Yii::$app->user->login]);
+            if (\Yii::$app->user->id_emails && \Yii::$app->user->id) {
+                \Yii::configure(\Yii::$app->cart->user, ['id'=>\Yii::$app->user->id]);
                 if (!empty(array_diff_assoc(\Yii::$app->cart->user->getDataForСomparison(), \Yii::$app->user->getDataForСomparison()))) {
                     if (!MappersHelper::setUsersUpdate(\Yii::$app->cart->user)) {
                         throw new ErrorException('Ошибка при обновлении users!');
@@ -306,6 +312,10 @@ class ShoppingCartController extends AbstractBaseController
                 if (!MappersHelper::setUsersInsert(\Yii::$app->cart->user)) {
                     throw new ErrorException('Ошибка при создании users!');
                 }
+            }
+            
+            if (!MappersHelper::setUsersRulesInsert(\Yii::$app->cart->user)) {
+                throw new ErrorException('Ошибка при сохранении данных пользователя!');
             }
             
             if (MappersHelper::setPurchasesInsert()) {

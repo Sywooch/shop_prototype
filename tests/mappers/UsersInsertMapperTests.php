@@ -13,15 +13,20 @@ class UsersInsertMapperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
-    private static $_login = 'somelogin';
+    private static $_id_emails = 15;
     private static $_password = 'somepassword';
     private static $_name = 'Some Name';
     private static $_surname = 'Some Surname';
+    private static $_email = 'some@some.com';
     
     public static function setUpBeforeClass()
     {
         self::$_dbClass = new DbManager();
         self::$_dbClass->createDb();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
+        $command->bindValues([':id'=>self::$_id_emails, ':email'=>self::$_email]);
+        $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
             MappersHelper::cleanProperties();
@@ -35,14 +40,13 @@ class UsersInsertMapperTests extends \PHPUnit_Framework_TestCase
     {
         $usersInsertMapper = new UsersInsertMapper([
             'tableName'=>'users',
-            'fields'=>['login', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+            'fields'=>['password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
             'objectsArray'=>[
                 new MockModel([
-                    'login'=>self::$_login,
                     'password'=>password_hash(self::$_password, PASSWORD_DEFAULT),
                     'name'=>self::$_name,
                     'surname'=>self::$_surname,
-                    'id_emails'=>self::$_id, 
+                    'id_emails'=>self::$_id_emails, 
                     'id_phones'=>self::$_id, 
                     'id_address'=>self::$_id
                 ]),
@@ -52,20 +56,20 @@ class UsersInsertMapperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, $result);
         
-        $command = \Yii::$app->db->createCommand('SELECT * FROM {{users}} WHERE login=:login');
-        $command->bindValue(':login', self::$_login);
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{users}} WHERE id_emails=:id_emails');
+        $command->bindValue(':id_emails', self::$_id_emails);
         $result = $command->queryOne();
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
         
         $this->assertArrayHasKey('id', $result);
-        $this->assertArrayHasKey('login', $result);
+        $this->assertArrayHasKey('id_emails', $result);
         $this->assertArrayHasKey('password', $result);
         $this->assertArrayHasKey('name', $result);
         $this->assertArrayHasKey('surname', $result);
         
-        $this->assertEquals(self::$_login, $result['login']);
+        $this->assertEquals(self::$_id_emails, $result['id_emails']);
         $this->assertEquals(self::$_name, $result['name']);
         $this->assertEquals(self::$_surname, $result['surname']);
         $this->assertTrue(password_verify(self::$_password, $result['password']));

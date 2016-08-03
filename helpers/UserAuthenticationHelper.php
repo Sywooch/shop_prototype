@@ -36,13 +36,13 @@ class UserAuthenticationHelper
     public static function fillFromForm(UsersModel $usersModel)
     {
         try {
-            if (empty(\Yii::$app->params['usersModelForAuthentication'])) {
-                \Yii::$app->params['usersModelForAuthentication'] = MappersHelper::getUsersByIdEmails($usersModel);
+            if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
+                \Yii::$app->params['userFromFormForAuthentication'] = MappersHelper::getUsersByIdEmails($usersModel);
             }
             
-            if (is_object(\Yii::$app->params['usersModelForAuthentication']) && \Yii::$app->params['usersModelForAuthentication'] instanceof UsersModel) {
-                if ($usersModel->id_emails == \Yii::$app->params['usersModelForAuthentication']->id_emails && password_verify($usersModel->rawPassword, \Yii::$app->params['usersModelForAuthentication']->password)) {
-                    \Yii::configure(\Yii::$app->user, \Yii::$app->params['usersModelForAuthentication']->getDataArray());
+            if (is_object(\Yii::$app->params['userFromFormForAuthentication']) && \Yii::$app->params['userFromFormForAuthentication'] instanceof UsersModel) {
+                if ($usersModel->id_emails == \Yii::$app->params['userFromFormForAuthentication']->id_emails && password_verify($usersModel->rawPassword, \Yii::$app->params['userFromFormForAuthentication']->password)) {
+                    \Yii::configure(\Yii::$app->user, \Yii::$app->params['userFromFormForAuthentication']->getDataArray());
                 }
                 return true;
             }

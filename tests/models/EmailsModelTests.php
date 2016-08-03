@@ -66,9 +66,8 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'email'=>self::$_email];
+        $model->attributes = ['email'=>self::$_email];
         
-        $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->email));
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_DB]);

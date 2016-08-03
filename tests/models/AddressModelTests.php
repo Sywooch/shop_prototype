@@ -29,6 +29,10 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':address'=>self::$_address, ':city'=>self::$_city, ':country'=>self::$_country, ':postcode'=>self::$_postcode]);
         $command->execute();
         
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{address}} SET [[id]]=:id, [[address]]=:address, [[city]]=:city');
+        $command->bindValues([':id'=>self::$_id + 1, ':address'=>self::$_address, ':city'=>self::$_city]);
+        $command->execute();
+        
         if (!empty(MappersHelper::getObjectRegistry())) {
             MappersHelper::cleanProperties();
         }
@@ -43,6 +47,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
         
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, 'address'));
@@ -57,9 +62,8 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
+        $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
         
-        $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->address));
         $this->assertFalse(empty($model->city));
         $this->assertFalse(empty($model->country));
@@ -69,6 +73,14 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = ['id'=>self::$_id, 'address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
         
         $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->address));
+        $this->assertFalse(empty($model->city));
+        $this->assertFalse(empty($model->country));
+        $this->assertFalse(empty($model->postcode));
+        
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_UPDATE_FORM]);
+        $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
+        
         $this->assertFalse(empty($model->address));
         $this->assertFalse(empty($model->city));
         $this->assertFalse(empty($model->country));
@@ -123,18 +135,11 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
         
         $this->assertEquals(self::$_id, $model->id);
-    }
-    
-    /**
-     * Тестирует метод AddressModel::getId
-     * при условии отсутствия postcode
-     */
-    public function testGetIdWithoutPostcode()
-    {
-        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
-        $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country];
         
-        $this->assertEquals(self::$_id, $model->id);
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+        $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, ];
+        
+        $this->assertEquals(self::$_id + 1, $model->id);
     }
     
     /**

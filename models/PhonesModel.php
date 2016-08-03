@@ -25,15 +25,14 @@ class PhonesModel extends AbstractBaseModel
     const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
     
     public $phone = '';
-    
     private $_id = null;
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['id', 'phone'],
+            self::GET_FROM_FORM=>['phone'],
             self::GET_FROM_DB=>['id', 'phone'],
-            self::GET_FROM_UPDATE_FORM=>['phone'], #!!!
+            self::GET_FROM_UPDATE_FORM=>['phone'],
         ];
     }
     

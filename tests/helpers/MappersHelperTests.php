@@ -29,6 +29,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_dbClass;
     private static $_reflectionClass;
     private static $_id = 1;
+    private static $_id_emails = 42;
     private static $_images = 'images';
     private static $_name = 'Some Name';
     private static $_categorySeocode = 'mensfootwear';
@@ -44,7 +45,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_phone = '+396548971203';
     private static $_description = 'Some description';
     private static $_price = 12.34;
-    private static $_login = 'Somelogin';
     private static $_password = 'iJ7gdJ';
     private static $_surname = 'Some Surname';
     private static $_quantity = 1;
@@ -483,8 +483,12 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetPurchasesInsert()
     {
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
-        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
+        $command->bindValues([':id'=>self::$_id_emails, ':email'=>self::$_email]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id_emails, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
         $command->execute();
         
         \Yii::$app->cart->user = new UsersModel();
@@ -535,8 +539,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetUsersInsert()
     {
-        \Yii::$app->user->login = \Yii::$app->params['nonAuthenticatedUserLogin'];
-        
         $command = \Yii::$app->db->createCommand('INSERT INTO {{rules}} ([[id]],[[rule]]) VALUES (:id1, :rule1), (:id2, :rule2)');
         $command->bindValues([':id1'=>1, ':rule1'=>self::$_rule, ':id2'=>4, ':rule2'=>self::$_rule . self::$_rule]);
         $command->execute();
@@ -546,7 +548,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll()));
         
         $usersModel = new UsersModel();
-        $usersModel->id_emails = self::$_id;
+        $usersModel->id_emails = self::$_id_emails;
         $usersModel->rawPassword = self::$_password;
         $usersModel->name = self::$_name;
         $usersModel->surname = self::$_surname;
@@ -559,7 +561,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
-        $this->assertEquals(self::$_id, $result[0]['id_emails']);
+        $this->assertEquals(self::$_id_emails, $result[0]['id_emails']);
         $this->assertTrue(password_verify(self::$_password, $result[0]['password']));
         $this->assertEquals(self::$_name, $result[0]['name']);
         $this->assertEquals(self::$_surname, $result[0]['surname']);
@@ -578,10 +580,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $usersModel = new UsersModel();
         $usersModel->id = $id;
-        $usersModel->login = self::$_login;
         $usersModel->name = self::$_name;
         $usersModel->surname = self::$_surname;
-        $usersModel->id_emails = self::$_id + 12;
+        $usersModel->id_emails = self::$_id_emails;
         $usersModel->id_phones = self::$_id + 3;
         $usersModel->id_address = self::$_id + 6;
         
@@ -591,11 +592,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
-        $this->assertEquals(self::$_login, $result[0]['login']);
         $this->assertTrue(password_verify(self::$_password, $result[0]['password']));
         $this->assertEquals(self::$_name, $result[0]['name']);
         $this->assertEquals(self::$_surname, $result[0]['surname']);
-        $this->assertEquals(self::$_id + 12, $result[0]['id_emails']);
+        $this->assertEquals(self::$_id_emails, $result[0]['id_emails']);
         $this->assertEquals(self::$_id + 3, $result[0]['id_phones']);
         $this->assertEquals(self::$_id + 6, $result[0]['id_address']);
     }
@@ -605,6 +605,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetEmailsInsert()
     {
+        \Yii::$app->db->createCommand('DELETE FROM {{emails}}')->execute();
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryAll()));
         
         $emailsModel = new EmailsModel();
@@ -639,8 +640,20 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetUsersRulesInsert()
     {
+        \Yii::$app->db->createCommand('DELETE FROM {{emails}}')->execute();
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryAll()));
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll()));
+        
         \Yii::$app->db->createCommand('DELETE FROM {{users_rules}}')->execute();
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{users_rules}}')->queryAll()));
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
+        $command->bindValues([':id'=>self::$_id_emails, ':email'=>self::$_email]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id_emails, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
+        $command->execute();
         
         $usersModel = new UsersModel();
         $usersModel->id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{users}} LIMIT 1')->queryScalar();
@@ -927,7 +940,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     public function testGetUsersByIdEmails()
     {
         $usersModel = new UsersModel();
-        $usersModel->id_emails = self::$_id;
+        $usersModel->id_emails = self::$_id_emails;
         
         $result = MappersHelper::getUsersByIdEmails($usersModel);
         
@@ -950,7 +963,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof UsersModel);
-        $this->assertEquals(self::$_login, $result->login);
         $this->assertEquals(self::$_name, $result->name);
         $this->assertEquals(self::$_surname, $result->surname);
     }

@@ -126,7 +126,7 @@ class UsersModel extends AbstractBaseModel
     public function getPassword()
     {
         try {
-            if (is_null($this->_password) /*&& \Yii::$app->user->login == \Yii::$app->params['nonAuthenticatedUserLogin']*/) { 
+            if (is_null($this->_password)) { 
                 if (empty($this->rawPassword)) {
                     $this->rawPassword = PasswordHelper::getPassword();
                     if (!is_string($this->rawPassword)) {

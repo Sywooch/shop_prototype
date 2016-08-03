@@ -20,6 +20,10 @@ class AddressModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы
      */
     const GET_FROM_DB = 'getFromDb';
+    /**
+     * Сценарий загрузки данных из формы обновления данных
+     */
+    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
     
     public $address = '';
     public $city = '';
@@ -31,8 +35,9 @@ class AddressModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['id', 'address', 'city', 'country', 'postcode'],
+            self::GET_FROM_FORM=>['address', 'city', 'country', 'postcode'],
             self::GET_FROM_DB=>['id', 'address', 'city', 'country', 'postcode'],
+            self::GET_FROM_UPDATE_FORM=>['address', 'city', 'country', 'postcode'],
         ];
     }
     
@@ -40,7 +45,7 @@ class AddressModel extends AbstractBaseModel
     {
         return [
             [['address', 'city', 'country'], 'required', 'on'=>self::GET_FROM_FORM],
-            [['address', 'city', 'country', 'postcode'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
+            [['address', 'city', 'country', 'postcode'], 'app\validators\StripTagsValidator'],
         ];
     }
     
@@ -70,7 +75,7 @@ class AddressModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_id)) {
-                if (!empty($this->address) && !empty($this->city) && !empty($this->country)) {
+                if (!empty($this->address) || !empty($this->city) || !empty($this->country) || !empty($this->postcode)) { #!!!
                     $addressByAddressMapper = new AddressByAddressMapper([
                         'tableName'=>'address',
                         'fields'=>['id', 'address', 'city', 'country', 'postcode'],

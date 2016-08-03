@@ -52,9 +52,8 @@ class PhonesModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'phone'=>self::$_phone];
+        $model->attributes = ['phone'=>self::$_phone];
         
-        $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->phone));
         
         $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_DB]);

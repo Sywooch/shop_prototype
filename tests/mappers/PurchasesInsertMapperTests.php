@@ -14,7 +14,7 @@ class PurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
-    private static $_login = 'Somelogin';
+    private static $_id_emails = 63;
     private static $_name = 'Some Name';
     private static $_surname = 'Some Surname';
     private static $_categorySeocode = 'mensfootwear';
@@ -31,6 +31,7 @@ class PurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
     private static $_color = 'gray';
     private static $_size = '46';
     private static $_quantity = 2;
+    private static $_email = 'some@some.com';
     
     public static function setUpBeforeClass()
     {
@@ -45,8 +46,12 @@ class PurchasesInsertMapperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id_sizes, ':size'=>self::$_size]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[login]]=:login, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
-        $command->bindValues([':id'=>self::$_id, ':login'=>self::$_login, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id, [[email]]=:email');
+        $command->bindValues([':id'=>self::$_id_emails, ':email'=>self::$_email]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{users}} SET [[id]]=:id, [[name]]=:name, [[surname]]=:surname, [[id_emails]]=:id_emails, [[id_phones]]=:id_phones, [[id_address]]=:id_address');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':surname'=>self::$_surname, ':id_emails'=>self::$_id_emails, ':id_phones'=>self::$_id, ':id_address'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');

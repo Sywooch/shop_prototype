@@ -60,17 +60,10 @@ class DeliveriesModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price];
+        $model->attributes = ['id'=>self::$_id];
         
         $this->assertFalse(empty($model->id));
-        $this->assertFalse(empty($model->name));
-        $this->assertFalse(empty($model->description));
-        $this->assertFalse(empty($model->price));
-        
         $this->assertEquals(self::$_id, $model->id);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_description, $model->description);
-        $this->assertEquals(self::$_price, $model->price);
         
         $model = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_DB]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price];

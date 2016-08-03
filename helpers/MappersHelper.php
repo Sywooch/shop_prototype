@@ -1280,7 +1280,7 @@ class MappersHelper
         try {
             $usersByIdMapper = new UsersByIdMapper([
                 'tableName'=>'users',
-                'fields'=>['id', 'login', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+                'fields'=>['id', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
                 'model'=>$usersModel,
             ]);
             $hash = self::createHash([

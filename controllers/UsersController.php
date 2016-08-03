@@ -134,11 +134,21 @@ class UsersController extends AbstractBaseController
                 \Yii::configure($emailsModel, \Yii::$app->user->emails->getDataArray());
             }
             
+            $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_UPDATE_FORM]);
+            if (!empty(\Yii::$app->user->phones)) {
+                \Yii::configure($phonesModel, \Yii::$app->user->phones->getDataArray());
+            }
+            
+            $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_UPDATE_FORM]);
+            if (!empty(\Yii::$app->user->address)) {
+                \Yii::configure($addressModel, \Yii::$app->user->address->getDataArray());
+            }
+            
             $renderArray = array();
             $renderArray['usersModel'] = $usersModel;
             $renderArray['emailsModel'] = $emailsModel;
-            $renderArray['phonesModel'] = \Yii::$app->user->phones ?? new PhonesModel(['scenario'=>PhonesModel::GET_FROM_UPDATE_FORM]);
-            $renderArray['addressModel'] = \Yii::$app->user->address ?? new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+            $renderArray['phonesModel'] = $phonesModel;
+            $renderArray['addressModel'] = $addressModel;
             $renderArray['purchasesList'] = MappersHelper::getPurchasesForUserList(\Yii::$app->user);
             $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
@@ -158,8 +168,8 @@ class UsersController extends AbstractBaseController
         try {
             $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_UPDATE_FORM]);
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-            $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
-            $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
+            $phonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_UPDATE_FORM]);
+            $addressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_UPDATE_FORM]);
             
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $usersModel->validate() && $phonesModel->validate() && $addressModel->validate()) {
