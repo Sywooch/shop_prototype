@@ -36,11 +36,11 @@ class ProductsModel extends AbstractBaseModel
     private $_id = null;
     private $_date = null;
     
-    public $code = '';
-    public $name = '';
-    public $description = '';
-    public $short_description = '';
-    public $price = '';
+    public $code;
+    public $name;
+    public $description;
+    public $short_description;
+    public $price;
     
     /**
      * @var array массив объектов yii\web\UploadedFile
@@ -49,10 +49,10 @@ class ProductsModel extends AbstractBaseModel
     /**
      * @var string имя каталога, по которому в БД доступны изображения текущей модели
      */
-    public $images = '';
+    public $images;
     
-    public $id_categories = '';
-    public $id_subcategory = '';
+    public $id_categories;
+    public $id_subcategory;
     
     /**
      * @var string имена seocode категории и подкатегории продукта соответственно
@@ -63,7 +63,7 @@ class ProductsModel extends AbstractBaseModel
     /**
      * @var string хэш сумма для продукта, мспользуется для идентификации в массиве продуктов класса корзины
      */
-    public $hash = '';
+    public $hash;
     /**
      * @var array массив свойств, на основании которых создается хэш
      */
@@ -72,9 +72,9 @@ class ProductsModel extends AbstractBaseModel
     /**
      * Свойства получаемые из формы добавления в корзину
      */
-    public $colorToCart = '';
-    public $sizeToCart = '';
-    public $quantity = '';
+    public $colorToCart;
+    public $sizeToCart;
+    public $quantity;
     
     private $_colors = null;
     private $_sizes = null;

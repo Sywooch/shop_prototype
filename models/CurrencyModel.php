@@ -18,18 +18,18 @@ class CurrencyModel extends AbstractBaseModel
     */
     const GET_FROM_FORM_SET = 'getFromFormSet';
     
-    public $id = '';
-    public $currency = '';
-    public $exchange_rate = '';
-    public $main = '';
+    public $id;
+    public $currency;
+    public $exchange_rate;
+    public $main;
     
     /**
      * Свойства содержат данные для редиректа после обработки запроса
      */
-    public $categories = '';
-    public $subcategory = '';
-    public $search = '';
-    public $id_products = '';
+    public $categories;
+    public $subcategory;
+    public $search;
+    public $id_products;
     
     public function scenarios()
     {

@@ -25,10 +25,10 @@ class AddressModel extends AbstractBaseModel
      */
     const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
     
-    public $address = '';
-    public $city = '';
-    public $country = '';
-    public $postcode = '';
+    public $address;
+    public $city;
+    public $country;
+    public $postcode;
     
     private $_id = null;
     
@@ -75,7 +75,7 @@ class AddressModel extends AbstractBaseModel
     {
         try {
             if (is_null($this->_id)) {
-                if (!empty($this->address) || !empty($this->city) || !empty($this->country) || !empty($this->postcode)) { #!!!
+                if (!empty($this->address) || !empty($this->city) || !empty($this->country) || !empty($this->postcode)) {
                     $addressByAddressMapper = new AddressByAddressMapper([
                         'tableName'=>'address',
                         'fields'=>['id', 'address', 'city', 'country', 'postcode'],

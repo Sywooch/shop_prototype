@@ -44,8 +44,8 @@ class UsersModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     
-    public $name = '';
-    public $surname = '';
+    public $name;
+    public $surname;
     public $id_emails = 0;
     public $id_phones = 0;
     public $id_address = 0;
@@ -53,11 +53,11 @@ class UsersModel extends AbstractBaseModel
     /**
      * @var string пароль в незахэшированном виде
      */
-    public $rawPassword = '';
+    public $rawPassword;
     /**
      * @var string текущий пароль в незахэшированном виде, при смене пароля
      */
-    public $currentRawPassword = '';
+    public $currentRawPassword;
     
     /**
      * @var array массив ID rules, выбранных пользователем в форме

@@ -18,8 +18,8 @@ class BrandsModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    public $id = '';
-    public $brand = '';
+    public $id;
+    public $brand;
     
     public function scenarios()
     {

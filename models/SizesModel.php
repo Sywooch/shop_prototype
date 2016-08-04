@@ -18,8 +18,8 @@ class SizesModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    public $id = '';
-    public $size = '';
+    public $id;
+    public $size;
     /**
      * @var array массив id записей из БД
      */

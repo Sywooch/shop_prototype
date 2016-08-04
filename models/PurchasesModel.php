@@ -24,14 +24,14 @@ class PurchasesModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     
-    public $id = '';
-    public $id_users = '';
-    public $id_products = '';
-    public $quantity = '';
-    public $id_colors = '';
-    public $id_sizes = '';
-    public $id_deliveries = '';
-    public $id_payments = '';
+    public $id;
+    public $id_users;
+    public $id_products;
+    public $quantity;
+    public $id_colors;
+    public $id_sizes;
+    public $id_deliveries;
+    public $id_payments;
     
     private $_received = 0;
     private $_received_date = null;

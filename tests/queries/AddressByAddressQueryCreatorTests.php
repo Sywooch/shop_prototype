@@ -10,6 +10,9 @@ use app\queries\AddressByAddressQueryCreator;
  */
 class AddressByAddressQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_address = 'Some address';
+    private static $_city = 'Some city';
+    private static $_country = 'Some country';
     private static $_postcode = '34532';
     
     /**
@@ -20,7 +23,7 @@ class AddressByAddressQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'address',
             'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-            'params'=>[':postcode'=>self::$_postcode],
+            'params'=>[':address'=>self::$_address, ':city'=>self::$_city, ':country'=>self::$_country, ':postcode'=>self::$_postcode],
         ]);
         
         $queryCreator = new AddressByAddressQueryCreator();
@@ -33,20 +36,22 @@ class AddressByAddressQueryCreatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует создание строки SQL запроса
-     * при условии отсутствия postcode
+     * при условии отсутствия country, postcode
      */
     public function testGetInsertQueryWithoutPostcode()
     {
         $mockObject = new MockObject([
             'tableName'=>'address',
             'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-            'params'=>[],
+            'params'=>[':address'=>self::$_address, ':city'=>self::$_city],
         ]);
         
         $queryCreator = new AddressByAddressQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[address.id]],[[address.address]],[[address.city]],[[address.country]],[[address.postcode]] FROM {{address}} WHERE [[address.address]]=:address AND [[address.city]]=:city AND [[address.country]]=:country';
+        $query = 'SELECT [[address.id]],[[address.address]],[[address.city]],[[address.country]],[[address.postcode]] FROM {{address}} WHERE [[address.address]]=:address AND [[address.city]]=:city';
+        
+        $this->assertEquals($query, $mockObject->query);
         
         $this->assertEquals($query, $mockObject->query);
     }

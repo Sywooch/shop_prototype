@@ -24,7 +24,7 @@ class PhonesModel extends AbstractBaseModel
      */
     const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
     
-    public $phone = '';
+    public $phone;
     private $_id = null;
     
     public function scenarios()

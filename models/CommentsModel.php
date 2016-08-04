@@ -21,15 +21,15 @@ class CommentsModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     
-    public $id = '';
-    public $text = '';
-    public $name = '';
-    public $id_products = '';
-    public $active = '';
+    public $id;
+    public $text;
+    public $name;
+    public $id_products;
+    public $active;
     
-    public $email = '';
-    public $categories = '';
-    public $subcategory = '';
+    public $email;
+    public $categories;
+    public $subcategory;
     
     private $_id_emails = null;
     

@@ -19,8 +19,8 @@ class PaymentsModel extends AbstractBaseModel
      */
     const GET_FROM_DB = 'getFromDb';
     
-    public $name = '';
-    public $description = '';
+    public $name;
+    public $description;
     
     private $_id = null;
     private $_allPayments = null;

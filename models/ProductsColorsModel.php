@@ -18,8 +18,8 @@ class ProductsColorsModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    public $id_products = '';
-    public $id_colors = '';
+    public $id_products;
+    public $id_colors;
     
     public function scenarios()
     {

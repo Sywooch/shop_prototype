@@ -28,7 +28,7 @@ class EmailsModel extends AbstractBaseModel
     */
     const GET_FROM_LOGIN_FORM = 'getFromLoginForm';
     
-    public $email = '';
+    public $email;
     private $_id = null;
     
     public function scenarios()

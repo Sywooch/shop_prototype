@@ -13,15 +13,15 @@ class FiltersModel extends AbstractBaseModel
     public $sizes = array();
     public $brands = array();
     
-    public $sortingField = '';
-    public $sortingType = '';
+    public $sortingField;
+    public $sortingType;
     
     /**
      * Свойства содержат данные для редиректа после обработки запроса
      */
-    public $categories = '';
-    public $subcategory = '';
-    public $search = '';
+    public $categories;
+    public $subcategory;
+    public $search;
     
     public function rules()
     {

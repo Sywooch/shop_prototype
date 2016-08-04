@@ -18,8 +18,8 @@ class ColorsModel extends AbstractBaseModel
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
     
-    public $id = '';
-    public $color = '';
+    public $id;
+    public $color;
     /**
      * @var array массив id записей из БД
      */

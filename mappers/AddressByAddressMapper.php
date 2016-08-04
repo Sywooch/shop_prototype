@@ -30,14 +30,10 @@ class AddressByAddressMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
-                $this->params = [
-                    ':address'=>$this->model->address,
-                    ':city'=>$this->model->city,
-                    ':country'=>$this->model->country,
-                ];
-                if (!empty($this->model->postcode)) {
-                    $this->params[':postcode'] = $this->model->postcode;
-                }
+                $this->params[':address'] = $this->model->address ? $this->model->address : '';
+                $this->params[':city'] = $this->model->city ? $this->model->city : '';
+                $this->params[':country'] = $this->model->country ? $this->model->country : '';
+                $this->params[':postcode'] = $this->model->postcode ? $this->model->postcode : '';
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -19,9 +19,9 @@ class DeliveriesModel extends AbstractBaseModel
      */
     const GET_FROM_DB = 'getFromDb';
     
-    public $name = '';
-    public $description = '';
-    public $price = '';
+    public $name;
+    public $description;
+    public $price;
     
     private $_id = null;
     private $_allDeliveries = null;

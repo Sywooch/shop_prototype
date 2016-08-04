@@ -16,6 +16,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
     private static $_id = 1;
     private static $_address = 'Some address';
     private static $_city = 'Some city';
+    private static $_city2 = 'Some Another city';
     private static $_country = 'Some country';
     private static $_postcode = '06589';
     
@@ -30,7 +31,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{address}} SET [[id]]=:id, [[address]]=:address, [[city]]=:city');
-        $command->bindValues([':id'=>self::$_id + 1, ':address'=>self::$_address, ':city'=>self::$_city]);
+        $command->bindValues([':id'=>self::$_id + 1, ':address'=>self::$_address, ':city'=>self::$_city2]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -131,13 +132,17 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetId()
     {
-        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
-        $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
+        $model = new AddressModel();
+        $model->address = self::$_address;
+        $model->city = self::$_city;
+        $model->country = self::$_country;
+        $model->postcode = self::$_postcode;
         
         $this->assertEquals(self::$_id, $model->id);
         
-        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);
-        $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, ];
+        $model = new AddressModel();
+        $model->address = self::$_address;
+        $model->city = self::$_city2;
         
         $this->assertEquals(self::$_id + 1, $model->id);
     }

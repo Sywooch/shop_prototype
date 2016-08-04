@@ -14,10 +14,10 @@ class SubcategoryModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     
-    public $id = '';
-    public $name = '';
-    public $seocode = '';
-    public $id_categories = '';
+    public $id;
+    public $name;
+    public $seocode;
+    public $id_categories;
     
     public function scenarios()
     {
