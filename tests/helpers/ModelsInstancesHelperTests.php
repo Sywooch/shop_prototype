@@ -11,7 +11,8 @@ use app\models\{FiltersModel,
     CommentsModel,
     BrandsModel,
     ColorsModel,
-    SizesModel};
+    SizesModel,
+    MailingListModel};
 
 /**
  * Тестирует класс app\helpers\ModelsInstancesHelper
@@ -57,6 +58,7 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('brandsModelForAddToCart', $result));
         $this->assertTrue(array_key_exists('colorsModelForAddToCart', $result));
         $this->assertTrue(array_key_exists('sizesModelForAddToCart', $result));
+        $this->assertTrue(array_key_exists('mailingListModelForMailingForm', $result));
         
         $this->assertTrue($result['filtersModel'] instanceof FiltersModel);
         $this->assertTrue($result['productsModelForAddToCart'] instanceof ProductsModel);
@@ -67,6 +69,7 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result['brandsModelForAddToCart'] instanceof BrandsModel);
         $this->assertTrue($result['colorsModelForAddToCart'] instanceof ColorsModel);
         $this->assertTrue($result['sizesModelForAddToCart'] instanceof SizesModel);
+        $this->assertTrue($result['mailingListModelForMailingForm'] instanceof MailingListModel);
     }
     
     public static function tearDownAfterClass()

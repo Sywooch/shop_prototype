@@ -19,7 +19,8 @@ use app\models\{CategoriesModel,
     EmailsModel, 
     CommentsModel, 
     RulesModel, 
-    PurchasesModel};
+    PurchasesModel,
+    MailingListModel};
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -1182,6 +1183,26 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertEquals($id_products, $result['id_products']);
         $this->assertEquals($id_sizes, $result['id_sizes']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getMailingList
+     */
+    public function testGetMailingList()
+    {
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{mailing_list}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':description'=>self::$_description]);
+        $command->execute();
+        
+        $result = MappersHelper::getMailingList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof MailingListModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_name, $result[0]->name);
+        $this->assertEquals(self::$_description, $result[0]->description);
     }
     
     /**

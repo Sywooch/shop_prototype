@@ -44,8 +44,8 @@ class UsersModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     
-    public $name;
-    public $surname;
+    public $name = '';
+    public $surname = '';
     public $id_emails = 0;
     public $id_phones = 0;
     public $id_address = 0;

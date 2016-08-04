@@ -29,7 +29,7 @@ class ObjectsToArrayHelper
                 throw new ErrorException('Переданы неверные данные!');
             }
             foreach ($arrayObjects as $object) {
-                self::$_result[$object->id] = $object->name . '. ' . $object->description;
+                self::$_result[$object->id] = $object->description;
                 if ($object->price > 0) {
                     self::$_result[$object->id] .= ' Стоимость доставки: ' . number_format($object->price * \Yii::$app->shopUser->currency->exchange_rate, 2, '.', ' ') . ' ' . \Yii::$app->shopUser->currency->currency;
                 }
@@ -52,7 +52,7 @@ class ObjectsToArrayHelper
                 throw new ErrorException('Переданы неверные данные!');
             }
             foreach ($arrayObjects as $object) {
-                self::$_result[$object->id] = $object->name . '. ' . $object->description;
+                self::$_result[$object->id] = $object->description;
             }
             return self::$_result;
         } catch (\Exception $e) {

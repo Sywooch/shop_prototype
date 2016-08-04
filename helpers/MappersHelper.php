@@ -53,7 +53,8 @@ use app\mappers\{ColorsMapper,
     ProductsBrandsInsertMapper, 
     ProductsColorsInsertMapper, 
     ProductsSizesInsertMapper, 
-    ProductsInsertMapper};
+    ProductsInsertMapper,
+    MailingListMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -1625,6 +1626,38 @@ class MappersHelper
                 return null;
             }
             return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов MailingListModel
+     * @return array of objects MailingListModel
+     */
+    public static function getMailingList()
+    {
+        try {
+            $mailingListMapper = new MailingListMapper([
+                'tableName'=>'mailing_list',
+                'fields'=>['id', 'name', 'description'],
+                'orderByField'=>'name',
+            ]);
+            $hash = self::createHash([
+                MailingListMapper::className(), 
+                $mailingListMapper->tableName, 
+                implode('', $mailingListMapper->fields), 
+                $mailingListMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $mailingListArray = $mailingListMapper->getGroup();
+            if (!is_array($mailingListArray) || empty($mailingListArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $mailingListArray);
+            return $mailingListArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

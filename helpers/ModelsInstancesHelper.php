@@ -10,7 +10,8 @@ use app\models\{ProductsModel,
     CommentsModel,
     BrandsModel,
     ColorsModel,
-    SizesModel};
+    SizesModel,
+    MailingListModel};
 
 /**
  * Предоставляет методы для создания экземпляров моделей
@@ -36,6 +37,7 @@ class ModelsInstancesHelper
             self::$_instancesArray['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
             self::$_instancesArray['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
             self::$_instancesArray['commentsModel'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
+            self::$_instancesArray['mailingListModelForMailingForm'] = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM]);
             return self::$_instancesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
