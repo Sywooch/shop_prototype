@@ -29,7 +29,7 @@ class ShoppingCart extends Object
      */
     private $_totalProducts = 0;
     /**
-     * @var object объект пользователя, связанного с заказами в корзине
+     * @var object объект UsersModel, связанный с заказами в корзине
      */
     public $user = null;
     
@@ -136,7 +136,7 @@ class ShoppingCart extends Object
     
     /**
      * Присваивает восстановленный из сесии массив объектов свойству $this->_productsArray
-     * @param array $productsArray массив объектов модели, представляющей продукт
+     * @param array $productsArray массив объектов ProductsModel
      * @return boolean
      */
     public function setProductsArray(Array $productsArray)
@@ -161,9 +161,30 @@ class ShoppingCart extends Object
             }
             
             $this->_productsArray = array();
-            $this->user = null;
+            if (!$this->cleanUser()) {
+                throw new ErrorException('Ошибка при удалении пользователя!');
+            }
             $cleanResult = SessionHelper::removeVarFromSession([
                 \Yii::$app->params['cartKeyInSession'],
+            ]);
+            if (!$cleanResult) {
+                throw new ErrorException('Ошибка при удалении переменной из сесии!');
+            }
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет объект $this->user
+     * @return boolean
+     */
+    public function cleanUser()
+    {
+        try {
+            $this->user = null;
+            $cleanResult = SessionHelper::removeVarFromSession([
                 \Yii::$app->params['cartKeyInSession'] . '.user',
                 \Yii::$app->params['cartKeyInSession'] . '.email',
                 \Yii::$app->params['cartKeyInSession'] . '.phone',

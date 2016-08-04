@@ -60,6 +60,9 @@ class UserAuthenticationHelper
     {
         try {
             \Yii::configure(\Yii::$app->shopUser, self::$_cleanArray);
+            if (!SessionHelper::removeVarFromSession([\Yii::$app->params['usersKeyInSession']])) {
+                throw new ErrorException('Ошибка удалении пользователя из сессии!');
+            }
             return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);

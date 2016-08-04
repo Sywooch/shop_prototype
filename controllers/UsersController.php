@@ -74,7 +74,7 @@ class UsersController extends AbstractBaseController
                     if (!UserAuthenticationHelper::fillFromForm($usersModel)) {
                         return $this->redirect(Url::to(['users/add-user', 'notexists'=>$usersModel->id_emails->email]));
                     }
-                    return $this->redirect(Url::to(['products-list/index']));
+                    return $this->redirect(Url::to(['users/show-user-account']));
                 }
             }
             $renderArray = array();
@@ -104,8 +104,8 @@ class UsersController extends AbstractBaseController
                         if (!UserAuthenticationHelper::clean()) {
                             throw new ErrorException('Ошибка при попытку выхода из аккаунта!');
                         }
-                        if (!SessionHelper::removeVarFromSession([\Yii::$app->params['usersKeyInSession']])) {
-                            throw new ErrorException('Ошибка удалении переменной сессии!');
+                        if (!\Yii::$app->cart->cleanUser()) {
+                            throw new ErrorException('Ошибка при удалении пользователя!');
                         }
                     }
                 }

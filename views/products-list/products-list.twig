@@ -20,7 +20,7 @@
             {% if product.date %}
                 {{ app.formatter.asDate(product.date, 'dd.MM.yyyy') }}<br>
             {% endif %}
-            <strong><a href="{{ url.to({0:'product-detail/index', 'categories': product.categories, 'subcategory': product.subcategory, 'id': product.id}) }}">{{ product.name }}</a></strong>
+            <strong><a href="{{ url.to({0:'product-detail/index', 'categories': product.categories, 'subcategory': product.subcategory, 'id': product.id}) }}">{{ product.name | raw }}</a></strong>
             {% if product.images %}
                 <br><img src="{{ picturesHelper.getOneThumbnail('@pic', product.images) }}">
             {% endif %}

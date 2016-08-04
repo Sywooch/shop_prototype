@@ -3,6 +3,7 @@
 namespace app\tests\cart;
 
 use app\tests\DbManager;
+use app\tests\MockModel;
 use app\models\ProductsModel;
 use app\helpers\MappersHelper;
 
@@ -82,6 +83,22 @@ class ShoppingCartTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(isset($productsArray[0]->quantity));
         $this->assertTrue(isset($productsArray[0]->categories));
         $this->assertTrue(isset($productsArray[0]->subcategory));
+    }
+    
+    /**
+    * Тестирует метод app\cart\ShoppingCart::cleanUser
+    */
+    public function testCleanUser()
+    {
+        $user = new MockModel(['id'=>self::$_id, 'name'=>self::$_name]);
+        \Yii::$app->cart->user = $user;
+        
+        $this->assertFalse(empty(\Yii::$app->cart->user));
+        
+        $result = \Yii::$app->cart->cleanUser();
+        
+        $this->assertTrue($result);
+        $this->assertTrue(empty(\Yii::$app->cart->user));
     }
     
     /**

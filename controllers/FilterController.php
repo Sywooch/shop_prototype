@@ -55,11 +55,11 @@ class FilterController extends AbstractBaseController
             }
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
-                    if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession']])) {
-                        throw new ErrorException('Ошибка при удалении переменной из сесии!');
-                    }
                     if (!\Yii::$app->filters->clean()) {
                         throw new ErrorException('Ошибка при очистке фильтров!');
+                    }
+                    if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession']])) {
+                        throw new ErrorException('Ошибка при удалении фильтров из сесии!');
                     }
                     if (!empty(\Yii::$app->filters->search)) {
                         $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>\Yii::$app->filters->search];
