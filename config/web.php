@@ -82,6 +82,8 @@ $config = [
                 'shopping-cart-pay'=>'shopping-cart/pay',
                 'subscribe'=>'newsletter/subscribe',
                 'subscribe-ok'=>'newsletter/subscribe-ok',
+                'subscription-exists'=>'newsletter/subscription-exists',
+                'unsubscribe/<email>/<hash>'=>'newsletter/unsubscribe',
                 'add-product'=>'products-manager/add-product',
                 'get-subcategory-ajax'=>'products-manager/get-subcategory-ajax',
             ],
@@ -159,6 +161,9 @@ $config = [
         'thumbnailsPrefix'=>'thumbn_', # префикс эскизов изображений
         'thumbnails'=>'thumbnails', # ключ по которому доступен массив эскизов изображений, в массиве, возвращаемом app\helpers\PicturesHelper
         'fullpath'=>'fullpath', # ключ по которому доступен массив полноразмерных изображений, в массиве, возвращаемом app\helpers\PicturesHelper
+        
+        # Хэш
+        'hashSalt'=>'gh7Ujdf', # строка данных, которая передаётся хеш-функции чтобы увеличить сложность взлома
     ],
 ];
 

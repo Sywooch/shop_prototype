@@ -4,6 +4,7 @@ namespace app\helpers;
 
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
+use app\helpers\HashHelper;
 use app\mappers\{ColorsMapper, 
     ColorsByIdMapper, 
     SizesMapper, 
@@ -56,7 +57,8 @@ use app\mappers\{ColorsMapper,
     ProductsInsertMapper,
     MailingListMapper,
     EmailsMailingListInsertMapper,
-    MailingListByIdMapper};
+    MailingListByIdMapper,
+    MailingListForEmailMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -1730,6 +1732,41 @@ class MappersHelper
     }
     
     /**
+     * Получает массив объектов MailingListModel для текущего EmailsModel по email
+     * @param object $emailsModel экземпляр EmailsModel
+     * @return array of objects MailingListModel
+     */
+    public static function getMailingListForEmail(EmailsModel $emailsModel)
+    {
+        try {
+            $mailingListForEmailMapper = new MailingListForEmailMapper([
+                'tableName'=>'mailing_list',
+                'fields'=>['id', 'name', 'description'],
+                'orderByField'=>'name',
+                'model'=>$emailsModel,
+            ]);
+            $hash = self::createHash([
+                MailingListForEmailMapper::className(), 
+                $mailingListForEmailMapper->tableName, 
+                implode('', $mailingListForEmailMapper->fields), 
+                $mailingListForEmailMapper->orderByField,
+                $mailingListForEmailMapper->model->email,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $mailingList = $mailingListForEmailMapper->getGroup();
+            if (!is_array($mailingList) || empty($mailingList)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $mailingList);
+            return $mailingList;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Обнуляет значение всех свойств класса
      * @return boolean
      */
@@ -1785,8 +1822,7 @@ class MappersHelper
     private static function createHash(Array $inputArray)
     {
         try {
-            $inputString = implode('-', $inputArray);
-            return md5($inputString);
+            return HashHelper::createHash($inputArray);
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

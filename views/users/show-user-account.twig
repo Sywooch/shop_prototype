@@ -47,6 +47,8 @@
 
 {% include '@app/views/parts/user-update-form.twig' %}
 
+<p><a href="{{ url.to({0:'newsletter/subscribe'}) }}">Управление подписками</a></p>
+
 {% if purchasesList %}
     <p><strong>Your purchases</strong></p>
     

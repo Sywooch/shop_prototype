@@ -11,7 +11,24 @@
 
 <p><strong>Subscribe</strong></p>
 
-<p>Хотите первыми узнавать о новых товарах, скидках и получать специальные предложения? Отмечайте понравившиеся рассылки!</p>
+{% if currentMailingList %}
+    <p>Рассылки, на которые вы уже подписаны:</p>
+    <ul>
+        {% for object in currentMailingList %}
+            <li>{{ object.name }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
-{% include '@app/views/parts/add-subscriber-form.twig' %}
+{% if mailingList %}
+    <p>Хотите первыми узнавать о новых товарах, скидках и получать специальные предложения? Отмечайте понравившиеся рассылки!</p>
+
+    {{ use('yii/widgets/ActiveForm') }}
+    
+    {% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:'newsletter/subscribe-ok'}), method: 'POST'}) %}
+        {{ form.field(emailsModel, 'email') | raw }}
+        {{ form.field(mailingListModel, 'idFromForm').checkboxList(array.map(mailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}
+        <input type="submit" value="Subscribe" />
+    {{ active_form_end() }}
+{% endif %}
 

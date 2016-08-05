@@ -317,7 +317,14 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             if (MappersHelper::setPurchasesInsert()) {
-                if (!MailHelper::send([['template'=>'@app/views/mail/customer.twig', 'setFrom'=>['test@test.com'=>'John'], 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 'setSubject'=>'Hello!']])) {
+                if (!MailHelper::send([
+                    [
+                        'template'=>'@app/views/mail/customer.twig', 
+                        'setFrom'=>['test@test.com'=>'John'], 
+                        'setTo'=>['timofey@localhost.localdomain'=>'John Doe'], 
+                        'setSubject'=>'Hello!'
+                    ]
+                ])) {
                     throw new ErrorException('Ошибка при отправке E-mail сообщения!');
                 }
                 $userEmailsModel = \Yii::$app->cart->user->emails;

@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
+use yii\helpers\{Url,
+    ArrayHelper};
 use app\controllers\AbstractBaseController;
 use app\helpers\{UserAuthenticationHelper, 
     MappersHelper, 
@@ -49,6 +50,12 @@ class UsersController extends AbstractBaseController
                         throw new ErrorException('Ошибка при сохранении данных пользователя!');
                     }
                     if (!empty($mailingListModel->idFromForm)) {
+                        if ($currentSubscribes = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>$emailsModel->email]))) {
+                            if (!$arrayDiff = array_diff($mailingListModel->idFromForm, ArrayHelper::getColumn($currentSubscribes, 'id'))) {
+                                return $this->redirect(Url::to(['users/login-user', 'added'=>true]));
+                            }
+                            $mailingListModel->idFromForm = $arrayDiff;
+                        }
                         if (!MappersHelper::setEmailsMailingListInsert($emailsModel, $mailingListModel)) {
                             throw new ErrorException('Ошибка при сохранении связи email с подписками на рассылки!');
                         }

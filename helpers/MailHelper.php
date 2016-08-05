@@ -21,7 +21,7 @@ class MailHelper
      * Формирует и отправляет сообщение пользователю
      * @param array $messagesArray массив данных для создания сообщений. Каждая группа данных, представляющая письмо является массивом
      * Элементы $messagesArray: 
-     * - template - string имя шаблона
+     * - template - string путь к шаблону
      * - setFrom - array адрес отправителя array('email@address.com' => 'Real Name')
      * - setTo - array адрес получателя array('email@address.com' => 'Real Name')
      * - setBcc - array адрес получателя скрытой копии array('email@address.com' => 'Real Name')

@@ -1256,6 +1256,25 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getMailingListForEmail
+     */
+    public function testGetMailingListForEmail()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{mailing_list}}')->queryAll()));
+        $email = \Yii::$app->db->createCommand('SELECT [[email]] FROM {{emails}} LIMIT 1')->queryScalar();
+        
+        $model = new EmailsModel();
+        $model->email = $email;
+        
+        $result = MappersHelper::getMailingListForEmail($model);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0]  instanceof MailingListModel);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getObjectRegistry
      */
     public function testGetObjectRegistry()

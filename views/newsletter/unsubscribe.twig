@@ -1,0 +1,22 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/short-cart.twig' %}
+
+{% include '@app/views/parts/search.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+<p><strong>Unsubscribe</strong></p>
+
+<p>Если вы окончательно решили отписаться, выберите рассылку, которую вы хотите исключить и нажмите Отписаться.</p>
+
+{{ use('yii\widgets\ActiveForm') }}
+
+{% set form=active_form_begin({'id':'unsubscribe-form', 'action':'', 'method':'POST'}) %}
+    {{ form.field(mailingListModel, 'idFromForm').checkboxList(array.map(mailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}
+    <input type="submit" value="Отписаться">
+{{ active_form_end() }}
+
