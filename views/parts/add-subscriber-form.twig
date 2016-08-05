@@ -1,0 +1,8 @@
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:'newsletter/subscribe-ok'}), method: 'POST'}) %}
+    {{ form.field(emailsModel, 'email') | raw }}
+    {{ form.field(mailingListModel, 'idFromForm').checkboxList(array.map(mailingListModel.allMailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}
+    <input type="submit" value="Subscribe" />
+{{ active_form_end() }}

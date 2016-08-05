@@ -21,6 +21,8 @@ class MockObject extends AbstractBaseMapper
     public $extension;
     public $tempName;
     public $sphynxArray;
+    public $id_email;
+    public $id_mailing_list;
     
     public function init()
     {

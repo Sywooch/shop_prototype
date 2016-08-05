@@ -94,7 +94,6 @@ class ShoppingCartController extends AbstractBaseController
             }
             $renderArray = array();
             $renderArray['objectsProductsList'] = \Yii::$app->cart->getProductsArray();
-            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('shopping-cart.twig', $renderArray);
         } catch (\Exception $e) {
@@ -216,7 +215,6 @@ class ShoppingCartController extends AbstractBaseController
             $renderArray['phonesModel'] = $phonesModel;
             $renderArray['deliveriesModel'] = $deliveriesModel;
             $renderArray['paymentsModel'] = $paymentsModel;
-            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('address-contacts.twig', $renderArray);
         } catch (\Exception $e) {
@@ -239,7 +237,6 @@ class ShoppingCartController extends AbstractBaseController
             }
             $renderArray = array();
             $renderArray['objectsProductsList'] = \Yii::$app->cart->getProductsArray();
-            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('check-pay.twig', $renderArray);
         } catch (\Exception $e) {
@@ -333,7 +330,6 @@ class ShoppingCartController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['email'] = $userEmailsModel;
-            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('thank.twig', $renderArray);
         } catch (\Exception $e) {

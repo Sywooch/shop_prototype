@@ -5,8 +5,9 @@ namespace app\helpers;
 use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
-use app\models\DeliveriesModel;
-use app\models\PaymentsModel;
+use app\models\{DeliveriesModel,
+    PaymentsModel, 
+    CategoriesModel};
 
 /**
  * Предоставляет методы для конструирования строк из данных БД
@@ -16,9 +17,10 @@ class ObjectsToArrayHelper
     use ExceptionsTrait;
     
     private static $_result = array();
+    public static $_stopCategories = ['Главная'];
     
     /**
-     * Конструирует массив данных для формы DeliveriesModel
+     * Конструирует массив данных для формы выбора способа доставки
      * @param array $arrayObjects массив объектов DeliveriesModel
      * @return array
      */
@@ -41,7 +43,7 @@ class ObjectsToArrayHelper
     }
     
     /**
-     * Конструирует массив данных для формы PaymentsModel
+     * Конструирует массив данных для формы выбора способа оплаты
      * @param array $arrayObjects массив объектов PaymentsModel
      * @return array
      */
@@ -59,4 +61,26 @@ class ObjectsToArrayHelper
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Конструирует массив CategoriesModel для формы добавления продукта
+     * @param array $arrayObjects массив объектов CategoriesModel
+     * @return array
+     */
+     public static function getCategoriesToAddProductArray(Array $arrayObjects)
+     {
+        try {
+            if (empty($arrayObjects) || !is_object($arrayObjects[0]) || !$arrayObjects[0] instanceof CategoriesModel) {
+                throw new ErrorException('Переданы неверные данные!');
+            }
+            foreach ($arrayObjects as $object) {
+                if (!in_array($object->name, self::$_stopCategories)) {
+                    self::$_result[$object->id] = $object->name;
+                }
+            }
+            return self::$_result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+     }
 }

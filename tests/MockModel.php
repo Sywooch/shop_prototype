@@ -52,4 +52,6 @@ class MockModel extends AbstractBaseModel
     public $id_colors;
     public $id_sizes;
     public $short_description;
+    public $id_email;
+    public $id_mailing_list;
 }

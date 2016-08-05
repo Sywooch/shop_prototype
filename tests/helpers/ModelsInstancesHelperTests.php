@@ -12,7 +12,8 @@ use app\models\{FiltersModel,
     BrandsModel,
     ColorsModel,
     SizesModel,
-    MailingListModel};
+    MailingListModel,
+    CategoriesModel};
 
 /**
  * Тестирует класс app\helpers\ModelsInstancesHelper
@@ -24,6 +25,8 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
     private static $_currency = 'EUR';
     private static $_exchange_rate = '12.456';
     private static $_main = '1';
+    private static $_name = 'Some Name';
+    private static $_categorySeocode = 'mensfootwear';
     
     public static function setUpBeforeClass()
     {
@@ -32,6 +35,10 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
         $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -59,6 +66,8 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('colorsModelForAddToCart', $result));
         $this->assertTrue(array_key_exists('sizesModelForAddToCart', $result));
         $this->assertTrue(array_key_exists('mailingListModelForMailingForm', $result));
+        $this->assertTrue(array_key_exists('categoriesList', $result));
+        $this->assertTrue(array_key_exists('currencyList', $result));
         
         $this->assertTrue($result['filtersModel'] instanceof FiltersModel);
         $this->assertTrue($result['productsModelForAddToCart'] instanceof ProductsModel);
@@ -70,6 +79,8 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result['colorsModelForAddToCart'] instanceof ColorsModel);
         $this->assertTrue($result['sizesModelForAddToCart'] instanceof SizesModel);
         $this->assertTrue($result['mailingListModelForMailingForm'] instanceof MailingListModel);
+        $this->assertTrue($result['categoriesList'][0] instanceof CategoriesModel);
+        $this->assertTrue($result['currencyList'][0] instanceof CurrencyModel);
     }
     
     public static function tearDownAfterClass()

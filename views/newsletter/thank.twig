@@ -1,0 +1,23 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/short-cart.twig' %}
+
+{% include '@app/views/parts/search.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+<p><strong>Subscribe</strong></p>
+
+<p>Добро пожаловать в сообщество подписчиков! Вы подписались на рассылки:
+    <ol>
+        {% for name in array.getColumn(mailingList, 'name') %}
+            <li>{{ name }}</li>
+        {% endfor %}
+    </ol>
+</p>
+
+<p>Еженедельно вы будете получать на {{ emailsModel.email }} обзоры новых товаров, скидки и специальные предложения для подписчиков! Дополнительную информацию мы отправили на этот же Email! Мы рады что вы с нами! Хорошего дня!</p>
+

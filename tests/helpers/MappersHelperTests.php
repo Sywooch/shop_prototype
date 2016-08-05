@@ -1206,6 +1206,56 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::setEmailsMailingListInsert
+     */
+    public function testSetEmailsMailingListInsert()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails_mailing_list}}')->queryAll()));
+        
+        $id_emails = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{emails}} LIMIT 1')->queryScalar();
+        $id_mailing_list = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{mailing_list}} LIMIT 1')->queryScalar();
+        
+        $emailsModel = new EmailsModel();
+        $emailsModel->id = $id_emails;
+        
+        $mailingListModel = new MailingListModel();
+        $mailingListModel->idFromForm = [$id_mailing_list];
+        
+        $result = MappersHelper::setEmailsMailingListInsert($emailsModel, $mailingListModel);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailing_list}}')->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id_emails, $result['id_email']);
+        $this->assertEquals($id_mailing_list, $result['id_mailing_list']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getMailingListById
+     */
+    public function testGetMailingListById()
+    {
+        $id_mailingList = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{mailing_list}} LIMIT 1')->queryScalar();
+        
+        $mailingListModel = new MailingListModel();
+        $mailingListModel->id = $id_mailingList;
+        
+        $result = MappersHelper::getMailingListById($mailingListModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof MailingListModel);
+        
+        $this->assertFalse(empty($result->id));
+        $this->assertFalse(empty($result->name));
+        $this->assertFalse(empty($result->description));
+        
+        $this->assertEquals($id_mailingList, $result->id);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getObjectRegistry
      */
     public function testGetObjectRegistry()

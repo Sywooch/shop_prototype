@@ -1,0 +1,17 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/short-cart.twig' %}
+
+{% include '@app/views/parts/search.twig' %}
+
+{% include '@app/views/parts/menu.twig' %}
+
+<p><strong>Subscribe</strong></p>
+
+<p>Хотите первыми узнавать о новых товарах, скидках и получать специальные предложения? Отмечайте понравившиеся рассылки!</p>
+
+{% include '@app/views/parts/add-subscriber-form.twig' %}
+

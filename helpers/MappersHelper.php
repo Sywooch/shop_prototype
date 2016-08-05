@@ -54,7 +54,9 @@ use app\mappers\{ColorsMapper,
     ProductsColorsInsertMapper, 
     ProductsSizesInsertMapper, 
     ProductsInsertMapper,
-    MailingListMapper};
+    MailingListMapper,
+    EmailsMailingListInsertMapper,
+    MailingListByIdMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -68,7 +70,8 @@ use app\models\{AddressModel,
     SubcategoryModel, 
     BrandsModel, 
     ColorsModel, 
-    SizesModel};
+    SizesModel,
+    MailingListModel};
 
 /**
  * Коллекция методов для работы с БД
@@ -1658,6 +1661,69 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $mailingListArray);
             return $mailingListArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись EmailsMailingListModel в БД, связывающую email с рассылками
+     * @param object $emailsModel экземпляр EmailsModel
+     * @param object $mailingListModel экземпляр MailingListModel
+     * @return boolean
+     */
+    public static function setEmailsMailingListInsert(EmailsModel $emailsModel, MailingListModel $mailingListModel)
+    {
+        try {
+            if (!is_array($mailingListModel->idFromForm) || empty($mailingListModel->idFromForm)) {
+                throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+            }
+            $arrayToDb = [];
+            foreach ($mailingListModel->idFromForm as $mailingListId) {
+                $arrayToDb[] = ['id_email'=>$emailsModel->id, 'id_mailing_list'=>$mailingListId];
+            }
+            $emailsMailingListInsertMapper = new EmailsMailingListInsertMapper([
+                'tableName'=>'emails_mailing_list',
+                'fields'=>['id_email', 'id_mailing_list'],
+                'DbArray'=>$arrayToDb,
+            ]);
+            if (!$result = $emailsMailingListInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает MailingListModel по id
+     * @param object $mailingListModel экземпляр MailingListModel
+     * @return object MailingListModel
+     */
+    public static function getMailingListById(MailingListModel $mailingListModel)
+    {
+        try {
+            $mailingListByIdMapper = new MailingListByIdMapper([
+                'tableName'=>'mailing_list',
+                'fields'=>['id', 'name', 'description'],
+                'model'=>$mailingListModel,
+            ]);
+            $hash = self::createHash([
+                MailingListByIdMapper::className(), 
+                $mailingListByIdMapper->tableName, 
+                implode('', $mailingListByIdMapper->fields), 
+                $mailingListByIdMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $mailingListModel = $mailingListByIdMapper->getOneFromGroup();
+            if (!is_object($mailingListModel) && !$mailingListModel instanceof MailingListModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $mailingListModel);
+            return $mailingListModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

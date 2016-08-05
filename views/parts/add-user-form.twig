@@ -4,7 +4,7 @@
 {% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:'users/add-user'}), method: 'POST'}) %}
     {{ form.field(emailsModel, 'email') | raw }}
     {{ form.field(usersModel, 'rawPassword').passwordInput() | raw }}
-    <p>Хотите получать еженедельные обзоры новых товаров, скидки и специальные предложения? Отмечайте понравившиеся рассылки!</p>
-    {{ form.field(mailingListModelForMailingForm, 'id').checkboxList(array.map(mailingListModelForMailingForm.allMailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}<br>
+    <p>Хотите первыми узнавать о новых товарах, скидках и получать специальные предложения? Отмечайте понравившиеся рассылки!</p>
+    {{ form.field(mailingListModelForMailingForm, 'idFromForm').checkboxList(array.map(mailingListModelForMailingForm.allMailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}<br>
     <input type="submit" value="Join" />
 {{ active_form_end() }}

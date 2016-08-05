@@ -3,8 +3,9 @@
 namespace app\tests\helpers;
 
 use app\helpers\ObjectsToArrayHelper;
-use app\models\DeliveriesModel;
-use app\models\PaymentsModel;
+use app\models\{DeliveriesModel,
+    PaymentsModel,
+    CategoriesModel};
 
 /**
  * Тестирует app\helpers\ObjectsToArrayHelper
@@ -15,8 +16,9 @@ class ObjectsToArrayHelperTests extends \PHPUnit_Framework_TestCase
     private static $_name = 'Some name';
     private static $_description = 'Some description.';
     private static $_price = 12.56;
-    private static $_expectedForDelivery = 'Some name. Some description. Стоимость доставки: ';
-    private static $_expectedForPayments = 'Some name. Some description.';
+    private static $_expectedForDelivery = 'Some description. Стоимость доставки: ';
+    private static $_expectedForPayments = 'Some description.';
+    private static $_categoriesData = [['id'=>1, 'name'=>'some name'], ['id'=>2, 'name'=>'some name2'], ['id'=>3, 'name'=>'Главная']];
     
     public static function setUpBeforeClass()
     {
@@ -65,7 +67,7 @@ class ObjectsToArrayHelperTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует выброс исключения в методе ObjectsToArrayHelper::getDeliveriesArray
-     * если аргумент объект не объект класса DeliveriesModel
+     * если аргумент не объект класса DeliveriesModel
      * @expectedException ErrorException
      */
     public function testExcThreeGetDeliveriesArray()
@@ -114,11 +116,45 @@ class ObjectsToArrayHelperTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует выброс исключения в методе ObjectsToArrayHelper::getPaymentsArray
-     * если аргумент объект не объект класса PaymentsModel
+     * если аргумент не объект класса PaymentsModel
      * @expectedException ErrorException
      */
     public function testExcThreeGetPaymentsArray()
     {
         $result = ObjectsToArrayHelper::getPaymentsArray([new DeliveriesModel()]);
+    }
+    
+     /**
+     * Тестирует метод ObjectsToArrayHelper::getCategoriesToAddProductArray
+     */
+    public function testGetCategoriesArray()
+    {
+        $model = new CategoriesModel();
+        $model->id = self::$_categoriesData[0]['id'];
+        $model->name = self::$_categoriesData[0]['name'];
+        
+        $model2 = new CategoriesModel();
+        $model2->id = self::$_categoriesData[1]['id'];
+        $model2->name = self::$_categoriesData[1]['name'];
+        
+        $model3 = new CategoriesModel();
+        $model3->id = self::$_categoriesData[2]['id'];
+        $model3->name = self::$_categoriesData[2]['name'];
+        
+        $result = ObjectsToArrayHelper::getCategoriesToAddProductArray([$model, $model2, $model3]);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(2, count($result));
+    }
+    
+    /**
+     * Тестирует выброс исключения в методе ObjectsToArrayHelper::getCategoriesToAddProductArray
+     * если аргумент не объект класса CategoriesModel
+     * @expectedException ErrorException
+     */
+    public function testExcGetCategoriesArray()
+    {
+        $result = ObjectsToArrayHelper::getCategoriesToAddProductArray([new DeliveriesModel()]);
     }
 }

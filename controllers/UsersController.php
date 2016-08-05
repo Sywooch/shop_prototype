@@ -5,8 +5,15 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
-use app\helpers\{UserAuthenticationHelper, MappersHelper, ModelsInstancesHelper, SessionHelper};
-use app\models\{UsersModel, EmailsModel, PhonesModel, AddressModel};
+use app\helpers\{UserAuthenticationHelper, 
+    MappersHelper, 
+    ModelsInstancesHelper, 
+    SessionHelper};
+use app\models\{UsersModel, 
+    EmailsModel, 
+    PhonesModel, 
+    AddressModel, 
+    MailingListModel};
 
 /**
  * Управляет работой с пользователями
@@ -23,9 +30,10 @@ class UsersController extends AbstractBaseController
         try {
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
             $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION_FORM]);
+            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM]);
             
-            if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post())) {
-                if ($emailsModel->validate() && $usersModel->validate()) {
+            if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post()) && $mailingListModel->load(\Yii::$app->request->post())) {
+                if ($emailsModel->validate() && $usersModel->validate() && $mailingListModel->validate()) {
                     if ($emailsModelFromDb = MappersHelper::getEmailsByEmail($emailsModel)) {
                         $emailsModel = $emailsModelFromDb;
                     } else {
@@ -40,13 +48,17 @@ class UsersController extends AbstractBaseController
                     if (!MappersHelper::setUsersRulesInsert($usersModel)) {
                         throw new ErrorException('Ошибка при сохранении данных пользователя!');
                     }
+                    if (!empty($mailingListModel->idFromForm)) {
+                        if (!MappersHelper::setEmailsMailingListInsert($emailsModel, $mailingListModel)) {
+                            throw new ErrorException('Ошибка при сохранении связи email с подписками на рассылки!');
+                        }
+                    }
                     return $this->redirect(Url::to(['users/login-user', 'added'=>true]));
                 }
             }
             $renderArray = array();
             $renderArray['usersModel'] = $usersModel;
             $renderArray['emailsModel'] = $emailsModel;
-            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('add-user.twig', $renderArray);
         } catch (\Exception $e) {
@@ -80,7 +92,6 @@ class UsersController extends AbstractBaseController
             $renderArray = array();
             $renderArray['usersModel'] = $usersModel;
             $renderArray['emailsModel'] = $emailsModel;
-            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('login-user.twig', $renderArray);
         } catch (\Exception $e) {
@@ -150,7 +161,6 @@ class UsersController extends AbstractBaseController
             $renderArray['phonesModel'] = $phonesModel;
             $renderArray['addressModel'] = $addressModel;
             $renderArray['purchasesList'] = MappersHelper::getPurchasesForUserList(\Yii::$app->shopUser);
-            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-user-account.twig', $renderArray);
         } catch (\Exception $e) {

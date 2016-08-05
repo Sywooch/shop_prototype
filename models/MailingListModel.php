@@ -15,21 +15,41 @@ class MailingListModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromBd';
     /**
-     * Сценарий загрузки данных из формы подписки на рассылку
+     * Сценарий загрузки данных из формы подписки на рассылку для формы регистрации
     */
     const GET_FROM_MAILING_FORM = 'getFromMailingForm';
+    /**
+     * Сценарий загрузки данных из формы подписки на рассылку для формы подписки
+    */
+    const GET_FROM_MAILING_FORM_REQUIRE = 'getFromMailingFormRequire';
     
     public $id;
     public $name;
     public $description;
     
+    /**
+     * @var array массив всех объектов MailingListModel из БД
+     */
     private $_allMailingList = null;
+    
+    /**
+     * @var array массив ID, полученный из формы
+     */
+    public $idFromForm;
     
     public function scenarios()
     {
         return [
             self::GET_FROM_DB=>['id', 'name', 'description'],
-            self::GET_FROM_MAILING_FORM=>['id'],
+            self::GET_FROM_MAILING_FORM=>['idFromForm'],
+            self::GET_FROM_MAILING_FORM_REQUIRE=>['idFromForm'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['idFromForm'], 'required', 'on'=>self::GET_FROM_MAILING_FORM_REQUIRE],
         ];
     }
     

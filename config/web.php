@@ -80,6 +80,8 @@ $config = [
                 'shopping-cart-checkout'=>'shopping-cart/address-contacts',
                 'shopping-cart-check-pay'=>'shopping-cart/check-pay',
                 'shopping-cart-pay'=>'shopping-cart/pay',
+                'subscribe'=>'newsletter/subscribe',
+                'subscribe-ok'=>'newsletter/subscribe-ok',
                 'add-product'=>'products-manager/add-product',
                 'get-subcategory-ajax'=>'products-manager/get-subcategory-ajax',
             ],

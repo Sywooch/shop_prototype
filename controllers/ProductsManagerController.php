@@ -56,7 +56,6 @@ class ProductsManagerController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['productsModelForAddProduct'] = $productsModelForAddProduct;
-            $renderArray['categoriesList'] = MappersHelper::getCategoriesList();
             $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
             $renderArray['colorsList'] = MappersHelper::getColorsList(false);
             $renderArray['sizesList'] = MappersHelper::getSizesList(false);
