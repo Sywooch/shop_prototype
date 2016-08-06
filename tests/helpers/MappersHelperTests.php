@@ -20,7 +20,8 @@ use app\models\{CategoriesModel,
     CommentsModel, 
     RulesModel, 
     PurchasesModel,
-    MailingListModel};
+    MailingListModel,
+    EmailsMailingListModel};
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -1272,6 +1273,34 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertTrue(is_object($result[0]));
         $this->assertTrue($result[0]  instanceof MailingListModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setEmailsMailingListDelete
+     */
+    public function testSetEmailsMailingListDelete()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails}}')->queryAll()));
+        $id_email = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{emails}} LIMIT 1')->queryScalar();
+        
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{mailing_list}}')->queryAll()));
+        $id_mailing_list = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{mailing_list}} LIMIT 1')->queryScalar();
+        
+        \Yii::$app->db->createCommand('DELETE FROM {{emails_mailing_list}}')->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{emails_mailing_list}} SET [[id_email]]=:id_email, [[id_mailing_list]]=:id_mailing_list');
+        $command->bindValues([':id_email'=>$id_email, ':id_mailing_list'=>$id_mailing_list]);
+        $command->execute();
+        
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails_mailing_list}}')->queryAll()));
+        
+        $model = new EmailsMailingListModel(['id_email'=>$id_email, 'id_mailing_list'=>$id_mailing_list]);
+        
+        $result = MappersHelper::setEmailsMailingListDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails_mailing_list}}')->queryAll()));
     }
     
     /**

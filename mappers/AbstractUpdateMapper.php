@@ -17,7 +17,7 @@ abstract class AbstractUpdateMapper extends AbstractInsertMapper
             parent::init();
             
             if (empty($this->model) || !$this->model instanceof AbstractBaseModel) {
-                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
+                throw new ErrorException('Не определен объект модели, для которой необходимо обновить данные!');
             }
             
             if (empty($this->params)) {

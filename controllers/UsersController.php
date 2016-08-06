@@ -9,7 +9,9 @@ use app\controllers\AbstractBaseController;
 use app\helpers\{UserAuthenticationHelper, 
     MappersHelper, 
     ModelsInstancesHelper, 
-    SessionHelper};
+    SessionHelper,
+    MailHelper,
+    HashHelper};
 use app\models\{UsersModel, 
     EmailsModel, 
     PhonesModel, 
@@ -58,6 +60,21 @@ class UsersController extends AbstractBaseController
                         }
                         if (!MappersHelper::setEmailsMailingListInsert($emailsModel, $mailingListModel)) {
                             throw new ErrorException('Ошибка при сохранении связи email с подписками на рассылки!');
+                        }
+                        if (!MailHelper::send([
+                            [
+                                'template'=>'@app/views/mail/subscribe-ok.twig', 
+                                'setFrom'=>['admin@shop.com'=>'Shop'], 
+                                'setTo'=>['timofey@localhost.localdomain'=>'John Doe'], 
+                                'setSubject'=>'Hello!', 
+                                'dataForTemplate'=>[
+                                    'mailingList'=>$mailingListModel->getObjectsFromIdFromForm(), 
+                                    'emailsModel'=>$emailsModel,
+                                    'hash'=>HashHelper::createHash([$emailsModel->email, \Yii::$app->params['hashSalt']]),
+                                ],
+                            ]
+                        ])) {
+                            throw new ErrorException('Ошибка при отправке E-mail сообщения!');
                         }
                     }
                     return $this->redirect(Url::to(['users/login-user', 'added'=>true]));

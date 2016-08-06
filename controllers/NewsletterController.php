@@ -4,9 +4,11 @@ namespace app\controllers;
 
 use yii\helpers\{Url,
     ArrayHelper};
+use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\models\{EmailsModel,
-    MailingListModel};
+    MailingListModel,
+    EmailsMailingListModel};
 use app\helpers\{ModelsInstancesHelper,
     MappersHelper,
     MailHelper,
@@ -95,9 +97,7 @@ class NewsletterController extends AbstractBaseController
             }
             
             $renderArray = array();
-            foreach ($mailingListModel->idFromForm as $id) {
-                $renderArray['mailingList'][] = MappersHelper::getMailingListById(new MailingListModel(['id'=>$id]));
-            }
+            $renderArray['mailingList'] = $mailingListModel->getObjectsFromIdFromForm();
             $renderArray['emailsModel'] = $emailsModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             if (!MailHelper::send([
@@ -109,14 +109,13 @@ class NewsletterController extends AbstractBaseController
                     'dataForTemplate'=>[
                         'mailingList'=>$renderArray['mailingList'], 
                         'emailsModel'=>$renderArray['emailsModel'], 
-                        //'hash'=>HashHelper::createHash([$emailsModel->email, implode('', ArrayHelper::getColumn($renderArray['mailingList'], 'name')), \Yii::$app->params['hashSalt']]),
                         'hash'=>HashHelper::createHash([$emailsModel->email, \Yii::$app->params['hashSalt']]),
                     ],
                 ]
             ])) {
                 throw new ErrorException('Ошибка при отправке E-mail сообщения!');
             }
-            return $this->render('thank.twig', $renderArray);
+            return $this->render('subscribe-ok.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -133,11 +132,7 @@ class NewsletterController extends AbstractBaseController
             $renderArray = array();
             $renderArray['mailingList'] = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>\Yii::$app->request->get('email')]));
             
-            //$hashArray = [];
             if (\Yii::$app->request->isGet && !empty(\Yii::$app->request->get('email')) && !empty(\Yii::$app->request->get('hash'))) {
-                //$hashArray[] = \Yii::$app->request->get('email');
-                //$hashArray[] = implode('', ArrayHelper::getColumn($renderArray['mailingList'], 'name'));
-                //$hashArray[] = \Yii::$app->params['hashSalt'];
                 $hash = HashHelper::createHash([\Yii::$app->request->get('email'), \Yii::$app->params['hashSalt']]);
                 if ($hash != \Yii::$app->request->get('hash')) {
                     return $this->render('error-unsubscribe.twig');
@@ -146,9 +141,47 @@ class NewsletterController extends AbstractBaseController
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
+            $renderArray['emailsModel'] = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM, 'email'=>\Yii::$app->request->get('email')]);
             $renderArray['mailingListModel'] = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('unsubscribe.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет процессом оповещения о удачном завершении процесса отписки
+     * @return string
+     */
+    public function actionUnsubscribeOk()
+    {
+        try {
+            $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+            
+            if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $mailingListModel->load(\Yii::$app->request->post())) {
+                if ($emailsModel->validate() && $mailingListModel->validate()) {
+                    if (empty($mailingListModel->idFromForm)) {
+                        throw new ErrorException('Отсутствуют необходимые данные!');
+                    }
+                    $emailsMailingList = [];
+                    foreach ($mailingListModel->getObjectsFromIdFromForm() as $mailingListObject) {
+                        $emailsMailingList[] = new EmailsMailingListModel(['id_email'=>$emailsModel->id, 'id_mailing_list'=>$mailingListObject->id]);
+                    }
+                    if (!MappersHelper::setEmailsMailingListDelete($emailsMailingList)) {
+                        throw new ErrorException('Ошибка при удалении данных из БД!');
+                    }
+                }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
+            }
+            
+            $renderArray = array();
+            $renderArray['mailingList'] = $mailingListModel->getObjectsFromIdFromForm();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('unsubscribe-ok.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

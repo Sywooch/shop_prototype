@@ -13,8 +13,12 @@ class MailingListModelTests extends \PHPUnit_Framework_TestCase
     private static $_dbClass;
     private static $_reflectionClass;
     private static $_id = 2;
+    private static $_id2 = 23;
+    private static $_id3 = 12;
     private static $_idFromForm = [23,12,34];
     private static $_name = 'some name';
+    private static $_name2 = 'some name 2';
+    private static $_name3 = 'some name 3';
     private static $_description = 'some description';
     
     public static function setUpBeforeClass()
@@ -26,6 +30,14 @@ class MailingListModelTests extends \PHPUnit_Framework_TestCase
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{mailing_list}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':description'=>self::$_description]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{mailing_list}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description');
+        $command->bindValues([':id'=>self::$_id2, ':name'=>self::$_name2, ':description'=>self::$_description]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{mailing_list}} SET [[id]]=:id, [[name]]=:name, [[description]]=:description');
+        $command->bindValues([':id'=>self::$_id3, ':name'=>self::$_name3, ':description'=>self::$_description]);
         $command->execute();
     }
     
@@ -98,6 +110,23 @@ class MailingListModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->allMailingList));
         $this->assertTrue(is_object($model->allMailingList[0]));
         $this->assertTrue($model->allMailingList[0] instanceof MailingListModel);
+    }
+    
+    /**
+     * Тестирует метод MailingListModel::getObjectsFromIdFromForm
+     */
+    public function testGetObjectsFromIdFromForm()
+    {
+        $model = new MailingListModel();
+        $model->idFromForm = [self::$_id, self::$_id2, self::$_id3];
+        
+        $result =  $model->getObjectsFromIdFromForm();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals(3, count($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof MailingListModel);
     }
     
     public static function tearDownAfterClass()

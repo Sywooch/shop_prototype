@@ -21,7 +21,7 @@
 {% endif %}
 
 {% if mailingList %}
-    <p>Хотите первыми узнавать о новых товарах, скидках и получать специальные предложения? Отмечайте понравившиеся рассылки!</p>
+    <p>Доступные рассылки:</p>
 
     {{ use('yii/widgets/ActiveForm') }}
     
@@ -29,6 +29,17 @@
         {{ form.field(emailsModel, 'email') | raw }}
         {{ form.field(mailingListModel, 'idFromForm').checkboxList(array.map(mailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}
         <input type="submit" value="Subscribe" />
+    {{ active_form_end() }}
+{% endif %}
+
+{% if app.shopUser.id_emails and app.shopUser.id and currentMailingList %}
+    <p>Если вы решили отписаться, выберите рассылку, которую вы хотите исключить и нажмите Отписаться.</p>
+    {{ use('yii/widgets/ActiveForm') }}
+    
+    {% set form=active_form_begin({'id':'unsubscribe-form', 'action':url.to({0:'newsletter/unsubscribe-ok'}), 'method':'POST'}) %}
+        {{ form.field(emailsModel, 'email').hiddenInput().label(false) | raw }}
+        {{ form.field(mailingListModel, 'idFromForm').checkboxList(array.map(currentMailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}
+        <input type="submit" value="Отписаться">
     {{ active_form_end() }}
 {% endif %}
 

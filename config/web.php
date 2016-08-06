@@ -84,6 +84,7 @@ $config = [
                 'subscribe-ok'=>'newsletter/subscribe-ok',
                 'subscription-exists'=>'newsletter/subscription-exists',
                 'unsubscribe/<email>/<hash>'=>'newsletter/unsubscribe',
+                'unsubscribe-ok'=>'newsletter/unsubscribe-ok',
                 'add-product'=>'products-manager/add-product',
                 'get-subcategory-ajax'=>'products-manager/get-subcategory-ajax',
             ],

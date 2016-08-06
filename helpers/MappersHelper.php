@@ -58,7 +58,8 @@ use app\mappers\{ColorsMapper,
     MailingListMapper,
     EmailsMailingListInsertMapper,
     MailingListByIdMapper,
-    MailingListForEmailMapper};
+    MailingListForEmailMapper,
+    EmailsMailingListDeleteMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -1761,6 +1762,29 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $mailingList);
             return $mailingList;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи EmailsMailingListModel из БД
+     * @param array массив объектов EmailsMailingListModel
+     * @return int
+     */
+    public static function setEmailsMailingListDelete(Array $emailsMailingListModelArray)
+    {
+        try {
+            $emailsMailingListDeleteMapper = new EmailsMailingListDeleteMapper([
+                'tableName'=>'emails_mailing_list',
+                'fields'=>['id_email', 'id_mailing_list'],
+                'objectsArray'=>$emailsMailingListModelArray,
+            ]);
+            $result = $emailsMailingListDeleteMapper->setGroup();
+            if (!$result) {
+                return null;
+            }
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

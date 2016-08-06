@@ -68,4 +68,24 @@ class MailingListModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив объектов MailingListModel для каждого ID в idFromForm
+     * @return array
+     */
+    public function getObjectsFromIdFromForm()
+    {
+        try {
+            $mailingList = array();
+            if (empty($this->idFromForm)) {
+                return null;
+            }
+            foreach ($this->idFromForm as $id) {
+                $mailingList[] = MappersHelper::getMailingListById(new self(['id'=>$id]));
+            }
+            return $mailingList;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }
