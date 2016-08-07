@@ -35,6 +35,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_id_emails = 42;
     private static $_images = 'images';
     private static $_name = 'Some Name';
+    private static $_path = 'products-list/index';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
     private static $_color = 'gray';

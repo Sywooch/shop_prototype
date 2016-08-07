@@ -1,16 +1,6 @@
 
-<p><strong>Menu</strong></p>
+<p><strong>Каталог товаров</strong></p>
 
-<ul>
-    {% for category in categoriesList %}
-        <li><a href="{{ url.to({0:'products-list/index', 'categories': category.seocode}) }}">{{ category.name }}</a>
-            {% if category.subcategory %}
-                <ul>
-                    {% for subcategory in category.subcategory %}
-                        <li><a href="{{ url.to({0:'products-list/index', 'categories': category.seocode, 'subcategory': subcategory.seocode}) }}">{{ subcategory.name }}</a></li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </li>
-    {% endfor %}
-</ul>
+{{ use('app/widgets/MenuWidget') }}
+
+{{ menu_widget_widget({'objectsList':categoriesList, 'route':'products-list/index'}) }}

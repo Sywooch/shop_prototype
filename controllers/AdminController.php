@@ -3,10 +3,6 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\web\{Response, 
-    UploadedFile};
-use yii\helpers\{Url, 
-    ArrayHelper};
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper, 
@@ -18,10 +14,25 @@ use app\models\{ProductsModel,
     SizesModel};
 
 /**
- * Управляет добавлением, удалением, обновлением товаров
+ * Управляет административными функциями
  */
-class ProductsManagerController extends AbstractBaseController
+class AdminController extends AbstractBaseController
 {
+    /**
+     * Управляет отображением основной страницы входа
+     */
+    public function actionIndex()
+    {
+        try {
+            $renderArray = array();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('index.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     /**
      * Добавляет продукт в БД
      * @return redirect
@@ -69,32 +80,6 @@ class ProductsManagerController extends AbstractBaseController
             $renderArray['sizesList'] = MappersHelper::getSizesList(false);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('add-product.twig', $renderArray);
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив объектов subcategory для category
-     * @return json
-     */
-    public function actionGetSubcategoryAjax()
-    {
-        try {
-            if (\Yii::$app->request->isAjax) {
-                if (!\Yii::$app->request->post('categoriesId')) {
-                    throw new ErrorException('Невозможно получить значение categoriesId!');
-                }
-                $response = \Yii::$app->response;
-                $response->format = Response::FORMAT_JSON;
-                if (!$subcategoriesArray = MappersHelper::getSubcategoryForCategoryList(new CategoriesModel(['id'=>\Yii::$app->request->post('categoriesId')]))) {
-                    throw new ErrorException('Ошибка при получении данных!');
-                }
-                return ArrayHelper::map($subcategoriesArray, 'id', 'name');
-            } else {
-                throw new ErrorException('Неверный тип запроса!');
-            }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

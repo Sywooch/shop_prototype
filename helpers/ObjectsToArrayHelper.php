@@ -17,7 +17,7 @@ class ObjectsToArrayHelper
     use ExceptionsTrait;
     
     private static $_result = array();
-    public static $_stopCategories = ['Главная'];
+    public static $allowCategories = ['Мужская обувь', 'Мужская одежда'];
     
     /**
      * Конструирует массив данных для формы выбора способа доставки
@@ -74,7 +74,7 @@ class ObjectsToArrayHelper
                 throw new ErrorException('Переданы неверные данные!');
             }
             foreach ($arrayObjects as $object) {
-                if (!in_array($object->name, self::$_stopCategories)) {
+                if (in_array($object->name, self::$allowCategories)) {
                     self::$_result[$object->id] = $object->name;
                 }
             }

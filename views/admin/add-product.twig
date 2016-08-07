@@ -23,7 +23,7 @@
     {{ form.field(colorsModelForAddToCart, 'idArray').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
     {{ form.field(sizesModelForAddToCart, 'idArray').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
     {{ form.field(productsModelForAddProduct, 'imagesToLoad[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
-    {{ form.field(productsModelForAddProduct, 'id_categories').dropDownList(array.merge({'':'Choose categoy'}, objectsToArrayHelper.getCategoriesToAddProductArray(categoriesList))) | raw }}
+    {{ form.field(productsModelForAddProduct, 'id_categories').dropDownList(array.merge({'':'Choose categoy'}, array.map(categoriesList, 'id', 'name'))) | raw }}
     {{ form.field(productsModelForAddProduct, 'id_subcategory').dropDownList({'':'Choose subcategory'}) | raw }}
     <input type="submit" value="Add product" >
 {{ active_form_end() }}
