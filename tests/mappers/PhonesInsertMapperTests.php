@@ -2,7 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\PhonesInsertMapper;
 use app\helpers\MappersHelper;
 

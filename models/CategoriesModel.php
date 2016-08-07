@@ -2,9 +2,9 @@
 
 namespace app\models;
 
+use yii\base\ErrorException;
 use app\models\AbstractBaseModel;
 use app\helpers\MappersHelper;
-use yii\base\ErrorException;
 
 /**
  * Представляет данные таблицы categories

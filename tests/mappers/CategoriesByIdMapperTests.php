@@ -2,7 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\CategoriesByIdMapper;
 use app\models\CategoriesModel;
 use app\helpers\MappersHelper;

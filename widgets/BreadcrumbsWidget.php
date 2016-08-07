@@ -2,9 +2,9 @@
 
 namespace app\widgets;
 
-use yii\base\Widget;
+use yii\base\{Widget,
+    ErrorException};
 use yii\helpers\Url;
-use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 
 /**

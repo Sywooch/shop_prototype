@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\MockObject;
-use app\tests\MockModel;
+use app\tests\{MockObject,
+    MockModel};
 use app\queries\UsersInsertQueryCreator;
 
 /**

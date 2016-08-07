@@ -3,9 +3,9 @@
 namespace app\models;
 
 use yii\base\ErrorException;
-use app\models\AbstractBaseModel;
 use app\helpers\MappersHelper;
-use app\models\{ProductsModel, 
+use app\models\{AbstractBaseModel,
+    ProductsModel, 
     ColorsModel, 
     DeliveriesModel,
     PaymentsModel};

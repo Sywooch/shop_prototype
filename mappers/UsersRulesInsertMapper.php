@@ -2,8 +2,8 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractInsertMapper;
 use yii\base\ErrorException;
+use app\mappers\AbstractInsertMapper;
 use app\models\UsersModel;
 
 /**

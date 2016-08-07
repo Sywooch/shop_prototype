@@ -2,8 +2,8 @@
 
 namespace app\mappers;
 
-use yii\base\Component;
-use yii\base\ErrorException;
+use yii\base\{Component,
+    ErrorException};
 use app\traits\ExceptionsTrait;
 use app\interfaces\VisitorInterface;
 

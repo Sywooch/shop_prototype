@@ -2,8 +2,8 @@
 
 namespace app\helpers;
 
-use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
+use app\traits\ExceptionsTrait;
 use app\helpers\MappersHelper;
 use app\models\UsersModel;
 

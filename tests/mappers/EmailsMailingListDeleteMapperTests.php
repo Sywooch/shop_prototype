@@ -2,7 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\EmailsMailingListDeleteMapper;
 use app\helpers\MappersHelper;
 use app\models\EmailsMailingListModel;

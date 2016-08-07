@@ -2,9 +2,11 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\CommentsForProductMapper;
-use app\models\{CommentsModel, ProductsModel};
+use app\models\{CommentsModel, 
+    ProductsModel};
 use app\helpers\MappersHelper;
 
 /**

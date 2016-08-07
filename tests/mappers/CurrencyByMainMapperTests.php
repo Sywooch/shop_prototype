@@ -2,7 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\CurrencyByMainMapper;
 use app\models\CurrencyModel;
 use app\helpers\MappersHelper;

@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\queries\AbstractUpdateQueryCreator;
 use yii\base\ErrorException;
+use app\queries\AbstractUpdateQueryCreator;
 
 /**
  * Конструирует запрос к БД

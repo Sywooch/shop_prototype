@@ -2,9 +2,11 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\ColorsForProductMapper;
-use app\models\{ColorsModel, ProductsModel};
+use app\models\{ColorsModel, 
+    ProductsModel};
 use app\helpers\MappersHelper;
 
 /**

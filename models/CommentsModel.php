@@ -2,9 +2,9 @@
 
 namespace app\models;
 
-use app\models\AbstractBaseModel;
-use app\models\EmailsModel;
 use yii\base\ErrorException;
+use app\models\{AbstractBaseModel,
+    EmailsModel};
 use app\helpers\MappersHelper;
 
 /**

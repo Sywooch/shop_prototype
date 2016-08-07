@@ -2,7 +2,8 @@
 
 namespace app\tests\helpers;
 
-use app\tests\{DbManager, MockObject};
+use app\tests\{DbManager, 
+    MockObject};
 use app\helpers\MappersHelper;
 use app\models\{CategoriesModel, 
     CurrencyModel, 

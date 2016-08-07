@@ -3,7 +3,8 @@
 namespace app\test\models;
 
 use app\tests\DbManager;
-use app\models\{CommentsModel, EmailsModel};
+use app\models\{CommentsModel, 
+    EmailsModel};
 use app\helpers\MappersHelper;
 
 /**

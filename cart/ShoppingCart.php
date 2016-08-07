@@ -2,11 +2,12 @@
 
 namespace app\cart;
 
-use yii\base\Object;
-use yii\base\ErrorException;
+use yii\base\{Object,
+    ErrorException};
 use app\traits\ExceptionsTrait;
 use app\helpers\SessionHelper;
-use app\models\{ProductsModel, UsersModel};
+use app\models\{ProductsModel, 
+    UsersModel};
 
 /**
  * Предоставляет свойства и методы для работы с корзиной покупок

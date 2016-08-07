@@ -2,7 +2,8 @@
 
 namespace app\filters;
 
-use yii\base\{ActionFilter, ErrorException};
+use yii\base\{ActionFilter, 
+    ErrorException};
 use app\traits\ExceptionsTrait;
 
 /**

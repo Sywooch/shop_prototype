@@ -4,7 +4,8 @@ namespace app\validators;
 
 use yii\validators\Validator;
 use app\traits\ExceptionsTrait;
-use app\models\{EmailsModel, UsersModel};
+use app\models\{EmailsModel, 
+    UsersModel};
 use app\helpers\MappersHelper;
 
 /**

@@ -2,8 +2,8 @@
 
 namespace app\tests\cart;
 
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\tests\{DbManager,
+    MockModel};
 use app\models\ProductsModel;
 use app\helpers\MappersHelper;
 

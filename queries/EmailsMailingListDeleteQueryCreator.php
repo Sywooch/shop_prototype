@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\queries\AbstractDeleteQueryCreator;
 use yii\base\ErrorException;
+use app\queries\AbstractDeleteQueryCreator;
 
 /**
  * Конструирует запрос к БД

@@ -2,9 +2,15 @@
 
 namespace app\filters;
 
-use yii\base\{ActionFilter, ErrorException};
+use yii\base\{ActionFilter, 
+    ErrorException};
 use app\traits\ExceptionsTrait;
-use app\models\{UsersModel, EmailsModel, AddressModel, PhonesModel, DeliveriesModel, PaymentsModel};
+use app\models\{UsersModel, 
+    EmailsModel, 
+    AddressModel, 
+    PhonesModel, 
+    DeliveriesModel, 
+    PaymentsModel};
 
 /**
  * Заполняет объект \Yii::$app->cart данными сесии

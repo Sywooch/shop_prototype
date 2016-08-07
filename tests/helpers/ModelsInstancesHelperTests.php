@@ -3,7 +3,8 @@
 namespace app\tests\helpers;
 
 use app\tests\DbManager;
-use app\helpers\{ModelsInstancesHelper, MappersHelper};
+use app\helpers\{ModelsInstancesHelper, 
+    MappersHelper};
 use app\models\{FiltersModel,
     ProductsModel,
     UsersModel,

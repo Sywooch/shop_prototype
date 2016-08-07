@@ -5,7 +5,10 @@ namespace app\test\models;
 use yii\helpers\Url;
 use yii\web\UploadedFile;
 use app\tests\DbManager;
-use app\models\{ProductsModel, ColorsModel, SizesModel, CommentsModel};
+use app\models\{ProductsModel, 
+    ColorsModel, 
+    SizesModel, 
+    CommentsModel};
 use app\helpers\MappersHelper;
 
 /**

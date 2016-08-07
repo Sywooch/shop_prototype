@@ -3,7 +3,8 @@
 namespace app\test\models;
 
 use app\tests\DbManager;
-use app\models\{CategoriesModel, SubcategoryModel};
+use app\models\{CategoriesModel, 
+    SubcategoryModel};
 use app\helpers\MappersHelper;
 
 /**

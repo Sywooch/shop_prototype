@@ -2,10 +2,10 @@
 
 namespace app\models;
 
-use app\models\AbstractBaseModel;
 use yii\base\ErrorException;
-use app\helpers\MappersHelper;
-use app\helpers\UploadHelper;
+use app\models\AbstractBaseModel;
+use app\helpers\{MappersHelper,
+    UploadHelper};
 
 /**
  * Представляет данные таблицы products

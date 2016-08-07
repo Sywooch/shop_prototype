@@ -2,9 +2,10 @@
 
 namespace app\tests\helpers;
 
-use app\helpers\{UserAuthenticationHelper, MappersHelper};
-use app\tests\DbManager;
-use app\tests\MockModel;
+use app\helpers\{UserAuthenticationHelper, 
+    MappersHelper};
+use app\tests\{DbManager,
+    MockModel};
 use app\models\UsersModel;
 
 /**

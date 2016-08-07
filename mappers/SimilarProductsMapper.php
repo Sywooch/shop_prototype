@@ -2,8 +2,8 @@
 
 namespace app\mappers;
 
-use app\mappers\ProductsListMapper;
 use yii\base\ErrorException;
+use app\mappers\ProductsListMapper;
 use app\models\ProductsModel;
 
 /**

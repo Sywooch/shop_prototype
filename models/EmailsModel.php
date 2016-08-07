@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use app\models\AbstractBaseModel;
 use yii\base\ErrorException;
+use app\models\AbstractBaseModel;
 use app\helpers\MappersHelper;
 
 /**

@@ -2,7 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\EmailsByIdMapper;
 use app\models\EmailsModel;
 use app\helpers\MappersHelper;

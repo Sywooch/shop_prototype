@@ -2,9 +2,9 @@
 
 namespace app\queries;
 
-use app\queries\ProductsListQueryCreator;
 use yii\helpers\ArrayHelper;
 use yii\base\ErrorException;
+use app\queries\ProductsListQueryCreator;
 
 /**
  * Формирует строку запроса к БД

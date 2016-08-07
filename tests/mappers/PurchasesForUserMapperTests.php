@@ -4,7 +4,8 @@ namespace app\tests\mappers;
 
 use app\tests\DbManager;
 use app\mappers\PurchasesForUserMapper;
-use app\models\{UsersModel, PurchasesModel};
+use app\models\{UsersModel, 
+    PurchasesModel};
 use app\helpers\MappersHelper;
 
 /**

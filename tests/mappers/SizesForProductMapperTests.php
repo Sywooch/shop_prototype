@@ -2,9 +2,11 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\SizesForProductMapper;
-use app\models\{SizesModel, ProductsModel};
+use app\models\{SizesModel, 
+    ProductsModel};
 use app\helpers\MappersHelper;
 
 /**

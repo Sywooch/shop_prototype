@@ -2,8 +2,8 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractBaseMapper;
 use yii\base\ErrorException;
+use app\mappers\AbstractBaseMapper;
 
 /**
  * Реализует вставку строк данных в БД

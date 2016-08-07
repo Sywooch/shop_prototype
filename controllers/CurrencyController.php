@@ -2,9 +2,9 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
 use yii\helpers\Url;
 use yii\base\ErrorException;
+use app\controllers\AbstractBaseController;
 use app\helpers\MappersHelper;
 use app\traits\ExceptionsTrait;
 use app\models\CurrencyModel;

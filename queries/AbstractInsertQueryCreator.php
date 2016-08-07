@@ -2,9 +2,9 @@
 
 namespace app\queries;
 
+use yii\base\ErrorException;
 use app\queries\AbstractBaseQueryCreator;
 use app\mappers\AbstractBaseMapper;
-use yii\base\ErrorException;
 
 abstract class AbstractInsertQueryCreator extends AbstractBaseQueryCreator
 {

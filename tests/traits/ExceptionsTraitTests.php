@@ -2,8 +2,8 @@
 
 namespace app\tests\traits;
 
-use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
+use app\traits\ExceptionsTrait;
 
 class TestClass
 {

@@ -2,10 +2,11 @@
 
 namespace app\models;
 
-use app\models\AbstractBaseModel;
-use app\mappers\AddressByAddressMapper;
-use app\mappers\AddressInsertMapper;
 use yii\base\ErrorException;
+use app\models\AbstractBaseModel;
+use app\mappers\{AddressByAddressMapper,
+    AddressInsertMapper};
+
 
 /**
  * Представляет данные таблицы address

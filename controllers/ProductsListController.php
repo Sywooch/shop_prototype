@@ -3,9 +3,11 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\{Url, ArrayHelper};
+use yii\helpers\{Url, 
+    ArrayHelper};
 use app\controllers\AbstractBaseController;
-use app\helpers\{MappersHelper, ModelsInstancesHelper};
+use app\helpers\{MappersHelper, 
+    ModelsInstancesHelper};
 
 /**
  * Обрабатывает запросы на получение списка продуктов

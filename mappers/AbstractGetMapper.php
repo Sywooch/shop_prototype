@@ -2,9 +2,9 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractBaseMapper;
 use yii\helpers\ArrayHelper;
 use yii\base\ErrorException;
+use app\mappers\AbstractBaseMapper;
 
 /**
  * Реализует интерфейс получения массива объектов из базы данных

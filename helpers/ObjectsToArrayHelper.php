@@ -2,9 +2,9 @@
 
 namespace app\helpers;
 
-use app\traits\ExceptionsTrait;
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
+use app\traits\ExceptionsTrait;
 use app\models\{DeliveriesModel,
     PaymentsModel, 
     CategoriesModel};

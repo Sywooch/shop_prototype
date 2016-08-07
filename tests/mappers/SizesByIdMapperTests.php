@@ -2,7 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\SizesByIdMapper;
 use app\models\SizesModel;
 use app\helpers\MappersHelper;

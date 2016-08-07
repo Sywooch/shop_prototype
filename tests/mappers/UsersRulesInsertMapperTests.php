@@ -2,7 +2,8 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\UsersRulesInsertMapper;
 use app\models\UsersModel;
 use app\helpers\MappersHelper;

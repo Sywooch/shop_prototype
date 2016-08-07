@@ -2,9 +2,11 @@
 
 namespace app\tests\mappers;
 
-use app\tests\{DbManager, MockModel};
+use app\tests\{DbManager, 
+    MockModel};
 use app\mappers\SubcategoryForCategoryMapper;
-use app\models\{SubcategoryModel, CategoriesModel};
+use app\models\{SubcategoryModel, 
+    CategoriesModel};
 use app\helpers\MappersHelper;
 
 /**

@@ -4,7 +4,8 @@ namespace app\tests\validators;
 
 use app\tests\DbManager;
 use app\validators\EmailExistsValidator;
-use app\models\{UsersModel, EmailsModel};
+use app\models\{UsersModel, 
+    EmailsModel};
 use app\helpers\MappersHelper;
 
 /**

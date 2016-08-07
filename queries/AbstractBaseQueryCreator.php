@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use yii\base\Object;
-use yii\base\ErrorException;
+use yii\base\{Object,
+    ErrorException};
 use app\mappers\AbstractBaseMapper;
 use app\traits\ExceptionsTrait;
 use app\interfaces\VisitorInterface;

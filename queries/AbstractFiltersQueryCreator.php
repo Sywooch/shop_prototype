@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\queries\ProductsListQueryCreator;
 use yii\base\ErrorException;
+use app\queries\ProductsListQueryCreator;
 
 /**
  * Конструирует запрос к БД для получения списка строк
