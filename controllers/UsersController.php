@@ -98,6 +98,10 @@ class UsersController extends AbstractBaseController
     public function actionLoginUser()
     {
         try {
+            if (!empty(\Yii::$app->shopUser->id_emails) && !empty(\Yii::$app->shopUser->id)) {
+                return $this->redirect(Url::to(['users/show-user-account']));
+            }
+            
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
             $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGIN_FORM]);
             
