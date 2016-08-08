@@ -26,7 +26,7 @@ class AdminController extends AbstractBaseController
      */
     private $_config = [
         'tableName'=>'products',
-        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
         'otherTablesFields'=>[
             ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
             ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],

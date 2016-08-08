@@ -16,6 +16,7 @@
 {% if objectsProductsList %}
     <ol>
     {% for product in objectsProductsList %}
+    {% if product.active %}
         <li>
             {% if product.date %}
                 {{ app.formatter.asDate(product.date, 'dd.MM.yyyy') }}<br>
@@ -29,6 +30,7 @@
             {% endif %}
             <br>{{ (product.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
         </li>
+    {% endif %}
     {% endfor %}
     </ol>
 {% else %}

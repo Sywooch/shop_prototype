@@ -22,6 +22,7 @@
         {{ form.field(product, 'description').textarea({'cols':40, 'rows':5}) | raw }}
         {{ form.field(product, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
         {{ form.field(product, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(product.id_categories))) | raw }}
+        {{ form.field(product, 'active').checkbox() | raw }}
         <input type="submit" value="Обновить">
     {{ active_form_end() }}
     </p>

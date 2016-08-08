@@ -36,6 +36,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_email = 'some@some.com';
     private static $_hash = '34acc7564bb9997b72462bcfff0c15a0';
     private static $_content = 'some content';
+    private static $_active = true;
     
     private static $_filesArray = [
         'ProductsModel' => [
@@ -155,6 +156,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'description'));
         $this->assertTrue(property_exists($model, 'short_description'));
         $this->assertTrue(property_exists($model, 'price'));
+        $this->assertTrue(property_exists($model, 'active'));
         $this->assertTrue(property_exists($model, 'images'));
         $this->assertTrue(property_exists($model, 'imagesToLoad'));
         $this->assertTrue(property_exists($model, 'id_categories'));
@@ -186,7 +188,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_LIST_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'colorToCart'=>self::$_colorToCart,  'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'colorToCart'=>self::$_colorToCart,  'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->date));
@@ -200,6 +202,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->subcategory));
         $this->assertFalse(empty($model->id_categories));
         $this->assertFalse(empty($model->id_subcategory));
+        $this->assertFalse(empty($model->active));
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_date, $model->date);
@@ -213,6 +216,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
         $this->assertEquals(self::$_id, $model->id_categories);
         $this->assertEquals(self::$_id, $model->id_subcategory);
+        $this->assertEquals(self::$_active, $model->active);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
         $model->attributes = ['id'=>self::$_id, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'colorToCart'=>self::$_colorToCart, 'sizeToCart'=>self::$_sizeToCart, 'quantity'=>self::$_quantity, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'hash'=>self::$_hash];

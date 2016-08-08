@@ -16,7 +16,7 @@ class ProductsListController extends AbstractBaseController
 {
     private $_config = [
         'tableName'=>'products',
-        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images'],
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'active'],
         'otherTablesFields'=>[
             ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
             ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],

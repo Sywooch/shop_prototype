@@ -41,6 +41,7 @@ class ProductsModel extends AbstractBaseModel
     public $description;
     public $short_description;
     public $price;
+    public $active;
     
     /**
      * @var array массив объектов yii\web\UploadedFile
@@ -85,7 +86,7 @@ class ProductsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'categories', 'subcategory', 'id_categories', 'id_subcategory'],
+            self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'categories', 'subcategory', 'id_categories', 'id_subcategory', 'active'],
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'images', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],

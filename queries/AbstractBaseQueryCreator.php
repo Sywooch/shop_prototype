@@ -325,6 +325,28 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
         }
     }
     
+    /**
+     * Формирует часть запроса для подстановки данных при появлении дубликатов
+     * @return string
+    */
+    protected function addOnDuplicateKeyUpdate()
+    {
+        
+        try {
+            if (empty($this->_mapperObject->fields)) {
+                throw new ErrorException('Отсутствуют данные для постороения запроса!');
+            }
+            $string = ' ON DUPLICATE KEY UPDATE ';
+            $arrayValues = array();
+            foreach ($this->_mapperObject->fields as $field) {
+                $arrayValues[] = $field . '=VALUES(' . $field . ')';
+            }
+            return $string . implode(',', $arrayValues);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     protected function getWhereStart()
     {
         try {
