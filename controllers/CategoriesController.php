@@ -28,7 +28,7 @@ class CategoriesController extends AbstractBaseController
                 $response = \Yii::$app->response;
                 $response->format = Response::FORMAT_JSON;
                 if (!$subcategoriesArray = MappersHelper::getSubcategoryForCategoryList(new CategoriesModel(['id'=>\Yii::$app->request->post('categoriesId')]))) {
-                    throw new ErrorException('Ошибка при получении данных!');
+                    return false;
                 }
                 return ArrayHelper::map($subcategoriesArray, 'id', 'name');
             } else {

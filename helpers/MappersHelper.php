@@ -1344,7 +1344,7 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов SubcategoryModel по seocode CategoriesModel
+     * Получает массив объектов SubcategoryModel по id CategoriesModel
      * @return array of objects SubcategoryModel
      */
     public static function getSubcategoryForCategoryList(CategoriesModel $categoriesModel)
@@ -1359,7 +1359,7 @@ class MappersHelper
                 SubcategoryForCategoryMapper::className(), 
                 $subcategoryForCategoryMapper->tableName, 
                 implode('', $subcategoryForCategoryMapper->fields), 
-                $subcategoryForCategoryMapper->model->seocode, 
+                $subcategoryForCategoryMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
                 return self::$_objectRegistry[$hash];

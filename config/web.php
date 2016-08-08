@@ -23,6 +23,7 @@ $config = [
                         'url'=>'yii\helpers\Url',
                         'objectsToArrayHelper'=>'app\helpers\ObjectsToArrayHelper',
                         'picturesHelper'=>'app\helpers\PicturesHelper',
+                        'subcategoryHelper'=>'app\helpers\SubcategoryHelper',
                     ],
                 ]
             ],
@@ -101,6 +102,7 @@ $config = [
                 
                 # Администрирование
                 'admin'=>'admin/index',
+                'admin/show-products'=>'admin/show-products',
                 'admin/add-product'=>'admin/add-product',
                 'get-subcategory-ajax'=>'categories/get-subcategory-ajax',
             ],

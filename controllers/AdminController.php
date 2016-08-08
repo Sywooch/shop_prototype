@@ -21,6 +21,21 @@ use app\models\{ProductsModel,
 class AdminController extends AbstractBaseController
 {
     /**
+     * @var array конфиг для получения данных товаров из БД
+     * @see self::actionShowProducts
+     */
+    private $_config = [
+        'tableName'=>'products',
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
+        'otherTablesFields'=>[
+            ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
+            ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
+        ],
+        'orderByField'=>'date',
+        'getDataSorting'=>false,
+    ];
+    
+    /**
      * Управляет отображением основной страницы входа
      */
     public function actionIndex()
@@ -96,11 +111,8 @@ class AdminController extends AbstractBaseController
         try {
             $renderArray = array();
             $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
-            $renderArray['colorsList'] = MappersHelper::getColorsList();
-            $renderArray['sizesList'] = MappersHelper::getSizesList();
-            $renderArray['brandsList'] = MappersHelper::getBrandsList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
-            return $this->render('products-list.twig', $renderArray);
+            return $this->render('show-products.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
