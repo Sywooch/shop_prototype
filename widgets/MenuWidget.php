@@ -2,38 +2,25 @@
 
 namespace app\widgets;
 
-use yii\base\{Widget,
-    ErrorException};
+use yii\base\ErrorException;
 use yii\helpers\Url;
-use app\traits\ExceptionsTrait;
+use app\widgets\AbstractMenuWidget;
 
 /**
  * Формирует меню
  */
-class MenuWidget extends Widget
+class MenuWidget extends AbstractMenuWidget
 {
-    use ExceptionsTrait;
-    
-    /**
-     * @var array массив объектов CategoriesModel
-     */
-    public $objectsList;
-    /**
-     * @var string основной route
-     */
-    public $route;
-    /**
-     * @var string результирующая HTML строка меню
-     */
-    private $_menu;
-    /**
-     * @var array массив данных для создания URL из текущего объекта
-     */
-    private $_routeArray = array();
-    
     public function run()
     {
         try {
+            if (empty($this->objectsList)) {
+                throw new ErrorException('Отсуствуют данные для построения меню!');
+            }
+            if (empty($this->route)) {
+                throw new ErrorException('Отсуствует route для построения меню!');
+            }
+            
             foreach ($this->objectsList as $object) {
                 $this->_routeArray[] = $this->route;
                 if ($object->seocode) {

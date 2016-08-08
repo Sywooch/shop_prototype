@@ -22,7 +22,8 @@ use app\models\{CategoriesModel,
     RulesModel, 
     PurchasesModel,
     MailingListModel,
-    EmailsMailingListModel};
+    EmailsMailingListModel,
+    AdminMenuModel};
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -62,6 +63,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_tableName = 'sometable';
     private static $_field = 'somefield';
     private static $_orderByType = 'DESC';
+    private static $_route = 'some/index';
     
     private static $_config = [
         'tableName'=>'products',
@@ -1303,6 +1305,28 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $result);
         
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails_mailing_list}}')->queryAll()));
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getAdminMenuList
+     */
+    public function testGetAdminMenuList()
+    {
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{admin_menu}} SET [[id]]=:id, [[name]]=:name, [[route]]=:route');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name,  ':route'=>self::$_route]);
+        $command->execute();
+        
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{admin_menu}}')->queryAll()));
+        
+        $result = MappersHelper::getAdminMenuList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof AdminMenuModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_name, $result[0]->name);
+        $this->assertEquals(self::$_route, $result[0]->route);
     }
     
     /**

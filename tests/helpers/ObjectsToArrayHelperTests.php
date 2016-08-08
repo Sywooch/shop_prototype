@@ -123,38 +123,4 @@ class ObjectsToArrayHelperTests extends \PHPUnit_Framework_TestCase
     {
         $result = ObjectsToArrayHelper::getPaymentsArray([new DeliveriesModel()]);
     }
-    
-     /**
-     * Тестирует метод ObjectsToArrayHelper::getCategoriesToAddProductArray
-     */
-    public function testGetCategoriesArray()
-    {
-        $model = new CategoriesModel();
-        $model->id = self::$_categoriesData[0]['id'];
-        $model->name = self::$_categoriesData[0]['name'];
-        
-        $model2 = new CategoriesModel();
-        $model2->id = self::$_categoriesData[1]['id'];
-        $model2->name = self::$_categoriesData[1]['name'];
-        
-        $model3 = new CategoriesModel();
-        $model3->id = self::$_categoriesData[2]['id'];
-        $model3->name = self::$_categoriesData[2]['name'];
-        
-        $result = ObjectsToArrayHelper::getCategoriesToAddProductArray([$model, $model2, $model3]);
-        
-        $this->assertTrue(is_array($result));
-        $this->assertFalse(empty($result));
-        $this->assertEquals(2, count($result));
-    }
-    
-    /**
-     * Тестирует выброс исключения в методе ObjectsToArrayHelper::getCategoriesToAddProductArray
-     * если аргумент не объект класса CategoriesModel
-     * @expectedException ErrorException
-     */
-    public function testExcGetCategoriesArray()
-    {
-        $result = ObjectsToArrayHelper::getCategoriesToAddProductArray([new DeliveriesModel()]);
-    }
 }

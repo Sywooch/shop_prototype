@@ -14,7 +14,8 @@ use app\models\{FiltersModel,
     ColorsModel,
     SizesModel,
     MailingListModel,
-    CategoriesModel};
+    CategoriesModel,
+    AdminMenuModel};
 
 /**
  * Тестирует класс app\helpers\ModelsInstancesHelper
@@ -28,6 +29,7 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
     private static $_main = '1';
     private static $_name = 'Some Name';
     private static $_categorySeocode = 'mensfootwear';
+    private static $_route = 'some/some';
     
     public static function setUpBeforeClass()
     {
@@ -40,6 +42,10 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{admin_menu}} SET [[id]]=:id, [[name]]=:name, [[route]]=:route');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name,  ':route'=>self::$_route]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -69,6 +75,7 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('mailingListModelForMailingForm', $result));
         $this->assertTrue(array_key_exists('categoriesList', $result));
         $this->assertTrue(array_key_exists('currencyList', $result));
+        $this->assertTrue(array_key_exists('adminMenuList', $result));
         
         $this->assertTrue($result['filtersModel'] instanceof FiltersModel);
         $this->assertTrue($result['productsModelForAddToCart'] instanceof ProductsModel);
@@ -82,6 +89,7 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result['mailingListModelForMailingForm'] instanceof MailingListModel);
         $this->assertTrue($result['categoriesList'][0] instanceof CategoriesModel);
         $this->assertTrue($result['currencyList'][0] instanceof CurrencyModel);
+        $this->assertTrue($result['adminMenuList'][0] instanceof AdminMenuModel);
     }
     
     public static function tearDownAfterClass()

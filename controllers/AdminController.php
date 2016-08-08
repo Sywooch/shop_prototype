@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
+use yii\web\UploadedFile;
+use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper, 
@@ -80,6 +82,25 @@ class AdminController extends AbstractBaseController
             $renderArray['sizesList'] = MappersHelper::getSizesList(false);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('add-product.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет отображением всех товаров в базе
+     */
+    public function actionShowProducts()
+    {
+        try {
+            $renderArray = array();
+            $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
+            $renderArray['colorsList'] = MappersHelper::getColorsList();
+            $renderArray['sizesList'] = MappersHelper::getSizesList();
+            $renderArray['brandsList'] = MappersHelper::getBrandsList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('products-list.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

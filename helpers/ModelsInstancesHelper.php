@@ -40,6 +40,7 @@ class ModelsInstancesHelper
             self::$_instancesArray['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
             self::$_instancesArray['commentsModel'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
             self::$_instancesArray['mailingListModelForMailingForm'] = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM]);
+            self::$_instancesArray['adminMenuList'] = MappersHelper::getAdminMenuList();
             return self::$_instancesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);

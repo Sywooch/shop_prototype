@@ -54,4 +54,6 @@ class MockModel extends AbstractBaseModel
     public $short_description;
     public $id_email;
     public $id_mailing_list;
+    public $seocode;
+    public $route;
 }

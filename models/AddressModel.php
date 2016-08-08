@@ -18,7 +18,7 @@ class AddressModel extends AbstractBaseModel
      */
     const GET_FROM_FORM = 'getFromForm';
     /**
-     * Сценарий загрузки данных из формы
+     * Сценарий загрузки данных из БД
      */
     const GET_FROM_DB = 'getFromDb';
     /**

@@ -59,7 +59,8 @@ use app\mappers\{ColorsMapper,
     EmailsMailingListInsertMapper,
     MailingListByIdMapper,
     MailingListForEmailMapper,
-    EmailsMailingListDeleteMapper};
+    EmailsMailingListDeleteMapper,
+    AdminMenuMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -1785,6 +1786,38 @@ class MappersHelper
                 return null;
             }
             return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов AdminMenuModel
+     * @return array
+     */
+    public static function getAdminMenuList()
+    {
+        try {
+            $adminMenuMapper = new AdminMenuMapper([
+                'tableName'=>'admin_menu',
+                'fields'=>['id', 'name', 'route'],
+                'orderByField'=>'name',
+            ]);
+            $hash = self::createHash([
+                AdminMenuMapper::className(), 
+                $adminMenuMapper->tableName, 
+                implode('', $adminMenuMapper->fields), 
+                $adminMenuMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $adminMenuArray = $adminMenuMapper->getGroup();
+            if (!is_array($adminMenuArray) || empty($adminMenuArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $adminMenuArray);
+            return $adminMenuArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

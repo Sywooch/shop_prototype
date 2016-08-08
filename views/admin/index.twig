@@ -1,14 +1,6 @@
 
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{% include 'header.twig' %}
 
-{% include '@app/views/parts/user-buttons.twig' %}
+<p>Это административный раздел, в котором собрана информация для управления вашим магазином.</p>
 
-{% include '@app/views/parts/short-cart.twig' %}
 
-{% include '@app/views/parts/search.twig' %}
-
-{% include '@app/views/parts/menu.twig' %}
-
-<p>Административный раздел, в котором собрана информация для управления вашим магазином.</p>
-
-<p><a href="{{ url.to({0:'admin/add-product'}) }}">Добавить продукт</a></p>

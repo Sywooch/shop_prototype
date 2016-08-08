@@ -61,26 +61,4 @@ class ObjectsToArrayHelper
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
-    
-    /**
-     * Конструирует массив CategoriesModel для формы добавления продукта
-     * @param array $arrayObjects массив объектов CategoriesModel
-     * @return array
-     */
-     public static function getCategoriesToAddProductArray(Array $arrayObjects)
-     {
-        try {
-            if (empty($arrayObjects) || !is_object($arrayObjects[0]) || !$arrayObjects[0] instanceof CategoriesModel) {
-                throw new ErrorException('Переданы неверные данные!');
-            }
-            foreach ($arrayObjects as $object) {
-                if (in_array($object->name, self::$allowCategories)) {
-                    self::$_result[$object->id] = $object->name;
-                }
-            }
-            return self::$_result;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
-        }
-     }
 }

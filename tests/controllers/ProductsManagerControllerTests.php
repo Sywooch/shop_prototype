@@ -24,7 +24,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
     private static $_dirPath = null;
     private static $_imagesInDirPath = null;
     
-    private static $_code = 'Nw-1234';
+    private static $_code = '5632659872';
     private static $_name = 'Name';
     private static $_description = 'Some description';
     private static $_price = 14.45;
@@ -107,7 +107,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetActionAddProduct()
     {
-        $response = self::$_guzzleClient->request('GET', 'http://shop.com/add-product');
+        $response = self::$_guzzleClient->request('GET', 'http://shop.com/admin/add-product');
         
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
@@ -119,7 +119,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
      */
     public function testPostActionAddProduct()
     {
-        $response = self::$_guzzleClient->request('POST', 'http://shop.com/add-product', [
+        $response = self::$_guzzleClient->request('POST', 'http://shop.com/admin/add-product', [
             'query'=>['csrfdisable'=>true],
             'allow_redirects' => false,
             'multipart'=>[
