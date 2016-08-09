@@ -64,6 +64,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_field = 'somefield';
     private static $_orderByType = 'DESC';
     private static $_route = 'some/index';
+    private static $_active = true;
     
     private static $_config = [
         'tableName'=>'products',
@@ -167,8 +168,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[short_description]]=:short_description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':short_description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[short_description]]=:short_description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory, [[active]]=:active');
+        $command->bindValues([':id'=>self::$_id, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':short_description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
@@ -875,8 +876,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSimilarProductsList()
     {
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id + 23, ':date'=>self::$_date, ':code'=>self::$_code . 'n', ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory, [[active]]=:active');
+        $command->bindValues([':id'=>self::$_id + 23, ':date'=>self::$_date, ':code'=>self::$_code . 'n', ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
@@ -1008,6 +1009,49 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_images, $result[0]['images']);
         $this->assertEquals(self::$_id, $result[0]['id_categories']);
         $this->assertEquals(self::$_id, $result[0]['id_subcategory']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setProductsUpdate
+     */
+    public function testSetProductsUpdate()
+    {
+        $this->assertFalse(empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar()));
+        
+        $productsModel = new ProductsModel();
+        $productsModel->id = $id;
+        $productsModel->date = self::$_date;
+        $productsModel->code = self::$_code;
+        $productsModel->name = self::$_name . ' another';
+        $productsModel->description = self::$_description;
+        $productsModel->short_description = self::$_description;
+        $productsModel->price = round(self::$_price * 23.4, 2, PHP_ROUND_HALF_UP);
+        $productsModel->images = self::$_images;
+        $productsModel->id_categories = self::$_id;
+        $productsModel->id_subcategory = self::$_id;
+        $productsModel->active = self::$_active * 0;
+        
+        $result = MappersHelper::setProductsUpdate([$productsModel]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{products}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $id);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id, $result['id']);
+        $this->assertEquals(self::$_date, $result['date']);
+        $this->assertEquals(self::$_code, $result['code']);
+        $this->assertEquals(self::$_name . ' another', $result['name']);
+        $this->assertEquals(self::$_description, $result['description']);
+        $this->assertEquals(self::$_description, $result['short_description']);
+        $this->assertEquals(round(self::$_price * 23.4, 2, PHP_ROUND_HALF_UP), round($result['price'], 2, PHP_ROUND_HALF_UP));
+        $this->assertEquals(self::$_images, $result['images']);
+        $this->assertEquals(self::$_id, $result['id_categories']);
+        $this->assertEquals(self::$_id, $result['id_subcategory']);
+        $this->assertEquals(self::$_active * 0, $result['active']);
     }
     
     /**

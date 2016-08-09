@@ -60,7 +60,8 @@ use app\mappers\{ColorsMapper,
     MailingListByIdMapper,
     MailingListForEmailMapper,
     EmailsMailingListDeleteMapper,
-    AdminMenuMapper};
+    AdminMenuMapper,
+    ProductsUpdateMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -1236,6 +1237,32 @@ class MappersHelper
                 'objectsArray'=>[$productsModel],
             ]);
             $result = $productsInsertMapper->setGroup();
+            if (!$result) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет запись ProductsModel в БД
+     * @param array $productsModelArray массив экземпляров ProductsModel
+     * @return int
+     */
+    public static function setProductsUpdate(Array $productsModelArray)
+    {
+        try {
+            if (empty($productsModelArray) || !$productsModelArray[0] instanceof ProductsModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            $productsUpdateMapper = new ProductsUpdateMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+                'objectsArray'=>$productsModelArray,
+            ]);
+            $result = $productsUpdateMapper->setGroup();
             if (!$result) {
                 return null;
             }
