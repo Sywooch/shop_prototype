@@ -1234,7 +1234,7 @@ class MappersHelper
         try {
             $productsInsertMapper = new ProductsInsertMapper([
                 'tableName'=>'products',
-                'fields'=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
+                'fields'=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
                 'objectsArray'=>[$productsModel],
             ]);
             $result = $productsInsertMapper->setGroup();
@@ -1250,19 +1250,28 @@ class MappersHelper
     /**
      * Обновляет запись ProductsModel в БД
      * @param array $productsModelArray массив экземпляров ProductsModel
+     * @param array $fields массив полей, которые будут обновлены
+     * @param boolean $images указывает, необходимо ли обновлять поле images
      * @return int
      */
-    public static function setProductsUpdate(Array $productsModelArray)
+    public static function setProductsUpdate(Array $productsModelArray, Array $fields=array(), $images=false)
     {
         try {
             if (empty($productsModelArray) || !$productsModelArray[0] instanceof ProductsModel) {
                 throw new ErrorException('Переданы некорректные данные!');
             }
-            $productsUpdateMapper = new ProductsUpdateMapper([
+            $config = [
                 'tableName'=>'products',
-                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory', 'active'],
                 'objectsArray'=>$productsModelArray,
-            ]);
+            ];
+            if (!empty($fields)) {
+                $config['fields'] = $fields;
+            }
+            if (!empty($images)) {
+                $config['fields'][] = 'images';
+            }
+            $productsUpdateMapper = new ProductsUpdateMapper($config);
             $result = $productsUpdateMapper->setGroup();
             if (!$result) {
                 return null;

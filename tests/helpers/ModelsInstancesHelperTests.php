@@ -69,9 +69,6 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('usersModelForLogout', $result));
         $this->assertTrue(array_key_exists('currencyModel', $result));
         $this->assertTrue(array_key_exists('commentsModel', $result));
-        $this->assertTrue(array_key_exists('brandsModelForAddToCart', $result));
-        $this->assertTrue(array_key_exists('colorsModelForAddToCart', $result));
-        $this->assertTrue(array_key_exists('sizesModelForAddToCart', $result));
         $this->assertTrue(array_key_exists('mailingListModelForMailingForm', $result));
         $this->assertTrue(array_key_exists('categoriesList', $result));
         $this->assertTrue(array_key_exists('currencyList', $result));
@@ -83,9 +80,6 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result['usersModelForLogout'] instanceof UsersModel);
         $this->assertTrue($result['currencyModel'] instanceof CurrencyModel);
         $this->assertTrue($result['commentsModel'] instanceof CommentsModel);
-        $this->assertTrue($result['brandsModelForAddToCart'] instanceof BrandsModel);
-        $this->assertTrue($result['colorsModelForAddToCart'] instanceof ColorsModel);
-        $this->assertTrue($result['sizesModelForAddToCart'] instanceof SizesModel);
         $this->assertTrue($result['mailingListModelForMailingForm'] instanceof MailingListModel);
         $this->assertTrue($result['categoriesList'][0] instanceof CategoriesModel);
         $this->assertTrue($result['currencyList'][0] instanceof CurrencyModel);

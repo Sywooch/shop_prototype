@@ -59,7 +59,7 @@ $config = [
             'showScriptName'=>false,
             'enableStrictParsing' => false,
             'rules'=>[
-                # Продукты
+                # Вывод товаров
                 'products/<categories>/<subcategory>/<id:\d+>'=>'product-detail/index',
                 'products/<categories>/<subcategory>'=>'products-list/index',
                 'products/<categories>'=>'products-list/index',
@@ -105,6 +105,7 @@ $config = [
                 'admin/show-products'=>'admin/show-products',
                 'admin/show-products/<id:\d+>'=>'admin/show-product-detail',
                 'admin/add-product'=>'admin/add-product',
+                'admin/update-product-cut'=>'admin/update-product-cut',
                 'get-subcategory-ajax'=>'categories/get-subcategory-ajax',
             ],
         ],

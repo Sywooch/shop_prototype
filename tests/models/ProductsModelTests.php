@@ -36,7 +36,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_size = '46';
     private static $_text = 'Some text';
     private static $_email = 'some@some.com';
-    private static $_hash = '34acc7564bb9997b72462bcfff0c15a0';
+    private static $_hash;
     private static $_content = 'some content';
     private static $_active = true;
     
@@ -80,6 +80,8 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         self::$_dbClass = new DbManager();
         self::$_dbClass->createDb();
         self::$_reflectionClass = new \ReflectionClass('app\models\ProductsModel');
+        
+        self::$_hash = md5('some');
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
@@ -151,6 +153,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_CLEAR_CART'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_UPDATE'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_UPDATE_CUT'));
         
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, '_date'));
@@ -266,7 +269,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
-        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>[self::$_images], 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>[self::$_images], 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
         
         $this->assertFalse(empty($model->code));
         $this->assertFalse(empty($model->name));
@@ -276,9 +279,10 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->imagesToLoad));
         $this->assertFalse(empty($model->id_categories));
         $this->assertFalse(empty($model->id_subcategory));
+        $this->assertFalse(empty($model->active));
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
-        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
+        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>[self::$_images], 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->date));
@@ -287,7 +291,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->description));
         $this->assertFalse(empty($model->short_description));
         $this->assertFalse(empty($model->price));
-        $this->assertFalse(empty($model->images));
+        $this->assertFalse(empty($model->imagesToLoad));
         $this->assertFalse(empty($model->id_categories));
         $this->assertFalse(empty($model->id_subcategory));
         $this->assertFalse(empty($model->active));
@@ -299,9 +303,18 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_description, $model->description);
         $this->assertEquals(self::$_description, $model->short_description);
         $this->assertEquals(self::$_price, $model->price);
-        $this->assertEquals(self::$_images, $model->images);
+        $this->assertEquals([self::$_images], $model->imagesToLoad);
         $this->assertEquals(self::$_id, $model->id_categories);
         $this->assertEquals(self::$_id, $model->id_subcategory);
+        $this->assertEquals(self::$_active, $model->active);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE_CUT]);
+        $model->attributes = ['id'=>self::$_id, 'active'=>self::$_active];
+        
+        $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->active));
+        
+        $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_active, $model->active);
     }
     
@@ -314,7 +327,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertEquals(8, count($model->errors));
+        $this->assertEquals(9, count($model->errors));
         $this->assertTrue(array_key_exists('code', $model->errors));
         $this->assertTrue(array_key_exists('name', $model->errors));
         $this->assertTrue(array_key_exists('description', $model->errors));
@@ -323,19 +336,20 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('imagesToLoad', $model->errors));
         $this->assertTrue(array_key_exists('id_categories', $model->errors));
         $this->assertTrue(array_key_exists('id_subcategory', $model->errors));
+        $this->assertTrue(array_key_exists('active', $model->errors));
         
         $_FILES = self::$_filesArray;
         $imagesToLoad = UploadedFile::getInstancesByName('ProductsModel[imagesToLoad]');
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
-        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->attributes = ['code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('imagesToLoad', $model->errors));
         
-        $model = new ProductsModel();
-        $model->attributes = ['code'=>'<p>' . self::$_code . '</p>', 'name'=>'<script src="/my/script.js"></script>' . self::$_name, 'description'=>'<p>' . self::$_description . '</p>', 'short_description'=>'<script src="/my/script.js"></script>' . self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model->attributes = ['code'=>'<p>' . self::$_code . '</p>', 'name'=>'<script src="/my/script.js"></script>' . self::$_name, 'description'=>'<p>' . self::$_description . '</p>', 'short_description'=>'<script src="/my/script.js"></script>' . self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
         $model->validate();
         
         $this->assertEquals(self::$_code, $model->code);
@@ -347,17 +361,51 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertEquals(10, count($model->errors));
+        $this->assertEquals(8, count($model->errors));
         $this->assertTrue(array_key_exists('id', $model->errors));
-        $this->assertTrue(array_key_exists('date', $model->errors));
         $this->assertTrue(array_key_exists('code', $model->errors));
         $this->assertTrue(array_key_exists('name', $model->errors));
         $this->assertTrue(array_key_exists('description', $model->errors));
         $this->assertTrue(array_key_exists('short_description', $model->errors));
         $this->assertTrue(array_key_exists('price', $model->errors));
-        $this->assertTrue(array_key_exists('images', $model->errors));
         $this->assertTrue(array_key_exists('id_categories', $model->errors));
         $this->assertTrue(array_key_exists('id_subcategory', $model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
+        $model->attributes = ['id'=>self::$_id, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('imagesToLoad', $model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
+        $model->attributes = ['id'=>self::$_id, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
+        $model->attributes = ['code'=>'<p>' . self::$_code . '</p>', 'name'=>'<script src="/my/script.js"></script>' . self::$_name, 'description'=>'<p>' . self::$_description . '</p>', 'short_description'=>'<script src="/my/script.js"></script>' . self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->validate();
+        
+        $this->assertEquals(self::$_code, $model->code);
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_description, $model->short_description);
+        $this->assertEquals('<p>' . self::$_description . '</p>', $model->description);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE_CUT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(2, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        $this->assertTrue(array_key_exists('active', $model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE_CUT]);
+        $model->attributes = ['id'=>self::$_id, 'active'=>self::$_active];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
     
     /**

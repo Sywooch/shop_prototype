@@ -999,6 +999,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $productsModel->images = self::$_images;
         $productsModel->id_categories = self::$_id;
         $productsModel->id_subcategory = self::$_id;
+        $productsModel->active = self::$_active * 0;
         
         MappersHelper::setProductsInsert($productsModel);
         
@@ -1014,6 +1015,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_images, $result[0]['images']);
         $this->assertEquals(self::$_id, $result[0]['id_categories']);
         $this->assertEquals(self::$_id, $result[0]['id_subcategory']);
+        $this->assertEquals(self::$_active * 0, $result[0]['active']);
     }
     
     /**

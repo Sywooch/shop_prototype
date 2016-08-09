@@ -57,41 +57,44 @@ class AdminController extends AbstractBaseController
     public function actionAddProduct()
     {
         try {
-            $productsModelForAddProduct = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            $brandsModelForAddToCart = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            $colorsModelForAddToCart = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            $sizesModelForAddToCart = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
             
-            if (\Yii::$app->request->isPost && $productsModelForAddProduct->load(\Yii::$app->request->post()) && $brandsModelForAddToCart->load(\Yii::$app->request->post()) && $colorsModelForAddToCart->load(\Yii::$app->request->post()) && $sizesModelForAddToCart->load(\Yii::$app->request->post())) {
-                $productsModelForAddProduct->imagesToLoad = UploadedFile::getInstances($productsModelForAddProduct, 'imagesToLoad');
-                if ($productsModelForAddProduct->validate() && $brandsModelForAddToCart->validate() && $colorsModelForAddToCart->validate() && $sizesModelForAddToCart->validate()) {
-                    if (!PicturesHelper::createPictures($productsModelForAddProduct->imagesToLoad)) {
+            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post()) && $brandsModel->load(\Yii::$app->request->post()) && $colorsModel->load(\Yii::$app->request->post()) && $sizesModel->load(\Yii::$app->request->post())) {
+                $productsModel->imagesToLoad = UploadedFile::getInstances($productsModel, 'imagesToLoad');
+                if ($productsModel->validate() && $brandsModel->validate() && $colorsModel->validate() && $sizesModel->validate()) {
+                    if (!PicturesHelper::createPictures($productsModel->imagesToLoad)) {
                         throw new ErrorException('Ошибка при обработке изображений!');
                     }
-                    if(!$productsModelForAddProduct->upload()) {
+                    if(!$productsModel->upload()) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }
-                    if(!PicturesHelper::createThumbnails(\Yii::getAlias('@pic/' . $productsModelForAddProduct->images))) {
+                    if(!PicturesHelper::createThumbnails(\Yii::getAlias('@pic/' . $productsModel->images))) {
                         throw new ErrorException('Ошибка при загрузке images!');
                     }
-                    if (!MappersHelper::setProductsInsert($productsModelForAddProduct)) {
+                    if (!MappersHelper::setProductsInsert($productsModel)) {
                         throw new ErrorException('Ошибка при сохранении продукта!');
                     }
-                    if (!MappersHelper::setProductsBrandsInsert($productsModelForAddProduct, $brandsModelForAddToCart)) {
+                    if (!MappersHelper::setProductsBrandsInsert($productsModel, $brandsModel)) {
                         throw new ErrorException('Ошибка при сохранении связи продукта с брендом!');
                     }
-                    if (!MappersHelper::setProductsColorsInsert($productsModelForAddProduct, $colorsModelForAddToCart)) {
+                    if (!MappersHelper::setProductsColorsInsert($productsModel, $colorsModel)) {
                         throw new ErrorException('Ошибка при сохранении связи продукта с colors!');
                     }
-                    if (!MappersHelper::setProductsSizesInsert($productsModelForAddProduct, $sizesModelForAddToCart)) {
+                    if (!MappersHelper::setProductsSizesInsert($productsModel, $sizesModel)) {
                         throw new ErrorException('Ошибка при сохранении связи продукта с colors!');
                     }
-                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModelForAddProduct->categories, 'subcategory'=>$productsModelForAddProduct->subcategory, 'id'=>$productsModelForAddProduct->id]));
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModel->categories, 'subcategory'=>$productsModel->subcategory, 'id'=>$productsModel->id]));
                 }
             }
             
             $renderArray = array();
-            $renderArray['productsModelForAddProduct'] = $productsModelForAddProduct;
+            $renderArray['productsModel'] = $productsModel;
+            $renderArray['brandsModel'] = $brandsModel;
+            $renderArray['colorsModel'] = $colorsModel;
+            $renderArray['sizesModel'] = $sizesModel;
             $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
             $renderArray['colorsList'] = MappersHelper::getColorsList(false);
             $renderArray['sizesList'] = MappersHelper::getSizesList(false);
@@ -144,13 +147,65 @@ class AdminController extends AbstractBaseController
     }
     
     /**
-     * Обновляет данные товара в БД
+     * Обновляет cut данные товара в БД
+     * @return redirect
+     */
+    public function actionUpdateProductCut()
+    {
+        try {
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE_CUT]);
+            
+            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
+                if ($productsModel->validate()) {
+                    if (!MappersHelper::setProductsUpdate([$productsModel], ['id', 'active'])) {
+                        throw new ErrorException('Ошибка при обновлении данных!');
+                    }
+                    return $this->redirect(Url::to(['admin/show-products']));
+                }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
+            }
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет full данные товара в БД
      * @return redirect
      */
     public function actionUpdateProduct()
     {
         try {
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
+            $images = false;
             
+            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
+                if (!empty($productsModel->imagesToLoad)) {
+                    $productsModel->imagesToLoad = UploadedFile::getInstances($productsModel, 'imagesToLoad');
+                }
+                if ($productsModel->validate()) {
+                    if (!empty($productsModel->imagesToLoad)) {
+                        if (!PicturesHelper::createPictures($productsModel->imagesToLoad)) {
+                            throw new ErrorException('Ошибка при обработке изображений!');
+                        }
+                        if(!$productsModel->upload()) {
+                            throw new ErrorException('Ошибка при загрузке images!');
+                        }
+                        if(!PicturesHelper::createThumbnails(\Yii::getAlias('@pic/' . $productsModel->images))) {
+                            throw new ErrorException('Ошибка при загрузке images!');
+                        }
+                        $images = true;
+                    }
+                    if (!MappersHelper::setProductsUpdate([$productsModel], [], $images)) {
+                        throw new ErrorException('Ошибка при обновлении данных!');
+                    }
+                    return $this->redirect(Url::to(['admin/show-product-detail', 'id'=>$productsModel->id]));
+                }
+            } else {
+                return $this->redirect(Url::to(['products-list/index']));
+            }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

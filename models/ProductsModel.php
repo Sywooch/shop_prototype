@@ -35,7 +35,11 @@ class ProductsModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы для обновления товара
     */
-    const GET_FROM_FORM_FOR_UPDATE = 'getFromFormForRemove'; #!!!TEST
+    const GET_FROM_FORM_FOR_UPDATE = 'getFromFormForUpdate'; 
+    /**
+     * Сценарий cut загрузки данных из формы для обновления товара
+    */
+    const GET_FROM_FORM_FOR_UPDATE_CUT = 'getFromFormForUpdateCut'; 
     
     private $_id = null;
     private $_date = null;
@@ -54,7 +58,7 @@ class ProductsModel extends AbstractBaseModel
     /**
      * @var string имя каталога, по которому в БД доступны изображения текущей модели
      */
-    public $images;
+    public $images = '';
     
     public $id_categories;
     public $id_subcategory;
@@ -100,19 +104,22 @@ class ProductsModel extends AbstractBaseModel
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'images', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'],
-            self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'], #!!!TEST
+            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'],
+            self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'], 
+            self::GET_FROM_FORM_FOR_UPDATE_CUT=>['id', 'active'], 
         ];
     }
     
     public function rules()
     {
         return [
-            [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE], #!!!TEST
+            [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE], 
+            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_FORM_FOR_UPDATE],
             [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM_FOR_UPDATE],
+            [['id', 'active'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE_CUT], 
         ];
     }
     
