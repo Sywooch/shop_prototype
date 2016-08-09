@@ -259,7 +259,7 @@ class UsersController extends AbstractBaseController
                     
                     if ($usersModel->id_emails && $usersModel->id == \Yii::$app->shopUser->id) {
                         if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->shopUser->getDataForСomparison()))) {
-                            if (!MappersHelper::setUsersUpdate($usersModel)) {
+                            if (!MappersHelper::setUsersUpdate([$usersModel])) {
                                 throw new ErrorException('Ошибка при обновлении users!');
                             }
                             \Yii::configure(\Yii::$app->shopUser, $usersModel->getDataArray());

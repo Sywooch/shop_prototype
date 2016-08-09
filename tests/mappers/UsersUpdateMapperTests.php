@@ -54,53 +54,42 @@ class UsersUpdateMapperTests extends \PHPUnit_Framework_TestCase
      */
     public function testSetGroup()
     {
-        $command = \Yii::$app->db->createCommand('SELECT * FROM {{users}} WHERE [[id]]=:id');
-        $command->bindValue(':id', self::$_id);
-        $result = $command->queryOne();
-        
-        $this->assertFalse(empty($result));
-        $this->assertTrue(array_key_exists('name', $result));
-        $this->assertTrue(array_key_exists('surname', $result));
-        $this->assertTrue(array_key_exists('id_emails', $result));
-        $this->assertTrue(array_key_exists('id_phones', $result));
-        $this->assertTrue(array_key_exists('id_address', $result));
-        
-        $this->assertEquals(self::$_name, $result['name']);
-        $this->assertEquals(self::$_surname, $result['surname']);
-        $this->assertEquals(self::$_id_emails, $result['id_emails']);
-        $this->assertEquals(self::$_idPhones, $result['id_phones']);
-        $this->assertEquals(self::$_idAddress, $result['id_address']);
-        
         $usersUpdateMapper = new UsersUpdateMapper([
             'tableName'=>'users',
-            'fields'=>['name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-            'model'=> new MockModel([
-                'id'=>self::$_id,
-                'name'=>self::$_name2,
-                'surname'=>self::$_surname2,
-                'id_emails'=>self::$_id_emails2,
-                'id_phones'=>self::$_idPhones2,
-                'id_address'=>self::$_idAddress2,
-            ]),
+            'fields'=>['id', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'],
+            'objectsArray'=> [
+                new MockModel([
+                    'id'=>self::$_id,
+                    'id_emails'=>self::$_id_emails2,
+                    'name'=>self::$_name2,
+                    'surname'=>self::$_surname2,
+                    'id_phones'=>self::$_idPhones2,
+                    'id_address'=>self::$_idAddress2,
+                ]),
+            ],
         ]);
         $result = $usersUpdateMapper->setGroup();
         
-        $this->assertEquals(1, $result);
+        $this->assertEquals(2, $result);
         
         $command = \Yii::$app->db->createCommand('SELECT * FROM {{users}} WHERE [[id]]=:id');
         $command->bindValue(':id', self::$_id);
         $result = $command->queryOne();
         
+        $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
-        $this->assertTrue(array_key_exists('name', $result));
-        $this->assertTrue(array_key_exists('surname', $result));
-        $this->assertTrue(array_key_exists('id_emails', $result));
-        $this->assertTrue(array_key_exists('id_phones', $result));
-        $this->assertTrue(array_key_exists('id_address', $result));
         
+        $this->assertArrayHasKey('id', $result);
+        $this->assertArrayHasKey('id_emails', $result);
+        $this->assertArrayHasKey('name', $result);
+        $this->assertArrayHasKey('surname', $result);
+        $this->assertArrayHasKey('id_phones', $result);
+        $this->assertArrayHasKey('id_address', $result);
+        
+        $this->assertEquals(self::$_id, $result['id']);
+        $this->assertEquals(self::$_id_emails2, $result['id_emails']);
         $this->assertEquals(self::$_name2, $result['name']);
         $this->assertEquals(self::$_surname2, $result['surname']);
-        $this->assertEquals(self::$_id_emails2, $result['id_emails']);
         $this->assertEquals(self::$_idPhones2, $result['id_phones']);
         $this->assertEquals(self::$_idAddress2, $result['id_address']);
     }

@@ -2,12 +2,12 @@
 
 namespace app\mappers;
 
-use app\mappers\AbstractUpdateMapper;
+use app\mappers\AbstractInsertMapper;
 
 /**
  * Добавляет записи в БД
  */
-class UsersUpdateMapper extends AbstractUpdateMapper
+class UsersUpdateMapper extends AbstractInsertMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса

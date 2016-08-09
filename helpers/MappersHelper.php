@@ -857,15 +857,16 @@ class MappersHelper
     
     /**
      * Обновляет запись в БД объектом UsersModel
-     * @return objects UsersModel
+     * @param array $usersModelArray массив экземпляров UsersModel
+     * @return int
      */
-    public static function setUsersUpdate(UsersModel $usersModel)
+    public static function setUsersUpdate(Array $usersModelArray)
     {
         try {
             $usersUpdateMapper = new UsersUpdateMapper([
                 'tableName'=>'users',
-                'fields'=>['name', 'surname', 'id_emails', 'id_phones', 'id_address'],
-                'model'=>$usersModel,
+                'fields'=>['id', 'id_emails', 'name', 'surname', 'id_phones', 'id_address'],
+                'objectsArray'=>$usersModelArray,
             ]);
             $result = $usersUpdateMapper->setGroup();
             if (!$result) {

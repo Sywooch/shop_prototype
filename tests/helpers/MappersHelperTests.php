@@ -593,18 +593,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $usersModel->id_phones = self::$_id + 3;
         $usersModel->id_address = self::$_id + 6;
         
-        MappersHelper::setUsersUpdate($usersModel);
+        $result = MappersHelper::setUsersUpdate([$usersModel]);
         
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll();
+       $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{users}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $id);
+        $result = $command->queryOne();
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
-        $this->assertTrue(password_verify(self::$_password, $result[0]['password']));
-        $this->assertEquals(self::$_name, $result[0]['name']);
-        $this->assertEquals(self::$_surname, $result[0]['surname']);
-        $this->assertEquals(self::$_id_emails, $result[0]['id_emails']);
-        $this->assertEquals(self::$_id + 3, $result[0]['id_phones']);
-        $this->assertEquals(self::$_id + 6, $result[0]['id_address']);
+        $this->assertTrue(password_verify(self::$_password, $result['password']));
+        $this->assertEquals($id, $result['id']);
+        $this->assertEquals(self::$_id_emails, $result['id_emails']);
+        $this->assertEquals(self::$_name, $result['name']);
+        $this->assertEquals(self::$_surname, $result['surname']);
+        $this->assertEquals(self::$_id + 3, $result['id_phones']);
+        $this->assertEquals(self::$_id + 6, $result['id_address']);
     }
     
     /**
