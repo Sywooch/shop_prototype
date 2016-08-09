@@ -32,6 +32,10 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы добавления продукта
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
+    /**
+     * Сценарий загрузки данных из формы для обновления товара
+    */
+    const GET_FROM_FORM_FOR_UPDATE = 'getFromFormForRemove'; #!!!TEST
     
     private $_id = null;
     private $_date = null;
@@ -60,6 +64,12 @@ class ProductsModel extends AbstractBaseModel
      */
     private $_categories = null;
     private $_subcategory = null;
+    /**
+     * @var object объекты категории и подкатегории продукта соответственно,
+     * полученные при обращении с $this->categories, $this->subcategory
+     */
+    private $_categoriesObject = null; 
+    private $_subcategoryObject = null; 
     
     /**
      * @var string хэш сумма для продукта, мспользуется для идентификации в массиве продуктов класса корзины
@@ -91,6 +101,7 @@ class ProductsModel extends AbstractBaseModel
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
             self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'],
+            self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'], #!!!TEST
         ];
     }
     
@@ -100,6 +111,8 @@ class ProductsModel extends AbstractBaseModel
             [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE], #!!!TEST
+            [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM_FOR_UPDATE],
         ];
     }
     
@@ -280,11 +293,14 @@ class ProductsModel extends AbstractBaseModel
      * @param string $value
      * @return boolean
      */
-    public function setCategories($value)
+    public function setCategories($value) 
     {
         try {
             $this->_categories = $value;
-            return true;
+            if (!empty($this->_categories)) {
+                $this->_categoriesObject = MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>$this->_categories]));
+            }
+            return (!empty($this->_categories) && !empty($this->_categoriesObject)) ? true : null;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -294,7 +310,7 @@ class ProductsModel extends AbstractBaseModel
      * Возвращает значение свойства $this->_categories
      * @return int
      */
-    public function getCategories()
+    public function getCategories() 
     {
         try {
             if (is_null($this->_categories)) {
@@ -303,6 +319,7 @@ class ProductsModel extends AbstractBaseModel
                     if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
                         return null;
                     }
+                    $this->_categoriesObject = $categoriesModel;
                     $this->_categories = $categoriesModel->seocode;
                 }
             }
@@ -313,15 +330,59 @@ class ProductsModel extends AbstractBaseModel
     }
     
     /**
+     * Присваивает значение свойству $this->_categoriesObject
+     * @param CategoriesModel
+     * @return boolean
+     */
+    public function setCategoriesObject(CategoriesModel $categoriesModel) 
+    {
+        try {
+            $this->_categoriesObject = $categoriesModel;
+            if (!empty($this->_categoriesObject)) {
+                $this->_categories = $this->_categoriesObject->seocode;
+            }
+            return (!empty($this->_categories) && !empty($this->_categoriesObject)) ? true : null;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_categoriesObject
+     * @return int
+     */
+    public function getCategoriesObject() 
+    {
+        try {
+            if (is_null($this->_categoriesObject)) {
+                if (!empty($this->id_categories)) {
+                    $categoriesModel = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>$this->id_categories]));
+                    if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
+                        return null;
+                    }
+                    $this->_categoriesObject = $categoriesModel;
+                    $this->_categories = $categoriesModel->seocode;
+                }
+            }
+            return $this->_categoriesObject;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Присваивает значение свойству $this->_subcategory
      * @param string $value
      * @return boolean
      */
-    public function setSubcategory($value)
+    public function setSubcategory($value) 
     {
         try {
             $this->_subcategory = $value;
-            return true;
+            if (!empty($this->_subcategory)) {
+                $this->_subcategoryObject = MappersHelper::getSubcategoryBySeocode(new SubcategoryModel(['seocode'=>$this->_subcategory]));
+            }
+            return (!empty($this->_subcategory) && !empty($this->_subcategoryObject)) ? true : null;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -331,7 +392,7 @@ class ProductsModel extends AbstractBaseModel
      * Возвращает значение свойства $this->_subcategory
      * @return int
      */
-    public function getSubcategory()
+    public function getSubcategory() 
     {
         try {
             if (is_null($this->_subcategory)) {
@@ -340,10 +401,52 @@ class ProductsModel extends AbstractBaseModel
                     if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
                         return null;
                     }
+                    $this->_subcategoryObject = $subcategoryModel;
                     $this->_subcategory = $subcategoryModel->seocode;
                 }
             }
             return $this->_subcategory;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_subcategoryObject
+     * @param SubcategoryModel
+     * @return boolean
+     */
+    public function setSubcategoryObject(SubcategoryModel $subcategoryModel) 
+    {
+        try {
+            $this->_subcategoryObject = $subcategoryModel;
+            if (!empty($this->_subcategoryObject)) {
+                $this->_subcategory = $this->_subcategoryObject->seocode;
+            }
+            return (!empty($this->_subcategory) && !empty($this->_subcategoryObject)) ? true : null;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение свойства $this->_subcategoryObject
+     * @return int
+     */
+    public function getSubcategoryObject() 
+    {
+        try {
+            if (is_null($this->_subcategoryObject)) {
+                if (!empty($this->id_subcategory)) {
+                    $subcategoryModel = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>$this->id_subcategory]));
+                    if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
+                        return null;
+                    }
+                    $this->_subcategoryObject = $subcategoryModel;
+                    $this->_subcategory = $subcategoryModel->seocode;
+                }
+            }
+            return $this->_subcategoryObject;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

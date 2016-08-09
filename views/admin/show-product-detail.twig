@@ -1,0 +1,26 @@
+
+{{ register_asset_bundle('app/assets/AddProductsAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+<p>Здесь вы можете отслеживать и редактировать товары магазина.</p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+    <p>
+    {% set form=active_form_begin({'id':'change-product-%s' | format(objectsProducts.id), 'action':'', 'method':'POST'}) %}
+        {{ form.field(objectsProducts, 'id').hiddenInput().label(false) | raw }}
+        {{ form.field(objectsProducts, 'date').input('date', {'value':app.formatter.asDate(objectsProducts.date, 'yyyy-MM-dd')}) | raw }}
+        {{ form.field(objectsProducts, 'code') | raw }}
+        {{ form.field(objectsProducts, 'name') | raw }}
+        {{ form.field(objectsProducts, 'short_description').textarea({'cols':40, 'rows':5}) | raw }}
+        {{ form.field(objectsProducts, 'description').textarea({'cols':40, 'rows':5}) | raw }}
+        {{ form.field(objectsProducts, 'price').input('number', {'step':'any'}) | raw }}
+        {{ form.field(objectsProducts, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
+        {{ form.field(objectsProducts, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(objectsProducts.id_categories))) | raw }}
+        {{ form.field(objectsProducts, 'active').checkbox() | raw }}
+        <input type="submit" value="Обновить">
+    {{ active_form_end() }}
+    </p>

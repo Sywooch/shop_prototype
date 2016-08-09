@@ -103,6 +103,7 @@ $config = [
                 # Администрирование
                 'admin'=>'admin/index',
                 'admin/show-products'=>'admin/show-products',
+                'admin/show-products/<id:\d+>'=>'admin/show-product-detail',
                 'admin/add-product'=>'admin/add-product',
                 'get-subcategory-ajax'=>'categories/get-subcategory-ajax',
             ],

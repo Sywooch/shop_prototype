@@ -1201,7 +1201,7 @@ class MappersHelper
         try {
             $productsByIdMapper = new ProductsByIdMapper([
                 'tableName'=>'products',
-                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
+                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
                 'model'=>$productsModel,
             ]);
             $hash = self::createHash([

@@ -13,16 +13,16 @@
     
     <p>
     {% set form=active_form_begin({'id':'change-product-%s' | format(product.id), 'action':'', 'method':'POST'}) %}
-        {{ form.field(product, 'id').hiddenInput().label(false) | raw }}
-        {{ form.field(product, 'code') | raw }}
-        {{ form.field(product, 'name') | raw }}
-        {{ form.field(product, 'date').input('date', {'value':app.formatter.asDate(product.date, 'yyyy-MM-dd')}) | raw }}
-        {{ form.field(product, 'price').input('number', {'step':'any'}) | raw }}
-        {{ form.field(product, 'short_description').textarea({'cols':40, 'rows':5}) | raw }}
-        {{ form.field(product, 'description').textarea({'cols':40, 'rows':5}) | raw }}
-        {{ form.field(product, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
-        {{ form.field(product, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(product.id_categories))) | raw }}
+        {{ form.field(product, 'id').hiddenInput().label(false) | raw }}<br>
+        Название: <a href="{{ url.to({0:'product-detail/index', 'categories':product.categories, 'subcategory':product.subcategory, 'id':product.id}) }}">{{ product.name }}</a><br>
+        Дата добавления: {{ app.formatter.asDate(product.date, 'yyyy-MM-dd') }}<br>
+        Код: {{ product.code }}<br>
+        Описание: {{ product.short_description }}<br>
+        Price: {{ (product.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}<br>
+        Category: {{ product.categoriesObject.name }}<br>
+        Subcategory: {{ product.subcategoryObject.name }}<br>
         {{ form.field(product, 'active').checkbox() | raw }}
+        <a href="{{ url.to({0:'admin/show-product-detail', 'id':product.id}) }}">Редактировать детали</a><br>
         <input type="submit" value="Обновить">
     {{ active_form_end() }}
     </p>
