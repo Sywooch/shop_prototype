@@ -91,6 +91,7 @@ class ProductsModel extends AbstractBaseModel
     public $sizeToCart;
     public $quantity;
     
+    private $_brands = null;
     private $_colors = null;
     private $_sizes = null;
     private $_similar = null;
@@ -164,7 +165,25 @@ class ProductsModel extends AbstractBaseModel
     }
     
     /**
-     * Возвращает по запросу массив объектов colors, связанных с текущим объектом
+     * Возвращает по запросу объект BrandsModel, связанный с текущим объектом
+     * @return array
+     */
+    public function getBrands()
+    {
+        try {
+            if (is_null($this->_brands)) {
+                if (!empty($this->id)) {
+                    $this->_brands = MappersHelper::getBrandsForProduct($this);
+                }
+            }
+            return $this->_brands;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает по запросу массив объектов ColorsModel, связанных с текущим объектом
      * @return array
      */
     public function getColors()

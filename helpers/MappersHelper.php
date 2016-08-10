@@ -61,7 +61,9 @@ use app\mappers\{ColorsMapper,
     MailingListForEmailMapper,
     EmailsMailingListDeleteMapper,
     AdminMenuMapper,
-    ProductsUpdateMapper};
+    ProductsUpdateMapper,
+    BrandsForProductMapper,
+    ProductsBrandsDeleteMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -76,7 +78,8 @@ use app\models\{AddressModel,
     BrandsModel, 
     ColorsModel, 
     SizesModel,
-    MailingListModel};
+    MailingListModel,
+    ProductsBrandsModel};
 
 /**
  * Коллекция методов для работы с БД
@@ -222,7 +225,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов colors
-     * @param boolean $joinProducts определяет, выбирать ли только те записи, которые связаны с хотя бы одним продуктом
+     * @param boolean $joinProducts, true - выбирать только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects ColorsModel
      */
     public static function getColorsList($joinProducts=true)
@@ -327,7 +330,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов sizes
-     * @param boolean $joinProducts определяет, выбирать ли только те записи, которые связаны с хотя бы одним продуктом
+     * @param boolean $joinProducts, true - выбирать только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects SizesModel
      */
     public static function getSizesList($joinProducts=true)
@@ -432,7 +435,7 @@ class MappersHelper
     
     /**
      * Получает массив объектов brands
-     * @param boolean $joinProducts определяет, выбирать ли только те записи, которые связаны с хотя бы одним продуктом
+     * @param boolean $joinProducts, true - выбирать только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects BrandsModel
      */
     public static function getBrandsList($joinProducts=true)
@@ -462,6 +465,39 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $brandsArray);
             return $brandsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает BrandsModel по ProductsModel::id
+     * @param object $productsModel экземпляр ProductsModel
+     * @return object BrandsModel
+     */
+    public static function getBrandsForProduct(ProductsModel $productsModel)
+    {
+        try {
+            $brandsForProductMapper = new BrandsForProductMapper([
+                'tableName'=>'brands',
+                'fields'=>['id', 'brand'],
+                'model'=>$productsModel,
+            ]);
+            $hash = self::createHash([
+                BrandsForProductMapper::className(), 
+                $brandsForProductMapper->tableName, 
+                implode('', $brandsForProductMapper->fields), 
+                $brandsForProductMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $brandsModel = $brandsForProductMapper->getOneFromGroup();
+            if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $brandsModel);
+            return $brandsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -1614,6 +1650,33 @@ class MappersHelper
                 'DbArray'=>[['id_products'=>$productsModel->id, 'id_brands'=>$brandsModel->id]],
             ]);
             if (!$result = $productsBrandsInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи ProductsBrandsModel из БД
+     * @param array $productsBrandsModels массив ProductsBrandsModel
+     * @return boolean
+     */
+    public static function setProductsBrandsDelete(Array $productsBrandsModels)
+    {
+        try {
+            if (empty($productsBrandsModels)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$productsBrandsModels[0] instanceof ProductsBrandsModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $productsBrandsDeleteMapper = new ProductsBrandsDeleteMapper([
+                'tableName'=>'products_brands',
+                'objectsArray'=>$productsBrandsModels,
+            ]);
+            if (!$result = $productsBrandsDeleteMapper->setGroup()) {
                 return null;
             }
             return $result;

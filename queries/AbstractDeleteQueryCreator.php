@@ -30,7 +30,7 @@ abstract class AbstractDeleteQueryCreator extends AbstractBaseQueryCreator
     }
     
     /**
-     * Инициирует создание INSERT запроса
+     * Инициирует создание DELETE запроса
      * @return boolean
      */
     public function getDeleteQuery()

@@ -4,7 +4,8 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use yii\web\UploadedFile;
-use yii\helpers\Url;
+use yii\helpers\{Url,
+    ArrayHelper};
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper, 
@@ -13,7 +14,8 @@ use app\models\{ProductsModel,
     CategoriesModel, 
     BrandsModel, 
     ColorsModel, 
-    SizesModel};
+    SizesModel,
+    ProductsBrandsModel};
 
 /**
  * Управляет административными функциями
@@ -138,6 +140,12 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['objectsProducts'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
+            $renderArray['brandsModel'] = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM, 'id'=>$renderArray['objectsProducts']->brands->id]);
+            $renderArray['colorsModel'] = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['objectsProducts']->colors, 'id')]);
+            $renderArray['sizesModel'] = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['objectsProducts']->sizes, 'id')]);
+            $renderArray['colorsList'] = MappersHelper::getColorsList(false);
+            $renderArray['sizesList'] = MappersHelper::getSizesList(false);
+            $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-product-detail.twig', $renderArray);
         } catch (\Exception $e) {
@@ -179,13 +187,17 @@ class AdminController extends AbstractBaseController
     {
         try {
             $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
+            
             $updateConfig = array();
             
-            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
+            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post()) && $brandsModel->load(\Yii::$app->request->post()) && $colorsModel->load(\Yii::$app->request->post()) && $sizesModel->load(\Yii::$app->request->post())) {
                 if (!empty($productsModel->imagesToLoad)) {
                     $productsModel->imagesToLoad = UploadedFile::getInstances($productsModel, 'imagesToLoad');
                 }
-                if ($productsModel->validate()) {
+                if ($productsModel->validate() && $brandsModel->validate() && $colorsModel->validate() && $sizesModel->validate()) {
                     if (!empty($productsModel->imagesToLoad)) {
                         if (!PicturesHelper::createPictures($productsModel->imagesToLoad)) {
                             throw new ErrorException('Ошибка при обработке изображений!');
@@ -202,6 +214,16 @@ class AdminController extends AbstractBaseController
                     if (!MappersHelper::setProductsUpdate($updateConfig)) {
                         throw new ErrorException('Ошибка при обновлении данных!');
                     }
+                    
+                    if ($brandsModel->id != $productsModel->brands->id) {
+                        if (!MappersHelper::setProductsBrandsDelete([new ProductsBrandsModel(['id_products'=>$productsModel->id])])) {
+                            throw new ErrorException('Ошибка при удалении записи products_brands!');
+                        }
+                        if (!MappersHelper::setProductsBrandsInsert($productsModel, $brandsModel)) {
+                            throw new ErrorException('Ошибка при сохранении связи продукта с брендом!');
+                        }
+                    }
+                    
                     return $this->redirect(Url::to(['admin/show-product-detail', 'id'=>$productsModel->id]));
                 }
             } else {

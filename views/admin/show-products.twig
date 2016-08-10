@@ -21,6 +21,7 @@
         Price: {{ (product.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}<br>
         Category: {{ product.categoriesObject.name }}<br>
         Subcategory: {{ product.subcategoryObject.name }}<br>
+        Brand: {{ product.brands.brand }}<br>
         Sizes: {{ array.getColumn(product.sizes, 'size') | join(', ') }}<br>
         Colors: {{ array.getColumn(product.colors, 'color') | join(', ') }}
         {{ form.field(product, 'active').checkbox() | raw }}

@@ -23,7 +23,8 @@ use app\models\{CategoriesModel,
     PurchasesModel,
     MailingListModel,
     EmailsMailingListModel,
-    AdminMenuModel};
+    AdminMenuModel,
+    ProductsBrandsModel};
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -330,6 +331,28 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result[0] instanceof BrandsModel);
         $this->assertEquals(self::$_id, $result[0]->id);
         $this->assertEquals(self::$_brand, $result[0]->brand);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getBrandsForProduct
+     */
+    public function testGetBrandsForProduct()
+    {
+        $this->assertFalse(empty($products_brands = \Yii::$app->db->createCommand('SELECT * FROM {{products_brands}} LIMIT 1')->queryOne()));
+        
+        $model = new ProductsModel();
+        $model->id = $products_brands['id_products'];
+        
+        $result = MappersHelper::getBrandsForProduct($model);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof BrandsModel);
+        $this->assertTrue(property_exists($result, 'id'));
+        $this->assertTrue(property_exists($result, 'brand'));
+        $this->assertFalse(empty($result->id));
+        $this->assertFalse(empty($result->brand));
+        $this->assertEquals($products_brands['id_brands'], $result['id']);
+        
     }
     
     /**
@@ -1220,6 +1243,24 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals($id_products, $result['id_products']);
         $this->assertEquals($id_brands, $result['id_brands']);
     }
+    
+    /**
+     * Тестирует метод MappersHelper::setProductsBrandsDelete
+     */
+    public function testSetProductsBrandsDelete()
+    {
+        $this->assertFalse(empty($products_brands = \Yii::$app->db->createCommand('SELECT * FROM {{products_brands}}')->queryAll()));
+        $this->assertEquals(1, count($products_brands));
+        
+        $model = new ProductsBrandsModel();
+        $model->id_products = $products_brands[0]['id_products'];
+        
+        $result = MappersHelper::setProductsBrandsDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_brands}}')->queryAll()));
+    }
+    
     
     /**
      * Тестирует метод MappersHelper::setProductsColorsInsert

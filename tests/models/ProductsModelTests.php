@@ -10,7 +10,8 @@ use app\models\{ProductsModel,
     SizesModel, 
     CommentsModel,
     CategoriesModel,
-    SubcategoryModel};
+    SubcategoryModel,
+    BrandsModel};
 use app\helpers\MappersHelper;
 
 /**
@@ -32,6 +33,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_quantity = 1;
     private static $_sizeToCart = 23;
     private static $_colorToCart = 2;
+    private static $_brand = 'Adidas';
     private static $_color = 'gray';
     private static $_size = '46';
     private static $_text = 'Some text';
@@ -111,6 +113,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id_products'=>self::$_id, ':id_sizes'=>self::$_id]);
         $command->execute();
         
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{brands}} SET [[id]]=:id, [[brand]]=:brand');
+        $command->bindValues([':id'=>self::$_id, ':brand'=>self::$_brand]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_brands}} SET [[id_products]]=:id_products, [[id_brands]]=:id_brands');
+        $command->bindValues([':id_products'=>self::$_id, ':id_brands'=>self::$_id]);
+        $command->execute();
+        
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
         $command->bindValues([':id'=>self::$_id + 1, ':date'=>self::$_date, ':code'=>self::$_code . 'n', ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
@@ -173,6 +183,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'colorToCart'));
         $this->assertTrue(property_exists($model, 'sizeToCart'));
         $this->assertTrue(property_exists($model, 'quantity'));
+        $this->assertTrue(property_exists($model, '_brands'));
         $this->assertTrue(property_exists($model, '_colors'));
         $this->assertTrue(property_exists($model, '_sizes'));
         $this->assertTrue(property_exists($model, '_similar'));
@@ -466,6 +477,31 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model = new ProductsModel();
         
         $this->assertTrue(is_null($model->colors));
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getBrands
+     */
+    public function testGetBrands()
+    {
+        $model = new ProductsModel();
+        $model->id = self::$_id;
+        
+        $brandsObject = $model->brands;
+        
+        $this->assertTrue(is_object($brandsObject));
+        $this->assertTrue($brandsObject instanceof BrandsModel);
+    }
+    
+    /**
+     * Тестирует возврат null в методе ProductsModel::getBrands
+     * при условии, что необходимые для выполнения свойства пусты
+     */
+    public function testNullGetBrands()
+    {
+        $model = new ProductsModel();
+        
+        $this->assertTrue(is_null($model->brands));
     }
     
     /**
