@@ -104,7 +104,7 @@ $config = [
                 'admin'=>'admin/index',
                 'admin/show-products'=>'admin/show-products',
                 'admin/show-products/<id:\d+>'=>'admin/show-product-detail',
-                'admin/add-product'=>'admin/add-product',
+                'admin/add-products'=>'admin/add-products',
                 'admin/update-product-cut'=>'admin/update-product-cut',
                 'get-subcategory-ajax'=>'categories/get-subcategory-ajax',
             ],
@@ -179,6 +179,7 @@ $config = [
         'maxHeight'=>700, # максимально допустимая высота сохраняемого изображения
         'maxThumbnailWidth'=>500, # максимально допустимая ширина сохраняемого эскиза изображения
         'maxThumbnailHeight'=>500, # максимально допустимая высота сохраняемого эскиза изображения
+        'adminWidth'=>120, # ширина изображения на странице редактирования раздела администрирования
         'thumbnailsPrefix'=>'thumbn_', # префикс эскизов изображений
         'thumbnails'=>'thumbnails', # ключ по которому доступен массив эскизов изображений, в массиве, возвращаемом app\helpers\PicturesHelper
         'fullpath'=>'fullpath', # ключ по которому доступен массив полноразмерных изображений, в массиве, возвращаемом app\helpers\PicturesHelper

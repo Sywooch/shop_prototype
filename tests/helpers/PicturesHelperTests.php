@@ -101,6 +101,30 @@ class PicturesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue((bool)strpos($result, \Yii::$app->params['thumbnailsPrefix']));
     }
     
+    /**
+     * Тестирует метод PicturesHelper::getAllThumbnails
+     */
+    public function testGetAllThumbnails()
+    {
+        $result = PicturesHelper::getAllThumbnails(self::$_sourceCatalog, self::$_testCatalog);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue((bool)strpos($result[0], \Yii::$app->params['thumbnailsPrefix']));
+    }
+    
+    /**
+     * Тестирует метод PicturesHelper::getFullPaths
+     */
+    public function testGetFullPaths()
+    {
+        $result = PicturesHelper::getFullPaths(self::$_sourceCatalog, self::$_testCatalog);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertFalse((bool)strpos($result[0], \Yii::$app->params['thumbnailsPrefix']));
+    }
+    
     public static function tearDownAfterClass()
     {
         if (file_exists(self::$_sourceCatalog . '/' . self::$_testCatalog . '/' . self::$_fileName)) {

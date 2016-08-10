@@ -108,6 +108,22 @@ class PicturesHelper
     }
     
     /**
+     * Возвращает путь к полноразмерным изображениям
+     * @param string $basePath путь к базовому каталогу
+     * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
+     * @return array 
+     */
+    public static function getFullPaths($basePath, $catalogName)
+    {
+        try {
+            $picturesArray = self::getPathImages($basePath, $catalogName);
+            return $picturesArray[\Yii::$app->params['fullpath']];
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает путь к 1 случайно выбранному эскизу
      * @param string $basePath путь к базовому каталогу
      * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
@@ -119,6 +135,22 @@ class PicturesHelper
             $picturesArray = self::getPathImages($basePath, $catalogName);
             $thumbnailsArray = $picturesArray[\Yii::$app->params['thumbnails']];
             return $thumbnailsArray[array_rand($thumbnailsArray, 1)];
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает путь к эскизам
+     * @param string $basePath путь к базовому каталогу
+     * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
+     * @return array 
+     */
+    public static function getAllThumbnails($basePath, $catalogName)
+    {
+        try {
+            $picturesArray = self::getPathImages($basePath, $catalogName);
+            return $picturesArray[\Yii::$app->params['thumbnails']];
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

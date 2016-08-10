@@ -1038,7 +1038,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $productsModel->id_subcategory = self::$_id;
         $productsModel->active = self::$_active * 0;
         
-        $result = MappersHelper::setProductsUpdate([$productsModel]);
+        $result = MappersHelper::setProductsUpdate(['productsModels'=>[$productsModel]]);
         
         $this->assertEquals(2, $result);
         
@@ -1059,6 +1059,42 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $result['id_categories']);
         $this->assertEquals(self::$_id, $result['id_subcategory']);
         $this->assertEquals(self::$_active * 0, $result['active']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setProductsUpdate
+     * для нескольких полей
+     */
+    public function testSetCutProductsUpdate()
+    {
+        $this->assertFalse(empty($productArray = \Yii::$app->db->createCommand('SELECT * FROM {{products}} LIMIT 1')->queryOne()));
+        $this->assertTrue($productArray['active'] == 0);
+        
+        $productsModel = new ProductsModel();
+        $productsModel->id = $productArray['id'];
+        $productsModel->active = self::$_active;
+        
+        $result = MappersHelper::setProductsUpdate(['productsModels'=>[$productsModel], 'fields'=>['id', 'active']]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{products}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $productArray['id']);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($productArray['id'], $result['id']);
+        $this->assertEquals($productArray['date'], $result['date']);
+        $this->assertEquals($productArray['code'], $result['code']);
+        $this->assertEquals($productArray['name'], $result['name']);
+        $this->assertEquals($productArray['description'], $result['description']);
+        $this->assertEquals($productArray['short_description'], $result['short_description']);
+        $this->assertEquals(round($productArray['price'], 2, PHP_ROUND_HALF_UP), round($result['price'], 2, PHP_ROUND_HALF_UP));
+        $this->assertEquals($productArray['images'], $result['images']);
+        $this->assertEquals($productArray['id_categories'], $result['id_categories']);
+        $this->assertEquals($productArray['id_subcategory'], $result['id_subcategory']);
+        $this->assertEquals(self::$_active, $result['active']);
     }
     
     /**

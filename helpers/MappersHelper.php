@@ -1249,26 +1249,33 @@ class MappersHelper
     
     /**
      * Обновляет запись ProductsModel в БД
-     * @param array $productsModelArray массив экземпляров ProductsModel
-     * @param array $fields массив полей, которые будут обновлены
-     * @param boolean $images указывает, необходимо ли обновлять поле images
+     * @param array $updateConfig массив конфигурации, может включать в себя
+     * - productsModels массив экземпляров ProductsModel, обязательный
+     * - fields массив полей, которые должны быть обновлены
+     * - images bool, указывает, необходимо ли обновлять поле images
      * @return int
      */
-    public static function setProductsUpdate(Array $productsModelArray, Array $fields=array(), $images=false)
+    public static function setProductsUpdate(Array $updateConfig)
     {
         try {
-            if (empty($productsModelArray) || !$productsModelArray[0] instanceof ProductsModel) {
+            if (empty($updateConfig)) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            if (!is_array($updateConfig['productsModels']) || empty($updateConfig['productsModels']) || !$updateConfig['productsModels'][0] instanceof ProductsModel) {
                 throw new ErrorException('Переданы некорректные данные!');
             }
             $config = [
                 'tableName'=>'products',
                 'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory', 'active'],
-                'objectsArray'=>$productsModelArray,
+                'objectsArray'=>$updateConfig['productsModels'],
             ];
-            if (!empty($fields)) {
-                $config['fields'] = $fields;
+            if (!empty($updateConfig['fields'])) {
+                if (!is_array($updateConfig['fields'])) {
+                    throw new ErrorException('Переданы некорректные данные!');
+                }
+                $config['fields'] = $updateConfig['fields'];
             }
-            if (!empty($images)) {
+            if (!empty($updateConfig['images'])) {
                 $config['fields'][] = 'images';
             }
             $productsUpdateMapper = new ProductsUpdateMapper($config);

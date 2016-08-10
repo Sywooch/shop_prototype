@@ -1,7 +1,7 @@
 
 {{ use('yii/widgets/ActiveForm') }}
 
-<p>Hello, {{ app.shopUser.emails.email | default(app.params['nonAuthenticatedUserLogin']) }}!</p>
+<p>Hello, {{ app.shopUser.emails.email | default(app.params.nonAuthenticatedUserLogin) }}!</p>
 
 {% if not app.shopUser.emails %}
     <p><a href="{{ url.to({0:'/users/add-user'}) }}">Присоедениться</a> <a href="{{ url.to({0:'/users/login-user'}) }}">Войти</a></p>

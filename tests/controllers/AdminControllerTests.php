@@ -7,9 +7,9 @@ use yii\helpers\ArrayHelper;
 use app\helpers\MappersHelper;
 
 /**
- * Тестирует класс ProductsManagerController
+ * Тестирует класс AdminController
  */
-class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
+class AdminControllerTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_guzzleClient;
@@ -21,6 +21,11 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
     private static $_sizesId = 1;
     
     private static $_productId = null;
+    private static $_categoriesAdd = null;
+    private static $_subcategoryAdd = null;
+    private static $_brandsAdd = null;
+    private static $_colorsAdd = null;
+    private static $_sizesAdd = null;
     private static $_dirPath = null;
     private static $_imagesInDirPath = null;
     
@@ -36,6 +41,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
     private static $_subcategorySeocode = 'boots';
     private static $_color = 'gray';
     private static $_size = '46';
+    private static $_active = 0;
     
     public static function setUpBeforeClass()
     {
@@ -54,6 +60,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         } else {
             $pdoStatement = self::$_dbClass->prepare('INSERT INTO categories SET id=:id, name=:name, seocode=:seocode');
             $pdoStatement->execute([':id'=>self::$_categoriesId, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
+            self::$_categoriesAdd = true;
         }
         
         $pdoStatement = self::$_dbClass->prepare('SELECT id FROM subcategory WHERE id_categories=:id_categories LIMIT 1');
@@ -64,6 +71,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         } else {
             $pdoStatement = self::$_dbClass->prepare('INSERT INTO subcategory SET id=:id, name=:name, id_categories=:id_categories, seocode=:seocode');
             $pdoStatement->execute([':id'=>self::$_subcategoryId, ':name'=>self::$_name, ':id_categories'=>self::$_categoriesId, ':seocode'=>self::$_categorySeocode]);
+            self::$_subcategoryAdd = true;
         }
         
         $pdoStatement = self::$_dbClass->prepare('SELECT id FROM brands LIMIT 1');
@@ -74,6 +82,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         } else {
             $pdoStatement = self::$_dbClass->prepare('INSERT INTO brands SET id=:id, brand=:brand');
             $pdoStatement->execute([':id'=>self::$_brandsId, ':brand'=>self::$_brand]);
+            self::$_brandsAdd = true;
         }
         
         $pdoStatement = self::$_dbClass->prepare('SELECT id FROM colors LIMIT 1');
@@ -84,6 +93,7 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         } else {
             $pdoStatement = self::$_dbClass->prepare('INSERT INTO colors SET id=:id, color=:color');
             $pdoStatement->execute([':id'=>self::$_colorsId, ':color'=>self::$_color]);
+            self::$_colorsAdd = true;
         }
         
         $pdoStatement = self::$_dbClass->prepare('SELECT id FROM sizes LIMIT 1');
@@ -92,8 +102,9 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         if (is_array($result) && !empty($result) && !empty($result['id'])) {
             self::$_sizesId = $result['id'];
         } else {
-            $pdoStatement = self::$_dbClass->prepare('INSERT INTO colors SET id=:id, size=:size');
+            $pdoStatement = self::$_dbClass->prepare('INSERT INTO sizes SET id=:id, size=:size');
             $pdoStatement->execute([':id'=>self::$_sizesId, ':size'=>self::$_size]);
+            self::$_sizesAdd = true;
         }
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -102,24 +113,24 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод ProductsManagerController::actionAddProduct
+     * Тестирует метод AdminController::actionAddProduct
      * при обработке GET запроса
      */
     public function testGetActionAddProduct()
     {
-        $response = self::$_guzzleClient->request('GET', 'http://shop.com/admin/add-product');
+        $response = self::$_guzzleClient->request('GET', 'http://shop.com/admin/add-products');
         
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals('OK', $response->getReasonPhrase());
     }
     
     /**
-     * Тестирует метод ProductsManagerController::actionAddProduct
+     * Тестирует метод AdminController::actionAddProduct
      * при обработке POST запроса
      */
     public function testPostActionAddProduct()
     {
-        $response = self::$_guzzleClient->request('POST', 'http://shop.com/admin/add-product', [
+        $response = self::$_guzzleClient->request('POST', 'http://shop.com/admin/add-products', [
             'query'=>['csrfdisable'=>true],
             'allow_redirects' => false,
             'multipart'=>[
@@ -158,6 +169,10 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
                 [
                     'name'=>'ProductsModel[imagesToLoad][]',
                     'contents'=>fopen(self::$_file2, 'r'),
+                ],
+                [
+                    'name'=>'ProductsModel[active]',
+                    'contents'=>self::$_active,
                 ],
                 [
                     'name'=>'BrandsModel[id]',
@@ -231,37 +246,36 @@ class ProductsManagerControllerTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_sizesId, $sizesArray['id_sizes']);
     }
     
-    /**
-     * Тестирует метод ProductsManagerController::actionGetSubcategoryAjax
-     */
-    public function testActionGetSubcategoryAjax()
-    {
-        $response = self::$_guzzleClient->request('POST', 'http://shop.com/get-subcategory-ajax', [
-            'headers'=>['X-Requested-With'=>'XMLHttpRequest'],
-            'query'=>['csrfdisable'=>true],
-            'form_params' => [
-                'categoriesId'=>self::$_categoriesId,
-            ],
-        ]);
-        
-        $ajaxArray = json_decode($response->getBody(), true);
-        
-        $pdoStatement = self::$_dbClass->prepare('SELECT * FROM subcategory WHERE id_categories=:id_categories');
-        $pdoStatement->execute([':id_categories'=>self::$_categoriesId]);
-        $subcategoryDbArray = ArrayHelper::map($pdoStatement->fetchAll(\PDO::FETCH_ASSOC), 'id', 'name');
-        
-        $this->assertEquals(count($ajaxArray), count($subcategoryDbArray));
-        
-        foreach (array_keys($ajaxArray) as $key) {
-            $this->assertEquals($ajaxArray[$key], $subcategoryDbArray[$key]);
-        }
-    }
-    
     public static function tearDownAfterClass()
     {
         if (!empty(self::$_productId)) {
             $pdoStatement = self::$_dbClass->prepare('DELETE FROM products WHERE id=:id');
             $pdoStatement->execute([':id'=>self::$_productId]);
+        }
+        
+        if (!empty(self::$_categoriesAdd)) {
+            $pdoStatement = self::$_dbClass->prepare('DELETE FROM categories WHERE id=:id');
+            $pdoStatement->execute([':id'=>self::$_categoriesId]);
+        }
+        
+        if (!empty(self::$_subcategoryAdd)) {
+            $pdoStatement = self::$_dbClass->prepare('DELETE FROM subcayegory WHERE id=:id');
+            $pdoStatement->execute([':id'=>self::$_subcategoryId]);
+        }
+        
+        if (!empty(self::$_brandsAdd)) {
+            $pdoStatement = self::$_dbClass->prepare('DELETE FROM brands WHERE id=:id');
+            $pdoStatement->execute([':id'=>self::$_brandsId]);
+        }
+        
+        if (!empty(self::$_colorsAdd)) {
+            $pdoStatement = self::$_dbClass->prepare('DELETE FROM colors WHERE id=:id');
+            $pdoStatement->execute([':id'=>self::$_colorsId]);
+        }
+        
+        if (!empty(self::$_sizesAdd)) {
+            $pdoStatement = self::$_dbClass->prepare('DELETE FROM sizes WHERE id=:id');
+            $pdoStatement->execute([':id'=>self::$_sizesId]);
         }
         
         if (!empty(self::$_imagesInDirPath)) {

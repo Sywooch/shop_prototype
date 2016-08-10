@@ -7,6 +7,8 @@
 
 <p>Здесь вы можете отслеживать и редактировать товары магазина.</p>
 
+<p><a href="{{ url.to({0:'product-detail/index', 'categories':objectsProducts.categories, 'subcategory':objectsProducts.subcategory, 'id':objectsProducts.id}) }}">Страница товара</a></p>
+
 {{ use('yii/widgets/ActiveForm') }}
 
     <p>
@@ -18,6 +20,12 @@
         {{ form.field(objectsProducts, 'short_description').textarea({'cols':40, 'rows':5}) | raw }}
         {{ form.field(objectsProducts, 'description').textarea({'cols':40, 'rows':5}) | raw }}
         {{ form.field(objectsProducts, 'price').input('number', {'step':'any'}) | raw }}
+        {% if objectsProducts.images %}
+            {% for picturePath in picturesHelper.getAllThumbnails('@pic', objectsProducts.images) %}
+                <img src="{{ picturePath }}" width="{{ app.params.adminWidth }}">
+            {% endfor %}
+            <br>
+        {% endif %}
         {{ form.field(objectsProducts, 'imagesToLoad[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
         {{ form.field(objectsProducts, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
         {{ form.field(objectsProducts, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(objectsProducts.id_categories))) | raw }}

@@ -54,7 +54,7 @@ class AdminController extends AbstractBaseController
      * Добавляет продукт в БД
      * @return redirect
      */
-    public function actionAddProduct()
+    public function actionAddProducts()
     {
         try {
             $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
@@ -157,7 +157,7 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if ($productsModel->validate()) {
-                    if (!MappersHelper::setProductsUpdate([$productsModel], ['id', 'active'])) {
+                    if (!MappersHelper::setProductsUpdate(['productsModels'=>[$productsModel], 'fields'=>['id', 'active']])) {
                         throw new ErrorException('Ошибка при обновлении данных!');
                     }
                     return $this->redirect(Url::to(['admin/show-products']));
@@ -179,7 +179,7 @@ class AdminController extends AbstractBaseController
     {
         try {
             $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
-            $images = false;
+            $updateConfig = array();
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if (!empty($productsModel->imagesToLoad)) {
@@ -196,9 +196,10 @@ class AdminController extends AbstractBaseController
                         if(!PicturesHelper::createThumbnails(\Yii::getAlias('@pic/' . $productsModel->images))) {
                             throw new ErrorException('Ошибка при загрузке images!');
                         }
-                        $images = true;
+                        $updateConfig['images'] = true;
                     }
-                    if (!MappersHelper::setProductsUpdate([$productsModel], [], $images)) {
+                    $updateConfig['productsModels'][] = $productsModel;
+                    if (!MappersHelper::setProductsUpdate($updateConfig)) {
                         throw new ErrorException('Ошибка при обновлении данных!');
                     }
                     return $this->redirect(Url::to(['admin/show-product-detail', 'id'=>$productsModel->id]));

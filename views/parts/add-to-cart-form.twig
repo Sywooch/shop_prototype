@@ -11,7 +11,7 @@
     {{ form.field(productsModelForAddToCart, 'colorToCart').dropDownList(array.map(objectsProducts.colors, 'id', 'color')) | raw }}
     {{ form.field(productsModelForAddToCart, 'sizeToCart').dropDownList(array.map(objectsProducts.sizes, 'id', 'size')) | raw }}
     {{ form.field(productsModelForAddToCart, 'quantity').textInput({'value':1}) | raw }}
-    {{ form.field(productsModelForAddToCart, 'categories').hiddenInput({'value':app.request.get(app.params['categoryKey'])}).label(false) | raw }}
-    {{ form.field(productsModelForAddToCart, 'subcategory').hiddenInput({'value':app.request.get(app.params['subCategoryKey'])}).label(false) | raw }}
+    {{ form.field(productsModelForAddToCart, 'categories').hiddenInput({'value':app.request.get(app.params.categoryKey)}).label(false) | raw }}
+    {{ form.field(productsModelForAddToCart, 'subcategory').hiddenInput({'value':app.request.get(app.params.subCategoryKey)}).label(false) | raw }}
     <input type="submit" value="To cart" />
 {{ active_form_end() }}
