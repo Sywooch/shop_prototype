@@ -63,7 +63,9 @@ use app\mappers\{ColorsMapper,
     AdminMenuMapper,
     ProductsUpdateMapper,
     BrandsForProductMapper,
-    ProductsBrandsDeleteMapper};
+    ProductsBrandsDeleteMapper,
+    ProductsColorsDeleteMapper,
+    ProductsSizesDeleteMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -79,7 +81,9 @@ use app\models\{AddressModel,
     ColorsModel, 
     SizesModel,
     MailingListModel,
-    ProductsBrandsModel};
+    ProductsBrandsModel,
+    ProductsColorsModel,
+    ProductsSizesModel};
 
 /**
  * Коллекция методов для работы с БД
@@ -1660,21 +1664,21 @@ class MappersHelper
     
     /**
      * Удаляет записи ProductsBrandsModel из БД
-     * @param array $productsBrandsModels массив ProductsBrandsModel
-     * @return boolean
+     * @param array $productsBrandsModelsArray массив ProductsBrandsModel
+     * @return int
      */
-    public static function setProductsBrandsDelete(Array $productsBrandsModels)
+    public static function setProductsBrandsDelete(Array $productsBrandsModelsArray)
     {
         try {
-            if (empty($productsBrandsModels)) {
+            if (empty($productsBrandsModelsArray)) {
                 throw new ErrorException('Неверный формат данных!');
             }
-            if (!$productsBrandsModels[0] instanceof ProductsBrandsModel) {
+            if (!$productsBrandsModelsArray[0] instanceof ProductsBrandsModel) {
                 throw new ErrorException('Неверный тип данных!');
             }
             $productsBrandsDeleteMapper = new ProductsBrandsDeleteMapper([
                 'tableName'=>'products_brands',
-                'objectsArray'=>$productsBrandsModels,
+                'objectsArray'=>$productsBrandsModelsArray,
             ]);
             if (!$result = $productsBrandsDeleteMapper->setGroup()) {
                 return null;
@@ -1714,7 +1718,34 @@ class MappersHelper
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
-     
+    
+    /**
+     * Удаляет записи ProductsColorsModel из БД
+     * @param array $productsColorsModelsArray массив ProductsColorsModel
+     * @return int
+     */
+    public static function setProductsColorsDelete(Array $productsColorsModelsArray)
+    {
+        try {
+            if (empty($productsColorsModelsArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$productsColorsModelsArray[0] instanceof ProductsColorsModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $productsColorsDeleteMapper = new ProductsColorsDeleteMapper([
+                'tableName'=>'products_colors',
+                'objectsArray'=>$productsColorsModelsArray,
+            ]);
+            if (!$result = $productsColorsDeleteMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
      /**
      * Создает новую запись ProductsSizesModel в БД, связывающую товар с colors
      * @param object $productsModel экземпляр ProductsModel
@@ -1737,6 +1768,33 @@ class MappersHelper
                 'DbArray'=>$arrayToDb,
             ]);
             if (!$result = $productsSizesInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи ProductsSizesModel из БД
+     * @param array $productsSizesModelsArray массив ProductsSizesModel
+     * @return int
+     */
+    public static function setProductsSizesDelete(Array $productsSizesModelsArray)
+    {
+        try {
+            if (empty($productsSizesModelsArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$productsSizesModelsArray[0] instanceof ProductsSizesModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $productsSizesDeleteMapper = new ProductsSizesDeleteMapper([
+                'tableName'=>'products_sizes',
+                'objectsArray'=>$productsSizesModelsArray,
+            ]);
+            if (!$result = $productsSizesDeleteMapper->setGroup()) {
                 return null;
             }
             return $result;

@@ -24,7 +24,9 @@ use app\models\{CategoriesModel,
     MailingListModel,
     EmailsMailingListModel,
     AdminMenuModel,
-    ProductsBrandsModel};
+    ProductsBrandsModel,
+    ProductsColorsModel,
+    ProductsSizesModel};
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -1291,6 +1293,31 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::setProductsColorsDelete
+     */
+    public function testSetProductsColorsDelete()
+    {
+        $this->assertFalse(empty($products_colors = \Yii::$app->db->createCommand('SELECT * FROM {{products_colors}}')->queryAll()));
+        $this->assertEquals(1, count($products_colors));
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
+        $command->bindValues([':id'=>123, ':color'=>'ruby']);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
+        $command->bindValues([':id_products'=>$products_colors[0]['id_products'], ':id_colors'=>123]);
+        $command->execute();
+        
+        $model = new ProductsColorsModel();
+        $model->id_products = $products_colors[0]['id_products'];
+        
+        $result = MappersHelper::setProductsColorsDelete([$model]);
+        
+        $this->assertEquals(2, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_colors}}')->queryAll()));
+    }
+    
+    /**
      * Тестирует метод MappersHelper::setProductsSizesInsert
      */
     public function testSetProductsSizesInsert()
@@ -1316,6 +1343,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertEquals($id_products, $result['id_products']);
         $this->assertEquals($id_sizes, $result['id_sizes']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setProductsSizesDelete
+     */
+    public function testSetProductsSizesDelete()
+    {
+        $this->assertFalse(empty($products_sizes = \Yii::$app->db->createCommand('SELECT * FROM {{products_sizes}}')->queryAll()));
+        $this->assertEquals(1, count($products_sizes));
+        
+        $model = new ProductsSizesModel();
+        $model->id_products = $products_sizes[0]['id_products'];
+        
+        $result = MappersHelper::setProductsSizesDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_sizes}}')->queryAll()));
     }
     
     /**

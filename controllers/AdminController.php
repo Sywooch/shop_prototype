@@ -15,7 +15,9 @@ use app\models\{ProductsModel,
     BrandsModel, 
     ColorsModel, 
     SizesModel,
-    ProductsBrandsModel};
+    ProductsBrandsModel,
+    ProductsColorsModel,
+    ProductsSizesModel};
 
 /**
  * Управляет административными функциями
@@ -80,13 +82,13 @@ class AdminController extends AbstractBaseController
                         throw new ErrorException('Ошибка при сохранении продукта!');
                     }
                     if (!MappersHelper::setProductsBrandsInsert($productsModel, $brandsModel)) {
-                        throw new ErrorException('Ошибка при сохранении связи продукта с брендом!');
+                        throw new ErrorException('Ошибка при сохранении ProductsBrandsModel!');
                     }
                     if (!MappersHelper::setProductsColorsInsert($productsModel, $colorsModel)) {
-                        throw new ErrorException('Ошибка при сохранении связи продукта с colors!');
+                        throw new ErrorException('Ошибка при сохранении ProductsColorsModel!');
                     }
                     if (!MappersHelper::setProductsSizesInsert($productsModel, $sizesModel)) {
-                        throw new ErrorException('Ошибка при сохранении связи продукта с colors!');
+                        throw new ErrorException('Ошибка при сохранении ProductsSizesModel!');
                     }
                     return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModel->categories, 'subcategory'=>$productsModel->subcategory, 'id'=>$productsModel->id]));
                 }
@@ -140,6 +142,7 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['objectsProducts'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
+            \Yii::configure($renderArray['objectsProducts'], ['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
             $renderArray['brandsModel'] = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM, 'id'=>$renderArray['objectsProducts']->brands->id]);
             $renderArray['colorsModel'] = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['objectsProducts']->colors, 'id')]);
             $renderArray['sizesModel'] = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['objectsProducts']->sizes, 'id')]);
@@ -220,7 +223,25 @@ class AdminController extends AbstractBaseController
                             throw new ErrorException('Ошибка при удалении записи products_brands!');
                         }
                         if (!MappersHelper::setProductsBrandsInsert($productsModel, $brandsModel)) {
-                            throw new ErrorException('Ошибка при сохранении связи продукта с брендом!');
+                            throw new ErrorException('Ошибка при сохранении ProductsBrandsModel!');
+                        }
+                    }
+                    
+                    if (count($colorsModel->idArray) != count(ArrayHelper::getColumn($productsModel->colors, 'id')) || array_diff($colorsModel->idArray, ArrayHelper::getColumn($productsModel->colors, 'id'))) {
+                        if (!MappersHelper::setProductsColorsDelete([new ProductsColorsModel(['id_products'=>$productsModel->id])])) {
+                            throw new ErrorException('Ошибка при удалении записи products_colors!');
+                        }
+                        if (!MappersHelper::setProductsColorsInsert($productsModel, $colorsModel)) {
+                            throw new ErrorException('Ошибка при сохранении ProductsColorsModel!');
+                        }
+                    }
+                    
+                    if (count($sizesModel->idArray) != count(ArrayHelper::getColumn($productsModel->colors, 'id')) || array_diff($sizesModel->idArray, ArrayHelper::getColumn($productsModel->colors, 'id'))) {
+                        if (!MappersHelper::setProductsSizesDelete([new ProductsSizesModel(['id_products'=>$productsModel->id])])) {
+                            throw new ErrorException('Ошибка при удалении записи products_sizes!');
+                        }
+                        if (!MappersHelper::setProductsSizesInsert($productsModel, $sizesModel)) {
+                            throw new ErrorException('Ошибка при сохранении ProductsSizesModel!');
                         }
                     }
                     
