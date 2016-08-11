@@ -39,7 +39,11 @@ class ProductsModel extends AbstractBaseModel
     /**
      * Сценарий cut загрузки данных из формы для обновления товара
     */
-    const GET_FROM_FORM_FOR_UPDATE_CUT = 'getFromFormForUpdateCut'; 
+    const GET_FROM_FORM_FOR_UPDATE_CUT = 'getFromFormForUpdateCut';
+    /**
+     * Сценарий загрузки данных из формы для фильтра администрирования товаров
+    */
+    const GET_FROM_FORM_FOR_ADMIN_FILTER = 'getFromFormForAdminFilter';
     
     private $_id = null;
     private $_date = null;
@@ -50,6 +54,7 @@ class ProductsModel extends AbstractBaseModel
     public $short_description;
     public $price;
     public $active;
+    public $total_products = 0;
     
     /**
      * @var array массив объектов yii\web\UploadedFile
@@ -101,13 +106,14 @@ class ProductsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'categories', 'subcategory', 'id_categories', 'id_subcategory', 'active'],
+            self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'categories', 'subcategory', 'id_categories', 'id_subcategory', 'active', 'total_products'],
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'images', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'],
-            self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'],
+            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+            self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
             self::GET_FROM_FORM_FOR_UPDATE_CUT=>['id', 'active'],
+            self::GET_FROM_FORM_FOR_ADMIN_FILTER=>['id_categories', 'id_subcategory'], 
         ];
     }
     
@@ -116,7 +122,7 @@ class ProductsModel extends AbstractBaseModel
         return [
             [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['code', 'name', 'description', 'short_description', 'price', 'total_products'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE], 
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_FORM_FOR_UPDATE],
             [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM_FOR_UPDATE],

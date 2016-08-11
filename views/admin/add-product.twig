@@ -11,7 +11,7 @@
 
 {{ use('yii/widgets/ActiveForm') }}
 
-{% set form=active_form_begin({'action':url.to({0:'admin/add-product'}), 'method':'POST', 'options':{'id':'add-product-form', 'enctype':'multipart/form-data'}}) %}
+{% set form=active_form_begin({'action':url.to({0:'admin/add-products'}), 'method':'POST', 'options':{'id':'add-product-form', 'enctype':'multipart/form-data'}}) %}
     {{ form.field(productsModel, 'code') | raw }}
     {{ form.field(productsModel, 'name') | raw }}
     {{ form.field(productsModel, 'short_description').textarea() | raw }}
@@ -23,6 +23,7 @@
     {{ form.field(productsModel, 'imagesToLoad[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
     {{ form.field(productsModel, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
     {{ form.field(productsModel, 'id_subcategory').dropDownList({'':'------------------------'}) | raw }}
+    {{ form.field(productsModel, 'total_products') | raw }}
     {{ form.field(productsModel, 'active').checkbox() | raw }}
     <input type="submit" value="Add product" >
 {{ active_form_end() }}

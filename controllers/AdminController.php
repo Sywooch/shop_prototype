@@ -12,6 +12,7 @@ use app\helpers\{MappersHelper,
     PicturesHelper};
 use app\models\{ProductsModel, 
     CategoriesModel, 
+    SubcategoryModel,
     BrandsModel, 
     ColorsModel, 
     SizesModel,
@@ -30,11 +31,12 @@ class AdminController extends AbstractBaseController
      */
     private $_config = [
         'tableName'=>'products',
-        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
         'otherTablesFields'=>[
             ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
             ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
         ],
+        'queryClass'=>'app\queries\ProductsListAdminQueryCreator',
         'orderByField'=>'date',
         'getDataSorting'=>false,
     ];
@@ -91,6 +93,9 @@ class AdminController extends AbstractBaseController
                         throw new ErrorException('Ошибка при сохранении ProductsSizesModel!');
                     }
                     return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModel->categories, 'subcategory'=>$productsModel->subcategory, 'id'=>$productsModel->id]));
+                } else {
+                    print_r($productsModel);
+                    exit();
                 }
             }
             
@@ -118,6 +123,16 @@ class AdminController extends AbstractBaseController
         try {
             $renderArray = array();
             $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
+            $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            if (!empty(\Yii::$app->filters->categories)) {
+                \Yii::configure($renderArray['productsModelFilter'], ['id_categories'=>MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>\Yii::$app->filters->categories]))]);
+            }
+            if (!empty(\Yii::$app->filters->subcategory)) {
+                \Yii::configure($renderArray['productsModelFilter'], ['id_subcategory'=>MappersHelper::getSubcategoryBySeocode(new SubcategoryModel(['seocode'=>\Yii::$app->filters->subcategory]))]);
+            }
+            $renderArray['colorsList'] = MappersHelper::getColorsList();
+            $renderArray['sizesList'] = MappersHelper::getSizesList();
+            $renderArray['brandsList'] = MappersHelper::getBrandsList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-products.twig', $renderArray);
         } catch (\Exception $e) {
@@ -254,5 +269,28 @@ class AdminController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
+    }
+    
+    /**
+     * Конвертирует данные о товарах из БД в csv
+     * @return redirect
+     */
+    public function actionDataConvert()
+    {
+        try {
+            $renderArray = array();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('convert.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    public function behaviors()
+    {
+        return [
+            ['class'=>'app\filters\ProductsListFilter'],
+        ];
     }
 }

@@ -19,9 +19,9 @@ class FiltersModel extends AbstractBaseModel
     /**
      * Свойства содержат данные для редиректа после обработки запроса
      */
-    public $categories;
-    public $subcategory;
-    public $search;
+    public $categories = '';
+    public $subcategory = '';
+    public $search = '';
     
     public function rules()
     {
@@ -40,6 +40,9 @@ class FiltersModel extends AbstractBaseModel
             $this->colors = array();
             $this->sizes = array();
             $this->brands = array();
+            $this->categories = '';
+            $this->subcategory = '';
+            $this->search = '';
             $this->sortingField = '';
             $this->sortingType = '';
             return true;

@@ -74,13 +74,15 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     public function testClean()
     {
         $model = new FiltersModel();
-        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType];
+        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType, 'categories'=>self::$_categories, 'subcategory'=>self::$_subcategory];
         
         $this->assertFalse(empty($model->colors));
         $this->assertFalse(empty($model->sizes));
         $this->assertFalse(empty($model->brands));
         $this->assertFalse(empty($model->sortingField));
         $this->assertFalse(empty($model->sortingType));
+        $this->assertFalse(empty($model->categories));
+        $this->assertFalse(empty($model->subcategory));
         
         $model->clean();
         
@@ -89,5 +91,7 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty($model->brands));
         $this->assertTrue(empty($model->sortingField));
         $this->assertTrue(empty($model->sortingType));
+        $this->assertTrue(empty($model->categories));
+        $this->assertTrue(empty($model->subcategory));
     }
 }

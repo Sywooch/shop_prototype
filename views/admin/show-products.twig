@@ -23,7 +23,8 @@
         Subcategory: {{ product.subcategoryObject.name }}<br>
         Brand: {{ product.brands.brand }}<br>
         Sizes: {{ array.getColumn(product.sizes, 'size') | join(', ') }}<br>
-        Colors: {{ array.getColumn(product.colors, 'color') | join(', ') }}
+        Colors: {{ array.getColumn(product.colors, 'color') | join(', ') }}<br>
+        На складе: {{ product.total_products }}
         {{ form.field(product, 'active').checkbox() | raw }}
         <a href="{{ url.to({0:'admin/show-product-detail', 'id':product.id}) }}">Редактировать детали</a><br>
         <input type="submit" value="Обновить">
@@ -33,3 +34,7 @@
     <hr>
     
 {% endfor %}
+
+
+{% include '@app/views/parts/filters-admin.twig' %}
+

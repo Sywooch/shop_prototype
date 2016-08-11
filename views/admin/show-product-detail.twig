@@ -34,6 +34,7 @@
         {{ form.field(colorsModel, 'idArray').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
         {{ form.field(sizesModel, 'idArray').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
         
+        {{ form.field(objectsProducts, 'total_products') | raw }}
         {{ form.field(objectsProducts, 'active').checkbox() | raw }}
         <input type="submit" value="Обновить">
     {{ active_form_end() }}

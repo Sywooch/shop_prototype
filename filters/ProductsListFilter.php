@@ -4,6 +4,7 @@ namespace app\filters;
 
 use yii\base\{ActionFilter, 
     ErrorException};
+use yii\helpers\Url;
 use app\traits\ExceptionsTrait;
 
 /**
@@ -42,7 +43,7 @@ class ProductsListFilter extends ActionFilter
                     throw new ErrorException('Ошибка при получении данных из сессии!');
                 }
                 
-                if ($attributes[\Yii::$app->params['categoryKey']] == \Yii::$app->request->get(\Yii::$app->params['categoryKey']) && $attributes[\Yii::$app->params['subCategoryKey']] == \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']) && $attributes[\Yii::$app->params['searchKey']] == \Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
+                if ($attributes[\Yii::$app->params['categoryKey']] == \Yii::$app->request->get(\Yii::$app->params['categoryKey']) && $attributes[\Yii::$app->params['subCategoryKey']] == \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']) && $attributes[\Yii::$app->params['searchKey']] == \Yii::$app->request->get(\Yii::$app->params['searchKey']) || strpos(Url::current(), 'admin/show-products')) {
                     \Yii::configure(\Yii::$app->filters, $attributes);
                 }
                 

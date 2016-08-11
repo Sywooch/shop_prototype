@@ -1241,7 +1241,7 @@ class MappersHelper
         try {
             $productsByIdMapper = new ProductsByIdMapper([
                 'tableName'=>'products',
-                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
                 'model'=>$productsModel,
             ]);
             $hash = self::createHash([
@@ -1274,7 +1274,7 @@ class MappersHelper
         try {
             $productsInsertMapper = new ProductsInsertMapper([
                 'tableName'=>'products',
-                'fields'=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+                'fields'=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
                 'objectsArray'=>[$productsModel],
             ]);
             $result = $productsInsertMapper->setGroup();
@@ -1306,7 +1306,7 @@ class MappersHelper
             }
             $config = [
                 'tableName'=>'products',
-                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory', 'active'],
+                'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory', 'active', 'total_products'],
                 'objectsArray'=>$updateConfig['productsModels'],
             ];
             if (!empty($updateConfig['fields'])) {

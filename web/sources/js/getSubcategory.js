@@ -42,4 +42,5 @@ jQuery(function() {
     $('select#productsmodel-id_categories').change(function(event) {
         (new SendRequest()).send(event);
     });
+    
 });
