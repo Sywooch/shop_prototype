@@ -106,8 +106,8 @@ class ProductsModel extends AbstractBaseModel
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
             self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
             self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'],
-            self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'], 
-            self::GET_FROM_FORM_FOR_UPDATE_CUT=>['id', 'active'], 
+            self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'],
+            self::GET_FROM_FORM_FOR_UPDATE_CUT=>['id', 'active'],
         ];
     }
     
@@ -486,11 +486,12 @@ class ProductsModel extends AbstractBaseModel
     public function setDate($value)
     {
         try {
-            if (is_numeric($value)) {
-                $this->_date = $value;
-                return true;
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                $date = \DateTime::createFromFormat('Y-m-d', $value);
+                $value = $date->getTimestamp();
             }
-            return false;
+            $this->_date = $value;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

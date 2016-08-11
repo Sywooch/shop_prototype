@@ -23,6 +23,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_reflectionClass;
     private static $_id = 1;
     private static $_date = 1462453595;
+    private static $_dateString = '2015-02-14';
     private static $_code = 'YU-6709';
     private static $_name = 'name';
     private static $_description = 'description';
@@ -762,6 +763,14 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model->date = $date;
         
         $this->assertEquals($date, $model->date);
+        
+        $model = new ProductsModel();
+        $model->date = self::$_dateString;
+        
+        $expectedDate = \DateTime::createFromFormat('Y-m-d', self::$_dateString);
+        
+        $this->assertEquals($expectedDate->getTimestamp(), $model->date);
+        $this->assertEquals(date('d.m.Y', $expectedDate->getTimestamp()), date('d.m.Y', $model->date));
     }
     
     /**
