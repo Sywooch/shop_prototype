@@ -14,6 +14,7 @@
     <testsuites>
         
         <testsuite name="Global">
+            <!--<directory suffix="Tests.php">some</directory>-->
             <directory suffix="Tests.php">cart</directory>
             <directory suffix="Tests.php">controllers</directory>
             <directory suffix="Tests.php">factories</directory>

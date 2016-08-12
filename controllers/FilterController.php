@@ -101,6 +101,9 @@ class FilterController extends AbstractBaseController
     {
         try {
             if ($this->cleanFilters()) {
+                if (!\Yii::$app->filters->cleanAdmin()) {
+                    throw new ErrorException('Ошибка при очистке фильтров!');
+                }
                 return $this->redirect(Url::to(['admin/show-products'])); 
             }
         } catch (\Exception $e) {
@@ -161,7 +164,14 @@ class FilterController extends AbstractBaseController
     public function behaviors()
     {
         return [
-            ['class'=>'app\filters\ProductsListFilter'],
+            [
+                'class'=>'app\filters\ProductsListFilter',
+                'only'=>['add-filters', 'clean-filters'],
+            ],
+            [
+                'class'=>'app\filters\ProductsListFilterAdmin',
+                'only'=>['add-filters-admin', 'clean-filters-admin'],
+            ],
         ];
     }
 }

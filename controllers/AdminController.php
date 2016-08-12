@@ -293,7 +293,10 @@ class AdminController extends AbstractBaseController
     public function behaviors()
     {
         return [
-            ['class'=>'app\filters\ProductsListFilter'],
+            [
+                'class'=>'app\filters\ProductsListFilterAdmin',
+                'only'=>['show-products'],
+            ],
         ];
     }
 }

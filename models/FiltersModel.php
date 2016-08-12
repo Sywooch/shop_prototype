@@ -42,12 +42,24 @@ class FiltersModel extends AbstractBaseModel
             $this->colors = array();
             $this->sizes = array();
             $this->brands = array();
-            $this->categories = '';
-            $this->subcategory = '';
-            $this->search = '';
-            $this->active = true;
             $this->sortingField = '';
             $this->sortingType = '';
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обнуляет значение свойств, очищая фильтры Admin
+     * @return boolean
+     */
+    public function cleanAdmin()
+    {
+        try {
+            $this->categories = '';
+            $this->subcategory = '';
+            $this->active = true;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -1,0 +1,11 @@
+
+<p><strong>Скачать товары в формате csv</strong></p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'id':'filters-form', 'action':url.to({0:'filter/add-filters-admin'}), 'method':'POST'}) %}
+    {{ form.field(productsModelFilter, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
+    {{ form.field(productsModelFilter, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(productsModelFilter.id_categories))) | raw }}
+    {{ form.field(productsModelFilter, 'active').checkbox() | raw }}
+    <input type="submit" value="Download" />
+{{ active_form_end() }}

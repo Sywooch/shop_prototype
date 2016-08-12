@@ -37,11 +37,11 @@
     <p>Похоже, мы пока не можем предложить эту штуку!</p>
 {% endif %}
 
-{% if objectsProductsList %}
-    {% include '@app/views/parts/filters.twig' %}
 
-    {% include '@app/views/parts/currency.twig' %}
-{% endif %}
+{% include '@app/views/parts/filters.twig' %}
+
+{% include '@app/views/parts/currency.twig' %}
+
 
 <p><a href="{{ url.to({0:'newsletter/subscribe'}) }}">Скидки и новинки на ваш Email!</a></p>
 

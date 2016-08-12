@@ -78,17 +78,13 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     public function testClean()
     {
         $model = new FiltersModel();
-        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType, 'categories'=>self::$_categories, 'subcategory'=>self::$_subcategory, 'search'=>self::$_search, 'active'=>self::$_active];
+        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType];
         
         $this->assertFalse(empty($model->colors));
         $this->assertFalse(empty($model->sizes));
         $this->assertFalse(empty($model->brands));
         $this->assertFalse(empty($model->sortingField));
         $this->assertFalse(empty($model->sortingType));
-        $this->assertFalse(empty($model->categories));
-        $this->assertFalse(empty($model->subcategory));
-        $this->assertFalse(empty($model->search));
-        $this->assertTrue(empty($model->active));
         
         $model->clean();
         
@@ -97,9 +93,24 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty($model->brands));
         $this->assertTrue(empty($model->sortingField));
         $this->assertTrue(empty($model->sortingType));
+    }
+    
+    /**
+     * Тестирует метод FiltersModel::cleanAdmin
+     */
+    public function testCleanAdmin()
+    {
+        $model = new FiltersModel();
+        $model->attributes = ['categories'=>self::$_categories, 'subcategory'=>self::$_subcategory, 'active'=>self::$_active];
+        
+        $this->assertFalse(empty($model->categories));
+        $this->assertFalse(empty($model->subcategory));
+        $this->assertTrue(empty($model->active));
+        
+        $model->cleanAdmin();
+        
         $this->assertTrue(empty($model->categories));
         $this->assertTrue(empty($model->subcategory));
-        $this->assertTrue(empty($model->search));
         $this->assertFalse(empty($model->active));
     }
 }
