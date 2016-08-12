@@ -17,7 +17,7 @@
     {{ form.field(productsModel, 'short_description').textarea() | raw }}
     {{ form.field(productsModel, 'description').textarea() | raw }}
     {{ form.field(productsModel, 'price').input('number', {'step':'any'}) | raw }}
-    {{ form.field(brandsModel, 'id').dropDownList(array.merge({'':'Choose brand'}, array.map(brandsList, 'id', 'brand'))).label('Brands') | raw }}
+    {{ form.field(brandsModel, 'id').dropDownList(array.merge({'':'------------------------'}, array.map(brandsList, 'id', 'brand'))).label('Brands') | raw }}
     {{ form.field(colorsModel, 'idArray').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
     {{ form.field(sizesModel, 'idArray').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
     {{ form.field(productsModel, 'imagesToLoad[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}

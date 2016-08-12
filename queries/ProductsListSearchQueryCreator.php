@@ -13,18 +13,26 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
     /**
      * @var array массив для выборки данных
      */
-    public $config = [
-        'search'=>[ # Данные для выборки из таблицы categories
-            'tableName'=>'products', # Имя таблицы участвующей в объединении
-            'tableFieldWhere'=>'id', # Имя поля таблицы, по которому делается выборка с помощью WHERE
+    public $categoriesArrayFilters = [
+        'search'=>[
+            'tableName'=>'products',
+            'tableFieldWhere'=>'id',
         ],
     ];
     
     public function init()
     {
-        parent::init();
-        
-        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
+        try {
+            parent::init();
+            
+            $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
+            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
+                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
+            }
+            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**

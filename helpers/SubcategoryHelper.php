@@ -13,6 +13,8 @@ use app\traits\ExceptionsTrait;
  */
 class SubcategoryHelper
 {
+    private static $_resultArray = array();
+    
     /**
      * Возвращает массив данных SubcategoryModel для переданного ID CategoriesModel
      * @param string ID CategoriesModel
@@ -22,9 +24,23 @@ class SubcategoryHelper
     {
         try {
             if ($data = MappersHelper::getSubcategoryForCategoryList(new CategoriesModel(['id'=>$categoryId]))) {
-                return ArrayHelper::map($data, 'id', 'name');
+                self::$_resultArray = ArrayHelper::map($data, 'id', 'name');
             }
-            return null;
+            return self::$_resultArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Очищает массив self::$_resultArray
+     * @return boolean
+     */
+    public static function clean()
+    {
+        try {
+            self::$_resultArray = array();
+            return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

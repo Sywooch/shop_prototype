@@ -17,6 +17,7 @@ class SubcategoryHelperTests extends \PHPUnit_Framework_TestCase
     private static $_subcategoryName = 'Some subcategory';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
+    private static $_mock = 'mock';
     
     public static function setUpBeforeClass()
     {
@@ -48,6 +49,22 @@ class SubcategoryHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(array_key_exists(self::$_id, $result));
         $this->assertEquals(self::$_subcategoryName,  $result[self::$_id]);
+    }
+    
+    /**
+     * Тестирует метод SubcategoryHelper::getSubcategory
+     * при передаче неверных значений
+     */
+    public function testGetSubcategoryForEmpty()
+    {
+        $result = SubcategoryHelper::clean();
+        
+        $this->assertTrue($result);
+        
+        $result = SubcategoryHelper::getSubcategory(self::$_mock);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(empty($result));
     }
     
     public static function tearDownAfterClass()

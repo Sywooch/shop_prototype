@@ -2,7 +2,8 @@
 
 namespace app\queries;
 
-use app\queries\AbstractFiltersQueryCreator;
+use app\queries\{AbstractFiltersQueryCreator,
+    ProductsListQueryCreator};
 
 /**
  * Конструирует запрос к БД для получения списка строк
@@ -12,7 +13,7 @@ class BrandsJoinProductsQueryCreator extends AbstractFiltersQueryCreator
     /**
      * @var array массив для выборки данных
      */
-    public $config = [
+    public $categoriesArrayFilters = [
         'tableOne'=>[ # Данные для выборки из таблицы products_brands
             'firstTableName'=>'brands',
             'firstTableFieldOn'=>'id',
@@ -29,8 +30,16 @@ class BrandsJoinProductsQueryCreator extends AbstractFiltersQueryCreator
     
     public function init()
     {
-        parent::init();
-        
-        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
+        try {
+            parent::init();
+            
+            $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
+            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
+                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
+            }
+            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
 }

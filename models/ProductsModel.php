@@ -113,7 +113,7 @@ class ProductsModel extends AbstractBaseModel
             self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
             self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
             self::GET_FROM_FORM_FOR_UPDATE_CUT=>['id', 'active'],
-            self::GET_FROM_FORM_FOR_ADMIN_FILTER=>['id_categories', 'id_subcategory'], 
+            self::GET_FROM_FORM_FOR_ADMIN_FILTER=>['id_categories', 'id_subcategory', 'active'], 
         ];
     }
     

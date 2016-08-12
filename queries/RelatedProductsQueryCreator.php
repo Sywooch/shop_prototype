@@ -13,7 +13,7 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
     /**
      * @var array массив для выборки данных
      */
-    public $config = [
+    public $categoriesArrayFilters = [
         'id'=>[
             'firstTableName'=>'products', 
             'firstTableFieldOn'=>'id', 
@@ -27,9 +27,17 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
     
     public function init()
     {
-        parent::init();
-        
-        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
+        try {
+            parent::init();
+            
+            $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
+            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
+                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
+            }
+            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**

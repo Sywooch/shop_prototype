@@ -14,15 +14,15 @@ class SimilarProductsQueryCreator extends ProductsListQueryCreator
     /**
      * @var array массив для выборки данных
      */
-    public $config = [
-        'colors'=>[ # Данные для выборки из таблицы colors
+    public $categoriesArrayFilters = [
+        'colors'=>[
             'firstTableName'=>'products_colors',
             'firstTableFieldOn'=>'id_colors',
             'secondTableName'=>'colors',
             'secondTableFieldOn'=>'id',
             'secondTableFieldWhere'=>'id',
         ],
-        'sizes'=>[ # Данные для выборки из таблицы sizes
+        'sizes'=>[
             'firstTableName'=>'products_sizes',
             'firstTableFieldOn'=>'id_sizes',
             'secondTableName'=>'sizes',
@@ -33,9 +33,17 @@ class SimilarProductsQueryCreator extends ProductsListQueryCreator
     
     public function init()
     {
-        parent::init();
-        
-        $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
+        try {
+            parent::init();
+            
+            $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
+            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
+                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
+            }
+            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**

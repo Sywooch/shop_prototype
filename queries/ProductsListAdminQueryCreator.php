@@ -12,6 +12,31 @@ use app\queries\ProductsListQueryCreator;
 class ProductsListAdminQueryCreator extends ProductsListQueryCreator
 {
     /**
+     * @var array массив для выборки данных с учетом категории или(и) подкатегории, а также фильтров
+     */
+    public $categoriesArrayFilters = [
+        'products'=>[
+            'tableName'=>'products',
+            'tableFieldWhere'=>'active',
+        ],
+    ];
+    
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
+            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
+                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
+            }
+            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Инициирует создание SELECT запроса, выбирая сценарий на основе данных из объекта Yii::$app->request
      * @return boolean
      */
@@ -38,6 +63,17 @@ class ProductsListAdminQueryCreator extends ProductsListQueryCreator
                 }
                 $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->filters->subcategory;
             }
+            
+            $where = $this->getWhere(
+                $this->categoriesArrayFilters['products']['tableName'],
+                $this->categoriesArrayFilters['products']['tableFieldWhere'],
+                $this->categoriesArrayFilters['products']['tableFieldWhere']
+            );
+            if (!is_string($where)) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->params[':' . $this->categoriesArrayFilters['products']['tableFieldWhere']] = \Yii::$app->filters->active;
             
             if (!$this->addSelectEnd()) {
                 throw new ErrorException('Ошибка при построении запроса!');

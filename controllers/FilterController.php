@@ -57,6 +57,7 @@ class FilterController extends AbstractBaseController
                 if (!empty($productsModel->subcategory)) {
                     \Yii::$app->filters->subcategory = $productsModel->subcategory;
                 }
+                \Yii::$app->filters->active = $productsModel->active;
             }
             return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {

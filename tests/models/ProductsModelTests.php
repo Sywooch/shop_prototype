@@ -338,13 +338,15 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_active, $model->active);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
-        $model->attributes = ['id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
+        $model->attributes = ['id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
         
         $this->assertFalse(empty($model->id_categories));
         $this->assertFalse(empty($model->id_subcategory));
+        $this->assertFalse(empty($model->active));
         
         $this->assertEquals(self::$_id, $model->id_categories);
         $this->assertEquals(self::$_id, $model->id_subcategory);
+        $this->assertEquals(self::$_active, $model->active);
     }
     
     /**

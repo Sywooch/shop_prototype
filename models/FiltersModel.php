@@ -23,10 +23,12 @@ class FiltersModel extends AbstractBaseModel
     public $subcategory = '';
     public $search = '';
     
+    public $active = true;
+    
     public function rules()
     {
         return [
-            [['colors', 'sizes', 'brands', 'sortingField', 'sortingType', 'categories', 'subcategory', 'search'], 'safe'],
+            [['colors', 'sizes', 'brands', 'sortingField', 'sortingType', 'categories', 'subcategory', 'search', 'active'], 'safe'],
         ];
     }
     
@@ -43,6 +45,7 @@ class FiltersModel extends AbstractBaseModel
             $this->categories = '';
             $this->subcategory = '';
             $this->search = '';
+            $this->active = true;
             $this->sortingField = '';
             $this->sortingType = '';
             return true;

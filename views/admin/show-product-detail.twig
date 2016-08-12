@@ -30,7 +30,7 @@
         {{ form.field(objectsProducts, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
         {{ form.field(objectsProducts, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(objectsProducts.id_categories))) | raw }}
         
-        {{ form.field(brandsModel, 'id').dropDownList(array.map(brandsList, 'id', 'brand')).label('Brand') | raw }}
+        {{ form.field(brandsModel, 'id').dropDownList(array.merge({'':'------------------------'}, array.map(brandsList, 'id', 'brand'))).label('Brand') | raw }}
         {{ form.field(colorsModel, 'idArray').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
         {{ form.field(sizesModel, 'idArray').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
         
