@@ -9,7 +9,8 @@ use yii\helpers\{Url,
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper, 
-    PicturesHelper};
+    PicturesHelper,
+    CSVHelper};
 use app\models\{ProductsModel, 
     CategoriesModel, 
     SubcategoryModel,
@@ -275,13 +276,17 @@ class AdminController extends AbstractBaseController
     }
     
     /**
-     * Конвертирует данные о товарах из БД в csv
+     * Формирует страницу выгрузки данных в csv
      * @return redirect
      */
     public function actionDataConvert()
     {
         try {
             $renderArray = array();
+            $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            if (!empty(\Yii::$app->filters->active)) {
+                \Yii::configure($renderArray['productsModelFilter'], ['active'=>\Yii::$app->filters->active]);
+            }
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('convert.twig', $renderArray);
         } catch (\Exception $e) {
@@ -290,12 +295,39 @@ class AdminController extends AbstractBaseController
         }
     }
     
+    /**
+     * Формирует csv файл из товаров, сохраненных в БД
+     */
+    public function actionDownloadProducts()
+    {
+        try {
+            $objectsProductsList = MappersHelper::getProductsList($this->_config);
+            $productsFile = CSVHelper::getCSV([
+                'path'=>\Yii::getAlias('@app/web/sources/csv/'),
+                'filename'=>'products' . time(),
+                'objectsArray'=>$objectsProductsList,
+                'fields'=>['id', 'date', 'code', 'name', 'short_description', 'price', 'images', 'active', 'total_products'],
+            ]);
+            return $this->redirect(Url::to(['admin/data-convert']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        } finally {
+            \Yii::$app->filters->clean();
+            \Yii::$app->filters->cleanAdmin();
+        }
+    }
+    
     public function behaviors()
     {
         return [
             [
                 'class'=>'app\filters\ProductsListFilterAdmin',
-                'only'=>['show-products'],
+                'only'=>['show-products', 'data-convert'],
+            ],
+            [
+                'class'=>'app\filters\ProductsListFilterCSV',
+                'only'=>['download-products'],
             ],
         ];
     }

@@ -7,18 +7,19 @@ use app\assets\AbstractAsset;
 /**
  * Задает пакет ресурсов для представления add-product
  */
-class AddProductsAsset extends AbstractAsset
+class ConvertAsset extends AbstractAsset
 {
     /**
      * @var array массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте
      */
     public $js = [
-        'js/getSubcategory.js',
+        'js/getCSV.js',
     ];
     /**
      * @var array зависимости пакета
      */
     public $depends = [
         'app\assets\MainAsset',
+        'app\assets\GetSubcategoryAsset',
     ];
 }

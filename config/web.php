@@ -68,6 +68,7 @@ $config = [
                 # Фильтры
                 'add-filters'=>'filter/add-filters',
                 'add-filters-admin'=>'filter/add-filters-admin',
+                'add-filters-download-products'=>'filter/add-filters-download-products',
                 'clean-filters'=>'filter/clean-filters',
                 'clean-filters-admin'=>'filter/clean-filters-admin',
                 'currency-filter'=>'currency/set-currency',
@@ -108,6 +109,7 @@ $config = [
                 'admin/show-products/<id:\d+>'=>'admin/show-product-detail',
                 'admin/add-products'=>'admin/add-products',
                 'admin/data-convert'=>'admin/data-convert',
+                'admin/download-products'=>'admin/download-products',
                 'admin/update-product-cut'=>'admin/update-product-cut',
                 'get-subcategory-ajax'=>'categories/get-subcategory-ajax',
             ],

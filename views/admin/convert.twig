@@ -1,11 +1,17 @@
 
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/ConvertAsset') }}
 
 {% include '@app/views/parts/user-buttons.twig' %}
 
 {% include '@app/views/parts/admin-menu.twig' %}
 
 <p>Здесь вы можете скачать данные в формате csv</p>
+
+{% include '@app/views/parts/download-products-form.twig' %}
+
+{% if productsFile %}
+    <p><a href="/sources/csv/{{ productsFile }}">Скачать</a></p>
+{% endif %}
 
 
 
