@@ -3,6 +3,7 @@ runtime/
 logs/
 web/sources/images/
 web/sources/temp/
+web/sources/csv/
 tests/source/sql/
 tests/source/mail/letters/
 tests/source/images/products/

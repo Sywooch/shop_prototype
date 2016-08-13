@@ -3,14 +3,16 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\web\UploadedFile;
+use yii\web\{UploadedFile,
+    Response};
 use yii\helpers\{Url,
     ArrayHelper};
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper, 
     PicturesHelper,
-    CSVHelper};
+    CSVHelper,
+    FiltersHelper};
 use app\models\{ProductsModel, 
     CategoriesModel, 
     SubcategoryModel,
@@ -297,18 +299,33 @@ class AdminController extends AbstractBaseController
     
     /**
      * Формирует csv файл из товаров, сохраненных в БД
+     * @return ajax
      */
     public function actionDownloadProducts()
     {
         try {
-            $objectsProductsList = MappersHelper::getProductsList($this->_config);
-            $productsFile = CSVHelper::getCSV([
-                'path'=>\Yii::getAlias('@app/web/sources/csv/'),
-                'filename'=>'products' . time(),
-                'objectsArray'=>$objectsProductsList,
-                'fields'=>['id', 'date', 'code', 'name', 'short_description', 'price', 'images', 'active', 'total_products'],
-            ]);
-            return $this->redirect(Url::to(['admin/data-convert']));
+            if (\Yii::$app->request->isAjax) {
+                \Yii::$app->filters->clean();
+                \Yii::$app->filters->cleanAdmin();
+                
+                FiltersHelper::addFiltersAdmin();
+                
+                if (!empty($objectsProductsList = MappersHelper::getProductsList($this->_config))) {
+                    $productsFile = CSVHelper::getCSV([
+                        'path'=>\Yii::getAlias('@app/web/sources/csv/'),
+                        'filename'=>'products' . time(),
+                        'objectsArray'=>$objectsProductsList,
+                        'fields'=>['id', 'date', 'code', 'name', 'short_description', 'price', 'images', 'active', 'total_products'],
+                    ]);
+                    
+                    $response = \Yii::$app->response;
+                    $response->format = Response::FORMAT_JSON;
+                    
+                    return ['productsFile'=>$productsFile];
+                }
+            } else {
+                return $this->redirect(Url::to(['admin/data-convert']));
+            }
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

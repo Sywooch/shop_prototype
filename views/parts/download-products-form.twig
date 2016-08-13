@@ -3,7 +3,7 @@
 
 {{ use('yii/widgets/ActiveForm') }}
 
-{% set form=active_form_begin({'id':'download-products-form', 'action':url.to({0:'filter/add-filters-download-products'}), 'method':'POST'}) %}
+{% set form=active_form_begin({'id':'download-products-form', 'action':url.to({0:'admin/download-products'}), 'method':'POST'}) %}
     {{ form.field(productsModelFilter, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
     {{ form.field(productsModelFilter, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(productsModelFilter.id_categories))) | raw }}
     {{ form.field(productsModelFilter, 'active').checkbox() | raw }}

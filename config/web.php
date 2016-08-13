@@ -68,7 +68,6 @@ $config = [
                 # Фильтры
                 'add-filters'=>'filter/add-filters',
                 'add-filters-admin'=>'filter/add-filters-admin',
-                'add-filters-download-products'=>'filter/add-filters-download-products',
                 'clean-filters'=>'filter/clean-filters',
                 'clean-filters-admin'=>'filter/clean-filters-admin',
                 'currency-filter'=>'currency/set-currency',

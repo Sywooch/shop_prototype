@@ -6,7 +6,7 @@ jQuery(function() {
         this.url;
         this.token = $('meta[name="csrf-token"]').attr('content');
         function success(data, status, jqXHR) {
-            alert(data);
+            $('.productsFile').html('Скачать <a href="/sources/csv/' + data.productsFile + '">' + data.productsFile + '</a>');
         };
         function error(jqXHR, status, errorThrown) {
             alert(jqXHR.responseText);
@@ -27,7 +27,6 @@ jQuery(function() {
     };
     
     $('form :submit').click(function(event) {
-        //alert($(event.target).closest('form').attr('action'));
         (new SendRequest()).send(event);
         return false;
     });
