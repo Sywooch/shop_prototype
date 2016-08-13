@@ -108,10 +108,40 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::setCategoriesInsert
+     */
+    public function testSetCategoriesInsert()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll()));
+        
+        $categoriesModel = new CategoriesModel();
+        $categoriesModel->name = self::$_name;
+        $categoriesModel->seocode = self::$_categorySeocode;
+        
+        $result = MappersHelper::setCategoriesInsert($categoriesModel);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        
+        $this->assertTrue(array_key_exists('id', $result[0]));
+        $this->assertTrue(array_key_exists('name', $result[0]));
+        $this->assertTrue(array_key_exists('seocode', $result[0]));
+        
+        $this->assertEquals(self::$_name, $result[0]['name']);
+        $this->assertEquals(self::$_categorySeocode, $result[0]['seocode']);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getCategoriesList
      */
     public function testGetCategoriesList()
     {
+        \Yii::$app->db->createCommand('DELETE FROM {{categories}}')->execute();
+        
         $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
         $command->execute();

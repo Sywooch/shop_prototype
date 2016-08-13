@@ -119,7 +119,7 @@ class AdminController extends AbstractBaseController
     }
     
     /**
-     * Управляет отображением всех товаров в базе
+     * Управляет отображением товаров
      */
     public function actionShowProducts()
     {
@@ -336,6 +336,34 @@ class AdminController extends AbstractBaseController
         } finally {
             FiltersHelper::cleanFilters();
             FiltersHelper::cleanAdminFilters();
+        }
+    }
+    
+    /**
+     * Управляет категориями
+     */
+    public function actionShowCategories()
+    {
+        try {
+            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_CATEGORY_FORM]);
+            
+            if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
+                if ($categoriesModel->validate()) {
+                    $categoriesModel->seocode = mb_strtolower($categoriesModel->seocode);
+                    if (!MappersHelper::setCategoriesInsert($categoriesModel)) { # Проверить сочетание name and seocode на уникальность
+                        throw new ErrorException('Ошибка при сохранении категории!');
+                    }
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['categoriesModel'] = $categoriesModel;
+            $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('show-categories.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
         }
     }
     

@@ -108,6 +108,7 @@ $config = [
                 'admin/show-products/<id:\d+>'=>'admin/show-product-detail',
                 'admin/add-products'=>'admin/add-products',
                 'admin/data-convert'=>'admin/data-convert',
+                'admin/show-categories'=>'admin/show-categories',
                 'admin/download-products'=>'admin/download-products',
                 'admin/update-product-cut'=>'admin/update-product-cut',
                 'get-subcategory-ajax'=>'categories/get-subcategory-ajax',

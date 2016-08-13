@@ -1,0 +1,24 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+<p>Здесь вы можете управлять товарными категориями</p>
+
+{% if objectsCategoriesList %}
+    <p><strong>Текущие категории</strong></p>
+    <ul>
+        {% for category in objectsCategoriesList %}
+            <li>{{ category.name }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% include '@app/views/parts/categories-form.twig' %}
+
+
+
+
+

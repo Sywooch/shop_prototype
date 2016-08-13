@@ -1,0 +1,10 @@
+
+<p><strong>Создать категорию</strong></p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'id':'categories-form', 'action':'', 'method':'POST'}) %}
+    {{ form.field(categoriesModel, 'name') | raw }}
+    {{ form.field(categoriesModel, 'seocode') | raw }}
+    <input type="submit" value="Create" />
+{{ active_form_end() }}

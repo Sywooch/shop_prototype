@@ -65,7 +65,8 @@ use app\mappers\{ColorsMapper,
     BrandsForProductMapper,
     ProductsBrandsDeleteMapper,
     ProductsColorsDeleteMapper,
-    ProductsSizesDeleteMapper};
+    ProductsSizesDeleteMapper,
+    CategoriesInsertMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -96,6 +97,28 @@ class MappersHelper
      * @var array реестр загруженных объектов
      */
     private static $_objectRegistry = array();
+    
+    /**
+     * Создает новую запись CategoriesModel в БД
+     * @param object $categoriesModel экземпляр CategoriesModel
+     * @return int
+     */
+    public static function setCategoriesInsert(CategoriesModel $categoriesModel)
+    {
+        try {
+            $categoriesInsertMapper = new CategoriesInsertMapper([
+                'tableName'=>'categories',
+                'fields'=>['name', 'seocode'],
+                'objectsArray'=>[$categoriesModel],
+            ]);
+            if (!$result = $categoriesInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
     
     /**
      * Получает массив объектов категорий

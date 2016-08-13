@@ -46,6 +46,7 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $model = new CategoriesModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_CATEGORY_FORM'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'name'));
@@ -70,6 +71,35 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_CATEGORY_FORM]);
+        $model->attributes = ['name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
+        
+        $this->assertFalse(empty($model->name));
+        $this->assertFalse(empty($model->seocode));
+        
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_categorySeocode, $model->seocode);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_CATEGORY_FORM]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(2, count($model->errors));
+        $this->assertTrue(array_key_exists('name', $model->errors));
+        $this->assertTrue(array_key_exists('seocode', $model->errors));
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_CATEGORY_FORM]);
+        $model->attributes = ['name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
     
     /**

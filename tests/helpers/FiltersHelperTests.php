@@ -6,7 +6,7 @@ use app\models\FiltersModel;
 use app\helpers\FiltersHelper;
 
 /**
- * Тестирует класс FiltersHelper
+ * Тестирует класс app\helpers\FiltersHelper
  */
 class FiltersHelperTests extends \PHPUnit_Framework_TestCase
 {

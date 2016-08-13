@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 
 /**
- * Предоставляет функциональность для создания csv из данных БД
+ * Предоставляет функциональность для создания csv из данных
  */
 class CSVHelper
 {
