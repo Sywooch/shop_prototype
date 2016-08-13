@@ -51,6 +51,22 @@ class FiltersModel extends AbstractBaseModel
     }
     
     /**
+     * Обнуляет значение свойств, необходимых для построения URL
+     * @return boolean
+     */
+    public function cleanOther()
+    {
+        try {
+            $this->categories = '';
+            $this->subcategory = '';
+            $this->search = '';
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Обнуляет значение свойств, очищая фильтры Admin
      * @return boolean
      */

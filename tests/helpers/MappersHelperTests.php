@@ -72,7 +72,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     
     private static $_config = [
         'tableName'=>'products',
-        'fields'=>['id', 'code', 'name', 'description', 'price', 'images'],
+        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'active', 'total_products'],
         'otherTablesFields'=>[
             ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
             ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
@@ -172,8 +172,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[short_description]]=:short_description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
-        $command->bindValues([':id'=>self::$_id, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':short_description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[short_description]]=:short_description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
+        
+        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':short_description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
@@ -769,6 +770,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetProductsList()
     {
+        \Yii::$app->filters->clean();
+        
         $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
         
         $result = MappersHelper::getProductsList(self::$_config);

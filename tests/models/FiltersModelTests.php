@@ -96,6 +96,25 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод FiltersModel::cleanOther
+     */
+    public function testCleanOther()
+    {
+        $model = new FiltersModel();
+        $model->attributes = ['categories'=>self::$_categories, 'subcategory'=>self::$_subcategory, 'search'=>self::$_search];
+        
+        $this->assertFalse(empty($model->categories));
+        $this->assertFalse(empty($model->subcategory));
+        $this->assertFalse(empty($model->search));
+        
+        $model->cleanOther();
+        
+        $this->assertTrue(empty($model->categories));
+        $this->assertTrue(empty($model->subcategory));
+        $this->assertTrue(empty($model->search));
+    }
+    
+    /**
      * Тестирует метод FiltersModel::cleanAdmin
      */
     public function testCleanAdmin()

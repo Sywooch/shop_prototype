@@ -305,10 +305,12 @@ class AdminController extends AbstractBaseController
     {
         try {
             if (\Yii::$app->request->isAjax) {
-                \Yii::$app->filters->clean();
-                \Yii::$app->filters->cleanAdmin();
+                FiltersHelper::cleanFilters();
+                FiltersHelper::cleanAdminFilters();
                 
                 FiltersHelper::addFiltersAdmin();
+                
+                $resultArray = array();
                 
                 if (!empty($objectsProductsList = MappersHelper::getProductsList($this->_config))) {
                     $productsFile = CSVHelper::getCSV([
@@ -318,11 +320,13 @@ class AdminController extends AbstractBaseController
                         'fields'=>['id', 'date', 'code', 'name', 'short_description', 'price', 'images', 'active', 'total_products'],
                     ]);
                     
-                    $response = \Yii::$app->response;
-                    $response->format = Response::FORMAT_JSON;
-                    
-                    return ['productsFile'=>$productsFile];
+                    if (!empty($productsFile)) {
+                        $resultArray['productsFile'] = $productsFile;
+                    }
                 }
+                $response = \Yii::$app->response;
+                $response->format = Response::FORMAT_JSON;
+                return $resultArray;
             } else {
                 return $this->redirect(Url::to(['admin/data-convert']));
             }
@@ -330,8 +334,8 @@ class AdminController extends AbstractBaseController
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         } finally {
-            \Yii::$app->filters->clean();
-            \Yii::$app->filters->cleanAdmin();
+            FiltersHelper::cleanFilters();
+            FiltersHelper::cleanAdminFilters();
         }
     }
     

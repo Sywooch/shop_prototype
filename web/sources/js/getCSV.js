@@ -6,7 +6,11 @@ jQuery(function() {
         this.url;
         this.token = $('meta[name="csrf-token"]').attr('content');
         function success(data, status, jqXHR) {
-            $('.productsFile').html('Скачать <a href="/sources/csv/' + data.productsFile + '">' + data.productsFile + '</a>');
+            if (data.productsFile) {
+                $('.productsFile').html('Скачать <a href="/sources/csv/' + data.productsFile + '">' + data.productsFile + '</a>');
+            } else {
+                $('.productsFile').html('Данные удовлетворяющие вашему запросу не найдены!');
+            }
         };
         function error(jqXHR, status, errorThrown) {
             alert(jqXHR.responseText);

@@ -18,11 +18,11 @@ class CSVHelper
     /**
      * Формирует csv файл
      * @param array $config массив конфигурации, включает ключи:
-     * - path путь к директории файла
+     * - path путь к директории, в которой будет сохранен файл
      * - filename имя файла
-     * - objectsArray массив обектов
+     * - objectsArray массив объектов
      * - fields имена полей, которые будут включены в файл
-     * @return string результирующий путь по которому доступен готовый файл
+     * @return string имя сохраненного файла
      */
     public static function getCSV(Array $config)
     {
@@ -40,6 +40,10 @@ class CSVHelper
             foreach ($config['objectsArray'] as $object) {
                 $objectFieldsArray = array();
                 foreach ($config['fields'] as $field) {
+                    if ($field == 'date') {
+                        $objectFieldsArray[] = date('d.m.Y', $object->$field);
+                        continue;
+                    }
                     $objectFieldsArray[] = $object->$field;
                 }
                 if (!fputcsv($handle, $objectFieldsArray, ';', '"')) {

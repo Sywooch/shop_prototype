@@ -30,6 +30,8 @@ class ProductsListAdminQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = [];
         \Yii::$app->filters->clean();
+        \Yii::$app->filters->cleanOther();
+        \Yii::$app->filters->cleanAdmin();
         
         $mockObject = new MockObject(self::$_config);
         

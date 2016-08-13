@@ -65,4 +65,36 @@ class FiltersHelper
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Удаляет данные фильтров, необходимых для построения URL
+     * @return boolean
+     */
+    public static function cleanOtherFilters()
+    {
+        try {
+            if (!\Yii::$app->filters->cleanOther()) {
+                throw new ErrorException('Ошибка при очистке фильтров!');
+            }
+            return true;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет данные фильтров административного раздела
+     * @return boolean
+     */
+    public static function cleanAdminFilters()
+    {
+        try {
+            if (!\Yii::$app->filters->cleanAdmin()) {
+                throw new ErrorException('Ошибка при очистке фильтров!');
+            }
+            return true;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
 }

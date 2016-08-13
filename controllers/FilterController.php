@@ -79,6 +79,7 @@ class FilterController extends AbstractBaseController
                                 $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>\Yii::$app->filters->subcategory]);
                             }
                         }
+                        FiltersHelper::cleanOtherFilters();
                     }
                 }
             }
@@ -99,7 +100,7 @@ class FilterController extends AbstractBaseController
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
                     if (FiltersHelper::cleanFilters()) {
-                        if (!\Yii::$app->filters->cleanAdmin()) {
+                        if (!FiltersHelper::cleanAdminFilters()) {
                             throw new ErrorException('Ошибка при очистке фильтров!');
                         }
                         if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin'])) {
