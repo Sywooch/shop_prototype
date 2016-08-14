@@ -136,6 +136,33 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::setCategoriesUpdate
+     */
+    public function testSetCategoriesUpdate()
+    {
+        $this->assertFalse(empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{categories}} LIMIT 1')->queryScalar()));
+        
+        $categoriesModel = new CategoriesModel();
+        $categoriesModel->id = $id;
+        $categoriesModel->name = self::$_name . ' another';
+        $categoriesModel->seocode = self::$_categorySeocode . ' another';
+        
+        $result = MappersHelper::setCategoriesUpdate([$categoriesModel]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{categories}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $id);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id, $result['id']);
+        $this->assertEquals(self::$_name . ' another', $result['name']);
+        $this->assertEquals(self::$_categorySeocode . ' another', $result['seocode']);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getCategoriesList
      */
     public function testGetCategoriesList()
@@ -1191,6 +1218,22 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getProductsByIdCategories
+     */
+    public function testGetProductsByIdCategories()
+    {
+        $categoriesModel = new CategoriesModel();
+        $categoriesModel->id = self::$_id;
+        
+        $result = MappersHelper::getProductsByIdCategories($categoriesModel);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue($result[0] instanceof ProductsModel);
+        $this->assertEquals(self::$_id, $result[0]->id_categories);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getCategoriesById
      */
     public function testGetCategoriesById()
@@ -1215,6 +1258,22 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $categoriesModel->seocode = self::$_categorySeocode;
         
         $result = MappersHelper::getCategoriesBySeocode($categoriesModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof CategoriesModel);
+        $this->assertEquals(self::$_name, $result->name);
+        $this->assertEquals(self::$_categorySeocode, $result->seocode);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getCategoriesByName
+     */
+    public function testGetCategoriesByName()
+    {
+        $categoriesModel = new CategoriesModel();
+        $categoriesModel->name = self::$_name;
+        
+        $result = MappersHelper::getCategoriesByName($categoriesModel);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof CategoriesModel);

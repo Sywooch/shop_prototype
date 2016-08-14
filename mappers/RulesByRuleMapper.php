@@ -30,6 +30,9 @@ class RulesByRuleMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
+                if (empty($this->model->rule)) {
+                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+                }
                 $this->params = [':rule'=>$this->model->rule];
             }
         } catch (\Exception $e) {

@@ -65,6 +65,15 @@ class SubcategoryHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_array($result));
         $this->assertTrue(empty($result));
+        
+        $result = SubcategoryHelper::clean();
+        
+        $this->assertTrue($result);
+        
+        $result = SubcategoryHelper::getSubcategory(null);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue(empty($result));
     }
     
     public static function tearDownAfterClass()

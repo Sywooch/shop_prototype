@@ -46,6 +46,9 @@ class UsersRulesInsertMapper extends AbstractInsertMapper
             if (empty($this->model) || !$this->model instanceof UsersModel) {
                 throw new ErrorException('Не передана модель!');
             }
+            if (empty($this->model->id) || empty($this->model->rulesFromForm)) {
+                throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+            }
             $result = array();
             $rulesForUser = $this->model->rulesFromForm;
             if (!is_array($rulesForUser) || empty($rulesForUser)) {

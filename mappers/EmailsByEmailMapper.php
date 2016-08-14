@@ -30,6 +30,9 @@ class EmailsByEmailMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
+                if (empty($this->model->email)) {
+                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+                }
                 $this->params = [':email'=>$this->model->email];
             }
         } catch (\Exception $e) {

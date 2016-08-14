@@ -1,0 +1,24 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+<p>Здесь вы можете управлять товарными категориями</p>
+
+<p><strong>Обновить категорию</strong></p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'id':'update-categories-form', 'action':url.to({0:'admin/update-categories', 'id':categoriesModel.id}), 'method':'POST'}) %}
+    {{ form.field(categoriesModel, 'id').hiddenInput().label(false) | raw }}
+    {{ form.field(categoriesModel, 'name') | raw }}
+    {{ form.field(categoriesModel, 'seocode') | raw }}
+    <input type="submit" value="Обновить">
+{{ active_form_end() }}
+
+
+
+
+

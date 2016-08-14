@@ -39,6 +39,9 @@ class SimilarProductsMapper extends ProductsListMapper
                 if (empty(\Yii::$app->params['subCategoryKey'])) {
                     throw new ErrorException('Не поределен subCategoryKey!');
                 }
+                if (empty($this->model->id)) {
+                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+                }
                 $this->params = [
                     ':' . \Yii::$app->params['idKey']=>$this->model->id,
                     ':' . \Yii::$app->params['categoryKey']=>\Yii::$app->request->get(\Yii::$app->params['categoryKey']),

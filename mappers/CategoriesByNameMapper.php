@@ -9,12 +9,12 @@ use app\models\CategoriesModel;
 /**
  * Реализует интерфейс получения массива объектов из базы данных
  */
-class CategoriesBySeocodeMapper extends AbstractGetMapper
+class CategoriesByNameMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\CategoriesBySeocodeQueryCreator';
+    public $queryClass = 'app\queries\CategoriesByNameQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */
@@ -30,10 +30,10 @@ class CategoriesBySeocodeMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
-                if (empty($this->model->seocode)) {
+                if (empty($this->model->name)) {
                     throw new ErrorException('Отсутствуют данные для выполнения запроса!');
                 }
-                $this->params = [':seocode'=>$this->model->seocode];
+                $this->params = [':name'=>$this->model->name];
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

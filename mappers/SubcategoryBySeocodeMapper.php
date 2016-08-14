@@ -30,6 +30,9 @@ class SubcategoryBySeocodeMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
+                if (empty($this->model->seocode)) {
+                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+                }
                 $this->params = [':seocode'=>$this->model->seocode];
             }
         } catch (\Exception $e) {

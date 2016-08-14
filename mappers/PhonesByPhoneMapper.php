@@ -30,6 +30,9 @@ class PhonesByPhoneMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
+                if (empty($this->model->phone)) {
+                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+                }
                 $this->params = [':phone'=>$this->model->phone];
             }
         } catch (\Exception $e) {

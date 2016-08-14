@@ -5,13 +5,19 @@
 
 {% include '@app/views/parts/admin-menu.twig' %}
 
+{{ use('yii/widgets/ActiveForm') }}
+
 <p>Здесь вы можете управлять товарными категориями</p>
 
 {% if objectsCategoriesList %}
     <p><strong>Текущие категории</strong></p>
     <ul>
-        {% for category in objectsCategoriesList %}
-            <li>{{ category.name }}</li>
+        {% for categories in objectsCategoriesList %}
+            <li>
+                {{ categories.name }}</a><br>
+                <a href="{{ url.to({0:'admin/update-categories', 'id':categories.id}) }}">Обновить категорию</a><br>
+                <a href="{{ url.to({0:'admin/delete-categories', 'id':categories.id}) }}">Удалить категорию</a>
+            </li>
         {% endfor %}
     </ul>
 {% endif %}

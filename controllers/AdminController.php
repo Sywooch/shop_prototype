@@ -345,12 +345,13 @@ class AdminController extends AbstractBaseController
     public function actionShowCategories()
     {
         try {
-            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_CATEGORY_FORM]);
+            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_FORM]);
+            $categoriesDeleteModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
                     $categoriesModel->seocode = mb_strtolower($categoriesModel->seocode);
-                    if (!MappersHelper::setCategoriesInsert($categoriesModel)) { # Проверить сочетание name and seocode на уникальность
+                    if (!MappersHelper::setCategoriesInsert($categoriesModel)) {
                         throw new ErrorException('Ошибка при сохранении категории!');
                     }
                 }
@@ -358,9 +359,87 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['categoriesModel'] = $categoriesModel;
+            $renderArray['categoriesDeleteModel'] = $categoriesDeleteModel;
             $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-categories.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет обновлением категории
+     */
+    public function actionUpdateCategories()
+    {
+        try {
+            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_UPDATE_FORM]);
+            
+            $renderArray = array();
+            $renderArray['categoriesModel'] = $categoriesModel;
+            
+            if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
+                if ($categoriesModel->validate()) {
+                    if (array_diff_assoc($categoriesModel->attributes, MappersHelper::getCategoriesById($categoriesModel)->attributes)) {
+                        $categoriesModel->seocode = mb_strtolower($categoriesModel->seocode);
+                        if (!MappersHelper::setCategoriesUpdate([$categoriesModel])) {
+                            throw new ErrorException('Ошибка при обновлении CategoriesModel!');
+                        }
+                    }
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID продукта!');
+                }
+                
+                if ($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($renderArray['categoriesModel'], $currentCategories->attributes);
+                }
+            }
+            
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('update-categories.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет обновлением категории
+     */
+    public function actionDeleteCategories()
+    {
+        try {
+            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
+            
+            $renderArray = array();
+            $renderArray['categoriesModel'] = $categoriesModel;
+            
+            if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
+                if ($categoriesModel->validate()) {
+                    print_r($categoriesModel);
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID продукта!');
+                }
+                
+                if ($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($renderArray['categoriesModel'], $currentCategories->attributes);
+                }
+            }
+            
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('delete-categories.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

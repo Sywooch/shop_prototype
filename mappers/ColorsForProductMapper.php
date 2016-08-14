@@ -33,6 +33,9 @@ class ColorsForProductMapper extends AbstractGetMapper
                 if (empty(\Yii::$app->params['idKey'])) {
                     throw new ErrorException('Не поределен idKey!');
                 }
+                if (empty($this->model->id)) {
+                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+                }
                 $this->params = [':' . \Yii::$app->params['idKey']=>$this->model->id];
             }
         } catch (\Exception $e) {

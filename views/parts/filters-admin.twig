@@ -11,7 +11,7 @@
     {{ form.field(filtersModel, 'brands').checkboxList(array.map(brandsList, 'id', 'brand')) | raw }}
     
     {{ form.field(productsModelFilter, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
-    {{ form.field(productsModelFilter, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(productsModelFilter.id_categories))) | raw }}
+    {{ form.field(productsModelFilter, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(productsModelFilter.id_categories | default(null)))) | raw }}
     
     {{ form.field(productsModelFilter, 'active').checkbox() | raw }}
     

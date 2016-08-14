@@ -18,7 +18,15 @@ class CategoriesModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы
     */
-    const GET_FROM_ADD_CATEGORY_FORM = 'getFromAddCategoryForm';
+    const GET_FROM_ADD_FORM = 'getFromAddForm';
+    /**
+     * Сценарий загрузки данных из формы обновления
+    */
+    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
+    /**
+     * Сценарий загрузки данных из формы удаления
+    */
+    const GET_FROM_DELETE_FORM = 'getFromDeleteForm';
     
     public $id;
     public $name;
@@ -30,14 +38,26 @@ class CategoriesModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'name', 'seocode'],
-            self::GET_FROM_ADD_CATEGORY_FORM=>['name', 'seocode'],
+            self::GET_FROM_ADD_FORM=>['name', 'seocode'],
+            self::GET_FROM_UPDATE_FORM=>['id', 'name', 'seocode'],
+            self::GET_FROM_DELETE_FORM=>['id', 'name', 'seocode'], #!!!TEST
         ];
     }
     
     public function rules()
     {
         return [
-            [['name', 'seocode'], 'required', 'on'=>self::GET_FROM_ADD_CATEGORY_FORM],
+            [['name', 'seocode'], 'required', 'on'=>self::GET_FROM_ADD_FORM],
+            [['name'], 'app\validators\CategoryNameExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
+            [['seocode'], 'app\validators\CategorySeocodeExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
+            [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_UPDATE_FORM],
+            [['name'], 'app\validators\CategoryNameExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+                return $model->name != MappersHelper::getCategoriesById($model)->name;
+            }],
+            [['seocode'], 'app\validators\CategorySeocodeExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+                return $model->seocode != MappersHelper::getCategoriesById($model)->seocode;
+            }],
+            [['id'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
         ];
     }
     

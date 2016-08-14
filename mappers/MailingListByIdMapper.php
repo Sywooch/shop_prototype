@@ -30,6 +30,9 @@ class MailingListByIdMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
+                if (empty($this->model->id)) {
+                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+                }
                 $this->params = [':id'=>$this->model->id];
             }
         } catch (\Exception $e) {

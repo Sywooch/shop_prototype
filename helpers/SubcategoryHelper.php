@@ -23,8 +23,10 @@ class SubcategoryHelper
     public static function getSubcategory($categoryId)
     {
         try {
-            if ($data = MappersHelper::getSubcategoryForCategoryList(new CategoriesModel(['id'=>$categoryId]))) {
-                self::$_resultArray = ArrayHelper::map($data, 'id', 'name');
+            if (!empty($categoryId)) {
+                if ($data = MappersHelper::getSubcategoryForCategoryList(new CategoriesModel(['id'=>$categoryId]))) {
+                    self::$_resultArray = ArrayHelper::map($data, 'id', 'name');
+                }
             }
             return self::$_resultArray;
         } catch (\Exception $e) {

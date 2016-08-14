@@ -30,6 +30,9 @@ class ProductsByCodeMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
+                if (empty($this->model->code)) {
+                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
+                }
                 $this->params = [':code'=>$this->model->code];
             }
         } catch (\Exception $e) {

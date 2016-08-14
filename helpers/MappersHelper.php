@@ -66,7 +66,10 @@ use app\mappers\{ColorsMapper,
     ProductsBrandsDeleteMapper,
     ProductsColorsDeleteMapper,
     ProductsSizesDeleteMapper,
-    CategoriesInsertMapper};
+    CategoriesInsertMapper,
+    CategoriesByNameMapper,
+    CategoriesUpdateMapper,
+    ProductsByIdCategoriesMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -112,6 +115,32 @@ class MappersHelper
                 'objectsArray'=>[$categoriesModel],
             ]);
             if (!$result = $categoriesInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет записи CategoriesModel в БД
+     * @param array $categoriesModels массив объектов CategoriesModel
+     * @return int
+     */
+    public static function setCategoriesUpdate(Array $categoriesModels)
+    {
+        try {
+            if (!is_array($categoriesModels) || empty($categoriesModels) || !$categoriesModels[0] instanceof CategoriesModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            $сategoriesUpdateMapper = new CategoriesUpdateMapper([
+                'tableName'=>'categories',
+                'fields'=>['id', 'name', 'seocode'],
+                'objectsArray'=>$categoriesModels
+            ]);
+            $result = $сategoriesUpdateMapper->setGroup();
+            if (!$result) {
                 return null;
             }
             return $result;
@@ -208,6 +237,39 @@ class MappersHelper
                 return self::$_objectRegistry[$hash];
             }
             $categoriesModel = $categoriesBySeocodeMapper->getOneFromGroup();
+            if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $categoriesModel);
+            return $categoriesModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект CategoriesModel по name
+     * @param object $categoriesModel экземпляр CategoriesModel
+     * @return objects CategoriesModel
+     */
+    public static function getCategoriesByName(CategoriesModel $categoriesModel)
+    {
+        try {
+            $categoriesByNameMapper = new CategoriesByNameMapper([
+                'tableName'=>'categories',
+                'fields'=>['id', 'name', 'seocode'],
+                'model'=>$categoriesModel
+            ]);
+            $hash = self::createHash([
+                CategoriesByNameMapper::className(), 
+                $categoriesByNameMapper->tableName, 
+                implode('', $categoriesByNameMapper->fields), 
+                $categoriesByNameMapper->model->name,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $categoriesModel = $categoriesByNameMapper->getOneFromGroup();
             if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
                 return null;
             }
@@ -1282,6 +1344,39 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $productsModel);
             return $productsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов ProductsModel по CategoriesModel->id_categories
+     * @param object $categoriesModel экземпляр CategoriesModel
+     * @return array ProductsModel
+     */
+    public static function getProductsByIdCategories(CategoriesModel $categoriesModel)
+    {
+        try {
+            $productsByIdCategoriesMapper = new ProductsByIdCategoriesMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'date', 'code', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+                'model'=>$categoriesModel,
+            ]);
+            $hash = self::createHash([
+                ProductsByIdCategoriesMapper::className(), 
+                $productsByIdCategoriesMapper->tableName, 
+                implode('', $productsByIdCategoriesMapper->fields), 
+                $productsByIdCategoriesMapper->model->id, 
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $productsArray = $productsByIdCategoriesMapper->getGroup();
+            if (!is_array($productsArray) || empty($productsArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $productsArray);
+            return $productsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
