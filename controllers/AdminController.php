@@ -340,7 +340,7 @@ class AdminController extends AbstractBaseController
     }
     
     /**
-     * Управляет категориями
+     * Управляет текущим списком и добавлением категорий
      */
     public function actionShowAddCategories()
     {
@@ -409,7 +409,7 @@ class AdminController extends AbstractBaseController
     }
     
     /**
-     * Управляет обновлением категории
+     * Управляет удалением категории
      */
     public function actionDeleteCategories()
     {
@@ -448,7 +448,7 @@ class AdminController extends AbstractBaseController
     }
     
     /**
-     * Управляет подкатегориями
+     * Управляет текущим списком и добавлением подкатегорий
      */
     public function actionShowAddSubcategory()
     {
@@ -470,6 +470,88 @@ class AdminController extends AbstractBaseController
             $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-subcategory.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет обновлением подкатегории
+     */
+    public function actionUpdateSubcategory()
+    {
+        try {
+            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_UPDATE_FORM]);
+            
+            $renderArray = array();
+            $renderArray['subcategoryModel'] = $subcategoryModel;
+            
+            if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
+                if ($subcategoryModel->validate()) {
+                    if (array_diff_assoc($subcategoryModel->attributes, MappersHelper::getSubcategoryById($subcategoryModel)->attributes)) {
+                        $subcategoryModel->seocode = mb_strtolower($subcategoryModel->seocode);
+                        if (!MappersHelper::setSubcategoryUpdate([$subcategoryModel])) {
+                            throw new ErrorException('Ошибка при обновлении SubcategoryModel!');
+                        }
+                    }
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                
+                if ($currentSubcategory = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($renderArray['subcategoryModel'], $currentSubcategory->attributes);
+                }
+            }
+            
+            $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('update-subcategory.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет удалением подкатегории
+     */
+    public function actionDeleteSubcategory()
+    {
+        try {
+            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
+            
+            $renderArray = array();
+            $renderArray['subcategoryModel'] = $subcategoryModel;
+            
+            if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
+                if ($subcategoryModel->validate()) {
+                    /*if (!MappersHelper::setSubcategoryDelete([$subcategoryModel])) {
+                        throw new ErrorException('Ошибка при удалении категории!');
+                    }
+                    return $this->redirect(Url::to(['admin/show-subcategory']));*/
+                    echo 'DELETE!';
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                
+                if ($currentSubcategory = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($renderArray['subcategoryModel'], $currentSubcategory->attributes);
+                }
+            }
+            
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('delete-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

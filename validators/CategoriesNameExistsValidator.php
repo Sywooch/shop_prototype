@@ -10,11 +10,11 @@ use app\models\CategoriesModel;
 /**
  * Проверяет атрибуты модели EmailsModel
  */
-class CategorySeocodeExistsValidator extends Validator
+class CategoriesNameExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
-    private static $_message = 'Этот код уже используется!';
+    private static $_message = 'Категория уже существует!';
     
     /**
      * Проверяет, существует ли категория товаров с таким name
@@ -24,7 +24,7 @@ class CategorySeocodeExistsValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $categoriesModel = MappersHelper::getCategoriesBySeocode($model);
+            $categoriesModel = MappersHelper::getCategoriesByName($model);
             
             if (is_object($categoriesModel) && $categoriesModel instanceof CategoriesModel) {
                 $this->addError($model, $attribute, self::$_message);

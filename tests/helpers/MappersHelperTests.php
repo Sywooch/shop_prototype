@@ -1281,6 +1281,22 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getProductsByIdSubcategory
+     */
+    public function testGetProductsByIdSubcategory()
+    {
+        $subcategoryModel = new SubcategoryModel();
+        $subcategoryModel->id = self::$_id;
+        
+        $result = MappersHelper::getProductsByIdSubcategory($subcategoryModel);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue($result[0] instanceof ProductsModel);
+        $this->assertEquals(self::$_id, $result[0]->id_subcategory);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getCategoriesById
      */
     public function testGetCategoriesById()
@@ -1672,6 +1688,35 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result[0]['name']));
         $this->assertFalse(empty($result[0]['seocode']));
         $this->assertFalse(empty($result[0]['id_categories']));
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setSubcategoryUpdate
+     */
+    public function testSetSubcategoryUpdate()
+    {
+        $this->assertFalse(empty($subcategory = \Yii::$app->db->createCommand('SELECT * FROM {{subcategory}} LIMIT 1')->queryOne()));
+        
+        $subcategoryModel = new SubcategoryModel();
+        $subcategoryModel->id = $subcategory['id'];
+        $subcategoryModel->name = self::$_name . ' another';
+        $subcategoryModel->seocode = self::$_subcategorySeocode . ' another';
+        $subcategoryModel->id_categories = $subcategory['id_categories'];
+        
+        $result = MappersHelper::setSubcategoryUpdate([$subcategoryModel]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{subcategory}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $subcategory['id']);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($subcategory['id'], $result['id']);
+        $this->assertEquals(self::$_name . ' another', $result['name']);
+        $this->assertEquals(self::$_subcategorySeocode . ' another', $result['seocode']);
+        $this->assertEquals($subcategory['id_categories'], $result['id_categories']);
     }
     
     /**

@@ -3,14 +3,14 @@
 namespace app\tests\validators;
 
 use app\tests\DbManager;
-use app\validators\CategorySeocodeExistsValidator;
+use app\validators\CategoriesSeocodeExistsValidator;
 use app\helpers\MappersHelper;
 use app\models\CategoriesModel;
 
 /**
- * Тестирует класс app\validators\CategorySeocodeExistsValidator
+ * Тестирует класс app\validators\CategoriesSeocodeExistsValidator
  */
-class CategorySeocodeExistsValidatorTests extends \PHPUnit_Framework_TestCase
+class CategoriesSeocodeExistsValidatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
@@ -34,14 +34,14 @@ class CategorySeocodeExistsValidatorTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод CategorySeocodeExistsValidator::validateAttribute
+     * Тестирует метод CategoriesSeocodeExistsValidator::validateAttribute
      */
     public function testValidateAttribute()
     {
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_FORM]);
         $model->seocode = self::$_seocode;
         
-        $validator = new CategorySeocodeExistsValidator();
+        $validator = new CategoriesSeocodeExistsValidator();
         $validator->validateAttribute($model, 'seocode');
         
         $this->assertEquals(1, count($model->errors));

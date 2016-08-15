@@ -73,7 +73,9 @@ use app\mappers\{ColorsMapper,
     CategoriesDeleteMapper,
     SubcategoryMapper,
     SubcategoryInsertMapper,
-    SubcategoryByNameMapper};
+    SubcategoryByNameMapper,
+    SubcategoryUpdateMapper,
+    ProductsByIdSubcategoryMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -1417,6 +1419,39 @@ class MappersHelper
     }
     
     /**
+     * Получает массив объектов ProductsModel по SubcategoryModel->id
+     * @param object $subcategoryModel экземпляр SubcategoryModel
+     * @return array ProductsModel
+     */
+    public static function getProductsByIdSubcategory(SubcategoryModel $subcategoryModel)
+    {
+        try {
+            $productsByIdSubcategoryMapper = new ProductsByIdSubcategoryMapper([
+                'tableName'=>'products',
+                'fields'=>['id', 'date', 'code', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+                'model'=>$subcategoryModel,
+            ]);
+            $hash = self::createHash([
+                ProductsByIdSubcategoryMapper::className(), 
+                $productsByIdSubcategoryMapper->tableName, 
+                implode('', $productsByIdSubcategoryMapper->fields), 
+                $productsByIdSubcategoryMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $productsArray = $productsByIdSubcategoryMapper->getGroup();
+            if (!is_array($productsArray) || empty($productsArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $productsArray);
+            return $productsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Создает новую запись ProductsModel в БД
      * @param object $productsModel экземпляр ProductsModel
      * @return int
@@ -1596,6 +1631,32 @@ class MappersHelper
                 'objectsArray'=>$subcategoryModels,
             ]);
             if (!$result = $subcategoryInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет записи SubcategoryModel в БД
+     * @param array $subcategoryModels массив объектов SubcategoryModel
+     * @return int
+     */
+    public static function setSubcategoryUpdate(Array $subcategoryModels)
+    {
+        try {
+            if (!is_array($subcategoryModels) || empty($subcategoryModels) || !$subcategoryModels[0] instanceof SubcategoryModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            $subcategoryUpdateMapper = new SubcategoryUpdateMapper([
+                'tableName'=>'subcategory',
+                'fields'=>['id', 'name', 'seocode', 'id_categories'],
+                'objectsArray'=>$subcategoryModels
+            ]);
+            $result = $subcategoryUpdateMapper->setGroup();
+            if (!$result) {
                 return null;
             }
             return $result;

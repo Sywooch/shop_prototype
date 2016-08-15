@@ -3,14 +3,14 @@
 namespace app\tests\validators;
 
 use app\tests\DbManager;
-use app\validators\CategoryForeignProductsExistsValidator;
+use app\validators\SubcategoryForeignProductsExistsValidator;
 use app\helpers\MappersHelper;
-use app\models\CategoriesModel;
+use app\models\SubcategoryModel;
 
 /**
- * Тестирует класс app\validators\CategoryForeignProductsExistsValidator
+ * Тестирует класс app\validators\SubcategoryForeignProductsExistsValidator
  */
-class CategoryForeignProductsExistsValidatorTests extends \PHPUnit_Framework_TestCase
+class SubcategoryForeignProductsExistsValidatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
@@ -18,7 +18,7 @@ class CategoryForeignProductsExistsValidatorTests extends \PHPUnit_Framework_Tes
     private static $_seocode = 'shoes';
     private static $_subcategorySeocode = 'sneakers';
     
-    private static $_message = 'С категорией связаны товары! Необходимо перенести их перед удалением!';
+    private static $_message = 'С подкатегорией связаны товары! Необходимо перенести их перед удалением!';
     
     public static function setUpBeforeClass()
     {
@@ -43,15 +43,15 @@ class CategoryForeignProductsExistsValidatorTests extends \PHPUnit_Framework_Tes
     }
     
     /**
-     * Тестирует метод CategoryForeignProductsExistsValidator::validateAttribute
+     * Тестирует метод SubcategoryForeignProductsExistsValidator::validateAttribute
      */
     public function testValidateAttribute()
     {
-        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
         $model->id = self::$_id;
         $model->name = self::$_name;
         
-        $validator = new CategoryForeignProductsExistsValidator();
+        $validator = new SubcategoryForeignProductsExistsValidator();
         $validator->validateAttribute($model, 'name');
         
         $this->assertEquals(1, count($model->errors));

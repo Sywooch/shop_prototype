@@ -48,18 +48,18 @@ class CategoriesModel extends AbstractBaseModel
     {
         return [
             [['name', 'seocode'], 'required', 'on'=>self::GET_FROM_ADD_FORM],
-            [['name'], 'app\validators\CategoryNameExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
-            [['seocode'], 'app\validators\CategorySeocodeExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
+            [['name'], 'app\validators\CategoriesNameExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
+            [['seocode'], 'app\validators\CategoriesSeocodeExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
             [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_UPDATE_FORM],
-            [['name'], 'app\validators\CategoryNameExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+            [['name'], 'app\validators\CategoriesNameExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
                 return $model->name != MappersHelper::getCategoriesById($model)->name;
             }],
-            [['seocode'], 'app\validators\CategorySeocodeExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+            [['seocode'], 'app\validators\CategoriesSeocodeExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
                 return $model->seocode != MappersHelper::getCategoriesById($model)->seocode;
             }],
             [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['name'], 'app\validators\CategoryForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['name'], 'app\validators\CategoryForeignSubcategoryExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['name'], 'app\validators\CategoriesForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['name'], 'app\validators\CategoriesForeignSubcategoryExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
         ];
     }
     

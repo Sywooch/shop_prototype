@@ -5,17 +5,15 @@ namespace app\validators;
 use yii\validators\Validator;
 use app\traits\ExceptionsTrait;
 use app\helpers\MappersHelper;
-use app\models\{CategoriesModel,
-    ProductsModel};
 
 /**
  * Проверяет атрибуты модели EmailsModel
  */
-class CategoryForeignSubcategoryExistsValidator extends Validator
+class CategoriesForeignProductsExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
-    private static $_message = 'С категорией связаны подкатегории! Необходимо перенести их перед удалением!';
+    private static $_message = 'С категорией связаны товары! Необходимо перенести их перед удалением!';
     
     /**
      * Проверяет, существует ли связь товаров с текущей категорией
@@ -25,7 +23,7 @@ class CategoryForeignSubcategoryExistsValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $productsArray = MappersHelper::getSubcategoryForCategoryList($model);
+            $productsArray = MappersHelper::getProductsByIdCategories($model);
             
             if (is_array($productsArray) && !empty($productsArray)) {
                 $this->addError($model, $attribute, self::$_message);

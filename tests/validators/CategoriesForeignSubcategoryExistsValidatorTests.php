@@ -3,21 +3,22 @@
 namespace app\tests\validators;
 
 use app\tests\DbManager;
-use app\validators\CategoryNameExistsValidator;
+use app\validators\CategoriesForeignSubcategoryExistsValidator;
 use app\helpers\MappersHelper;
 use app\models\CategoriesModel;
 
 /**
- * Тестирует класс app\validators\CategoryNameExistsValidator
+ * Тестирует класс app\validators\CategoriesForeignSubcategoryExistsValidator
  */
-class CategoryNameExistsValidatorTests extends \PHPUnit_Framework_TestCase
+class CategoriesForeignSubcategoryExistsValidatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
     private static $_name = 'Обувь';
     private static $_seocode = 'shoes';
+    private static $_subcategorySeocode = 'sneakers';
     
-    private static $_message = 'Категория уже существует!';
+    private static $_message = 'С категорией связаны подкатегории! Необходимо перенести их перед удалением!';
     
     public static function setUpBeforeClass()
     {
@@ -28,20 +29,25 @@ class CategoryNameExistsValidatorTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_seocode]);
         $command->execute();
         
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
         if (!empty(MappersHelper::getObjectRegistry())) {
             MappersHelper::cleanProperties();
         }
     }
     
     /**
-     * Тестирует метод CategoryNameExistsValidator::validateAttribute
+     * Тестирует метод CategoriesForeignSubcategoryExistsValidator::validateAttribute
      */
     public function testValidateAttribute()
     {
-        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_FORM]);
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
+        $model->id = self::$_id;
         $model->name = self::$_name;
         
-        $validator = new CategoryNameExistsValidator();
+        $validator = new CategoriesForeignSubcategoryExistsValidator();
         $validator->validateAttribute($model, 'name');
         
         $this->assertEquals(1, count($model->errors));
