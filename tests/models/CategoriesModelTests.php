@@ -17,11 +17,15 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
     private static $_id = 1;
     private static $_name = 'Some Name';
     private static $_name2 = 'Some Name 2';
+    private static $_name3 = 'Some Name 3';
     private static $_nameFresh = 'Some Fresh Name';
     private static $_categorySeocode = 'mensfootwear';
     private static $_categorySeocode2 = 'mensfootwear2';
+    private static $_categorySeocode3 = 'mensfootwear3';
     private static $_categorySeocodeFresh = 'fresh';
     private static $_subcategorySeocode = 'boots';
+    private static $_productsMessage = 'С категорией связаны товары! Необходимо перенести их перед удалением!';
+    private static $_subcategoryMessage = 'С категорией связаны подкатегории! Необходимо перенести их перед удалением!';
     
     public static function setUpBeforeClass()
     {
@@ -37,8 +41,20 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id + 1, ':name'=>self::$_name2, ':seocode'=>self::$_categorySeocode2]);
         $command->execute();
         
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id + 2, ':name'=>self::$_name3, ':seocode'=>self::$_categorySeocode3]);
+        $command->execute();
+        
         $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id + 1, ':name'=>self::$_name, ':id_categories'=>self::$_id + 1, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -103,9 +119,15 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
         
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
-        $model->attributes = ['id'=>self::$_id];
+        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
         
         $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->name));
+        $this->assertFalse(empty($model->seocode));
+        
+        $this->assertEquals(self::$_id, $model->id);
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_categorySeocode, $model->seocode);
     }
     
     /**
@@ -168,11 +190,29 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertEquals(1, count($model->errors));
+        $this->assertEquals(3, count($model->errors));
         $this->assertTrue(array_key_exists('id', $model->errors));
+        $this->assertTrue(array_key_exists('name', $model->errors));
+        $this->assertTrue(array_key_exists('seocode', $model->errors));
         
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
-        $model->attributes = ['id'=>self::$_id];
+        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('name', $model->errors));
+        $this->assertEquals(self::$_productsMessage, $model->errors['name'][0]);
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
+        $model->attributes = ['id'=>self::$_id + 1, 'name'=>self::$_name2, 'seocode'=>self::$_categorySeocode2];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('name', $model->errors));
+        $this->assertEquals(self::$_subcategoryMessage, $model->errors['name'][0]);
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
+        $model->attributes = ['id'=>self::$_id + 2, 'name'=>self::$_name3, 'seocode'=>self::$_categorySeocode3];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));

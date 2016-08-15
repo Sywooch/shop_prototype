@@ -394,7 +394,7 @@ class AdminController extends AbstractBaseController
                     throw new ErrorException('Не поределен idKey!');
                 }
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
-                    throw new ErrorException('Ошибка при получении ID продукта!');
+                    throw new ErrorException('Ошибка при получении ID!');
                 }
                 
                 if ($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
@@ -423,14 +423,17 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
-                    print_r($categoriesModel);
+                    if (!MappersHelper::setCategoriesDelete([$categoriesModel])) {
+                        throw new ErrorException('Ошибка при удалении категории!');
+                    }
+                    return $this->redirect(Url::to(['admin/show-categories']));
                 }
             } else {
                 if (empty(\Yii::$app->params['idKey'])) {
                     throw new ErrorException('Не поределен idKey!');
                 }
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
-                    throw new ErrorException('Ошибка при получении ID продукта!');
+                    throw new ErrorException('Ошибка при получении ID!');
                 }
                 
                 if ($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {

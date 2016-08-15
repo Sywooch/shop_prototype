@@ -163,6 +163,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::setCategoriesDelete
+     */
+    public function testSetCategoriesDelete()
+    {
+        $this->assertFalse(empty($categories = \Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll()));
+        $this->assertEquals(1, count($categories));
+        
+        $model = new CategoriesModel();
+        $model->id = $categories[0]['id'];
+        
+        $result = MappersHelper::setCategoriesDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll()));
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getCategoriesList
      */
     public function testGetCategoriesList()

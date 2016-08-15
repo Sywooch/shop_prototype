@@ -40,7 +40,7 @@ class CategoriesModel extends AbstractBaseModel
             self::GET_FROM_DB=>['id', 'name', 'seocode'],
             self::GET_FROM_ADD_FORM=>['name', 'seocode'],
             self::GET_FROM_UPDATE_FORM=>['id', 'name', 'seocode'],
-            self::GET_FROM_DELETE_FORM=>['id', 'name', 'seocode'], #!!!TEST
+            self::GET_FROM_DELETE_FORM=>['id', 'name', 'seocode'],
         ];
     }
     
@@ -57,7 +57,9 @@ class CategoriesModel extends AbstractBaseModel
             [['seocode'], 'app\validators\CategorySeocodeExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
                 return $model->seocode != MappersHelper::getCategoriesById($model)->seocode;
             }],
-            [['id'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['name'], 'app\validators\CategoryForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['name'], 'app\validators\CategoryForeignSubcategoryExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
         ];
     }
     

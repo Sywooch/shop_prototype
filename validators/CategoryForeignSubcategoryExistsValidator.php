@@ -11,11 +11,11 @@ use app\models\{CategoriesModel,
 /**
  * Проверяет атрибуты модели EmailsModel
  */
-class CategoryForeignProductsExistsValidator extends Validator
+class CategoryForeignSubcategoryExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
-    private static $_message = 'С категорией связаны товары! Необходимо перенести их перед удалением!';
+    private static $_message = 'С категорией связаны подкатегории! Необходимо перенести их перед удалением!';
     
     /**
      * Проверяет, существует ли связь товаров с текущей категорией
@@ -25,7 +25,7 @@ class CategoryForeignProductsExistsValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $productsArray = MappersHelper::getProductsByIdCategories($model);
+            $productsArray = MappersHelper::getSubcategoryForCategoryList($model);
             
             if (is_array($productsArray) && !empty($productsArray)) {
                 $this->addError($model, $attribute, self::$_message);

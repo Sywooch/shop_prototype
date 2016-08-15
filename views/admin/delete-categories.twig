@@ -11,7 +11,7 @@
 
 {{ use('yii/widgets/ActiveForm') }}
 
-{% set form=active_form_begin({'id':'delete-categories-form', 'action':url.to({0:'admin/delete-categories'}), 'method':'POST'}) %}
+{% set form=active_form_begin({'id':'delete-categories-form', 'action':url.to({0:'admin/delete-categories', 'id':categoriesModel.id}), 'method':'POST'}) %}
     {{ form.field(categoriesModel, 'id').hiddenInput().label(false) | raw }}
     {{ form.field(categoriesModel, 'name') | raw }}
     {{ form.field(categoriesModel, 'seocode') | raw }}

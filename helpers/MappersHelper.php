@@ -69,7 +69,8 @@ use app\mappers\{ColorsMapper,
     CategoriesInsertMapper,
     CategoriesByNameMapper,
     CategoriesUpdateMapper,
-    ProductsByIdCategoriesMapper};
+    ProductsByIdCategoriesMapper,
+    CategoriesDeleteMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -141,6 +142,33 @@ class MappersHelper
             ]);
             $result = $сategoriesUpdateMapper->setGroup();
             if (!$result) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи CategoriesModel из БД
+     * @param array $categoriesModelArray массив CategoriesModel
+     * @return int
+     */
+    public static function setCategoriesDelete(Array $categoriesModelArray)
+    {
+        try {
+            if (empty($categoriesModelArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$categoriesModelArray[0] instanceof CategoriesModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $categoriesDeleteMapper = new CategoriesDeleteMapper([
+                'tableName'=>'categories',
+                'objectsArray'=>$categoriesModelArray,
+            ]);
+            if (!$result = $categoriesDeleteMapper->setGroup()) {
                 return null;
             }
             return $result;
@@ -1350,7 +1378,7 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов ProductsModel по CategoriesModel->id_categories
+     * Получает массив объектов ProductsModel по CategoriesModel->id
      * @param object $categoriesModel экземпляр CategoriesModel
      * @return array ProductsModel
      */
@@ -1366,7 +1394,7 @@ class MappersHelper
                 ProductsByIdCategoriesMapper::className(), 
                 $productsByIdCategoriesMapper->tableName, 
                 implode('', $productsByIdCategoriesMapper->fields), 
-                $productsByIdCategoriesMapper->model->id, 
+                $productsByIdCategoriesMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
                 return self::$_objectRegistry[$hash];
