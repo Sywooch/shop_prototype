@@ -1,0 +1,28 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+{{ use('yii/widgets/ActiveForm') }}
+
+<p>Здесь вы можете управлять товарными подкатегориями</p>
+
+{% if objectsSubcategoryList %}
+    <p><strong>Текущие подкатегории</strong></p>
+    <ul>
+        {% for subcategory in objectsSubcategoryList %}
+            <li>
+                {{ subcategory.name }} ({{ subcategory.categories.name }})<br>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% include '@app/views/parts/add-subcategory-form.twig' %}
+
+
+
+
+

@@ -3,7 +3,7 @@
 
 {{ use('yii/widgets/ActiveForm') }}
 
-{% set form=active_form_begin({'id':'categories-form', 'action':'', 'method':'POST'}) %}
+{% set form=active_form_begin({'id':'add-categories-form', 'action':url.to({0:'admin/show-add-categories'}), 'method':'POST'}) %}
     {{ form.field(categoriesModel, 'name') | raw }}
     {{ form.field(categoriesModel, 'seocode') | raw }}
     <input type="submit" value="Create" />

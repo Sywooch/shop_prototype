@@ -17,13 +17,13 @@ class CategoriesQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'tableName'=>'categories',
-            'fields'=>['id', 'name'],
+            'fields'=>['id', 'name', 'seocode'],
         ]);
         
         $queryCreator = new CategoriesQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[categories.id]],[[categories.name]] FROM {{categories}}';
+        $query = 'SELECT [[categories.id]],[[categories.name]],[[categories.seocode]] FROM {{categories}}';
         
         $this->assertEquals($query, $mockObject->query);
     }

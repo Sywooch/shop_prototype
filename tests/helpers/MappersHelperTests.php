@@ -118,7 +118,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $categoriesModel->name = self::$_name;
         $categoriesModel->seocode = self::$_categorySeocode;
         
-        $result = MappersHelper::setCategoriesInsert($categoriesModel);
+        $result = MappersHelper::setCategoriesInsert([$categoriesModel]);
         
         $this->assertEquals(1, $result);
         
@@ -980,6 +980,36 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getSubcategoryList
+     */
+    public function testGetSubcategoryList()
+    {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{subcategory}}')->queryAll()));
+        
+        $result = MappersHelper::getSubcategoryList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof SubcategoryModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getSubcategoryByName
+     */
+    public function testGetSubcategoryByName()
+    {
+        $subcategoryModel = new SubcategoryModel();
+        $subcategoryModel->name = self::$_name;
+        
+        $result = MappersHelper::getSubcategoryByName($subcategoryModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof SubcategoryModel);
+        $this->assertEquals(self::$_name, $result->name);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getSimilarProductsList
      */
     public function testGetSimilarProductsList()
@@ -1613,6 +1643,35 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $result[0]->id);
         $this->assertEquals(self::$_name, $result[0]->name);
         $this->assertEquals(self::$_route, $result[0]->route);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setSubcategoryInsert
+     */
+    public function testSetSubcategoryInsert()
+    {
+        \Yii::$app->db->createCommand('DELETE FROM {{products}}')->execute();
+        \Yii::$app->db->createCommand('DELETE FROM {{subcategory}}')->execute();
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{subcategory}}')->queryAll()));
+        
+        $subcategoryModel = new SubcategoryModel();
+        $subcategoryModel->name = self::$_name;
+        $subcategoryModel->seocode = self::$_subcategorySeocode;
+        $subcategoryModel->id_categories = self::$_id;
+        
+        $result = MappersHelper::setSubcategoryInsert([$subcategoryModel]);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{subcategory}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        
+        $this->assertFalse(empty($result[0]['id']));
+        $this->assertFalse(empty($result[0]['name']));
+        $this->assertFalse(empty($result[0]['seocode']));
+        $this->assertFalse(empty($result[0]['id_categories']));
     }
     
     /**

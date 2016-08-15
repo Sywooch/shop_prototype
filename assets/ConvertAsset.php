@@ -14,12 +14,12 @@ class ConvertAsset extends AbstractAsset
      */
     public $js = [
         'js/getCSV.js',
+        'js/getSubcategory.js',
     ];
     /**
      * @var array зависимости пакета
      */
     public $depends = [
         'app\assets\MainAsset',
-        'app\assets\GetSubcategoryAsset',
     ];
 }

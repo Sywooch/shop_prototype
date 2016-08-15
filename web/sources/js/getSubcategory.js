@@ -37,10 +37,6 @@ jQuery(function() {
         };
     };
     
-    $('select#productsmodel-id_categories > option:first-child, select#productsmodel-id_subcategory > option:first-child').attr('disabled', true);
-    
-    $('select#brandsmodel-id > option:first-child').attr('disabled', true);
-    
     $('select#productsmodel-id_categories').change(function(event) {
         (new SendRequest()).send(event);
     });

@@ -14,7 +14,7 @@
     <ul>
         {% for categories in objectsCategoriesList %}
             <li>
-                {{ categories.name }}</a><br>
+                {{ categories.name }}<br>
                 <a href="{{ url.to({0:'admin/update-categories', 'id':categories.id}) }}">Обновить категорию</a><br>
                 <a href="{{ url.to({0:'admin/delete-categories', 'id':categories.id}) }}">Удалить категорию</a>
             </li>
@@ -22,7 +22,7 @@
     </ul>
 {% endif %}
 
-{% include '@app/views/parts/categories-form.twig' %}
+{% include '@app/views/parts/add-categories-form.twig' %}
 
 
 

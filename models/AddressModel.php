@@ -4,9 +4,7 @@ namespace app\models;
 
 use yii\base\ErrorException;
 use app\models\AbstractBaseModel;
-use app\mappers\{AddressByAddressMapper,
-    AddressInsertMapper};
-
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы address
@@ -77,12 +75,7 @@ class AddressModel extends AbstractBaseModel
         try {
             if (is_null($this->_id)) {
                 if (!empty($this->address) || !empty($this->city) || !empty($this->country) || !empty($this->postcode)) {
-                    $addressByAddressMapper = new AddressByAddressMapper([
-                        'tableName'=>'address',
-                        'fields'=>['id', 'address', 'city', 'country', 'postcode'],
-                        'model'=>$this,
-                    ]);
-                    $addressModel = $addressByAddressMapper->getOneFromGroup();
+                    $addressModel = MappersHelper::getAddressByAddress($this);
                     if (!is_object($addressModel) || !$addressModel instanceof $this) {
                         return null;
                     }

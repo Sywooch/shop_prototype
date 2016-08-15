@@ -70,7 +70,10 @@ use app\mappers\{ColorsMapper,
     CategoriesByNameMapper,
     CategoriesUpdateMapper,
     ProductsByIdCategoriesMapper,
-    CategoriesDeleteMapper};
+    CategoriesDeleteMapper,
+    SubcategoryMapper,
+    SubcategoryInsertMapper,
+    SubcategoryByNameMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -104,16 +107,19 @@ class MappersHelper
     
     /**
      * Создает новую запись CategoriesModel в БД
-     * @param object $categoriesModel экземпляр CategoriesModel
+     * @param array $categoriesModels массив объектов CategoriesModel
      * @return int
      */
-    public static function setCategoriesInsert(CategoriesModel $categoriesModel)
+    public static function setCategoriesInsert(Array $categoriesModels)
     {
         try {
+            if (empty($categoriesModels) || !$categoriesModels[0] instanceof CategoriesModel) {
+                throw new ErrorException('Неверный формат данных!');
+            }
             $categoriesInsertMapper = new CategoriesInsertMapper([
                 'tableName'=>'categories',
                 'fields'=>['name', 'seocode'],
-                'objectsArray'=>[$categoriesModel],
+                'objectsArray'=>$categoriesModels,
             ]);
             if (!$result = $categoriesInsertMapper->setGroup()) {
                 return null;
@@ -1574,6 +1580,31 @@ class MappersHelper
     }
     
     /**
+     * Создает новую запись SubcategoryModel в БД
+     * @param array $subcategoryModels массив объектов SubcategoryModel
+     * @return int
+     */
+    public static function setSubcategoryInsert(Array $subcategoryModels)
+    {
+        try {
+            if (empty($subcategoryModels) || !$subcategoryModels[0] instanceof SubcategoryModel) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            $subcategoryInsertMapper = new SubcategoryInsertMapper([
+                'tableName'=>'subcategory',
+                'fields'=>['name', 'seocode', 'id_categories'],
+                'objectsArray'=>$subcategoryModels,
+            ]);
+            if (!$result = $subcategoryInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив объектов SubcategoryModel по id CategoriesModel
      * @return array of objects SubcategoryModel
      */
@@ -1595,6 +1626,38 @@ class MappersHelper
                 return self::$_objectRegistry[$hash];
             }
             $subcategoryArray = $subcategoryForCategoryMapper->getGroup();
+            if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $subcategoryArray);
+            return $subcategoryArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов SubcategoryModel
+     * @return array of objects SubcategoryModel
+     */
+    public static function getSubcategoryList()
+    {
+        try {
+            $subcategoryMapper = new SubcategoryMapper([
+                'tableName'=>'subcategory',
+                'fields'=>['id', 'name', 'seocode', 'id_categories'],
+                'orderByField'=>'name'
+            ]);
+            $hash = self::createHash([
+                SubcategoryMapper::className(), 
+                $subcategoryMapper->tableName, 
+                implode('', $subcategoryMapper->fields), 
+                $subcategoryMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $subcategoryArray = $subcategoryMapper->getGroup();
             if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
                 return null;
             }
@@ -1662,6 +1725,39 @@ class MappersHelper
             }
             $subcategoryModel = $subcategoryBySeocodeMapper->getOneFromGroup();
             if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $subcategoryModel);
+            return $subcategoryModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект SubcategoryModel по name
+     * @param object $subcategoryModel экземпляр SubcategoryModel
+     * @return objects SubcategoryModel
+     */
+    public static function getSubcategoryByName(SubcategoryModel $subcategoryModel)
+    {
+        try {
+            $subcategoryByNameMapper = new SubcategoryByNameMapper([
+                'tableName'=>'subcategory',
+                'fields'=>['id', 'name', 'seocode', 'id_categories'],
+                'model'=>$subcategoryModel
+            ]);
+            $hash = self::createHash([
+                SubcategoryByNameMapper::className(), 
+                $subcategoryByNameMapper->tableName, 
+                implode('', $subcategoryByNameMapper->fields), 
+                $subcategoryByNameMapper->model->name,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $subcategoryModel = $subcategoryByNameMapper->getOneFromGroup();
+            if (!is_object($subcategoryModel) && !$subcategoryModel instanceof SubcategoryModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $subcategoryModel);

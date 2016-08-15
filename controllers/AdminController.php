@@ -342,16 +342,15 @@ class AdminController extends AbstractBaseController
     /**
      * Управляет категориями
      */
-    public function actionShowCategories()
+    public function actionShowAddCategories()
     {
         try {
             $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_FORM]);
-            $categoriesDeleteModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
                     $categoriesModel->seocode = mb_strtolower($categoriesModel->seocode);
-                    if (!MappersHelper::setCategoriesInsert($categoriesModel)) {
+                    if (!MappersHelper::setCategoriesInsert([$categoriesModel])) {
                         throw new ErrorException('Ошибка при сохранении категории!');
                     }
                 }
@@ -359,10 +358,9 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['categoriesModel'] = $categoriesModel;
-            $renderArray['categoriesDeleteModel'] = $categoriesDeleteModel;
             $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
-            return $this->render('show-categories.twig', $renderArray);
+            return $this->render('show-add-categories.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -443,6 +441,35 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-categories.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет подкатегориями
+     */
+    public function actionShowAddSubcategory()
+    {
+        try {
+            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+            
+            if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
+                if ($subcategoryModel->validate()) {
+                    $subcategoryModel->seocode = mb_strtolower($subcategoryModel->seocode);
+                    if (!MappersHelper::setSubcategoryInsert([$subcategoryModel])) {
+                        throw new ErrorException('Ошибка при сохранении категории!');
+                    }
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['subcategoryModel'] = $subcategoryModel;
+            $renderArray['objectsSubcategoryList'] = MappersHelper::getSubcategoryList();
+            $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('show-add-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
