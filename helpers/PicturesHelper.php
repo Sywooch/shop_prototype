@@ -157,6 +157,33 @@ class PicturesHelper
     }
     
     /**
+     * Удаляет директорию с файлами при удалении товара из БД
+     * @param string $dirName имя директории с файлами
+     * @return boolean
+     */
+    public static function deletePictures($dirName)
+    {
+        try {
+            $catalogPath = \Yii::getAlias('@pic/' . $dirName);
+            if (file_exists($catalogPath) && is_dir($catalogPath)) {
+                if (!empty($imagesArray = glob($catalogPath . '/*.{jpg,png,gif}', GLOB_BRACE))) {
+                    foreach ($imagesArray as $image) {
+                        if (!unlink($image)) {
+                            throw new ErrorException('Ошибка при удалении файла!');
+                        }
+                    }
+                }
+                if (!rmdir($catalogPath)) {
+                    throw new ErrorException('Ошибка при удалении директории!');
+                }
+            }
+            return true;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Анализирует и обрабатывает изображение
      * @param string $maxWidth максимально допустимая ширина
      * @param string $maxHeight максимально допустимая высота

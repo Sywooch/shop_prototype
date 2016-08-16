@@ -189,14 +189,16 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if ($productsModel->validate()) {
-                    if (!MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel], 'fields'=>['id', 'active']])) {
-                        throw new ErrorException('Ошибка при обновлении данных!');
+                    if ($productsModel->active != MappersHelper::getProductsById($productsModel)->active) {
+                        if (!MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel], 'fields'=>['id', 'active']])) {
+                            throw new ErrorException('Ошибка при обновлении данных!');
+                        }
                     }
-                    return $this->redirect(Url::to(['admin/show-products']));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
             }
+            return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -235,8 +237,11 @@ class AdminController extends AbstractBaseController
                         $updateConfig['images'] = true;
                     }
                     $updateConfig['productsModelArray'][] = $productsModel;
-                    if (!MappersHelper::setProductsUpdate($updateConfig)) {
-                        throw new ErrorException('Ошибка при обновлении данных!');
+                    
+                    if (array_diff_assoc($productsModel->getDataArray(), MappersHelper::getProductsById($productsModel)->getDataArray())) {
+                        if (!MappersHelper::setProductsUpdate($updateConfig)) {
+                            throw new ErrorException('Ошибка при обновлении данных!');
+                        }
                     }
                     
                     if ($brandsModel->id != $productsModel->brands->id) {
@@ -271,6 +276,34 @@ class AdminController extends AbstractBaseController
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
             }
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет удалением товара
+     */
+    public function actionDeleteProduct()
+    {
+        try {
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_DELETE]);
+            
+            if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
+                if ($productsModel->validate()) {
+                    if (!MappersHelper::setProductsDelete([$productsModel])) {
+                        throw new ErrorException('Ошибка при удалении категории!');
+                    }
+                    if (!empty($productsModel->images)) {
+                        if (!PicturesHelper::deletePictures($productsModel->images)) {
+                            throw new ErrorException('Ошибка при удалении изображений!');
+                        }
+                    }
+                }
+            }
+            
+            return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

@@ -12,11 +12,11 @@
 {% if subcategoryList %}
     <p><strong>Текущие подкатегории</strong></p>
     <ul>
-        {% for subcategory in subcategoryList %}
+        {% for subcategoryModel in subcategoryList %}
             <li>
-                {{ subcategory.name }} ({{ subcategory.categories.name }})<br>
-                <a href="{{ url.to({0:'admin/update-subcategory', 'id':subcategory.id}) }}">Обновить подкатегорию</a><br>
-                <a href="{{ url.to({0:'admin/delete-subcategory', 'id':subcategory.id}) }}">Удалить подкатегорию</a>
+                {{ subcategoryModel.name }} ({{ subcategoryModel.categories.name }})<br>
+                <a href="{{ url.to({0:'admin/update-subcategory', 'id':subcategoryModel.id}) }}">Обновить подкатегорию</a><br>
+                <a href="{{ url.to({0:'admin/delete-subcategory', 'id':subcategoryModel.id}) }}">Удалить подкатегорию</a>
             </li>
         {% endfor %}
     </ul>

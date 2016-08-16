@@ -13,8 +13,6 @@
     {% for productsModel in productsList %}
         
         <p>
-        {% set form=active_form_begin({'id':'change-product-%s' | format(productsModel.id), 'action':url.to({0:'admin/update-product-cut'}), 'method':'POST'}) %}
-            {{ form.field(productsModel, 'id').hiddenInput().label(false) | raw }}<br>
             Название: <a href="{{ url.to({0:'product-detail/index', 'categories':productsModel.categories, 'subcategory':productsModel.subcategory, 'id':productsModel.id}) }}">{{ productsModel.name }}</a><br>
             Дата добавления: {{ app.formatter.asDate(productsModel.date, 'yyyy-MM-dd') }}<br>
             Код: {{ productsModel.code }}<br>
@@ -25,12 +23,21 @@
             Brand: {{ productsModel.brands.brand }}<br>
             Sizes: {{ array.getColumn(productsModel.sizes, 'size') | join(', ') }}<br>
             Colors: {{ array.getColumn(productsModel.colors, 'color') | join(', ') }}<br>
-            На складе: {{ productsModel.total_products }}
+            На складе: {{ productsModel.total_products }}<br>
+            <a href="{{ url.to({0:'admin/show-product-detail', 'id':productsModel.id}) }}">Редактировать детали</a>
+        </p>
+        
+        {% set form=active_form_begin({'id':'change-product-form-%s' | format(productsModel.id), 'action':url.to({0:'admin/update-product-cut'}), 'method':'POST'}) %}
+            {{ form.field(productsModel, 'id').hiddenInput().label(false) | raw }}<br>
             {{ form.field(productsModel, 'active').checkbox() | raw }}
-            <a href="{{ url.to({0:'admin/show-product-detail', 'id':productsModel.id}) }}">Редактировать детали</a><br>
             <input type="submit" value="Обновить">
         {{ active_form_end() }}
-        </p>
+        
+        {% set form=active_form_begin({'id':'delete-product-form-%s' | format(productsModel.id), 'action':url.to({0:'admin/delete-product'}), 'method':'POST'}) %}
+            {{ form.field(productsModel, 'id').hiddenInput().label(false) | raw }}<br>
+            {{ form.field(productsModel, 'images').hiddenInput().label(false) | raw }}<br>
+            <input type="submit" value="Удалить">
+        {{ active_form_end() }}
         
         <hr>
         

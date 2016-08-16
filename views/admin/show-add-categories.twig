@@ -12,11 +12,11 @@
 {% if categoriesList %}
     <p><strong>Текущие категории</strong></p>
     <ul>
-        {% for categories in categoriesList %}
+        {% for categoriesModel in categoriesList %}
             <li>
-                {{ categories.name }}<br>
-                <a href="{{ url.to({0:'admin/update-categories', 'id':categories.id}) }}">Обновить категорию</a><br>
-                <a href="{{ url.to({0:'admin/delete-categories', 'id':categories.id}) }}">Удалить категорию</a>
+                {{ categoriesModel.name }}<br>
+                <a href="{{ url.to({0:'admin/update-categories', 'id':categoriesModel.id}) }}">Обновить категорию</a><br>
+                <a href="{{ url.to({0:'admin/delete-categories', 'id':categoriesModel.id}) }}">Удалить категорию</a>
             </li>
         {% endfor %}
     </ul>

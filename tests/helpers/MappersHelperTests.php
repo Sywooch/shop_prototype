@@ -1737,6 +1737,35 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::setProductsDelete
+     */
+    public function testSetProductsDelete()
+    {
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{subcategory}}')->queryAll()));
+        
+        $this->assertFalse(empty($id_categories = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{categories}} LIMIT 1')->queryScalar()));
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>$id_categories, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[short_description]]=:short_description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
+        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':short_description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>$id_categories, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
+        $command->execute();
+        
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
+        
+        $model = new ProductsModel();
+        $model->id = self::$_id;
+        
+        $result = MappersHelper::setProductsDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getObjectRegistry
      */
     public function testGetObjectRegistry()

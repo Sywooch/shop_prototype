@@ -167,6 +167,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_UPDATE'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_UPDATE_CUT'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_ADMIN_FILTER'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_FOR_DELETE'));
         
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, '_date'));
@@ -347,6 +348,15 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id_categories);
         $this->assertEquals(self::$_id, $model->id_subcategory);
         $this->assertEquals(self::$_active, $model->active);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_DELETE]);
+        $model->attributes = ['id'=>self::$_id, 'images'=>self::$_images];
+        
+        $this->assertFalse(empty($model->id));
+        $this->assertFalse(empty($model->images));
+        
+        $this->assertEquals(self::$_id, $model->id);
+        $this->assertEquals(self::$_images, $model->images);
     }
     
     /**
@@ -434,6 +444,19 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE_CUT]);
         $model->attributes = ['id'=>self::$_id, 'active'=>self::$_active];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_DELETE]);
+        $model->attributes = ['id'=>self::$_id];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
@@ -800,6 +823,42 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model = new ProductsModel();
         
         $this->assertFalse(empty($model->date));
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getDataArray
+     */
+    public function testGetDataArray()
+    {
+        $model = new ProductsModel();
+        $model->date = self::$_date;
+        $model->code = self::$_code;
+        $model->name = self::$_name;
+        $model->short_description = self::$_description;
+        $model->description = self::$_description;
+        $model->price = self::$_price;
+        $model->images = self::$_images;
+        $model->id_categories = self::$_id;
+        $model->id_subcategory = self::$_id;
+        $model->active = self::$_active;
+        $model->total_products = self::$_total_products;
+        
+        $result = $model->getDataArray();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        
+        $this->assertEquals(self::$_date, $result['date']);
+        $this->assertEquals(self::$_code, $result['code']);
+        $this->assertEquals(self::$_name, $result['name']);
+        $this->assertEquals(self::$_description, $result['short_description']);
+        $this->assertEquals(self::$_description, $result['description']);
+        $this->assertEquals(self::$_price, $result['price']);
+        $this->assertEquals(self::$_images, $result['images']);
+        $this->assertEquals(self::$_id, $result['id_categories']);
+        $this->assertEquals(self::$_id, $result['id_subcategory']);
+        $this->assertEquals(self::$_active, $result['active']);
+        $this->assertEquals(self::$_total_products, $result['total_products']);
     }
     
     public static function tearDownAfterClass()

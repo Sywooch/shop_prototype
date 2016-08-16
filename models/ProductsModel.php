@@ -44,6 +44,10 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы для фильтра администрирования товаров
     */
     const GET_FROM_FORM_FOR_ADMIN_FILTER = 'getFromFormForAdminFilter';
+    /**
+     * Сценарий загрузки данных из формы для удаления товара из БД
+    */
+    const GET_FROM_FORM_FOR_DELETE = 'getFromFormForDelete'; 
     
     private $_id = null;
     private $_date = null;
@@ -113,7 +117,8 @@ class ProductsModel extends AbstractBaseModel
             self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
             self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
             self::GET_FROM_FORM_FOR_UPDATE_CUT=>['id', 'active'],
-            self::GET_FROM_FORM_FOR_ADMIN_FILTER=>['id_categories', 'id_subcategory', 'active'], 
+            self::GET_FROM_FORM_FOR_ADMIN_FILTER=>['id_categories', 'id_subcategory', 'active'],
+            self::GET_FROM_FORM_FOR_DELETE=>['id', 'images'], 
         ];
     }
     
@@ -126,7 +131,8 @@ class ProductsModel extends AbstractBaseModel
             [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE], 
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_FORM_FOR_UPDATE],
             [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM_FOR_UPDATE],
-            [['id', 'active'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE_CUT], 
+            [['id', 'active'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE_CUT],
+            [['id'], 'required', 'on'=>self::GET_FROM_FORM_FOR_DELETE], 
         ];
     }
     
@@ -514,6 +520,19 @@ class ProductsModel extends AbstractBaseModel
                 $this->_date = time();
             }
             return $this->_date;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив данных для сравнения
+     * @return array
+     */
+    public function getDataArray()
+    {
+        try {
+            return ['date'=>$this->date, 'code'=>$this->code, 'name'=>$this->name, 'short_description'=>$this->short_description, 'description'=>$this->description, 'price'=>$this->price, 'images'=>$this->images, 'id_categories'=>$this->id_categories, 'id_subcategory'=>$this->id_subcategory, 'active'=>$this->active, 'total_products'=>$this->total_products];
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -76,7 +76,8 @@ use app\mappers\{ColorsMapper,
     SubcategoryByNameMapper,
     SubcategoryUpdateMapper,
     ProductsByIdSubcategoryMapper,
-    SubcategoryDeleteMapper};
+    SubcategoryDeleteMapper,
+    ProductsDeleteMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -1509,6 +1510,33 @@ class MappersHelper
             $productsUpdateMapper = new ProductsUpdateMapper($config);
             $result = $productsUpdateMapper->setGroup();
             if (!$result) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи ProductsModel из БД
+     * @param array $productsModelArray массив ProductsModel
+     * @return int
+     */
+    public static function setProductsDelete(Array $productsModelArray)
+    {
+        try {
+            if (empty($productsModelArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$productsModelArray[0] instanceof ProductsModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $productsDeleteMapper = new ProductsDeleteMapper([
+                'tableName'=>'products',
+                'objectsArray'=>$productsModelArray,
+            ]);
+            if (!$result = $productsDeleteMapper->setGroup()) {
                 return null;
             }
             return $result;
