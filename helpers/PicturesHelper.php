@@ -80,10 +80,10 @@ class PicturesHelper
      * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
      * @return array 
      */
-    public static function getPathImages($basePath, $catalogName)
+    public static function getPathImages($catalogName)
     {
         try {
-            $catalogPath = \Yii::getAlias($basePath . '/' . $catalogName);
+            $catalogPath = \Yii::getAlias('@pic/' . $catalogName);
             if (!file_exists($catalogPath) || !is_dir($catalogPath)) {
                 return false;
             }
@@ -113,10 +113,10 @@ class PicturesHelper
      * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
      * @return array 
      */
-    public static function getFullPaths($basePath, $catalogName)
+    public static function getFullPaths($catalogName)
     {
         try {
-            $picturesArray = self::getPathImages($basePath, $catalogName);
+            $picturesArray = self::getPathImages($catalogName);
             return $picturesArray[\Yii::$app->params['fullpath']];
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -129,10 +129,10 @@ class PicturesHelper
      * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
      * @return string 
      */
-    public static function getOneThumbnail($basePath, $catalogName)
+    public static function getOneThumbnail($catalogName)
     {
         try {
-            $picturesArray = self::getPathImages($basePath, $catalogName);
+            $picturesArray = self::getPathImages($catalogName);
             $thumbnailsArray = $picturesArray[\Yii::$app->params['thumbnails']];
             return $thumbnailsArray[array_rand($thumbnailsArray, 1)];
         } catch (\Exception $e) {
@@ -146,10 +146,10 @@ class PicturesHelper
      * @param string $catalogName имя каталога, из которого необходимо загрузить изображения
      * @return array 
      */
-    public static function getAllThumbnails($basePath, $catalogName)
+    public static function getAllThumbnails($catalogName)
     {
         try {
-            $picturesArray = self::getPathImages($basePath, $catalogName);
+            $picturesArray = self::getPathImages($catalogName);
             return $picturesArray[\Yii::$app->params['thumbnails']];
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);

@@ -13,7 +13,7 @@
     <p>
         Code: {{ productsModel.code }}</br>
         Name: <a href="{{ url.to({0:'productsModel-detail/index', 'categories':productsModel.categories, 'subcategory':productsModel.subcategory, 'id':productsModel.id}) }}">{{ productsModel.name }}</a></br>
-        <img src="{{ picturesHelper.getOneThumbnail('@pic', productsModel.images) }}"></br>
+        <img src="{{ picturesHelper.getOneThumbnail(productsModel.images) }}"></br>
         Color: {{ array.map(productsModel.colors, 'id', 'color')[productsModel.colorToCart] }}<br>
         Size: {{ array.map(productsModel.sizes, 'id', 'size')[productsModel.sizeToCart] }}<br>
         Price: {{ (productsModel.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>

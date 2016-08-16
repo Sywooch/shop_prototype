@@ -13,6 +13,7 @@ $config['components']['db'] = new \yii\db\Connection([
     'charset'=>'utf8'
 ]);
 
+$config['aliases']['@pic'] = '/var/www/html/shop/tests/source/images';
 $config['components']['mailer']['useFileTransport'] = true;
 $config['components']['mailer']['fileTransportPath'] = '@app/tests/source/mail/letters';
 

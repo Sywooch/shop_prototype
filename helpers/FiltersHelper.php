@@ -42,7 +42,6 @@ class FiltersHelper
                 if (!empty($productsModel->subcategory)) {
                     \Yii::$app->filters->subcategory = $productsModel->subcategory;
                 }
-                \Yii::$app->filters->active = $productsModel->active;
             }
             return true;
         } catch (\Exception $e) {

@@ -12,7 +12,7 @@
 {% for productsModel in productsList %}<p></p>
     Code: {{ productsModel.code }}</br>
     Name: <a href="{{ url.to({0:'product-detail/index', 'categories':productsModel.categories, 'subcategory':productsModel.subcategory, 'id':productsModel.id}) }}">{{ productsModel.name }}</a></br>
-    <img src="{{ picturesHelper.getOneThumbnail('@pic', productsModel.images) }}"></br>
+    <img src="{{ picturesHelper.getOneThumbnail(productsModel.images) }}"></br>
     {% set form = active_form_begin({'id':'cart-for-product-%s' | format(product.id), 'action':url.to({0:'shopping-cart/update-product'}), 'method':'POST'}) %}
         {{ form.field(productsModel, 'id').hiddenInput().label(false) | raw }}
         {{ form.field(productsModel, 'hash').hiddenInput().label(false) | raw }}

@@ -23,7 +23,7 @@
             {% endif %}
             <strong><a href="{{ url.to({0:'product-detail/index', 'categories': productsModel.categories, 'subcategory': productsModel.subcategory, 'id': productsModel.id}) }}">{{ productsModel.name | raw }}</a></strong>
             {% if productsModel.images %}
-                <br><img src="{{ picturesHelper.getOneThumbnail('@pic', productsModel.images) }}">
+                <br><img src="{{ picturesHelper.getOneThumbnail(productsModel.images) }}">
             {% endif %}
             {% if productsModel.short_description %}
                 <br>{{ productsModel.short_description }}

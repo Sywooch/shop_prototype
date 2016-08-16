@@ -21,7 +21,7 @@
         {{ form.field(productsModel, 'description').textarea({'cols':40, 'rows':5}) | raw }}
         {{ form.field(productsModel, 'price').input('number', {'step':'any'}) | raw }}
         {% if productsModel.images %}
-            {% for picturePath in picturesHelper.getAllThumbnails('@pic', productsModel.images) %}
+            {% for picturePath in picturesHelper.getAllThumbnails(productsModel.images) %}
                 <img src="{{ picturePath }}" width="{{ app.params.adminWidth }}">
             {% endfor %}
             <br>

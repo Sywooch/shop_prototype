@@ -133,9 +133,6 @@ class AdminController extends AbstractBaseController
             if (!empty(\Yii::$app->filters->subcategory)) {
                 \Yii::configure($renderArray['productsModelFilter'], ['id_subcategory'=>MappersHelper::getSubcategoryBySeocode(new SubcategoryModel(['seocode'=>\Yii::$app->filters->subcategory]))->id]);
             }
-            if (!empty(\Yii::$app->filters->active)) {
-                \Yii::configure($renderArray['productsModelFilter'], ['active'=>\Yii::$app->filters->active]);
-            }
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();
             $renderArray['brandsList'] = MappersHelper::getBrandsList();

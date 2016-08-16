@@ -58,8 +58,8 @@ class CategoriesModel extends AbstractBaseModel
                 return $model->seocode != MappersHelper::getCategoriesById($model)->seocode;
             }],
             [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['name'], 'app\validators\CategoriesForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
             [['name'], 'app\validators\CategoriesForeignSubcategoryExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['name'], 'app\validators\CategoriesForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
         ];
     }
     

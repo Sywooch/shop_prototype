@@ -15,7 +15,7 @@
 
 <h1>{{ productsModel.name }}</h1>
 {% if productsModel.images %}
-    {% for picturePath in picturesHelper.getFullPaths('@pic', productsModel.images) %}
+    {% for picturePath in picturesHelper.getFullPaths(productsModel.images) %}
         <img src="{{ picturePath }}">
     {% endfor %}
     <br>

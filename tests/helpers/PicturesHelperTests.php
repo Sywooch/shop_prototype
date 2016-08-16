@@ -11,7 +11,7 @@ use app\helpers\PicturesHelper;
 class PicturesHelperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_sourceCatalog = '/var/www/html/shop/tests/source/images';
-    private static $_testCatalog = 'test';
+    private static $_testCatalog = 'products';
     private static $_fileName = '1919842.jpg';
     
     public static function setUpBeforeClass()
@@ -68,7 +68,7 @@ class PicturesHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetPathImages()
     {
-        $result = PicturesHelper::getPathImages(self::$_sourceCatalog, self::$_testCatalog);
+        $result = PicturesHelper::getPathImages(self::$_testCatalog);
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
@@ -95,7 +95,7 @@ class PicturesHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetOneThumbnail()
     {
-        $result = PicturesHelper::getOneThumbnail(self::$_sourceCatalog, self::$_testCatalog);
+        $result = PicturesHelper::getOneThumbnail(self::$_testCatalog);
         
         $this->assertTrue(is_string($result));
         $this->assertTrue((bool)strpos($result, \Yii::$app->params['thumbnailsPrefix']));
@@ -106,7 +106,7 @@ class PicturesHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllThumbnails()
     {
-        $result = PicturesHelper::getAllThumbnails(self::$_sourceCatalog, self::$_testCatalog);
+        $result = PicturesHelper::getAllThumbnails(self::$_testCatalog);
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
@@ -118,11 +118,27 @@ class PicturesHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetFullPaths()
     {
-        $result = PicturesHelper::getFullPaths(self::$_sourceCatalog, self::$_testCatalog);
+        $result = PicturesHelper::getFullPaths(self::$_testCatalog);
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
         $this->assertFalse((bool)strpos($result[0], \Yii::$app->params['thumbnailsPrefix']));
+    }
+    
+    /**
+     * Тестирует метод PicturesHelper::deletePictures
+     */
+    public function testDeletePictures()
+    {
+        $this->assertTrue(file_exists(self::$_sourceCatalog . '/' . self::$_testCatalog));
+        $this->assertTrue(is_dir(self::$_sourceCatalog . '/' . self::$_testCatalog));
+        $this->assertFalse(empty(glob(self::$_sourceCatalog . '/' . self::$_testCatalog . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE)));
+        
+        $result = PicturesHelper::deletePictures(self::$_testCatalog);
+        
+        $this->assertTrue($result);
+        
+        $this->assertFalse(file_exists(self::$_sourceCatalog . '/' . self::$_testCatalog));
     }
     
     public static function tearDownAfterClass()

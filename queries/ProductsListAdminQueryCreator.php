@@ -64,16 +64,26 @@ class ProductsListAdminQueryCreator extends ProductsListQueryCreator
                 $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->filters->subcategory;
             }
             
-            $where = $this->getWhere(
-                $this->categoriesArrayFilters['products']['tableName'],
-                $this->categoriesArrayFilters['products']['tableFieldWhere'],
-                $this->categoriesArrayFilters['products']['tableFieldWhere']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (empty(\Yii::$app->filters->getActive) || empty(\Yii::$app->filters->getNotActive)) {
+                $filterActive = null;
+                if (!empty(\Yii::$app->filters->getActive)) {
+                    $filterActive = true;
+                } elseif (!empty(\Yii::$app->filters->getNotActive)) {
+                    $filterActive = false;
+                }
+                if (!is_null($filterActive)) {
+                    $where = $this->getWhere(
+                        $this->categoriesArrayFilters['products']['tableName'],
+                        $this->categoriesArrayFilters['products']['tableFieldWhere'],
+                        $this->categoriesArrayFilters['products']['tableFieldWhere']
+                    );
+                    if (!is_string($where)) {
+                        throw new ErrorException('Ошибка при построении запроса!');
+                    }
+                    $this->_mapperObject->query .= $where;
+                    $this->_mapperObject->params[':' . $this->categoriesArrayFilters['products']['tableFieldWhere']] = $filterActive;
+                }
             }
-            $this->_mapperObject->query .= $where;
-            $this->_mapperObject->params[':' . $this->categoriesArrayFilters['products']['tableFieldWhere']] = \Yii::$app->filters->active;
             
             if (!$this->addSelectEnd()) {
                 throw new ErrorException('Ошибка при построении запроса!');
