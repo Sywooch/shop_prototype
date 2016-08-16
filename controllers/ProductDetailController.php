@@ -28,7 +28,7 @@ class ProductDetailController extends AbstractBaseController
             }
             
             $renderArray = array();
-            $renderArray['objectsProducts'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
+            $renderArray['productsModel'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('product-detail.twig', $renderArray);
         } catch (\Exception $e) {

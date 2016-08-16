@@ -13,22 +13,22 @@
 
 {{ breadcrumbs_widget_widget({'categoriesList':categoriesList}) }}
 
-{% if objectsProductsList %}
+{% if productsList %}
     <ol>
-    {% for product in objectsProductsList %}
-    {% if product.active %}
+    {% for productsModel in productsList %}
+    {% if productsModel.active %}
         <li>
-            {% if product.date %}
-                {{ app.formatter.asDate(product.date, 'dd.MM.yyyy') }}<br>
+            {% if productsModel.date %}
+                {{ app.formatter.asDate(productsModel.date, 'dd.MM.yyyy') }}<br>
             {% endif %}
-            <strong><a href="{{ url.to({0:'product-detail/index', 'categories': product.categories, 'subcategory': product.subcategory, 'id': product.id}) }}">{{ product.name | raw }}</a></strong>
-            {% if product.images %}
-                <br><img src="{{ picturesHelper.getOneThumbnail('@pic', product.images) }}">
+            <strong><a href="{{ url.to({0:'product-detail/index', 'categories': productsModel.categories, 'subcategory': productsModel.subcategory, 'id': productsModel.id}) }}">{{ productsModel.name | raw }}</a></strong>
+            {% if productsModel.images %}
+                <br><img src="{{ picturesHelper.getOneThumbnail('@pic', productsModel.images) }}">
             {% endif %}
-            {% if product.short_description %}
-                <br>{{ product.short_description }}
+            {% if productsModel.short_description %}
+                <br>{{ productsModel.short_description }}
             {% endif %}
-            <br>{{ (product.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
+            <br>{{ (productsModel.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
         </li>
     {% endif %}
     {% endfor %}

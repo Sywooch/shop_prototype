@@ -93,7 +93,7 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['products-list/index']));
             }
             $renderArray = array();
-            $renderArray['objectsProductsList'] = \Yii::$app->cart->getProductsArray();
+            $renderArray['productsList'] = \Yii::$app->cart->getProductsArray();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('shopping-cart.twig', $renderArray);
         } catch (\Exception $e) {
@@ -236,7 +236,7 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['shopping-cart/address-contacts']));
             }
             $renderArray = array();
-            $renderArray['objectsProductsList'] = \Yii::$app->cart->getProductsArray();
+            $renderArray['productsList'] = \Yii::$app->cart->getProductsArray();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('check-pay.twig', $renderArray);
         } catch (\Exception $e) {
@@ -327,7 +327,7 @@ class ShoppingCartController extends AbstractBaseController
                 ])) {
                     throw new ErrorException('Ошибка при отправке E-mail сообщения!');
                 }
-                $userEmailsModel = \Yii::$app->cart->user->emails;
+                $emailsModel = \Yii::$app->cart->user->emails;
                 if (!\Yii::$app->cart->clearProductsArray()) {
                     throw new ErrorException('Ошибка при очистке корзины!');
                 }
@@ -336,7 +336,7 @@ class ShoppingCartController extends AbstractBaseController
             }
             
             $renderArray = array();
-            $renderArray['email'] = $userEmailsModel;
+            $renderArray['emailsModel'] = $emailsModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('thank.twig', $renderArray);
         } catch (\Exception $e) {

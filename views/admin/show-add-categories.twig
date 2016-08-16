@@ -9,10 +9,10 @@
 
 <p>Здесь вы можете управлять товарными категориями</p>
 
-{% if objectsCategoriesList %}
+{% if categoriesList %}
     <p><strong>Текущие категории</strong></p>
     <ul>
-        {% for categories in objectsCategoriesList %}
+        {% for categories in categoriesList %}
             <li>
                 {{ categories.name }}<br>
                 <a href="{{ url.to({0:'admin/update-categories', 'id':categories.id}) }}">Обновить категорию</a><br>

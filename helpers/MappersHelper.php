@@ -75,7 +75,8 @@ use app\mappers\{ColorsMapper,
     SubcategoryInsertMapper,
     SubcategoryByNameMapper,
     SubcategoryUpdateMapper,
-    ProductsByIdSubcategoryMapper};
+    ProductsByIdSubcategoryMapper,
+    SubcategoryDeleteMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -1477,7 +1478,7 @@ class MappersHelper
     /**
      * Обновляет запись ProductsModel в БД
      * @param array $updateConfig массив конфигурации, может включать в себя
-     * - productsModels массив экземпляров ProductsModel, обязательный
+     * - productsModelArray массив экземпляров ProductsModel, обязательный
      * - fields массив полей, которые должны быть обновлены
      * - images bool, указывает, необходимо ли обновлять поле images
      * @return int
@@ -1488,13 +1489,13 @@ class MappersHelper
             if (empty($updateConfig)) {
                 throw new ErrorException('Переданы некорректные данные!');
             }
-            if (!is_array($updateConfig['productsModels']) || empty($updateConfig['productsModels']) || !$updateConfig['productsModels'][0] instanceof ProductsModel) {
+            if (!is_array($updateConfig['productsModelArray']) || empty($updateConfig['productsModelArray']) || !$updateConfig['productsModelArray'][0] instanceof ProductsModel) {
                 throw new ErrorException('Переданы некорректные данные!');
             }
             $config = [
                 'tableName'=>'products',
                 'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory', 'active', 'total_products'],
-                'objectsArray'=>$updateConfig['productsModels'],
+                'objectsArray'=>$updateConfig['productsModelArray'],
             ];
             if (!empty($updateConfig['fields'])) {
                 if (!is_array($updateConfig['fields'])) {
@@ -1657,6 +1658,33 @@ class MappersHelper
             ]);
             $result = $subcategoryUpdateMapper->setGroup();
             if (!$result) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи SubcategoryModel из БД
+     * @param array $subcategoryModels массив SubcategoryModel
+     * @return int
+     */
+    public static function setSubcategoryDelete(Array $subcategoryModels)
+    {
+        try {
+            if (empty($subcategoryModels)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$subcategoryModels[0] instanceof SubcategoryModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $subcategoryDeleteMapper = new SubcategoryDeleteMapper([
+                'tableName'=>'subcategory',
+                'objectsArray'=>$subcategoryModels,
+            ]);
+            if (!$result = $subcategoryDeleteMapper->setGroup()) {
                 return null;
             }
             return $result;

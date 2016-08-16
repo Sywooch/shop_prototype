@@ -44,31 +44,31 @@ class PurchasesModel extends AbstractBaseModel
      * связанный с текущим экзкмпляром PurchasesModel
      * @see getProductObject()
      */
-    private $_productsObject = null;
+    private $_productsModel = null;
     /**
      * @var object экземпляр ColorsModel, представляющий color, 
      * связанный с текущим экзкмпляром PurchasesModel
      * @see getColorsObject()
      */
-    private $_colorsObject = null;
+    private $_colorsModel = null;
     /**
      * @var object экземпляр SizesModel, представляющий size, 
      * связанный с текущим экзкмпляром PurchasesModel
      * @see getSizesObject()
      */
-    private $_sizesObject = null;
+    private $_sizesModel = null;
     /**
      * @var object экземпляр DeliveriesModel, представляющий delivery, 
      * связанный с текущим экзкмпляром PurchasesModel
      * @see getDeliveriesObject()
      */
-    private $_deliveriesObject = null;
+    private $_deliveriesModel = null;
     /**
      * @var object экземпляр PaymentsModel, представляющий payment, 
      * связанный с текущим экзкмпляром PurchasesModel
      * @see getPaymentsObject()
      */
-    private $_paymentsObject = null;
+    private $_paymentsModel = null;
     
     public function scenarios()
     {
@@ -234,15 +234,15 @@ class PurchasesModel extends AbstractBaseModel
      * связанный с текущим экзкмпляром PurchasesModel
      * @return object ProductsModel
      */
-    public function getProductsObject()
+    public function getProductsModel()
     {
         try {
-            if (is_null($this->_productsObject)) {
+            if (is_null($this->_productsModel)) {
                 if (!empty($this->id_products)) {
-                    $this->_productsObject = MappersHelper::getProductsById(new ProductsModel(['id'=>$this->id_products]));
+                    $this->_productsModel = MappersHelper::getProductsById(new ProductsModel(['id'=>$this->id_products]));
                 }
             }
-            return $this->_productsObject;
+            return $this->_productsModel;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -253,15 +253,15 @@ class PurchasesModel extends AbstractBaseModel
      * связанный с текущим экзкмпляром PurchasesModel
      * @return object ColorsModel
      */
-    public function getColorsObject()
+    public function getColorsModel()
     {
         try {
-            if (is_null($this->_colorsObject)) {
+            if (is_null($this->_colorsModel)) {
                 if (!empty($this->id_colors)) {
-                    $this->_colorsObject = MappersHelper::getColorsById(new ColorsModel(['id'=>$this->id_colors]));
+                    $this->_colorsModel = MappersHelper::getColorsById(new ColorsModel(['id'=>$this->id_colors]));
                 }
             }
-            return $this->_colorsObject;
+            return $this->_colorsModel;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -272,15 +272,15 @@ class PurchasesModel extends AbstractBaseModel
      * связанный с текущим экзкмпляром PurchasesModel
      * @return object SizesModel
      */
-    public function getSizesObject()
+    public function getSizesModel()
     {
         try {
-            if (is_null($this->_sizesObject)) {
+            if (is_null($this->_sizesModel)) {
                 if (!empty($this->id_sizes)) {
-                    $this->_sizesObject = MappersHelper::getSizesById(new SizesModel(['id'=>$this->id_sizes]));
+                    $this->_sizesModel = MappersHelper::getSizesById(new SizesModel(['id'=>$this->id_sizes]));
                 }
             }
-            return $this->_sizesObject;
+            return $this->_sizesModel;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -291,15 +291,15 @@ class PurchasesModel extends AbstractBaseModel
      * связанный с текущим экзкмпляром PurchasesModel
      * @return object DeliveriesModel
      */
-    public function getDeliveriesObject()
+    public function getDeliveriesModel()
     {
         try {
-            if (is_null($this->_deliveriesObject)) {
+            if (is_null($this->_deliveriesModel)) {
                 if (!empty($this->id_deliveries)) {
-                    $this->_deliveriesObject = MappersHelper::getDeliveriesById(new DeliveriesModel(['id'=>$this->id_deliveries]));
+                    $this->_deliveriesModel = MappersHelper::getDeliveriesById(new DeliveriesModel(['id'=>$this->id_deliveries]));
                 }
             }
-            return $this->_deliveriesObject;
+            return $this->_deliveriesModel;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -310,15 +310,15 @@ class PurchasesModel extends AbstractBaseModel
      * связанный с текущим экзкмпляром PurchasesModel
      * @return object PaymentsModel
      */
-    public function getPaymentsObject()
+    public function getPaymentsModel()
     {
         try {
-            if (is_null($this->_paymentsObject)) {
+            if (is_null($this->_paymentsModel)) {
                 if (!empty($this->id_payments)) {
-                    $this->_paymentsObject = MappersHelper::getPaymentsById(new PaymentsModel(['id'=>$this->id_payments]));
+                    $this->_paymentsModel = MappersHelper::getPaymentsById(new PaymentsModel(['id'=>$this->id_payments]));
                 }
             }
-            return $this->_paymentsObject;
+            return $this->_paymentsModel;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

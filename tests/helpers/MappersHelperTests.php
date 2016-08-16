@@ -1174,7 +1174,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $productsModel->active = self::$_active * 0;
         $productsModel->total_products = self::$_total_products;
         
-        $result = MappersHelper::setProductsUpdate(['productsModels'=>[$productsModel]]);
+        $result = MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel]]);
         
         $this->assertEquals(2, $result);
         
@@ -1211,7 +1211,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $productsModel->id = $productArray['id'];
         $productsModel->active = self::$_active;
         
-        $result = MappersHelper::setProductsUpdate(['productsModels'=>[$productsModel], 'fields'=>['id', 'active']]);
+        $result = MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel], 'fields'=>['id', 'active']]);
         
         $this->assertEquals(2, $result);
         
@@ -1717,6 +1717,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_name . ' another', $result['name']);
         $this->assertEquals(self::$_subcategorySeocode . ' another', $result['seocode']);
         $this->assertEquals($subcategory['id_categories'], $result['id_categories']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setSubcategoryDelete
+     */
+    public function testSetSubcategoryDelete()
+    {
+        $this->assertFalse(empty($subcategory = \Yii::$app->db->createCommand('SELECT * FROM {{subcategory}}')->queryAll()));
+        $this->assertEquals(1, count($subcategory));
+        
+        $model = new SubcategoryModel();
+        $model->id = $subcategory[0]['id'];
+        
+        $result = MappersHelper::setSubcategoryDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{subcategory}}')->queryAll()));
     }
     
     /**

@@ -38,7 +38,7 @@ class ProductsListController extends AbstractBaseController
     {
         try {
             $renderArray = array();
-            $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
+            $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();
             $renderArray['brandsList'] = MappersHelper::getBrandsList();
@@ -67,7 +67,7 @@ class ProductsListController extends AbstractBaseController
                 $sphynxResult = ArrayHelper::getColumn($sphynxSearchArray, 'id');
                 $this->_config['sphynxArray'] = $sphynxResult;
                 $this->_config['queryClass'] = 'app\queries\ProductsListSearchQueryCreator';
-                $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
+                $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
             }
             
             $renderArray['colorsList'] = MappersHelper::getColorsList();

@@ -13,10 +13,10 @@
 
 {% set form=active_form_begin({'id':'delete-subcategory-form', 'action':url.to({0:'admin/delete-subcategory', 'id':subcategoryModel.id}), 'method':'POST'}) %}
     {{ form.field(subcategoryModel, 'id').hiddenInput().label(false) | raw }}
+    Categories: {{ subcategoryModel.categories.name }}<br>
     {{ form.field(subcategoryModel, 'name') | raw }}
     {{ form.field(subcategoryModel, 'seocode') | raw }}
     {{ form.field(subcategoryModel, 'id_categories').hiddenInput().label(false) | raw }}
-    {{ form.field(subcategoryModel, 'categories').textInput({'value':subcategoryModel.categories.name}) | raw }}
     <input type="submit" value="Удалить">
 {{ active_form_end() }}
 

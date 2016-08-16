@@ -1,8 +1,8 @@
 
-{% if objectsProducts.colors %}
+{% if productsModel.colors %}
     <p><strong>Colors</strong></p>
     <ul>
-        {% for color in objectsProducts.colors %}
+        {% for color in productsModel.colors %}
             <li>{{ color.color }}</li>
         {% endfor %}
     </ul>

@@ -11,18 +11,18 @@
 
 {{ use('app/widgets/BreadcrumbsWidget') }}
 
-{{ breadcrumbs_widget_widget({'categoriesList':categoriesList, 'productName':objectsProducts.name}) }}
+{{ breadcrumbs_widget_widget({'categoriesList':categoriesList, 'productName':productsModel.name}) }}
 
-<h1>{{ objectsProducts.name }}</h1>
-{% if objectsProducts.images %}
-    {% for picturePath in picturesHelper.getFullPaths('@pic', objectsProducts.images) %}
+<h1>{{ productsModel.name }}</h1>
+{% if productsModel.images %}
+    {% for picturePath in picturesHelper.getFullPaths('@pic', productsModel.images) %}
         <img src="{{ picturePath }}">
     {% endfor %}
     <br>
 {% endif %}
-<p>{{ objectsProducts.code }}</p>
-<p>{{ objectsProducts.description | raw }}</p>
-<p>{{ (objectsProducts.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</p>
+<p>{{ productsModel.code }}</p>
+<p>{{ productsModel.description | raw }}</p>
+<p>{{ (productsModel.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</p>
 
 {% include '@app/views/parts/product-detail-colors.twig' %}
 
@@ -30,11 +30,11 @@
 
 {% include '@app/views/parts/add-to-cart-form.twig' %}
 
-{% if objectsProducts.similar %}
+{% if productsModel.similar %}
     {% include '@app/views/parts/similar-products.twig' %}
 {% endif %}
 
-{% if objectsProducts.related %}
+{% if productsModel.related %}
     {% include '@app/views/parts/related-products.twig' %}
 {% endif %}
 
@@ -42,6 +42,6 @@
 
 {% include '@app/views/parts/add-comment-form.twig' %}
 
-{% if objectsProducts.comments %}
+{% if productsModel.comments %}
     {% include '@app/views/parts/comments.twig' %}
 {% endif %}

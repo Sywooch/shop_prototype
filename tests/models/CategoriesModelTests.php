@@ -24,6 +24,7 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
     private static $_categorySeocode3 = 'mensfootwear3';
     private static $_categorySeocodeFresh = 'fresh';
     private static $_subcategorySeocode = 'boots';
+    private static $_subcategorySeocode2 = 'boots2';
     private static $_productsMessage = 'С категорией связаны товары! Необходимо перенести их перед удалением!';
     private static $_subcategoryMessage = 'С категорией связаны подкатегории! Необходимо перенести их перед удалением!';
     
@@ -50,7 +51,7 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id + 1, ':name'=>self::$_name, ':id_categories'=>self::$_id + 1, ':seocode'=>self::$_subcategorySeocode]);
+        $command->bindValues([':id'=>self::$_id + 1, ':name'=>self::$_name2, ':id_categories'=>self::$_id + 1, ':seocode'=>self::$_subcategorySeocode2]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');

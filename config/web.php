@@ -68,8 +68,10 @@ $config = [
                 # Фильтры
                 'add-filters'=>'filter/add-filters',
                 'add-filters-admin'=>'filter/add-filters-admin',
+                'add-filters-admin-subcategory'=>'filter/add-filters-admin-subcategory',
                 'clean-filters'=>'filter/clean-filters',
                 'clean-filters-admin'=>'filter/clean-filters-admin',
+                'clean-filters-admin-subcategory'=>'filter/clean-filters-admin-subcategory',
                 'currency-filter'=>'currency/set-currency',
                 
                 # Поиск

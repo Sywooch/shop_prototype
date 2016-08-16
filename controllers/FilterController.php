@@ -56,6 +56,21 @@ class FilterController extends AbstractBaseController
     }
     
     /**
+     * Обрабатывает запрос на применение фильтров для административного раздела подкатегорий
+     * @return redirect
+     */
+    public function actionAddFiltersAdminSubcategory()
+    {
+        try {
+            FiltersHelper::addFiltersAdmin();
+            return $this->redirect(Url::to(['admin/show-add-subcategory']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Обрабатывает запрос на очистку фильтров
      * @return redirect
      */
@@ -116,6 +131,32 @@ class FilterController extends AbstractBaseController
         }
     }
     
+    /**
+     * Обрабатывает запрос на очистку фильтров для административного раздела
+     * @return redirect
+     */
+    public function actionCleanFiltersAdminSubcategory()
+    {
+        try {
+            if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
+                if (\Yii::$app->filters->validate()) {
+                    if (FiltersHelper::cleanFilters()) {
+                        if (!FiltersHelper::cleanAdminFilters()) {
+                            throw new ErrorException('Ошибка при очистке фильтров!');
+                        }
+                        if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin.subcategory'])) {
+                            throw new ErrorException('Ошибка при удалении фильтров из сесии!');
+                        }
+                    }
+                }
+            }
+            return $this->redirect(Url::to(['admin/show-add-subcategory']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     public function behaviors()
     {
         return [
@@ -126,6 +167,10 @@ class FilterController extends AbstractBaseController
             [
                 'class'=>'app\filters\ProductsListFilterAdmin',
                 'only'=>['add-filters-admin', 'clean-filters-admin'],
+            ],
+            [
+                'class'=>'app\filters\ProductsListFilterAdminSubcategory',
+                'only'=>['add-filters-admin-subcategory', 'clean-filters-admin-subcategory'],
             ],
         ];
     }

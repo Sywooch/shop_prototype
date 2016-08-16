@@ -125,7 +125,7 @@ class AdminController extends AbstractBaseController
     {
         try {
             $renderArray = array();
-            $renderArray['objectsProductsList'] = MappersHelper::getProductsList($this->_config);
+            $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
             $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
             if (!empty(\Yii::$app->filters->categories)) {
                 \Yii::configure($renderArray['productsModelFilter'], ['id_categories'=>MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>\Yii::$app->filters->categories]))->id]);
@@ -162,11 +162,11 @@ class AdminController extends AbstractBaseController
             }
             
             $renderArray = array();
-            $renderArray['objectsProducts'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
-            \Yii::configure($renderArray['objectsProducts'], ['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
-            $renderArray['brandsModel'] = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM, 'id'=>$renderArray['objectsProducts']->brands->id]);
-            $renderArray['colorsModel'] = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['objectsProducts']->colors, 'id')]);
-            $renderArray['sizesModel'] = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['objectsProducts']->sizes, 'id')]);
+            $renderArray['productsModel'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
+            \Yii::configure($renderArray['productsModel'], ['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
+            $renderArray['brandsModel'] = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM, 'id'=>$renderArray['productsModel']->brands->id]);
+            $renderArray['colorsModel'] = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['productsModel']->colors, 'id')]);
+            $renderArray['sizesModel'] = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['productsModel']->sizes, 'id')]);
             $renderArray['colorsList'] = MappersHelper::getColorsList(false);
             $renderArray['sizesList'] = MappersHelper::getSizesList(false);
             $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
@@ -189,7 +189,7 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if ($productsModel->validate()) {
-                    if (!MappersHelper::setProductsUpdate(['productsModels'=>[$productsModel], 'fields'=>['id', 'active']])) {
+                    if (!MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel], 'fields'=>['id', 'active']])) {
                         throw new ErrorException('Ошибка при обновлении данных!');
                     }
                     return $this->redirect(Url::to(['admin/show-products']));
@@ -234,7 +234,7 @@ class AdminController extends AbstractBaseController
                         }
                         $updateConfig['images'] = true;
                     }
-                    $updateConfig['productsModels'][] = $productsModel;
+                    $updateConfig['productsModelArray'][] = $productsModel;
                     if (!MappersHelper::setProductsUpdate($updateConfig)) {
                         throw new ErrorException('Ошибка при обновлении данных!');
                     }
@@ -312,11 +312,11 @@ class AdminController extends AbstractBaseController
                 
                 $resultArray = array();
                 
-                if (!empty($objectsProductsList = MappersHelper::getProductsList($this->_config))) {
+                if (!empty($productsList = MappersHelper::getProductsList($this->_config))) {
                     $productsFile = CSVHelper::getCSV([
                         'path'=>\Yii::getAlias('@app/web/sources/csv/'),
                         'filename'=>'products' . time(),
-                        'objectsArray'=>$objectsProductsList,
+                        'objectsArray'=>$productsList,
                         'fields'=>['id', 'date', 'code', 'name', 'short_description', 'price', 'images', 'active', 'total_products'],
                     ]);
                     
@@ -358,7 +358,6 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['categoriesModel'] = $categoriesModel;
-            $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-categories.twig', $renderArray);
         } catch (\Exception $e) {
@@ -424,7 +423,7 @@ class AdminController extends AbstractBaseController
                     if (!MappersHelper::setCategoriesDelete([$categoriesModel])) {
                         throw new ErrorException('Ошибка при удалении категории!');
                     }
-                    return $this->redirect(Url::to(['admin/show-categories']));
+                    return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
             } else {
                 if (empty(\Yii::$app->params['idKey'])) {
@@ -466,8 +465,14 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['subcategoryModel'] = $subcategoryModel;
-            $renderArray['objectsSubcategoryList'] = MappersHelper::getSubcategoryList();
-            $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
+            $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            if (!empty(\Yii::$app->filters->categories)) {
+                $categoriesModel = MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>\Yii::$app->filters->categories]));
+                \Yii::configure($renderArray['productsModelFilter'], ['id_categories'=>$categoriesModel->id]);
+                $renderArray['subcategoryList'] = MappersHelper::getSubcategoryForCategoryList($categoriesModel);
+            } else {
+                $renderArray['subcategoryList'] = MappersHelper::getSubcategoryList();
+            }
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
@@ -509,7 +514,6 @@ class AdminController extends AbstractBaseController
                 }
             }
             
-            $renderArray['objectsCategoriesList'] = MappersHelper::getCategoriesList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
@@ -531,11 +535,10 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
-                    /*if (!MappersHelper::setSubcategoryDelete([$subcategoryModel])) {
+                    if (!MappersHelper::setSubcategoryDelete([$subcategoryModel])) {
                         throw new ErrorException('Ошибка при удалении категории!');
                     }
-                    return $this->redirect(Url::to(['admin/show-subcategory']));*/
-                    echo 'DELETE!';
+                    return $this->redirect(Url::to(['admin/show-add-subcategory']));
                 }
             } else {
                 if (empty(\Yii::$app->params['idKey'])) {
@@ -564,6 +567,10 @@ class AdminController extends AbstractBaseController
             [
                 'class'=>'app\filters\ProductsListFilterAdmin',
                 'only'=>['show-products', 'data-convert'],
+            ],
+            [
+                'class'=>'app\filters\ProductsListFilterAdminSubcategory',
+                'only'=>['show-add-subcategory'],
             ],
             [
                 'class'=>'app\filters\ProductsListFilterCSV',

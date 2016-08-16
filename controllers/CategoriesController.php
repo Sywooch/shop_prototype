@@ -27,10 +27,10 @@ class CategoriesController extends AbstractBaseController
                 }
                 $response = \Yii::$app->response;
                 $response->format = Response::FORMAT_JSON;
-                if (!$subcategoriesArray = MappersHelper::getSubcategoryForCategoryList(new CategoriesModel(['id'=>\Yii::$app->request->post('categoriesId')]))) {
+                if (!$subcategoryArray = MappersHelper::getSubcategoryForCategoryList(new CategoriesModel(['id'=>\Yii::$app->request->post('categoriesId')]))) {
                     return false;
                 }
-                return ArrayHelper::map($subcategoriesArray, 'id', 'name');
+                return ArrayHelper::map($subcategoryArray, 'id', 'name');
             } else {
                 throw new ErrorException('Неверный тип запроса!');
             }

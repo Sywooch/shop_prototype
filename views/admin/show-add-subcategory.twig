@@ -9,10 +9,10 @@
 
 <p>Здесь вы можете управлять товарными подкатегориями</p>
 
-{% if objectsSubcategoryList %}
+{% if subcategoryList %}
     <p><strong>Текущие подкатегории</strong></p>
     <ul>
-        {% for subcategory in objectsSubcategoryList %}
+        {% for subcategory in subcategoryList %}
             <li>
                 {{ subcategory.name }} ({{ subcategory.categories.name }})<br>
                 <a href="{{ url.to({0:'admin/update-subcategory', 'id':subcategory.id}) }}">Обновить подкатегорию</a><br>
@@ -20,7 +20,11 @@
             </li>
         {% endfor %}
     </ul>
+{% else %}
+    <p>Похоже, мы пока не можем предложить эту штуку!</p>
 {% endif %}
+
+{% include '@app/views/parts/filters-admin-subcategory.twig' %}
 
 {% include '@app/views/parts/add-subcategory-form.twig' %}
 

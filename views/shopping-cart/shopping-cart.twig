@@ -9,26 +9,26 @@
 
 {{ use('yii/widgets/ActiveForm') }}
 
-{% for productsObject in objectsProductsList %}<p></p>
-    Code: {{ productsObject.code }}</br>
-    Name: <a href="{{ url.to({0:'product-detail/index', 'categories':productsObject.categories, 'subcategory':productsObject.subcategory, 'id':productsObject.id}) }}">{{ productsObject.name }}</a></br>
-    <img src="{{ picturesHelper.getOneThumbnail('@pic', productsObject.images) }}"></br>
+{% for productsModel in productsList %}<p></p>
+    Code: {{ productsModel.code }}</br>
+    Name: <a href="{{ url.to({0:'product-detail/index', 'categories':productsModel.categories, 'subcategory':productsModel.subcategory, 'id':productsModel.id}) }}">{{ productsModel.name }}</a></br>
+    <img src="{{ picturesHelper.getOneThumbnail('@pic', productsModel.images) }}"></br>
     {% set form = active_form_begin({'id':'cart-for-product-%s' | format(product.id), 'action':url.to({0:'shopping-cart/update-product'}), 'method':'POST'}) %}
-        {{ form.field(productsObject, 'id').hiddenInput().label(false) | raw }}
-        {{ form.field(productsObject, 'hash').hiddenInput().label(false) | raw }}
-        {{ form.field(productsObject, 'code').hiddenInput().label(false) | raw }}
-        {{ form.field(productsObject, 'name').hiddenInput().label(false) | raw }}
-        {{ form.field(productsObject, 'quantity') | raw }}
-        {{ form.field(productsObject, 'colorToCart').dropDownList(array.map(productsObject.colors, 'id', 'color')) | raw }}
-        {{ form.field(productsObject, 'sizeToCart').dropDownList(array.map(productsObject.sizes, 'id', 'size')) | raw }}
-        {{ form.field(productsObject, 'price').hiddenInput().label(false) | raw }}
-        Price: {{ (productsObject.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
-        Total price: {{ ((productsObject.price * productsObject.quantity) * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
+        {{ form.field(productsModel, 'id').hiddenInput().label(false) | raw }}
+        {{ form.field(productsModel, 'hash').hiddenInput().label(false) | raw }}
+        {{ form.field(productsModel, 'code').hiddenInput().label(false) | raw }}
+        {{ form.field(productsModel, 'name').hiddenInput().label(false) | raw }}
+        {{ form.field(productsModel, 'quantity') | raw }}
+        {{ form.field(productsModel, 'colorToCart').dropDownList(array.map(productsModel.colors, 'id', 'color')) | raw }}
+        {{ form.field(productsModel, 'sizeToCart').dropDownList(array.map(productsModel.sizes, 'id', 'size')) | raw }}
+        {{ form.field(productsModel, 'price').hiddenInput().label(false) | raw }}
+        Price: {{ (productsModel.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
+        Total price: {{ ((productsModel.price * productsModel.quantity) * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
         <input type="submit" value="Update" />
     {{ active_form_end() }}
     {% set removeForm = active_form_begin({'id':'remove-product-%s' | format(product.id), 'action':url.to({0:'shopping-cart/remove-product'}), 'method':'POST'}) %}
-        {{ removeForm.field(productsObject, 'id').hiddenInput().label(false) | raw }}
-        {{ removeForm.field(productsObject, 'hash').hiddenInput().label(false) | raw }}
+        {{ removeForm.field(productsModel, 'id').hiddenInput().label(false) | raw }}
+        {{ removeForm.field(productsModel, 'hash').hiddenInput().label(false) | raw }}
         <input type="submit" value="Remove" />
     {{ active_form_end() }}
 {% endfor %}

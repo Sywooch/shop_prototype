@@ -9,16 +9,16 @@
 
 <p><strong>Purchased products</strong></p>
 
-{% for product in objectsProductsList %}
+{% for productsModel in productsList %}
     <p>
-        Code: {{ product.code }}</br>
-        Name: <a href="{{ url.to({0:'product-detail/index', 'categories':product.categories, 'subcategory':product.subcategory, 'id':product.id}) }}">{{ product.name }}</a></br>
-        <img src="{{ picturesHelper.getOneThumbnail('@pic', product.images) }}"></br>
-        Color: {{ array.map(product.colors, 'id', 'color')[product.colorToCart] }}<br>
-        Size: {{ array.map(product.sizes, 'id', 'size')[product.sizeToCart] }}<br>
-        Price: {{ (product.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
-        Quantity: {{ product.quantity }}<br>
-        Total price: {{ ((product.price * app.shopUser.currency.exchange_rate) * product.quantity) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
+        Code: {{ productsModel.code }}</br>
+        Name: <a href="{{ url.to({0:'productsModel-detail/index', 'categories':productsModel.categories, 'subcategory':productsModel.subcategory, 'id':productsModel.id}) }}">{{ productsModel.name }}</a></br>
+        <img src="{{ picturesHelper.getOneThumbnail('@pic', productsModel.images) }}"></br>
+        Color: {{ array.map(productsModel.colors, 'id', 'color')[productsModel.colorToCart] }}<br>
+        Size: {{ array.map(productsModel.sizes, 'id', 'size')[productsModel.sizeToCart] }}<br>
+        Price: {{ (productsModel.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}</br>
+        Quantity: {{ productsModel.quantity }}<br>
+        Total price: {{ ((productsModel.price * app.shopUser.currency.exchange_rate) * productsModel.quantity) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}
     </p>
 {% endfor %}
 

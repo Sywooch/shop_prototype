@@ -105,11 +105,11 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, '_processed'));
         $this->assertTrue(property_exists($model, '_canceled'));
         $this->assertTrue(property_exists($model, '_shipped'));
-        $this->assertTrue(property_exists($model, '_productsObject'));
-        $this->assertTrue(property_exists($model, '_colorsObject'));
-        $this->assertTrue(property_exists($model, '_sizesObject'));
-        $this->assertTrue(property_exists($model, '_deliveriesObject'));
-        $this->assertTrue(property_exists($model, '_paymentsObject'));
+        $this->assertTrue(property_exists($model, '_productsModel'));
+        $this->assertTrue(property_exists($model, '_colorsModel'));
+        $this->assertTrue(property_exists($model, '_sizesModel'));
+        $this->assertTrue(property_exists($model, '_deliveriesModel'));
+        $this->assertTrue(property_exists($model, '_paymentsModel'));
     }
     
     /**
@@ -282,7 +282,7 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $model = new PurchasesModel();
         $model->id_products = self::$_id_products;
         
-        $result = $model->productsObject;
+        $result = $model->productsModel;
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof ProductsModel);
@@ -296,7 +296,7 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $model = new PurchasesModel();
         $model->id_colors = self::$_id_colors;
         
-        $result = $model->colorsObject;
+        $result = $model->colorsModel;
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof ColorsModel);
@@ -310,7 +310,7 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $model = new PurchasesModel();
         $model->id_sizes = self::$_id_sizes;
         
-        $result = $model->sizesObject;
+        $result = $model->sizesModel;
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof SizesModel);
@@ -324,7 +324,7 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $model = new PurchasesModel();
         $model->id_deliveries = self::$_id_deliveries;
         
-        $result = $model->deliveriesObject;
+        $result = $model->deliveriesModel;
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof DeliveriesModel);
@@ -338,7 +338,7 @@ class PurchasesModelTests extends \PHPUnit_Framework_TestCase
         $model = new PurchasesModel();
         $model->id_payments = self::$_id_payments;
         
-        $result = $model->paymentsObject;
+        $result = $model->paymentsModel;
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof PaymentsModel);

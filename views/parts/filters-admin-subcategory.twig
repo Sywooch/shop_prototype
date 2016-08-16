@@ -1,0 +1,11 @@
+
+<p><strong>Sorting</strong></p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'id':'filters-admin-subcategory-form', 'action':url.to({0:'filter/add-filters-admin-subcategory'}), 'method':'POST'}) %}
+    {{ form.field(productsModelFilter, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
+    <input type="submit" value="Apply" />
+{{ active_form_end() }}
+
+{% include '@app/views/parts/clean-filters-admin-subcategory.twig' %}

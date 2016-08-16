@@ -7,35 +7,35 @@
 
 <p>Здесь вы можете отслеживать и редактировать товары магазина.</p>
 
-<p><a href="{{ url.to({0:'product-detail/index', 'categories':objectsProducts.categories, 'subcategory':objectsProducts.subcategory, 'id':objectsProducts.id}) }}">Страница товара</a></p>
+<p><a href="{{ url.to({0:'product-detail/index', 'categories':productsModel.categories, 'subcategory':productsModel.subcategory, 'id':productsModel.id}) }}">Страница товара</a></p>
 
 {{ use('yii/widgets/ActiveForm') }}
 
     <p>
-    {% set form=active_form_begin({'id':'change-product-%s' | format(objectsProducts.id), 'action':url.to({0:'admin/update-product'}), 'method':'POST'}) %}
-        {{ form.field(objectsProducts, 'id').hiddenInput().label(false) | raw }}
-        {{ form.field(objectsProducts, 'date').input('date', {'value':app.formatter.asDate(objectsProducts.date, 'yyyy-MM-dd')}) | raw }}
-        {{ form.field(objectsProducts, 'code') | raw }}
-        {{ form.field(objectsProducts, 'name') | raw }}
-        {{ form.field(objectsProducts, 'short_description').textarea({'cols':40, 'rows':5}) | raw }}
-        {{ form.field(objectsProducts, 'description').textarea({'cols':40, 'rows':5}) | raw }}
-        {{ form.field(objectsProducts, 'price').input('number', {'step':'any'}) | raw }}
-        {% if objectsProducts.images %}
-            {% for picturePath in picturesHelper.getAllThumbnails('@pic', objectsProducts.images) %}
+    {% set form=active_form_begin({'id':'change-product-%s' | format(productsModel.id), 'action':url.to({0:'admin/update-product'}), 'method':'POST'}) %}
+        {{ form.field(productsModel, 'id').hiddenInput().label(false) | raw }}
+        {{ form.field(productsModel, 'date').input('date', {'value':app.formatter.asDate(productsModel.date, 'yyyy-MM-dd')}) | raw }}
+        {{ form.field(productsModel, 'code') | raw }}
+        {{ form.field(productsModel, 'name') | raw }}
+        {{ form.field(productsModel, 'short_description').textarea({'cols':40, 'rows':5}) | raw }}
+        {{ form.field(productsModel, 'description').textarea({'cols':40, 'rows':5}) | raw }}
+        {{ form.field(productsModel, 'price').input('number', {'step':'any'}) | raw }}
+        {% if productsModel.images %}
+            {% for picturePath in picturesHelper.getAllThumbnails('@pic', productsModel.images) %}
                 <img src="{{ picturePath }}" width="{{ app.params.adminWidth }}">
             {% endfor %}
             <br>
         {% endif %}
-        {{ form.field(objectsProducts, 'imagesToLoad[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
-        {{ form.field(objectsProducts, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
-        {{ form.field(objectsProducts, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(objectsProducts.id_categories))) | raw }}
+        {{ form.field(productsModel, 'imagesToLoad[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
+        {{ form.field(productsModel, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
+        {{ form.field(productsModel, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(productsModel.id_categories))) | raw }}
         
         {{ form.field(brandsModel, 'id').dropDownList(array.merge({'':'------------------------'}, array.map(brandsList, 'id', 'brand'))).label('Brand') | raw }}
         {{ form.field(colorsModel, 'idArray').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
         {{ form.field(sizesModel, 'idArray').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
         
-        {{ form.field(objectsProducts, 'total_products') | raw }}
-        {{ form.field(objectsProducts, 'active').checkbox() | raw }}
+        {{ form.field(productsModel, 'total_products') | raw }}
+        {{ form.field(productsModel, 'active').checkbox() | raw }}
         <input type="submit" value="Обновить">
     {{ active_form_end() }}
     </p>

@@ -55,17 +55,17 @@
         <ol>
             {% for purchase in purchasesList %}
                 <li>
-                    <a href="{{ url.to({0:'product-detail/index', 'categories':purchase.productsObject.categories, 'subcategory':purchase.productsObject.subcategory, 'id':purchase.productsObject.id}) }}">{{ purchase.productsObject.name }}</a></br>
+                    <a href="{{ url.to({0:'product-detail/index', 'categories':purchase.productsModel.categories, 'subcategory':purchase.productsModel.subcategory, 'id':purchase.productsModel.id}) }}">{{ purchase.productsModel.name }}</a></br>
                     Purchase date: {{ app.formatter.asDate(purchase.received_date, 'dd.MM.yyyy') }}</br>
                     Delivery status: {{ purchase.getDeliveryStatus() }}</br>
-                    <img src="{{ picturesHelper.getOneThumbnail('@pic', purchase.productsObject.images) }}"></br>
-                    Description: {{ purchase.productsObject.short_description }}</br>
-                    Price: {{ (purchase.productsObject.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}<br>
+                    <img src="{{ picturesHelper.getOneThumbnail('@pic', purchase.productsModel.images) }}"></br>
+                    Description: {{ purchase.productsModel.short_description }}</br>
+                    Price: {{ (purchase.productsModel.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}<br>
                     Quantity: {{ purchase.quantity }}</br>
-                    Color: {{ purchase.colorsObject.color }}</br>
-                    Size: {{ purchase.sizesObject.size }}</br>
-                    Delivery: {{ purchase.deliveriesObject.description }}</br>
-                    Payments: {{ purchase.paymentsObject.description }}</br>
+                    Color: {{ purchase.colorsModel.color }}</br>
+                    Size: {{ purchase.sizesModel.size }}</br>
+                    Delivery: {{ purchase.deliveriesModel.description }}</br>
+                    Payments: {{ purchase.paymentsModel.description }}</br>
                 </li>
             {% endfor %}
         </ol>

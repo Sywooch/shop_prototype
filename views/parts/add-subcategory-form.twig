@@ -6,6 +6,6 @@
 {% set form=active_form_begin({'id':'add-subcategory-form', 'action':url.to({0:'admin/show-add-subcategory'}), 'method':'POST'}) %}
     {{ form.field(subcategoryModel, 'name') | raw }}
     {{ form.field(subcategoryModel, 'seocode') | raw }}
-    {{ form.field(subcategoryModel, 'id_categories').dropDownList(array.merge({0:'------------------------'}, array.map(objectsCategoriesList, 'id', 'name'))) | raw }}
+    {{ form.field(subcategoryModel, 'id_categories').dropDownList(array.merge({0:'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
     <input type="submit" value="Create" />
 {{ active_form_end() }}
