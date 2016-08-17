@@ -128,10 +128,12 @@ class AdminController extends AbstractBaseController
             $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
             $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
             if (!empty(\Yii::$app->filters->categories)) {
-                \Yii::configure($renderArray['productsModelFilter'], ['id_categories'=>MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>\Yii::$app->filters->categories]))->id]);
+                $categoriesModel = MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>\Yii::$app->filters->categories]));
+                \Yii::configure($renderArray['productsModelFilter'], ['id_categories'=>$categoriesModel->id]);
             }
             if (!empty(\Yii::$app->filters->subcategory)) {
-                \Yii::configure($renderArray['productsModelFilter'], ['id_subcategory'=>MappersHelper::getSubcategoryBySeocode(new SubcategoryModel(['seocode'=>\Yii::$app->filters->subcategory]))->id]);
+                $subcategoryModel = MappersHelper::getSubcategoryBySeocode(new SubcategoryModel(['seocode'=>\Yii::$app->filters->subcategory]));
+                \Yii::configure($renderArray['productsModelFilter'], ['id_subcategory'=>$subcategoryModel->id]);
             }
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();

@@ -4,7 +4,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form=active_form_begin({'id':'filters-admin-subcategory-form', 'action':url.to({0:'filter/add-filters-admin-subcategory'}), 'method':'POST'}) %}
-    {{ form.field(productsModelFilter, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
+    {{ form.field(filtersModel, 'categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'seocode', 'name'))) | raw }}
     <input type="submit" value="Apply" />
 {{ active_form_end() }}
 

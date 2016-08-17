@@ -48,6 +48,8 @@ class FiltersModel extends AbstractBaseModel
             $this->brands = array();
             $this->sortingField = '';
             $this->sortingType = '';
+            $this->getActive = true;
+            $this->getNotActive = true;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -64,23 +66,6 @@ class FiltersModel extends AbstractBaseModel
             $this->categories = '';
             $this->subcategory = '';
             $this->search = '';
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Обнуляет значение свойств, очищая фильтры Admin
-     * @return boolean
-     */
-    public function cleanAdmin()
-    {
-        try {
-            $this->categories = '';
-            $this->subcategory = '';
-            $this->getActive = true;
-            $this->getNotActive = true;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

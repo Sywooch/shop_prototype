@@ -6,15 +6,15 @@ jQuery(function() {
         self.value;
         self.token = $('meta[name="csrf-token"]').attr('content');
         function success(data, status, jqXHR) {
-            $('form#' + self.formID + ' select#productsmodel-id_subcategory').empty();
-            $('form#' + self.formID + ' select#productsmodel-id_subcategory').append('<option>------------------------</option>');
+            $('#' + self.formID).find('#productsmodel-id_subcategory').empty();
+            $('#' + self.formID).find('#productsmodel-id_subcategory').append('<option>------------------------</option>');
             if (data) {
                 for (var i in data) {
                     var option = $('<option></option>').val(i).html(data[i]);
-                    $('form#' + self.formID + ' select#productsmodel-id_subcategory').append(option);
+                    $('#' + self.formID).find('#productsmodel-id_subcategory').append(option);
                 }
             }
-            $('form#' + self.formID + ' select#productsmodel-id_subcategory > option:first-child').attr('disabled', true);
+            $('#' + self.formID).find('#productsmodel-id_subcategory').find('option:first-child').attr('disabled', true);
         };
         function error(jqXHR, status, errorThrown) {
             alert(jqXHR.responseText);

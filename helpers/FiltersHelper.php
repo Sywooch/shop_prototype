@@ -5,6 +5,7 @@ namespace app\helpers;
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
 use app\models\ProductsModel;
+use app\helpers\SessionHelper;
 
 /**
  * Предоставляет функциональность для работы с фильтрами
@@ -29,20 +30,27 @@ class FiltersHelper
      * Добавляет данные раздела администрирования для фильтрации в \Yii::$app->filters
      * @return boolean
      */
-    public static function addFiltersAdmin()
+    public static function addFiltersAdminCategories()
     {
         try {
             $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
             
-            if (self::addFilters()) {
-                $productsModel->load(\Yii::$app->request->post());
-                if (!empty($productsModel->categories)) {
-                    \Yii::$app->filters->categories = $productsModel->categories;
-                }
-                if (!empty($productsModel->subcategory)) {
-                    \Yii::$app->filters->subcategory = $productsModel->subcategory;
-                }
+            $productsModel->load(\Yii::$app->request->post());
+            
+            if (\Yii::$app->filters->categories != $productsModel->categories && \Yii::$app->filters->subcategory != $productsModel->subcategory) {
+                self::cleanFilters();
+                self::cleanOtherFilters();
+            } elseif (\Yii::$app->filters->categories != $productsModel->categories || \Yii::$app->filters->subcategory != $productsModel->subcategory) {
+                self::cleanFilters();
             }
+            
+            if (!empty($productsModel->categories)) {
+                \Yii::$app->filters->categories = $productsModel->categories;
+            }
+            if (!empty($productsModel->subcategory)) {
+                \Yii::$app->filters->subcategory = $productsModel->subcategory;
+            }
+            
             return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -73,22 +81,6 @@ class FiltersHelper
     {
         try {
             if (!\Yii::$app->filters->cleanOther()) {
-                throw new ErrorException('Ошибка при очистке фильтров!');
-            }
-            return true;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Удаляет данные фильтров административного раздела
-     * @return boolean
-     */
-    public static function cleanAdminFilters()
-    {
-        try {
-            if (!\Yii::$app->filters->cleanAdmin()) {
                 throw new ErrorException('Ошибка при очистке фильтров!');
             }
             return true;

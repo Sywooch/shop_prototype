@@ -44,10 +44,25 @@ class FilterController extends AbstractBaseController
      * Обрабатывает запрос на применение фильтров для административного раздела
      * @return redirect
      */
+    public function actionAddFiltersAdminCategories()
+    {
+        try {
+            FiltersHelper::addFiltersAdminCategories();
+            return $this->redirect(Url::to(['admin/show-products']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обрабатывает запрос на применение фильтров для административного раздела
+     * @return redirect
+     */
     public function actionAddFiltersAdmin()
     {
         try {
-            FiltersHelper::addFiltersAdmin();
+            FiltersHelper::addFilters();
             return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -62,7 +77,7 @@ class FilterController extends AbstractBaseController
     public function actionAddFiltersAdminSubcategory()
     {
         try {
-            FiltersHelper::addFiltersAdmin();
+            FiltersHelper::addFilters();
             return $this->redirect(Url::to(['admin/show-add-subcategory']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -112,19 +127,38 @@ class FilterController extends AbstractBaseController
     public function actionCleanFiltersAdmin()
     {
         try {
-            if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
-                if (\Yii::$app->filters->validate()) {
-                    if (FiltersHelper::cleanFilters()) {
-                        if (!FiltersHelper::cleanAdminFilters()) {
-                            throw new ErrorException('Ошибка при очистке фильтров!');
-                        }
-                        if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin'])) {
-                            throw new ErrorException('Ошибка при удалении фильтров из сесии!');
-                        }
+            if (\Yii::$app->request->isPost) {
+                if (FiltersHelper::cleanFilters()) {
+                    if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin'])) {
+                        throw new ErrorException('Ошибка при удалении фильтров из сесии!');
                     }
                 }
             }
             return $this->redirect(Url::to(['admin/show-products']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обрабатывает запрос на очистку фильтров для административного раздела
+     * @return redirect
+     */
+    public function actionCleanFiltersAdminCategories()
+    {
+        try {
+            if (\Yii::$app->request->isPost) {
+                if (FiltersHelper::cleanFilters()) {
+                    if (!FiltersHelper::cleanOtherFilters()) {
+                        throw new ErrorException('Ошибка при очистке фильтров!');
+                    }
+                    if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin'])) {
+                        throw new ErrorException('Ошибка при удалении фильтров из сесии!');
+                    }
+                }
+            }
+        return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -141,7 +175,7 @@ class FilterController extends AbstractBaseController
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
                     if (FiltersHelper::cleanFilters()) {
-                        if (!FiltersHelper::cleanAdminFilters()) {
+                        if (!FiltersHelper::cleanOtherFilters()) {
                             throw new ErrorException('Ошибка при очистке фильтров!');
                         }
                         if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin.subcategory'])) {
@@ -166,7 +200,7 @@ class FilterController extends AbstractBaseController
             ],
             [
                 'class'=>'app\filters\ProductsListFilterAdmin',
-                'only'=>['add-filters-admin', 'clean-filters-admin'],
+                'only'=>['add-filters-admin', 'add-filters-admin-categories', 'clean-filters-admin', 'clean-filters-admin-categories'],
             ],
             [
                 'class'=>'app\filters\ProductsListFilterAdminSubcategory',

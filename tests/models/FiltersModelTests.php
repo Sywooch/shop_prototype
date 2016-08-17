@@ -82,13 +82,15 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     public function testClean()
     {
         $model = new FiltersModel();
-        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType];
+        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType, 'getActive'=>self::$_getActive, 'getNotActive'=>self::$_getNotActive];
         
         $this->assertFalse(empty($model->colors));
         $this->assertFalse(empty($model->sizes));
         $this->assertFalse(empty($model->brands));
         $this->assertFalse(empty($model->sortingField));
         $this->assertFalse(empty($model->sortingType));
+        $this->assertTrue(empty($model->getActive));
+        $this->assertFalse(empty($model->getNotActive));
         
         $model->clean();
         
@@ -97,6 +99,8 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty($model->brands));
         $this->assertTrue(empty($model->sortingField));
         $this->assertTrue(empty($model->sortingType));
+        $this->assertFalse(empty($model->getActive));
+        $this->assertFalse(empty($model->getNotActive));
     }
     
     /**
@@ -116,25 +120,5 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty($model->categories));
         $this->assertTrue(empty($model->subcategory));
         $this->assertTrue(empty($model->search));
-    }
-    
-    /**
-     * Тестирует метод FiltersModel::cleanAdmin
-     */
-    public function testCleanAdmin()
-    {
-        $model = new FiltersModel();
-        $model->attributes = ['categories'=>self::$_categories, 'subcategory'=>self::$_subcategory, 'getActive'=>self::$_getActive, 'getNotActive'=>self::$_getNotActive];
-        
-        $this->assertFalse(empty($model->categories));
-        $this->assertTrue(empty($model->getActive));
-        $this->assertFalse(empty($model->getNotActive));
-        
-        $model->cleanAdmin();
-        
-        $this->assertTrue(empty($model->categories));
-        $this->assertTrue(empty($model->subcategory));
-        $this->assertFalse(empty($model->getActive));
-        $this->assertFalse(empty($model->getNotActive));
     }
 }
