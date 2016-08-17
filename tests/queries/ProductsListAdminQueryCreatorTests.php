@@ -32,6 +32,8 @@ class ProductsListAdminQueryCreatorTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->filters->clean();
         \Yii::$app->filters->cleanOther();
         \Yii::$app->filters->cleanAdmin();
+        \Yii::$app->filters->getActive = false;
+        \Yii::$app->filters->getNotActive = true;
         
         $mockObject = new MockObject(self::$_config);
         
@@ -49,6 +51,8 @@ class ProductsListAdminQueryCreatorTests extends \PHPUnit_Framework_TestCase
     public function testQueryForCategory()
     {
         \Yii::$app->filters->categories = self::$_categories;
+        \Yii::$app->filters->getActive = true;
+        \Yii::$app->filters->getNotActive = false;
         
         $mockObject = new MockObject(self::$_config);
         
@@ -68,6 +72,8 @@ class ProductsListAdminQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         \Yii::$app->filters->categories = self::$_categories;
         \Yii::$app->filters->subcategory = self::$_subcategory;
+        \Yii::$app->filters->getActive = false;
+        \Yii::$app->filters->getNotActive = true;
         
         $mockObject = new MockObject(self::$_config);
         
@@ -88,6 +94,8 @@ class ProductsListAdminQueryCreatorTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->filters->categories = self::$_categories;
         \Yii::$app->filters->subcategory = self::$_subcategory;
         \Yii::configure(\Yii::$app->filters, ['colors'=>[1]]);
+        \Yii::$app->filters->getActive = true;
+        \Yii::$app->filters->getNotActive = false;
         
         $mockObject = new MockObject(self::$_config);
         
@@ -108,6 +116,8 @@ class ProductsListAdminQueryCreatorTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->filters->categories = self::$_categories;
         \Yii::$app->filters->subcategory = self::$_subcategory;
         \Yii::configure(\Yii::$app->filters, ['colors'=>[1], 'sizes'=>[2]]);
+        \Yii::$app->filters->getActive = false;
+        \Yii::$app->filters->getNotActive = true;
         
         $mockObject = new MockObject(self::$_config);
         

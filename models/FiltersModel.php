@@ -23,12 +23,11 @@ class FiltersModel extends AbstractBaseModel
     public $subcategory = '';
     public $search = '';
     
-    //public $active = true;
     /**
      * Свойства для фильтрации активных/неактивных товаров в административном разделе
      */
-    public $getActive = true; #!!!TEST Геттер, если оба сняты, вернуть оба true для сессии
-    public $getNotActive = true; #!!!TEST
+    public $getActive = true;
+    public $getNotActive = true;
     
     public function rules()
     {
@@ -80,8 +79,8 @@ class FiltersModel extends AbstractBaseModel
         try {
             $this->categories = '';
             $this->subcategory = '';
-            $this->getActive = true; #!!!TEST
-            $this->getNotActive = true; #!!!TEST
+            $this->getActive = true;
+            $this->getNotActive = true;
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

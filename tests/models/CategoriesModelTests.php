@@ -25,7 +25,6 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
     private static $_categorySeocodeFresh = 'fresh';
     private static $_subcategorySeocode = 'boots';
     private static $_subcategorySeocode2 = 'boots2';
-    private static $_productsMessage = 'С категорией связаны товары! Необходимо перенести их перед удалением!';
     private static $_subcategoryMessage = 'С категорией связаны подкатегории! Необходимо перенести их перед удалением!';
     
     public static function setUpBeforeClass()
@@ -195,14 +194,6 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('id', $model->errors));
         $this->assertTrue(array_key_exists('name', $model->errors));
         $this->assertTrue(array_key_exists('seocode', $model->errors));
-        
-        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
-        $model->validate();
-        
-        $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('name', $model->errors));
-        $this->assertEquals(self::$_productsMessage, $model->errors['name'][0]);
         
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
         $model->attributes = ['id'=>self::$_id + 1, 'name'=>self::$_name2, 'seocode'=>self::$_categorySeocode2];

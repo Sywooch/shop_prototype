@@ -2,9 +2,9 @@ jQuery(function() {
     
     function SendRequest() {
         var self = this;
-        this.formID;
-        this.value;
-        this.token = $('meta[name="csrf-token"]').attr('content');
+        self.formID;
+        self.value;
+        self.token = $('meta[name="csrf-token"]').attr('content');
         function success(data, status, jqXHR) {
             $('form#' + self.formID + ' select#productsmodel-id_subcategory').empty();
             $('form#' + self.formID + ' select#productsmodel-id_subcategory').append('<option>------------------------</option>');
@@ -19,7 +19,7 @@ jQuery(function() {
         function error(jqXHR, status, errorThrown) {
             alert(jqXHR.responseText);
         };
-        this.send = function(event) {
+        self.send = function(event) {
             self.value = $(event.target).val();
             self.formID = $(event.target).closest('form').attr('id');
             if (!self.value) {

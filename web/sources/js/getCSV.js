@@ -2,9 +2,9 @@ jQuery(function() {
     
     function SendRequest() {
         var self = this;
-        this.form;
-        this.url;
-        this.token = $('meta[name="csrf-token"]').attr('content');
+        self.form;
+        self.url;
+        self.token = $('meta[name="csrf-token"]').attr('content');
         function success(data, status, jqXHR) {
             if (data.productsFile) {
                 $('.productsFile').html('Скачать <a href="/sources/csv/' + data.productsFile + '">' + data.productsFile + '</a>');
@@ -15,7 +15,7 @@ jQuery(function() {
         function error(jqXHR, status, errorThrown) {
             alert(jqXHR.responseText);
         };
-        this.send = function(event) {
+        self.send = function(event) {
             self.form = $(event.target).closest('form');
             self.url = $(event.target).closest('form').attr('action');
             $.ajax({

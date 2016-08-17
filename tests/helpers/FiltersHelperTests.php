@@ -18,7 +18,8 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_categories = 'menswear';
     private static $_subcategory = 'pants';
     private static $_search = 'воротник';
-    private static $_active = 0;
+    private static $_getActive = false;
+    private static $_getNotActive = true;
     
     /**
      * Тестирует метод FiltersHelper::addFilters
@@ -33,7 +34,8 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty(\Yii::$app->filters->categories));
         $this->assertTrue(empty(\Yii::$app->filters->subcategory));
         $this->assertTrue(empty(\Yii::$app->filters->search));
-        $this->assertTrue(\Yii::$app->filters->active);
+        $this->assertTrue(\Yii::$app->filters->getActive);
+        $this->assertTrue(\Yii::$app->filters->getNotActive);
         
         $_POST = [
             '_method'=>'POST',
@@ -46,7 +48,8 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
                 'categories'=>self::$_categories,
                 'subcategory'=>self::$_subcategory,
                 'search'=>self::$_search,
-                'active'=>self::$_active,
+                'getActive'=>self::$_getActive,
+                'getNotActive'=>self::$_getNotActive,
             ],
         ];
         
@@ -75,8 +78,10 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_subcategory, \Yii::$app->filters->subcategory);
         $this->assertFalse(empty(\Yii::$app->filters->search));
         $this->assertEquals(self::$_search, \Yii::$app->filters->search);
-        $this->assertTrue(empty(\Yii::$app->filters->active));
-        $this->assertEquals(self::$_active, \Yii::$app->filters->active);
+        $this->assertTrue(empty(\Yii::$app->filters->getActive));
+        $this->assertEquals(self::$_getActive, \Yii::$app->filters->getActive);
+        $this->assertFalse(empty(\Yii::$app->filters->getNotActive));
+        $this->assertEquals(self::$_getNotActive, \Yii::$app->filters->getNotActive);
     }
     
     /**
@@ -141,8 +146,11 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_categories, \Yii::$app->filters->categories);
         $this->assertFalse(empty(\Yii::$app->filters->subcategory));
         $this->assertEquals(self::$_subcategory, \Yii::$app->filters->subcategory);
-        $this->assertTrue(empty(\Yii::$app->filters->active));
-        $this->assertEquals(self::$_active, \Yii::$app->filters->active);
+        
+        $this->assertTrue(empty(\Yii::$app->filters->getActive));
+        $this->assertEquals(self::$_getActive, \Yii::$app->filters->getActive);
+        $this->assertFalse(empty(\Yii::$app->filters->getNotActive));
+        $this->assertEquals(self::$_getNotActive, \Yii::$app->filters->getNotActive);
         
         $result = FiltersHelper::cleanAdminFilters();
         
@@ -150,7 +158,8 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(empty(\Yii::$app->filters->categories));
         $this->assertTrue(empty(\Yii::$app->filters->subcategory));
-        $this->assertTrue(\Yii::$app->filters->active);
+        $this->assertFalse(empty(\Yii::$app->filters->getActive));
+        $this->assertFalse(empty(\Yii::$app->filters->getNotActive));
     }
     
     /**
@@ -170,7 +179,8 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty(\Yii::$app->filters->categories));
         $this->assertTrue(empty(\Yii::$app->filters->subcategory));
         $this->assertTrue(empty(\Yii::$app->filters->search));
-        $this->assertTrue(\Yii::$app->filters->active);
+        $this->assertFalse(empty(\Yii::$app->filters->getActive));
+        $this->assertFalse(empty(\Yii::$app->filters->getNotActive));
         
         $result = FiltersHelper::addFiltersAdmin();
         
@@ -181,6 +191,7 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty(\Yii::$app->filters->subcategory));
         $this->assertEquals(self::$_subcategory, \Yii::$app->filters->subcategory);
         $this->assertTrue(empty(\Yii::$app->filters->active));
-        $this->assertEquals(self::$_active, \Yii::$app->filters->active);
+        $this->assertTrue(empty(\Yii::$app->filters->getActive));
+        $this->assertFalse(empty(\Yii::$app->filters->getNotActive));
     }
 }

@@ -97,6 +97,10 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         if (!empty(MappersHelper::getObjectRegistry())) {
             MappersHelper::cleanProperties();
         }
+        
+        \Yii::$app->filters->clean();
+        \Yii::$app->filters->cleanOther();
+        \Yii::$app->filters->cleanAdmin();
     }
     
     /**

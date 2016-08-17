@@ -10,6 +10,13 @@ use app\queries\ColorsJoinProductsQueryCreator;
  */
 class ColorsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        \Yii::$app->filters->clean();
+        \Yii::$app->filters->cleanOther();
+        \Yii::$app->filters->cleanAdmin();
+    }
+    
     /**
      * Тестирует создание строки SQL запроса
      */

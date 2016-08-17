@@ -37,15 +37,16 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
             }
             $this->_mapperObject->query .= $join;
             
-            if (in_array(\Yii::$app->params['categoryKey'], array_keys(\Yii::$app->request->get())) && !in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get()))) {
+            if (in_array(\Yii::$app->params['categoryKey'], array_keys(\Yii::$app->request->get())) && !in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get())) || !empty(\Yii::$app->filters->categories) && empty(\Yii::$app->filters->subcategory)) {
                 if (!$this->queryForCategory()) {
                     throw new ErrorException('Ошибка при построении запроса!');
                 }
-            } elseif (in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get())) && in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get()))) {
+            } elseif (in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get())) && in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get())) || !empty(\Yii::$app->filters->categories) && !empty(\Yii::$app->filters->subcategory)) {
                 if (!$this->queryForSubCategory()) {
                     throw new ErrorException('Ошибка при построении запроса!');
                 }
             }
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -100,7 +101,13 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
             }
             $this->_mapperObject->query .= $join;
             
-            $this->_mapperObject->params[':' . \Yii::$app->params['categoryKey']] = \Yii::$app->request->get(\Yii::$app->params['categoryKey']);
+            if (\Yii::$app->filters->categories) {
+                $categoriesValue = \Yii::$app->filters->categories;
+            } else {
+                $categoriesValue = \Yii::$app->request->get(\Yii::$app->params['categoryKey']);
+            }
+            $this->_mapperObject->params[':' . \Yii::$app->params['categoryKey']] = $categoriesValue;
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -171,7 +178,14 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $this->_mapperObject->query .= $join;
-            $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']);
+            
+            if (\Yii::$app->filters->subcategory) {
+                $subcategoryValue = \Yii::$app->filters->subcategory;
+            } else {
+                $subcategoryValue = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']);
+            }
+            $this->_mapperObject->params[':' . \Yii::$app->params['subCategoryKey']] = $subcategoryValue;
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
