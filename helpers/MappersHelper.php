@@ -80,7 +80,12 @@ use app\mappers\{ColorsMapper,
     ProductsDeleteMapper,
     ColorsAdminMapper,
     BrandsAdminMapper,
-    SizesAdminMapper};
+    SizesAdminMapper,
+    BrandsInsertMapper,
+    ProductsBrandsByIdBrandsMapper,
+    BrandsByIdMapper,
+    BrandsDeleteMapper,
+    BrandsByBrandMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -628,6 +633,31 @@ class MappersHelper
     }
     
     /**
+     * Создает новую запись BrandsModel в БД
+     * @param array $brandsModelArray массив объектов BrandsModel
+     * @return int
+     */
+    public static function setBrandsInsert(Array $brandsModelArray)
+    {
+        try {
+            if (empty($brandsModelArray) || !$brandsModelArray[0] instanceof BrandsModel) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            $brandsInsertMapper = new BrandsInsertMapper([
+                'tableName'=>'brands',
+                'fields'=>['brand'],
+                'objectsArray'=>$brandsModelArray,
+            ]);
+            if (!$result = $brandsInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив объектов brands
      * @param boolean $joinProducts, true - выбирать только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects BrandsModel
@@ -724,6 +754,99 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $brandsModel);
             return $brandsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект BrandsModel по BrandsModel->id
+     * @param object $brandsModel экземпляр BrandsModel
+     * @return objects BrandsModel
+     */
+    public static function getBrandsById(BrandsModel $brandsModel)
+    {
+        try {
+            $brandsByIdMapper = new BrandsByIdMapper([
+                'tableName'=>'brands',
+                'fields'=>['id', 'brand'],
+                'model'=>$brandsModel,
+            ]);
+            $hash = self::createHash([
+                BrandsByIdMapper::className(), 
+                $brandsByIdMapper->tableName, 
+                implode('', $brandsByIdMapper->fields), 
+                $brandsByIdMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $brandsModel = $brandsByIdMapper->getOneFromGroup();
+            if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $brandsModel);
+            return $brandsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект BrandsModel по BrandsModel->brand
+     * @param object $brandsModel экземпляр BrandsModel
+     * @return objects BrandsModel
+     */
+    public static function getBrandsByBrand(BrandsModel $brandsModel)
+    {
+        try {
+            $brandsByBrandMapper = new BrandsByBrandMapper([
+                'tableName'=>'brands',
+                'fields'=>['id', 'brand'],
+                'model'=>$brandsModel,
+            ]);
+            $hash = self::createHash([
+                BrandsByBrandMapper::className(), 
+                $brandsByBrandMapper->tableName, 
+                implode('', $brandsByBrandMapper->fields),
+                $brandsByBrandMapper->model->brand,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $brandsModel = $brandsByBrandMapper->getOneFromGroup();
+            if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $brandsModel);
+            return $brandsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи BrandsModel из БД
+     * @param array $brandsModelArray массив BrandsModel
+     * @return int
+     */
+    public static function setBrandsDelete(Array $brandsModelArray)
+    {
+        try {
+            if (empty($brandsModelArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$brandsModelArray[0] instanceof BrandsModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $brandsDeleteMapper = new BrandsDeleteMapper([
+                'tableName'=>'brands',
+                'objectsArray'=>$brandsModelArray,
+            ]);
+            if (!$result = $brandsDeleteMapper->setGroup()) {
+                return null;
+            }
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -1044,15 +1167,15 @@ class MappersHelper
     {
         try {
             $id_users = \Yii::$app->cart->user->id;
-            $productsArray = \Yii::$app->cart->getProductsArray();
+            $brandsArray = \Yii::$app->cart->getProductsArray();
             $id_deliveries = \Yii::$app->cart->user->deliveries->id;
             $id_payments = \Yii::$app->cart->user->payments->id;
             
             if (empty($id_users)) {
                 throw new ErrorException('Отсутствует cart->user->id!');
             }
-            if (!is_array($productsArray) || empty($productsArray)) {
-                throw new ErrorException('Отсутствуют данные в массиве cart->productsArray!');
+            if (!is_array($brandsArray) || empty($brandsArray)) {
+                throw new ErrorException('Отсутствуют данные в массиве cart->brandsArray!');
             }
             if (empty($id_deliveries)) {
                 throw new ErrorException('Отсутствует user->deliveries->id!');
@@ -1062,7 +1185,7 @@ class MappersHelper
             }
             
             $arrayToDb = [];
-            foreach ($productsArray as $product) {
+            foreach ($brandsArray as $product) {
                 $arrayToDb[] = ['id_users'=>$id_users, 'id_products'=>$product->id, 'quantity'=>$product->quantity, 'id_colors'=>$product->colorToCart, 'id_sizes'=>$product->sizeToCart, 'id_deliveries'=>$id_deliveries, 'id_payments'=>$id_payments, 'received'=>true];
             }
             
@@ -1379,12 +1502,12 @@ class MappersHelper
             if (self::compareHashes($hash)) {
                 return self::$_objectRegistry[$hash];
             }
-            $productsArray = $productsMapper->getGroup();
-            if (!is_array($productsArray) || empty($productsArray) || !$productsArray[0] instanceof ProductsModel) {
+            $brandsArray = $productsMapper->getGroup();
+            if (!is_array($brandsArray) || empty($brandsArray) || !$brandsArray[0] instanceof ProductsModel) {
                 return null;
             }
-            self::createRegistryEntry($hash, $productsArray);
-            return $productsArray;
+            self::createRegistryEntry($hash, $brandsArray);
+            return $brandsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -1409,12 +1532,12 @@ class MappersHelper
             if (self::compareHashes($hash)) {
                 return self::$_objectRegistry[$hash];
             }
-            $productsArray = $productsSearchMapper->getGroup();
-            if (!is_array($productsArray) || empty($productsArray) || !$productsArray[0] instanceof ProductsModel) {
+            $brandsArray = $productsSearchMapper->getGroup();
+            if (!is_array($brandsArray) || empty($brandsArray) || !$brandsArray[0] instanceof ProductsModel) {
                 return null;
             }
-            self::createRegistryEntry($hash, $productsArray);
-            return $productsArray;
+            self::createRegistryEntry($hash, $brandsArray);
+            return $brandsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -1508,12 +1631,12 @@ class MappersHelper
             if (self::compareHashes($hash)) {
                 return self::$_objectRegistry[$hash];
             }
-            $productsArray = $productsByIdCategoriesMapper->getGroup();
-            if (!is_array($productsArray) || empty($productsArray)) {
+            $brandsArray = $productsByIdCategoriesMapper->getGroup();
+            if (!is_array($brandsArray) || empty($brandsArray)) {
                 return null;
             }
-            self::createRegistryEntry($hash, $productsArray);
-            return $productsArray;
+            self::createRegistryEntry($hash, $brandsArray);
+            return $brandsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -1541,12 +1664,12 @@ class MappersHelper
             if (self::compareHashes($hash)) {
                 return self::$_objectRegistry[$hash];
             }
-            $productsArray = $productsByIdSubcategoryMapper->getGroup();
-            if (!is_array($productsArray) || empty($productsArray)) {
+            $brandsArray = $productsByIdSubcategoryMapper->getGroup();
+            if (!is_array($brandsArray) || empty($brandsArray)) {
                 return null;
             }
-            self::createRegistryEntry($hash, $productsArray);
-            return $productsArray;
+            self::createRegistryEntry($hash, $brandsArray);
+            return $brandsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -2115,6 +2238,39 @@ class MappersHelper
                 return null;
             }
             return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов ProductsBrandsModel по BrandsModel->id
+     * @param object $brandsModel экземпляр BrandsModel
+     * @return array ProductsModel
+     */
+    public static function getProductsBrandsByIdBrands(BrandsModel $brandsModel)
+    {
+        try {
+            $productsBrandsByIdBrandsMapper = new ProductsBrandsByIdBrandsMapper([
+                'tableName'=>'products_brands',
+                'fields'=>['id_products', 'id_brands'],
+                'model'=>$brandsModel,
+            ]);
+            $hash = self::createHash([
+                ProductsBrandsByIdBrandsMapper::className(), 
+                $productsBrandsByIdBrandsMapper->tableName, 
+                implode('', $productsBrandsByIdBrandsMapper->fields), 
+                $productsBrandsByIdBrandsMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $brandsArray = $productsBrandsByIdBrandsMapper->getGroup();
+            if (!is_array($brandsArray) || empty($brandsArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $brandsArray);
+            return $brandsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

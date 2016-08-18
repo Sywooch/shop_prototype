@@ -16,8 +16,8 @@
 <p><strong>Filters</strong></p>
 
 {% set form=active_form_begin({'id':'add-filters-admin-form', 'action':url.to({0:'filter/add-filters-admin'}), 'method':'POST'}) %}
-    {{ form.field(filtersModel, 'categories').textInput({'value':app.filters.categories}) | raw }}
-    {{ form.field(filtersModel, 'subcategory').textInput({'value':app.filters.subcategory}) | raw }}
+    {{ form.field(filtersModel, 'categories').hiddenInput({'value':app.filters.categories}).label(false) | raw }}
+    {{ form.field(filtersModel, 'subcategory').hiddenInput({'value':app.filters.subcategory}).label(false) | raw }}
     
     {{ form.field(filtersModel, 'sortingField').dropDownList({'':'По дате добавления', 'price':'По цене'}) | raw }}
     {{ form.field(filtersModel, 'sortingType').dropDownList({'DESC':'По убыванию', 'ASC':'По возростанию'}) | raw }}

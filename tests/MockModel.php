@@ -57,4 +57,5 @@ class MockModel extends AbstractBaseModel
     public $seocode;
     public $route;
     public $active;
+    public $brand;
 }

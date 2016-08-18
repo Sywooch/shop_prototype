@@ -1,0 +1,30 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+{{ use('yii/widgets/ActiveForm') }}
+
+<p>Здесь вы можете управлять брендами</p>
+
+{% if brandsList %}
+    <p><strong>Текущие бренды</strong></p>
+    <ul>
+        {% for brandsModel in brandsList %}
+            <li>
+                {{ brandsModel.brand }}<br>
+                <a href="{{ url.to({0:'admin/update-brands', 'id':brandsModel.id}) }}">Обновить бренд</a><br>
+                <a href="{{ url.to({0:'admin/delete-brands', 'id':brandsModel.id}) }}">Удалить бренд</a><br>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% include '@app/views/admin/add-brands-form.twig' %}
+
+
+
+
+

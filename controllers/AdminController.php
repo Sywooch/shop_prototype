@@ -139,6 +139,12 @@ class AdminController extends AbstractBaseController
             $renderArray['sizesList'] = MappersHelper::getSizesAdminList();
             $renderArray['brandsList'] = MappersHelper::getBrandsAdminList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            
+            if (empty(\Yii::$app->filters->getActive) && empty(\Yii::$app->filters->getNotActive)) {
+                \Yii::$app->filters->getActive = true;
+                \Yii::$app->filters->getNotActive = true;
+            }
+            
             return $this->render('show-products.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -587,6 +593,111 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-subcategory.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет текущим списком и добавлением brands
+     */
+    public function actionShowAddBrands()
+    {
+        try {
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_FORM]);
+            
+            if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
+                if ($brandsModel->validate()) {
+                    if (!MappersHelper::setBrandsInsert([$brandsModel])) {
+                        throw new ErrorException('Ошибка при сохранении категории!');
+                    }
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['brandsModel'] = $brandsModel;
+            $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('show-add-brands.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет обновлением бренда
+     */
+    public function actionUpdateBrands()
+    {
+        try {
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
+            
+            $renderArray = array();
+            $renderArray['brandsModel'] = $brandsModel;
+            
+            if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
+                if ($brandsModel->validate()) {
+                    if (array_diff_assoc($brandsModel->attributes, MappersHelper::getBrandsById($brandsModel)->attributes)) {
+                        echo 'UPDATE!';
+                    }
+                    /*if (!MappersHelper::setBrandsDelete([$brandsModel])) {
+                        throw new ErrorException('Ошибка при удалении категории!');
+                    }*/
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                if ($currentBrands = MappersHelper::getBrandsById(new BrandsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($renderArray['brandsModel'], $currentBrands->attributes);
+                }
+            }
+            
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('update-brands.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет удалением бренда
+     */
+    public function actionDeleteBrands()
+    {
+        try {
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_DELETE_FORM]);
+            
+            $renderArray = array();
+            $renderArray['brandsModel'] = $brandsModel;
+            
+            if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
+                if ($brandsModel->validate()) {
+                    if (!MappersHelper::setBrandsDelete([$brandsModel])) {
+                        throw new ErrorException('Ошибка при удалении категории!');
+                    }
+                    return $this->redirect(Url::to(['admin/show-add-brands']));
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                if ($currentBrands = MappersHelper::getBrandsById(new BrandsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($renderArray['brandsModel'], $currentBrands->attributes);
+                }
+            }
+            
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('delete-brands.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

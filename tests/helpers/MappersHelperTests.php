@@ -473,6 +473,8 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetBrandsAdminList()
     {
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll()));
+        
         $result = MappersHelper::getBrandsAdminList();
         
         $this->assertTrue(is_array($result));
@@ -515,6 +517,62 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result->brand));
         $this->assertEquals($products_brands['id_brands'], $result['id']);
         
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getBrandsById
+     */
+    public function testGetBrandsById()
+    {
+        $brandsModel = new BrandsModel();
+        $brandsModel->id = self::$_id;
+        
+        $result = MappersHelper::getBrandsById($brandsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof BrandsModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getBrandsByBrand
+     */
+    public function testGetBrandsByBrand()
+    {
+        $brandsModel = new BrandsModel();
+        $brandsModel->brand = self::$_brand;
+        
+        $result = MappersHelper::getBrandsByBrand($brandsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof BrandsModel);
+    }
+    
+     /**
+     * Тестирует метод MappersHelper::setBrandsInsert
+     */
+    public function testSetBrandsInsert()
+    {
+        if (!empty(\Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll())) {
+            \Yii::$app->db->createCommand('DELETE FROM {{brands}}')->execute();
+        }
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll()));
+        
+        $brandsModel = new BrandsModel();
+        $brandsModel->brand = self::$_brand;
+        
+        $result = MappersHelper::setBrandsInsert([$brandsModel]);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        
+        $this->assertTrue(array_key_exists('id', $result[0]));
+        $this->assertTrue(array_key_exists('brand', $result[0]));
+        
+        $this->assertEquals(self::$_brand, $result[0]['brand']);
     }
     
     /**
@@ -1491,6 +1549,26 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getProductsBrandsByIdBrandsList
+     */
+    public function testGetProductsBrandsByIdBrands()
+    {
+        $this->assertFalse(empty($products_brands = \Yii::$app->db->createCommand('SELECT * FROM {{products_brands}}')->queryOne()));
+        
+        $model = new BrandsModel();
+        $model->id = $products_brands['id_brands'];
+        
+        $result = MappersHelper::getProductsBrandsByIdBrands($model);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof ProductsBrandsModel);
+        $this->assertFalse(empty($result[0]->id_products));
+        $this->assertFalse(empty($result[0]->id_brands));
+    }
+    
+    /**
      * Тестирует метод MappersHelper::setProductsBrandsDelete
      */
     public function testSetProductsBrandsDelete()
@@ -1847,6 +1925,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, $result);
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll()));
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setBrandsDelete
+     */
+    public function testSetBrandsDelete()
+    {
+        $this->assertFalse(empty($brands = \Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll()));
+        $this->assertEquals(1, count($brands));
+        
+        $model = new BrandsModel();
+        $model->id = $brands[0]['id'];
+        
+        $result = MappersHelper::setBrandsDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll()));
     }
     
     /**
