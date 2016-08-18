@@ -31,7 +31,6 @@ class ProductsListAdminQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $_GET = [];
         \Yii::$app->filters->clean();
         \Yii::$app->filters->cleanOther();
-        \Yii::$app->filters->cleanAdmin();
         \Yii::$app->filters->getActive = false;
         \Yii::$app->filters->getNotActive = true;
         

@@ -3,18 +3,17 @@
 namespace app\tests\queries;
 
 use app\tests\MockObject;
-use app\queries\BrandsJoinProductsQueryCreator;
+use app\queries\BrandsJoinProductsClientQueryCreator;
 
 /**
- * Тестирует класс app\queries\BrandsJoinProductsQueryCreator
+ * Тестирует класс app\queries\BrandsJoinProductsClientQueryCreator
  */
-class BrandsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
+class BrandsJoinProductsClientQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
         \Yii::$app->filters->clean();
         \Yii::$app->filters->cleanOther();
-        \Yii::$app->filters->cleanAdmin();
     }
     
     /**
@@ -29,10 +28,10 @@ class BrandsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'brand'],
         ]);
         
-        $queryCreator = new BrandsJoinProductsQueryCreator();
+        $queryCreator = new BrandsJoinProductsClientQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]]';
+        $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]] JOIN {{products}} ON [[products_brands.id_products]]=[[products.id]] WHERE [[products.active]]=:active';
         
         $this->assertEquals($query, $mockObject->query);
     }
@@ -49,10 +48,10 @@ class BrandsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'brand'],
         ]);
         
-        $queryCreator = new BrandsJoinProductsQueryCreator();
+        $queryCreator = new BrandsJoinProductsClientQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]] JOIN {{products}} ON [[products_brands.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] WHERE [[categories.seocode]]=:categories';
+        $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]] JOIN {{products}} ON [[products_brands.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] WHERE [[categories.seocode]]=:categories AND [[products.active]]=:active';
         
         $this->assertEquals($query, $mockObject->query);
     }
@@ -69,10 +68,10 @@ class BrandsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'brand'],
         ]);
         
-        $queryCreator = new BrandsJoinProductsQueryCreator();
+        $queryCreator = new BrandsJoinProductsClientQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]] JOIN {{products}} ON [[products_brands.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory';
+        $query = 'SELECT DISTINCT [[brands.id]],[[brands.brand]] FROM {{brands}} JOIN {{products_brands}} ON [[brands.id]]=[[products_brands.id_brands]] JOIN {{products}} ON [[products_brands.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory AND [[products.active]]=:active';
         
         $this->assertEquals($query, $mockObject->query);
     }

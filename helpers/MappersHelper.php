@@ -77,7 +77,10 @@ use app\mappers\{ColorsMapper,
     SubcategoryUpdateMapper,
     ProductsByIdSubcategoryMapper,
     SubcategoryDeleteMapper,
-    ProductsDeleteMapper};
+    ProductsDeleteMapper,
+    ColorsAdminMapper,
+    BrandsAdminMapper,
+    SizesAdminMapper};
 use app\models\{AddressModel, 
     EmailsModel, 
     PaymentsModel, 
@@ -388,6 +391,38 @@ class MappersHelper
     }
     
     /**
+     * Получает массив объектов ColorsModel
+     * @return array of objects ColorsModel
+     */
+    public static function getColorsAdminList()
+    {
+        try {
+            $colorsAdminMapper = new ColorsAdminMapper([
+                'tableName'=>'colors',
+                'fields'=>['id', 'color'],
+                'orderByField'=>'color',
+            ]);
+            $hash = self::createHash([
+                ColorsAdminMapper::className(), 
+                $colorsAdminMapper->tableName, 
+                implode('', $colorsAdminMapper->fields), 
+                $colorsAdminMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $colorsArray = $colorsAdminMapper->getGroup();
+            if (!is_array($colorsArray) || empty($colorsArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $colorsArray);
+            return $colorsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает ColorsModel по id
      * @param object $colorsModel экземпляр ColorsModel
      * @return object ColorsModel
@@ -493,6 +528,38 @@ class MappersHelper
     }
     
     /**
+     * Получает массив объектов SizesModel
+     * @return array of objects SizesModel
+     */
+    public static function getSizesAdminList()
+    {
+        try {
+            $sizesAdminMapper = new SizesAdminMapper([
+                'tableName'=>'sizes',
+                'fields'=>['id', 'size'],
+                'orderByField'=>'size'
+            ]);
+            $hash = self::createHash([
+                SizesAdminMapper::className(), 
+                $sizesAdminMapper->tableName, 
+                implode('', $sizesAdminMapper->fields), 
+                $sizesAdminMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $sizesArray = $sizesAdminMapper->getGroup();
+            if (!is_array($sizesArray) || empty($sizesArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $sizesArray);
+            return $sizesArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает SizesModel по id
      * @param object $sizesModel экземпляр SizesModel
      * @return object SizesModel
@@ -587,6 +654,38 @@ class MappersHelper
                 return self::$_objectRegistry[$hash];
             }
             $brandsArray = $brandsMapper->getGroup();
+            if (!is_array($brandsArray) || empty($brandsArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $brandsArray);
+            return $brandsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов BrandsModel
+     * @return array of objects BrandsModel
+     */
+    public static function getBrandsAdminList()
+    {
+        try {
+            $brandsAdminMapper = new BrandsAdminMapper([
+                'tableName'=>'brands',
+                'fields'=>['id', 'brand'],
+                'orderByField'=>'brand',
+            ]);
+            $hash = self::createHash([
+                BrandsAdminMapper::className(), 
+                $brandsAdminMapper->tableName, 
+                implode('', $brandsAdminMapper->fields), 
+                $brandsAdminMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $brandsArray = $brandsAdminMapper->getGroup();
             if (!is_array($brandsArray) || empty($brandsArray)) {
                 return null;
             }

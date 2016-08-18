@@ -2,26 +2,26 @@
 
 namespace app\queries;
 
-use app\queries\{AbstractFiltersQueryCreator,
+use app\queries\{AbstractFiltersAdminQueryCreator,
     ProductsListQueryCreator};
 
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class ColorsJoinProductsQueryCreator extends AbstractFiltersQueryCreator
+class BrandsJoinProductsAdminQueryCreator extends AbstractFiltersAdminQueryCreator
 {
     /**
      * @var array массив для выборки данных
      */
     public $categoriesArrayFilters = [
         'tableOne'=>[
-            'firstTableName'=>'colors',
+            'firstTableName'=>'brands',
             'firstTableFieldOn'=>'id',
-            'secondTableName'=>'products_colors',
-            'secondTableFieldOn'=>'id_colors',
+            'secondTableName'=>'products_brands',
+            'secondTableFieldOn'=>'id_brands',
         ],
         'tableTwo'=>[
-            'firstTableName'=>'products_colors',
+            'firstTableName'=>'products_brands',
             'firstTableFieldOn'=>'id_products',
             'secondTableName'=>'products',
             'secondTableFieldOn'=>'id',

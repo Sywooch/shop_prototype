@@ -7,12 +7,12 @@ use app\mappers\AbstractGetMapper;
 /**
  * Получает строки с данными о категориях из БД, конструирует из каждой строки объект данных
  */
-class BrandsMapper extends AbstractGetMapper
+class BrandsAdminMapper extends AbstractGetMapper
 {
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\BrandsJoinProductsClientQueryCreator';
+    public $queryClass = 'app\queries\BrandsJoinProductsAdminQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */

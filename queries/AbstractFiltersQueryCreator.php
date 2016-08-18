@@ -37,16 +37,6 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
             }
             $this->_mapperObject->query .= $join;
             
-            if (in_array(\Yii::$app->params['categoryKey'], array_keys(\Yii::$app->request->get())) && !in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get())) || !empty(\Yii::$app->filters->categories) && empty(\Yii::$app->filters->subcategory)) {
-                if (!$this->queryForCategory()) {
-                    throw new ErrorException('Ошибка при построении запроса!');
-                }
-            } elseif (in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get())) && in_array(\Yii::$app->params['subCategoryKey'], array_keys(\Yii::$app->request->get())) || !empty(\Yii::$app->filters->categories) && !empty(\Yii::$app->filters->subcategory)) {
-                if (!$this->queryForSubCategory()) {
-                    throw new ErrorException('Ошибка при построении запроса!');
-                }
-            }
-            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -72,13 +62,13 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
         }
     }
     
-    protected function forCategoryJoin()
+    /**
+     * Формирует строку запроса к БД, добавляя таблицу products
+     * @return boolean
+     */
+    protected function productsJoin()
     {
         try {
-            if (empty(\Yii::$app->params['categoryKey'])) {
-                throw new ErrorException('Не поределен categoryKey!');
-            }
-            
             $join = $this->getJoin(
                 $this->categoriesArrayFilters['tableTwo']['firstTableName'],
                 $this->categoriesArrayFilters['tableTwo']['firstTableFieldOn'],
@@ -89,6 +79,23 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $this->_mapperObject->query .= $join;
+            
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует строку запроса к БД, добавляя join categories
+     * @return boolean
+     */
+    protected function forCategoryJoin()
+    {
+        try {
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не поределен categoryKey!');
+            }
             
             $join = $this->getJoin(
                 $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
@@ -114,6 +121,10 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
         }
     }
     
+    /**
+     * Формирует строку запроса к БД, добавляя where categories
+     * @return boolean
+     */
     protected function forCategoryWhere()
     {
         try {
@@ -161,6 +172,10 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
         }
     }
     
+    /**
+     * Формирует строку запроса к БД, добавляя join subcategory
+     * @return boolean
+     */
     protected function forSubCategoryJoin()
     {
         try {
@@ -192,6 +207,10 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
         }
     }
     
+    /**
+     * Формирует строку запроса к БД, добавляя where subcategory
+     * @return boolean
+     */
     protected function forSubCategoryWhere()
     {
         try {

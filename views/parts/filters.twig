@@ -1,7 +1,9 @@
 
-<p><strong>Sorting</strong></p>
-
 {{ use('yii/widgets/ActiveForm') }}
+
+{% if colorsList and sizesList and brandsList %}
+
+<p><strong>Sorting</strong></p>
 
 {% set form=active_form_begin({'id':'filters-form', 'action':url.to({0:'filter/add-filters'}), 'method':'POST'}) %}
     {{ form.field(filtersModel, 'sortingField').dropDownList({'':'По дате добавления', 'price':'По цене'}) | raw }}
@@ -15,4 +17,11 @@
     <input type="submit" value="Apply" />
 {{ active_form_end() }}
 
-{% include '@app/views/parts/clean-filters.twig' %}
+{% set form=active_form_begin({'id':'clean-filters-form', 'action':url.to({0:'filter/clean-filters'}), 'method':'POST'}) %}
+    {{ form.field(filtersModel, 'categories').hiddenInput({'value':app.request.get(app.params.categoryKey)}).label(false) | raw }}
+    {{ form.field(filtersModel, 'subcategory').hiddenInput({'value':app.request.get(app.params.subCategoryKey)}).label(false) | raw }}
+    {{ form.field(filtersModel, 'search').hiddenInput({'value':app.request.get(app.params.searchKey)}).label(false) | raw }}
+    <input type="submit" value="Clean" />
+{{ active_form_end() }}
+
+{% endif %}

@@ -100,7 +100,6 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         \Yii::$app->filters->clean();
         \Yii::$app->filters->cleanOther();
-        \Yii::$app->filters->cleanAdmin();
     }
     
     /**
@@ -270,6 +269,33 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getColorsAdminList
+     */
+    public function testGetColorsAdminList()
+    {
+        $result = MappersHelper::getColorsAdminList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof ColorsModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_color, $result[0]->color);
+        
+        \Yii::$app->filters->categories = 'mensfootwear';
+        \Yii::$app->filters->subcategory = 'boots';
+        
+        $result = MappersHelper::getColorsAdminList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof ColorsModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_color, $result[0]->color);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getColorsForProductList
      */
     public function testGetColorsForProductList()
@@ -343,6 +369,33 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getSizesAdminList
+     */
+    public function testGetSizesAdminList()
+    {
+        $result = MappersHelper::getSizesAdminList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof SizesModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_size, $result[0]->size);
+        
+        \Yii::$app->filters->categories = 'mensfootwear';
+        \Yii::$app->filters->subcategory = 'boots';
+        
+        $result = MappersHelper::getSizesAdminList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof SizesModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_size, $result[0]->size);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getSizesById
      */
     public function testGetSizesById()
@@ -406,6 +459,33 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->execute();
         
         $result = MappersHelper::getBrandsList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof BrandsModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_brand, $result[0]->brand);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getBrandsAdminList
+     */
+    public function testGetBrandsAdminList()
+    {
+        $result = MappersHelper::getBrandsAdminList();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof BrandsModel);
+        $this->assertEquals(self::$_id, $result[0]->id);
+        $this->assertEquals(self::$_brand, $result[0]->brand);
+        
+        \Yii::$app->filters->categories = 'mensfootwear';
+        \Yii::$app->filters->subcategory = 'boots';
+        
+        $result = MappersHelper::getBrandsAdminList();
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));

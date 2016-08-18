@@ -135,9 +135,9 @@ class AdminController extends AbstractBaseController
                 $subcategoryModel = MappersHelper::getSubcategoryBySeocode(new SubcategoryModel(['seocode'=>\Yii::$app->filters->subcategory]));
                 \Yii::configure($renderArray['productsModelFilter'], ['id_subcategory'=>$subcategoryModel->id]);
             }
-            $renderArray['colorsList'] = MappersHelper::getColorsList();
-            $renderArray['sizesList'] = MappersHelper::getSizesList();
-            $renderArray['brandsList'] = MappersHelper::getBrandsList();
+            $renderArray['colorsList'] = MappersHelper::getColorsAdminList();
+            $renderArray['sizesList'] = MappersHelper::getSizesAdminList();
+            $renderArray['brandsList'] = MappersHelper::getBrandsAdminList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-products.twig', $renderArray);
         } catch (\Exception $e) {

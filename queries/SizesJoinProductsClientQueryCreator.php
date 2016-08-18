@@ -2,13 +2,13 @@
 
 namespace app\queries;
 
-use app\queries\{AbstractFiltersQueryCreator,
+use app\queries\{AbstractFiltersClientQueryCreator,
     ProductsListQueryCreator};
 
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class SizesJoinProductsQueryCreator extends AbstractFiltersQueryCreator
+class SizesJoinProductsClientQueryCreator extends AbstractFiltersClientQueryCreator
 {
     /**
      * @var array массив для выборки данных

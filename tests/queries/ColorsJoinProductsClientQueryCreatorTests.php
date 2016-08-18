@@ -3,18 +3,17 @@
 namespace app\tests\queries;
 
 use app\tests\MockObject;
-use app\queries\ColorsJoinProductsQueryCreator;
+use app\queries\ColorsJoinProductsClientQueryCreator;
 
 /**
- * Тестирует класс app\queries\ColorsJoinProductsQueryCreator
+ * Тестирует класс app\queries\ColorsJoinProductsClientQueryCreator
  */
-class ColorsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
+class ColorsJoinProductsClientQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     public static function setUpBeforeClass()
     {
         \Yii::$app->filters->clean();
         \Yii::$app->filters->cleanOther();
-        \Yii::$app->filters->cleanAdmin();
     }
     
     /**
@@ -29,10 +28,10 @@ class ColorsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'color'],
         ]);
         
-        $queryCreator = new ColorsJoinProductsQueryCreator();
+        $queryCreator = new ColorsJoinProductsClientQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[colors.id]],[[colors.color]] FROM {{colors}} JOIN {{products_colors}} ON [[colors.id]]=[[products_colors.id_colors]]';
+        $query = 'SELECT DISTINCT [[colors.id]],[[colors.color]] FROM {{colors}} JOIN {{products_colors}} ON [[colors.id]]=[[products_colors.id_colors]] JOIN {{products}} ON [[products_colors.id_products]]=[[products.id]] WHERE [[products.active]]=:active';
         
         $this->assertEquals($query, $mockObject->query);
     }
@@ -49,10 +48,10 @@ class ColorsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'color'],
         ]);
         
-        $queryCreator = new ColorsJoinProductsQueryCreator();
+        $queryCreator = new ColorsJoinProductsClientQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[colors.id]],[[colors.color]] FROM {{colors}} JOIN {{products_colors}} ON [[colors.id]]=[[products_colors.id_colors]] JOIN {{products}} ON [[products_colors.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] WHERE [[categories.seocode]]=:categories';
+        $query = 'SELECT DISTINCT [[colors.id]],[[colors.color]] FROM {{colors}} JOIN {{products_colors}} ON [[colors.id]]=[[products_colors.id_colors]] JOIN {{products}} ON [[products_colors.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] WHERE [[categories.seocode]]=:categories AND [[products.active]]=:active';
         
         $this->assertEquals($query, $mockObject->query);
     }
@@ -69,10 +68,10 @@ class ColorsJoinProductsQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'fields'=>['id', 'color'],
         ]);
         
-        $queryCreator = new ColorsJoinProductsQueryCreator();
+        $queryCreator = new ColorsJoinProductsClientQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[colors.id]],[[colors.color]] FROM {{colors}} JOIN {{products_colors}} ON [[colors.id]]=[[products_colors.id_colors]] JOIN {{products}} ON [[products_colors.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory';
+        $query = 'SELECT DISTINCT [[colors.id]],[[colors.color]] FROM {{colors}} JOIN {{products_colors}} ON [[colors.id]]=[[products_colors.id_colors]] JOIN {{products}} ON [[products_colors.id_products]]=[[products.id]] JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory AND [[products.active]]=:active';
         
         $this->assertEquals($query, $mockObject->query);
     }

@@ -172,15 +172,13 @@ class FilterController extends AbstractBaseController
     public function actionCleanFiltersAdminSubcategory()
     {
         try {
-            if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
-                if (\Yii::$app->filters->validate()) {
-                    if (FiltersHelper::cleanFilters()) {
-                        if (!FiltersHelper::cleanOtherFilters()) {
-                            throw new ErrorException('Ошибка при очистке фильтров!');
-                        }
-                        if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin.subcategory'])) {
-                            throw new ErrorException('Ошибка при удалении фильтров из сесии!');
-                        }
+            if (\Yii::$app->request->isPost) {
+                if (FiltersHelper::cleanFilters()) {
+                    if (!FiltersHelper::cleanOtherFilters()) {
+                        throw new ErrorException('Ошибка при очистке фильтров!');
+                    }
+                    if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin.subcategory'])) {
+                        throw new ErrorException('Ошибка при удалении фильтров из сесии!');
                     }
                 }
             }
