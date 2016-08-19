@@ -43,7 +43,7 @@ class SubcategoryNameExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttribute()
     {
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+        $model = new SubcategoryModel();
         $model->name = self::$_name;
         
         $validator = new SubcategoryNameExistsValidator();

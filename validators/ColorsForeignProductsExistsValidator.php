@@ -9,23 +9,23 @@ use app\helpers\MappersHelper;
 /**
  * Проверяет атрибуты модели EmailsModel
  */
-class BrandsForeignProductsExistsValidator extends Validator
+class ColorsForeignProductsExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
-    private static $_message = 'С брендом связаны товары! Необходимо перенести их перед удалением!';
+    private static $_message = 'С цветом связаны товары! Необходимо перенести их перед удалением!';
     
     /**
-     * Проверяет, существует ли связь товаров с текущим брендом
+     * Проверяет, существует ли связь товаров с текущим удаляемым цветом
      * @param object $model текущий экземпляр модели, атрибут которой проверяется
      * @param string $attribute имя атрибута, значение которого проверяется
      */
     public function validateAttribute($model, $attribute)
     {
         try {
-            $productsBrandsArray = MappersHelper::getProductsBrandsByIdBrands($model);
+            $productsColorsArray = MappersHelper::getProductsColorsByIdColors($model);
             
-            if (is_array($productsBrandsArray) && !empty($productsBrandsArray)) {
+            if (is_array($productsColorsArray) && !empty($productsColorsArray)) {
                 $this->addError($model, $attribute, self::$_message);
             }
         } catch (\Exception $e) {

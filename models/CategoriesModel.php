@@ -60,6 +60,8 @@ class CategoriesModel extends AbstractBaseModel
             [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
             [['name'], 'app\validators\CategoriesForeignSubcategoryExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
             [['name'], 'app\validators\CategoriesForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['name', 'seocode'], 'trim'],
+            [['seocode'], 'app\validators\StrtolowerValidator'],
         ];
     }
     

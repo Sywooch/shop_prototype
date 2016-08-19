@@ -3,14 +3,14 @@
 namespace app\tests\validators;
 
 use app\tests\DbManager;
-use app\validators\BrandsForeignProductsExistsValidator;
+use app\validators\ColorsForeignProductsExistsValidator;
 use app\helpers\MappersHelper;
-use app\models\BrandsModel;
+use app\models\ColorsModel;
 
 /**
- * Тестирует класс app\validators\BrandsForeignProductsExistsValidator
+ * Тестирует класс app\validators\ColorsForeignProductsExistsValidator
  */
-class BrandsForeignProductsExistsValidatorTests extends \PHPUnit_Framework_TestCase
+class ColorsForeignProductsExistsValidatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
@@ -22,9 +22,9 @@ class BrandsForeignProductsExistsValidatorTests extends \PHPUnit_Framework_TestC
     private static $_images = 'images';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
-    private static $_brand = 'Night relax';
+    private static $_color = 'purple';
     
-    private static $_message = 'С брендом связаны товары! Необходимо перенести их перед удалением!';
+    private static $_message = 'С цветом связаны товары! Необходимо перенести их перед удалением!';
     
     public static function setUpBeforeClass()
     {
@@ -43,12 +43,12 @@ class BrandsForeignProductsExistsValidatorTests extends \PHPUnit_Framework_TestC
         $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{brands}} SET [[id]]=:id, [[brand]]=:brand');
-        $command->bindValues([':id'=>self::$_id, ':brand'=>self::$_brand]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
+        $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_brands}} SET [[id_products]]=:id_products, [[id_brands]]=:id_brands');
-        $command->bindValues([':id_products'=>self::$_id, ':id_brands'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
+        $command->bindValues([':id_products'=>self::$_id, ':id_colors'=>self::$_id]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -57,21 +57,21 @@ class BrandsForeignProductsExistsValidatorTests extends \PHPUnit_Framework_TestC
     }
     
     /**
-     * Тестирует метод BrandsForeignProductsExistsValidator::validateAttribute
+     * Тестирует метод ColorsForeignProductsExistsValidator::validateAttribute
      */
     public function testValidateAttribute()
     {
-        $model = new BrandsModel();
+        $model = new ColorsModel();
         $model->id = self::$_id;
-        $model->brand = self::$_brand;
+        $model->color = self::$_color;
         
-        $validator = new BrandsForeignProductsExistsValidator();
-        $validator->validateAttribute($model, 'brand');
+        $validator = new ColorsForeignProductsExistsValidator();
+        $validator->validateAttribute($model, 'color');
         
         $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('brand', $model->errors));
-        $this->assertEquals(1, count($model->errors['brand']));
-        $this->assertEquals(self::$_message, $model->errors['brand'][0]);
+        $this->assertTrue(array_key_exists('color', $model->errors));
+        $this->assertEquals(1, count($model->errors['color']));
+        $this->assertEquals(self::$_message, $model->errors['color'][0]);
     }
     
     public static function tearDownAfterClass()

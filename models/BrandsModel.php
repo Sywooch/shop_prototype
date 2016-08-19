@@ -50,12 +50,14 @@ class BrandsModel extends AbstractBaseModel
         return [
             [['id'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['brand'], 'required', 'on'=>self::GET_FROM_ADD_FORM],
+            [['brand'], 'app\validators\BrandsBrandExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
             [['id', 'brand'], 'required', 'on'=>self::GET_FROM_UPDATE_FORM],
             [['brand'], 'app\validators\BrandsBrandExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
                 return $model->brand != MappersHelper::getBrandsById($model)->brand;
             }],
             [['id', 'brand'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
             [['brand'], 'app\validators\BrandsForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['brand'], 'trim'],
         ];
     }
 }

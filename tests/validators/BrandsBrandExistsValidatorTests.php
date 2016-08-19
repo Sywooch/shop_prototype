@@ -37,7 +37,7 @@ class BrandsBrandExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttribute()
     {
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
+        $model = new BrandsModel();
         $model->brand = self::$_brand;
         
         $validator = new BrandsBrandExistsValidator();

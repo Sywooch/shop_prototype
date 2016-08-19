@@ -47,7 +47,7 @@ class CategoriesForeignProductsExistsValidatorTests extends \PHPUnit_Framework_T
      */
     public function testValidateAttribute()
     {
-        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
+        $model = new CategoriesModel();
         $model->id = self::$_id;
         $model->name = self::$_name;
         

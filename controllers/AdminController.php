@@ -124,27 +124,29 @@ class AdminController extends AbstractBaseController
     public function actionShowProducts()
     {
         try {
-            $renderArray = array();
-            $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
-            $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            $productsModelFilter = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            
             if (!empty(\Yii::$app->filters->categories)) {
                 $categoriesModel = MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>\Yii::$app->filters->categories]));
-                \Yii::configure($renderArray['productsModelFilter'], ['id_categories'=>$categoriesModel->id]);
+                \Yii::configure($productsModelFilter, ['id_categories'=>$categoriesModel->id]);
             }
             if (!empty(\Yii::$app->filters->subcategory)) {
                 $subcategoryModel = MappersHelper::getSubcategoryBySeocode(new SubcategoryModel(['seocode'=>\Yii::$app->filters->subcategory]));
-                \Yii::configure($renderArray['productsModelFilter'], ['id_subcategory'=>$subcategoryModel->id]);
+                \Yii::configure($productsModelFilter, ['id_subcategory'=>$subcategoryModel->id]);
             }
-            $renderArray['colorsList'] = MappersHelper::getColorsAdminList();
-            $renderArray['sizesList'] = MappersHelper::getSizesAdminList();
-            $renderArray['brandsList'] = MappersHelper::getBrandsAdminList();
-            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             
             if (empty(\Yii::$app->filters->getActive) && empty(\Yii::$app->filters->getNotActive)) {
                 \Yii::$app->filters->getActive = true;
                 \Yii::$app->filters->getNotActive = true;
             }
             
+            $renderArray = array();
+            $renderArray['productsModelFilter'] = $productsModelFilter;
+            $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
+            $renderArray['colorsList'] = MappersHelper::getColorsAdminList();
+            $renderArray['sizesList'] = MappersHelper::getSizesAdminList();
+            $renderArray['brandsList'] = MappersHelper::getBrandsAdminList();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-products.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -387,7 +389,6 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
-                    $categoriesModel->seocode = mb_strtolower($categoriesModel->seocode);
                     if (!MappersHelper::setCategoriesInsert([$categoriesModel])) {
                         throw new ErrorException('Ошибка при сохранении категории!');
                     }
@@ -412,17 +413,14 @@ class AdminController extends AbstractBaseController
         try {
             $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_UPDATE_FORM]);
             
-            $renderArray = array();
-            $renderArray['categoriesModel'] = $categoriesModel;
-            
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
                     if (array_diff_assoc($categoriesModel->attributes, MappersHelper::getCategoriesById($categoriesModel)->attributes)) {
-                        $categoriesModel->seocode = mb_strtolower($categoriesModel->seocode);
                         if (!MappersHelper::setCategoriesUpdate([$categoriesModel])) {
                             throw new ErrorException('Ошибка при обновлении CategoriesModel!');
                         }
                     }
+                    return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
             } else {
                 if (empty(\Yii::$app->params['idKey'])) {
@@ -433,10 +431,12 @@ class AdminController extends AbstractBaseController
                 }
                 
                 if ($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($renderArray['categoriesModel'], $currentCategories->attributes);
+                    \Yii::configure($categoriesModel, $currentCategories->attributes);
                 }
             }
             
+            $renderArray = array();
+            $renderArray['categoriesModel'] = $categoriesModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-categories.twig', $renderArray);
         } catch (\Exception $e) {
@@ -453,9 +453,6 @@ class AdminController extends AbstractBaseController
         try {
             $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
             
-            $renderArray = array();
-            $renderArray['categoriesModel'] = $categoriesModel;
-            
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
                     if (!MappersHelper::setCategoriesDelete([$categoriesModel])) {
@@ -470,12 +467,13 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                
                 if ($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($renderArray['categoriesModel'], $currentCategories->attributes);
+                    \Yii::configure($categoriesModel, $currentCategories->attributes);
                 }
             }
             
+            $renderArray = array();
+            $renderArray['categoriesModel'] = $categoriesModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-categories.twig', $renderArray);
         } catch (\Exception $e) {
@@ -494,7 +492,6 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
-                    $subcategoryModel->seocode = mb_strtolower($subcategoryModel->seocode);
                     if (!MappersHelper::setSubcategoryInsert([$subcategoryModel])) {
                         throw new ErrorException('Ошибка при сохранении категории!');
                     }
@@ -527,17 +524,14 @@ class AdminController extends AbstractBaseController
         try {
             $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_UPDATE_FORM]);
             
-            $renderArray = array();
-            $renderArray['subcategoryModel'] = $subcategoryModel;
-            
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
                     if (array_diff_assoc($subcategoryModel->attributes, MappersHelper::getSubcategoryById($subcategoryModel)->attributes)) {
-                        $subcategoryModel->seocode = mb_strtolower($subcategoryModel->seocode);
                         if (!MappersHelper::setSubcategoryUpdate([$subcategoryModel])) {
                             throw new ErrorException('Ошибка при обновлении SubcategoryModel!');
                         }
                     }
+                    return $this->redirect(Url::to(['admin/show-add-subcategory']));
                 }
             } else {
                 if (empty(\Yii::$app->params['idKey'])) {
@@ -548,10 +542,12 @@ class AdminController extends AbstractBaseController
                 }
                 
                 if ($currentSubcategory = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($renderArray['subcategoryModel'], $currentSubcategory->attributes);
+                    \Yii::configure($subcategoryModel, $currentSubcategory->attributes);
                 }
             }
             
+            $renderArray = array();
+            $renderArray['subcategoryModel'] = $subcategoryModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
@@ -568,13 +564,10 @@ class AdminController extends AbstractBaseController
         try {
             $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
             
-            $renderArray = array();
-            $renderArray['subcategoryModel'] = $subcategoryModel;
-            
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
                     if (!MappersHelper::setSubcategoryDelete([$subcategoryModel])) {
-                        throw new ErrorException('Ошибка при удалении категории!');
+                        throw new ErrorException('Ошибка при удалении подкатегории!');
                     }
                     return $this->redirect(Url::to(['admin/show-add-subcategory']));
                 }
@@ -585,12 +578,13 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                
                 if ($currentSubcategory = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($renderArray['subcategoryModel'], $currentSubcategory->attributes);
+                    \Yii::configure($subcategoryModel, $currentSubcategory->attributes);
                 }
             }
             
+            $renderArray = array();
+            $renderArray['subcategoryModel'] = $subcategoryModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
@@ -610,7 +604,7 @@ class AdminController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
                     if (!MappersHelper::setBrandsInsert([$brandsModel])) {
-                        throw new ErrorException('Ошибка при сохранении категории!');
+                        throw new ErrorException('Ошибка при сохранении бренда!');
                     }
                 }
             }
@@ -634,17 +628,14 @@ class AdminController extends AbstractBaseController
         try {
             $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
             
-            $renderArray = array();
-            $renderArray['brandsModel'] = $brandsModel;
-            
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
                     if (array_diff_assoc($brandsModel->attributes, MappersHelper::getBrandsById($brandsModel)->attributes)) {
-                        echo 'UPDATE!';
+                        if (!MappersHelper::setBrandsUpdate([$brandsModel])) {
+                            throw new ErrorException('Ошибка при обновлении бренда!');
+                        }
                     }
-                    /*if (!MappersHelper::setBrandsDelete([$brandsModel])) {
-                        throw new ErrorException('Ошибка при удалении категории!');
-                    }*/
+                    return $this->redirect(Url::to(['admin/show-add-brands']));
                 }
             } else {
                 if (empty(\Yii::$app->params['idKey'])) {
@@ -654,10 +645,12 @@ class AdminController extends AbstractBaseController
                     throw new ErrorException('Ошибка при получении ID!');
                 }
                 if ($currentBrands = MappersHelper::getBrandsById(new BrandsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($renderArray['brandsModel'], $currentBrands->attributes);
+                    \Yii::configure($brandsModel, $currentBrands->attributes);
                 }
             }
             
+            $renderArray = array();
+            $renderArray['brandsModel'] = $brandsModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-brands.twig', $renderArray);
         } catch (\Exception $e) {
@@ -674,13 +667,10 @@ class AdminController extends AbstractBaseController
         try {
             $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_DELETE_FORM]);
             
-            $renderArray = array();
-            $renderArray['brandsModel'] = $brandsModel;
-            
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
                     if (!MappersHelper::setBrandsDelete([$brandsModel])) {
-                        throw new ErrorException('Ошибка при удалении категории!');
+                        throw new ErrorException('Ошибка при удалении бренда!');
                     }
                     return $this->redirect(Url::to(['admin/show-add-brands']));
                 }
@@ -692,12 +682,117 @@ class AdminController extends AbstractBaseController
                     throw new ErrorException('Ошибка при получении ID!');
                 }
                 if ($currentBrands = MappersHelper::getBrandsById(new BrandsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($renderArray['brandsModel'], $currentBrands->attributes);
+                    \Yii::configure($brandsModel, $currentBrands->attributes);
                 }
             }
             
+            $renderArray = array();
+            $renderArray['brandsModel'] = $brandsModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-brands.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет текущим списком и добавлением цветов
+     */
+    public function actionShowAddColors()
+    {
+        try {
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_FORM]);
+            
+            if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
+                if ($colorsModel->validate()) {
+                    if (!MappersHelper::setColorsInsert([$colorsModel])) {
+                        throw new ErrorException('Ошибка при сохранении цвета!');
+                    }
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['colorsModel'] = $colorsModel;
+            $renderArray['colorsList'] = MappersHelper::getColorsList(false);
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('show-add-colors.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет обновлением цветов
+     */
+    public function actionUpdateColors()
+    {
+        try {
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_UPDATE_FORM]);
+            
+            if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
+                if ($colorsModel->validate()) {
+                    if (array_diff_assoc($colorsModel->attributes, MappersHelper::getColorsById($colorsModel)->attributes)) {
+                        if (!MappersHelper::setColorsUpdate([$colorsModel])) {
+                            throw new ErrorException('Ошибка при обновлении цвета!');
+                        }
+                    }
+                    return $this->redirect(Url::to(['admin/show-add-colors']));
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                if ($currentColors = MappersHelper::getColorsById(new ColorsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($colorsModel, $currentColors->attributes);
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['colorsModel'] = $colorsModel;
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('update-colors.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет удалением цвета
+     */
+    public function actionDeleteColors()
+    {
+        try {
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_DELETE_FORM]);
+            
+            if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
+                if ($colorsModel->validate()) {
+                    if (!MappersHelper::setColorsDelete([$colorsModel])) {
+                        throw new ErrorException('Ошибка при удалении бренда!');
+                    }
+                    return $this->redirect(Url::to(['admin/show-add-colors']));
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                if ($currentColors = MappersHelper::getColorsById(new ColorsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($colorsModel, $currentColors->attributes);
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['colorsModel'] = $colorsModel;
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('delete-colors.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

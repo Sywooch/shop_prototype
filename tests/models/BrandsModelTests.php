@@ -141,7 +141,15 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('brand', $model->errors));
         
         $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_FORM]);
-        $model->attributes = ['brand'=>self::$_brand];
+        $model->attributes = ['brand'=>self::$_brand2];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('brand', $model->errors));
+        $this->assertEquals(self::$_messageDuplicate, $model->errors['brand'][0]);
+        
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_FORM]);
+        $model->attributes = ['brand'=>self::$_brand3];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
@@ -177,7 +185,7 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('brand', $model->errors));
         
         $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'brand'=>self::$_brand];
+        $model->attributes = ['id'=>self::$_id, 'brand'=>self::$_brand2];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));

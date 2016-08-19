@@ -62,6 +62,8 @@ class SubcategoryModel extends AbstractBaseModel
             }],
             [['id', 'name', 'seocode', 'id_categories'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
             [['name'], 'app\validators\SubcategoryForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['name', 'seocode'], 'trim'],
+            [['seocode'], 'app\validators\StrtolowerValidator'],
         ];
     }
     

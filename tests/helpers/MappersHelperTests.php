@@ -335,6 +335,20 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getColorsByColor
+     */
+    public function testGetColorsByColor()
+    {
+        $colorsModel = new ColorsModel();
+        $colorsModel->color = self::$_color;
+        
+        $result = MappersHelper::getColorsByColor($colorsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof ColorsModel);
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getSizesList
      */
     public function testGetSizesList()
@@ -1942,6 +1956,149 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, $result);
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll()));
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setBrandsUpdate
+     */
+    public function testSetBrandsUpdate()
+    {
+        if (empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{brands}} LIMIT 1')->queryScalar())) {
+            $id = self::$_id;
+            $command = \Yii::$app->db->createCommand('INSERT INTO {{brands}} SET [[id]]=:id, [[brand]]=:brand');
+            $command->bindValues([':id'=>$id, ':brand'=>self::$_brand]);
+            $command->execute();
+        }
+        
+        $brandsModel = new BrandsModel();
+        $brandsModel->id = $id;
+        $brandsModel->brand = self::$_brand . ' another';
+        
+        $result = MappersHelper::setBrandsUpdate([$brandsModel]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{brands}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $id);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id, $result['id']);
+        $this->assertEquals(self::$_brand . ' another', $result['brand']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setColorsInsert
+     */
+    public function testSetColorsInsert()
+    {
+        if (!empty(\Yii::$app->db->createCommand('SELECT * FROM {{colors}}')->queryAll())) {
+            \Yii::$app->db->createCommand('DELETE FROM {{colors}}')->execute();
+        }
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{colors}}')->queryAll()));
+        
+        $colorsModel = new ColorsModel();
+        $colorsModel->color = self::$_color;
+        
+        $result = MappersHelper::setColorsInsert([$colorsModel]);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{colors}} LIMIT 1')->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        
+        $this->assertTrue(array_key_exists('id', $result));
+        $this->assertEquals(self::$_color, $result['color']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setColorsUpdate
+     */
+    public function testSetColorsUpdate()
+    {
+        if (empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{colors}} LIMIT 1')->queryScalar())) {
+            $id = self::$_id;
+            $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
+            $command->bindValues([':id'=>$id, ':color'=>self::$_color]);
+            $command->execute();
+        }
+        
+        $colorsModel = new ColorsModel();
+        $colorsModel->id = $id;
+        $colorsModel->color = self::$_color . ' another';
+        
+        $result = MappersHelper::setColorsUpdate([$colorsModel]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{colors}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $id);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id, $result['id']);
+        $this->assertEquals(self::$_color . ' another', $result['color']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getProductsColorsByIdColors
+     */
+    public function testGetProductsColorsByIdColors()
+    {
+        if (empty($id_colors = \Yii::$app->db->createCommand('SELECT [[id_colors]] FROM {{products_colors}} LIMIT 1')->queryScalar())) {
+            
+            if (empty($id_colors = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{colors}} LIMIT 1')->queryScalar())) {
+                $id_colors = self::$_id;
+                $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
+                $command->bindValues([':id'=>$id_colors, ':color'=>$id_color]);
+                $command->execute();
+            }
+            
+            if (empty($id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar())) {
+                $id_products = self::$_id;
+                $id_categories = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{categories}} LIMIT 1')->queryScalar();
+                $id_subcategory = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{subcategory}} LIMIT 1')->queryScalar();
+                $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+                $command->bindValues([':id'=>$id_products, ':id_categories'=>$id_categories, ':id_subcategory'=>$id_subcategory]);
+                $command->execute();
+            }
+            
+            $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} (id_products,id_colors) VALUES (:id_products,:id_colors)');
+            $command->bindValues([':id_products'=>$id_products, ':id_colors'=>$id_colors]);
+            $command->execute();
+        }
+        
+        $model = new ColorsModel();
+        $model->id = $id_colors;
+        
+        $result = MappersHelper::getProductsColorsByIdColors($model);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof ProductsColorsModel);
+        $this->assertFalse(empty($result[0]->id_products));
+        $this->assertFalse(empty($result[0]->id_colors));
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setColorsDelete
+     */
+    public function testSetColorsDelete()
+    {
+        $this->assertFalse(empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{colors}} LIMIT 1')->queryScalar()));
+        
+        $model = new ColorsModel();
+        $model->id = $id;
+        
+        $result = MappersHelper::setColorsDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{colors}}')->queryAll()));
     }
     
     /**

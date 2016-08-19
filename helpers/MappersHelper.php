@@ -85,25 +85,31 @@ use app\mappers\{ColorsMapper,
     ProductsBrandsByIdBrandsMapper,
     BrandsByIdMapper,
     BrandsDeleteMapper,
-    BrandsByBrandMapper};
+    BrandsByBrandMapper,
+    BrandsUpdateMapper,
+    ColorsByColorMapper,
+    ColorsInsertMapper,
+    ColorsUpdateMapper,
+    ProductsColorsByIdColorsMapper,
+    ColorsDeleteMapper};
 use app\models\{AddressModel, 
-    EmailsModel, 
-    PaymentsModel, 
-    PhonesModel, 
-    UsersModel, 
-    DeliveriesModel, 
-    CurrencyModel, 
-    CommentsModel, 
-    ProductsModel, 
-    CategoriesModel, 
-    SubcategoryModel, 
-    BrandsModel, 
-    ColorsModel, 
-    SizesModel,
+    BrandsModel,
+    CategoriesModel,
+    ColorsModel,
+    CommentsModel,
+    CurrencyModel,
+    DeliveriesModel,
+    EmailsModel,
     MailingListModel,
+    PaymentsModel,
+    PhonesModel,
     ProductsBrandsModel,
     ProductsColorsModel,
-    ProductsSizesModel};
+    ProductsModel,
+    ProductsSizesModel,
+    SizesModel,
+    SubcategoryModel,
+    UsersModel};
 
 /**
  * Коллекция методов для работы с БД
@@ -119,19 +125,19 @@ class MappersHelper
     
     /**
      * Создает новую запись CategoriesModel в БД
-     * @param array $categoriesModels массив объектов CategoriesModel
+     * @param array $categoriesModelArray массив объектов CategoriesModel
      * @return int
      */
-    public static function setCategoriesInsert(Array $categoriesModels)
+    public static function setCategoriesInsert(Array $categoriesModelArray)
     {
         try {
-            if (empty($categoriesModels) || !$categoriesModels[0] instanceof CategoriesModel) {
+            if (empty($categoriesModelArray) || !$categoriesModelArray[0] instanceof CategoriesModel) {
                 throw new ErrorException('Неверный формат данных!');
             }
             $categoriesInsertMapper = new CategoriesInsertMapper([
                 'tableName'=>'categories',
                 'fields'=>['name', 'seocode'],
-                'objectsArray'=>$categoriesModels,
+                'objectsArray'=>$categoriesModelArray,
             ]);
             if (!$result = $categoriesInsertMapper->setGroup()) {
                 return null;
@@ -144,19 +150,19 @@ class MappersHelper
     
     /**
      * Обновляет записи CategoriesModel в БД
-     * @param array $categoriesModels массив объектов CategoriesModel
+     * @param array $categoriesModelArray массив объектов CategoriesModel
      * @return int
      */
-    public static function setCategoriesUpdate(Array $categoriesModels)
+    public static function setCategoriesUpdate(Array $categoriesModelArray)
     {
         try {
-            if (!is_array($categoriesModels) || empty($categoriesModels) || !$categoriesModels[0] instanceof CategoriesModel) {
+            if (!is_array($categoriesModelArray) || empty($categoriesModelArray) || !$categoriesModelArray[0] instanceof CategoriesModel) {
                 throw new ErrorException('Переданы некорректные данные!');
             }
             $сategoriesUpdateMapper = new CategoriesUpdateMapper([
                 'tableName'=>'categories',
                 'fields'=>['id', 'name', 'seocode'],
-                'objectsArray'=>$categoriesModels
+                'objectsArray'=>$categoriesModelArray
             ]);
             $result = $сategoriesUpdateMapper->setGroup();
             if (!$result) {
@@ -461,6 +467,39 @@ class MappersHelper
     }
     
     /**
+     * Получает объект ColorsModel по ColorsModel->color
+     * @param object $colorsModel экземпляр ColorsModel
+     * @return objects ColorsModel
+     */
+    public static function getColorsByColor(ColorsModel $colorsModel)
+    {
+        try {
+            $colorsByColorMapper = new ColorsByColorMapper([
+                'tableName'=>'colors',
+                'fields'=>['id', 'color'],
+                'model'=>$colorsModel,
+            ]);
+            $hash = self::createHash([
+                ColorsByColorMapper::className(), 
+                $colorsByColorMapper->tableName, 
+                implode('', $colorsByColorMapper->fields),
+                $colorsByColorMapper->model->color,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $colorsModel = $colorsByColorMapper->getOneFromGroup();
+            if (!is_object($colorsModel) && !$colorsModel instanceof ColorsModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $colorsModel);
+            return $colorsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив объектов colors для текущего ProductsModel по id
      * @param object $productsModel экземпляр ProductsModel
      * @return array of objects ColorsModel
@@ -658,6 +697,84 @@ class MappersHelper
     }
     
     /**
+     * Создает новую запись ColorsModel в БД
+     * @param array $colorsModelArray массив объектов ColorsModel
+     * @return int
+     */
+    public static function setColorsInsert(Array $colorsModelArray)
+    {
+        try {
+            if (empty($colorsModelArray) || !$colorsModelArray[0] instanceof ColorsModel) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            $colorsInsertMapper = new ColorsInsertMapper([
+                'tableName'=>'colors',
+                'fields'=>['color'],
+                'objectsArray'=>$colorsModelArray,
+            ]);
+            if (!$result = $colorsInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет записи ColorsModel в БД
+     * @param array $colorsModelArray массив объектов ColorsModel
+     * @return int
+     */
+    public static function setColorsUpdate(Array $colorsModelArray)
+    {
+        try {
+            if (!is_array($colorsModelArray) || empty($colorsModelArray) || !$colorsModelArray[0] instanceof ColorsModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            $colorsUpdateMapper = new ColorsUpdateMapper([
+                'tableName'=>'colors',
+                'fields'=>['id', 'color'],
+                'objectsArray'=>$colorsModelArray
+            ]);
+            $result = $colorsUpdateMapper->setGroup();
+            if (!$result) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи ColorsModel из БД
+     * @param array $colorsModelArray массив ColorsModel
+     * @return int
+     */
+    public static function setColorsDelete(Array $colorsModelArray)
+    {
+        try {
+            if (empty($colorsModelArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$colorsModelArray[0] instanceof ColorsModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $colorsDeleteMapper = new ColorsDeleteMapper([
+                'tableName'=>'colors',
+                'objectsArray'=>$colorsModelArray,
+            ]);
+            if (!$result = $colorsDeleteMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив объектов brands
      * @param boolean $joinProducts, true - выбирать только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects BrandsModel
@@ -820,6 +937,32 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $brandsModel);
             return $brandsModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет записи BrandsModel в БД
+     * @param array $brandsModelArray массив объектов BrandsModel
+     * @return int
+     */
+    public static function setBrandsUpdate(Array $brandsModelArray)
+    {
+        try {
+            if (!is_array($brandsModelArray) || empty($brandsModelArray) || !$brandsModelArray[0] instanceof BrandsModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            $brandsUpdateMapper = new BrandsUpdateMapper([
+                'tableName'=>'brands',
+                'fields'=>['id', 'brand'],
+                'objectsArray'=>$brandsModelArray
+            ]);
+            $result = $brandsUpdateMapper->setGroup();
+            if (!$result) {
+                return null;
+            }
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -1918,21 +2061,21 @@ class MappersHelper
     
     /**
      * Удаляет записи SubcategoryModel из БД
-     * @param array $subcategoryModels массив SubcategoryModel
+     * @param array $subcategoryModelArray массив SubcategoryModel
      * @return int
      */
-    public static function setSubcategoryDelete(Array $subcategoryModels)
+    public static function setSubcategoryDelete(Array $subcategoryModelArray)
     {
         try {
-            if (empty($subcategoryModels)) {
+            if (empty($subcategoryModelArray)) {
                 throw new ErrorException('Неверный формат данных!');
             }
-            if (!$subcategoryModels[0] instanceof SubcategoryModel) {
+            if (!$subcategoryModelArray[0] instanceof SubcategoryModel) {
                 throw new ErrorException('Неверный тип данных!');
             }
             $subcategoryDeleteMapper = new SubcategoryDeleteMapper([
                 'tableName'=>'subcategory',
-                'objectsArray'=>$subcategoryModels,
+                'objectsArray'=>$subcategoryModelArray,
             ]);
             if (!$result = $subcategoryDeleteMapper->setGroup()) {
                 return null;
@@ -2265,12 +2408,45 @@ class MappersHelper
             if (self::compareHashes($hash)) {
                 return self::$_objectRegistry[$hash];
             }
-            $brandsArray = $productsBrandsByIdBrandsMapper->getGroup();
-            if (!is_array($brandsArray) || empty($brandsArray)) {
+            $productsBrandsArray = $productsBrandsByIdBrandsMapper->getGroup();
+            if (!is_array($productsBrandsArray) || empty($productsBrandsArray)) {
                 return null;
             }
-            self::createRegistryEntry($hash, $brandsArray);
-            return $brandsArray;
+            self::createRegistryEntry($hash, $productsBrandsArray);
+            return $productsBrandsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов ProductsColorsModel по ColorsModel->id
+     * @param object $colorsModel экземпляр ColorsModel
+     * @return array ProductsModel
+     */
+    public static function getProductsColorsByIdColors(ColorsModel $colorsModel)
+    {
+        try {
+            $productsColorsByIdColorsMapper = new ProductsColorsByIdColorsMapper([
+                'tableName'=>'products_colors',
+                'fields'=>['id_products', 'id_colors'],
+                'model'=>$colorsModel,
+            ]);
+            $hash = self::createHash([
+                ProductsColorsByIdColorsMapper::className(), 
+                $productsColorsByIdColorsMapper->tableName, 
+                implode('', $productsColorsByIdColorsMapper->fields), 
+                $productsColorsByIdColorsMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectRegistry[$hash];
+            }
+            $productsColorsArray = $productsColorsByIdColorsMapper->getGroup();
+            if (!is_array($productsColorsArray) || empty($productsColorsArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $productsColorsArray);
+            return $productsColorsArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

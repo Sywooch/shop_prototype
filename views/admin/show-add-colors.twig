@@ -1,0 +1,30 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+{{ use('yii/widgets/ActiveForm') }}
+
+<p>Здесь вы можете управлять цветами товаров</p>
+
+{% if colorsList %}
+    <p><strong>Текущие цвета</strong></p>
+    <ul>
+        {% for colorsModel in colorsList %}
+            <li>
+                {{ colorsModel.color }}<br>
+                <a href="{{ url.to({0:'admin/update-colors', 'id':colorsModel.id}) }}">Обновить цвет</a><br>
+                <a href="{{ url.to({0:'admin/delete-colors', 'id':colorsModel.id}) }}">Удалить цвет</a><br>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% include '@app/views/admin/add-colors-form.twig' %}
+
+
+
+
+

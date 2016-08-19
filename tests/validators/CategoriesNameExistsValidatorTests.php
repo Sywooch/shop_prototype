@@ -38,7 +38,7 @@ class CategoriesNameExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttribute()
     {
-        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_FORM]);
+        $model = new CategoriesModel();
         $model->name = self::$_name;
         
         $validator = new CategoriesNameExistsValidator();

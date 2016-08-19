@@ -43,7 +43,7 @@ class SubcategorySeocodeExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttribute()
     {
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+        $model = new SubcategoryModel();
         $model->seocode = self::$_subcategorySeocode;
         
         $validator = new SubcategorySeocodeExistsValidator();

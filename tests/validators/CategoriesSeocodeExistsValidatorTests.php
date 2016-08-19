@@ -38,7 +38,7 @@ class CategoriesSeocodeExistsValidatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testValidateAttribute()
     {
-        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_FORM]);
+        $model = new CategoriesModel();
         $model->seocode = self::$_seocode;
         
         $validator = new CategoriesSeocodeExistsValidator();

@@ -58,4 +58,5 @@ class MockModel extends AbstractBaseModel
     public $route;
     public $active;
     public $brand;
+    public $color;
 }

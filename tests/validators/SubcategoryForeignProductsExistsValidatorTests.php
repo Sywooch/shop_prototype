@@ -47,7 +47,7 @@ class SubcategoryForeignProductsExistsValidatorTests extends \PHPUnit_Framework_
      */
     public function testValidateAttribute()
     {
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
+        $model = new SubcategoryModel();
         $model->id = self::$_id;
         $model->name = self::$_name;
         
