@@ -30,9 +30,6 @@ class BrandsByBrandMapper extends AbstractGetMapper
             }
             
             if (empty($this->params)) {
-                if (empty(\Yii::$app->params['idKey'])) {
-                    throw new ErrorException('Не поределен idKey!');
-                }
                 if (empty($this->model->brand)) {
                     throw new ErrorException('Отсутствуют данные для выполнения запроса!');
                 }

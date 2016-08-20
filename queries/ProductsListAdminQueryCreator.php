@@ -28,9 +28,9 @@ class ProductsListAdminQueryCreator extends ProductsListQueryCreator
             
             $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
             if ($reflectionParent->hasProperty('config')) {
-                $parentCategoriesArrayFilters = $reflectionParent->getProperty('config')->getValue(new ProductsListQueryCreator);
+                $parentConfig = $reflectionParent->getProperty('config')->getValue(new ProductsListQueryCreator);
             }
-            $this->config = array_merge($parentCategoriesArrayFilters, $this->config);
+            $this->config = array_merge($parentConfig, $this->config);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

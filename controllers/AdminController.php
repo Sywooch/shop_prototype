@@ -799,6 +799,34 @@ class AdminController extends AbstractBaseController
         }
     }
     
+    /**
+     * Управляет текущим списком и добавлением размеров
+     */
+    public function actionShowAddSizes()
+    {
+        try {
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+            
+            if (\Yii::$app->request->isPost && $sizesModel->load(\Yii::$app->request->post())) {
+                if ($sizesModel->validate()) {
+                    echo 'ADDED!';
+                    /*if (!MappersHelper::setSizesInsert([$sizesModel])) {
+                        throw new ErrorException('Ошибка при сохранении цвета!');
+                    }*/
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['sizesModel'] = $sizesModel;
+            $renderArray['sizesList'] = MappersHelper::getSizesList(false);
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('show-add-sizes.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     public function behaviors()
     {
         return [

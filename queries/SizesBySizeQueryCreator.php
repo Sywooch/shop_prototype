@@ -8,15 +8,15 @@ use app\queries\AbstractSeletcQueryCreator;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class ColorsByColorQueryCreator extends AbstractSeletcQueryCreator
+class SizesBySizeQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
      * @var array массив данных для построения запроса
      */
     public $config = [
-        'colors'=>[
-            'tableName'=>'colors',
-            'tableFieldWhere'=>'color',
+        'sizes'=>[
+            'tableName'=>'sizes',
+            'tableFieldWhere'=>'size',
         ],
     ];
     
@@ -32,9 +32,9 @@ class ColorsByColorQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->config['colors']['tableName'],
-                $this->config['colors']['tableFieldWhere'],
-                $this->config['colors']['tableFieldWhere']
+                $this->config['sizes']['tableName'],
+                $this->config['sizes']['tableFieldWhere'],
+                $this->config['sizes']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

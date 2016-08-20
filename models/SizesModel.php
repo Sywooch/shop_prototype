@@ -17,6 +17,10 @@ class SizesModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы добавления продукта
     */
     const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
+    /**
+     * Сценарий загрузки данных из формы добавления SizesModel в БД
+    */
+    const GET_FROM_ADD_FORM = 'getFromAddForm';
     
     public $id;
     public $size;
@@ -30,6 +34,7 @@ class SizesModel extends AbstractBaseModel
         return [
             self::GET_FROM_DB=>['id', 'size'],
             self::GET_FROM_ADD_PRODUCT_FORM=>['idArray'],
+            self::GET_FROM_ADD_FORM=>['size'],
         ];
     }
     
@@ -37,6 +42,8 @@ class SizesModel extends AbstractBaseModel
     {
         return [
             [['idArray'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
+            [['size'], 'required', 'on'=>self::GET_FROM_ADD_FORM],
+            [['size'], 'app\validators\SizesSizeExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
         ];
     }
 }

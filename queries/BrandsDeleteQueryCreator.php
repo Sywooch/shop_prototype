@@ -13,7 +13,7 @@ class BrandsDeleteQueryCreator extends AbstractDeleteQueryCreator
     /**
      * @var array массив данных для построения запроса
      */
-    public $brandsArrayFilters = [
+    public $config = [
         'brands'=>[
             'tableName'=>'brands',
             'tableFieldWhere'=>'id',
@@ -35,7 +35,7 @@ class BrandsDeleteQueryCreator extends AbstractDeleteQueryCreator
             }
             
             $deleteArray = array();
-            $property = $this->brandsArrayFilters['brands']['tableFieldWhere'];
+            $property = $this->config['brands']['tableFieldWhere'];
             foreach ($this->_mapperObject->objectsArray as $key=>$object) {
                 $param = $key . '_' . $property;
                 $this->_mapperObject->params[':' . $param] = $object->$property;
@@ -43,8 +43,8 @@ class BrandsDeleteQueryCreator extends AbstractDeleteQueryCreator
             }
             
             $where = $this->getWhereIn(
-                $this->brandsArrayFilters['brands']['tableName'],
-                $this->brandsArrayFilters['brands']['tableFieldWhere'],
+                $this->config['brands']['tableName'],
+                $this->config['brands']['tableFieldWhere'],
                 implode(',:', $deleteArray)
             );
             if (!is_string($where)) {

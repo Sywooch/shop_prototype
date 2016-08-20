@@ -2,21 +2,36 @@
 
 namespace app\test\models;
 
+use app\tests\DbManager;
 use app\models\SizesModel;
+use app\helpers\MappersHelper;
 
 /**
  * Тестирует SizesModel
  */
 class SizesModelTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
     private static $_reflectionClass;
     private static $_id = 1;
     private static $_size = '46';
+    private static $_size2 = '35';
     private static $_idArray = [1, 24];
+    private static $_message = 'Такой размер уже добавлен!';
     
     public static function setUpBeforeClass()
     {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
         self::$_reflectionClass = new \ReflectionClass('app\models\SizesModel');
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
+        $command->bindValues([':id'=>self::$_id, ':size'=>self::$_size]);
+        $command->execute();
+        
+        if (!empty(MappersHelper::getObjectRegistry())) {
+            MappersHelper::cleanProperties();
+        }
     }
     
     /**
@@ -28,6 +43,7 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_FORM'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'size'));
@@ -42,16 +58,18 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_DB]);
         $model->attributes = ['id'=>self::$_id, 'size'=>self::$_size];
         
-        $this->assertFalse(empty($model->id));
-        $this->assertFalse(empty($model->size));
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_size, $model->size);
         
         $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
         $model->attributes = ['idArray'=>self::$_idArray];
         
-        $this->assertFalse(empty($model->idArray));
         $this->assertEquals(self::$_idArray, $model->idArray);
+        
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+        $model->attributes = ['size'=>self::$_size];
+        
+        $this->assertEquals(self::$_size, $model->size);
     }
     
     /**
@@ -71,5 +89,31 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+        
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('size', $model->errors));
+        
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+        $model->attributes = ['size'=>self::$_size];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('size', $model->errors));
+        $this->assertEquals(self::$_message, $model->errors['size'][0]);
+        
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+        $model->attributes = ['size'=>self::$_size2];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

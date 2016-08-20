@@ -91,7 +91,8 @@ use app\mappers\{ColorsMapper,
     ColorsInsertMapper,
     ColorsUpdateMapper,
     ProductsColorsByIdColorsMapper,
-    ColorsDeleteMapper};
+    ColorsDeleteMapper,
+    SizesBySizeMapper};
 use app\models\{AddressModel, 
     BrandsModel,
     CategoriesModel,
@@ -121,7 +122,7 @@ class MappersHelper
     /**
      * @var array реестр загруженных объектов
      */
-    private static $_objectRegistry = array();
+    private static $_objectsRegistry = array();
     
     /**
      * Создает новую запись CategoriesModel в БД
@@ -220,7 +221,7 @@ class MappersHelper
                 $categoriesMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $categoriesArray = $categoriesMapper->getGroup();
             if (!is_array($categoriesArray) || empty($categoriesArray)) {
@@ -253,7 +254,7 @@ class MappersHelper
                 $categoriesByIdMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $categoriesModel = $categoriesByIdMapper->getOneFromGroup();
             if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
@@ -286,7 +287,7 @@ class MappersHelper
                 $categoriesBySeocodeMapper->model->seocode,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $categoriesModel = $categoriesBySeocodeMapper->getOneFromGroup();
             if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
@@ -319,7 +320,7 @@ class MappersHelper
                 $categoriesByNameMapper->model->name,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $categoriesModel = $categoriesByNameMapper->getOneFromGroup();
             if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
@@ -351,7 +352,7 @@ class MappersHelper
                 $currencyMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $currencyArray = $currencyMapper->getGroup();
             if (!is_array($currencyArray) || empty($currencyArray)) {
@@ -388,7 +389,7 @@ class MappersHelper
                 $colorsMapper->queryClass,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $colorsArray = $colorsMapper->getGroup();
             if (!is_array($colorsArray) || empty($colorsArray)) {
@@ -420,7 +421,7 @@ class MappersHelper
                 $colorsAdminMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $colorsArray = $colorsAdminMapper->getGroup();
             if (!is_array($colorsArray) || empty($colorsArray)) {
@@ -453,7 +454,7 @@ class MappersHelper
                 $colorsByIdMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $colorsModel = $colorsByIdMapper->getOneFromGroup();
             if (!is_object($colorsModel) && !$colorsModel instanceof ColorsModel) {
@@ -486,7 +487,7 @@ class MappersHelper
                 $colorsByColorMapper->model->color,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $colorsModel = $colorsByColorMapper->getOneFromGroup();
             if (!is_object($colorsModel) && !$colorsModel instanceof ColorsModel) {
@@ -521,7 +522,7 @@ class MappersHelper
                 $colorsMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $colorsArray = $colorsMapper->getGroup();
             if (!is_array($colorsArray) || empty($colorsArray)) {
@@ -558,7 +559,7 @@ class MappersHelper
                 $sizesMapper->queryClass,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $sizesArray = $sizesMapper->getGroup();
             if (!is_array($sizesArray) || empty($sizesArray)) {
@@ -590,7 +591,7 @@ class MappersHelper
                 $sizesAdminMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $sizesArray = $sizesAdminMapper->getGroup();
             if (!is_array($sizesArray) || empty($sizesArray)) {
@@ -623,7 +624,7 @@ class MappersHelper
                 $sizesByIdMapper->model->id
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $sizesModel = $sizesByIdMapper->getOneFromGroup();
             if (!is_object($sizesModel) && !$sizesModel instanceof SizesModel) {
@@ -658,7 +659,7 @@ class MappersHelper
                 $sizesForProductMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $sizesArray = $sizesForProductMapper->getGroup();
             if (!is_array($sizesArray) || empty($sizesArray)) {
@@ -666,6 +667,39 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $sizesArray);
             return $sizesArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект SizesModel по SizesModel->size
+     * @param object $sizesModel экземпляр SizesModel
+     * @return objects SizesModel
+     */
+    public static function getSizesBySize(SizesModel $sizesModel)
+    {
+        try {
+            $sizesBySizeMapper = new SizesBySizeMapper([
+                'tableName'=>'sizes',
+                'fields'=>['id', 'size'],
+                'model'=>$sizesModel,
+            ]);
+            $hash = self::createHash([
+                SizesBySizeMapper::className(), 
+                $sizesBySizeMapper->tableName, 
+                implode('', $sizesBySizeMapper->fields),
+                $sizesBySizeMapper->model->size,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectsRegistry[$hash];
+            }
+            $sizesModel = $sizesBySizeMapper->getOneFromGroup();
+            if (!is_object($sizesModel) && !$sizesModel instanceof SizesModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $sizesModel);
+            return $sizesModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -798,7 +832,7 @@ class MappersHelper
                 $brandsMapper->queryClass,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsArray = $brandsMapper->getGroup();
             if (!is_array($brandsArray) || empty($brandsArray)) {
@@ -830,7 +864,7 @@ class MappersHelper
                 $brandsAdminMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsArray = $brandsAdminMapper->getGroup();
             if (!is_array($brandsArray) || empty($brandsArray)) {
@@ -863,7 +897,7 @@ class MappersHelper
                 $brandsForProductMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsModel = $brandsForProductMapper->getOneFromGroup();
             if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
@@ -896,7 +930,7 @@ class MappersHelper
                 $brandsByIdMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsModel = $brandsByIdMapper->getOneFromGroup();
             if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
@@ -929,7 +963,7 @@ class MappersHelper
                 $brandsByBrandMapper->model->brand,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsModel = $brandsByBrandMapper->getOneFromGroup();
             if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
@@ -1017,7 +1051,7 @@ class MappersHelper
                 $addressByAddressMapper->model->postcode,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $addressModel = $addressByAddressMapper->getOneFromGroup();
             if (!is_object($addressModel) && !$addressModel instanceof AddressModel) {
@@ -1073,7 +1107,7 @@ class MappersHelper
                 $addressByIdMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $addressModel = $addressByIdMapper->getOneFromGroup();
             if (!is_object($addressModel) || !$addressModel instanceof AddressModel) {
@@ -1105,7 +1139,7 @@ class MappersHelper
                 $phonesByPhoneMapper->model->phone,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $phonesModel = $phonesByPhoneMapper->getOneFromGroup();
             if (!is_object($phonesModel) && !$phonesModel instanceof PhonesModel) {
@@ -1161,7 +1195,7 @@ class MappersHelper
                 $phonesByIdMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $phonesModel = $phonesByIdMapper->getOneFromGroup();
             if (!is_object($phonesModel) || !$phonesModel instanceof PhonesModel) {
@@ -1194,7 +1228,7 @@ class MappersHelper
                 $deliveriesByIdMapper->model->id
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $deliveriesModel = $deliveriesByIdMapper->getOneFromGroup();
             if (!is_object($deliveriesModel) || !$deliveriesModel instanceof DeliveriesModel) {
@@ -1226,7 +1260,7 @@ class MappersHelper
                 $deliveriesMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $deliveriesArray = $deliveriesMapper->getGroup();
             if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
@@ -1259,7 +1293,7 @@ class MappersHelper
                 $paymentsByIdMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $paymentsModel = $paymentsByIdMapper->getOneFromGroup();
             if (!is_object($paymentsModel) || !$paymentsModel instanceof PaymentsModel) {
@@ -1289,7 +1323,7 @@ class MappersHelper
                 implode('', $paymentsMapper->fields), 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $paymentsArray = $paymentsMapper->getGroup();
             if (!is_array($paymentsArray) || empty($paymentsArray)) {
@@ -1370,7 +1404,7 @@ class MappersHelper
                 $purchasesForUserMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $purchasesArray = $purchasesForUserMapper->getGroup();
             if (!is_array($purchasesArray) || empty($purchasesArray)) {
@@ -1448,7 +1482,7 @@ class MappersHelper
                 $emailsByEmailMapper->model->email, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $emailsModel = $emailsByEmailMapper->getOneFromGroup();
             if (!is_object($emailsModel) && !$emailsModel instanceof EmailsModel) {
@@ -1504,7 +1538,7 @@ class MappersHelper
                 $emailsByIdMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $emailsModel = $emailsByIdMapper->getOneFromGroup();
             if (!is_object($emailsModel) || !$emailsModel instanceof EmailsModel) {
@@ -1559,7 +1593,7 @@ class MappersHelper
                 $currencyByIdMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $currencyModel = $currencyByIdMapper->getOneFromGroup();
             if (!is_object($currencyModel) && !$currencyModel instanceof CurrencyModel) {
@@ -1590,7 +1624,7 @@ class MappersHelper
                 implode('', $currencyByMainMapper->fields), 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $currencyModel = $currencyByMainMapper->getOneFromGroup();
             if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
@@ -1643,7 +1677,7 @@ class MappersHelper
                 $productsMapper->getDataSorting, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsArray = $productsMapper->getGroup();
             if (!is_array($brandsArray) || empty($brandsArray) || !$brandsArray[0] instanceof ProductsModel) {
@@ -1673,7 +1707,7 @@ class MappersHelper
                 $productsSearchMapper->orderByType, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsArray = $productsSearchMapper->getGroup();
             if (!is_array($brandsArray) || empty($brandsArray) || !$brandsArray[0] instanceof ProductsModel) {
@@ -1706,7 +1740,7 @@ class MappersHelper
                 $productsByCodeMapper->model->code, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $productsModel = $productsByCodeMapper->getOneFromGroup();
             if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
@@ -1739,7 +1773,7 @@ class MappersHelper
                 $productsByIdMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $productsModel = $productsByIdMapper->getOneFromGroup();
             if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
@@ -1772,7 +1806,7 @@ class MappersHelper
                 $productsByIdCategoriesMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsArray = $productsByIdCategoriesMapper->getGroup();
             if (!is_array($brandsArray) || empty($brandsArray)) {
@@ -1805,7 +1839,7 @@ class MappersHelper
                 $productsByIdSubcategoryMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $brandsArray = $productsByIdSubcategoryMapper->getGroup();
             if (!is_array($brandsArray) || empty($brandsArray)) {
@@ -1930,7 +1964,7 @@ class MappersHelper
                 $usersByLoginMapper->model->id_emails, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $usersModel = $usersByLoginMapper->getOneFromGroup();
             if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
@@ -1963,7 +1997,7 @@ class MappersHelper
                 $usersByIdMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $usersModel = $usersByIdMapper->getOneFromGroup();
             if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
@@ -1995,7 +2029,7 @@ class MappersHelper
                 $rulesMapper->orderByField, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $rulesArray = $rulesMapper->getGroup();
             if (!is_array($rulesArray) || empty($rulesArray)) {
@@ -2105,7 +2139,7 @@ class MappersHelper
                 $subcategoryForCategoryMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $subcategoryArray = $subcategoryForCategoryMapper->getGroup();
             if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
@@ -2137,7 +2171,7 @@ class MappersHelper
                 $subcategoryMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $subcategoryArray = $subcategoryMapper->getGroup();
             if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
@@ -2170,7 +2204,7 @@ class MappersHelper
                 $subcategoryByIdMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $subcategoryModel = $subcategoryByIdMapper->getOneFromGroup();
             if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
@@ -2203,7 +2237,7 @@ class MappersHelper
                 $subcategoryBySeocodeMapper->model->seocode, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $subcategoryModel = $subcategoryBySeocodeMapper->getOneFromGroup();
             if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
@@ -2236,7 +2270,7 @@ class MappersHelper
                 $subcategoryByNameMapper->model->name,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $subcategoryModel = $subcategoryByNameMapper->getOneFromGroup();
             if (!is_object($subcategoryModel) && !$subcategoryModel instanceof SubcategoryModel) {
@@ -2276,7 +2310,7 @@ class MappersHelper
                 $similarProductsMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $similarsArray = $similarProductsMapper->getGroup();
             if (!is_array($similarsArray) || empty($similarsArray)) {
@@ -2317,7 +2351,7 @@ class MappersHelper
                 $relatedProductsMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $relatedArray = $relatedProductsMapper->getGroup();
             if (!is_array($relatedArray) || empty($relatedArray)) {
@@ -2350,7 +2384,7 @@ class MappersHelper
                 $commentsForProductMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $commentsArray = $commentsForProductMapper->getGroup();
             if (!is_array($commentsArray) || empty($commentsArray)) {
@@ -2406,7 +2440,7 @@ class MappersHelper
                 $productsBrandsByIdBrandsMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $productsBrandsArray = $productsBrandsByIdBrandsMapper->getGroup();
             if (!is_array($productsBrandsArray) || empty($productsBrandsArray)) {
@@ -2439,7 +2473,7 @@ class MappersHelper
                 $productsColorsByIdColorsMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $productsColorsArray = $productsColorsByIdColorsMapper->getGroup();
             if (!is_array($productsColorsArray) || empty($productsColorsArray)) {
@@ -2612,7 +2646,7 @@ class MappersHelper
                 $mailingListMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $mailingListArray = $mailingListMapper->getGroup();
             if (!is_array($mailingListArray) || empty($mailingListArray)) {
@@ -2675,7 +2709,7 @@ class MappersHelper
                 $mailingListByIdMapper->model->id,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $mailingListModel = $mailingListByIdMapper->getOneFromGroup();
             if (!is_object($mailingListModel) && !$mailingListModel instanceof MailingListModel) {
@@ -2710,7 +2744,7 @@ class MappersHelper
                 $mailingListForEmailMapper->model->email,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $mailingList = $mailingListForEmailMapper->getGroup();
             if (!is_array($mailingList) || empty($mailingList)) {
@@ -2765,7 +2799,7 @@ class MappersHelper
                 $adminMenuMapper->orderByField,
             ]);
             if (self::compareHashes($hash)) {
-                return self::$_objectRegistry[$hash];
+                return self::$_objectsRegistry[$hash];
             }
             $adminMenuArray = $adminMenuMapper->getGroup();
             if (!is_array($adminMenuArray) || empty($adminMenuArray)) {
@@ -2785,7 +2819,7 @@ class MappersHelper
     public static function cleanProperties()
     {
         try {
-            self::$_objectRegistry = array();
+            self::$_objectsRegistry = array();
             return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -2793,7 +2827,7 @@ class MappersHelper
     }
     
     /**
-     * Сравнивает хеш текущего объекта с хешами-ключами в MappersHelper::$_objectRegistry, 
+     * Сравнивает хеш текущего объекта с хешами-ключами в MappersHelper::$_objectsRegistry, 
      * возвращает true, если совпадение найдено, иначе false
      * @params string хеш
      * @return boolean
@@ -2801,7 +2835,7 @@ class MappersHelper
     private static function compareHashes(string $hash)
     {
         try {
-            if (!array_key_exists($hash, self::$_objectRegistry)) {
+            if (!array_key_exists($hash, self::$_objectsRegistry)) {
                 return false;
             }
             return true;
@@ -2811,7 +2845,7 @@ class MappersHelper
     }
     
     /**
-     * Сохраняет загруженные данные в реестре MappersHelper::$_objectRegistry
+     * Сохраняет загруженные данные в реестре MappersHelper::$_objectsRegistry
      * @param string $hash хеш сохраняемого объекта, который станет ключом в реестре
      * @param object $object объект, который необходимо сохранить в реестре
      * @return boolean
@@ -2819,7 +2853,7 @@ class MappersHelper
     private static function createRegistryEntry(string $hash, $object)
     {
         try {
-            self::$_objectRegistry[$hash] = $object;
+            self::$_objectsRegistry[$hash] = $object;
             return true;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
@@ -2841,13 +2875,13 @@ class MappersHelper
     }
     
     /**
-     * Возвращает массив реестра MappersHelper::$_objectRegistry
+     * Возвращает массив реестра MappersHelper::$_objectsRegistry
      * @return array
      */
     public static function getObjectRegistry()
     {
         try {
-            return self::$_objectRegistry;
+            return self::$_objectsRegistry;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

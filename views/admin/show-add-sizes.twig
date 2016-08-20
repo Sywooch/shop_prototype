@@ -1,0 +1,30 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+{{ use('yii/widgets/ActiveForm') }}
+
+<p>Здесь вы можете управлять размерами товаров</p>
+
+{% if sizesList %}
+    <p><strong>Текущие размеры</strong></p>
+    <ul>
+        {% for sizesModel in sizesList %}
+            <li>
+                {{ sizesModel.size }}<br>
+                <a href="{{ url.to({0:'admin/update-sizes', 'id':sizesModel.id}) }}">Обновить цвет</a><br>
+                <a href="{{ url.to({0:'admin/delete-sizes', 'id':sizesModel.id}) }}">Удалить цвет</a><br>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% include '@app/views/admin/add-sizes-form.twig' %}
+
+
+
+
+

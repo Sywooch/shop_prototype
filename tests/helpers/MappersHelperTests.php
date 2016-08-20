@@ -107,7 +107,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_objectRegistry'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_objectsRegistry'));
     }
     
     /**
@@ -2099,6 +2099,20 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(1, $result);
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{colors}}')->queryAll()));
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getSizesBySize
+     */
+    public function testGetSizesBySize()
+    {
+        $sizesModel = new SizesModel();
+        $sizesModel->size = self::$_size;
+        
+        $result = MappersHelper::getSizesBySize($sizesModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof SizesModel);
     }
     
     /**
