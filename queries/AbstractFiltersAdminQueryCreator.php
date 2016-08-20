@@ -10,6 +10,21 @@ use app\queries\AbstractFiltersQueryCreator;
  */
 abstract class AbstractFiltersAdminQueryCreator extends AbstractFiltersQueryCreator
 {
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
+            if ($reflectionParent->hasProperty('config')) {
+                $parentConfig = $reflectionParent->getProperty('config')->getValue(new ProductsListQueryCreator);
+            }
+            $this->config = array_merge($parentConfig, $this->config);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     /**
      * Инициирует создание SELECT запроса, выбирая сценарий на основе данных из объекта Yii::$app->request
      */

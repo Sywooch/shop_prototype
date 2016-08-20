@@ -27,10 +27,10 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $join = $this->getJoin(
-                $this->categoriesArrayFilters['tableOne']['firstTableName'],
-                $this->categoriesArrayFilters['tableOne']['firstTableFieldOn'],
-                $this->categoriesArrayFilters['tableOne']['secondTableName'],
-                $this->categoriesArrayFilters['tableOne']['secondTableFieldOn']
+                $this->config['tableOne']['firstTableName'],
+                $this->config['tableOne']['firstTableFieldOn'],
+                $this->config['tableOne']['secondTableName'],
+                $this->config['tableOne']['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -70,10 +70,10 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
     {
         try {
             $join = $this->getJoin(
-                $this->categoriesArrayFilters['tableTwo']['firstTableName'],
-                $this->categoriesArrayFilters['tableTwo']['firstTableFieldOn'],
-                $this->categoriesArrayFilters['tableTwo']['secondTableName'],
-                $this->categoriesArrayFilters['tableTwo']['secondTableFieldOn']
+                $this->config['tableTwo']['firstTableName'],
+                $this->config['tableTwo']['firstTableFieldOn'],
+                $this->config['tableTwo']['secondTableName'],
+                $this->config['tableTwo']['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -98,10 +98,10 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
             }
             
             $join = $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
+                $this->config[\Yii::$app->params['categoryKey']]['firstTableName'],
+                $this->config[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -133,8 +133,8 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
                 \Yii::$app->params['categoryKey']
             );
             if (!is_string($where)) {
@@ -184,10 +184,10 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
             }
             
             $join = $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
+                $this->config[\Yii::$app->params['subCategoryKey']]['firstTableName'],
+                $this->config[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
+                $this->config[\Yii::$app->params['subCategoryKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -218,8 +218,8 @@ abstract class AbstractFiltersQueryCreator extends ProductsListQueryCreator
                 throw new ErrorException('Не поределен subCategoryKey!');
             }
             $where = $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldWhere'],
+                $this->config[\Yii::$app->params['subCategoryKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['subCategoryKey']]['secondTableFieldWhere'],
                 \Yii::$app->params['subCategoryKey']
             );
             if (!is_string($where)) {

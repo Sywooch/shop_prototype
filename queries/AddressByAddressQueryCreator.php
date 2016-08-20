@@ -11,9 +11,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class AddressByAddressQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'address'=>[
             'tableName'=>'address', 
             'tableFieldWhereAddress'=>'address', 
@@ -35,11 +35,11 @@ class AddressByAddressQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            if (array_key_exists(':' . $this->categoriesArrayFilters['address']['tableFieldWhereAddress'], $this->_mapperObject->params)) {
+            if (array_key_exists(':' . $this->config['address']['tableFieldWhereAddress'], $this->_mapperObject->params)) {
                 $where = $this->getWhere(
-                        $this->categoriesArrayFilters['address']['tableName'],
-                    $this->categoriesArrayFilters['address']['tableFieldWhereAddress'],
-                    $this->categoriesArrayFilters['address']['tableFieldWhereAddress']
+                        $this->config['address']['tableName'],
+                    $this->config['address']['tableFieldWhereAddress'],
+                    $this->config['address']['tableFieldWhereAddress']
                 );
                 if (!is_string($where)) {
                     throw new ErrorException('Ошибка при построении запроса!');
@@ -47,11 +47,11 @@ class AddressByAddressQueryCreator extends AbstractSeletcQueryCreator
                 $this->_mapperObject->query .= $where;
             }
             
-            if (array_key_exists(':' . $this->categoriesArrayFilters['address']['tableFieldWhereCity'], $this->_mapperObject->params)) {
+            if (array_key_exists(':' . $this->config['address']['tableFieldWhereCity'], $this->_mapperObject->params)) {
                 $where = $this->getWhere(
-                    $this->categoriesArrayFilters['address']['tableName'],
-                    $this->categoriesArrayFilters['address']['tableFieldWhereCity'],
-                    $this->categoriesArrayFilters['address']['tableFieldWhereCity']
+                    $this->config['address']['tableName'],
+                    $this->config['address']['tableFieldWhereCity'],
+                    $this->config['address']['tableFieldWhereCity']
                 );
                 if (!is_string($where)) {
                     throw new ErrorException('Ошибка при построении запроса!');
@@ -59,11 +59,11 @@ class AddressByAddressQueryCreator extends AbstractSeletcQueryCreator
                 $this->_mapperObject->query .= $where;
             }
             
-            if (array_key_exists(':' . $this->categoriesArrayFilters['address']['tableFieldWhereCountry'], $this->_mapperObject->params)) {
+            if (array_key_exists(':' . $this->config['address']['tableFieldWhereCountry'], $this->_mapperObject->params)) {
                 $where = $this->getWhere(
-                    $this->categoriesArrayFilters['address']['tableName'],
-                    $this->categoriesArrayFilters['address']['tableFieldWhereCountry'],
-                    $this->categoriesArrayFilters['address']['tableFieldWhereCountry']
+                    $this->config['address']['tableName'],
+                    $this->config['address']['tableFieldWhereCountry'],
+                    $this->config['address']['tableFieldWhereCountry']
                 );
                 if (!is_string($where)) {
                     throw new ErrorException('Ошибка при построении запроса!');
@@ -71,11 +71,11 @@ class AddressByAddressQueryCreator extends AbstractSeletcQueryCreator
                 $this->_mapperObject->query .= $where;
             }
             
-            if (array_key_exists(':' . $this->categoriesArrayFilters['address']['tableFieldWherePostcode'], $this->_mapperObject->params)) {
+            if (array_key_exists(':' . $this->config['address']['tableFieldWherePostcode'], $this->_mapperObject->params)) {
                 $where = $this->getWhere(
-                    $this->categoriesArrayFilters['address']['tableName'],
-                    $this->categoriesArrayFilters['address']['tableFieldWherePostcode'],
-                    $this->categoriesArrayFilters['address']['tableFieldWherePostcode']
+                    $this->config['address']['tableName'],
+                    $this->config['address']['tableFieldWherePostcode'],
+                    $this->config['address']['tableFieldWherePostcode']
                 );
                 if (!is_string($where)) {
                     throw new ErrorException('Ошибка при построении запроса!');

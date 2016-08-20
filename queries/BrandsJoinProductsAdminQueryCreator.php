@@ -11,9 +11,9 @@ use app\queries\{AbstractFiltersAdminQueryCreator,
 class BrandsJoinProductsAdminQueryCreator extends AbstractFiltersAdminQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'tableOne'=>[
             'firstTableName'=>'brands',
             'firstTableFieldOn'=>'id',
@@ -27,19 +27,4 @@ class BrandsJoinProductsAdminQueryCreator extends AbstractFiltersAdminQueryCreat
             'secondTableFieldOn'=>'id',
         ],
     ];
-    
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
-            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
-                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
-            }
-            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
 }

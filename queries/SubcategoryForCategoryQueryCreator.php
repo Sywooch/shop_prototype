@@ -11,15 +11,15 @@ use app\queries\AbstractSeletcQueryCreator;
 class SubcategoryForCategoryQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
-        'categories'=>[ # Данные для выборки из таблицы categories
-            'firstTableName'=>'subcategory', # Имя первой таблицы участвующей в объединении
-            'firstTableFieldOn'=>'id_categories', # Имя поля первой таблицы, по которому проходит объединение
-            'secondTableName'=>'categories', # Имя второй таблицы участвующей в объединении
-            'secondTableFieldOn'=>'id', # Имя поля второй таблицы, по которому проходит объединение
-            'secondTableFieldWhere'=>'id', # Имя поля второй таблицы, по которому делается выборка с помощью WHERE
+    public $config = [
+        'categories'=>[
+            'firstTableName'=>'subcategory',
+            'firstTableFieldOn'=>'id_categories',
+            'secondTableName'=>'categories',
+            'secondTableFieldOn'=>'id',
+            'secondTableFieldWhere'=>'id',
         ],
     ];
     
@@ -39,10 +39,10 @@ class SubcategoryForCategoryQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $join = $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
+                $this->config[\Yii::$app->params['categoryKey']]['firstTableName'],
+                $this->config[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -50,8 +50,8 @@ class SubcategoryForCategoryQueryCreator extends AbstractSeletcQueryCreator
             $this->_mapperObject->query .= $join;
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
                 \Yii::$app->params['idKey']
             );
             if (!is_string($where)) {

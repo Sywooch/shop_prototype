@@ -11,9 +11,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class AddressByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'address'=>[
             'tableName'=>'address', 
             'tableFieldWhere'=>'id', 
@@ -32,9 +32,9 @@ class AddressByIdQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['address']['tableName'],
-                $this->categoriesArrayFilters['address']['tableFieldWhere'],
-                $this->categoriesArrayFilters['address']['tableFieldWhere']
+                $this->config['address']['tableName'],
+                $this->config['address']['tableFieldWhere'],
+                $this->config['address']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

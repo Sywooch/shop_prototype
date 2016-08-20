@@ -11,9 +11,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class BrandsByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $brandsArrayFilters = [
+    public $config = [
         'brands'=>[
             'tableName'=>'brands',
             'tableFieldWhere'=>'id',
@@ -32,9 +32,9 @@ class BrandsByIdQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->brandsArrayFilters['brands']['tableName'],
-                $this->brandsArrayFilters['brands']['tableFieldWhere'],
-                $this->brandsArrayFilters['brands']['tableFieldWhere']
+                $this->config['brands']['tableName'],
+                $this->config['brands']['tableFieldWhere'],
+                $this->config['brands']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

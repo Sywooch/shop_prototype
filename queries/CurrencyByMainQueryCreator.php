@@ -11,9 +11,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class CurrencyByMainQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'currency'=>[
             'tableName'=>'currency', 
             'tableFieldWhere'=>'main', 
@@ -32,9 +32,9 @@ class CurrencyByMainQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhereNotEqual(
-                $this->categoriesArrayFilters['currency']['tableName'],
-                $this->categoriesArrayFilters['currency']['tableFieldWhere'],
-                $this->categoriesArrayFilters['currency']['tableFieldWhere']
+                $this->config['currency']['tableName'],
+                $this->config['currency']['tableFieldWhere'],
+                $this->config['currency']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

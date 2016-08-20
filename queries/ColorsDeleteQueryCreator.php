@@ -11,9 +11,9 @@ use app\queries\AbstractDeleteQueryCreator;
 class ColorsDeleteQueryCreator extends AbstractDeleteQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $colorsArrayFilters = [
+    public $config = [
         'colors'=>[
             'tableName'=>'colors',
             'tableFieldWhere'=>'id',
@@ -35,7 +35,7 @@ class ColorsDeleteQueryCreator extends AbstractDeleteQueryCreator
             }
             
             $deleteArray = array();
-            $property = $this->colorsArrayFilters['colors']['tableFieldWhere'];
+            $property = $this->config['colors']['tableFieldWhere'];
             foreach ($this->_mapperObject->objectsArray as $key=>$object) {
                 $param = $key . '_' . $property;
                 $this->_mapperObject->params[':' . $param] = $object->$property;
@@ -43,8 +43,8 @@ class ColorsDeleteQueryCreator extends AbstractDeleteQueryCreator
             }
             
             $where = $this->getWhereIn(
-                $this->colorsArrayFilters['colors']['tableName'],
-                $this->colorsArrayFilters['colors']['tableFieldWhere'],
+                $this->config['colors']['tableName'],
+                $this->config['colors']['tableFieldWhere'],
                 implode(',:', $deleteArray)
             );
             if (!is_string($where)) {

@@ -11,9 +11,9 @@ use app\queries\AbstractDeleteQueryCreator;
 class EmailsMailingListDeleteQueryCreator extends AbstractDeleteQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'emails_mailing_list'=>[
             'tableName'=>'emails_mailing_list',
             'tableFieldWhere'=>'id_email',
@@ -45,7 +45,7 @@ class EmailsMailingListDeleteQueryCreator extends AbstractDeleteQueryCreator
                 foreach ($this->_mapperObject->objectsArray as $key=>$object) {
                     $param = $key . '_' . $field;
                     $this->_mapperObject->params[':' . $param] = $object->$field;
-                    if ($field == $this->categoriesArrayFilters['emails_mailing_list']['tableFieldWhere']) {
+                    if ($field == $this->config['emails_mailing_list']['tableFieldWhere']) {
                         $id_email_array[] = $param;
                     } else {
                         $id_mailing_list_array[] = $param;
@@ -54,8 +54,8 @@ class EmailsMailingListDeleteQueryCreator extends AbstractDeleteQueryCreator
             }
             
             $where = $this->getWhereIn(
-                $this->categoriesArrayFilters['emails_mailing_list']['tableName'],
-                $this->categoriesArrayFilters['emails_mailing_list']['tableFieldWhere'],
+                $this->config['emails_mailing_list']['tableName'],
+                $this->config['emails_mailing_list']['tableFieldWhere'],
                 implode(',:', $id_email_array)
             );
             if (!is_string($where)) {
@@ -64,8 +64,8 @@ class EmailsMailingListDeleteQueryCreator extends AbstractDeleteQueryCreator
             $this->_mapperObject->query .= $where;
             
             $where = $this->getWhereIn(
-                $this->categoriesArrayFilters['emails_mailing_list']['tableName'],
-                $this->categoriesArrayFilters['emails_mailing_list']['tableFieldWhereTwo'],
+                $this->config['emails_mailing_list']['tableName'],
+                $this->config['emails_mailing_list']['tableFieldWhereTwo'],
                 implode(',:', $id_mailing_list_array)
             );
             if (!is_string($where)) {

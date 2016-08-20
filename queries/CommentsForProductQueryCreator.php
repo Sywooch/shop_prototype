@@ -11,10 +11,10 @@ use app\queries\AbstractSeletcQueryCreator;
 class CommentsForProductQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
-        'comments'=>[ # Данные для выборки из таблицы emails
+    public $config = [
+        'comments'=>[
             'tableName'=>'comments', 
             'tableFieldWhere'=>'id_products', 
         ],
@@ -32,9 +32,9 @@ class CommentsForProductQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['comments']['tableName'],
-                $this->categoriesArrayFilters['comments']['tableFieldWhere'],
-                $this->categoriesArrayFilters['comments']['tableFieldWhere']
+                $this->config['comments']['tableName'],
+                $this->config['comments']['tableFieldWhere'],
+                $this->config['comments']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

@@ -11,9 +11,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class CategoriesBySeocodeQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'categories'=>[
             'tableName'=>'categories',
             'tableFieldWhere'=>'seocode',
@@ -32,9 +32,9 @@ class CategoriesBySeocodeQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['categories']['tableName'],
-                $this->categoriesArrayFilters['categories']['tableFieldWhere'],
-                $this->categoriesArrayFilters['categories']['tableFieldWhere']
+                $this->config['categories']['tableName'],
+                $this->config['categories']['tableFieldWhere'],
+                $this->config['categories']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

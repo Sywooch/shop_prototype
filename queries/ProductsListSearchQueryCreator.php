@@ -11,9 +11,9 @@ use app\queries\ProductsListQueryCreator;
 class ProductsListSearchQueryCreator extends ProductsListQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'search'=>[
             'tableName'=>'products',
             'tableFieldWhere'=>'id',
@@ -26,10 +26,10 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
             parent::init();
             
             $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
-            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
-                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
+            if ($reflectionParent->hasProperty('config')) {
+                $parentConfig = $reflectionParent->getProperty('config')->getValue(new ProductsListQueryCreator);
             }
-            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
+            $this->config = array_merge($parentConfig, $this->config);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -80,8 +80,8 @@ class ProductsListSearchQueryCreator extends ProductsListQueryCreator
                     $searchID[] = $data;
                 }
                 $where = $this->getWhereIn(
-                    $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableName'],
-                    $this->categoriesArrayFilters[\Yii::$app->params['searchKey']]['tableFieldWhere'],
+                    $this->config[\Yii::$app->params['searchKey']]['tableName'],
+                    $this->config[\Yii::$app->params['searchKey']]['tableFieldWhere'],
                     implode(',:', $searchID)
                 );
                 if (!is_string($where)) {

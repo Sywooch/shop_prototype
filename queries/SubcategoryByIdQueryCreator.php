@@ -11,12 +11,12 @@ use app\queries\AbstractSeletcQueryCreator;
 class SubcategoryByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $subcategoryArrayFilters = [
-        'subcategory'=>[ # Данные для выборки из таблицы products
-            'tableName'=>'subcategory', # Имя таблицы участвующей в объединении
-            'tableFieldWhere'=>'id', # Имя поля таблицы, по которому делается выборка с помощью WHERE
+    public $config = [
+        'subcategory'=>[
+            'tableName'=>'subcategory', 
+            'tableFieldWhere'=>'id', 
         ],
     ];
     
@@ -32,9 +32,9 @@ class SubcategoryByIdQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->subcategoryArrayFilters['subcategory']['tableName'],
-                $this->subcategoryArrayFilters['subcategory']['tableFieldWhere'],
-                $this->subcategoryArrayFilters['subcategory']['tableFieldWhere']
+                $this->config['subcategory']['tableName'],
+                $this->config['subcategory']['tableFieldWhere'],
+                $this->config['subcategory']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

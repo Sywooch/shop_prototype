@@ -8,23 +8,18 @@ use app\queries\AbstractFiltersQueryCreator;
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-abstract class AbstractFiltersCLientQueryCreator extends AbstractFiltersQueryCreator
+abstract class AbstractFiltersClientQueryCreator extends AbstractFiltersQueryCreator
 {
-    /**
-     * @var array массив для выборки данных
-     */
-    public $config = [
-        'active'=>[
-            'tableName'=>'products',
-            'tableFieldWhere'=>'active',
-        ],
-    ];
-    
     public function init()
     {
         try {
             parent::init();
-            $this->categoriesArrayFilters = array_merge($this->categoriesArrayFilters, $this->config);
+            
+            $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
+            if ($reflectionParent->hasProperty('config')) {
+                $parentConfig = $reflectionParent->getProperty('config')->getValue(new ProductsListQueryCreator);
+            }
+            $this->config = array_merge($parentConfig, $this->config);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -68,15 +63,15 @@ abstract class AbstractFiltersCLientQueryCreator extends AbstractFiltersQueryCre
     {
         try {
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['active']['tableName'],
-                $this->categoriesArrayFilters['active']['tableFieldWhere'],
-                $this->categoriesArrayFilters['active']['tableFieldWhere']
+                $this->config['active']['tableName'],
+                $this->config['active']['tableFieldWhere'],
+                $this->config['active']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $this->_mapperObject->query .= $where;
-            $this->_mapperObject->params[':' . $this->categoriesArrayFilters['active']['tableFieldWhere']] = true;
+            $this->_mapperObject->params[':' . $this->config['active']['tableFieldWhere']] = true;
             
             return true;
         } catch (\Exception $e) {

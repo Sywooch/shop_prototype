@@ -11,17 +11,15 @@ use app\queries\ProductsListQueryCreator;
 class RelatedProductsQueryCreator extends ProductsListQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'id'=>[
             'firstTableName'=>'products', 
             'firstTableFieldOn'=>'id', 
             'secondTableName'=>'related_products', 
             'secondTableFieldOn'=>'id_related_products', 
-            'unionSecondTableFieldOn'=>'id_products', 
             'secondTableFieldWhere'=>'id_products', 
-            'unionSecondTableFieldWhere'=>'id_related_products', 
         ],
     ];
     
@@ -31,10 +29,10 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
             parent::init();
             
             $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
-            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
-                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
+            if ($reflectionParent->hasProperty('config')) {
+                $parentConfig = $reflectionParent->getProperty('config')->getValue(new ProductsListQueryCreator);
             }
-            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
+            $this->config = array_merge($parentConfig, $this->config);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -58,10 +56,10 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
             }
             
             $join = $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableFieldOn']
+                $this->config[\Yii::$app->params['idKey']]['firstTableName'],
+                $this->config[\Yii::$app->params['idKey']]['firstTableFieldOn'],
+                $this->config[\Yii::$app->params['idKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['idKey']]['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -73,8 +71,8 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableFieldWhere'],
+                $this->config[\Yii::$app->params['idKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['idKey']]['secondTableFieldWhere'],
                 \Yii::$app->params['idKey']
             );
             if (!is_string($where)) {
@@ -136,10 +134,10 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
             }
             
             $join = $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
+                $this->config[\Yii::$app->params['categoryKey']]['firstTableName'],
+                $this->config[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -147,10 +145,10 @@ class RelatedProductsQueryCreator extends ProductsListQueryCreator
             $this->_mapperObject->query .= $join;
             
             $join = $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
+                $this->config[\Yii::$app->params['subCategoryKey']]['firstTableName'],
+                $this->config[\Yii::$app->params['subCategoryKey']]['firstTableFieldOn'],
+                $this->config[\Yii::$app->params['subCategoryKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['subCategoryKey']]['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');

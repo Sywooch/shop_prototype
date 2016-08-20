@@ -11,9 +11,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class SubcategoryByNameQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $subcategoryArrayFilters = [
+    public $config = [
         'subcategory'=>[
             'tableName'=>'subcategory',
             'tableFieldWhere'=>'name',
@@ -32,9 +32,9 @@ class SubcategoryByNameQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->subcategoryArrayFilters['subcategory']['tableName'],
-                $this->subcategoryArrayFilters['subcategory']['tableFieldWhere'],
-                $this->subcategoryArrayFilters['subcategory']['tableFieldWhere']
+                $this->config['subcategory']['tableName'],
+                $this->config['subcategory']['tableFieldWhere'],
+                $this->config['subcategory']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

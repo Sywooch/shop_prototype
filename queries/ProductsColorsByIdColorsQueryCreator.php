@@ -11,9 +11,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class ProductsColorsByIdColorsQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'products_colors'=>[
             'tableName'=>'products_colors',
             'tableFieldWhere'=>'id_colors',
@@ -32,9 +32,9 @@ class ProductsColorsByIdColorsQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['products_colors']['tableName'],
-                $this->categoriesArrayFilters['products_colors']['tableFieldWhere'],
-                $this->categoriesArrayFilters['products_colors']['tableFieldWhere']
+                $this->config['products_colors']['tableName'],
+                $this->config['products_colors']['tableFieldWhere'],
+                $this->config['products_colors']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

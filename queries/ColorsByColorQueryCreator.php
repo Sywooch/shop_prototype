@@ -11,7 +11,7 @@ use app\queries\AbstractSeletcQueryCreator;
 class ColorsByColorQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
     public $colorsArrayFilters = [
         'colors'=>[

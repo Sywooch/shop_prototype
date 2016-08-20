@@ -10,15 +10,15 @@ use app\queries\AbstractSeletcForAnythingQueryCreator;
 class SizesForProductQueryCreator extends AbstractSeletcForAnythingQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
-        'id'=>[ # Данные для выборки из таблицы sizes
-            'firstTableName'=>'sizes', # Имя первой таблицы участвующей в объединении
-            'firstTableFieldOn'=>'id', # Имя поля первой таблицы, по которому проходит объединение
-            'secondTableName'=>'products_sizes', # Имя второй таблицы участвующей в объединении
-            'secondTableFieldOn'=>'id_sizes', # Имя поля второй таблицы, по которому проходит объединение
-            'secondTableFieldWhere'=>'id_products', # Имя поля второй таблицы, по которому делается выборка с помощью WHERE
+    public $config = [
+        'id'=>[
+            'firstTableName'=>'sizes',
+            'firstTableFieldOn'=>'id',
+            'secondTableName'=>'products_sizes',
+            'secondTableFieldOn'=>'id_sizes',
+            'secondTableFieldWhere'=>'id_products',
         ],
     ];
 }

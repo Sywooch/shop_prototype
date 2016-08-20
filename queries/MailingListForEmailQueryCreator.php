@@ -12,9 +12,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class MailingListForEmailQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных с учетом категории или(и) подкатегории, а также фильтров
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'mailing_list'=>[
             'firstTableName'=>'mailing_list',
             'firstTableFieldOn'=>'id',
@@ -46,10 +46,10 @@ class MailingListForEmailQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $join = $this->getJoin(
-                $this->categoriesArrayFilters['mailing_list']['firstTableName'],
-                $this->categoriesArrayFilters['mailing_list']['firstTableFieldOn'],
-                $this->categoriesArrayFilters['mailing_list']['secondTableName'],
-                $this->categoriesArrayFilters['mailing_list']['secondTableFieldOn']
+                $this->config['mailing_list']['firstTableName'],
+                $this->config['mailing_list']['firstTableFieldOn'],
+                $this->config['mailing_list']['secondTableName'],
+                $this->config['mailing_list']['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -57,10 +57,10 @@ class MailingListForEmailQueryCreator extends AbstractSeletcQueryCreator
             $this->_mapperObject->query .= $join;
             
             $join = $this->getJoin(
-                $this->categoriesArrayFilters['emails']['firstTableName'],
-                $this->categoriesArrayFilters['emails']['firstTableFieldOn'],
-                $this->categoriesArrayFilters['emails']['secondTableName'],
-                $this->categoriesArrayFilters['emails']['secondTableFieldOn']
+                $this->config['emails']['firstTableName'],
+                $this->config['emails']['firstTableFieldOn'],
+                $this->config['emails']['secondTableName'],
+                $this->config['emails']['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -69,9 +69,9 @@ class MailingListForEmailQueryCreator extends AbstractSeletcQueryCreator
             
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['emails_where']['tableName'],
-                $this->categoriesArrayFilters['emails_where']['tableField'],
-                $this->categoriesArrayFilters['emails_where']['tableFieldWhere']
+                $this->config['emails_where']['tableName'],
+                $this->config['emails_where']['tableField'],
+                $this->config['emails_where']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

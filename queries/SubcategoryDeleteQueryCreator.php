@@ -11,9 +11,9 @@ use app\queries\AbstractDeleteQueryCreator;
 class SubcategoryDeleteQueryCreator extends AbstractDeleteQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $subcategoryArrayFilters = [
+    public $config = [
         'subcategory'=>[
             'tableName'=>'subcategory',
             'tableFieldWhere'=>'id',
@@ -35,7 +35,7 @@ class SubcategoryDeleteQueryCreator extends AbstractDeleteQueryCreator
             }
             
             $deleteArray = array();
-            $property = $this->subcategoryArrayFilters['subcategory']['tableFieldWhere'];
+            $property = $this->config['subcategory']['tableFieldWhere'];
             foreach ($this->_mapperObject->objectsArray as $key=>$object) {
                 $param = $key . '_' . $property;
                 $this->_mapperObject->params[':' . $param] = $object->$property;
@@ -43,8 +43,8 @@ class SubcategoryDeleteQueryCreator extends AbstractDeleteQueryCreator
             }
             
             $where = $this->getWhereIn(
-                $this->subcategoryArrayFilters['subcategory']['tableName'],
-                $this->subcategoryArrayFilters['subcategory']['tableFieldWhere'],
+                $this->config['subcategory']['tableName'],
+                $this->config['subcategory']['tableFieldWhere'],
                 implode(',:', $deleteArray)
             );
             if (!is_string($where)) {

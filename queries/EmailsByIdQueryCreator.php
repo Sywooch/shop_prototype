@@ -11,9 +11,9 @@ use app\queries\AbstractSeletcQueryCreator;
 class EmailsByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'emails'=>[ 
             'tableName'=>'emails', 
             'tableFieldWhere'=>'id', 
@@ -32,9 +32,9 @@ class EmailsByIdQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['emails']['tableName'],
-                $this->categoriesArrayFilters['emails']['tableFieldWhere'],
-                $this->categoriesArrayFilters['emails']['tableFieldWhere']
+                $this->config['emails']['tableName'],
+                $this->config['emails']['tableFieldWhere'],
+                $this->config['emails']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

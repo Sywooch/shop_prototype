@@ -11,7 +11,7 @@ use app\queries\AbstractDeleteQueryCreator;
 class BrandsDeleteQueryCreator extends AbstractDeleteQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
     public $brandsArrayFilters = [
         'brands'=>[

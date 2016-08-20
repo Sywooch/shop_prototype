@@ -11,12 +11,12 @@ use app\queries\AbstractSeletcQueryCreator;
 class ProductsByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
-        'id'=>[ # Данные для выборки из таблицы products
-            'tableName'=>'products', # Имя таблицы участвующей в объединении
-            'tableFieldWhere'=>'id', # Имя поля таблицы, по которому делается выборка с помощью WHERE
+    public $config = [
+        'id'=>[
+            'tableName'=>'products',
+            'tableFieldWhere'=>'id',
         ],
     ];
     
@@ -35,8 +35,8 @@ class ProductsByIdQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['tableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['tableFieldWhere'],
+                $this->config[\Yii::$app->params['idKey']]['tableName'],
+                $this->config[\Yii::$app->params['idKey']]['tableFieldWhere'],
                 \Yii::$app->params['idKey']
             );
             if (!is_string($where)) {

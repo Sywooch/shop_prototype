@@ -12,9 +12,9 @@ use app\queries\ProductsListQueryCreator;
 class ProductsListAdminQueryCreator extends ProductsListQueryCreator
 {
     /**
-     * @var array массив для выборки данных с учетом категории или(и) подкатегории, а также фильтров
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
+    public $config = [
         'products'=>[
             'tableName'=>'products',
             'tableFieldWhere'=>'active',
@@ -27,10 +27,10 @@ class ProductsListAdminQueryCreator extends ProductsListQueryCreator
             parent::init();
             
             $reflectionParent = new \ReflectionClass('app\queries\ProductsListQueryCreator');
-            if ($reflectionParent->hasProperty('categoriesArrayFilters')) {
-                $parentCategoriesArrayFilters = $reflectionParent->getProperty('categoriesArrayFilters')->getValue(new ProductsListQueryCreator);
+            if ($reflectionParent->hasProperty('config')) {
+                $parentCategoriesArrayFilters = $reflectionParent->getProperty('config')->getValue(new ProductsListQueryCreator);
             }
-            $this->categoriesArrayFilters = array_merge($parentCategoriesArrayFilters, $this->categoriesArrayFilters);
+            $this->config = array_merge($parentCategoriesArrayFilters, $this->config);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -73,15 +73,15 @@ class ProductsListAdminQueryCreator extends ProductsListQueryCreator
                 }
                 if (!is_null($filterActive)) {
                     $where = $this->getWhere(
-                        $this->categoriesArrayFilters['products']['tableName'],
-                        $this->categoriesArrayFilters['products']['tableFieldWhere'],
-                        $this->categoriesArrayFilters['products']['tableFieldWhere']
+                        $this->config['products']['tableName'],
+                        $this->config['products']['tableFieldWhere'],
+                        $this->config['products']['tableFieldWhere']
                     );
                     if (!is_string($where)) {
                         throw new ErrorException('Ошибка при построении запроса!');
                     }
                     $this->_mapperObject->query .= $where;
-                    $this->_mapperObject->params[':' . $this->categoriesArrayFilters['products']['tableFieldWhere']] = $filterActive;
+                    $this->_mapperObject->params[':' . $this->config['products']['tableFieldWhere']] = $filterActive;
                 }
             }
             

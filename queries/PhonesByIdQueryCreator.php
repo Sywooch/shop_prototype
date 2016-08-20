@@ -11,12 +11,12 @@ use app\queries\AbstractSeletcQueryCreator;
 class PhonesByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив для выборки данных
+     * @var array массив данных для построения запроса
      */
-    public $categoriesArrayFilters = [
-        'phones'=>[ # Данные для выборки из таблицы products
-            'tableName'=>'phones', # Имя таблицы участвующей в объединении
-            'tableFieldWhere'=>'id', # Имя поля таблицы, по которому делается выборка с помощью WHERE
+    public $config = [
+        'phones'=>[
+            'tableName'=>'phones',
+            'tableFieldWhere'=>'id',
         ],
     ];
     
@@ -32,9 +32,9 @@ class PhonesByIdQueryCreator extends AbstractSeletcQueryCreator
             }
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters['phones']['tableName'],
-                $this->categoriesArrayFilters['phones']['tableFieldWhere'],
-                $this->categoriesArrayFilters['phones']['tableFieldWhere']
+                $this->config['phones']['tableName'],
+                $this->config['phones']['tableFieldWhere'],
+                $this->config['phones']['tableFieldWhere']
             );
             if (!is_string($where)) {
                 throw new ErrorException('Ошибка при построении запроса!');

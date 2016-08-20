@@ -25,10 +25,10 @@ abstract class AbstractSeletcForAnythingQueryCreator extends AbstractSeletcQuery
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $join = $this->getJoin(
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['firstTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['firstTableFieldOn'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableFieldOn']
+                $this->config[\Yii::$app->params['idKey']]['firstTableName'],
+                $this->config[\Yii::$app->params['idKey']]['firstTableFieldOn'],
+                $this->config[\Yii::$app->params['idKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['idKey']]['secondTableFieldOn']
             );
             if (!is_string($join)) {
                 throw new ErrorException('Ошибка при построении запроса!');
@@ -36,8 +36,8 @@ abstract class AbstractSeletcForAnythingQueryCreator extends AbstractSeletcQuery
             $this->_mapperObject->query .= $join;
             
             $where = $this->getWhere(
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableName'],
-                $this->categoriesArrayFilters[\Yii::$app->params['idKey']]['secondTableFieldWhere'],
+                $this->config[\Yii::$app->params['idKey']]['secondTableName'],
+                $this->config[\Yii::$app->params['idKey']]['secondTableFieldWhere'],
                 \Yii::$app->params['idKey']
             );
             if (!is_string($where)) {
