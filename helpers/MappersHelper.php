@@ -81,6 +81,7 @@ use app\mappers\{AddressByAddressMapper,
     SizesForProductMapper,
     SizesInsertMapper,
     SizesMapper,
+    SizesUpdateMapper,
     SubcategoryByIdMapper,
     SubcategoryByNameMapper,
     SubcategoryBySeocodeMapper,
@@ -773,6 +774,32 @@ class MappersHelper
                 'objectsArray'=>$sizesModelArray,
             ]);
             if (!$result = $sizesInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет записи SizesModel в БД
+     * @param array $sizesModelArray массив объектов SizesModel
+     * @return int
+     */
+    public static function setSizesUpdate(Array $sizesModelArray)
+    {
+        try {
+            if (!is_array($sizesModelArray) || empty($sizesModelArray) || !$sizesModelArray[0] instanceof SizesModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            $sizesUpdateMapper = new SizesUpdateMapper([
+                'tableName'=>'sizes',
+                'fields'=>['id', 'size'],
+                'objectsArray'=>$sizesModelArray
+            ]);
+            $result = $sizesUpdateMapper->setGroup();
+            if (!$result) {
                 return null;
             }
             return $result;

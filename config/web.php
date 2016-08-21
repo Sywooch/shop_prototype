@@ -124,6 +124,7 @@ $config = [
                 'admin/update-colors/<id:\d+>'=>'admin/update-colors',
                 'admin/delete-colors/<id:\d+>'=>'admin/delete-colors',
                 'admin/show-sizes'=>'admin/show-add-sizes',
+                'admin/update-sizes/<id:\d+>'=>'admin/update-sizes',
                 'admin/data-convert'=>'admin/data-convert',
                 'admin/download-products'=>'admin/download-products',
                 'admin/update-product'=>'admin/update-product',

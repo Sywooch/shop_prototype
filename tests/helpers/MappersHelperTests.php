@@ -44,7 +44,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_subcategorySeocode = 'boots';
     private static $_color = 'gray';
     private static $_code = 'Fghr8';
-    private static $_size = '46';
+    private static $_size = 46;
     private static $_brand = 'Some Brand';
     private static $_address = 'Some address';
     private static $_city = 'Some city';
@@ -2139,6 +2139,36 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof SizesModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setSizesUpdate
+     */
+    public function testSetSizesUpdate()
+    {
+        if (empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{sizes}} LIMIT 1')->queryScalar())) {
+            $id = self::$_id;
+            $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
+            $command->bindValues([':id'=>$id, ':size'=>self::$_size]);
+            $command->execute();
+        }
+        
+        $sizesModel = new SizesModel();
+        $sizesModel->id = $id;
+        $sizesModel->size = self::$_size + 7;
+        
+        $result = MappersHelper::setSizesUpdate([$sizesModel]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{sizes}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $id);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id, $result['id']);
+        $this->assertEquals(self::$_size + 7, $result['size']);
     }
     
     /**

@@ -13,6 +13,8 @@
     <input type="submit" value="Clean"/>
 {{ active_form_end() }}
 
+{% if colorsList and sizesList and brandsList %}
+
 <p><strong>Filters</strong></p>
 
 {% set form=active_form_begin({'id':'add-filters-admin-form', 'action':url.to({0:'filter/add-filters-admin'}), 'method':'POST'}) %}
@@ -34,3 +36,5 @@
 {% set form=active_form_begin({'id':'clean-filters-admin-form', 'action':url.to({0:'filter/clean-filters-admin'}), 'method':'POST'}) %}
     <input type="submit" value="Clean" />
 {{ active_form_end() }}
+
+{% endif %}

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\helpers\MappersHelper;
 
 /**
  * Представляет данные таблицы sizes
@@ -21,6 +22,10 @@ class SizesModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы добавления SizesModel в БД
     */
     const GET_FROM_ADD_FORM = 'getFromAddForm';
+    /**
+     * Сценарий загрузки данных из формы обновления SizesModel в БД
+    */
+    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
     
     public $id;
     public $size;
@@ -35,6 +40,7 @@ class SizesModel extends AbstractBaseModel
             self::GET_FROM_DB=>['id', 'size'],
             self::GET_FROM_ADD_PRODUCT_FORM=>['idArray'],
             self::GET_FROM_ADD_FORM=>['size'],
+            self::GET_FROM_UPDATE_FORM=>['id', 'size'],
         ];
     }
     
@@ -43,7 +49,13 @@ class SizesModel extends AbstractBaseModel
         return [
             [['idArray'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
             [['size'], 'required', 'on'=>self::GET_FROM_ADD_FORM],
+            [['size'], 'app\validators\DecimalValidator', 'on'=>self::GET_FROM_ADD_FORM],
             [['size'], 'app\validators\SizesSizeExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
+            [['id', 'size'], 'required', 'on'=>self::GET_FROM_UPDATE_FORM],
+            [['size'], 'app\validators\DecimalValidator', 'on'=>self::GET_FROM_UPDATE_FORM],
+            [['size'], 'app\validators\SizesSizeExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+                return $model->size != MappersHelper::getSizesById($model)->size;
+            }],
         ];
     }
 }

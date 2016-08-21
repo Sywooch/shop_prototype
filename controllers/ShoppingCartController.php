@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use yii\helpers\Url;
 use yii\base\ErrorException;
+use yii\db\Transaction;
 use app\controllers\AbstractBaseController;
 use app\helpers\{ModelsInstancesHelper, 
     MappersHelper, 
@@ -260,6 +261,8 @@ class ShoppingCartController extends AbstractBaseController
                 return $this->redirect(Url::to(['shopping-cart/address-contacts']));
             }
             
+            $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+            
             if (!empty(\Yii::$app->cart->user->emails) && is_object(\Yii::$app->cart->user->emails)) {
                 if ($emailsModel = MappersHelper::getEmailsByEmail(\Yii::$app->cart->user->emails)) {
                     \Yii::$app->cart->user->emails = $emailsModel;
@@ -331,15 +334,19 @@ class ShoppingCartController extends AbstractBaseController
                 if (!\Yii::$app->cart->clearProductsArray()) {
                     throw new ErrorException('Ошибка при очистке корзины!');
                 }
+                
             } else {
                 throw new ErrorException('Ошибка при сохранении связи пользователя с покупкой в процессе оформления заказа!');
             }
+            
+            $transaction->commit();
             
             $renderArray = array();
             $renderArray['emailsModel'] = $emailsModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('thank.twig', $renderArray);
         } catch (\Exception $e) {
+            $transaction->rollBack();
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }

@@ -5,6 +5,7 @@ namespace app\controllers;
 use yii\helpers\{Url,
     ArrayHelper};
 use yii\base\ErrorException;
+use yii\db\Transaction;
 use app\controllers\AbstractBaseController;
 use app\models\{EmailsModel,
     MailingListModel,
@@ -26,33 +27,36 @@ class NewsletterController extends AbstractBaseController
     public function actionSubscribe()
     {
         try {
-            $renderArray = array();
-            $renderArray['emailsModel'] = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-            $renderArray['mailingListModel'] = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
-            $renderArray['mailingList'] = $renderArray['mailingListModel']->allMailingList;
+            $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+            $subscriptions = $mailingListModel->allMailingList;
             
             if (!empty(\Yii::$app->shopUser->id_emails) && !empty(\Yii::$app->shopUser->id)) {
-                if ($currentSubscribes = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>\Yii::$app->shopUser->emails->email]))) {
-                    if ($notExists = array_diff(ArrayHelper::getColumn($renderArray['mailingList'], 'id'), ArrayHelper::getColumn($currentSubscribes, 'id'))) {
-                        $mailingList = [];
-                        $currentMailingList = [];
-                        foreach ($renderArray['mailingList'] as $object) {
-                            if (in_array($object->id, $notExists)) {
-                                $mailingList[] = $object;
+                if ($currentSubscriptions = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>\Yii::$app->shopUser->emails->email]))) {
+                    if ($notSubscribed = array_diff(ArrayHelper::getColumn($subscriptions, 'id'), ArrayHelper::getColumn($currentSubscriptions, 'id'))) {
+                        $futureSubscriptions = [];
+                        $currentSubscriptions = [];
+                        foreach ($subscriptions as $object) {
+                            if (in_array($object->id, $notSubscribed)) {
+                                $futureSubscriptions[] = $object;
                                 continue;
                             }
-                            $currentMailingList[] = $object;
+                            $currentSubscriptions[] = $object;
                         }
-                        $renderArray['mailingList'] = $mailingList;
-                        $renderArray['currentMailingList'] = $currentMailingList;
+                        $subscriptions = $futureSubscriptions;
                     } else {
-                        $renderArray['currentMailingList'] = $renderArray['mailingList'];
-                        $renderArray['mailingList'] = [];
+                        $currentSubscriptions = $subscriptions;
+                        $subscriptions = [];
                     }
                 }
-                $renderArray['emailsModel']->email = \Yii::$app->shopUser->emails->email;
+                $emailsModel->email = \Yii::$app->shopUser->emails->email;
             }
             
+            $renderArray = array();
+            $renderArray['emailsModel'] = $emailsModel;
+            $renderArray['mailingListModel'] = $mailingListModel;
+            $renderArray['futureSubscriptions'] = $subscriptions;
+            $renderArray['currentSubscriptions'] = $currentSubscriptions;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('subscribe.twig', $renderArray);
         } catch (\Exception $e) {
@@ -73,6 +77,9 @@ class NewsletterController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $mailingListModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $mailingListModel->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
                     if ($emailsModelFromDb = MappersHelper::getEmailsByEmail($emailsModel)) {
                         $emailsModel = $emailsModelFromDb;
                     } else {
@@ -91,6 +98,7 @@ class NewsletterController extends AbstractBaseController
                         throw new ErrorException('Ошибка при сохранении связи email с подписками на рассылки!');
                     }
                     
+                    $transaction->commit();
                 }
             } else {
                 return $this->redirect(Url::to(['newsletter/subscribe']));
@@ -117,6 +125,9 @@ class NewsletterController extends AbstractBaseController
             }
             return $this->render('subscribe-ok.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -129,18 +140,17 @@ class NewsletterController extends AbstractBaseController
     public function actionUnsubscribe()
     {
         try {
-            $renderArray = array();
-            $renderArray['mailingList'] = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>\Yii::$app->request->get('email')]));
-            
             if (\Yii::$app->request->isGet && !empty(\Yii::$app->request->get('email')) && !empty(\Yii::$app->request->get('hash'))) {
                 $hash = HashHelper::createHash([\Yii::$app->request->get('email'), \Yii::$app->params['hashSalt']]);
                 if ($hash != \Yii::$app->request->get('hash')) {
-                    return $this->render('error-unsubscribe.twig');
+                    return $this->render('error-unsubscribe.twig', ModelsInstancesHelper::getInstancesArray());
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
+            $renderArray = array();
+            $renderArray['mailingList'] = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>\Yii::$app->request->get('email')]));
             $renderArray['emailsModel'] = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM, 'email'=>\Yii::$app->request->get('email')]);
             $renderArray['mailingListModel'] = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
@@ -163,6 +173,9 @@ class NewsletterController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $mailingListModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $mailingListModel->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
                     if (empty($mailingListModel->idFromForm)) {
                         throw new ErrorException('Отсутствуют необходимые данные!');
                     }
@@ -173,6 +186,8 @@ class NewsletterController extends AbstractBaseController
                     if (!MappersHelper::setEmailsMailingListDelete($emailsMailingList)) {
                         throw new ErrorException('Ошибка при удалении данных из БД!');
                     }
+                    
+                    $transaction->commit();
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
@@ -183,6 +198,9 @@ class NewsletterController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('unsubscribe-ok.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }

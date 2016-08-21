@@ -37,16 +37,20 @@ abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator
     {
         try {
             $this->_mapperObject->query = 'SELECT ';
+            
             $fields = $this->addFields();
             if (!is_string($fields)) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $this->_mapperObject->query .= $fields;
+            
             $name = $this->addTableName();
+            
             if (!is_string($name)) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             $this->_mapperObject->query .= $name;
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

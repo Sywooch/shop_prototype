@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
+use yii\db\Transaction;
 use yii\web\{UploadedFile,
     Response};
 use yii\helpers\{Url,
@@ -74,6 +75,9 @@ class AdminController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post()) && $brandsModel->load(\Yii::$app->request->post()) && $colorsModel->load(\Yii::$app->request->post()) && $sizesModel->load(\Yii::$app->request->post())) {
                 $productsModel->imagesToLoad = UploadedFile::getInstances($productsModel, 'imagesToLoad');
                 if ($productsModel->validate() && $brandsModel->validate() && $colorsModel->validate() && $sizesModel->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
                     if (!PicturesHelper::createPictures($productsModel->imagesToLoad)) {
                         throw new ErrorException('Ошибка при обработке изображений!');
                     }
@@ -95,10 +99,10 @@ class AdminController extends AbstractBaseController
                     if (!MappersHelper::setProductsSizesInsert($productsModel, $sizesModel)) {
                         throw new ErrorException('Ошибка при сохранении ProductsSizesModel!');
                     }
+                    
+                    $transaction->commit();
+                    
                     return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModel->categories, 'subcategory'=>$productsModel->subcategory, 'id'=>$productsModel->id]));
-                } else {
-                    print_r($productsModel);
-                    exit();
                 }
             }
             
@@ -113,6 +117,14 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('add-product.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+                if (!empty($productsModel->images)) {
+                    if (!PicturesHelper::deletePictures($productsModel->images)) {
+                        throw new ErrorException('Ошибка при удалении изображений!');
+                    }
+                }
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -197,9 +209,11 @@ class AdminController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if ($productsModel->validate()) {
                     if ($productsModel->active != MappersHelper::getProductsById($productsModel)->active) {
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                         if (!MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel], 'fields'=>['id', 'active']])) {
                             throw new ErrorException('Ошибка при обновлении данных!');
                         }
+                        $transaction->commit();
                     }
                 }
             } else {
@@ -207,6 +221,9 @@ class AdminController extends AbstractBaseController
             }
             return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -231,6 +248,9 @@ class AdminController extends AbstractBaseController
                     $productsModel->imagesToLoad = UploadedFile::getInstances($productsModel, 'imagesToLoad');
                 }
                 if ($productsModel->validate() && $brandsModel->validate() && $colorsModel->validate() && $sizesModel->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
                     if (!empty($productsModel->imagesToLoad)) {
                         if (!PicturesHelper::createPictures($productsModel->imagesToLoad)) {
                             throw new ErrorException('Ошибка при обработке изображений!');
@@ -278,12 +298,22 @@ class AdminController extends AbstractBaseController
                         }
                     }
                     
+                    $transaction->commit();
+                    
                     return $this->redirect(Url::to(['admin/show-product-detail', 'id'=>$productsModel->id]));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
             }
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+                if (!empty($productsModel->imagesToLoad && !empty($productsModel->images))) {
+                    if (!PicturesHelper::deletePictures($productsModel->images)) {
+                        throw new ErrorException('Ошибка при удалении изображений!');
+                    }
+                }
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -299,6 +329,9 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if ($productsModel->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
                     if (!MappersHelper::setProductsDelete([$productsModel])) {
                         throw new ErrorException('Ошибка при удалении категории!');
                     }
@@ -307,11 +340,16 @@ class AdminController extends AbstractBaseController
                             throw new ErrorException('Ошибка при удалении изображений!');
                         }
                     }
+                    
+                    $transaction->commit();
                 }
             }
             
             return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -389,9 +427,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setCategoriesInsert([$categoriesModel])) {
                         throw new ErrorException('Ошибка при сохранении категории!');
                     }
+                    $transaction->commit();
                 }
             }
             
@@ -400,6 +440,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-categories.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -416,9 +459,11 @@ class AdminController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
                     if (array_diff_assoc($categoriesModel->attributes, MappersHelper::getCategoriesById($categoriesModel)->attributes)) {
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                         if (!MappersHelper::setCategoriesUpdate([$categoriesModel])) {
                             throw new ErrorException('Ошибка при обновлении CategoriesModel!');
                         }
+                        $transaction->commit();
                     }
                     return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
@@ -440,6 +485,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-categories.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -455,9 +503,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setCategoriesDelete([$categoriesModel])) {
                         throw new ErrorException('Ошибка при удалении категории!');
                     }
+                    $transaction->commit();
                     return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
             } else {
@@ -477,6 +527,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-categories.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -492,9 +545,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setSubcategoryInsert([$subcategoryModel])) {
                         throw new ErrorException('Ошибка при сохранении категории!');
                     }
+                    $transaction->commit();
                 }
             }
             
@@ -511,6 +566,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -527,9 +585,11 @@ class AdminController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
                     if (array_diff_assoc($subcategoryModel->attributes, MappersHelper::getSubcategoryById($subcategoryModel)->attributes)) {
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                         if (!MappersHelper::setSubcategoryUpdate([$subcategoryModel])) {
                             throw new ErrorException('Ошибка при обновлении SubcategoryModel!');
                         }
+                        $transaction->commit();
                     }
                     return $this->redirect(Url::to(['admin/show-add-subcategory']));
                 }
@@ -551,6 +611,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -566,9 +629,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setSubcategoryDelete([$subcategoryModel])) {
                         throw new ErrorException('Ошибка при удалении подкатегории!');
                     }
+                    $transaction->commit();
                     return $this->redirect(Url::to(['admin/show-add-subcategory']));
                 }
             } else {
@@ -588,6 +653,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-subcategory.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -603,9 +671,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setBrandsInsert([$brandsModel])) {
                         throw new ErrorException('Ошибка при сохранении бренда!');
                     }
+                    $transaction->commit();
                 }
             }
             
@@ -615,6 +685,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-brands.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -631,9 +704,11 @@ class AdminController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
                     if (array_diff_assoc($brandsModel->attributes, MappersHelper::getBrandsById($brandsModel)->attributes)) {
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                         if (!MappersHelper::setBrandsUpdate([$brandsModel])) {
                             throw new ErrorException('Ошибка при обновлении бренда!');
                         }
+                        $transaction->commit();
                     }
                     return $this->redirect(Url::to(['admin/show-add-brands']));
                 }
@@ -654,6 +729,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-brands.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -669,9 +747,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setBrandsDelete([$brandsModel])) {
                         throw new ErrorException('Ошибка при удалении бренда!');
                     }
+                    $transaction->commit();
                     return $this->redirect(Url::to(['admin/show-add-brands']));
                 }
             } else {
@@ -691,6 +771,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-brands.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -706,9 +789,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
                 if ($colorsModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setColorsInsert([$colorsModel])) {
                         throw new ErrorException('Ошибка при сохранении цвета!');
                     }
+                    $transaction->commit();
                 }
             }
             
@@ -718,6 +803,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-colors.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -734,9 +822,11 @@ class AdminController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
                 if ($colorsModel->validate()) {
                     if (array_diff_assoc($colorsModel->attributes, MappersHelper::getColorsById($colorsModel)->attributes)) {
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                         if (!MappersHelper::setColorsUpdate([$colorsModel])) {
                             throw new ErrorException('Ошибка при обновлении цвета!');
                         }
+                        $transaction->commit();
                     }
                     return $this->redirect(Url::to(['admin/show-add-colors']));
                 }
@@ -757,6 +847,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-colors.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -772,9 +865,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
                 if ($colorsModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setColorsDelete([$colorsModel])) {
                         throw new ErrorException('Ошибка при удалении бренда!');
                     }
+                    $transaction->commit();
                     return $this->redirect(Url::to(['admin/show-add-colors']));
                 }
             } else {
@@ -794,6 +889,9 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('delete-colors.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -809,9 +907,11 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $sizesModel->load(\Yii::$app->request->post())) {
                 if ($sizesModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setSizesInsert([$sizesModel])) {
                         throw new ErrorException('Ошибка при сохранении размера!');
                     }
+                    $transaction->commit();
                 }
             }
             
@@ -821,6 +921,53 @@ class AdminController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-sizes.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет обновлением размеров
+     */
+    public function actionUpdateSizes()
+    {
+        try {
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_UPDATE_FORM]);
+            
+            if (\Yii::$app->request->isPost && $sizesModel->load(\Yii::$app->request->post())) {
+                if ($sizesModel->validate()) {
+                    if (array_diff_assoc($sizesModel->attributes, MappersHelper::getSizesById($sizesModel)->attributes)) {
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                        if (!MappersHelper::setSizesUpdate([$sizesModel])) {
+                            throw new ErrorException('Ошибка при обновлении размера!');
+                        }
+                        $transaction->commit();
+                    }
+                    return $this->redirect(Url::to(['admin/show-add-sizes']));
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                if ($currentSizes = MappersHelper::getSizesById(new SizesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($sizesModel, $currentSizes->attributes);
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['sizesModel'] = $sizesModel;
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('update-sizes.twig', $renderArray);
+        } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }

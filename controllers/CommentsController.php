@@ -24,15 +24,20 @@ class CommentsController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $commentsModel->load(\Yii::$app->request->post())) {
                 if ($commentsModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     if (!MappersHelper::setCommentsInsert($commentsModel)) {
                         throw new ErrorException('Не удалось обновить данные в БД!');
                     }
+                    $transaction->commit();
                     return $this->redirect(Url::to(['product-detail/index', 'categories'=>$commentsModel->categories, 'subcategory'=>$commentsModel->subcategory, 'id'=>$commentsModel->id_products]));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
             }
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }

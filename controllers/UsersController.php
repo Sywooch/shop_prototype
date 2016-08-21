@@ -5,6 +5,7 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use yii\helpers\{Url,
     ArrayHelper};
+use yii\db\Transaction;
 use app\controllers\AbstractBaseController;
 use app\helpers\{UserAuthenticationHelper, 
     MappersHelper, 
@@ -37,6 +38,9 @@ class UsersController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post()) && $mailingListModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $usersModel->validate() && $mailingListModel->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
                     if ($emailsModelFromDb = MappersHelper::getEmailsByEmail($emailsModel)) {
                         $emailsModel = $emailsModelFromDb;
                     } else {
@@ -77,6 +81,9 @@ class UsersController extends AbstractBaseController
                             throw new ErrorException('Ошибка при отправке E-mail сообщения!');
                         }
                     }
+                    
+                    $transaction->commit();
+                    
                     return $this->redirect(Url::to(['users/login-user', 'added'=>true]));
                 }
             }
@@ -86,6 +93,9 @@ class UsersController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('add-user.twig', $renderArray);
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -212,6 +222,8 @@ class UsersController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post()) && $phonesModel->load(\Yii::$app->request->post()) && $addressModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $usersModel->validate() && $phonesModel->validate() && $addressModel->validate()) {
                     
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
                     if (empty(\Yii::$app->shopUser->emails) || \Yii::$app->shopUser->emails->email != $emailsModel->email) {
                         if (!empty($emailsModel->email)) {
                             if ($result = MappersHelper::getEmailsByEmail($emailsModel)) {
@@ -266,11 +278,16 @@ class UsersController extends AbstractBaseController
                         }
                     }
                     
+                    $transaction->commit();
+                    
                     return $this->redirect(Url::to(['users/show-user-account']));
                 }
             }
             return $this->redirect(Url::to(['products-list/index']));
         } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
