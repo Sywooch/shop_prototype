@@ -809,10 +809,9 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $sizesModel->load(\Yii::$app->request->post())) {
                 if ($sizesModel->validate()) {
-                    echo 'ADDED!';
-                    /*if (!MappersHelper::setSizesInsert([$sizesModel])) {
-                        throw new ErrorException('Ошибка при сохранении цвета!');
-                    }*/
+                    if (!MappersHelper::setSizesInsert([$sizesModel])) {
+                        throw new ErrorException('Ошибка при сохранении размера!');
+                    }
                 }
             }
             

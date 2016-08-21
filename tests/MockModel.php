@@ -59,4 +59,5 @@ class MockModel extends AbstractBaseModel
     public $active;
     public $brand;
     public $color;
+    public $size;
 }

@@ -5,28 +5,28 @@ namespace app\tests\helpers;
 use app\tests\{DbManager, 
     MockObject};
 use app\helpers\MappersHelper;
-use app\models\{CategoriesModel, 
-    CurrencyModel, 
-    SubcategoryModel, 
-    ColorsModel, 
-    SizesModel, 
-    BrandsModel, 
-    AddressModel, 
-    PhonesModel, 
-    DeliveriesModel, 
-    PaymentsModel, 
-    ProductsModel, 
-    UsersModel, 
-    EmailsModel, 
-    CommentsModel, 
-    RulesModel, 
-    PurchasesModel,
-    MailingListModel,
-    EmailsMailingListModel,
+use app\models\{AddressModel,
     AdminMenuModel,
+    BrandsModel,
+    CategoriesModel,
+    ColorsModel,
+    CommentsModel,
+    CurrencyModel,
+    DeliveriesModel,
+    EmailsMailingListModel,
+    EmailsModel,
+    MailingListModel,
+    PaymentsModel,
+    PhonesModel,
     ProductsBrandsModel,
     ProductsColorsModel,
-    ProductsSizesModel};
+    ProductsModel,
+    ProductsSizesModel,
+    PurchasesModel,
+    RulesModel,
+    SizesModel,
+    SubcategoryModel,
+    UsersModel};
 
 /**
  * Тестирует класс app\helpers\MappersHelper
@@ -2083,6 +2083,32 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result[0] instanceof ProductsColorsModel);
         $this->assertFalse(empty($result[0]->id_products));
         $this->assertFalse(empty($result[0]->id_colors));
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setSizesInsert
+     */
+    public function testSetSizesInsert()
+    {
+        if (!empty(\Yii::$app->db->createCommand('SELECT * FROM {{sizes}}')->queryAll())) {
+            \Yii::$app->db->createCommand('DELETE FROM {{sizes}}')->execute();
+        }
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{sizes}}')->queryAll()));
+        
+        $sizesModel = new SizesModel();
+        $sizesModel->size = self::$_size;
+        
+        $result = MappersHelper::setSizesInsert([$sizesModel]);
+        
+        $this->assertEquals(1, $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{sizes}} LIMIT 1')->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        
+        $this->assertTrue(array_key_exists('id', $result));
+        $this->assertEquals(self::$_size, $result['size']);
     }
     
     /**
