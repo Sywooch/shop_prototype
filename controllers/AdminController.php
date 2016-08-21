@@ -973,6 +973,48 @@ class AdminController extends AbstractBaseController
         }
     }
     
+    /**
+     * Управляет удалением размера
+     */
+    public function actionDeleteSizes()
+    {
+        try {
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_DELETE_FORM]);
+            
+            if (\Yii::$app->request->isPost && $sizesModel->load(\Yii::$app->request->post())) {
+                if ($sizesModel->validate()) {
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    if (!MappersHelper::setSizesDelete([$sizesModel])) {
+                        throw new ErrorException('Ошибка при удалении бренда!');
+                    }
+                    $transaction->commit();
+                    return $this->redirect(Url::to(['admin/show-add-sizes']));
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                if ($currentSizes = MappersHelper::getSizesById(new SizesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
+                    \Yii::configure($sizesModel, $currentSizes->attributes);
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['sizesModel'] = $sizesModel;
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('delete-sizes.twig', $renderArray);
+        } catch (\Exception $e) {
+            if (\Yii::$app->request->isPost) {
+                $transaction->rollBack();
+            }
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     public function behaviors()
     {
         return [

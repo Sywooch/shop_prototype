@@ -15,8 +15,8 @@
         {% for sizesModel in sizesList %}
             <li>
                 {{ sizesModel.size }}<br>
-                <a href="{{ url.to({0:'admin/update-sizes', 'id':sizesModel.id}) }}">Обновить цвет</a><br>
-                <a href="{{ url.to({0:'admin/delete-sizes', 'id':sizesModel.id}) }}">Удалить цвет</a><br>
+                <a href="{{ url.to({0:'admin/update-sizes', 'id':sizesModel.id}) }}">Обновить размер</a><br>
+                <a href="{{ url.to({0:'admin/delete-sizes', 'id':sizesModel.id}) }}">Удалить размер</a><br>
             </li>
         {% endfor %}
     </ul>

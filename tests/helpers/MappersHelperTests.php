@@ -2172,6 +2172,63 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::getProductsSizesByIdSizes
+     */
+    public function testGetProductsSizesByIdSizes()
+    {
+        if (empty($id_sizes = \Yii::$app->db->createCommand('SELECT [[id_sizes]] FROM {{products_sizes}} LIMIT 1')->queryScalar())) {
+            
+            if (empty($id_sizes = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{sizes}} LIMIT 1')->queryScalar())) {
+                $id_sizes = self::$_id;
+                $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
+                $command->bindValues([':id'=>$id_sizes, ':size'=>$id_size]);
+                $command->execute();
+            }
+            
+            if (empty($id_products = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{products}} LIMIT 1')->queryScalar())) {
+                $id_products = self::$_id;
+                $id_categories = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{categories}} LIMIT 1')->queryScalar();
+                $id_subcategory = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{subcategory}} LIMIT 1')->queryScalar();
+                $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+                $command->bindValues([':id'=>$id_products, ':id_categories'=>$id_categories, ':id_subcategory'=>$id_subcategory]);
+                $command->execute();
+            }
+            
+            $command = \Yii::$app->db->createCommand('INSERT INTO {{products_sizes}} (id_products,id_sizes) VALUES (:id_products,:id_sizes)');
+            $command->bindValues([':id_products'=>$id_products, ':id_sizes'=>$id_sizes]);
+            $command->execute();
+        }
+        
+        $model = new SizesModel();
+        $model->id = $id_sizes;
+        
+        $result = MappersHelper::getProductsSizesByIdSizes($model);
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(is_object($result[0]));
+        $this->assertTrue($result[0] instanceof ProductsSizesModel);
+        $this->assertFalse(empty($result[0]->id_products));
+        $this->assertFalse(empty($result[0]->id_sizes));
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setSizesDelete
+     */
+    public function testSetSizesDelete()
+    {
+        $this->assertFalse(empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{sizes}} LIMIT 1')->queryScalar()));
+        
+        $model = new SizesModel();
+        $model->id = $id;
+        
+        $result = MappersHelper::setSizesDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{sizes}}')->queryAll()));
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getObjectRegistry
      */
     public function testGetObjectRegistry()

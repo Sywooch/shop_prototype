@@ -67,6 +67,7 @@ use app\mappers\{AddressByAddressMapper,
     ProductsInsertMapper,
     ProductsListMapper,
     ProductsSearchMapper,
+    ProductsSizesByIdSizesMapper,
     ProductsSizesDeleteMapper,
     ProductsSizesInsertMapper,
     ProductsUpdateMapper,
@@ -78,6 +79,7 @@ use app\mappers\{AddressByAddressMapper,
     SizesAdminMapper,
     SizesByIdMapper,
     SizesBySizeMapper,
+    SizesDeleteMapper,
     SizesForProductMapper,
     SizesInsertMapper,
     SizesMapper,
@@ -800,6 +802,33 @@ class MappersHelper
             ]);
             $result = $sizesUpdateMapper->setGroup();
             if (!$result) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи SizesModel из БД
+     * @param array $sizesModelArray массив SizesModel
+     * @return int
+     */
+    public static function setSizesDelete(Array $sizesModelArray)
+    {
+        try {
+            if (empty($sizesModelArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$sizesModelArray[0] instanceof SizesModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $sizesDeleteMapper = new SizesDeleteMapper([
+                'tableName'=>'sizes',
+                'objectsArray'=>$sizesModelArray,
+            ]);
+            if (!$result = $sizesDeleteMapper->setGroup()) {
                 return null;
             }
             return $result;
@@ -2534,6 +2563,39 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $productsColorsArray);
             return $productsColorsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов ProductsSizesModel по SizesModel->id
+     * @param object $sizesModel экземпляр SizesModel
+     * @return array ProductsModel
+     */
+    public static function getProductsSizesByIdSizes(SizesModel $sizesModel)
+    {
+        try {
+            $productsSizesByIdSizesMapper = new ProductsSizesByIdSizesMapper([
+                'tableName'=>'products_sizes',
+                'fields'=>['id_products', 'id_sizes'],
+                'model'=>$sizesModel,
+            ]);
+            $hash = self::createHash([
+                ProductsSizesByIdSizesMapper::className(), 
+                $productsSizesByIdSizesMapper->tableName, 
+                implode('', $productsSizesByIdSizesMapper->fields), 
+                $productsSizesByIdSizesMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectsRegistry[$hash];
+            }
+            $productsSizesArray = $productsSizesByIdSizesMapper->getGroup();
+            if (!is_array($productsSizesArray) || empty($productsSizesArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $productsSizesArray);
+            return $productsSizesArray;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

@@ -1,0 +1,23 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+<p>Здесь вы можете управлять размерами</p>
+
+<p><strong>Удалить размер</strong></p>
+
+{% set form=active_form_begin({'id':'delete-sizes-form', 'action':url.to({0:'admin/delete-sizes', 'id':sizesModel.id}), 'method':'POST'}) %}
+    {{ form.field(sizesModel, 'id').hiddenInput().label(false) | raw }}
+    {{ form.field(sizesModel, 'size') | raw }}
+    <input type="submit" value="Удалить">
+{{ active_form_end() }}
+
+
+
+
+
