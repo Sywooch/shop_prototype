@@ -25,6 +25,7 @@ class GetSubcategoryWithDisableAsset extends AbstractAsset
      * @var array зависимости пакета
      */
     public $depends = [
+        'app\assets\MainAsset',
         'app\assets\AbstractDropDownDisable',
         'app\assets\AbstractGetSubcategory',
     ];

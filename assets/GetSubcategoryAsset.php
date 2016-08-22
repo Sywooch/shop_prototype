@@ -25,6 +25,7 @@ class GetSubcategoryAsset extends AbstractAsset
      * @var array зависимости пакета
      */
     public $depends = [
+        'app\assets\MainAsset',
         'app\assets\AbstractGetSubcategory',
     ];
 }

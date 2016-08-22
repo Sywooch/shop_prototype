@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use yii\helpers\Url;
 use yii\base\ErrorException;
+use yii\db\Transaction;
 use app\helpers\MappersHelper;
 use app\controllers\AbstractBaseController;
 use app\models\CommentsModel;

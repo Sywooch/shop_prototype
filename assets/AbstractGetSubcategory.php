@@ -21,10 +21,4 @@ class AbstractGetSubcategory extends AbstractAsset
     public $js = [
         'js/abstractGetSubcategory.js',
     ];
-    /**
-     * @var array зависимости пакета
-     */
-    public $depends = [
-        'app\assets\MainAsset',
-    ];
 }

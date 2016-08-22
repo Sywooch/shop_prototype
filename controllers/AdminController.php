@@ -1007,6 +1007,21 @@ class AdminController extends AbstractBaseController
         }
     }
     
+    /**
+     * Управляет текущим списком комментариев
+     */
+    public function actionShowComments()
+    {
+        try {
+            $renderArray = array();
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('show-comments.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     public function behaviors()
     {
         return [

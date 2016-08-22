@@ -3,6 +3,7 @@
 namespace app\models;
 
 use yii\base\ErrorException;
+use yii\db\Transaction;
 use app\models\{AbstractBaseModel,
     EmailsModel};
 use app\helpers\MappersHelper;
@@ -78,16 +79,17 @@ class CommentsModel extends AbstractBaseModel
         try {
             if (is_null($this->_id_emails)) {
                 if (!empty($this->email)) {
-                    $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-                    $emailsModel->email = $this->email;
+                    $emailsModel = new EmailsModel(['email'=>$this->email]);
                     $result = MappersHelper::getEmailsByEmail($emailsModel);
-                    if (is_object($result) || $result instanceof EmailsModel) {
+                    if (is_object($result) && $result instanceof EmailsModel) {
                         $emailsModel = $result;
                     } else {
-                        $result = MappersHelper::setEmailsInsert($emailsModel);
-                        if (!$result) {
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                        if (!$result = MappersHelper::setEmailsInsert($emailsModel)) {
+                            $transaction->rollBack();
                             return null;
                         }
+                        $transaction->commit();
                     }
                     $this->_id_emails = $emailsModel->id;
                 }

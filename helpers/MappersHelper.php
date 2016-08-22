@@ -34,6 +34,7 @@ use app\mappers\{AddressByAddressMapper,
     ColorsUpdateMapper,
     CommentsForProductMapper,
     CommentsInsertMapper,
+    CommentsMapper,
     CurrencyByIdMapper,
     CurrencyByMainMapper,
     CurrencyMapper,
@@ -2469,6 +2470,38 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $commentsArray = $commentsForProductMapper->getGroup();
+            if (!is_array($commentsArray) || empty($commentsArray)) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $commentsArray);
+            return $commentsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов comments
+     * @return array of objects CommentsModel
+     */
+    public static function getCommentsList() #!!!TEST
+    {
+        try {
+            $commentsMapper = new CommentsMapper([
+                'tableName'=>'comments',
+                'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'orderByField'=>'id',
+            ]);
+            $hash = self::createHash([
+                CommentsMapper::className(), 
+                $commentsMapper->tableName, 
+                implode('', $commentsMapper->fields), 
+                $commentsMapper->orderByField,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectsRegistry[$hash];
+            }
+            $commentsArray = $commentsMapper->getGroup();
             if (!is_array($commentsArray) || empty($commentsArray)) {
                 return null;
             }

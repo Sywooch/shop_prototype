@@ -88,7 +88,7 @@ class NewsletterController extends AbstractBaseController
                         }
                     }
                     
-                    if ($currentSubscribes = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>$emailsModel->email]))) {
+                    if ($currentSubscribes = MappersHelper::getMailingListForEmail($emailsModel)) {
                         if (!$arrayDiff = array_diff($mailingListModel->idFromForm, ArrayHelper::getColumn($currentSubscribes, 'id'))) {
                             return $this->redirect(Url::to(['newsletter/subscription-exists']));
                         }
