@@ -16,12 +16,6 @@ class MainAsset extends AbstractAsset
         'css/main.css',
     ];
     /**
-     * @var array массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте
-     */
-    public $js = [
-        'js/dropDownDisable.js',
-    ];
-    /**
      * @var array зависимости пакета
      */
     public $depends = [

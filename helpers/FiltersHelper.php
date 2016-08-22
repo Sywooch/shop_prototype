@@ -37,19 +37,34 @@ class FiltersHelper
             
             $productsModel->load(\Yii::$app->request->post());
             
-            if (\Yii::$app->filters->categories != $productsModel->categories && \Yii::$app->filters->subcategory != $productsModel->subcategory) {
-                self::cleanFilters();
-                self::cleanOtherFilters();
-            } elseif (\Yii::$app->filters->categories != $productsModel->categories || \Yii::$app->filters->subcategory != $productsModel->subcategory) {
+             if (\Yii::$app->filters->categories != $productsModel->categories || \Yii::$app->filters->subcategory != $productsModel->subcategory) {
                 self::cleanFilters();
             }
             
-            if (!empty($productsModel->categories)) {
-                \Yii::$app->filters->categories = $productsModel->categories;
-            }
-            if (!empty($productsModel->subcategory)) {
-                \Yii::$app->filters->subcategory = $productsModel->subcategory;
-            }
+            \Yii::$app->filters->categories = $productsModel->categories;
+            \Yii::$app->filters->subcategory = $productsModel->subcategory;
+            
+            return true;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Добавляет данные раздела администрирования для фильтрации в \Yii::$app->filters
+     * @return boolean
+     */
+    public static function addFiltersConvert()
+    {
+        try {
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            
+            self::addFilters();
+            
+            $productsModel->load(\Yii::$app->request->post());
+            
+            \Yii::$app->filters->categories = $productsModel->categories;
+            \Yii::$app->filters->subcategory = $productsModel->subcategory;
             
             return true;
         } catch (\Exception $e) {

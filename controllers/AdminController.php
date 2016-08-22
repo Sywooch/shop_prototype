@@ -364,9 +364,6 @@ class AdminController extends AbstractBaseController
         try {
             $renderArray = array();
             $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
-            if (!empty(\Yii::$app->filters->active)) {
-                \Yii::configure($renderArray['productsModelFilter'], ['active'=>\Yii::$app->filters->active]);
-            }
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('convert.twig', $renderArray);
         } catch (\Exception $e) {
@@ -383,10 +380,8 @@ class AdminController extends AbstractBaseController
     {
         try {
             if (\Yii::$app->request->isAjax) {
-                FiltersHelper::cleanFilters();
-                FiltersHelper::cleanAdminFilters();
                 
-                FiltersHelper::addFiltersAdmin();
+                FiltersHelper::addFiltersConvert();
                 
                 $resultArray = array();
                 
@@ -411,9 +406,6 @@ class AdminController extends AbstractBaseController
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
-        } finally {
-            FiltersHelper::cleanFilters();
-            FiltersHelper::cleanAdminFilters();
         }
     }
     
@@ -1020,16 +1012,16 @@ class AdminController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\ProductsListFilterAdmin',
-                'only'=>['show-products', 'data-convert'],
+                'only'=>['show-products'],
             ],
             [
                 'class'=>'app\filters\ProductsListFilterAdminSubcategory',
                 'only'=>['show-add-subcategory'],
             ],
-            [
+            /*[
                 'class'=>'app\filters\ProductsListFilterCSV',
                 'only'=>['download-products'],
-            ],
+            ],*/
         ];
     }
 }

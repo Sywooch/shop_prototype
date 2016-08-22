@@ -7,18 +7,12 @@ use app\assets\AbstractAsset;
 /**
  * Задает пакет ресурсов для представления add-product
  */
-class ConvertAsset extends AbstractAsset
+class AbstractDropDownDisable extends AbstractAsset
 {
     /**
      * @var array массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте
      */
     public $js = [
-        'js/getCSV.js',
-    ];
-    /**
-     * @var array зависимости пакета
-     */
-    public $depends = [
-        'app\assets\GetSubcategoryAsset',
+        'js/dropDownDisable.js',
     ];
 }

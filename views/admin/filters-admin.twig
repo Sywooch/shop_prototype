@@ -4,8 +4,8 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form=active_form_begin({'id':'add-filters-admin-categories-form', 'action':url.to({0:'filter/add-filters-admin-categories'}), 'method':'POST'}) %}
-    {{ form.field(productsModelFilter, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
-    {{ form.field(productsModelFilter, 'id_subcategory').dropDownList(array.merge({'':'------------------------'}, subcategoryHelper.getSubcategory(productsModelFilter.id_categories | default(null)))) | raw }}
+    {{ form.field(productsModelFilter, 'id_categories').dropDownList(array.merge({'':'Все'}, array.map(categoriesList, 'id', 'name'))) | raw }}
+    {{ form.field(productsModelFilter, 'id_subcategory').dropDownList(array.merge({'':'Все'}, subcategoryHelper.getSubcategory(productsModelFilter.id_categories | default(null)))) | raw }}
     <input type="submit" value="Choose" /><br>
 {{ active_form_end() }}
 

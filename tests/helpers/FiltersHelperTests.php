@@ -226,7 +226,58 @@ class FiltersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(empty(\Yii::$app->filters->sortingType));
         $this->assertFalse(empty(\Yii::$app->filters->getActive));
         $this->assertFalse(empty(\Yii::$app->filters->getNotActive));
+        $this->assertFalse(empty(\Yii::$app->filters->search));
+        $this->assertEquals(self::$_search, \Yii::$app->filters->search);
+        $this->assertFalse(empty(\Yii::$app->filters->categories));
+        $this->assertEquals(self::$_categories, \Yii::$app->filters->categories);
+        $this->assertFalse(empty(\Yii::$app->filters->subcategory));
+        $this->assertEquals(self::$_subcategory, \Yii::$app->filters->subcategory);
+    }
+    
+    /**
+     * Тестирует метод FiltersHelper::addFiltersConvert
+     */
+    public function testAddFiltersConvert()
+    {
+        FiltersHelper::cleanFilters();
+        FiltersHelper::cleanOtherFilters();
+        
+        $this->assertTrue(empty(\Yii::$app->filters->colors));
+        $this->assertTrue(empty(\Yii::$app->filters->sizes));
+        $this->assertTrue(empty(\Yii::$app->filters->brands));
+        $this->assertTrue(empty(\Yii::$app->filters->sortingField));
+        $this->assertTrue(empty(\Yii::$app->filters->sortingType));
+        $this->assertFalse(empty(\Yii::$app->filters->getActive));
+        $this->assertFalse(empty(\Yii::$app->filters->getNotActive));
+        $this->assertTrue(empty(\Yii::$app->filters->categories));
+        $this->assertTrue(empty(\Yii::$app->filters->subcategory));
         $this->assertTrue(empty(\Yii::$app->filters->search));
+        
+        FiltersHelper::addFiltersConvert();
+        
+        $this->assertTrue(is_array(\Yii::$app->filters->colors));
+        $this->assertFalse(empty(\Yii::$app->filters->colors));
+        $this->assertEquals(self::$_colors, \Yii::$app->filters->colors);
+        $this->assertTrue(is_array(\Yii::$app->filters->sizes));
+        $this->assertFalse(empty(\Yii::$app->filters->sizes));
+        $this->assertEquals(self::$_sizes, \Yii::$app->filters->sizes);
+        $this->assertTrue(is_array(\Yii::$app->filters->brands));
+        $this->assertFalse(empty(\Yii::$app->filters->brands));
+        $this->assertEquals(self::$_brands, \Yii::$app->filters->brands);
+        $this->assertFalse(empty(\Yii::$app->filters->sortingField));
+        $this->assertEquals(self::$_sortingField, \Yii::$app->filters->sortingField);
+        $this->assertFalse(empty(\Yii::$app->filters->sortingType));
+        $this->assertEquals(self::$_sortingType, \Yii::$app->filters->sortingType);
+        $this->assertFalse(empty(\Yii::$app->filters->categories));
+        $this->assertEquals(self::$_categories, \Yii::$app->filters->categories);
+        $this->assertFalse(empty(\Yii::$app->filters->subcategory));
+        $this->assertEquals(self::$_subcategory, \Yii::$app->filters->subcategory);
+        $this->assertFalse(empty(\Yii::$app->filters->search));
+        $this->assertEquals(self::$_search, \Yii::$app->filters->search);
+        $this->assertTrue(empty(\Yii::$app->filters->getActive));
+        $this->assertEquals(self::$_getActive, \Yii::$app->filters->getActive);
+        $this->assertFalse(empty(\Yii::$app->filters->getNotActive));
+        $this->assertEquals(self::$_getNotActive, \Yii::$app->filters->getNotActive);
         $this->assertFalse(empty(\Yii::$app->filters->categories));
         $this->assertEquals(self::$_categories, \Yii::$app->filters->categories);
         $this->assertFalse(empty(\Yii::$app->filters->subcategory));

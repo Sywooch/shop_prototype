@@ -5,10 +5,16 @@ namespace app\assets;
 use app\assets\AbstractAsset;
 
 /**
- * Задает пакет ресурсов для представления add-product
+ * Задает пакет ресурсов
  */
 class GetSubcategoryAsset extends AbstractAsset
 {
+    /**
+     * @var array массив js параметров
+     */
+    public $jsOptions = [
+        'defer'=>true,
+    ];
     /**
      * @var array массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте
      */
@@ -19,6 +25,6 @@ class GetSubcategoryAsset extends AbstractAsset
      * @var array зависимости пакета
      */
     public $depends = [
-        'app\assets\MainAsset',
+        'app\assets\AbstractGetSubcategory',
     ];
 }

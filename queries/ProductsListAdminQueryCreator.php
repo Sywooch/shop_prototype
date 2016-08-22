@@ -50,14 +50,14 @@ class ProductsListAdminQueryCreator extends ProductsListQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            if (\Yii::$app->filters->categories) {
+            if (!empty(\Yii::$app->filters->categories)) {
                 if (!$this->queryForCategory()) {
                     throw new ErrorException('Ошибка при построении запроса!');
                 }
                 $this->_mapperObject->params[':' . \Yii::$app->params['categoryKey']] = \Yii::$app->filters->categories;
             }
             
-            if (\Yii::$app->filters->subcategory) {
+            if (!empty(\Yii::$app->filters->subcategory)) {
                 if (!$this->queryForSubCategory()) {
                     throw new ErrorException('Ошибка при построении запроса!');
                 }

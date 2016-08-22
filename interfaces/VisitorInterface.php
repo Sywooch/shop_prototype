@@ -11,7 +11,7 @@ interface VisitorInterface
 {
     /**
      * Принимает объект, данные которого необходимо обработать
-     * @param object
+     * @param object типа AbstractBaseMapper
      */
     public function update(AbstractBaseMapper $object);
 }
