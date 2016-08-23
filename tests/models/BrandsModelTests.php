@@ -72,10 +72,10 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $model = new BrandsModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DELETE_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD_PRODUCT'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_DELETE'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'brand'));
@@ -92,23 +92,23 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->brand));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = ['id'=>self::$_id];
         
         $this->assertFalse(empty($model->id));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD]);
         $model->attributes = ['brand'=>self::$_brand];
         
         $this->assertFalse(empty($model->brand));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_DELETE_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id, 'brand'=>self::$_brand];
         
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->brand));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'brand'=>self::$_brand];
         
         $this->assertFalse(empty($model->id));
@@ -120,27 +120,27 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('id', $model->errors));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = ['id'=>self::$_id];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('brand', $model->errors));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD]);
         $model->attributes = ['brand'=>self::$_brand2];
         $model->validate();
         
@@ -148,13 +148,13 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('brand', $model->errors));
         $this->assertEquals(self::$_messageDuplicate, $model->errors['brand'][0]);
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD]);
         $model->attributes = ['brand'=>self::$_brand3];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_DELETE_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_DELETE]);
         $model->attributes = [];
         $model->validate();
         
@@ -162,7 +162,7 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('id', $model->errors));
         $this->assertTrue(array_key_exists('brand', $model->errors));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_DELETE_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id, 'brand'=>self::$_brand];
         $model->validate();
         
@@ -170,13 +170,13 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('brand', $model->errors));
         $this->assertEquals(self::$_message, $model->errors['brand'][0]);
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_DELETE_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id + 1, 'brand'=>self::$_brand2];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_UPDATE]);
         $model->attributes = [];
         $model->validate();
         
@@ -184,7 +184,7 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('id', $model->errors));
         $this->assertTrue(array_key_exists('brand', $model->errors));
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'brand'=>self::$_brand2];
         $model->validate();
         
@@ -192,7 +192,7 @@ class BrandsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('brand', $model->errors));
         $this->assertEquals(self::$_messageDuplicate, $model->errors['brand'][0]);
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'brand'=>self::$_brand3];
         $model->validate();
         

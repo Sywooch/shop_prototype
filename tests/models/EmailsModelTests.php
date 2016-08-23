@@ -53,8 +53,8 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_LOGIN_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_REGISTRATION'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_LOGIN'));
         
         $this->assertTrue(property_exists($model, 'email'));
         $this->assertTrue(property_exists($model, '_id'));
@@ -76,12 +76,12 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->id));
         $this->assertFalse(empty($model->email));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_REGISTRATION]);
         $model->attributes = ['email'=>self::$_email];
         
         $this->assertFalse(empty($model->email));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->attributes = ['email'=>self::$_email];
         
         $this->assertFalse(empty($model->email));
@@ -112,34 +112,34 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_REGISTRATION]);
         $model->attributes = ['email'=>self::$_notEmail];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->attributes = ['email'=>self::$_notEmail];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_REGISTRATION]);
         $model->attributes = ['email'=>self::$_email];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_REGISTRATION]);
         $model->attributes = ['email'=>self::$_notAddedEmail];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->attributes = ['email'=>self::$_notAddedEmail];
         $model->validate();
         
@@ -148,14 +148,14 @@ class EmailsModelTests extends \PHPUnit_Framework_TestCase
         
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->attributes = ['email'=>self::$_email2];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->attributes = ['email'=>self::$_email];
         $model->validate();
         

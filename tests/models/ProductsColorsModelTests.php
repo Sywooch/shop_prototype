@@ -26,7 +26,7 @@ class ProductsColorsModelTests extends \PHPUnit_Framework_TestCase
         $model = new ProductsColorsModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD_PRODUCT'));
         
         $this->assertTrue(property_exists($model, 'id_products'));
         $this->assertTrue(property_exists($model, 'id_colors'));
@@ -45,7 +45,7 @@ class ProductsColorsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id_products, $model->id_products);
         $this->assertEquals(self::$_id_colors, $model->id_colors);
         
-        $model = new ProductsColorsModel(['scenario'=>ProductsColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new ProductsColorsModel(['scenario'=>ProductsColorsModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = ['id_products'=>self::$_id_products, 'id_colors'=>self::$_id_colors];
         
         $this->assertFalse(empty($model->id_products));

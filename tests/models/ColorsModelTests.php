@@ -72,10 +72,10 @@ class ColorsModelTests extends \PHPUnit_Framework_TestCase
         $model = new ColorsModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DELETE_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD_PRODUCT'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_DELETE'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'color'));
@@ -93,23 +93,23 @@ class ColorsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_color, $model->color);
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = ['idArray'=>self::$_idArray];
         
         $this->assertEquals(self::$_idArray, $model->idArray);
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD]);
         $model->attributes = ['color'=>self::$_color];
         
         $this->assertEquals(self::$_color, $model->color);
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_UPDATE_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'color'=>self::$_color];
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_color, $model->color);
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_DELETE_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id, 'color'=>self::$_color];
         
         $this->assertEquals(self::$_id, $model->id);
@@ -121,27 +121,27 @@ class ColorsModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('idArray', $model->errors));
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = ['idArray'=>self::$_idArray];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('color', $model->errors));
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD]);
         $model->attributes = ['color'=>self::$_color];
         $model->validate();
         
@@ -149,13 +149,13 @@ class ColorsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('color', $model->errors));
         $this->assertEquals(self::$_messageDuplicate, $model->errors['color'][0]);
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD]);
         $model->attributes = ['color'=>self::$_color3];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_UPDATE_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_UPDATE]);
         $model->attributes = [];
         $model->validate();
         
@@ -163,20 +163,20 @@ class ColorsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('id', $model->errors));
         $this->assertTrue(array_key_exists('color', $model->errors));
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_UPDATE_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'color'=>self::$_color2];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('color', $model->errors));
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_UPDATE_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'color'=>self::$_color3];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_DELETE_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_DELETE]);
         $model->attributes = [];
         $model->validate();
         
@@ -184,7 +184,7 @@ class ColorsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('id', $model->errors));
         $this->assertTrue(array_key_exists('color', $model->errors));
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_DELETE_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id, 'color'=>self::$_color];
         $model->validate();
         
@@ -192,7 +192,7 @@ class ColorsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('color', $model->errors));
         $this->assertEquals(self::$_message, $model->errors['color'][0]);
         
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_DELETE_FORM]);
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id + 1, 'color'=>self::$_color2];
         $model->validate();
         

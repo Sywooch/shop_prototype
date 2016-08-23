@@ -16,7 +16,7 @@ class ProductsObjectsFactory extends AbstractGetObjectsFactory
         
         try {
             if (empty($this->model)) {
-                $this->model = new ProductsModel(['scenario'=>ProductsModel::GET_LIST_FROM_DB]);
+                $this->model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_DB]);
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

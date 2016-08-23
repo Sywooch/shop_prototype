@@ -16,7 +16,7 @@ class ProductsBrandsModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы добавления продукта
     */
-    const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
+    const GET_FOR_ADD_PRODUCT = 'getForAddProduct';
     
     public $id_products;
     public $id_brands;
@@ -25,7 +25,7 @@ class ProductsBrandsModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id_products', 'id_brands'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['id_products', 'id_brands'],
+            self::GET_FOR_ADD_PRODUCT=>['id_products', 'id_brands'],
         ];
     }
 }

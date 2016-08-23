@@ -47,8 +47,8 @@ class MailingListModelTests extends \PHPUnit_Framework_TestCase
     public function testProperties()
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_MAILING_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_MAILING_FORM_REQUIRE'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_SUBSCRIPTION'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_SUBSCRIPTION_REQUIRE'));
         
         $this->assertTrue(self::$_reflectionClass->hasProperty('id'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('name'));
@@ -69,12 +69,12 @@ class MailingListModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->name));
         $this->assertFalse(empty($model->description));
         
-        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM]);
+        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION]);
         $model->attributes = ['idFromForm'=>self::$_idFromForm];
         
         $this->assertFalse(empty($model->idFromForm));
         
-        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION_REQUIRE]);
         $model->attributes = ['idFromForm'=>self::$_idFromForm];
         
         $this->assertFalse(empty($model->idFromForm));
@@ -85,14 +85,14 @@ class MailingListModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
-        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION_REQUIRE]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('idFromForm', $model->errors));
         
-        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION_REQUIRE]);
         $model->attributes = ['idFromForm'=>self::$_idFromForm];
         $model->validate();
         

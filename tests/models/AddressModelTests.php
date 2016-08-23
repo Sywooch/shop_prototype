@@ -48,7 +48,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE'));
         
         $this->assertTrue(property_exists($model, '_id'));
         $this->assertTrue(property_exists($model, 'address'));
@@ -79,7 +79,7 @@ class AddressModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->country));
         $this->assertFalse(empty($model->postcode));
         
-        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_UPDATE_FORM]);
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FOR_UPDATE]);
         $model->attributes = ['address'=>self::$_address, 'city'=>self::$_city, 'country'=>self::$_country, 'postcode'=>self::$_postcode];
         
         $this->assertFalse(empty($model->address));

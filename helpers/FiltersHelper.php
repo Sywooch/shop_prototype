@@ -33,7 +33,7 @@ class FiltersHelper
     public static function addFiltersAdminCategories()
     {
         try {
-            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_ADMIN_FILTER]);
             
             $productsModel->load(\Yii::$app->request->post());
             
@@ -57,7 +57,7 @@ class FiltersHelper
     public static function addFiltersConvert()
     {
         try {
-            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_ADMIN_FILTER]);
             
             self::addFilters();
             

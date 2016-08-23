@@ -22,6 +22,10 @@ class CommentsModel extends AbstractBaseModel
      * Сценарий загрузки данных из БД
     */
     const GET_FROM_DB = 'getFromDb';
+    /**
+     * Сценарий cut загрузки данных из формы для обновления товара
+    */
+    const GET_FOR_UPDATE_CUT = 'getForUpdateCut';
     
     public $id;
     public $text;

@@ -56,9 +56,9 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $model = new SubcategoryModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DELETE_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_DELETE'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         
         $this->assertTrue(property_exists($model, 'id'));
@@ -81,14 +81,14 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
         $this->assertEquals(self::$_id, $model->id_categories);
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_ADD]);
         $model->attributes = ['name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_categories'=>self::$_id];
         
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
         $this->assertEquals(self::$_id, $model->id_categories);
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_UPDATE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_categories'=>self::$_id];
         
         $this->assertEquals(self::$_id, $model->id);
@@ -96,7 +96,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
         $this->assertEquals(self::$_id, $model->id_categories);
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_categories'=>self::$_id];
         
         $this->assertEquals(self::$_id, $model->id);
@@ -117,7 +117,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_ADD]);
         $model->attributes = [];
         $model->validate();
         
@@ -126,7 +126,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('seocode', $model->errors));
         $this->assertTrue(array_key_exists('id_categories', $model->errors));
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_ADD]);
         $model->attributes = ['name'=>self::$_name, 'seocode'=>self::$_subcategorySeocodeFresh, 'id_categories'=>self::$_id];
         $model->validate();
         
@@ -134,7 +134,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('name', $model->errors));
         $this->assertEquals(self::$_nameMessage, $model->errors['name'][0]);
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_ADD]);
         $model->attributes = ['name'=>self::$_nameFresh, 'seocode'=>self::$_subcategorySeocode, 'id_categories'=>self::$_id];
         $model->validate();
         
@@ -142,13 +142,13 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('seocode', $model->errors));
         $this->assertEquals(self::$_seocodeMessage, $model->errors['seocode'][0]);
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_ADD]);
         $model->attributes = ['name'=>self::$_nameFresh, 'seocode'=>self::$_subcategorySeocodeFresh, 'id_categories'=>self::$_id];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_UPDATE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_UPDATE]);
         $model->attributes = [];
         $model->validate();
         
@@ -158,7 +158,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('seocode', $model->errors));
         $this->assertTrue(array_key_exists('id_categories', $model->errors));
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_UPDATE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name2, 'seocode'=>self::$_subcategorySeocodeFresh, 'id_categories'=>self::$_id];
         $model->validate();
         
@@ -166,7 +166,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('name', $model->errors));
         $this->assertEquals(self::$_nameMessage, $model->errors['name'][0]);
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_UPDATE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_nameFresh, 'seocode'=>self::$_subcategorySeocode2, 'id_categories'=>self::$_id];
         $model->validate();
         
@@ -174,13 +174,13 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('seocode', $model->errors));
         $this->assertEquals(self::$_seocodeMessage, $model->errors['seocode'][0]);
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_UPDATE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_nameFresh, 'seocode'=>self::$_subcategorySeocodeFresh, 'id_categories'=>self::$_id];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_DELETE]);
         $model->attributes = [];
         $model->validate();
         
@@ -190,7 +190,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('seocode', $model->errors));
         $this->assertTrue(array_key_exists('id_categories', $model->errors));
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_subcategorySeocode, 'id_categories'=>self::$_id];
         $model->validate();
         
@@ -198,7 +198,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('name', $model->errors));
         $this->assertEquals(self::$_foreignMessage, $model->errors['name'][0]);
         
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id + 1, 'name'=>self::$_name2, 'id_categories'=>self::$_id, 'seocode'=>self::$_subcategorySeocode2];
         $model->validate();
         

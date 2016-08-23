@@ -28,7 +28,7 @@ class NewsletterController extends AbstractBaseController
     {
         try {
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION_REQUIRE]);
             $subscriptions = $mailingListModel->allMailingList;
             
             if (!empty(\Yii::$app->shopUser->id_emails) && !empty(\Yii::$app->shopUser->id)) {
@@ -73,7 +73,7 @@ class NewsletterController extends AbstractBaseController
     {
         try {
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION_REQUIRE]);
             
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $mailingListModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $mailingListModel->validate()) {
@@ -154,7 +154,7 @@ class NewsletterController extends AbstractBaseController
             $renderArray = array();
             $renderArray['mailingList'] = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>\Yii::$app->request->get('email')]));
             $renderArray['emailsModel'] = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM, 'email'=>\Yii::$app->request->get('email')]);
-            $renderArray['mailingListModel'] = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+            $renderArray['mailingListModel'] = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION_REQUIRE]);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('unsubscribe.twig', $renderArray);
         } catch (\Exception $e) {
@@ -171,7 +171,7 @@ class NewsletterController extends AbstractBaseController
     {
         try {
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM_REQUIRE]);
+            $mailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION_REQUIRE]);
             
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $mailingListModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $mailingListModel->validate()) {

@@ -31,7 +31,7 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $model = new CurrencyModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM_SET'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_SET_CURRENCY'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'currency'));
@@ -61,7 +61,7 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_exchange_rate, $model->exchange_rate);
         $this->assertEquals(self::$_main, $model->main);
         
-        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM_SET]);
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_SET_CURRENCY]);
         $model->attributes = ['id'=>self::$_id, 'id_products'=>self::$_id, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'search'=>self::$_search];
         
         $this->assertFalse(empty($model->id));
@@ -85,14 +85,14 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
-        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM_SET]);
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_SET_CURRENCY]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('id', $model->errors));
         
-        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM_SET]);
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_SET_CURRENCY]);
         $model->attributes = ['id'=>self::$_id];
         $model->validate();
         

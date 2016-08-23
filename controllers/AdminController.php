@@ -67,10 +67,10 @@ class AdminController extends AbstractBaseController
     public function actionAddProducts()
     {
         try {
-            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_ADD_PRODUCT]);
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD_PRODUCT]);
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD_PRODUCT]);
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD_PRODUCT]);
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post()) && $brandsModel->load(\Yii::$app->request->post()) && $colorsModel->load(\Yii::$app->request->post()) && $sizesModel->load(\Yii::$app->request->post())) {
                 $productsModel->imagesToLoad = UploadedFile::getInstances($productsModel, 'imagesToLoad');
@@ -138,7 +138,7 @@ class AdminController extends AbstractBaseController
     public function actionShowProducts()
     {
         try {
-            $productsModelFilter = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            $productsModelFilter = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_ADMIN_FILTER]);
             
             if (!empty(\Yii::$app->filters->categories)) {
                 $categoriesModel = MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>\Yii::$app->filters->categories]));
@@ -184,10 +184,10 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['productsModel'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
-            \Yii::configure($renderArray['productsModel'], ['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
-            $renderArray['brandsModel'] = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM, 'id'=>$renderArray['productsModel']->brands->id]);
-            $renderArray['colorsModel'] = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['productsModel']->colors, 'id')]);
-            $renderArray['sizesModel'] = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM, 'idArray'=>ArrayHelper::getColumn($renderArray['productsModel']->sizes, 'id')]);
+            \Yii::configure($renderArray['productsModel'], ['scenario'=>ProductsModel::GET_FOR_UPDATE]);
+            $renderArray['brandsModel'] = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD_PRODUCT, 'id'=>$renderArray['productsModel']->brands->id]);
+            $renderArray['colorsModel'] = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD_PRODUCT, 'idArray'=>ArrayHelper::getColumn($renderArray['productsModel']->colors, 'id')]);
+            $renderArray['sizesModel'] = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD_PRODUCT, 'idArray'=>ArrayHelper::getColumn($renderArray['productsModel']->sizes, 'id')]);
             $renderArray['colorsList'] = MappersHelper::getColorsList(false);
             $renderArray['sizesList'] = MappersHelper::getSizesList(false);
             $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
@@ -206,7 +206,7 @@ class AdminController extends AbstractBaseController
     public function actionUpdateProductCut()
     {
         try {
-            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE_CUT]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_UPDATE_CUT]);
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if ($productsModel->validate()) {
@@ -243,10 +243,10 @@ class AdminController extends AbstractBaseController
     public function actionUpdateProduct()
     {
         try {
-            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_UPDATE]);
-            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT_FORM]);
-            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_UPDATE]);
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD_PRODUCT]);
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD_PRODUCT]);
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD_PRODUCT]);
             
             $updateConfig = array();
             
@@ -334,7 +334,7 @@ class AdminController extends AbstractBaseController
     public function actionDeleteProduct()
     {
         try {
-            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_DELETE]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_DELETE]);
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if ($productsModel->validate()) {
@@ -374,7 +374,7 @@ class AdminController extends AbstractBaseController
     {
         try {
             $renderArray = array();
-            $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_ADMIN_FILTER]);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('convert.twig', $renderArray);
         } catch (\Exception $e) {
@@ -426,7 +426,7 @@ class AdminController extends AbstractBaseController
     public function actionShowAddCategories()
     {
         try {
-            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_FORM]);
+            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FOR_ADD]);
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
@@ -462,7 +462,7 @@ class AdminController extends AbstractBaseController
     public function actionUpdateCategories()
     {
         try {
-            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_UPDATE_FORM]);
+            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FOR_UPDATE]);
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
@@ -512,7 +512,7 @@ class AdminController extends AbstractBaseController
     public function actionDeleteCategories()
     {
         try {
-            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
+            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FOR_DELETE]);
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
@@ -559,7 +559,7 @@ class AdminController extends AbstractBaseController
     public function actionShowAddSubcategory()
     {
         try {
-            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_ADD_FORM]);
+            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_ADD]);
             
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
@@ -581,7 +581,7 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['subcategoryModel'] = $subcategoryModel;
-            $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_ADMIN_FILTER]);
+            $renderArray['productsModelFilter'] = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_ADMIN_FILTER]);
             if (!empty(\Yii::$app->filters->categories)) {
                 $categoriesModel = MappersHelper::getCategoriesBySeocode(new CategoriesModel(['seocode'=>\Yii::$app->filters->categories]));
                 \Yii::configure($renderArray['productsModelFilter'], ['id_categories'=>$categoriesModel->id]);
@@ -603,7 +603,7 @@ class AdminController extends AbstractBaseController
     public function actionUpdateSubcategory()
     {
         try {
-            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_UPDATE_FORM]);
+            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_UPDATE]);
             
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
@@ -653,7 +653,7 @@ class AdminController extends AbstractBaseController
     public function actionDeleteSubcategory()
     {
         try {
-            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DELETE_FORM]);
+            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FOR_DELETE]);
             
             if (\Yii::$app->request->isPost && $subcategoryModel->load(\Yii::$app->request->post())) {
                 if ($subcategoryModel->validate()) {
@@ -700,7 +700,7 @@ class AdminController extends AbstractBaseController
     public function actionShowAddBrands()
     {
         try {
-            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_FORM]);
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD]);
             
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
@@ -737,7 +737,7 @@ class AdminController extends AbstractBaseController
     public function actionUpdateBrands()
     {
         try {
-            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_UPDATE_FORM]);
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_UPDATE]);
             
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
@@ -786,7 +786,7 @@ class AdminController extends AbstractBaseController
     public function actionDeleteBrands()
     {
         try {
-            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_DELETE_FORM]);
+            $brandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_DELETE]);
             
             if (\Yii::$app->request->isPost && $brandsModel->load(\Yii::$app->request->post())) {
                 if ($brandsModel->validate()) {
@@ -833,7 +833,7 @@ class AdminController extends AbstractBaseController
     public function actionShowAddColors()
     {
         try {
-            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_FORM]);
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD]);
             
             if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
                 if ($colorsModel->validate()) {
@@ -870,7 +870,7 @@ class AdminController extends AbstractBaseController
     public function actionUpdateColors()
     {
         try {
-            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_UPDATE_FORM]);
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_UPDATE]);
             
             if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
                 if ($colorsModel->validate()) {
@@ -919,7 +919,7 @@ class AdminController extends AbstractBaseController
     public function actionDeleteColors()
     {
         try {
-            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_DELETE_FORM]);
+            $colorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_DELETE]);
             
             if (\Yii::$app->request->isPost && $colorsModel->load(\Yii::$app->request->post())) {
                 if ($colorsModel->validate()) {
@@ -966,7 +966,7 @@ class AdminController extends AbstractBaseController
     public function actionShowAddSizes()
     {
         try {
-            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD]);
             
             if (\Yii::$app->request->isPost && $sizesModel->load(\Yii::$app->request->post())) {
                 if ($sizesModel->validate()) {
@@ -1003,7 +1003,7 @@ class AdminController extends AbstractBaseController
     public function actionUpdateSizes()
     {
         try {
-            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_UPDATE_FORM]);
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FOR_UPDATE]);
             
             if (\Yii::$app->request->isPost && $sizesModel->load(\Yii::$app->request->post())) {
                 if ($sizesModel->validate()) {
@@ -1052,7 +1052,7 @@ class AdminController extends AbstractBaseController
     public function actionDeleteSizes()
     {
         try {
-            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_DELETE_FORM]);
+            $sizesModel = new SizesModel(['scenario'=>SizesModel::GET_FOR_DELETE]);
             
             if (\Yii::$app->request->isPost && $sizesModel->load(\Yii::$app->request->post())) {
                 if ($sizesModel->validate()) {
@@ -1108,6 +1108,43 @@ class AdminController extends AbstractBaseController
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Обновляет cut данные комментария в БД
+     * @return redirect
+     */
+    /*public function actionUpdateCommentCut()
+    {
+        try {
+            $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_UPDATE_CUT]);
+            
+            if (\Yii::$app->request->isPost && $commentsModel->load(\Yii::$app->request->post())) {
+                if ($commentsModel->validate()) {
+                    if ($commentsModel->active != MappersHelper::getCommentsById($commentsModel)->active) {
+                        
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                        
+                        try {
+                            if (!MappersHelper::setCommentsUpdate(['commentsModelArray'=>[$commentsModel], 'fields'=>['id', 'active']])) {
+                                throw new ErrorException('Ошибка при обновлении данных!');
+                            }
+                        } catch(\Exception $e) {
+                            $transaction->rollBack();
+                            throw $e;
+                        }
+                        
+                        $transaction->commit();
+                    }
+                }
+            } else {
+                return $this->redirect(Url::to(['comments-list/index']));
+            }
+            return $this->redirect(Url::to(['admin/show-comments']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }*/
     
     public function behaviors()
     {

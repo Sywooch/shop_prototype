@@ -22,7 +22,7 @@ class AddressModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы обновления данных
      */
-    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
+    const GET_FOR_UPDATE = 'getForUpdate';
     
     public $address;
     public $city;
@@ -36,7 +36,7 @@ class AddressModel extends AbstractBaseModel
         return [
             self::GET_FROM_FORM=>['address', 'city', 'country', 'postcode'],
             self::GET_FROM_DB=>['id', 'address', 'city', 'country', 'postcode'],
-            self::GET_FROM_UPDATE_FORM=>['address', 'city', 'country', 'postcode'],
+            self::GET_FOR_UPDATE=>['address', 'city', 'country', 'postcode'],
         ];
     }
     

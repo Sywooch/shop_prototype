@@ -32,11 +32,11 @@ class ModelsInstancesHelper
             self::$_instancesArray['currencyModel'] = \Yii::$app->shopUser->currency;
             self::$_instancesArray['categoriesList'] = MappersHelper::getCategoriesList();
             self::$_instancesArray['currencyList'] = MappersHelper::getСurrencyList();
-            self::$_instancesArray['productsModelForAddToCart'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
-            self::$_instancesArray['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
-            self::$_instancesArray['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FROM_LOGOUT_FORM]);
+            self::$_instancesArray['productsModelForAddToCart'] = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CART]);
+            self::$_instancesArray['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CLEAR_CART]);
+            self::$_instancesArray['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FOR_LOGOUT]);
             self::$_instancesArray['commentsModel'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
-            self::$_instancesArray['mailingListModelForMailingForm'] = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_MAILING_FORM]);
+            self::$_instancesArray['mailingListModelForMailingForm'] = new MailingListModel(['scenario'=>MailingListModel::GET_FOR_SUBSCRIPTION]);
             self::$_instancesArray['adminMenuList'] = MappersHelper::getAdminMenuList();
             return self::$_instancesArray;
         } catch (\Exception $e) {

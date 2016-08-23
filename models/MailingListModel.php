@@ -13,15 +13,15 @@ class MailingListModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из БД
     */
-    const GET_FROM_DB = 'getFromBd';
+    const GET_FROM_DB = 'getFromDb';
     /**
      * Сценарий загрузки данных из формы подписки на рассылку для формы регистрации
     */
-    const GET_FROM_MAILING_FORM = 'getFromMailingForm';
+    const GET_FOR_SUBSCRIPTION = 'getForSubscription';
     /**
      * Сценарий загрузки данных из формы подписки на рассылку для формы подписки
     */
-    const GET_FROM_MAILING_FORM_REQUIRE = 'getFromMailingFormRequire';
+    const GET_FOR_SUBSCRIPTION_REQUIRE = 'getForSubscriptionRequire';
     
     public $id;
     public $name;
@@ -41,15 +41,15 @@ class MailingListModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'name', 'description'],
-            self::GET_FROM_MAILING_FORM=>['idFromForm'],
-            self::GET_FROM_MAILING_FORM_REQUIRE=>['idFromForm'],
+            self::GET_FOR_SUBSCRIPTION=>['idFromForm'],
+            self::GET_FOR_SUBSCRIPTION_REQUIRE=>['idFromForm'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['idFromForm'], 'required', 'on'=>self::GET_FROM_MAILING_FORM_REQUIRE],
+            [['idFromForm'], 'required', 'on'=>self::GET_FOR_SUBSCRIPTION_REQUIRE],
             [['name', 'description'], 'app\validators\StripTagsValidator'],
         ];
     }

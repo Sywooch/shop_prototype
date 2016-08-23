@@ -13,23 +13,23 @@ class ColorsModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из БД
     */
-    const GET_FROM_DB = 'getFromBd';
+    const GET_FROM_DB = 'getFromDb';
     /**
      * Сценарий загрузки данных из формы добавления продукта
     */
-    const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
+    const GET_FOR_ADD_PRODUCT = 'getForAddProduct';
     /**
      * Сценарий загрузки данных из формы добавления ColorsModel в БД
     */
-    const GET_FROM_ADD_FORM = 'getFromAddForm';
+    const GET_FOR_ADD = 'getForAdd';
     /**
      * Сценарий загрузки данных из формы обновления ColorsModel в БД
     */
-    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
+    const GET_FOR_UPDATE = 'getForUpdate';
     /**
      * Сценарий загрузки данных из формы для удаления ColorsModel из БД
     */
-    const GET_FROM_DELETE_FORM = 'getFromDeleteForm';
+    const GET_FOR_DELETE = 'getForDelete';
     
     public $id;
     public $color;
@@ -42,25 +42,25 @@ class ColorsModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'color'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['idArray'],
-            self::GET_FROM_ADD_FORM=>['color'],
-            self::GET_FROM_UPDATE_FORM=>['id', 'color'],
-            self::GET_FROM_DELETE_FORM=>['id', 'color'],
+            self::GET_FOR_ADD_PRODUCT=>['idArray'],
+            self::GET_FOR_ADD=>['color'],
+            self::GET_FOR_UPDATE=>['id', 'color'],
+            self::GET_FOR_DELETE=>['id', 'color'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['idArray'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['color'], 'required', 'on'=>self::GET_FROM_ADD_FORM],
-            [['color'], 'app\validators\ColorsColorExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
-            [['id', 'color'], 'required', 'on'=>self::GET_FROM_UPDATE_FORM],
-            [['color'], 'app\validators\ColorsColorExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+            [['idArray'], 'required', 'on'=>self::GET_FOR_ADD_PRODUCT],
+            [['color'], 'required', 'on'=>self::GET_FOR_ADD],
+            [['color'], 'app\validators\ColorsColorExistsValidator', 'on'=>self::GET_FOR_ADD],
+            [['id', 'color'], 'required', 'on'=>self::GET_FOR_UPDATE],
+            [['color'], 'app\validators\ColorsColorExistsValidator', 'on'=>self::GET_FOR_UPDATE, 'when'=>function($model) {
                 return $model->color != MappersHelper::getColorsById($model)->color;
             }],
-            [['id', 'color'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['color'], 'app\validators\ColorsForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['id', 'color'], 'required', 'on'=>self::GET_FOR_DELETE],
+            [['color'], 'app\validators\ColorsForeignProductsExistsValidator', 'on'=>self::GET_FOR_DELETE],
             [['color'], 'app\validators\StripTagsValidator'],
         ];
     }

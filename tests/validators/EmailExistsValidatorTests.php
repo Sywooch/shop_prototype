@@ -49,14 +49,14 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод EmailExistsValidator::validateAttribute
-     * для сценария EmailsModel::GET_FROM_REGISTRATION_FORM
+     * для сценария EmailsModel::GET_FOR_REGISTRATION
      * при условии, что передан email, связанный с аккаунтом
      */
     public function testValidateAttributeRegistration()
     {
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_REGISTRATION]);
         $model->email = self::$_email;
         
         $validator = new EmailExistsValidator();
@@ -70,7 +70,7 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод EmailExistsValidator::validateAttribute
-     * для сценария EmailsModel::GET_FROM_REGISTRATION_FORM
+     * для сценария EmailsModel::GET_FOR_REGISTRATION
      * при условии, что передан email, связанный с аккаунтом
      * после сохранения запроса к БД в \Yii::$app->params['userFromFormForAuthentication']
      */
@@ -78,7 +78,7 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertFalse(empty(\Yii::$app->params['userFromFormForAuthentication']));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_REGISTRATION]);
         $model->email = self::$_email;
         
         $validator = new EmailExistsValidator();
@@ -92,14 +92,14 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод EmailExistsValidator::validateAttribute
-     * для сценария EmailsModel::GET_FROM_REGISTRATION_FORM
+     * для сценария EmailsModel::GET_FOR_REGISTRATION
      * при условии, что передан email, не связанный с аккаунтом
      */
     public function testValidateAttributeRegistrationNotRelated()
     {
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_REGISTRATION]);
         $model->email = self::$_email2;
         
         $validator = new EmailExistsValidator();
@@ -110,14 +110,14 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод EmailExistsValidator::validateAttribute
-     * для сценария EmailsModel::GET_FROM_REGISTRATION_FORM
+     * для сценария EmailsModel::GET_FOR_REGISTRATION
      * при условии, что передан несуществующий email
      */
     public function testValidateAttributeRegistrationNotAdded()
     {
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_REGISTRATION]);
         $model->email = self::$_notAddedEmail;
         
         $validator = new EmailExistsValidator();
@@ -128,14 +128,14 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод EmailExistsValidator::validateAttribute
-     * для сценария EmailsModel::GET_FROM_LOGIN_FORM
+     * для сценария EmailsModel::GET_FOR_LOGIN
      * при условии, что передан несуществующий email
      */
     public function testValidateAttributeLogin()
     {
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->email = self::$_notAddedEmail;
         
         $validator = new EmailExistsValidator();
@@ -149,14 +149,14 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод EmailExistsValidator::validateAttribute
-     * для сценария EmailsModel::GET_FROM_LOGIN_FORM
+     * для сценария EmailsModel::GET_FOR_LOGIN
      * при условии, что передан email, не связанный с аккаунтом
      */
     public function testValidateAttributeLoginNotRelated()
     {
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->email = self::$_email2;
         
         $validator = new EmailExistsValidator();
@@ -170,14 +170,14 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод EmailExistsValidator::validateAttribute
-     * для сценария EmailsModel::GET_FROM_LOGIN_FORM
+     * для сценария EmailsModel::GET_FOR_LOGIN
      * при условии, что передан email, связанный с аккаунтом
      */
     public function testValidateAttributeLoginRelated()
     {
         \Yii::$app->params['userFromFormForAuthentication'] = null;
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->email = self::$_email;
         
         $validator = new EmailExistsValidator();
@@ -188,7 +188,7 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод EmailExistsValidator::validateAttribute
-     * для сценария EmailsModel::GET_FROM_LOGIN_FORM
+     * для сценария EmailsModel::GET_FOR_LOGIN
      * при условии, что передан email, связанный с аккаунтом
      * после сохранения запроса к БД в \Yii::$app->params['userFromFormForAuthentication']
      */
@@ -196,7 +196,7 @@ class EmailExistsValidatorTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertFalse(empty(\Yii::$app->params['userFromFormForAuthentication']));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_LOGIN_FORM]);
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FOR_LOGIN]);
         $model->email = self::$_email;
         
         $validator = new EmailExistsValidator();

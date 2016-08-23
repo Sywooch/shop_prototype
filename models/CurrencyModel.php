@@ -16,7 +16,7 @@ class CurrencyModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы, для установки текущей валюты
     */
-    const GET_FROM_FORM_SET = 'getFromFormSet';
+    const GET_FOR_SET_CURRENCY = 'getForSetCurrency';
     
     public $id;
     public $currency;
@@ -35,14 +35,14 @@ class CurrencyModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'currency', 'exchange_rate', 'main'],
-            self::GET_FROM_FORM_SET=>['id', 'id_products', 'categories', 'subcategory', 'search'],
+            self::GET_FOR_SET_CURRENCY=>['id', 'id_products', 'categories', 'subcategory', 'search'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['id'], 'required', 'on'=>self::GET_FROM_FORM_SET],
+            [['id'], 'required', 'on'=>self::GET_FOR_SET_CURRENCY],
             [['currency'], 'app\validators\StripTagsValidator'],
         ];
     }

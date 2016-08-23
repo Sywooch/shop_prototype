@@ -28,7 +28,7 @@ class EmailExistsValidator extends Validator
         try {
             $id_email = MappersHelper::getEmailsByEmail($model);
             
-            if ($model->scenario == EmailsModel::GET_FROM_REGISTRATION_FORM) {
+            if ($model->scenario == EmailsModel::GET_FOR_REGISTRATION) {
                 if (!empty($id_email)) {
                     if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
                         \Yii::$app->params['userFromFormForAuthentication'] = MappersHelper::getUsersByIdEmails(new UsersModel(['id_emails'=>$id_email->id]));
@@ -39,7 +39,7 @@ class EmailExistsValidator extends Validator
                 }
             }
             
-            if ($model->scenario == EmailsModel::GET_FROM_LOGIN_FORM) {
+            if ($model->scenario == EmailsModel::GET_FOR_LOGIN) {
                 if (!empty($id_email)) {
                     if (empty(\Yii::$app->params['userFromFormForAuthentication'])) {
                         \Yii::$app->params['userFromFormForAuthentication'] = MappersHelper::getUsersByIdEmails(new UsersModel(['id_emails'=>$id_email->id]));

@@ -67,10 +67,10 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $model = new SizesModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DELETE_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD_PRODUCT'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_DELETE'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'size'));
@@ -88,23 +88,23 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_size, $model->size);
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = ['idArray'=>self::$_idArray];
         
         $this->assertEquals(self::$_idArray, $model->idArray);
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD]);
         $model->attributes = ['size'=>self::$_size];
         
         $this->assertEquals(self::$_size, $model->size);
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_UPDATE_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'size'=>self::$_size];
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_size, $model->size);
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_DELETE_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id, 'size'=>self::$_size];
         
         $this->assertEquals(self::$_id, $model->id);
@@ -116,27 +116,27 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testRules()
     {
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('idArray', $model->errors));
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = ['idArray'=>self::$_idArray];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('size', $model->errors));
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD]);
         $model->attributes = ['size'=>self::$_size];
         $model->validate();
         
@@ -144,13 +144,13 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('size', $model->errors));
         $this->assertEquals(self::$_message, $model->errors['size'][0]);
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD]);
         $model->attributes = ['size'=>self::$_size3];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_UPDATE_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_UPDATE]);
         $model->attributes = [];
         $model->validate();
         
@@ -158,20 +158,20 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('size', $model->errors));
         $this->assertTrue(array_key_exists('id', $model->errors));
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_UPDATE_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'size'=>self::$_size2];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('size', $model->errors));
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_UPDATE_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_UPDATE]);
         $model->attributes = ['id'=>self::$_id, 'size'=>self::$_size3];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_DELETE_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_DELETE]);
         $model->attributes = [];
         $model->validate();
         
@@ -179,7 +179,7 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('size', $model->errors));
         $this->assertTrue(array_key_exists('id', $model->errors));
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_DELETE_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id, 'size'=>self::$_size];
         $model->validate();
         
@@ -187,7 +187,7 @@ class SizesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('size', $model->errors));
         $this->assertEquals(self::$_messageDelete, $model->errors['size'][0]);
         
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_DELETE_FORM]);
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FOR_DELETE]);
         $model->attributes = ['id'=>self::$_id + 1, 'size'=>self::$_size2];
         $model->validate();
         

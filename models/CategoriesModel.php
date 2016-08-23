@@ -22,15 +22,15 @@ class CategoriesModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы
     */
-    const GET_FROM_ADD_FORM = 'getFromAddForm';
+    const GET_FOR_ADD = 'getForAdd';
     /**
      * Сценарий загрузки данных из формы обновления
     */
-    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
+    const GET_FOR_UPDATE = 'getForUpdate';
     /**
      * Сценарий загрузки данных из формы удаления
     */
-    const GET_FROM_DELETE_FORM = 'getFromDeleteForm';
+    const GET_FOR_DELETE = 'getForDelete';
     
     public $id;
     public $name;
@@ -43,28 +43,28 @@ class CategoriesModel extends AbstractBaseModel
         return [
             self::GET_FROM_DB=>['id', 'name', 'seocode'],
             self::GET_FROM_FORM=>['name', 'seocode'],
-            self::GET_FROM_ADD_FORM=>['name', 'seocode'],
-            self::GET_FROM_UPDATE_FORM=>['id', 'name', 'seocode'],
-            self::GET_FROM_DELETE_FORM=>['id', 'name', 'seocode'],
+            self::GET_FOR_ADD=>['name', 'seocode'],
+            self::GET_FOR_UPDATE=>['id', 'name', 'seocode'],
+            self::GET_FOR_DELETE=>['id', 'name', 'seocode'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['name', 'seocode'], 'required', 'on'=>self::GET_FROM_ADD_FORM],
-            [['name'], 'app\validators\CategoriesNameExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
-            [['seocode'], 'app\validators\CategoriesSeocodeExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
-            [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_UPDATE_FORM],
-            [['name'], 'app\validators\CategoriesNameExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+            [['name', 'seocode'], 'required', 'on'=>self::GET_FOR_ADD],
+            [['name'], 'app\validators\CategoriesNameExistsValidator', 'on'=>self::GET_FOR_ADD],
+            [['seocode'], 'app\validators\CategoriesSeocodeExistsValidator', 'on'=>self::GET_FOR_ADD],
+            [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FOR_UPDATE],
+            [['name'], 'app\validators\CategoriesNameExistsValidator', 'on'=>self::GET_FOR_UPDATE, 'when'=>function($model) {
                 return $model->name != MappersHelper::getCategoriesById($model)->name;
             }],
-            [['seocode'], 'app\validators\CategoriesSeocodeExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+            [['seocode'], 'app\validators\CategoriesSeocodeExistsValidator', 'on'=>self::GET_FOR_UPDATE, 'when'=>function($model) {
                 return $model->seocode != MappersHelper::getCategoriesById($model)->seocode;
             }],
-            [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['name'], 'app\validators\CategoriesForeignSubcategoryExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['name'], 'app\validators\CategoriesForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FOR_DELETE],
+            [['name'], 'app\validators\CategoriesForeignSubcategoryExistsValidator', 'on'=>self::GET_FOR_DELETE],
+            [['name'], 'app\validators\CategoriesForeignProductsExistsValidator', 'on'=>self::GET_FOR_DELETE],
             [['name', 'seocode'], 'app\validators\StripTagsValidator'],
             [['seocode'], 'app\validators\StrtolowerValidator'],
         ];

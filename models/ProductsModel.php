@@ -15,7 +15,7 @@ class ProductsModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из БД в рамках списка продуктов
     */
-    const GET_LIST_FROM_DB = 'getListFromBd';
+    const GET_FROM_DB = 'getFromDb';
     /**
      * Сценарий загрузки данных из формы
     */
@@ -23,35 +23,35 @@ class ProductsModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы, добавляющей продукт в корзину
     */
-    const GET_FROM_FORM_TO_CART = 'getFromFormToCart';
+    const GET_FOR_CART = 'getForCart';
     /**
      * Сценарий загрузки данных из формы, удаляющей продукт из корзины
     */
-    const GET_FROM_FORM_FOR_REMOVE = 'getFromFormForRemove';
+    const GET_FOR_REMOVE = 'getForRemove';
     /**
      * Сценарий загрузки данных из формы, инициирующей очищающение корзины
     */
-    const GET_FROM_FORM_FOR_CLEAR_CART = 'getFromFormForClearCart';
+    const GET_FOR_CLEAR_CART = 'getForClearCart';
     /**
      * Сценарий загрузки данных из формы добавления продукта
     */
-    const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
+    const GET_FOR_ADD_PRODUCT = 'getForAddProduct';
     /**
      * Сценарий загрузки данных из формы для обновления товара
     */
-    const GET_FROM_FORM_FOR_UPDATE = 'getFromFormForUpdate'; 
+    const GET_FOR_UPDATE = 'getForUpdate';
     /**
      * Сценарий cut загрузки данных из формы для обновления товара
     */
-    const GET_FROM_FORM_FOR_UPDATE_CUT = 'getFromFormForUpdateCut';
+    const GET_FOR_UPDATE_CUT = 'getForUpdateCut';
     /**
      * Сценарий загрузки данных из формы для фильтра администрирования товаров
     */
-    const GET_FROM_FORM_FOR_ADMIN_FILTER = 'getFromFormForAdminFilter';
+    const GET_FOR_ADMIN_FILTER = 'getForAdminFilter';
     /**
      * Сценарий загрузки данных из формы для удаления товара из БД
     */
-    const GET_FROM_FORM_FOR_DELETE = 'getFromFormForDelete'; 
+    const GET_FOR_DELETE = 'getForDelete'; 
     
     private $_id = null;
     private $_date = null;
@@ -82,8 +82,7 @@ class ProductsModel extends AbstractBaseModel
     private $_categories = null;
     private $_subcategory = null;
     /**
-     * @var object объекты категории и подкатегории продукта соответственно,
-     * полученные при обращении с $this->categories, $this->subcategory
+     * @var object объекты категории и подкатегории продукта соответственно
      */
     private $_categoriesObject = null; 
     private $_subcategoryObject = null; 
@@ -115,29 +114,29 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_FORM=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
-            self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'categories', 'subcategory', 'id_categories', 'id_subcategory', 'active', 'total_products'],
-            self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'images', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
-            self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],
-            self::GET_FROM_FORM_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
-            self::GET_FROM_FORM_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
-            self::GET_FROM_FORM_FOR_UPDATE_CUT=>['id', 'active'],
-            self::GET_FROM_FORM_FOR_ADMIN_FILTER=>['id_categories', 'id_subcategory', 'active'],
-            self::GET_FROM_FORM_FOR_DELETE=>['id', 'images'], 
+            self::GET_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'categories', 'subcategory', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+            self::GET_FOR_CART=>['id', 'code', 'name', 'description', 'price', 'images', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
+            self::GET_FOR_REMOVE=>['id', 'hash'],
+            self::GET_FOR_CLEAR_CART=>['id', 'categories', 'subcategory'],
+            self::GET_FOR_ADD_PRODUCT=>['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+            self::GET_FOR_UPDATE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+            self::GET_FOR_UPDATE_CUT=>['id', 'active'],
+            self::GET_FOR_ADMIN_FILTER=>['id_categories', 'id_subcategory', 'active'],
+            self::GET_FOR_DELETE=>['id', 'images'], 
         ];
     }
     
     public function rules()
     {
         return [
-            [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['code', 'name', 'description', 'short_description', 'price', 'total_products'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE], 
-            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FROM_FORM_FOR_UPDATE],
-            [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM_FOR_UPDATE],
-            [['id', 'active'], 'required', 'on'=>self::GET_FROM_FORM_FOR_UPDATE_CUT],
-            [['id'], 'required', 'on'=>self::GET_FROM_FORM_FOR_DELETE], 
+            [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'], 'required', 'on'=>self::GET_FOR_ADD_PRODUCT],
+            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FOR_ADD_PRODUCT],
+            [['code', 'name', 'description', 'short_description', 'price', 'total_products'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FOR_ADD_PRODUCT],
+            [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FOR_UPDATE], 
+            [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FOR_UPDATE],
+            [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FOR_UPDATE],
+            [['id', 'active'], 'required', 'on'=>self::GET_FOR_UPDATE_CUT],
+            [['id'], 'required', 'on'=>self::GET_FOR_DELETE], 
         ];
     }
     

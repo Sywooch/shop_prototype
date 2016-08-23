@@ -29,7 +29,7 @@ class ShoppingCartController extends AbstractBaseController
     public function actionAddToCart()
     {
         try {
-            $productsModelForAddToCart = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
+            $productsModelForAddToCart = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CART]);
             
             if (\Yii::$app->request->isPost && $productsModelForAddToCart->load(\Yii::$app->request->post())) {
                 if ($productsModelForAddToCart->validate()) {
@@ -54,7 +54,7 @@ class ShoppingCartController extends AbstractBaseController
     public function actionClearCart()
     {
         try {
-            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_CLEAR_CART]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CLEAR_CART]);
             
             if (\Yii::$app->request->isPost && $productsModel->load(\Yii::$app->request->post())) {
                 if ($productsModel->validate()) {
@@ -110,7 +110,7 @@ class ShoppingCartController extends AbstractBaseController
     public function actionRemoveProduct()
     {
         try {
-            $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_FOR_REMOVE]);
+            $model = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_REMOVE]);
             
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {
@@ -139,7 +139,7 @@ class ShoppingCartController extends AbstractBaseController
     public function actionUpdateProduct()
     {
         try {
-            $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM_TO_CART]);
+            $model = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CART]);
             
             if (\Yii::$app->request->isPost && $model->load(\Yii::$app->request->post())) {
                 if ($model->validate()) {

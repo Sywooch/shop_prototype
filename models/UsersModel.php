@@ -22,23 +22,23 @@ class UsersModel extends AbstractBaseModel
     /**
      * Сценарий сохранения данных из формы регистрации
     */
-    const GET_FROM_REGISTRATION_FORM = 'getFromForm';
+    const GET_FOR_REGISTRATION = 'getForRegistartion';
     /**
      * Сценарий сохранения данных из формы авторизации
     */
-    const GET_FROM_LOGIN_FORM = 'getFromLoginForm';
+    const GET_FOR_LOGIN = 'getForLogin';
     /**
      * Сценарий выхода из аккаунта
     */
-    const GET_FROM_LOGOUT_FORM = 'getFromLogoutForm';
+    const GET_FOR_LOGOUT = 'getForLogout';
     /**
      * Сценарий сохранения данных из формы заказа
     */
-    const GET_FROM_CART_FORM = 'getFromCartForm';
+    const GET_FOR_CART = 'getForCart';
     /**
      * Сценарий сохранения данных из формы обновления данных
     */
-    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
+    const GET_FOR_UPDATE = 'getForUpdate';
     /**
      * Сценарий сохранения данных из БД
     */
@@ -81,24 +81,24 @@ class UsersModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_REGISTRATION_FORM=>['rawPassword'], 
+            self::GET_FOR_REGISTRATION=>['rawPassword'], 
             self::GET_FROM_DB=>['id', 'password', 'name', 'surname', 'id_emails', 'id_phones', 'id_address'], 
-            self::GET_FROM_CART_FORM=>['name', 'surname'],
-            self::GET_FROM_LOGIN_FORM=>['rawPassword'], 
-            self::GET_FROM_LOGOUT_FORM=>['id'],
-            self::GET_FROM_UPDATE_FORM=>['id', 'name', 'surname', 'currentRawPassword', 'rawPassword'], 
+            self::GET_FOR_CART=>['name', 'surname'],
+            self::GET_FOR_LOGIN=>['rawPassword'], 
+            self::GET_FOR_LOGOUT=>['id'],
+            self::GET_FOR_UPDATE=>['id', 'name', 'surname', 'currentRawPassword', 'rawPassword'], 
         ];
     }
     
     public function rules()
     {
         return [
-            [['rawPassword'], 'required', 'on'=>self::GET_FROM_REGISTRATION_FORM], 
-            [['rawPassword'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_REGISTRATION_FORM], 
-            [['name', 'surname'], 'required', 'on'=>self::GET_FROM_CART_FORM],
-            [['name', 'surname'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_CART_FORM],
-            [['rawPassword'], 'required', 'on'=>self::GET_FROM_LOGIN_FORM], 
-            ['rawPassword', 'app\validators\PasswordExistsValidator', 'on'=>self::GET_FROM_LOGIN_FORM, 'when'=>function($model) {
+            [['rawPassword'], 'required', 'on'=>self::GET_FOR_REGISTRATION], 
+            [['rawPassword'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FOR_REGISTRATION], 
+            [['name', 'surname'], 'required', 'on'=>self::GET_FOR_CART],
+            [['name', 'surname'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FOR_CART],
+            [['rawPassword'], 'required', 'on'=>self::GET_FOR_LOGIN], 
+            ['rawPassword', 'app\validators\PasswordExistsValidator', 'on'=>self::GET_FOR_LOGIN, 'when'=>function($model) {
                 return empty($model->errors) ? true : false;
             }],
         ];

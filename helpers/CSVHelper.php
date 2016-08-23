@@ -4,7 +4,6 @@ namespace app\helpers;
 
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
-use app\helpers\GeneratorHelper;
 
 /**
  * Предоставляет функциональность для создания csv из данных
@@ -41,7 +40,7 @@ class CSVHelper
                 throw new ErrorException('Ошибка при записи в файл!');
             }
             
-            foreach (GeneratorHelper::generate($config['objectsArray']) as $object) {
+            foreach ($config['objectsArray'] as $object) {
                 $objectFieldsArray = array();
                 foreach ($config['fields'] as $field) {
                     if ($field == 'date') {

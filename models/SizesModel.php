@@ -13,23 +13,23 @@ class SizesModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из БД
     */
-    const GET_FROM_DB = 'getFromBd';
+    const GET_FROM_DB = 'getFromDb';
     /**
      * Сценарий загрузки данных из формы добавления продукта
     */
-    const GET_FROM_ADD_PRODUCT_FORM = 'getFromAddProductForm';
+    const GET_FOR_ADD_PRODUCT = 'getForAddProduct';
     /**
      * Сценарий загрузки данных из формы добавления SizesModel в БД
     */
-    const GET_FROM_ADD_FORM = 'getFromAddForm';
+    const GET_FOR_ADD = 'getForAdd';
     /**
      * Сценарий загрузки данных из формы обновления SizesModel в БД
     */
-    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
+    const GET_FOR_UPDATE = 'getForUpdate';
     /**
      * Сценарий загрузки данных из формы для удаления SizesModel из БД
     */
-    const GET_FROM_DELETE_FORM = 'getFromDeleteForm';
+    const GET_FOR_DELETE = 'getForDelete';
     
     public $id;
     public $size;
@@ -42,27 +42,27 @@ class SizesModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'size'],
-            self::GET_FROM_ADD_PRODUCT_FORM=>['idArray'],
-            self::GET_FROM_ADD_FORM=>['size'],
-            self::GET_FROM_UPDATE_FORM=>['id', 'size'],
-            self::GET_FROM_DELETE_FORM=>['id', 'size'],
+            self::GET_FOR_ADD_PRODUCT=>['idArray'],
+            self::GET_FOR_ADD=>['size'],
+            self::GET_FOR_UPDATE=>['id', 'size'],
+            self::GET_FOR_DELETE=>['id', 'size'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['idArray'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT_FORM],
-            [['size'], 'required', 'on'=>self::GET_FROM_ADD_FORM],
-            [['size'], 'app\validators\DecimalValidator', 'on'=>self::GET_FROM_ADD_FORM],
-            [['size'], 'app\validators\SizesSizeExistsValidator', 'on'=>self::GET_FROM_ADD_FORM],
-            [['id', 'size'], 'required', 'on'=>self::GET_FROM_UPDATE_FORM],
-            [['size'], 'app\validators\DecimalValidator', 'on'=>self::GET_FROM_UPDATE_FORM],
-            [['size'], 'app\validators\SizesSizeExistsValidator', 'on'=>self::GET_FROM_UPDATE_FORM, 'when'=>function($model) {
+            [['idArray'], 'required', 'on'=>self::GET_FOR_ADD_PRODUCT],
+            [['size'], 'required', 'on'=>self::GET_FOR_ADD],
+            [['size'], 'app\validators\DecimalValidator', 'on'=>self::GET_FOR_ADD],
+            [['size'], 'app\validators\SizesSizeExistsValidator', 'on'=>self::GET_FOR_ADD],
+            [['id', 'size'], 'required', 'on'=>self::GET_FOR_UPDATE],
+            [['size'], 'app\validators\DecimalValidator', 'on'=>self::GET_FOR_UPDATE],
+            [['size'], 'app\validators\SizesSizeExistsValidator', 'on'=>self::GET_FOR_UPDATE, 'when'=>function($model) {
                 return $model->size != MappersHelper::getSizesById($model)->size;
             }],
-            [['id', 'size'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['size'], 'app\validators\SizesForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
+            [['id', 'size'], 'required', 'on'=>self::GET_FOR_DELETE],
+            [['size'], 'app\validators\SizesForeignProductsExistsValidator', 'on'=>self::GET_FOR_DELETE],
         ];
     }
 }

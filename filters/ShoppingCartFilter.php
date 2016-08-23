@@ -34,7 +34,7 @@ class ShoppingCartFilter extends ActionFilter
             $session = \Yii::$app->session;
             if ($session->has(\Yii::$app->params['cartKeyInSession'])) {
                 
-                \Yii::$app->cart->user = new UsersModel(['scenario'=>UsersModel::GET_FROM_CART_FORM]);
+                \Yii::$app->cart->user = new UsersModel(['scenario'=>UsersModel::GET_FOR_CART]);
                 \Yii::$app->cart->user->emails = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
                 \Yii::$app->cart->user->phones = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
                 \Yii::$app->cart->user->address = new AddressModel(['scenario'=>AddressModel::GET_FROM_FORM]);

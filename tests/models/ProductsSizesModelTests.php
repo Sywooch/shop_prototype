@@ -26,7 +26,7 @@ class ProductsSizesModelTests extends \PHPUnit_Framework_TestCase
         $model = new ProductsSizesModel();
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD_PRODUCT'));
         
         $this->assertTrue(property_exists($model, 'id_products'));
         $this->assertTrue(property_exists($model, 'id_sizes'));
@@ -45,7 +45,7 @@ class ProductsSizesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id_products, $model->id_products);
         $this->assertEquals(self::$_id_sizes, $model->id_sizes);
         
-        $model = new ProductsSizesModel(['scenario'=>ProductsSizesModel::GET_FROM_ADD_PRODUCT_FORM]);
+        $model = new ProductsSizesModel(['scenario'=>ProductsSizesModel::GET_FOR_ADD_PRODUCT]);
         $model->attributes = ['id_products'=>self::$_id_products, 'id_sizes'=>self::$_id_sizes];
         
         $this->assertFalse(empty($model->id_products));

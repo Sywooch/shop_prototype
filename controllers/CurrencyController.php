@@ -32,7 +32,7 @@ class CurrencyController extends AbstractBaseController
                 throw new ErrorException('Не установлена переменная subCategoryKey!');
             }
             
-            $currencyModel = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM_SET]);
+            $currencyModel = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_SET_CURRENCY]);
             
             if (\Yii::$app->request->isPost && $currencyModel->load(\Yii::$app->request->post())) {
                 if ($currencyModel->validate()) {

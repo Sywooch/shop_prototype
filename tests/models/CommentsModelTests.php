@@ -59,6 +59,7 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE_CUT'));
         
         $this->assertTrue(self::$_reflectionClass->hasProperty('id'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('text'));

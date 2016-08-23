@@ -21,7 +21,7 @@ class PhonesModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы обновления данных
      */
-    const GET_FROM_UPDATE_FORM = 'getFromUpdateForm';
+    const GET_FOR_UPDATE = 'getForUpdate';
     
     public $phone;
     private $_id = null;
@@ -31,7 +31,7 @@ class PhonesModel extends AbstractBaseModel
         return [
             self::GET_FROM_FORM=>['phone'],
             self::GET_FROM_DB=>['id', 'phone'],
-            self::GET_FROM_UPDATE_FORM=>['phone'],
+            self::GET_FOR_UPDATE=>['phone'],
         ];
     }
     
