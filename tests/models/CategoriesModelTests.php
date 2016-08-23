@@ -73,6 +73,7 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DELETE_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'name'));
@@ -90,10 +91,6 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DB]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
         
-        $this->assertFalse(empty($model->id));
-        $this->assertFalse(empty($model->name));
-        $this->assertFalse(empty($model->seocode));
-        
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
@@ -101,18 +98,11 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_ADD_FORM]);
         $model->attributes = ['name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
         
-        $this->assertFalse(empty($model->name));
-        $this->assertFalse(empty($model->seocode));
-        
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
         
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_UPDATE_FORM]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
-        
-        $this->assertFalse(empty($model->id));
-        $this->assertFalse(empty($model->name));
-        $this->assertFalse(empty($model->seocode));
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_name, $model->name);
@@ -121,11 +111,13 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DELETE_FORM]);
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
         
-        $this->assertFalse(empty($model->id));
-        $this->assertFalse(empty($model->name));
-        $this->assertFalse(empty($model->seocode));
-        
         $this->assertEquals(self::$_id, $model->id);
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_categorySeocode, $model->seocode);
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM]);
+        $model->attributes = ['name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
+        
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
     }

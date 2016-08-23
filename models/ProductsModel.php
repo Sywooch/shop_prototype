@@ -17,6 +17,10 @@ class ProductsModel extends AbstractBaseModel
     */
     const GET_LIST_FROM_DB = 'getListFromBd';
     /**
+     * Сценарий загрузки данных из формы
+    */
+    const GET_FROM_FORM = 'getFromForm';
+    /**
      * Сценарий загрузки данных из формы, добавляющей продукт в корзину
     */
     const GET_FROM_FORM_TO_CART = 'getFromFormToCart';
@@ -110,6 +114,7 @@ class ProductsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
+            self::GET_FROM_FORM=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
             self::GET_LIST_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'categories', 'subcategory', 'id_categories', 'id_subcategory', 'active', 'total_products'],
             self::GET_FROM_FORM_TO_CART=>['id', 'code', 'name', 'description', 'price', 'images', 'colorToCart', 'sizeToCart', 'quantity', 'categories', 'subcategory', 'hash'],
             self::GET_FROM_FORM_FOR_REMOVE=>['id', 'hash'],

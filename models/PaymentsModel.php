@@ -37,6 +37,7 @@ class PaymentsModel extends AbstractBaseModel
     {
         return [
             [['id'], 'required', 'on'=>self::GET_FROM_FORM],
+            [['name', 'description'], 'app\validators\StripTagsValidator'],
         ];
     }
     

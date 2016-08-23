@@ -57,7 +57,7 @@ class BrandsModel extends AbstractBaseModel
             }],
             [['id', 'brand'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
             [['brand'], 'app\validators\BrandsForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['brand'], 'trim'],
+            [['brand'], 'app\validators\StripTagsValidator'],
         ];
     }
 }

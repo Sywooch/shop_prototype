@@ -43,6 +43,7 @@ class CurrencyModel extends AbstractBaseModel
     {
         return [
             [['id'], 'required', 'on'=>self::GET_FROM_FORM_SET],
+            [['currency'], 'app\validators\StripTagsValidator'],
         ];
     }
     

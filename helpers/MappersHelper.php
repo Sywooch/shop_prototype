@@ -2484,7 +2484,7 @@ class MappersHelper
      * Получает массив объектов comments
      * @return array of objects CommentsModel
      */
-    public static function getCommentsList() #!!!TEST
+    public static function getCommentsList()
     {
         try {
             $commentsMapper = new CommentsMapper([

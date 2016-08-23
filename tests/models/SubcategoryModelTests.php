@@ -59,6 +59,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_UPDATE_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DELETE_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'name'));
@@ -99,6 +100,13 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_categories'=>self::$_id];
         
         $this->assertEquals(self::$_id, $model->id);
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_categorySeocode, $model->seocode);
+        $this->assertEquals(self::$_id, $model->id_categories);
+        
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
+        $model->attributes = ['name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_categories'=>self::$_id];
+        
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
         $this->assertEquals(self::$_id, $model->id_categories);

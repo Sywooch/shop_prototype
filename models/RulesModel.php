@@ -23,4 +23,11 @@ class RulesModel extends AbstractBaseModel
             self::GET_FROM_DB=>['id', 'rule'],
         ];
     }
+    
+    public function rules()
+    {
+        return [
+            [['rule'], 'app\validators\StripTagsValidator'],
+        ];
+    }
 }

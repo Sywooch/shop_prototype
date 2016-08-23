@@ -6,7 +6,10 @@ use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper};
-use app\models\ProductsModel;
+use app\models\{CategoriesModel,
+    EmailsModel,
+    ProductsModel,
+    SubcategoryModel};
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
@@ -29,6 +32,9 @@ class ProductDetailController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['productsModel'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
+            $renderArray['emailsModel'] = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
+            $renderArray['categoriesModel'] = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM]);
+            $renderArray['subcategoryModel'] = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('product-detail.twig', $renderArray);
         } catch (\Exception $e) {

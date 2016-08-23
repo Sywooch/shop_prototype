@@ -20,6 +20,10 @@ class HashHelper
     public static function createHash(Array $inputArray)
     {
         try {
+            if (empty($inputArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            
             $inputString = implode('-', $inputArray);
             return md5($inputString);
         } catch (\Exception $e) {

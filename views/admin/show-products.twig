@@ -27,7 +27,7 @@
             <a href="{{ url.to({0:'admin/show-product-detail', 'id':productsModel.id}) }}">Редактировать детали</a>
         </p>
         
-        {% set form=active_form_begin({'id':'change-product-form-%s' | format(productsModel.id), 'action':url.to({0:'admin/update-product-cut'}), 'method':'POST'}) %}
+        {% set form=active_form_begin({'id':'update-product-cut-%s' | format(productsModel.id), 'action':url.to({0:'admin/update-product-cut'}), 'method':'POST'}) %}
             {{ form.field(productsModel, 'id').hiddenInput().label(false) | raw }}<br>
             {{ form.field(productsModel, 'active').checkbox() | raw }}
             <input type="submit" value="Обновить">

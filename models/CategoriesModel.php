@@ -18,6 +18,10 @@ class CategoriesModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы
     */
+    const GET_FROM_FORM = 'getFromForm';
+    /**
+     * Сценарий загрузки данных из формы
+    */
     const GET_FROM_ADD_FORM = 'getFromAddForm';
     /**
      * Сценарий загрузки данных из формы обновления
@@ -38,6 +42,7 @@ class CategoriesModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'name', 'seocode'],
+            self::GET_FROM_FORM=>['name', 'seocode'],
             self::GET_FROM_ADD_FORM=>['name', 'seocode'],
             self::GET_FROM_UPDATE_FORM=>['id', 'name', 'seocode'],
             self::GET_FROM_DELETE_FORM=>['id', 'name', 'seocode'],
@@ -60,7 +65,7 @@ class CategoriesModel extends AbstractBaseModel
             [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
             [['name'], 'app\validators\CategoriesForeignSubcategoryExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
             [['name'], 'app\validators\CategoriesForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['name', 'seocode'], 'trim'],
+            [['name', 'seocode'], 'app\validators\StripTagsValidator'],
             [['seocode'], 'app\validators\StrtolowerValidator'],
         ];
     }

@@ -80,22 +80,27 @@ class NewsletterController extends AbstractBaseController
                     
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
-                    if ($emailsModelFromDb = MappersHelper::getEmailsByEmail($emailsModel)) {
-                        $emailsModel = $emailsModelFromDb;
-                    } else {
-                        if (!MappersHelper::setEmailsInsert($emailsModel)) {
-                            throw new ErrorException('Ошибка при сохранении E-mail!');
+                    try {
+                        if ($emailsModelFromDb = MappersHelper::getEmailsByEmail($emailsModel)) {
+                            $emailsModel = $emailsModelFromDb;
+                        } else {
+                            if (!MappersHelper::setEmailsInsert($emailsModel)) {
+                                throw new ErrorException('Ошибка при сохранении E-mail!');
+                            }
                         }
-                    }
-                    
-                    if ($currentSubscribes = MappersHelper::getMailingListForEmail($emailsModel)) {
-                        if (!$arrayDiff = array_diff($mailingListModel->idFromForm, ArrayHelper::getColumn($currentSubscribes, 'id'))) {
-                            return $this->redirect(Url::to(['newsletter/subscription-exists']));
+                        
+                        if ($currentSubscribes = MappersHelper::getMailingListForEmail($emailsModel)) {
+                            if (!$arrayDiff = array_diff($mailingListModel->idFromForm, ArrayHelper::getColumn($currentSubscribes, 'id'))) {
+                                return $this->redirect(Url::to(['newsletter/subscription-exists']));
+                            }
+                            $mailingListModel->idFromForm = $arrayDiff;
                         }
-                        $mailingListModel->idFromForm = $arrayDiff;
-                    }
-                    if (!MappersHelper::setEmailsMailingListInsert($emailsModel, $mailingListModel)) {
-                        throw new ErrorException('Ошибка при сохранении связи email с подписками на рассылки!');
+                        if (!MappersHelper::setEmailsMailingListInsert($emailsModel, $mailingListModel)) {
+                            throw new ErrorException('Ошибка при сохранении связи email с подписками на рассылки!');
+                        }
+                    } catch(\Exception $e) {
+                        $transaction->rollBack();
+                        throw $e;
                     }
                     
                     $transaction->commit();
@@ -125,9 +130,6 @@ class NewsletterController extends AbstractBaseController
             }
             return $this->render('subscribe-ok.twig', $renderArray);
         } catch (\Exception $e) {
-            if (\Yii::$app->request->isPost) {
-                $transaction->rollBack();
-            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -176,15 +178,20 @@ class NewsletterController extends AbstractBaseController
                     
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
-                    if (empty($mailingListModel->idFromForm)) {
-                        throw new ErrorException('Отсутствуют необходимые данные!');
-                    }
-                    $emailsMailingList = [];
-                    foreach ($mailingListModel->getObjectsFromIdFromForm() as $mailingListObject) {
-                        $emailsMailingList[] = new EmailsMailingListModel(['id_email'=>$emailsModel->id, 'id_mailing_list'=>$mailingListObject->id]);
-                    }
-                    if (!MappersHelper::setEmailsMailingListDelete($emailsMailingList)) {
-                        throw new ErrorException('Ошибка при удалении данных из БД!');
+                    try {
+                        if (empty($mailingListModel->idFromForm)) {
+                            throw new ErrorException('Отсутствуют необходимые данные!');
+                        }
+                        $emailsMailingList = [];
+                        foreach ($mailingListModel->getObjectsFromIdFromForm() as $mailingListObject) {
+                            $emailsMailingList[] = new EmailsMailingListModel(['id_email'=>$emailsModel->id, 'id_mailing_list'=>$mailingListObject->id]);
+                        }
+                        if (!MappersHelper::setEmailsMailingListDelete($emailsMailingList)) {
+                            throw new ErrorException('Ошибка при удалении данных из БД!');
+                        }
+                    } catch(\Exception $e) {
+                        $transaction->rollBack();
+                        throw $e;
                     }
                     
                     $transaction->commit();
@@ -198,9 +205,6 @@ class NewsletterController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('unsubscribe-ok.twig', $renderArray);
         } catch (\Exception $e) {
-            if (\Yii::$app->request->isPost) {
-                $transaction->rollBack();
-            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }

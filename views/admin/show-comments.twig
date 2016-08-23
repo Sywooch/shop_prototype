@@ -1,0 +1,33 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+{{ use('yii/widgets/ActiveForm') }}
+
+<p>Здесь вы можете отслеживать и редактировать комментарии к товарам.</p>
+
+{% if commentsList %}
+    {% for commentsModel in commentsList %}
+        
+        <p>
+            Текст: {{ commentsModel.text }}<br>
+            Автор: {{ commentsModel.name }}<br>
+            Email автора: {{ commentsModel.emails.email }}<br>
+            Товар: {{ commentsModel.products.name }}<br>
+            <a href="">Редактировать комментарий</a>
+        </p>
+        
+        {% set form=active_form_begin({'id':'change-comment-cut-form-%s' | format(commentsModel.id), 'action':'', 'method':'POST'}) %}
+            {{ form.field(commentsModel, 'id').hiddenInput().label(false) | raw }}<br>
+            {{ form.field(commentsModel, 'active').checkbox() | raw }}
+            <input type="submit" value="Обновить">
+        {{ active_form_end() }}
+        
+    {% endfor %}
+{% else %}
+    <p>Похоже, пока нет ни одного комментария!</p>
+{% endif %}
+

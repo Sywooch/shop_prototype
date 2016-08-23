@@ -25,4 +25,11 @@ class AdminMenuModel extends AbstractBaseModel
             self::GET_FROM_DB=>['id', 'name', 'route'],
         ];
     }
+    
+    public function rules()
+    {
+        return [
+            [['name'], 'app\validators\StripTagsValidator'],
+        ];
+    }
 }

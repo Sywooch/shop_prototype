@@ -2231,35 +2231,23 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     /**
      * Тестирует метод MappersHelper::getCommentsList
      */
-    /*public function testGetCommentsList()
+    public function testGetCommentsList()
     {
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{comments}} SET [[id]]=:id, [[color]]=:color');
-        $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
-        $command->execute();
+        if (empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll())) {
+            
+            if (empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{emails}} LIMIT 1')->queryScalar())) {
+                $id = self::$_id;
+                $command = \Yii::$app->db->createCommand('INSERT INTO {{emails}} SET [[id]]=:id,[[email]]=:email');
+                $command->bindValues([':id'=>$id, ':email'=>self::$_email]);
+                $command->execute();
+            }
+            
+            $command = \Yii::$app->db->createCommand('INSERT INTO {{comments}} SET [[id]]=:id,[[text]]=:text,[[name]]=:name,[[id_emails]]=:id_emails,[[id_products]]=:id_products,[[active]]=:active');
+            $command->bindValues([':id'=>self::$_id, ':text'=>self::$_text, ':name'=>self::$_name, ':id_emails'=>$id, ':id_products'=>self::$_id, ':active'=>self::$_active]);
+            $command->execute();
+        }
         
-        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_comments}}')->queryAll()));
-        
-        $result = MappersHelper::getCommentsList(false);
-        
-        $this->assertTrue(is_array($result));
-        $this->assertFalse(empty($result));
-        $this->assertTrue(is_object($result[0]));
-        $this->assertTrue($result[0] instanceof CommentsModel);
-        $this->assertEquals(self::$_id, $result[0]->id);
-        $this->assertEquals(self::$_color, $result[0]->color);
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[description]]=:description, [[short_description]]=:short_description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
-        
-        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':description'=>self::$_description, ':short_description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_comments}} SET [[id_products]]=:id_products, [[id_comments]]=:id_comments');
-        $command->bindValues([':id_products'=>self::$_id, ':id_comments'=>self::$_id]);
-        $command->execute();
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll()));
         
         $result = MappersHelper::getCommentsList();
         
@@ -2267,9 +2255,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertTrue(is_object($result[0]));
         $this->assertTrue($result[0] instanceof CommentsModel);
-        $this->assertEquals(self::$_id, $result[0]->id);
-        $this->assertEquals(self::$_color, $result[0]->color);
-    }*/
+    }
     
     /**
      * Тестирует метод MappersHelper::getObjectRegistry

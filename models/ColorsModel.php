@@ -61,7 +61,7 @@ class ColorsModel extends AbstractBaseModel
             }],
             [['id', 'color'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
             [['color'], 'app\validators\ColorsForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['color'], 'trim'],
+            [['color'], 'app\validators\StripTagsValidator'],
         ];
     }
 }

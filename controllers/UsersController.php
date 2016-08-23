@@ -41,45 +41,50 @@ class UsersController extends AbstractBaseController
                     
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
-                    if ($emailsModelFromDb = MappersHelper::getEmailsByEmail($emailsModel)) {
-                        $emailsModel = $emailsModelFromDb;
-                    } else {
-                        if (!MappersHelper::setEmailsInsert($emailsModel)) {
-                            throw new ErrorException('Ошибка при сохранении E-mail!');
-                        }
-                    }
-                    $usersModel->id_emails = $emailsModel->id;
-                    if (!MappersHelper::setUsersInsert($usersModel)) {
-                        throw new ErrorException('Ошибка при сохранении данных пользователя!');
-                    }
-                    if (!MappersHelper::setUsersRulesInsert($usersModel)) {
-                        throw new ErrorException('Ошибка при сохранении данных пользователя!');
-                    }
-                    if (!empty($mailingListModel->idFromForm)) {
-                        if ($currentSubscribes = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>$emailsModel->email]))) {
-                            if (!$arrayDiff = array_diff($mailingListModel->idFromForm, ArrayHelper::getColumn($currentSubscribes, 'id'))) {
-                                return $this->redirect(Url::to(['users/login-user', 'added'=>true]));
+                    try {
+                        if ($emailsModelFromDb = MappersHelper::getEmailsByEmail($emailsModel)) {
+                            $emailsModel = $emailsModelFromDb;
+                        } else {
+                            if (!MappersHelper::setEmailsInsert($emailsModel)) {
+                                throw new ErrorException('Ошибка при сохранении E-mail!');
                             }
-                            $mailingListModel->idFromForm = $arrayDiff;
                         }
-                        if (!MappersHelper::setEmailsMailingListInsert($emailsModel, $mailingListModel)) {
-                            throw new ErrorException('Ошибка при сохранении связи email с подписками на рассылки!');
+                        $usersModel->id_emails = $emailsModel->id;
+                        if (!MappersHelper::setUsersInsert($usersModel)) {
+                            throw new ErrorException('Ошибка при сохранении данных пользователя!');
                         }
-                        if (!MailHelper::send([
-                            [
-                                'template'=>'@app/views/mail/subscribe-ok.twig', 
-                                'setFrom'=>['admin@shop.com'=>'Shop'], 
-                                'setTo'=>['timofey@localhost.localdomain'=>'John Doe'], 
-                                'setSubject'=>'Hello!', 
-                                'dataForTemplate'=>[
-                                    'mailingList'=>$mailingListModel->getObjectsFromIdFromForm(), 
-                                    'emailsModel'=>$emailsModel,
-                                    'hash'=>HashHelper::createHash([$emailsModel->email, \Yii::$app->params['hashSalt']]),
-                                ],
-                            ]
-                        ])) {
-                            throw new ErrorException('Ошибка при отправке E-mail сообщения!');
+                        if (!MappersHelper::setUsersRulesInsert($usersModel)) {
+                            throw new ErrorException('Ошибка при сохранении данных пользователя!');
                         }
+                        if (!empty($mailingListModel->idFromForm)) {
+                            if ($currentSubscribes = MappersHelper::getMailingListForEmail(new EmailsModel(['email'=>$emailsModel->email]))) {
+                                if (!$arrayDiff = array_diff($mailingListModel->idFromForm, ArrayHelper::getColumn($currentSubscribes, 'id'))) {
+                                    return $this->redirect(Url::to(['users/login-user', 'added'=>true]));
+                                }
+                                $mailingListModel->idFromForm = $arrayDiff;
+                            }
+                            if (!MappersHelper::setEmailsMailingListInsert($emailsModel, $mailingListModel)) {
+                                throw new ErrorException('Ошибка при сохранении связи email с подписками на рассылки!');
+                            }
+                            if (!MailHelper::send([
+                                [
+                                    'template'=>'@app/views/mail/subscribe-ok.twig', 
+                                    'setFrom'=>['admin@shop.com'=>'Shop'], 
+                                    'setTo'=>['timofey@localhost.localdomain'=>'John Doe'], 
+                                    'setSubject'=>'Hello!', 
+                                    'dataForTemplate'=>[
+                                        'mailingList'=>$mailingListModel->getObjectsFromIdFromForm(), 
+                                        'emailsModel'=>$emailsModel,
+                                        'hash'=>HashHelper::createHash([$emailsModel->email, \Yii::$app->params['hashSalt']]),
+                                    ],
+                                ]
+                            ])) {
+                                throw new ErrorException('Ошибка при отправке E-mail сообщения!');
+                            }
+                        }
+                    } catch(\Exception $e) {
+                        $transaction->rollBack();
+                        throw $e;
                     }
                     
                     $transaction->commit();
@@ -93,9 +98,6 @@ class UsersController extends AbstractBaseController
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('add-user.twig', $renderArray);
         } catch (\Exception $e) {
-            if (\Yii::$app->request->isPost) {
-                $transaction->rollBack();
-            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
@@ -224,58 +226,63 @@ class UsersController extends AbstractBaseController
                     
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
-                    if (empty(\Yii::$app->shopUser->emails) || \Yii::$app->shopUser->emails->email != $emailsModel->email) {
-                        if (!empty($emailsModel->email)) {
-                            if ($result = MappersHelper::getEmailsByEmail($emailsModel)) {
-                                $emailsModel = $result;
-                            } else {
-                                if (!MappersHelper::setEmailsInsert($emailsModel)) {
-                                    throw new ErrorException('Ошибка при сохранении E-mail!');
+                    try {
+                        if (empty(\Yii::$app->shopUser->emails) || \Yii::$app->shopUser->emails->email != $emailsModel->email) {
+                            if (!empty($emailsModel->email)) {
+                                if ($result = MappersHelper::getEmailsByEmail($emailsModel)) {
+                                    $emailsModel = $result;
+                                } else {
+                                    if (!MappersHelper::setEmailsInsert($emailsModel)) {
+                                        throw new ErrorException('Ошибка при сохранении E-mail!');
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (!empty($emailsModel->id)) {
-                        $usersModel->id_emails = $emailsModel->id;
-                    }
-                    
-                    if (empty(\Yii::$app->shopUser->phones) || \Yii::$app->shopUser->phones->phone != $phonesModel->phone) {
-                        if (!empty($phonesModel->phone)) {
-                            if ($result = MappersHelper::getPhonesByPhone($phonesModel)) {
-                                $phonesModel = $result;
-                            } else {
-                                if (!MappersHelper::setPhonesInsert($phonesModel)) {
-                                    throw new ErrorException('Ошибка при сохранении address!');
+                        if (!empty($emailsModel->id)) {
+                            $usersModel->id_emails = $emailsModel->id;
+                        }
+                        
+                        if (empty(\Yii::$app->shopUser->phones) || \Yii::$app->shopUser->phones->phone != $phonesModel->phone) {
+                            if (!empty($phonesModel->phone)) {
+                                if ($result = MappersHelper::getPhonesByPhone($phonesModel)) {
+                                    $phonesModel = $result;
+                                } else {
+                                    if (!MappersHelper::setPhonesInsert($phonesModel)) {
+                                        throw new ErrorException('Ошибка при сохранении address!');
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (!empty($phonesModel->id)) {
-                        $usersModel->id_phones = $phonesModel->id;
-                    }
-                    
-                    if (empty(\Yii::$app->shopUser->address) || !empty(array_diff_assoc($addressModel->getDataArray(), \Yii::$app->shopUser->address->getDataArray()))) {
-                        if (!empty($addressModel->address) || !empty($addressModel->city) || !empty($addressModel->postcode) || !empty($addressModel->country)) {
-                            if ($result = MappersHelper::getAddressByAddress($addressModel)) {
-                                $addressModel = $result;
-                            } else {
-                                if (!MappersHelper::setAddressInsert($addressModel)) {
-                                    throw new ErrorException('Ошибка при сохранении address!');
+                        if (!empty($phonesModel->id)) {
+                            $usersModel->id_phones = $phonesModel->id;
+                        }
+                        
+                        if (empty(\Yii::$app->shopUser->address) || !empty(array_diff_assoc($addressModel->getDataArray(), \Yii::$app->shopUser->address->getDataArray()))) {
+                            if (!empty($addressModel->address) || !empty($addressModel->city) || !empty($addressModel->postcode) || !empty($addressModel->country)) {
+                                if ($result = MappersHelper::getAddressByAddress($addressModel)) {
+                                    $addressModel = $result;
+                                } else {
+                                    if (!MappersHelper::setAddressInsert($addressModel)) {
+                                        throw new ErrorException('Ошибка при сохранении address!');
+                                    }
                                 }
                             }
                         }
-                    }
-                    if (!empty($addressModel->id)) {
-                        $usersModel->id_address = $addressModel->id;
-                    }
-                    
-                    if ($usersModel->id_emails && $usersModel->id == \Yii::$app->shopUser->id) {
-                        if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->shopUser->getDataForСomparison()))) {
-                            if (!MappersHelper::setUsersUpdate([$usersModel])) {
-                                throw new ErrorException('Ошибка при обновлении users!');
-                            }
-                            \Yii::configure(\Yii::$app->shopUser, $usersModel->getDataArray());
+                        if (!empty($addressModel->id)) {
+                            $usersModel->id_address = $addressModel->id;
                         }
+                        
+                        if ($usersModel->id_emails && $usersModel->id == \Yii::$app->shopUser->id) {
+                            if (!empty(array_diff_assoc($usersModel->getDataForСomparison(), \Yii::$app->shopUser->getDataForСomparison()))) {
+                                if (!MappersHelper::setUsersUpdate([$usersModel])) {
+                                    throw new ErrorException('Ошибка при обновлении users!');
+                                }
+                                \Yii::configure(\Yii::$app->shopUser, $usersModel->getDataArray());
+                            }
+                        }
+                    } catch(\Exception $e) {
+                        $transaction->rollBack();
+                        throw $e;
                     }
                     
                     $transaction->commit();
@@ -285,9 +292,6 @@ class UsersController extends AbstractBaseController
             }
             return $this->redirect(Url::to(['products-list/index']));
         } catch (\Exception $e) {
-            if (\Yii::$app->request->isPost) {
-                $transaction->rollBack();
-            }
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }

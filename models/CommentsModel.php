@@ -5,7 +5,8 @@ namespace app\models;
 use yii\base\ErrorException;
 use yii\db\Transaction;
 use app\models\{AbstractBaseModel,
-    EmailsModel};
+    EmailsModel,
+    ProductsModel};
 use app\helpers\MappersHelper;
 
 /**
@@ -25,19 +26,23 @@ class CommentsModel extends AbstractBaseModel
     public $id;
     public $text;
     public $name;
+    public $id_emails;
     public $id_products;
     public $active;
     
-    public $email;
-    public $categories;
-    public $subcategory;
-    
-    private $_id_emails = null;
+    /**
+     * @var object экземпляр EmailModel, связанный с текущим комментарием
+     */
+    private $_emails;
+    /**
+     * @var object экземпляр ProductsModel, связанный с текущим комментарием
+     */
+    private $_products;
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_FORM=>['text', 'name', 'email', 'id_products', 'categories', 'subcategory'],
+            self::GET_FROM_FORM=>['text', 'name', 'active'],
             self::GET_FROM_DB=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
         ];
     }
@@ -45,56 +50,72 @@ class CommentsModel extends AbstractBaseModel
     public function rules()
     {
         return [
-            [['text', 'email'], 'required', 'on'=>self::GET_FROM_FORM],
-            [['email'], 'email'],
-            [['text', 'name', 'email'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
+            [['text', 'name'], 'required', 'on'=>self::GET_FROM_FORM],
+            [['text', 'name'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
         ];
     }
     
     /**
-     * Присваивает значение свойству $this->_id_emails
-     * @param int $value
-     * @return boolean
+     * Присваивает значение свойству $this->_emails
+     * @param object $emailsModel объект EmailsModel
+     * @return boolean EmailsModel
      */
-    public function setId_emails($value)
+    public function setEmails(EmailsModel $emailsModel)
     {
         try {
-            if (is_numeric($value)) {
-                $this->_id_emails = $value;
-                return true;
-            }
-            return false;
+            $this->_emails = $emailsModel;
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
     }
     
     /**
-     * Если не инициировано свойство $this->_id_emails, выполняет поиск при помощи обращения к БД,
-     * если возникает ошибка, добавляет запись в БД и возвращает ID добавленной записи
-     * @return int
+     * Получает значение свойства $this->_emails
+     * @return object
      */
-    public function getId_emails()
+    public function getEmails()
     {
         try {
-            if (is_null($this->_id_emails)) {
-                if (!empty($this->email)) {
-                    $emailsModel = new EmailsModel(['email'=>$this->email]);
-                    $result = MappersHelper::getEmailsByEmail($emailsModel);
-                    if (is_object($result) && $result instanceof EmailsModel) {
-                        $emailsModel = $result;
-                    } else {
-                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
-                        if (!$result = MappersHelper::setEmailsInsert($emailsModel)) {
-                            $transaction->rollBack();
-                            return null;
-                        }
-                        $transaction->commit();
-                    }
-                    $this->_id_emails = $emailsModel->id;
+            if (is_null($this->_emails)) {
+                if (!empty($this->id_emails)) {
+                    $this->_emails = MappersHelper::getEmailsById(new EmailsModel(['id'=>$this->id_emails]));
                 }
             }
-            return $this->_id_emails;
+            return $this->_emails;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_products
+     * @param object $productsModel объект ProductsModel
+     * @return boolean
+     */
+    public function setProducts(ProductsModel $productsModel)
+    {
+        try {
+            $this->_products = $productsModel;
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает значение свойства $this->_products
+     * @return object ProductsModel
+     */
+    public function getProducts()
+    {
+        try {
+            if (is_null($this->_products)) {
+                if (!empty($this->id_products)) {
+                    $this->_products = MappersHelper::getProductsById(new ProductsModel(['id'=>$this->id_products]));
+                }
+            }
+            return $this->_products;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

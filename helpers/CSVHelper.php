@@ -4,6 +4,7 @@ namespace app\helpers;
 
 use yii\base\ErrorException;
 use app\traits\ExceptionsTrait;
+use app\helpers\GeneratorHelper;
 
 /**
  * Предоставляет функциональность для создания csv из данных
@@ -30,6 +31,8 @@ class CSVHelper
             if (!$handle = fopen($config['path'] . $config['filename'] . '.csv', 'w')) {
                 throw new ErrorException('Ошибка при создании файла!');
             }
+            
+            # Пишем заголовки столбцов данных
             $fieldsNamesArray = array();
             foreach ($config['fields'] as $field) {
                 $fieldsNamesArray[] = $field;
@@ -37,7 +40,8 @@ class CSVHelper
             if (!fputcsv($handle, $fieldsNamesArray, ';', '"')) {
                 throw new ErrorException('Ошибка при записи в файл!');
             }
-            foreach ($config['objectsArray'] as $object) {
+            
+            foreach (GeneratorHelper::generate($config['objectsArray']) as $object) {
                 $objectFieldsArray = array();
                 foreach ($config['fields'] as $field) {
                     if ($field == 'date') {

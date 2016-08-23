@@ -17,6 +17,10 @@ class SubcategoryModel extends AbstractBaseModel
     /**
      * Сценарий загрузки данных из формы
     */
+    const GET_FROM_FORM = 'getFromForm';
+    /**
+     * Сценарий загрузки данных из формы
+    */
     const GET_FROM_ADD_FORM = 'getFromAddForm';
     /**
      * Сценарий загрузки данных из формы обновления
@@ -41,6 +45,7 @@ class SubcategoryModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_DB=>['id', 'name', 'seocode', 'id_categories'],
+            self::GET_FROM_FORM=>['name', 'seocode', 'id_categories'],
             self::GET_FROM_ADD_FORM=>['name', 'seocode', 'id_categories'],
             self::GET_FROM_UPDATE_FORM=>['id', 'name', 'seocode', 'id_categories'],
             self::GET_FROM_DELETE_FORM=>['id', 'name', 'seocode', 'id_categories'],
@@ -62,7 +67,7 @@ class SubcategoryModel extends AbstractBaseModel
             }],
             [['id', 'name', 'seocode', 'id_categories'], 'required', 'on'=>self::GET_FROM_DELETE_FORM],
             [['name'], 'app\validators\SubcategoryForeignProductsExistsValidator', 'on'=>self::GET_FROM_DELETE_FORM],
-            [['name', 'seocode'], 'trim'],
+            [['name', 'seocode'], 'app\validators\StripTagsValidator'],
             [['seocode'], 'app\validators\StrtolowerValidator'],
         ];
     }

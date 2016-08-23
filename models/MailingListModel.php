@@ -50,6 +50,7 @@ class MailingListModel extends AbstractBaseModel
     {
         return [
             [['idFromForm'], 'required', 'on'=>self::GET_FROM_MAILING_FORM_REQUIRE],
+            [['name', 'description'], 'app\validators\StripTagsValidator'],
         ];
     }
     
