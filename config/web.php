@@ -153,6 +153,9 @@ $config = [
             'class'=>'yii\swiftmailer\Mailer',
             'viewPath'=>'@app/views/mail',
         ],
+        'formatter'=>[
+            'dateFormat'=>'dd.MM.yyyy',
+        ],
     ],
     
     'aliases'=>[

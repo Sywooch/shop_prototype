@@ -19,6 +19,7 @@
             Текст: {{ commentsModel.text }}<br>
             Автор: {{ commentsModel.name }}<br>
             Email автора: {{ commentsModel.emails.email }}<br>
+            Дата: {{ app.formatter.asDate(commentsModel.date) }}<br>
             <a href="">Редактировать комментарий</a>
         </div>
         

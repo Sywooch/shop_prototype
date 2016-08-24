@@ -56,7 +56,7 @@
             {% for purchase in purchasesList %}
                 <li>
                     <a href="{{ url.to({0:'product-detail/index', 'categories':purchase.productsModel.categories, 'subcategory':purchase.productsModel.subcategory, 'id':purchase.productsModel.id}) }}">{{ purchase.productsModel.name }}</a></br>
-                    Purchase date: {{ app.formatter.asDate(purchase.received_date, 'dd.MM.yyyy') }}</br>
+                    Purchase date: {{ app.formatter.asDate(purchase.received_date) }}</br>
                     Delivery status: {{ purchase.getDeliveryStatus() }}</br>
                     <img src="{{ picturesHelper.getOneThumbnail(purchase.productsModel.images) }}"></br>
                     Description: {{ purchase.productsModel.short_description }}</br>

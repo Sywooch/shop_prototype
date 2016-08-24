@@ -1732,7 +1732,7 @@ class MappersHelper
         try {
             $commentsInsertMapper = new CommentsInsertMapper([
                 'tableName'=>'comments',
-                'fields'=>['text', 'name', 'id_emails', 'id_products'],
+                'fields'=>['date', 'text', 'name', 'id_emails', 'id_products'],
                 'objectsArray'=>[$commentsModel],
             ]);
             if (!$result = $commentsInsertMapper->setGroup()) {
@@ -2533,8 +2533,8 @@ class MappersHelper
         try {
             $commentsMapper = new CommentsMapper([
                 'tableName'=>'comments',
-                'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
-                'orderByField'=>'id',
+                'fields'=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'orderByField'=>'date',
                 'orderByType'=>'DESC',
             ]);
             $hash = self::createHash([

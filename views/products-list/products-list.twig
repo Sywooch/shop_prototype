@@ -19,7 +19,7 @@
     {% if productsModel.active %}
         <li>
             {% if productsModel.date %}
-                {{ app.formatter.asDate(productsModel.date, 'dd.MM.yyyy') }}<br>
+                {{ app.formatter.asDate(productsModel.date) }}<br>
             {% endif %}
             <strong><a href="{{ url.to({0:'product-detail/index', 'categories': productsModel.categories, 'subcategory': productsModel.subcategory, 'id': productsModel.id}) }}">{{ productsModel.name | raw }}</a></strong>
             {% if productsModel.images %}

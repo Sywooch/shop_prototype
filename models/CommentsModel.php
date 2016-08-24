@@ -34,6 +34,8 @@ class CommentsModel extends AbstractBaseModel
     public $id_products;
     public $active;
     
+    private $_date = null;
+    
     /**
      * @var object экземпляр EmailModel, связанный с текущим комментарием
      */
@@ -47,7 +49,7 @@ class CommentsModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_FORM=>['text', 'name', 'active'],
-            self::GET_FROM_DB=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+            self::GET_FROM_DB=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
             self::GET_FOR_UPDATE_CUT=>['id', 'active'],
         ];
     }
@@ -122,6 +124,40 @@ class CommentsModel extends AbstractBaseModel
                 }
             }
             return $this->_products;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение свойству $this->_date
+     * @param string $value
+     * @return boolean
+     */
+    public function setDate($value)
+    {
+        try {
+            if (is_numeric($value)) {
+                $this->_date = $value;
+                return true;
+            }
+            return false;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает значение свойства $this->_date
+     * @return UNIX Timestamp
+     */
+    public function getDate()
+    {
+        try {
+            if (is_null($this->_date)) {
+                $this->_date = time();
+            }
+            return $this->_date;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

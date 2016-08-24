@@ -16,6 +16,7 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
     private static $_dbClass;
     private static $_reflectionClass;
     private static $_id = 1;
+    private static $_date = 1463210808;
     private static $_text = 'Some Text';
     private static $_name = 'Some Name';
     private static $_active = true;
@@ -69,6 +70,7 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasProperty('active'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_emails'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_products'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_date'));
     }
     
     /**
@@ -84,9 +86,10 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_active, $model->active);
         
         $model = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'text'=>self::$_text, 'name'=>self::$_name, 'id_emails'=>self::$_id, 'id_products'=>self::$_id, 'active'=>self::$_active];
+        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'text'=>self::$_text, 'name'=>self::$_name, 'id_emails'=>self::$_id, 'id_products'=>self::$_id, 'active'=>self::$_active];
         
         $this->assertEquals(self::$_id, $model->id);
+        $this->assertEquals(self::$_date, $model->date);
         $this->assertEquals(self::$_text, $model->text);
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_id, $model->id_emails);
@@ -196,6 +199,30 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $model->id_products = self::$_id;
         
         $this->assertTrue($model->products instanceof ProductsModel);
+    }
+    
+    /**
+     * Тестирует метод CommentsModel::setDate
+     */
+    public function testSetDate()
+    {
+        $timestamp = time();
+        
+        $model = new CommentsModel();
+        $model->date = $timestamp;
+        
+        $this->assertEquals($timestamp, $model->date);
+    }
+    
+    /**
+     * Тестирует метод CommentsModel::getDate
+     */
+    public function testGetDate()
+    {
+        $model = new CommentsModel();
+        
+        $this->assertFalse(empty($model->date));
+        $this->assertEquals(10, strlen((string) $model->date));
     }
     
     public static function tearDownAfterClass()

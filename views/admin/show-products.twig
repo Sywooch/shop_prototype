@@ -17,7 +17,7 @@
         
         <div>
             Название: <a href="{{ url.to({0:'product-detail/index', 'categories':productsModel.categories, 'subcategory':productsModel.subcategory, 'id':productsModel.id}) }}">{{ productsModel.name }}</a><br>
-            Дата добавления: {{ app.formatter.asDate(productsModel.date, 'dd.MM.yyyy') }}<br>
+            Дата добавления: {{ app.formatter.asDate(productsModel.date) }}<br>
             Код: {{ productsModel.code }}<br>
             Описание: {{ productsModel.short_description }}<br>
             Price: {{ (productsModel.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}<br>
