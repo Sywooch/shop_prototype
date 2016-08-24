@@ -339,7 +339,9 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
             $string = ' ON DUPLICATE KEY UPDATE ';
             $arrayValues = array();
             foreach ($this->_mapperObject->fields as $field) {
-                $arrayValues[] = $field . '=VALUES(' . $field . ')';
+                if ($field != 'id') {
+                    $arrayValues[] = $field . '=VALUES(' . $field . ')';
+                }
             }
             return $string . implode(',', $arrayValues);
         } catch (\Exception $e) {

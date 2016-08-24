@@ -41,7 +41,7 @@ class ProductsUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ProductsUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{products}} (id,date,code,name,description,short_description,price,images,id_categories,id_subcategory,active) VALUES (:0_id,:0_date,:0_code,:0_name,:0_description,:0_short_description,:0_price,:0_images,:0_id_categories,:0_id_subcategory,:0_active) ON DUPLICATE KEY UPDATE id=VALUES(id),date=VALUES(date),code=VALUES(code),name=VALUES(name),description=VALUES(description),short_description=VALUES(short_description),price=VALUES(price),images=VALUES(images),id_categories=VALUES(id_categories),id_subcategory=VALUES(id_subcategory),active=VALUES(active)';
+        $query = 'INSERT INTO {{products}} (id,date,code,name,description,short_description,price,images,id_categories,id_subcategory,active) VALUES (:0_id,:0_date,:0_code,:0_name,:0_description,:0_short_description,:0_price,:0_images,:0_id_categories,:0_id_subcategory,:0_active) ON DUPLICATE KEY UPDATE date=VALUES(date),code=VALUES(code),name=VALUES(name),description=VALUES(description),short_description=VALUES(short_description),price=VALUES(price),images=VALUES(images),id_categories=VALUES(id_categories),id_subcategory=VALUES(id_subcategory),active=VALUES(active)';
         
         $this->assertEquals($query, $mockObject->query);
     }

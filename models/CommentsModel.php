@@ -48,6 +48,7 @@ class CommentsModel extends AbstractBaseModel
         return [
             self::GET_FROM_FORM=>['text', 'name', 'active'],
             self::GET_FROM_DB=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+            self::GET_FOR_UPDATE_CUT=>['id', 'active'],
         ];
     }
     
@@ -56,6 +57,7 @@ class CommentsModel extends AbstractBaseModel
         return [
             [['text', 'name'], 'required', 'on'=>self::GET_FROM_FORM],
             [['text', 'name'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
+            [['id', 'active'], 'required', 'on'=>self::GET_FOR_UPDATE_CUT],
         ];
     }
     

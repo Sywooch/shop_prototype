@@ -34,7 +34,7 @@ class SubcategoryUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new SubcategoryUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{subcategory}} (id,name,seocode,id_categories) VALUES (:0_id,:0_name,:0_seocode,:0_id_categories) ON DUPLICATE KEY UPDATE id=VALUES(id),name=VALUES(name),seocode=VALUES(seocode),id_categories=VALUES(id_categories)';
+        $query = 'INSERT INTO {{subcategory}} (id,name,seocode,id_categories) VALUES (:0_id,:0_name,:0_seocode,:0_id_categories) ON DUPLICATE KEY UPDATE name=VALUES(name),seocode=VALUES(seocode),id_categories=VALUES(id_categories)';
         
         $this->assertEquals($query, $mockObject->query);
     }

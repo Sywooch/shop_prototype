@@ -7,6 +7,7 @@ use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper};
 use app\models\{CategoriesModel,
+    CommentsModel,
     EmailsModel,
     ProductsModel,
     SubcategoryModel};
@@ -35,6 +36,7 @@ class ProductDetailController extends AbstractBaseController
             $renderArray['emailsModel'] = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
             $renderArray['categoriesModel'] = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM]);
             $renderArray['subcategoryModel'] = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
+            $renderArray['commentsModel'] = new CommentsModel(['scenario'=>CommentsModel::GET_FROM_FORM]);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('product-detail.twig', $renderArray);
         } catch (\Exception $e) {

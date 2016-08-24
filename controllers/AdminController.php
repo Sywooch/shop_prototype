@@ -16,6 +16,7 @@ use app\helpers\{MappersHelper,
     FiltersHelper};
 use app\models\{ProductsModel, 
     CategoriesModel, 
+    CommentsModel,
     SubcategoryModel,
     BrandsModel, 
     ColorsModel, 
@@ -183,7 +184,9 @@ class AdminController extends AbstractBaseController
             }
             
             $renderArray = array();
-            $renderArray['productsModel'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]));
+            if (empty($renderArray['productsModel'] = MappersHelper::getProductsById(new ProductsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                return $this->redirect(URL::to(['admin/show-products']));
+            }
             \Yii::configure($renderArray['productsModel'], ['scenario'=>ProductsModel::GET_FOR_UPDATE]);
             $renderArray['brandsModel'] = new BrandsModel(['scenario'=>BrandsModel::GET_FOR_ADD_PRODUCT, 'id'=>$renderArray['productsModel']->brands->id]);
             $renderArray['colorsModel'] = new ColorsModel(['scenario'=>ColorsModel::GET_FOR_ADD_PRODUCT, 'idArray'=>ArrayHelper::getColumn($renderArray['productsModel']->colors, 'id')]);
@@ -215,7 +218,7 @@ class AdminController extends AbstractBaseController
                         $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                         
                         try {
-                            if (!MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel], 'fields'=>['id', 'active']])) {
+                            if (!MappersHelper::setProductsUpdate(['modelArray'=>[$productsModel], 'fields'=>['id', 'active']])) {
                                 throw new ErrorException('Ошибка при обновлении данных!');
                             }
                         } catch(\Exception $e) {
@@ -226,9 +229,8 @@ class AdminController extends AbstractBaseController
                         $transaction->commit();
                     }
                 }
-            } else {
-                return $this->redirect(Url::to(['products-list/index']));
             }
+            
             return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -271,7 +273,7 @@ class AdminController extends AbstractBaseController
                             }
                             $updateConfig['images'] = true;
                         }
-                        $updateConfig['productsModelArray'][] = $productsModel;
+                        $updateConfig['modelArray'][] = $productsModel;
                         
                         if (array_diff_assoc($productsModel->getDataArray(), MappersHelper::getProductsById($productsModel)->getDataArray())) {
                             if (!MappersHelper::setProductsUpdate($updateConfig)) {
@@ -319,9 +321,9 @@ class AdminController extends AbstractBaseController
                     
                     return $this->redirect(Url::to(['admin/show-product-detail', 'id'=>$productsModel->id]));
                 }
-            } else {
-                return $this->redirect(Url::to(['products-list/index']));
             }
+            
+            return $this->redirect(Url::to(['admin/show-products']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -411,9 +413,9 @@ class AdminController extends AbstractBaseController
                 $response = \Yii::$app->response;
                 $response->format = Response::FORMAT_JSON;
                 return $resultArray;
-            } else {
-                return $this->redirect(Url::to(['admin/data-convert']));
             }
+            
+            return $this->redirect(Url::to(['admin/data-convert']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -488,12 +490,13 @@ class AdminController extends AbstractBaseController
                     throw new ErrorException('Не поределен idKey!');
                 }
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
-                    throw new ErrorException('Ошибка при получении ID!');
+                    return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
                 
-                if ($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($categoriesModel, $currentCategories->attributes);
+                if (empty($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
+                \Yii::configure($categoriesModel, $currentCategories->attributes);
             }
             
             $renderArray = array();
@@ -538,9 +541,10 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if ($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($categoriesModel, $currentCategories->attributes);
+                if (empty($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
+                \Yii::configure($categoriesModel, $currentCategories->attributes);
             }
             
             $renderArray = array();
@@ -632,9 +636,10 @@ class AdminController extends AbstractBaseController
                     throw new ErrorException('Ошибка при получении ID!');
                 }
                 
-                if ($currentSubcategory = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($subcategoryModel, $currentSubcategory->attributes);
+                if (empty($currentSubcategory = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-subcategory']));
                 }
+                \Yii::configure($subcategoryModel, $currentSubcategory->attributes);
             }
             
             $renderArray = array();
@@ -679,9 +684,10 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if ($currentSubcategory = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($subcategoryModel, $currentSubcategory->attributes);
+                if (empty($currentSubcategory = MappersHelper::getSubcategoryById(new SubcategoryModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-subcategory']));
                 }
+                \Yii::configure($subcategoryModel, $currentSubcategory->attributes);
             }
             
             $renderArray = array();
@@ -765,9 +771,10 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if ($currentBrands = MappersHelper::getBrandsById(new BrandsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($brandsModel, $currentBrands->attributes);
+                if (empty($currentBrands = MappersHelper::getBrandsById(new BrandsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-brands']));
                 }
+                \Yii::configure($brandsModel, $currentBrands->attributes);
             }
             
             $renderArray = array();
@@ -812,9 +819,10 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if ($currentBrands = MappersHelper::getBrandsById(new BrandsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($brandsModel, $currentBrands->attributes);
+                if (empty($currentBrands = MappersHelper::getBrandsById(new BrandsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-brands']));
                 }
+                \Yii::configure($brandsModel, $currentBrands->attributes);
             }
             
             $renderArray = array();
@@ -898,9 +906,10 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if ($currentColors = MappersHelper::getColorsById(new ColorsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($colorsModel, $currentColors->attributes);
+                if (empty($currentColors = MappersHelper::getColorsById(new ColorsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-colors']));
                 }
+                \Yii::configure($colorsModel, $currentColors->attributes);
             }
             
             $renderArray = array();
@@ -945,9 +954,10 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if ($currentColors = MappersHelper::getColorsById(new ColorsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($colorsModel, $currentColors->attributes);
+                if (empty($currentColors = MappersHelper::getColorsById(new ColorsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-colors']));
                 }
+                \Yii::configure($colorsModel, $currentColors->attributes);
             }
             
             $renderArray = array();
@@ -1031,9 +1041,10 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if ($currentSizes = MappersHelper::getSizesById(new SizesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($sizesModel, $currentSizes->attributes);
+                if (empty($currentSizes = MappersHelper::getSizesById(new SizesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-sizes']));
                 }
+                \Yii::configure($sizesModel, $currentSizes->attributes);
             }
             
             $renderArray = array();
@@ -1078,9 +1089,10 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if ($currentSizes = MappersHelper::getSizesById(new SizesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]))) {
-                    \Yii::configure($sizesModel, $currentSizes->attributes);
+                if (empty($currentSizes = MappersHelper::getSizesById(new SizesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-sizes']));
                 }
+                \Yii::configure($sizesModel, $currentSizes->attributes);
             }
             
             $renderArray = array();
@@ -1113,7 +1125,7 @@ class AdminController extends AbstractBaseController
      * Обновляет cut данные комментария в БД
      * @return redirect
      */
-    /*public function actionUpdateCommentCut()
+    public function actionUpdateCommentCut()
     {
         try {
             $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_UPDATE_CUT]);
@@ -1125,7 +1137,7 @@ class AdminController extends AbstractBaseController
                         $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                         
                         try {
-                            if (!MappersHelper::setCommentsUpdate(['commentsModelArray'=>[$commentsModel], 'fields'=>['id', 'active']])) {
+                            if (!MappersHelper::setCommentsUpdate(['modelArray'=>[$commentsModel], 'fields'=>['id', 'active']])) {
                                 throw new ErrorException('Ошибка при обновлении данных!');
                             }
                         } catch(\Exception $e) {
@@ -1136,15 +1148,14 @@ class AdminController extends AbstractBaseController
                         $transaction->commit();
                     }
                 }
-            } else {
-                return $this->redirect(Url::to(['comments-list/index']));
             }
+            
             return $this->redirect(Url::to(['admin/show-comments']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
-    }*/
+    }
     
     public function behaviors()
     {

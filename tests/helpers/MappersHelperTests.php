@@ -1330,7 +1330,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $productsModel->active = self::$_active * 0;
         $productsModel->total_products = self::$_total_products;
         
-        $result = MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel]]);
+        $result = MappersHelper::setProductsUpdate(['modelArray'=>[$productsModel]]);
         
         $this->assertEquals(2, $result);
         
@@ -1367,7 +1367,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $productsModel->id = $productArray['id'];
         $productsModel->active = self::$_active;
         
-        $result = MappersHelper::setProductsUpdate(['productsModelArray'=>[$productsModel], 'fields'=>['id', 'active']]);
+        $result = MappersHelper::setProductsUpdate(['modelArray'=>[$productsModel], 'fields'=>['id', 'active']]);
         
         $this->assertEquals(2, $result);
         
@@ -2255,6 +2255,56 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         $this->assertTrue(is_object($result[0]));
         $this->assertTrue($result[0] instanceof CommentsModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::getCommentsById
+     */
+    public function testGetCommentsById()
+    {
+        $this->assertFalse(empty($id_comments = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{comments}} LIMIT 1')->queryScalar()));
+        
+        $commentsModel = new CommentsModel();
+        $commentsModel->id = $id_comments;
+        
+        $result = MappersHelper::getCommentsById($commentsModel);
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof CommentsModel);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setCommentsUpdate
+     */
+    public function testSetCommentsUpdate()
+    {
+        $this->assertFalse(empty($comments = \Yii::$app->db->createCommand('SELECT * FROM {{comments}} LIMIT 1')->queryOne()));
+        
+        $commentsModel = new CommentsModel();
+        $commentsModel->id = $comments['id'];
+        $commentsModel->text = self::$_text . ' another';
+        $commentsModel->name = self::$_name . ' another';
+        $commentsModel->name = self::$_name . ' another';
+        $commentsModel->id_emails = $comments['id_emails'];
+        $commentsModel->id_products = $comments['id_products'];
+        $commentsModel->active = self::$_active * 0;
+        
+        $result = MappersHelper::setCommentsUpdate(['modelArray'=>[$commentsModel]]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{comments}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $comments['id']);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($comments['id'], $result['id']);
+        $this->assertEquals(self::$_text . ' another', $result['text']);
+        $this->assertEquals(self::$_name . ' another', $result['name']);
+        $this->assertEquals($comments['id_emails'], $result['id_emails']);
+        $this->assertEquals($comments['id_products'], $result['id_products']);
+        $this->assertEquals(self::$_active * 0, $result['active']);
     }
     
     /**

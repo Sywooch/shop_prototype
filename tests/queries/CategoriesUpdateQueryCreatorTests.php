@@ -33,7 +33,7 @@ class CategoriesUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new CategoriesUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{categories}} (id,name,seocode) VALUES (:0_id,:0_name,:0_seocode) ON DUPLICATE KEY UPDATE id=VALUES(id),name=VALUES(name),seocode=VALUES(seocode)';
+        $query = 'INSERT INTO {{categories}} (id,name,seocode) VALUES (:0_id,:0_name,:0_seocode) ON DUPLICATE KEY UPDATE name=VALUES(name),seocode=VALUES(seocode)';
         
         $this->assertEquals($query, $mockObject->query);
     }

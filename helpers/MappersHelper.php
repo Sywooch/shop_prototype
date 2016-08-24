@@ -32,9 +32,11 @@ use app\mappers\{AddressByAddressMapper,
     ColorsInsertMapper,
     ColorsMapper,
     ColorsUpdateMapper,
+    CommentsByIdMapper,
     CommentsForProductMapper,
     CommentsInsertMapper,
     CommentsMapper,
+    CommentsUpdateMapper,
     CurrencyByIdMapper,
     CurrencyByMainMapper,
     CurrencyMapper,
@@ -262,7 +264,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $categoriesModel = $categoriesByIdMapper->getOneFromGroup();
-            if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
+            if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $categoriesModel);
@@ -295,7 +297,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $categoriesModel = $categoriesBySeocodeMapper->getOneFromGroup();
-            if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
+            if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $categoriesModel);
@@ -328,7 +330,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $categoriesModel = $categoriesByNameMapper->getOneFromGroup();
-            if (!is_object($categoriesModel) && !$categoriesModel instanceof CategoriesModel) {
+            if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $categoriesModel);
@@ -462,7 +464,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $colorsModel = $colorsByIdMapper->getOneFromGroup();
-            if (!is_object($colorsModel) && !$colorsModel instanceof ColorsModel) {
+            if (!is_object($colorsModel) || !$colorsModel instanceof ColorsModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $colorsModel);
@@ -495,7 +497,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $colorsModel = $colorsByColorMapper->getOneFromGroup();
-            if (!is_object($colorsModel) && !$colorsModel instanceof ColorsModel) {
+            if (!is_object($colorsModel) || !$colorsModel instanceof ColorsModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $colorsModel);
@@ -632,7 +634,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $sizesModel = $sizesByIdMapper->getOneFromGroup();
-            if (!is_object($sizesModel) && !$sizesModel instanceof SizesModel) {
+            if (!is_object($sizesModel) || !$sizesModel instanceof SizesModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $sizesModel);
@@ -700,7 +702,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $sizesModel = $sizesBySizeMapper->getOneFromGroup();
-            if (!is_object($sizesModel) && !$sizesModel instanceof SizesModel) {
+            if (!is_object($sizesModel) || !$sizesModel instanceof SizesModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $sizesModel);
@@ -983,7 +985,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $brandsModel = $brandsForProductMapper->getOneFromGroup();
-            if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
+            if (!is_object($brandsModel) || !$brandsModel instanceof BrandsModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $brandsModel);
@@ -1016,7 +1018,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $brandsModel = $brandsByIdMapper->getOneFromGroup();
-            if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
+            if (!is_object($brandsModel) || !$brandsModel instanceof BrandsModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $brandsModel);
@@ -1049,7 +1051,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $brandsModel = $brandsByBrandMapper->getOneFromGroup();
-            if (!is_object($brandsModel) && !$brandsModel instanceof BrandsModel) {
+            if (!is_object($brandsModel) || !$brandsModel instanceof BrandsModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $brandsModel);
@@ -1137,7 +1139,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $addressModel = $addressByAddressMapper->getOneFromGroup();
-            if (!is_object($addressModel) && !$addressModel instanceof AddressModel) {
+            if (!is_object($addressModel) || !$addressModel instanceof AddressModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $addressModel);
@@ -1225,7 +1227,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $phonesModel = $phonesByPhoneMapper->getOneFromGroup();
-            if (!is_object($phonesModel) && !$phonesModel instanceof PhonesModel) {
+            if (!is_object($phonesModel) || !$phonesModel instanceof PhonesModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $phonesModel);
@@ -1568,7 +1570,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $emailsModel = $emailsByEmailMapper->getOneFromGroup();
-            if (!is_object($emailsModel) && !$emailsModel instanceof EmailsModel) {
+            if (!is_object($emailsModel) || !$emailsModel instanceof EmailsModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $emailsModel);
@@ -1679,7 +1681,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $currencyModel = $currencyByIdMapper->getOneFromGroup();
-            if (!is_object($currencyModel) && !$currencyModel instanceof CurrencyModel) {
+            if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $currencyModel);
@@ -1734,6 +1736,44 @@ class MappersHelper
                 'objectsArray'=>[$commentsModel],
             ]);
             if (!$result = $commentsInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет запись CommentsModel в БД
+     * @param array $updateConfig массив конфигурации, может включать в себя
+     * - modelArray массив экземпляров CommentsModel, обязательный
+     * - fields массив полей, которые должны быть обновлены
+     * @return int
+     */
+    public static function setCommentsUpdate(Array $updateConfig)
+    {
+        try {
+            if (empty($updateConfig)) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            if (!is_array($updateConfig['modelArray']) || empty($updateConfig['modelArray']) || !$updateConfig['modelArray'][0] instanceof CommentsModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            $config = [
+                'tableName'=>'comments',
+                'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'objectsArray'=>$updateConfig['modelArray'],
+            ];
+            if (!empty($updateConfig['fields'])) {
+                if (!is_array($updateConfig['fields'])) {
+                    throw new ErrorException('Переданы некорректные данные!');
+                }
+                $config['fields'] = $updateConfig['fields'];
+            }
+            $commentsUpdateMapper = new CommentsUpdateMapper($config);
+            $result = $commentsUpdateMapper->setGroup();
+            if (!$result) {
                 return null;
             }
             return $result;
@@ -1826,7 +1866,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $productsModel = $productsByCodeMapper->getOneFromGroup();
-            if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
+            if (!is_object($productsModel) || !$productsModel instanceof ProductsModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $productsModel);
@@ -1859,7 +1899,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $productsModel = $productsByIdMapper->getOneFromGroup();
-            if (!is_object($productsModel) && !$productsModel instanceof ProductsModel) {
+            if (!is_object($productsModel) || !$productsModel instanceof ProductsModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $productsModel);
@@ -1961,7 +2001,7 @@ class MappersHelper
     /**
      * Обновляет запись ProductsModel в БД
      * @param array $updateConfig массив конфигурации, может включать в себя
-     * - productsModelArray массив экземпляров ProductsModel, обязательный
+     * - modelArray массив экземпляров ProductsModel, обязательный
      * - fields массив полей, которые должны быть обновлены
      * - images bool, указывает, необходимо ли обновлять поле images
      * @return int
@@ -1972,13 +2012,13 @@ class MappersHelper
             if (empty($updateConfig)) {
                 throw new ErrorException('Переданы некорректные данные!');
             }
-            if (!is_array($updateConfig['productsModelArray']) || empty($updateConfig['productsModelArray']) || !$updateConfig['productsModelArray'][0] instanceof ProductsModel) {
+            if (!is_array($updateConfig['modelArray']) || empty($updateConfig['modelArray']) || !$updateConfig['modelArray'][0] instanceof ProductsModel) {
                 throw new ErrorException('Переданы некорректные данные!');
             }
             $config = [
                 'tableName'=>'products',
                 'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory', 'active', 'total_products'],
-                'objectsArray'=>$updateConfig['productsModelArray'],
+                'objectsArray'=>$updateConfig['modelArray'],
             ];
             if (!empty($updateConfig['fields'])) {
                 if (!is_array($updateConfig['fields'])) {
@@ -2356,7 +2396,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $subcategoryModel = $subcategoryByNameMapper->getOneFromGroup();
-            if (!is_object($subcategoryModel) && !$subcategoryModel instanceof SubcategoryModel) {
+            if (!is_object($subcategoryModel) || !$subcategoryModel instanceof SubcategoryModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $subcategoryModel);
@@ -2458,12 +2498,16 @@ class MappersHelper
             $commentsForProductMapper = new CommentsForProductMapper([
                 'tableName'=>'comments',
                 'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'orderByField'=>'id',
+                'orderByType'=>'DESC',
                 'model'=>$productsModel,
             ]);
             $hash = self::createHash([
-                CommentsForProductMapper::className(), 
-                $commentsForProductMapper->tableName, 
-                implode('', $commentsForProductMapper->fields), 
+                CommentsForProductMapper::className(),
+                $commentsForProductMapper->tableName,
+                implode('', $commentsForProductMapper->fields),
+                $commentsForProductMapper->orderByField,
+                $commentsForProductMapper->orderByType,
                 $commentsForProductMapper->model->id, 
             ]);
             if (self::compareHashes($hash)) {
@@ -2491,12 +2535,14 @@ class MappersHelper
                 'tableName'=>'comments',
                 'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
                 'orderByField'=>'id',
+                'orderByType'=>'DESC',
             ]);
             $hash = self::createHash([
                 CommentsMapper::className(), 
                 $commentsMapper->tableName, 
                 implode('', $commentsMapper->fields), 
                 $commentsMapper->orderByField,
+                $commentsMapper->orderByType,
             ]);
             if (self::compareHashes($hash)) {
                 return self::$_objectsRegistry[$hash];
@@ -2507,6 +2553,39 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $commentsArray);
             return $commentsArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает CommentsModel по id
+     * @param object $commentsModel экземпляр CommentsModel
+     * @return object CommentsModel
+     */
+    public static function getCommentsById(CommentsModel $commentsModel)
+    {
+        try {
+            $commentsByIdMapper = new CommentsByIdMapper([
+                'tableName'=>'comments',
+                'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'model'=>$commentsModel,
+            ]);
+            $hash = self::createHash([
+                CommentsByIdMapper::className(), 
+                $commentsByIdMapper->tableName, 
+                implode('', $commentsByIdMapper->fields), 
+                $commentsByIdMapper->model->id,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectsRegistry[$hash];
+            }
+            $commentsModel = $commentsByIdMapper->getOneFromGroup();
+            if (!is_object($commentsModel) || !$commentsModel instanceof CommentsModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $commentsModel);
+            return $commentsModel;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -2860,7 +2939,7 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $mailingListModel = $mailingListByIdMapper->getOneFromGroup();
-            if (!is_object($mailingListModel) && !$mailingListModel instanceof MailingListModel) {
+            if (!is_object($mailingListModel) || !$mailingListModel instanceof MailingListModel) {
                 return null;
             }
             self::createRegistryEntry($hash, $mailingListModel);

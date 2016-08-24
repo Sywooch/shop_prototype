@@ -32,7 +32,7 @@ class SizesUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new SizesUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{sizes}} (id,size) VALUES (:0_id,:0_size) ON DUPLICATE KEY UPDATE id=VALUES(id),size=VALUES(size)';
+        $query = 'INSERT INTO {{sizes}} (id,size) VALUES (:0_id,:0_size) ON DUPLICATE KEY UPDATE size=VALUES(size)';
         
         $this->assertEquals($query, $mockObject->query);
     }

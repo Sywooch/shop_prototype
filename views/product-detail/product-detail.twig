@@ -40,8 +40,9 @@
 
 {% include '@app/views/parts/currency.twig' %}
 
-{% include '@app/views/parts/add-comment-form.twig' %}
-
 {% if productsModel.comments %}
-    {% include '@app/views/parts/comments.twig' %}
+    <p><strong>Комментарии</strong></p>
+    {% include '@app/views/product-detail/comments.twig' %}
 {% endif %}
+
+{% include '@app/views/parts/add-comment-form.twig' %}

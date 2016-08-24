@@ -15,14 +15,14 @@
     
     {% for commentsModel in commentsList %}
         <div>
+            Товар: <a href="{{ url.to({0:'product-detail/index', 'categories':commentsModel.products.categories, 'subcategory':commentsModel.products.subcategory, 'id':commentsModel.products.id}) }}">{{ commentsModel.products.name }}</a><br>
             Текст: {{ commentsModel.text }}<br>
             Автор: {{ commentsModel.name }}<br>
             Email автора: {{ commentsModel.emails.email }}<br>
-            Товар: <a href="{{ url.to({0:'product-detail/index', 'categories':commentsModel.products.categories, 'subcategory':commentsModel.products.subcategory, 'id':commentsModel.products.id}) }}">{{ commentsModel.products.name }}</a><br>
             <a href="">Редактировать комментарий</a>
         </div>
         
-        {% set form=active_form_begin({'id':'change-comment-cut-form-%s' | format(commentsModel.id), 'action':'', 'method':'POST'}) %}
+        {% set form=active_form_begin({'id':'update-comment-cut-form-%s' | format(commentsModel.id), 'action':url.to({0:'admin/update-comment-cut'}), 'method':'POST'}) %}
             {{ form.field(commentsModel, 'id').hiddenInput().label(false) | raw }}<br>
             {{ form.field(commentsModel, 'active').checkbox() | raw }}
             <input type="submit" value="Обновить">

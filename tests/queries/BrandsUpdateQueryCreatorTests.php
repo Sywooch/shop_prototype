@@ -32,7 +32,7 @@ class BrandsUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new BrandsUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{brands}} (id,brand) VALUES (:0_id,:0_brand) ON DUPLICATE KEY UPDATE id=VALUES(id),brand=VALUES(brand)';
+        $query = 'INSERT INTO {{brands}} (id,brand) VALUES (:0_id,:0_brand) ON DUPLICATE KEY UPDATE brand=VALUES(brand)';
         
         $this->assertEquals($query, $mockObject->query);
     }

@@ -92,6 +92,12 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id_emails);
         $this->assertEquals(self::$_id, $model->id_products);
         $this->assertEquals(self::$_active, $model->active);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_UPDATE_CUT]);
+        $model->attributes = ['id'=>self::$_id, 'active'=>self::$_active];
+        
+        $this->assertEquals(self::$_id, $model->id);
+        $this->assertEquals(self::$_active, $model->active);
     }
     
     /**
@@ -120,6 +126,20 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, count($model->errors));
         $this->assertEquals(self::$_text, $model->text);
         $this->assertEquals(self::$_name, $model->name);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_UPDATE_CUT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(2, count($model->errors));
+         $this->assertTrue(array_key_exists('id', $model->errors));
+        $this->assertTrue(array_key_exists('active', $model->errors));
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_UPDATE_CUT]);
+        $model->attributes = ['id'=>self::$_id, 'active'=>self::$_active];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
     
     /**

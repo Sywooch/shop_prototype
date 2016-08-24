@@ -32,7 +32,7 @@ class ColorsUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ColorsUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{colors}} (id,color) VALUES (:0_id,:0_color) ON DUPLICATE KEY UPDATE id=VALUES(id),color=VALUES(color)';
+        $query = 'INSERT INTO {{colors}} (id,color) VALUES (:0_id,:0_color) ON DUPLICATE KEY UPDATE color=VALUES(color)';
         
         $this->assertEquals($query, $mockObject->query);
     }

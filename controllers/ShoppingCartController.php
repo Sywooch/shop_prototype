@@ -29,14 +29,14 @@ class ShoppingCartController extends AbstractBaseController
     public function actionAddToCart()
     {
         try {
-            $productsModelForAddToCart = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CART]);
+            $productsModelForCart = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CART]);
             
-            if (\Yii::$app->request->isPost && $productsModelForAddToCart->load(\Yii::$app->request->post())) {
-                if ($productsModelForAddToCart->validate()) {
-                    if (!\Yii::$app->cart->addProduct($productsModelForAddToCart)) {
+            if (\Yii::$app->request->isPost && $productsModelForCart->load(\Yii::$app->request->post())) {
+                if ($productsModelForCart->validate()) {
+                    if (!\Yii::$app->cart->addProduct($productsModelForCart)) {
                         throw new ErrorException('Ошибка при добавлении товара в корзину!');
                     }
-                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModelForAddToCart->categories, 'subcategory'=>$productsModelForAddToCart->subcategory, 'id'=>$productsModelForAddToCart->id]));
+                    return $this->redirect(Url::to(['product-detail/index', 'categories'=>$productsModelForCart->categories, 'subcategory'=>$productsModelForCart->subcategory, 'id'=>$productsModelForCart->id]));
                 }
             } else {
                 return $this->redirect(Url::to(['products-list/index']));
