@@ -1111,6 +1111,11 @@ class AdminController extends AbstractBaseController
     public function actionShowComments()
     {
         try {
+            if (empty(\Yii::$app->filters->getActive) && empty(\Yii::$app->filters->getNotActive)) {
+                \Yii::$app->filters->getActive = true;
+                \Yii::$app->filters->getNotActive = true;
+            }
+            
             $renderArray = array();
             $renderArray['commentsList'] = MappersHelper::getCommentsList();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
@@ -1125,7 +1130,7 @@ class AdminController extends AbstractBaseController
      * Обновляет cut данные комментария в БД
      * @return redirect
      */
-    public function actionUpdateCommentCut()
+    public function actionUpdateCommentsCut()
     {
         try {
             $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_UPDATE_CUT]);
@@ -1157,6 +1162,42 @@ class AdminController extends AbstractBaseController
         }
     }
     
+    /**
+     * Обновляет данные комментария в БД
+     * @return redirect
+     */
+    public function actionUpdateComments()
+    {
+        try {
+            $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_UPDATE]);
+            
+            if (\Yii::$app->request->isPost && $commentsModel->load(\Yii::$app->request->post())) {
+                if ($commentsModel->validate()) {
+                    
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                if (empty($currentComments = MappersHelper::getCommentsById(new CommentsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-comments']));
+                }
+                \Yii::configure($commentsModel, $currentComments->attributes);
+            }
+            
+            $renderArray = array();
+            $renderArray['commentsModel'] = $commentsModel;
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('update-comments.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     public function behaviors()
     {
         return [
@@ -1167,6 +1208,10 @@ class AdminController extends AbstractBaseController
             [
                 'class'=>'app\filters\ProductsListFilterAdminSubcategory',
                 'only'=>['show-add-subcategory'],
+            ],
+            [
+                'class'=>'app\filters\CommentsFilterAdmin',
+                'only'=>['show-comments'],
             ],
         ];
     }

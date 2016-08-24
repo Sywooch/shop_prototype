@@ -2526,23 +2526,29 @@ class MappersHelper
     
     /**
      * Получает массив объектов comments
+     * @param boolean $admin флаг, указывающий выбирать данные для административного раздела
      * @return array of objects CommentsModel
      */
-    public static function getCommentsList()
+    public static function getCommentsList($admin=true)
     {
         try {
-            $commentsMapper = new CommentsMapper([
+            $config = [
                 'tableName'=>'comments',
                 'fields'=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
                 'orderByField'=>'date',
                 'orderByType'=>'DESC',
-            ]);
+            ];
+            if ($admin) {
+                $config['queryClass'] = 'app\queries\CommentsAdminQueryCreator';
+            }
+            $commentsMapper = new CommentsMapper($config);
             $hash = self::createHash([
                 CommentsMapper::className(), 
                 $commentsMapper->tableName, 
                 implode('', $commentsMapper->fields), 
                 $commentsMapper->orderByField,
                 $commentsMapper->orderByType,
+                $commentsMapper->queryClass
             ]);
             if (self::compareHashes($hash)) {
                 return self::$_objectsRegistry[$hash];

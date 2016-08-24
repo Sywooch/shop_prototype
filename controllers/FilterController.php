@@ -86,6 +86,21 @@ class FilterController extends AbstractBaseController
     }
     
     /**
+     * Обрабатывает запрос на применение фильтров для раздела комментариев
+     * @return redirect
+     */
+    public function actionAddFiltersAdminComments()
+    {
+        try {
+            FiltersHelper::addFilters();
+            return $this->redirect(Url::to(['admin/show-comments']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
      * Обрабатывает запрос на очистку фильтров
      * @return redirect
      */
@@ -189,6 +204,27 @@ class FilterController extends AbstractBaseController
         }
     }
     
+    /**
+     * Обрабатывает запрос на очистку фильтров для раздела комментариев
+     * @return redirect
+     */
+    public function actionCleanFiltersAdminComments()
+    {
+        try {
+            if (\Yii::$app->request->isPost) {
+                if (FiltersHelper::cleanFilters()) {
+                    if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession'] . '.admin.comments'])) {
+                        throw new ErrorException('Ошибка при удалении фильтров из сесии!');
+                    }
+                }
+            }
+            return $this->redirect(Url::to(['admin/show-comments']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     public function behaviors()
     {
         return [
@@ -203,6 +239,10 @@ class FilterController extends AbstractBaseController
             [
                 'class'=>'app\filters\ProductsListFilterAdminSubcategory',
                 'only'=>['add-filters-admin-subcategory', 'clean-filters-admin-subcategory'],
+            ],
+            [
+                'class'=>'app\filters\CommentsFilterAdmin',
+                'only'=>['add-filters-admin-comments', 'clean-filters-admin-comments'],
             ],
         ];
     }

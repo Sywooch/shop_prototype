@@ -23,9 +23,13 @@ class CommentsModel extends AbstractBaseModel
     */
     const GET_FROM_DB = 'getFromDb';
     /**
-     * Сценарий cut загрузки данных из формы для обновления товара
+     * Сценарий cut загрузки данных из формы обновления CommentsModel в БД
     */
     const GET_FOR_UPDATE_CUT = 'getForUpdateCut';
+    /**
+     * Сценарий загрузки данных из формы обновления CommentsModel в БД
+    */
+    const GET_FOR_UPDATE = 'getForUpdate';
     
     public $id;
     public $text;
@@ -51,6 +55,7 @@ class CommentsModel extends AbstractBaseModel
             self::GET_FROM_FORM=>['text', 'name', 'active'],
             self::GET_FROM_DB=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
             self::GET_FOR_UPDATE_CUT=>['id', 'active'],
+            self::GET_FOR_UPDATE=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
         ];
     }
     
@@ -58,8 +63,9 @@ class CommentsModel extends AbstractBaseModel
     {
         return [
             [['text', 'name'], 'required', 'on'=>self::GET_FROM_FORM],
-            [['text', 'name'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FROM_FORM],
             [['id', 'active'], 'required', 'on'=>self::GET_FOR_UPDATE_CUT],
+            [['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'], 'required', 'on'=>self::GET_FOR_UPDATE],
+            [['text', 'name'], 'app\validators\StripTagsValidator'],
         ];
     }
     

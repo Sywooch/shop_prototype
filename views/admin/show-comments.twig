@@ -20,10 +20,10 @@
             Автор: {{ commentsModel.name }}<br>
             Email автора: {{ commentsModel.emails.email }}<br>
             Дата: {{ app.formatter.asDate(commentsModel.date) }}<br>
-            <a href="">Редактировать комментарий</a>
+            <a href="{{ url.to({0:'admin/update-comments', 'id':commentsModel.id}) }}">Редактировать комментарий</a>
         </div>
         
-        {% set form=active_form_begin({'id':'update-comment-cut-form-%s' | format(commentsModel.id), 'action':url.to({0:'admin/update-comment-cut'}), 'method':'POST'}) %}
+        {% set form=active_form_begin({'id':'update-comments-cut-form-%s' | format(commentsModel.id), 'action':url.to({0:'admin/update-comments-cut'}), 'method':'POST'}) %}
             {{ form.field(commentsModel, 'id').hiddenInput().label(false) | raw }}<br>
             {{ form.field(commentsModel, 'active').checkbox() | raw }}
             <input type="submit" value="Обновить">
@@ -34,4 +34,6 @@
 {% else %}
     <p>Похоже, пока нет ни одного комментария!</p>
 {% endif %}
+
+{% include '@app/views/admin/filters-comment.twig' %}
 
