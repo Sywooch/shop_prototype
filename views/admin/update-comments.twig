@@ -11,11 +11,13 @@
 
 <p><strong>Обновить комментарий</strong></p>
 
+<p>Товар: <a href="{{ url.to({0:'product-detail/index', 'categories':commentsModel.products.categories, 'subcategory':commentsModel.products.subcategory, 'id':commentsModel.products.id}) }}">{{ commentsModel.products.name }}</a></p>
+
 {% set form=active_form_begin({'id':'update-comments-form', 'action':url.to({0:'admin/update-comments', 'id':commentsModel.id}), 'method':'POST'}) %}
     {{ form.field(commentsModel, 'id').hiddenInput().label(false) | raw }}
-    {{ form.field(commentsModel, 'text') | raw }}
+    {{ form.field(commentsModel, 'text').textarea({'rows':5, 'cols':30}) | raw }}
     {{ form.field(commentsModel, 'name') | raw }}
-    {{ form.field(commentsModel, 'date').input('date', {'value':app.formatter.asDate(productsModel.date)}) | raw }}
+    {{ form.field(commentsModel, 'date').input('date', {'value':app.formatter.asDate(commentsModel.date)}) | raw }}
     <input type="submit" value="Обновить">
 {{ active_form_end() }}
 
