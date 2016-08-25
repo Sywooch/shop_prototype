@@ -3,12 +3,12 @@
 namespace app\filters;
 
 use yii\base\ErrorException;
-use app\filters\AbstractProductsListFilterAdmin;
+use app\filters\AbstractFilterAdmin;
 
 /**
  * Заполняет объект корзины данными сесии
  */
-class ProductsListFilterAdmin extends AbstractProductsListFilterAdmin
+class ProductsFilterAdmin extends AbstractFilterAdmin
 {
     public function init()
     {

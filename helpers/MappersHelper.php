@@ -33,6 +33,7 @@ use app\mappers\{AddressByAddressMapper,
     ColorsMapper,
     ColorsUpdateMapper,
     CommentsByIdMapper,
+    CommentsDeleteMapper,
     CommentsForProductMapper,
     CommentsInsertMapper,
     CommentsMapper,
@@ -1762,7 +1763,7 @@ class MappersHelper
             }
             $config = [
                 'tableName'=>'comments',
-                'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'fields'=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
                 'objectsArray'=>$updateConfig['modelArray'],
             ];
             if (!empty($updateConfig['fields'])) {
@@ -1774,6 +1775,33 @@ class MappersHelper
             $commentsUpdateMapper = new CommentsUpdateMapper($config);
             $result = $commentsUpdateMapper->setGroup();
             if (!$result) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи CommentsModel из БД
+     * @param array $commentsModelArray массив CommentsModel
+     * @return int
+     */
+    public static function setCommentsDelete(Array $commentsModelArray)
+    {
+        try {
+            if (empty($commentsModelArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$commentsModelArray[0] instanceof CommentsModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $commentsDeleteMapper = new CommentsDeleteMapper([
+                'tableName'=>'comments',
+                'objectsArray'=>$commentsModelArray,
+            ]);
+            if (!$result = $commentsDeleteMapper->setGroup()) {
                 return null;
             }
             return $result;
@@ -2497,8 +2525,8 @@ class MappersHelper
         try {
             $commentsForProductMapper = new CommentsForProductMapper([
                 'tableName'=>'comments',
-                'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
-                'orderByField'=>'id',
+                'fields'=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'orderByField'=>'date',
                 'orderByType'=>'DESC',
                 'model'=>$productsModel,
             ]);
@@ -2574,7 +2602,7 @@ class MappersHelper
         try {
             $commentsByIdMapper = new CommentsByIdMapper([
                 'tableName'=>'comments',
-                'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+                'fields'=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
                 'model'=>$commentsModel,
             ]);
             $hash = self::createHash([

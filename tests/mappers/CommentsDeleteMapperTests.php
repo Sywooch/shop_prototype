@@ -4,21 +4,22 @@ namespace app\tests\mappers;
 
 use app\tests\{DbManager, 
     MockModel};
-use app\mappers\CommentsByIdMapper;
-use app\models\CommentsModel;
+use app\mappers\CommentsDeleteMapper;
 use app\helpers\MappersHelper;
+use app\models\CommentsModel;
 
 /**
- * Тестирует класс app\mappers\CommentsByIdMapper
+ * Тестирует класс app\mappers\CommentsDeleteMapper
  */
-class CommentsByIdMapperTests extends \PHPUnit_Framework_TestCase
+class CommentsDeleteMapperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_id = 1;
+    private static $_id = 3;
     private static $_date = 1463210808;
+    private static $_text = 'some text';
+    private static $_name = 'John';
+    private static $_active = true;
     private static $_email = 'some@some.com';
-    private static $_name = 'Some Name';
-    private static $_text = 'Some Text';
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
     
@@ -44,7 +45,7 @@ class CommentsByIdMapperTests extends \PHPUnit_Framework_TestCase
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{comments}} SET [[id]]=:id, [[date]]=:date, [[text]]=:text, [[name]]=:name, [[id_emails]]=:id_emails, [[id_products]]=:id_products, [[active]]=:active');
-        $command->bindValues([':id'=>self::$_id, ':text'=>self::$_text, ':date'=>self::$_date, ':name'=>self::$_name, ':id_emails'=>self::$_id, ':id_products'=>self::$_id, ':active'=>self::$_id]);
+        $command->bindValues([':id'=>self::$_id, ':text'=>self::$_text, ':date'=>self::$_date, ':name'=>self::$_name, ':id_emails'=>self::$_id, ':id_products'=>self::$_id, ':active'=>self::$_active]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -53,29 +54,23 @@ class CommentsByIdMapperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод CommentsByIdMapper::getOneFromGroup
+     * Тестирует метод CommentsDeleteMapper::setGroup
      */
-    public function testGetOneFromGroup()
+    public function testSetGroup()
     {
-        $commentsByIdMapper = new CommentsByIdMapper([
+        $this->assertFalse(empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll()));
+        
+        $commentsDeleteMapper = new CommentsDeleteMapper([
             'tableName'=>'comments',
-            'fields'=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
-            'model'=>new CommentsModel([
-                'id'=>self::$_id,
-            ]),
+            'objectsArray'=>[
+                new CommentsModel(['id'=>self::$_id]),
+            ],
         ]);
-        $commentsModel = $commentsByIdMapper->getOneFromGroup();
         
-        $this->assertTrue(is_object($commentsModel));
-        $this->assertTrue($commentsModel instanceof CommentsModel);
+        $result = $commentsDeleteMapper->setGroup();
         
-        $this->assertEquals(self::$_id, $commentsModel->id);
-        $this->assertEquals(self::$_date, $commentsModel->date);
-        $this->assertEquals(self::$_text, $commentsModel->text);
-        $this->assertEquals(self::$_name, $commentsModel->name);
-        $this->assertEquals(self::$_id, $commentsModel->id_emails);
-        $this->assertEquals(self::$_id, $commentsModel->id_products);
-        $this->assertEquals(self::$_id, $commentsModel->active);
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll()));
     }
     
     public static function tearDownAfterClass()

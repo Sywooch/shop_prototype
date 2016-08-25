@@ -9,7 +9,7 @@ use app\traits\ExceptionsTrait;
 /**
  * Заполняет объект корзины данными сесии
  */
-class AbstractProductsListFilter extends ActionFilter
+class AbstractFilter extends ActionFilter
 {
     use ExceptionsTrait;
     

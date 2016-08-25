@@ -229,15 +229,15 @@ class FilterController extends AbstractBaseController
     {
         return [
             [
-                'class'=>'app\filters\ProductsListFilter',
+                'class'=>'app\filters\ProductsFilter',
                 'only'=>['add-filters', 'clean-filters'],
             ],
             [
-                'class'=>'app\filters\ProductsListFilterAdmin',
+                'class'=>'app\filters\ProductsFilterAdmin',
                 'only'=>['add-filters-admin', 'add-filters-admin-categories', 'clean-filters-admin', 'clean-filters-admin-categories'],
             ],
             [
-                'class'=>'app\filters\ProductsListFilterAdminSubcategory',
+                'class'=>'app\filters\SubcategoryFilterAdmin',
                 'only'=>['add-filters-admin-subcategory', 'clean-filters-admin-subcategory'],
             ],
             [

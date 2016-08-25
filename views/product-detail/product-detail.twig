@@ -40,8 +40,7 @@
 
 {% include '@app/views/parts/currency.twig' %}
 
-{% if productsModel.comments %}
-    <p><strong>Комментарии</strong></p>
+{% if productsModel.comments and productsModel.comments[0].active%}
     {% include '@app/views/product-detail/comments.twig' %}
 {% endif %}
 

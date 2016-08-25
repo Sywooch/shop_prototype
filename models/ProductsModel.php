@@ -506,8 +506,11 @@ class ProductsModel extends AbstractBaseModel
                 $date = \DateTime::createFromFormat('Y-m-d', $value);
                 $value = $date->getTimestamp();
             }
-            $this->_date = $value;
-            return true;
+            if (is_numeric($value)) {
+                $this->_date = $value;
+                return true;
+            }
+            return false;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

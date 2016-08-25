@@ -359,7 +359,7 @@ class ShoppingCartController extends AbstractBaseController
     public function behaviors()
     {
         return [
-            ['class'=>'app\filters\ProductsListFilter'],
+            ['class'=>'app\filters\ProductsFilter'],
         ];
     }
 }

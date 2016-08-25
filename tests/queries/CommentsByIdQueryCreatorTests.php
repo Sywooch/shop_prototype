@@ -17,13 +17,13 @@ class CommentsByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'tableName'=>'comments',
-            'fields'=>['id', 'text', 'name', 'id_emails', 'id_products', 'active'],
+            'fields'=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
         ]);
         
         $queryCreator = new CommentsByIdQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[comments.id]],[[comments.text]],[[comments.name]],[[comments.id_emails]],[[comments.id_products]],[[comments.active]] FROM {{comments}} WHERE [[comments.id]]=:id';
+        $query = 'SELECT [[comments.id]],[[comments.date]],[[comments.text]],[[comments.name]],[[comments.id_emails]],[[comments.id_products]],[[comments.active]] FROM {{comments}} WHERE [[comments.id]]=:id';
         
         $this->assertEquals($query, $mockObject->query);
     }

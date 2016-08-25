@@ -2308,6 +2308,22 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::setCommentsDelete
+     */
+    public function testSetCommentsDelete()
+    {
+        $this->assertFalse(empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{comments}} LIMIT 1')->queryScalar()));
+        
+        $model = new CommentsModel();
+        $model->id = $id;
+        
+        $result = MappersHelper::setCommentsDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{comments}}')->queryAll()));
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getObjectRegistry
      */
     public function testGetObjectRegistry()

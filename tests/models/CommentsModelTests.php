@@ -17,6 +17,7 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
     private static $_reflectionClass;
     private static $_id = 1;
     private static $_date = 1463210808;
+    private static $_dateString = '2015-02-14';
     private static $_text = 'Some Text';
     private static $_name = 'Some Name';
     private static $_active = true;
@@ -62,6 +63,7 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE_CUT'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_DELETE'));
         
         $this->assertTrue(self::$_reflectionClass->hasProperty('id'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('text'));
@@ -113,6 +115,11 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_id, $model->id_emails);
         $this->assertEquals(self::$_id, $model->id_products);
         $this->assertEquals(self::$_active, $model->active);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_DELETE]);
+        $model->attributes = ['id'=>self::$_id];
+        
+        $this->assertEquals(self::$_id, $model->id);
     }
     
     /**
@@ -173,6 +180,54 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_DELETE]);
+        $model->attributes = ['id'=>self::$_id];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+    }
+    
+    /**
+     * Тестирует определение полей
+     */
+    public function testFields()
+    {
+        $model = new CommentsModel();
+        $model->id = self::$_id;
+        $model->date = self::$_date;
+        $model->text = self::$_text;
+        $model->name = self::$_name;
+        $model->id_emails = self::$_id;
+        $model->id_products = self::$_id;
+        $model->active = self::$_active;
+        
+        $result = $model->attributes;
+        
+        $this->assertTrue(array_key_exists('id', $result));
+        $this->assertTrue(array_key_exists('text', $result));
+        $this->assertTrue(array_key_exists('name', $result));
+        $this->assertTrue(array_key_exists('id_emails', $result));
+        $this->assertTrue(array_key_exists('id_products', $result));
+        $this->assertTrue(array_key_exists('active', $result));
+        $this->assertFalse(array_key_exists('date', $result));
+        
+        $result = $model->toArray();
+        
+        $this->assertTrue(array_key_exists('id', $result));
+        $this->assertTrue(array_key_exists('text', $result));
+        $this->assertTrue(array_key_exists('name', $result));
+        $this->assertTrue(array_key_exists('id_emails', $result));
+        $this->assertTrue(array_key_exists('id_products', $result));
+        $this->assertTrue(array_key_exists('active', $result));
+        $this->assertTrue(array_key_exists('date', $result));
     }
     
     /**
@@ -242,6 +297,14 @@ class CommentsModelTests extends \PHPUnit_Framework_TestCase
         $model->date = $timestamp;
         
         $this->assertEquals($timestamp, $model->date);
+        
+        $model = new CommentsModel();
+        $model->date = self::$_dateString;
+        
+        $expectedDate = \DateTime::createFromFormat('Y-m-d', self::$_dateString);
+        
+        $this->assertEquals($expectedDate->getTimestamp(), $model->date);
+        $this->assertEquals(date('d.m.Y', $expectedDate->getTimestamp()), date('d.m.Y', $model->date));
     }
     
     /**

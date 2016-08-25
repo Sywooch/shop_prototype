@@ -30,6 +30,10 @@ class CommentsModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы обновления CommentsModel в БД
     */
     const GET_FOR_UPDATE = 'getForUpdate';
+    /**
+     * Сценарий загрузки данных из формы для удаления CommentsModel из БД
+    */
+    const GET_FOR_DELETE = 'getForDelete';
     
     public $id;
     public $text;
@@ -56,6 +60,7 @@ class CommentsModel extends AbstractBaseModel
             self::GET_FROM_DB=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
             self::GET_FOR_UPDATE_CUT=>['id', 'active'],
             self::GET_FOR_UPDATE=>['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'],
+            self::GET_FOR_DELETE=>['id']
         ];
     }
     
@@ -65,8 +70,22 @@ class CommentsModel extends AbstractBaseModel
             [['text', 'name'], 'required', 'on'=>self::GET_FROM_FORM],
             [['id', 'active'], 'required', 'on'=>self::GET_FOR_UPDATE_CUT],
             [['id', 'date', 'text', 'name', 'id_emails', 'id_products', 'active'], 'required', 'on'=>self::GET_FOR_UPDATE],
+            [['id'], 'required', 'on'=>self::GET_FOR_DELETE],
             [['text', 'name'], 'app\validators\StripTagsValidator'],
         ];
+    }
+    
+    public function fields()
+    {
+        $parentFields = parent::fields();
+        
+        $addedFields = [
+            'date'=>function() {
+                return $this->_date;
+            },
+        ];
+        
+        return array_merge($parentFields, $addedFields);
     }
     
     /**
@@ -143,6 +162,10 @@ class CommentsModel extends AbstractBaseModel
     public function setDate($value)
     {
         try {
+            if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $value)) {
+                $date = \DateTime::createFromFormat('Y-m-d', $value);
+                $value = $date->getTimestamp();
+            }
             if (is_numeric($value)) {
                 $this->_date = $value;
                 return true;

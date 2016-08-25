@@ -4,12 +4,12 @@ namespace app\filters;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
-use app\filters\AbstractProductsListFilter;
+use app\filters\AbstractFilter;
 
 /**
  * Заполняет объект корзины данными сесии
  */
-class ProductsListFilter extends AbstractProductsListFilter
+class ProductsFilter extends AbstractFilter
 {
     /**
      * Конфигурирует \Yii::$app->filters данными из сессионного хранилища

@@ -173,7 +173,7 @@ class AdminController extends AbstractBaseController
      * Обрабатывает запрос к конкретному продукту
      * @return string
      */
-    public function actionShowProductDetail()
+    public function actionShowProductsDetail()
     {
         try {
             if (empty(\Yii::$app->params['idKey'])) {
@@ -206,7 +206,7 @@ class AdminController extends AbstractBaseController
      * Обновляет cut данные товара в БД
      * @return redirect
      */
-    public function actionUpdateProductCut()
+    public function actionUpdateProductsCut()
     {
         try {
             $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_UPDATE_CUT]);
@@ -242,7 +242,7 @@ class AdminController extends AbstractBaseController
      * Обновляет full данные товара в БД
      * @return redirect
      */
-    public function actionUpdateProduct()
+    public function actionUpdateProducts()
     {
         try {
             $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_UPDATE]);
@@ -319,7 +319,7 @@ class AdminController extends AbstractBaseController
                     
                     $transaction->commit();
                     
-                    return $this->redirect(Url::to(['admin/show-product-detail', 'id'=>$productsModel->id]));
+                    return $this->redirect(Url::to(['admin/show-products-detail', 'id'=>$productsModel->id]));
                 }
             }
             
@@ -333,7 +333,7 @@ class AdminController extends AbstractBaseController
     /**
      * Управляет удалением товара
      */
-    public function actionDeleteProduct()
+    public function actionDeleteProducts()
     {
         try {
             $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_DELETE]);
@@ -1174,6 +1174,23 @@ class AdminController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $commentsModel->load(\Yii::$app->request->post())) {
                 if ($commentsModel->validate()) {
                     
+                    if (array_diff_assoc($commentsModel->toArray(), MappersHelper::getCommentsById($commentsModel)->toArray())) {
+                        
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                        
+                        try {
+                            if (!MappersHelper::setCommentsUpdate(['modelArray'=>[$commentsModel]])) {
+                                throw new ErrorException('Ошибка при обновлении комментария!');
+                            }
+                        } catch(\Exception $e) {
+                            $transaction->rollBack();
+                            throw $e;
+                        }
+                        
+                        $transaction->commit();
+                    }
+                    
+                    return $this->redirect(Url::to(['admin/show-comments']));
                 }
             } else {
                 if (empty(\Yii::$app->params['idKey'])) {
@@ -1185,7 +1202,7 @@ class AdminController extends AbstractBaseController
                 if (empty($currentComments = MappersHelper::getCommentsById(new CommentsModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
                     return $this->redirect(Url::to(['admin/show-comments']));
                 }
-                \Yii::configure($commentsModel, $currentComments->attributes);
+                \Yii::configure($commentsModel, $currentComments->toArray());
             }
             
             $renderArray = array();
@@ -1198,15 +1215,49 @@ class AdminController extends AbstractBaseController
         }
     }
     
+    /**
+     * Удаляет данные комментария из БД
+     * @return redirect
+     */
+    public function actionDeleteComments()
+    {
+        try {
+            $commentsModel = new CommentsModel(['scenario'=>CommentsModel::GET_FOR_DELETE]);
+            
+            if (\Yii::$app->request->isPost && $commentsModel->load(\Yii::$app->request->post())) {
+                if ($commentsModel->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
+                    try {
+                        if (!MappersHelper::setCommentsDelete([$commentsModel])) {
+                            throw new ErrorException('Ошибка при удалении комментария!');
+                        }
+                    } catch(\Exception $e) {
+                        $transaction->rollBack();
+                        throw $e;
+                    }
+                    
+                    $transaction->commit();
+                }
+            }
+            
+            return $this->redirect(Url::to(['admin/show-comments']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     public function behaviors()
     {
         return [
             [
-                'class'=>'app\filters\ProductsListFilterAdmin',
+                'class'=>'app\filters\ProductsFilterAdmin',
                 'only'=>['show-products'],
             ],
             [
-                'class'=>'app\filters\ProductsListFilterAdminSubcategory',
+                'class'=>'app\filters\SubcategoryFilterAdmin',
                 'only'=>['show-add-subcategory'],
             ],
             [
