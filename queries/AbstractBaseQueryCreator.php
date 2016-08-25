@@ -288,11 +288,12 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
             if (empty($this->_mapperObject->fields)) {
                 throw new ErrorException('Отсутствуют данные для постороения запроса!');
             }
+            $string = ' SET ';
             $result = array();
             foreach ($this->_mapperObject->fields as $field) {
                 $result[] = '[[' . $field . ']]=:' . $field;
             }
-            return ' ' . implode(',', $result);
+            return $string . implode(',', $result);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

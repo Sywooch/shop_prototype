@@ -23,7 +23,7 @@
     {{ form.field(productsModel, 'imagesToLoad[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
     {{ form.field(productsModel, 'id_categories').dropDownList(array.merge({'':'------------------------'}, array.map(categoriesList, 'id', 'name'))) | raw }}
     {{ form.field(productsModel, 'id_subcategory').dropDownList({'':'------------------------'}) | raw }}
-    {{ form.field(productsModel, 'total_products') | raw }}
+    {{ form.field(productsModel, 'total_products').input('number', {'step':1}) | raw }}
     {{ form.field(productsModel, 'active').checkbox() | raw }}
     <input type="submit" value="Add product" >
 {{ active_form_end() }}

@@ -347,15 +347,6 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('imagesToLoad', $model->errors));
         
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_ADD_PRODUCT]);
-        $model->attributes = ['code'=>'<p>' . self::$_code . '</p>', 'name'=>'<script src="/my/script.js"></script>' . self::$_name, 'description'=>'<p>' . self::$_description . '</p>', 'short_description'=>'<script src="/my/script.js"></script>' . self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active];
-        $model->validate();
-        
-        $this->assertEquals(self::$_code, $model->code);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_description, $model->short_description);
-        $this->assertEquals('<p>' . self::$_description . '</p>', $model->description);
-        
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_UPDATE]);
         $model->attributes = [];
         $model->validate();
@@ -383,15 +374,6 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertEquals(0, count($model->errors));
         
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_UPDATE]);
-        $model->attributes = ['code'=>'<p>' . self::$_code . '</p>', 'name'=>'<script src="/my/script.js"></script>' . self::$_name, 'description'=>'<p>' . self::$_description . '</p>', 'short_description'=>'<script src="/my/script.js"></script>' . self::$_description, 'price'=>self::$_price, 'imagesToLoad'=>$imagesToLoad, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id];
-        $model->validate();
-        
-        $this->assertEquals(self::$_code, $model->code);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_description, $model->short_description);
-        $this->assertEquals('<p>' . self::$_description . '</p>', $model->description);
-        
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_UPDATE_CUT]);
         $model->attributes = [];
         $model->validate();
@@ -418,6 +400,18 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_ADD_PRODUCT]);
+        $model->code = '<p>' . self::$_code . '</p>';
+        $model->name = '<script src="/my/script.js"></script>' . self::$_name;
+        $model->description = '<p>' . self::$_description . '</p>';
+        $model->short_description = '<script src="/my/script.js"></script>' . self::$_description;
+        $model->validate();
+        
+        $this->assertEquals(self::$_code, $model->code);
+        $this->assertEquals(self::$_name, $model->name);
+        $this->assertEquals(self::$_description, $model->short_description);
+        $this->assertEquals('<p>' . self::$_description . '</p>', $model->description);
     }
     
     /**

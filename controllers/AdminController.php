@@ -17,6 +17,7 @@ use app\helpers\{MappersHelper,
 use app\models\{ProductsModel, 
     CategoriesModel, 
     CommentsModel,
+    CurrencyModel,
     SubcategoryModel,
     BrandsModel, 
     ColorsModel, 
@@ -1243,6 +1244,42 @@ class AdminController extends AbstractBaseController
             }
             
             return $this->redirect(Url::to(['admin/show-comments']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет текущим списком и добавлением валют
+     */
+    public function actionShowAddCurrency()
+    {
+        try {
+            $currencyModelForAdd = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_ADD]);
+            
+            if (\Yii::$app->request->isPost && $currencyModelForAdd->load(\Yii::$app->request->post())) {
+                if ($currencyModelForAdd->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
+                    try {
+                        if (!MappersHelper::setCurrencyInsert([$currencyModelForAdd])) {
+                            throw new ErrorException('Ошибка при сохранении размера!');
+                        }
+                    } catch(\Exception $e) {
+                        $transaction->rollBack();
+                        throw $e;
+                    }
+                    
+                    $transaction->commit();
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['currencyModelForAdd'] = $currencyModelForAdd;
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('show-add-currency.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

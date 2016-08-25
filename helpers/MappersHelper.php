@@ -38,9 +38,12 @@ use app\mappers\{AddressByAddressMapper,
     CommentsInsertMapper,
     CommentsMapper,
     CommentsUpdateMapper,
+    CurrencyByCurrencyMapper,
     CurrencyByIdMapper,
     CurrencyByMainMapper,
+    CurrencyInsertMapper,
     CurrencyMapper,
+    CurrencyUpdateMainNullMapper,
     DeliveriesByIdMapper,
     DeliveriesMapper,
     EmailsByEmailMapper,
@@ -345,7 +348,7 @@ class MappersHelper
      * Получает массив объектов валют
      * @return array of objects CurrencyModel
      */
-    public static function getСurrencyList()
+    public static function getCurrencyList()
     {
         try {
             $currencyMapper = new CurrencyMapper([
@@ -368,6 +371,51 @@ class MappersHelper
             }
             self::createRegistryEntry($hash, $currencyArray);
             return $currencyArray;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает новую запись CurrencyModel в БД
+     * @param array $currencyModelArray массив объектов CurrencyModel
+     * @return int
+     */
+    public static function setCurrencyInsert(Array $currencyModelArray)
+    {
+        try {
+            if (empty($currencyModelArray) || !$currencyModelArray[0] instanceof CurrencyModel) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            $currencyInsertMapper = new CurrencyInsertMapper([
+                'tableName'=>'currency',
+                'fields'=>['currency', 'exchange_rate', 'main'],
+                'objectsArray'=>$currencyModelArray,
+            ]);
+            if (!$result = $currencyInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обнуляет поле main у всех CurrencyModel в БД
+     * @return int
+     */
+    public static function setCurrencyUpdateMainNull()
+    {
+        try {
+            $currencyInsertMapper = new CurrencyUpdateMainNullMapper([
+                'tableName'=>'currency',
+                'fields'=>['main'],
+            ]);
+            if (!$result = $currencyInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
@@ -1713,6 +1761,39 @@ class MappersHelper
                 return self::$_objectsRegistry[$hash];
             }
             $currencyModel = $currencyByMainMapper->getOneFromGroup();
+            if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
+                return null;
+            }
+            self::createRegistryEntry($hash, $currencyModel);
+            return $currencyModel;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект CurrencyModel по CurrencyModel->currency
+     * @param object $currencyModel экземпляр CurrencyModel
+     * @return objects CurrencyModel
+     */
+    public static function getCurrencyByCurrency(CurrencyModel $currencyModel)
+    {
+        try {
+            $currencyByCurrencyMapper = new CurrencyByCurrencyMapper([
+                'tableName'=>'currency',
+                'fields'=>['id', 'currency', 'exchange_rate', 'main'],
+                'model'=>$currencyModel,
+            ]);
+            $hash = self::createHash([
+                CurrencyByCurrencyMapper::className(), 
+                $currencyByCurrencyMapper->tableName, 
+                implode('', $currencyByCurrencyMapper->fields),
+                $currencyByCurrencyMapper->model->currency,
+            ]);
+            if (self::compareHashes($hash)) {
+                return self::$_objectsRegistry[$hash];
+            }
+            $currencyModel = $currencyByCurrencyMapper->getOneFromGroup();
             if (!is_object($currencyModel) || !$currencyModel instanceof CurrencyModel) {
                 return null;
             }

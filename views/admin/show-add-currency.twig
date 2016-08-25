@@ -1,0 +1,32 @@
+
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include '@app/views/parts/user-buttons.twig' %}
+
+{% include '@app/views/parts/admin-menu.twig' %}
+
+{{ use('yii/widgets/ActiveForm') }}
+
+<p>Здесь вы можете управлять валютами</p>
+
+{% if currencyList %}
+    <p><strong>Текущие валюты</strong></p>
+    <ul>
+        {% for currencyModel in currencyList %}
+            <li>
+                {{ currencyModel.currency }}<br>
+                {{ currencyModel.exchange_rate }}<br>
+                {% if currencyModel.main %}Основная по умолчанию<br>{% endif %}
+                <a href="{{ url.to({0:'admin/update-currency', 'id':currencyModel.id}) }}">Обновить валюту</a><br>
+                <a href="{{ url.to({0:'admin/delete-currency', 'id':currencyModel.id}) }}">Удалить валюту</a><br>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% include '@app/views/admin/add-currency-form.twig' %}
+
+
+
+
+

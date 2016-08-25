@@ -34,7 +34,7 @@
         {{ form.field(colorsModel, 'idArray').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
         {{ form.field(sizesModel, 'idArray').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
         
-        {{ form.field(productsModel, 'total_products') | raw }}
+        {{ form.field(productsModel, 'total_products').input('number', {'step':1}) | raw }}
         {{ form.field(productsModel, 'active').checkbox() | raw }}
         <input type="submit" value="Обновить">
     {{ active_form_end() }}

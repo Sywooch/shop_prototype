@@ -131,12 +131,11 @@ class ProductsModel extends AbstractBaseModel
         return [
             [['code', 'name', 'description', 'short_description', 'price', 'imagesToLoad', 'id_categories', 'id_subcategory', 'active'], 'required', 'on'=>self::GET_FOR_ADD_PRODUCT],
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FOR_ADD_PRODUCT],
-            [['code', 'name', 'description', 'short_description', 'price', 'total_products'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FOR_ADD_PRODUCT],
             [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_categories', 'id_subcategory'], 'required', 'on'=>self::GET_FOR_UPDATE], 
             [['imagesToLoad'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'mimeTypes'=>'image/*', 'maxSize'=>(1024*1024)*2, 'maxFiles'=>5, 'on'=>self::GET_FOR_UPDATE],
-            [['code', 'name', 'description', 'short_description', 'price'], 'app\validators\StripTagsValidator', 'on'=>self::GET_FOR_UPDATE],
             [['id', 'active'], 'required', 'on'=>self::GET_FOR_UPDATE_CUT],
-            [['id'], 'required', 'on'=>self::GET_FOR_DELETE], 
+            [['id'], 'required', 'on'=>self::GET_FOR_DELETE],
+            [['code', 'name', 'description', 'short_description'], 'app\validators\StripTagsValidator'],
         ];
     }
     

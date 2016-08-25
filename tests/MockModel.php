@@ -60,4 +60,7 @@ class MockModel extends AbstractBaseModel
     public $brand;
     public $color;
     public $size;
+    public $currency;
+    public $exchange_rate;
+    public $main;
 }

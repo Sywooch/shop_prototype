@@ -31,7 +31,7 @@ class ModelsInstancesHelper
             self::$_instancesArray['filtersModel'] = \Yii::$app->filters;
             self::$_instancesArray['currencyModel'] = \Yii::$app->shopUser->currency;
             self::$_instancesArray['categoriesList'] = MappersHelper::getCategoriesList();
-            self::$_instancesArray['currencyList'] = MappersHelper::getСurrencyList();
+            self::$_instancesArray['currencyList'] = MappersHelper::getCurrencyList();
             self::$_instancesArray['productsModelForCart'] = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CART]);
             self::$_instancesArray['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CLEAR_CART]);
             self::$_instancesArray['usersModelForLogout'] = new UsersModel(['scenario'=>UsersModel::GET_FOR_LOGOUT]);
