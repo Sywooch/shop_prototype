@@ -7,7 +7,11 @@ use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\helpers\MappersHelper;
 use app\traits\ExceptionsTrait;
-use app\models\CurrencyModel;
+use app\models\{CategoriesModel,
+    CurrencyModel,
+    ProductsModel,
+    SearchModel,
+    SubcategoryModel};
 
 /**
  * Обрабатывает запросы, связанные с валютами сайта
@@ -33,23 +37,27 @@ class CurrencyController extends AbstractBaseController
             }
             
             $currencyModel = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_SET_CURRENCY]);
+            $categoriesModel = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM]);
+            $subcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
+            $productsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM]);
+            $searchModel = new SearchModel(['scenario'=>SearchModel::GET_FROM_FORM]);
             
-            if (\Yii::$app->request->isPost && $currencyModel->load(\Yii::$app->request->post())) {
-                if ($currencyModel->validate()) {
+            if (\Yii::$app->request->isPost && $currencyModel->load(\Yii::$app->request->post()) && $categoriesModel->load(\Yii::$app->request->post()) && $subcategoryModel->load(\Yii::$app->request->post()) && $productsModel->load(\Yii::$app->request->post()) && $searchModel->load(\Yii::$app->request->post())) {
+                if ($currencyModel->validate() && $categoriesModel->validate() && $subcategoryModel->validate() && $productsModel->validate() && $searchModel->validate()) {
                     if (!empty(\Yii::$app->shopUser)) {
                         \Yii::$app->shopUser->currency = MappersHelper::getCurrencyById($currencyModel);
                     }
-                    if (!empty($currencyModel->id_products)) {
-                        $urlArray = ['product-detail/index', 'categories'=>$currencyModel->categories, 'subcategory'=>$currencyModel->subcategory, 'id'=>$currencyModel->id_products];
-                    } elseif (!empty($currencyModel->search)) {
-                        $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>$currencyModel->search];
+                    if (!empty($productsModel->id)) {
+                        $urlArray = ['product-detail/index', 'categories'=>$categoriesModel->seocode, 'subcategory'=>$subcategoryModel->seocode, 'id'=>$productsModel->id];
+                    } elseif (!empty($searchModel->search)) {
+                        $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>$searchModel->search];
                     } else {
                         $urlArray = ['products-list/index'];
-                        if (!empty($currencyModel->categories)) {
-                            $urlArray = array_merge($urlArray, [\Yii::$app->params['categoryKey']=>$currencyModel->categories]);
+                        if (!empty($categoriesModel->seocode)) {
+                            $urlArray = array_merge($urlArray, [\Yii::$app->params['categoryKey']=>$categoriesModel->seocode]);
                         }
-                        if (!empty($currencyModel->subcategory)) {
-                            $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>$currencyModel->subcategory]);
+                        if (!empty($subcategoryModel->seocode)) {
+                            $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>$subcategoryModel->seocode]);
                         }
                     }
                 }

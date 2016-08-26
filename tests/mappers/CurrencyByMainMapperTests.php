@@ -16,8 +16,10 @@ class CurrencyByMainMapperTests extends \PHPUnit_Framework_TestCase
     private static $_dbClass;
     private static $_id = 1;
     private static $_currency = 'EUR';
+    private static $_currency2 = 'UAH';
     private static $_exchange_rate = '12.456';
-    private static $_main = '1';
+    private static $_main = true;
+    private static $_mainFalse = false;
     
     public static function setUpBeforeClass()
     {
@@ -26,6 +28,10 @@ class CurrencyByMainMapperTests extends \PHPUnit_Framework_TestCase
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
         $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
+        $command->bindValues([':id'=>self::$_id + 1, ':currency'=>self::$_currency2, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_mainFalse]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -42,20 +48,11 @@ class CurrencyByMainMapperTests extends \PHPUnit_Framework_TestCase
             'tableName'=>'currency',
             'fields'=>['id', 'currency', 'exchange_rate', 'main'],
         ]);
+        
         $currencyModel = $currencyByMainMapper->getOneFromGroup();
         
         $this->assertTrue(is_object($currencyModel));
         $this->assertTrue($currencyModel instanceof CurrencyModel);
-        
-        $this->assertTrue(property_exists($currencyModel, 'id'));
-        $this->assertTrue(property_exists($currencyModel, 'currency'));
-        $this->assertTrue(property_exists($currencyModel, 'exchange_rate'));
-        $this->assertTrue(property_exists($currencyModel, 'main'));
-        
-        $this->assertFalse(empty($currencyModel->id));
-        $this->assertFalse(empty($currencyModel->currency));
-        $this->assertFalse(empty($currencyModel->exchange_rate));
-        $this->assertFalse(empty($currencyModel->main));
         
         $this->assertEquals(self::$_id, $currencyModel->id);
         $this->assertEquals(self::$_currency, $currencyModel->currency);

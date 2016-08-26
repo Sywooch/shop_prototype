@@ -1252,6 +1252,11 @@ class AdminController extends AbstractBaseController
     
     /**
      * Управляет текущим списком и добавлением валют
+     * Основная валюта - валюта в котрой указаны цены товаров. Ее курс равен 1.00000
+     * Курс остальных валют указыается относительно основной.
+     * Так как в системе может быть только 1 основная валюта, 
+     * в случае назначения новой основной валюты, значение main у текущей обнуляется,
+     * значение свойства exchange_rate новой основной валюты принудительно выставляется в значение 1.00000
      */
     public function actionShowAddCurrency()
     {
@@ -1264,6 +1269,15 @@ class AdminController extends AbstractBaseController
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
                     try {
+                        if (!empty($currencyModelForAdd->main)) {
+                            if (MappersHelper::getCurrencyByMain()) {
+                                if (!MappersHelper::setCurrencyUpdateMainNull()) {
+                                    throw new ErrorException('Ошибка при обнулении!');
+                                }
+                            }
+                            $currencyModelForAdd->exchange_rate = 1;
+                        }
+                        
                         if (!MappersHelper::setCurrencyInsert([$currencyModelForAdd])) {
                             throw new ErrorException('Ошибка при сохранении размера!');
                         }

@@ -17,7 +17,7 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
     private static $_currency = 'EUR';
     private static $_currency2 = 'UAH';
     private static $_exchange_rate = '12.5698';
-    private static $_main = '1';
+    private static $_main = true;
     private static $_categorySeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
     private static $_search = 'пиджак';
@@ -54,11 +54,6 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(property_exists($model, 'currency'));
         $this->assertTrue(property_exists($model, 'exchange_rate'));
         $this->assertTrue(property_exists($model, 'main'));
-        
-        $this->assertTrue(property_exists($model, 'categories'));
-        $this->assertTrue(property_exists($model, 'subcategory'));
-        $this->assertTrue(property_exists($model, 'search'));
-        $this->assertTrue(property_exists($model, 'id_products'));
     }
     
     /**
@@ -75,13 +70,9 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_main, $model->main);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_SET_CURRENCY]);
-        $model->attributes = ['id'=>self::$_id, 'id_products'=>self::$_id, 'categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode, 'search'=>self::$_search];
+        $model->attributes = ['id'=>self::$_id];
         
         $this->assertEquals(self::$_id, $model->id);
-        $this->assertEquals(self::$_id, $model->id_products);
-        $this->assertEquals(self::$_categorySeocode, $model->categories);
-        $this->assertEquals(self::$_subcategorySeocode, $model->subcategory);
-        $this->assertEquals(self::$_search, $model->search);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_ADD]);
         $model->attributes = ['currency'=>self::$_currency, 'exchange_rate'=>self::$_exchange_rate, 'main'=>self::$_main];
@@ -118,7 +109,7 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('exchange_rate', $model->errors));
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_ADD]);
-        $model->attributes = ['currency'=>self::$_currency, 'exchange_rate'=>self::$_exchange_rate, 'main'=>self::$_main];
+        $model->attributes = ['currency'=>self::$_currency, 'exchange_rate'=>self::$_exchange_rate];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
@@ -126,7 +117,7 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_message, $model->errors['currency'][0]);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_ADD]);
-        $model->attributes = ['currency'=>self::$_currency2, 'exchange_rate'=>self::$_exchange_rate, 'main'=>self::$_main];
+        $model->attributes = ['currency'=>self::$_currency2, 'exchange_rate'=>self::$_exchange_rate];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));

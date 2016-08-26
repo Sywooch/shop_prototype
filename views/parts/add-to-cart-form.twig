@@ -2,16 +2,16 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form = active_form_begin({'id':'add-to-cart-form', 'action':url.to({0:'shopping-cart/add-to-cart'}), 'method':'POST'}) %}
-    {{ form.field(productsModelForCart, 'id').hiddenInput({'value':app.request.get('id')}).label(false) | raw }}
-    {{ form.field(productsModelForCart, 'code').hiddenInput({'value':productsModel.code}).label(false) | raw }}
-    {{ form.field(productsModelForCart, 'name').hiddenInput({'value':productsModel.name}).label(false) | raw }}
-    {{ form.field(productsModelForCart, 'description').hiddenInput({'value':productsModel.description}).label(false) | raw }}
-    {{ form.field(productsModelForCart, 'price').hiddenInput({'value':productsModel.price}).label(false) | raw }}
-    {{ form.field(productsModelForCart, 'images').hiddenInput({'value':productsModel.images}).label(false) | raw }}
-    {{ form.field(productsModelForCart, 'colorToCart').dropDownList(array.map(productsModel.colors, 'id', 'color')) | raw }}
-    {{ form.field(productsModelForCart, 'sizeToCart').dropDownList(array.map(productsModel.sizes, 'id', 'size')) | raw }}
-    {{ form.field(productsModelForCart, 'quantity').textInput({'value':1}) | raw }}
-    {{ form.field(productsModelForCart, 'categories').hiddenInput({'value':app.request.get(app.params.categoryKey)}).label(false) | raw }}
-    {{ form.field(productsModelForCart, 'subcategory').hiddenInput({'value':app.request.get(app.params.subCategoryKey)}).label(false) | raw }}
+    {{ form.field(productsForCartModel, 'id').hiddenInput({'value':app.request.get('id')}).label(false) | raw }}
+    {{ form.field(productsForCartModel, 'code').hiddenInput({'value':productsModel.code}).label(false) | raw }}
+    {{ form.field(productsForCartModel, 'name').hiddenInput({'value':productsModel.name}).label(false) | raw }}
+    {{ form.field(productsForCartModel, 'description').hiddenInput({'value':productsModel.description}).label(false) | raw }}
+    {{ form.field(productsForCartModel, 'price').hiddenInput({'value':productsModel.price}).label(false) | raw }}
+    {{ form.field(productsForCartModel, 'images').hiddenInput({'value':productsModel.images}).label(false) | raw }}
+    {{ form.field(productsForCartModel, 'colorToCart').dropDownList(array.map(productsModel.colors, 'id', 'color')) | raw }}
+    {{ form.field(productsForCartModel, 'sizeToCart').dropDownList(array.map(productsModel.sizes, 'id', 'size')) | raw }}
+    {{ form.field(productsForCartModel, 'quantity').textInput({'value':1}) | raw }}
+    {{ form.field(productsForCartModel, 'categories').hiddenInput({'value':app.request.get(app.params.categoryKey)}).label(false) | raw }}
+    {{ form.field(productsForCartModel, 'subcategory').hiddenInput({'value':app.request.get(app.params.subCategoryKey)}).label(false) | raw }}
     <input type="submit" value="To cart" />
 {{ active_form_end() }}

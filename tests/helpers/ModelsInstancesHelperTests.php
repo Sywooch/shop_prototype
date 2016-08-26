@@ -3,19 +3,21 @@
 namespace app\tests\helpers;
 
 use app\tests\DbManager;
-use app\helpers\{ModelsInstancesHelper, 
-    MappersHelper};
-use app\models\{FiltersModel,
-    ProductsModel,
-    UsersModel,
-    CurrencyModel,
-    CommentsModel,
+use app\helpers\{MappersHelper,
+    ModelsInstancesHelper};
+use app\models\{AdminMenuModel,
     BrandsModel,
-    ColorsModel,
-    SizesModel,
-    MailingListModel,
     CategoriesModel,
-    AdminMenuModel};
+    ColorsModel,
+    CommentsModel,
+    CurrencyModel,
+    FiltersModel,
+    MailingListModel,
+    ProductsModel,
+    SearchModel,
+    SizesModel,
+    SubcategoryModel,
+    UsersModel};
 
 /**
  * Тестирует класс app\helpers\ModelsInstancesHelper
@@ -64,24 +66,32 @@ class ModelsInstancesHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         
         $this->assertTrue(array_key_exists('filtersModel', $result));
-        $this->assertTrue(array_key_exists('productsModelForCart', $result));
+        $this->assertTrue(array_key_exists('productsForCartModel', $result));
         $this->assertTrue(array_key_exists('clearCartModel', $result));
-        $this->assertTrue(array_key_exists('usersModelForLogout', $result));
+        $this->assertTrue(array_key_exists('usersForLogoutModel', $result));
         $this->assertTrue(array_key_exists('currencyModel', $result));
-        $this->assertTrue(array_key_exists('mailingListModelForMailingForm', $result));
+        $this->assertTrue(array_key_exists('mailingListForMailingFormModel', $result));
         $this->assertTrue(array_key_exists('categoriesList', $result));
         $this->assertTrue(array_key_exists('currencyList', $result));
         $this->assertTrue(array_key_exists('adminMenuList', $result));
+        $this->assertTrue(array_key_exists('categoriesForCurrencyModel', $result));
+        $this->assertTrue(array_key_exists('subcategoryForCurrencyModel', $result));
+        $this->assertTrue(array_key_exists('productsForCurrencyModel', $result));
+        $this->assertTrue(array_key_exists('searchForCurrencyModel', $result));
         
         $this->assertTrue($result['filtersModel'] instanceof FiltersModel);
-        $this->assertTrue($result['productsModelForCart'] instanceof ProductsModel);
+        $this->assertTrue($result['productsForCartModel'] instanceof ProductsModel);
         $this->assertTrue($result['clearCartModel'] instanceof ProductsModel);
-        $this->assertTrue($result['usersModelForLogout'] instanceof UsersModel);
+        $this->assertTrue($result['usersForLogoutModel'] instanceof UsersModel);
         $this->assertTrue($result['currencyModel'] instanceof CurrencyModel);
-        $this->assertTrue($result['mailingListModelForMailingForm'] instanceof MailingListModel);
+        $this->assertTrue($result['mailingListForMailingFormModel'] instanceof MailingListModel);
         $this->assertTrue($result['categoriesList'][0] instanceof CategoriesModel);
         $this->assertTrue($result['currencyList'][0] instanceof CurrencyModel);
         $this->assertTrue($result['adminMenuList'][0] instanceof AdminMenuModel);
+        $this->assertTrue($result['categoriesForCurrencyModel'] instanceof CategoriesModel);
+        $this->assertTrue($result['subcategoryForCurrencyModel'] instanceof SubcategoryModel);
+        $this->assertTrue($result['productsForCurrencyModel'] instanceof ProductsModel);
+        $this->assertTrue($result['searchForCurrencyModel'] instanceof SearchModel);
     }
     
     public static function tearDownAfterClass()

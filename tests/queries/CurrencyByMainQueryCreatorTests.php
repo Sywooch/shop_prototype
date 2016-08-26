@@ -23,7 +23,7 @@ class CurrencyByMainQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new CurrencyByMainQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[currency.id]],[[currency.currency]],[[currency.exchange_rate]],[[currency.main]] FROM {{currency}} WHERE [[currency.main]]!=:main';
+        $query = 'SELECT [[currency.id]],[[currency.currency]],[[currency.exchange_rate]],[[currency.main]] FROM {{currency}} WHERE [[currency.main]]=:main';
         
         $this->assertEquals($query, $mockObject->query);
     }

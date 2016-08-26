@@ -38,7 +38,7 @@
     {% include '@app/views/parts/related-products.twig' %}
 {% endif %}
 
-{% include '@app/views/parts/currency.twig' %}
+{% include '@app/views/parts/set-currency-form.twig' %}
 
 {% if productsModel.comments and productsModel.comments[0].active%}
     {% include '@app/views/product-detail/comments.twig' %}

@@ -31,7 +31,7 @@ class CurrencyByMainQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhereNotEqual(
+            $where = $this->getWhere(
                 $this->config['currency']['tableName'],
                 $this->config['currency']['tableFieldWhere'],
                 $this->config['currency']['tableFieldWhere']

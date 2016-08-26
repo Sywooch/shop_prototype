@@ -408,11 +408,11 @@ class MappersHelper
     public static function setCurrencyUpdateMainNull()
     {
         try {
-            $currencyInsertMapper = new CurrencyUpdateMainNullMapper([
+            $currencyUpdateMainNullMapper = new CurrencyUpdateMainNullMapper([
                 'tableName'=>'currency',
                 'fields'=>['main'],
             ]);
-            if (!$result = $currencyInsertMapper->setGroup()) {
+            if (!$result = $currencyUpdateMainNullMapper->setGroup()) {
                 return null;
             }
             return $result;

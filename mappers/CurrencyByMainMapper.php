@@ -26,7 +26,7 @@ class CurrencyByMainMapper extends AbstractGetMapper
             parent::init();
             
             if (empty($this->params)) {
-                $this->params = [':main'=>0];
+                $this->params = [':main'=>1];
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

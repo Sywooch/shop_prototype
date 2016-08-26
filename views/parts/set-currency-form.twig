@@ -1,0 +1,13 @@
+
+<p><strong>Currency</strong></p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'id':'set-currency-form', 'action':url.to({0:'currency/set-currency'}), 'method':'POST'}) %}
+    {{ form.field(currencyModel, 'id').dropDownList(array.map(currencyList, 'id', 'currency')) | raw }}
+    {{ form.field(productsForCurrencyModel, 'id').hiddenInput({'value':app.request.get(app.params.idKey)}).label(false) | raw }}
+    {{ form.field(categoriesForCurrencyModel, 'seocode').hiddenInput({'value':app.request.get(app.params.categoryKey)}).label(false) | raw }}
+    {{ form.field(subcategoryForCurrencyModel, 'seocode').hiddenInput({'value':app.request.get(app.params.subCategoryKey)}).label(false) | raw }}
+    {{ form.field(searchForCurrencyModel, 'search').hiddenInput({'value':app.request.get(app.params.searchKey)}).label(false) | raw }}
+    <input type="submit" value="Change currency">
+{{ active_form_end() }}

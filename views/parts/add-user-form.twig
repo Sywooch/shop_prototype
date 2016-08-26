@@ -5,6 +5,6 @@
     {{ form.field(emailsModel, 'email') | raw }}
     {{ form.field(usersModel, 'rawPassword').passwordInput() | raw }}
     <p>Хотите первыми узнавать о новых товарах, скидках и получать специальные предложения? Отмечайте понравившиеся рассылки!</p>
-    {{ form.field(mailingListModelForMailingForm, 'idFromForm').checkboxList(array.map(mailingListModelForMailingForm.allMailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}<br>
+    {{ form.field(mailingListForMailingFormModel, 'idFromForm').checkboxList(array.map(mailingListForMailingFormModel.allMailingList, 'id', 'name'), {'multiple':true}).label(false) | raw }}<br>
     <input type="submit" value="Join" />
 {{ active_form_end() }}
