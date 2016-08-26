@@ -1261,24 +1261,23 @@ class AdminController extends AbstractBaseController
     public function actionShowAddCurrency()
     {
         try {
-            $currencyModelForAdd = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_ADD]);
+            $currencyForAddModel = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_ADD]);
             
-            if (\Yii::$app->request->isPost && $currencyModelForAdd->load(\Yii::$app->request->post())) {
-                if ($currencyModelForAdd->validate()) {
+            if (\Yii::$app->request->isPost && $currencyForAddModel->load(\Yii::$app->request->post())) {
+                if ($currencyForAddModel->validate()) {
                     
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
                     try {
-                        if (!empty($currencyModelForAdd->main)) {
+                        if (!empty($currencyForAddModel->main)) {
                             if (MappersHelper::getCurrencyByMain()) {
                                 if (!MappersHelper::setCurrencyUpdateMainNull()) {
                                     throw new ErrorException('Ошибка при обнулении!');
                                 }
                             }
-                            $currencyModelForAdd->exchange_rate = 1;
+                            $currencyForAddModel->exchange_rate = 1;
                         }
-                        
-                        if (!MappersHelper::setCurrencyInsert([$currencyModelForAdd])) {
+                        if (!MappersHelper::setCurrencyInsert([$currencyForAddModel])) {
                             throw new ErrorException('Ошибка при сохранении размера!');
                         }
                     } catch(\Exception $e) {
@@ -1291,9 +1290,69 @@ class AdminController extends AbstractBaseController
             }
             
             $renderArray = array();
-            $renderArray['currencyModelForAdd'] = $currencyModelForAdd;
+            $renderArray['currencyForAddModel'] = $currencyForAddModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-currency.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет обновлением валют
+     */
+    public function actionUpdateCurrency()
+    {
+        try {
+            $currencyForUpdateModel = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_UPDATE]);
+            
+            if (\Yii::$app->request->isPost && $currencyForUpdateModel->load(\Yii::$app->request->post())) {
+                if ($currencyForUpdateModel->validate()) {
+                    
+                    if (array_diff_assoc($currencyForUpdateModel->attributes, MappersHelper::getCurrencyById($currencyForUpdateModel)->attributes)) {
+                        
+                        $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                        
+                        try {
+                            if (!empty($currencyForUpdateModel->main)) {
+                                if (MappersHelper::getCurrencyByMain()) {
+                                    if (!MappersHelper::setCurrencyUpdateMainNull()) {
+                                        throw new ErrorException('Ошибка при обнулении!');
+                                    }
+                                }
+                                $currencyForUpdateModel->exchange_rate = 1;
+                            }
+                            if (!MappersHelper::setCurrencyUpdate([$currencyForUpdateModel])) {
+                                throw new ErrorException('Ошибка при обновлении бренда!');
+                            }
+                        } catch(\Exception $e) {
+                            $transaction->rollBack();
+                            throw $e;
+                        }
+                        
+                        $transaction->commit();
+                    }
+                    
+                    return $this->redirect(Url::to(['admin/show-add-currency']));
+                }
+            } else {
+                if (empty(\Yii::$app->params['idKey'])) {
+                    throw new ErrorException('Не поределен idKey!');
+                }
+                if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+                    throw new ErrorException('Ошибка при получении ID!');
+                }
+                if (empty($currentCurrency = MappersHelper::getCurrencyById(new CurrencyModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                    return $this->redirect(Url::to(['admin/show-add-currency']));
+                }
+                \Yii::configure($currencyForUpdateModel, $currentCurrency->attributes);
+            }
+            
+            $renderArray = array();
+            $renderArray['currencyForUpdateModel'] = $currencyForUpdateModel;
+            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            return $this->render('update-currency.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

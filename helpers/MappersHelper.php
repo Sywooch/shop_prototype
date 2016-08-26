@@ -43,6 +43,7 @@ use app\mappers\{AddressByAddressMapper,
     CurrencyByMainMapper,
     CurrencyInsertMapper,
     CurrencyMapper,
+    CurrencyUpdateMapper,
     CurrencyUpdateMainNullMapper,
     DeliveriesByIdMapper,
     DeliveriesMapper,
@@ -393,6 +394,32 @@ class MappersHelper
                 'objectsArray'=>$currencyModelArray,
             ]);
             if (!$result = $currencyInsertMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет записи CurrencyModel в БД
+     * @param array $currencyModelArray массив объектов CurrencyModel
+     * @return int
+     */
+    public static function setCurrencyUpdate(Array $currencyModelArray)
+    {
+        try {
+            if (!is_array($currencyModelArray) || empty($currencyModelArray) || !$currencyModelArray[0] instanceof CurrencyModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            $currencyUpdateMapper = new CurrencyUpdateMapper([
+                'tableName'=>'currency',
+                'fields'=>['id', 'currency', 'exchange_rate', 'main'],
+                'objectsArray'=>$currencyModelArray
+            ]);
+            $result = $currencyUpdateMapper->setGroup();
+            if (!$result) {
                 return null;
             }
             return $result;

@@ -15,12 +15,11 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
     private static $_reflectionClass;
     private static $_id = 1;
     private static $_currency = 'EUR';
-    private static $_currency2 = 'UAH';
+    private static $_currencyFresh = 'UAH';
+    private static $_currency2 = 'USD';
     private static $_exchange_rate = '12.5698';
     private static $_main = true;
-    private static $_categorySeocode = 'mensfootwear';
-    private static $_subcategorySeocode = 'boots';
-    private static $_search = 'пиджак';
+    private static $_mainFalse = false;
     private static $_message = 'Валюта с таким именем уже добавлена!';
     
     public static function setUpBeforeClass()
@@ -32,6 +31,10 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
         $command->bindValues([':id'=>self::$_id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
+        $command->bindValues([':id'=>self::$_id + 1, ':currency'=>self::$_currency2, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_mainFalse]);
         $command->execute();
         
         if (!empty(MappersHelper::getObjectRegistry())) {
@@ -49,6 +52,8 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_SET_CURRENCY'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_ADD'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_UPDATE'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FOR_DELETE'));
         
         $this->assertTrue(property_exists($model, 'id'));
         $this->assertTrue(property_exists($model, 'currency'));
@@ -80,6 +85,19 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_currency, $model->currency);
         $this->assertEquals(self::$_exchange_rate, $model->exchange_rate);
         $this->assertEquals(self::$_main, $model->main);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_UPDATE]);
+        $model->attributes = ['id'=>self::$_id, 'currency'=>self::$_currency, 'exchange_rate'=>self::$_exchange_rate, 'main'=>self::$_main];
+        
+        $this->assertEquals(self::$_id, $model->id);
+        $this->assertEquals(self::$_currency, $model->currency);
+        $this->assertEquals(self::$_exchange_rate, $model->exchange_rate);
+        $this->assertEquals(self::$_main, $model->main);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_DELETE]);
+        $model->attributes = ['id'=>self::$_id];
+        
+        $this->assertEquals(self::$_id, $model->id);
     }
     
     /**
@@ -117,7 +135,43 @@ class CurrencyModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_message, $model->errors['currency'][0]);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_ADD]);
-        $model->attributes = ['currency'=>self::$_currency2, 'exchange_rate'=>self::$_exchange_rate];
+        $model->attributes = ['currency'=>self::$_currencyFresh, 'exchange_rate'=>self::$_exchange_rate];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_UPDATE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(3, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        $this->assertTrue(array_key_exists('currency', $model->errors));
+        $this->assertTrue(array_key_exists('exchange_rate', $model->errors));
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_UPDATE]);
+        $model->attributes = ['id'=>self::$_id, 'currency'=>self::$_currency2, 'exchange_rate'=>self::$_exchange_rate, 'main'=>self::$_main];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('currency', $model->errors));
+        $this->assertEquals(self::$_message, $model->errors['currency'][0]);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_UPDATE]);
+        $model->attributes = ['id'=>self::$_id, 'currency'=>self::$_currencyFresh, 'exchange_rate'=>self::$_exchange_rate, 'main'=>self::$_main];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_DELETE]);
+        $model->attributes = ['id'=>self::$_id];
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));

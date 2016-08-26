@@ -4,8 +4,8 @@
 <p><strong>Добавить валюту</strong></p>
 
 {% set form=active_form_begin({'id':'show-add-currency-form', 'action':url.to({0:'admin/show-add-currency'}), 'method':'POST'}) %}
-    {{ form.field(currencyModelForAdd, 'currency') | raw }}
-    {{ form.field(currencyModelForAdd, 'exchange_rate').input('number', {'step':'any'}) | raw }}
-    {{ form.field(currencyModelForAdd, 'main').checkbox() | raw }}
+    {{ form.field(currencyForAddModel, 'currency') | raw }}
+    {{ form.field(currencyForAddModel, 'exchange_rate').input('number', {'step':'any'}) | raw }}
+    {{ form.field(currencyForAddModel, 'main').checkbox() | raw }}
     <input type="submit" value="Create" />
 {{ active_form_end() }}

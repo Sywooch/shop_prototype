@@ -136,6 +136,7 @@ $config = [
                 'admin/update-comments/<id:\d+>'=>'admin/update-comments',
                 'admin/delete-comments'=>'admin/delete-comments',
                 'admin/show-currency'=>'admin/show-add-currency',
+                'admin/update-currency/<id:\d+>'=>'admin/update-currency',
                 'admin/data-convert'=>'admin/data-convert',
                 'admin/download-products'=>'admin/download-products',
                 'get-subcategory-ajax'=>'categories/get-subcategory-ajax',

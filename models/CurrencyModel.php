@@ -23,6 +23,14 @@ class CurrencyModel extends AbstractBaseModel
      * Сценарий загрузки данных из формы добавления CurrencyModel в БД
     */
     const GET_FOR_ADD = 'getForAdd';
+    /**
+     * Сценарий загрузки данных из формы обновления CurrencyModel в БД
+    */
+    const GET_FOR_UPDATE = 'getForUpdate';
+    /**
+     * Сценарий загрузки данных из формы для удаления CurrencyModel из БД
+    */
+    const GET_FOR_DELETE = 'getForDelete';
     
     public $id;
     public $currency;
@@ -35,6 +43,8 @@ class CurrencyModel extends AbstractBaseModel
             self::GET_FROM_DB=>['id', 'currency', 'exchange_rate', 'main'],
             self::GET_FOR_SET_CURRENCY=>['id'],
             self::GET_FOR_ADD=>['currency', 'exchange_rate', 'main'],
+            self::GET_FOR_UPDATE=>['id', 'currency', 'exchange_rate', 'main'],
+            self::GET_FOR_DELETE=>['id'],
         ];
     }
     
@@ -43,8 +53,13 @@ class CurrencyModel extends AbstractBaseModel
         return [
             [['id'], 'required', 'on'=>self::GET_FOR_SET_CURRENCY],
             [['currency', 'exchange_rate'], 'required', 'on'=>self::GET_FOR_ADD],
-            [['currency'], 'app\validators\CurrencyTruncValidator', 'on'=>self::GET_FOR_ADD],
+            [['id', 'currency', 'exchange_rate'], 'required', 'on'=>self::GET_FOR_UPDATE],
+            [['id'], 'required', 'on'=>self::GET_FOR_DELETE],
+            [['currency'], 'app\validators\CurrencyTruncValidator'],
             [['currency'], 'app\validators\CurrencyCurrencyExistsValidator', 'on'=>self::GET_FOR_ADD],
+            [['currency'], 'app\validators\CurrencyCurrencyExistsValidator', 'on'=>self::GET_FOR_UPDATE, 'when'=>function($model) {
+                return $model->currency != MappersHelper::getCurrencyById($model)->currency;
+            }],
             [['currency'], 'app\validators\StripTagsValidator'],
         ];
     }

@@ -59,6 +59,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     private static $_rule = 'rule';
     private static $_email = 'some@some.com';
     private static $_currency = 'EUR';
+    private static $_currency2 = 'USD';
     private static $_exchange_rate = '12.456';
     private static $_main = '1';
     private static $_text = 'Some Text';
@@ -2384,6 +2385,40 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($result));
         
         $this->assertFalse((bool) $result['main']);
+    }
+    
+    /**
+     * Тестирует метод MappersHelper::setCurrencyUpdate
+     */
+    public function testSetCurrencyUpdate()
+    {
+        if (empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{currency}} LIMIT 1')->queryScalar())) {
+            $id = self::$_id;
+            $command = \Yii::$app->db->createCommand('INSERT INTO {{currency}} SET [[id]]=:id, [[currency]]=:currency, [[exchange_rate]]=:exchange_rate, [[main]]=:main');
+            $command->bindValues([':id'=>$id, ':currency'=>self::$_currency, ':exchange_rate'=>self::$_exchange_rate, ':main'=>self::$_main]);
+            $command->execute();
+        }
+        
+        $currencyModel = new CurrencyModel();
+        $currencyModel->id = $id;
+        $currencyModel->currency = self::$_currency2;
+        $currencyModel->exchange_rate = self::$_exchange_rate + 24;
+        $currencyModel->main = self::$_main * 0;
+        
+        $result = MappersHelper::setCurrencyUpdate([$currencyModel]);
+        
+        $this->assertEquals(2, $result);
+        
+        $command = \Yii::$app->db->createCommand('SELECT * FROM {{currency}} WHERE [[id]]=:id');
+        $command->bindValue(':id', $id);
+        $result = $command->queryOne();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertEquals($id, $result['id']);
+        $this->assertEquals(self::$_currency2, $result['currency']);
+        $this->assertEquals(self::$_exchange_rate + 24, $result['exchange_rate']);
+        $this->assertEquals(self::$_main * 0, $result['main']);
     }
     
     /**
