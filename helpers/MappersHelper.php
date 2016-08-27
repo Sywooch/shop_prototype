@@ -41,6 +41,7 @@ use app\mappers\{AddressByAddressMapper,
     CurrencyByCurrencyMapper,
     CurrencyByIdMapper,
     CurrencyByMainMapper,
+    CurrencyDeleteMapper,
     CurrencyInsertMapper,
     CurrencyMapper,
     CurrencyUpdateMapper,
@@ -440,6 +441,33 @@ class MappersHelper
                 'fields'=>['main'],
             ]);
             if (!$result = $currencyUpdateMainNullMapper->setGroup()) {
+                return null;
+            }
+            return $result;
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет записи CurrencyModel из БД
+     * @param array $currencyModelArray массив CurrencyModel
+     * @return int
+     */
+    public static function setCurrencyDelete(Array $currencyModelArray)
+    {
+        try {
+            if (empty($currencyModelArray)) {
+                throw new ErrorException('Неверный формат данных!');
+            }
+            if (!$currencyModelArray[0] instanceof CurrencyModel) {
+                throw new ErrorException('Неверный тип данных!');
+            }
+            $currencyDeleteMapper = new CurrencyDeleteMapper([
+                'tableName'=>'currency',
+                'objectsArray'=>$currencyModelArray,
+            ]);
+            if (!$result = $currencyDeleteMapper->setGroup()) {
                 return null;
             }
             return $result;

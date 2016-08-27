@@ -4,27 +4,27 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use yii\db\Transaction;
-use yii\web\{UploadedFile,
-    Response};
+use yii\web\{Response,
+    UploadedFile};
 use yii\helpers\{Url,
     ArrayHelper};
 use app\controllers\AbstractBaseController;
-use app\helpers\{MappersHelper, 
-    ModelsInstancesHelper, 
-    PicturesHelper,
-    CSVHelper,
-    FiltersHelper};
-use app\models\{ProductsModel, 
-    CategoriesModel, 
+use app\helpers\{CSVHelper,
+    FiltersHelper,
+    MappersHelper,
+    ModelsInstancesHelper,
+    PicturesHelper};
+use app\models\{BrandsModel,
+    CategoriesModel,
+    ColorsModel,
     CommentsModel,
     CurrencyModel,
-    SubcategoryModel,
-    BrandsModel, 
-    ColorsModel, 
-    SizesModel,
     ProductsBrandsModel,
     ProductsColorsModel,
-    ProductsSizesModel};
+    ProductsModel,
+    ProductsSizesModel,
+    SizesModel,
+    SubcategoryMode};
 
 /**
  * Управляет административными функциями
@@ -1353,6 +1353,39 @@ class AdminController extends AbstractBaseController
             $renderArray['currencyForUpdateModel'] = $currencyForUpdateModel;
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('update-currency.twig', $renderArray);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет удалением товара
+     */
+    public function actionDeleteCurrency()
+    {
+        try {
+            $currencyModel = new CurrencyModel(['scenario'=>CurrencyModel::GET_FOR_DELETE]);
+            
+            if (\Yii::$app->request->isPost && $currencyModel->load(\Yii::$app->request->post())) {
+                if ($currencyModel->validate()) {
+                    
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
+                    try {
+                        if (!MappersHelper::setCurrencyDelete([$currencyModel])) {
+                            throw new ErrorException('Ошибка при удалении валюты!');
+                        }
+                    } catch(\Exception $e) {
+                        $transaction->rollBack();
+                        throw $e;
+                    }
+                    
+                    $transaction->commit();
+                }
+            }
+            
+            return $this->redirect(Url::to(['admin/show-currency']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

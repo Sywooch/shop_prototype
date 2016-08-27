@@ -58,89 +58,7 @@ $config = [
             'enablePrettyUrl'=>true,
             'showScriptName'=>false,
             'enableStrictParsing' => false,
-            'rules'=>[
-                # Вывод товаров
-                'products/<categories>/<subcategory>/<id:\d+>'=>'product-detail/index',
-                'products/<categories>/<subcategory>'=>'products-list/index',
-                'products/<categories>'=>'products-list/index',
-                'products'=>'products-list/index',
-                
-                # Фильтры
-                'add-filters'=>'filter/add-filters',
-                'add-filters-admin'=>'filter/add-filters-admin',
-                'add-filters-admin-categories'=>'filter/add-filters-admin-categories',
-                'add-filters-admin-subcategory'=>'filter/add-filters-admin-subcategory',
-                'add-filters-admin-comments'=>'filter/add-filters-admin-comments',
-                'clean-filters-admin-comments'=>'filter/clean-filters-admin-comments',
-                'clean-filters'=>'filter/clean-filters',
-                'clean-filters-admin'=>'filter/clean-filters-admin',
-                'clean-filters-admin-categories'=>'filter/clean-filters-admin-categories',
-                'clean-filters-admin-subcategory'=>'filter/clean-filters-admin-subcategory',
-                'currency-filter'=>'currency/set-currency',
-                
-                # Поиск
-                'search'=>'products-list/search',
-                
-                # Пользователь
-                'join'=>'users/add-user',
-                'login'=>'users/login-user',
-                'logout'=>'users/logout-user',
-                'account'=>'users/show-user-account',
-                'update-user'=>'users/update-user',
-                
-                # Комментарии
-                'add-comment'=>'comments/add-comment',
-                
-                # Корзина
-                'add-to-cart'=>'shopping-cart/add-to-cart',
-                'clear-cart'=>'shopping-cart/clear-cart',
-                'remove-product'=>'shopping-cart/remove-product',
-                'update-product'=>'shopping-cart/update-product',
-                'shopping-cart'=>'shopping-cart/index',
-                'shopping-cart-checkout'=>'shopping-cart/address-contacts',
-                'shopping-cart-check-pay'=>'shopping-cart/check-pay',
-                'shopping-cart-pay'=>'shopping-cart/pay',
-                
-                # Подписки
-                'subscribe'=>'newsletter/subscribe',
-                'subscribe-ok'=>'newsletter/subscribe-ok',
-                'subscription-exists'=>'newsletter/subscription-exists',
-                'unsubscribe/<email>/<hash>'=>'newsletter/unsubscribe',
-                'unsubscribe-ok'=>'newsletter/unsubscribe-ok',
-                
-                # Администрирование
-                'admin'=>'admin/index',
-                'admin/show-products'=>'admin/show-products',
-                'admin/show-products/<id:\d+>'=>'admin/show-products-detail',
-                'admin/add-products'=>'admin/add-products',
-                'admin/update-products-cut'=>'admin/update-products-cut',
-                'admin/update-products'=>'admin/update-products',
-                'admin/delete-products'=>'admin/delete-products',
-                'admin/show-categories'=>'admin/show-add-categories',
-                'admin/update-categories/<id:\d+>'=>'admin/update-categories',
-                'admin/delete-categories/<id:\d+>'=>'admin/delete-categories',
-                'admin/show-subcategory'=>'admin/show-add-subcategory',
-                'admin/update-subcategory/<id:\d+>'=>'admin/update-subcategory',
-                'admin/delete-subcategory/<id:\d+>'=>'admin/delete-subcategory',
-                'admin/show-brands'=>'admin/show-add-brands',
-                'admin/update-brands/<id:\d+>'=>'admin/update-brands',
-                'admin/delete-brands/<id:\d+>'=>'admin/delete-brands',
-                'admin/show-colors'=>'admin/show-add-colors',
-                'admin/update-colors/<id:\d+>'=>'admin/update-colors',
-                'admin/delete-colors/<id:\d+>'=>'admin/delete-colors',
-                'admin/show-sizes'=>'admin/show-add-sizes',
-                'admin/update-sizes/<id:\d+>'=>'admin/update-sizes',
-                'admin/delete-sizes/<id:\d+>'=>'admin/delete-sizes',
-                'admin/show-comments'=>'admin/show-comments',
-                'admin/update-comments-cut'=>'admin/update-comments-cut',
-                'admin/update-comments/<id:\d+>'=>'admin/update-comments',
-                'admin/delete-comments'=>'admin/delete-comments',
-                'admin/show-currency'=>'admin/show-add-currency',
-                'admin/update-currency/<id:\d+>'=>'admin/update-currency',
-                'admin/data-convert'=>'admin/data-convert',
-                'admin/download-products'=>'admin/download-products',
-                'get-subcategory-ajax'=>'categories/get-subcategory-ajax',
-            ],
+            'rules'=>require(__DIR__ . '/routes.php'),
         ],
         'cart'=>[
             'class'=>'app\cart\ShoppingCart',
@@ -172,57 +90,7 @@ $config = [
     'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],
     'as usersFilter'=>['class'=>'app\filters\UsersFilter'],
     
-    'params'=>[
-        # Вывод записей на страницу
-        'limit'=>20, # Кол-во записей на страницу
-        'pagePointer'=>'page', # Ключ, по которому в $_REQUEST доступен номер текущей страницы
-        
-        # Фильтры
-        'filterKeys'=>['colors', 'sizes', 'brands'], # Ключи, по которым в $_REQUEST доступны значения выбранных фильтров
-        'filtersKeyInSession'=>'filters', # Ключ, по которому в $_SESSION доступена переменная, хранящая выбранные фильтры
-        
-        # Sphynx
-        'sphynxKey'=>'sphynxquery', # Ключ для подстановки значения в подготовленный запрос к поисковой машине Sphynx
-        
-        # Путь к товару
-        'categoryKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
-        'subCategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории
-        'idKey'=>'id', # Ключ, по которому в $_REQUEST доступно значение id продукта
-        
-        # Поиск по товарам
-        'searchKey'=>'search', # Ключ, по которому в $_REQUEST доступно значение для поиска
-        
-        # Сортировка данных СУБД
-        'defaultOrderByType'=>'DESC', # Порядок сортировки для БД по умолчанию
-        
-        # Отладка
-        'fixSentRequests'=>0, #Количество запросов к БД при выполнении скрипта
-        
-        # Корзина
-        'cartKeyInSession'=>'cart', # Ключ, по которому в $_SESSION доступена переменная, хранящая купленные товары
-        
-        # Пользователи
-        'defaultRulesId'=>[1, 4], # ID прав доступа по-умолчанию, назначаемые при регистрации
-        'userFromFormForAuthentication'=>null, # Объект пользователя в процессе аутентификации
-        'usersKeyInSession'=>'user', # Ключ, по которому в $_SESSION доступена переменная, пользователя
-        'nonAuthenticatedUserLogin'=>'Guest', # логин не аутентифицированного пользователя, доступный в \Yii::$app->shopUser по умолчанию
-        
-        # Статусы обработки заказа
-        'deliveryStatusesArray'=>['shipped'=>'Отправлен покупателю', 'canceled'=>'Отменен', 'processed'=>'Выполняется', 'received'=>'Принят'],
-        
-        # Изображения
-        'maxWidth'=>1000, # максимально допустимая ширина сохраняемого изображения
-        'maxHeight'=>700, # максимально допустимая высота сохраняемого изображения
-        'maxThumbnailWidth'=>500, # максимально допустимая ширина сохраняемого эскиза изображения
-        'maxThumbnailHeight'=>500, # максимально допустимая высота сохраняемого эскиза изображения
-        'adminWidth'=>120, # ширина изображения на странице редактирования раздела администрирования
-        'thumbnailsPrefix'=>'thumbn_', # префикс эскизов изображений
-        'thumbnails'=>'thumbnails', # ключ по которому доступен массив эскизов изображений, в массиве, возвращаемом app\helpers\PicturesHelper
-        'fullpath'=>'fullpath', # ключ по которому доступен массив полноразмерных изображений, в массиве, возвращаемом app\helpers\PicturesHelper
-        
-        # Хэш
-        'hashSalt'=>'gh7Ujdf', # строка данных, которая передаётся хеш-функции чтобы увеличить сложность взлома
-    ],
+    'params'=>require(__DIR__ . '/params.php'),
 ];
 
 if (YII_DEBUG) {

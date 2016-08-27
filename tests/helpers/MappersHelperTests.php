@@ -2422,6 +2422,22 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
+     * Тестирует метод MappersHelper::setCurrencyDelete
+     */
+    public function testSetCurrencyDelete()
+    {
+        $this->assertFalse(empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{currency}} LIMIT 1')->queryScalar()));
+        
+        $model = new CurrencyModel();
+        $model->id = $id;
+        
+        $result = MappersHelper::setCurrencyDelete([$model]);
+        
+        $this->assertEquals(1, $result);
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{currency}}')->queryAll()));
+    }
+    
+    /**
      * Тестирует метод MappersHelper::getObjectRegistry
      */
     public function testGetObjectRegistry()

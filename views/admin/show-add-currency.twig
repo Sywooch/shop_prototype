@@ -18,7 +18,10 @@
                 {{ currencyModel.exchange_rate }}<br>
                 {% if currencyModel.main %}Основная по умолчанию<br>{% endif %}
                 <a href="{{ url.to({0:'admin/update-currency', 'id':currencyModel.id}) }}">Обновить валюту</a><br>
-                <a href="{{ url.to({0:'admin/delete-currency', 'id':currencyModel.id}) }}">Удалить валюту</a><br>
+                {% set form=active_form_begin({'id':'delete-currency-form', 'action':url.to({0:'admin/delete-currency'}), 'method':'POST'}) %}
+                    {{ form.field(currencyModel, 'id').hiddenInput().label(false) | raw }}
+                    <input type="submit" value="Удалить"/>
+                {{ active_form_end() }}
             </li>
         {% endfor %}
     </ul>
