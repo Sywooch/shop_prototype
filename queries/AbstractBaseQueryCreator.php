@@ -4,6 +4,7 @@ namespace app\queries;
 
 use yii\base\{Object,
     ErrorException};
+use yii\db\Query;
 use app\mappers\AbstractBaseMapper;
 use app\traits\ExceptionsTrait;
 use app\interfaces\VisitorInterface;
@@ -20,6 +21,20 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
      * запрос сохраняется в свойство $query этого объекта
      */
     protected $_mapperObject;
+    /**
+     * @var object экземпляр yii\db\Query для построения запроса
+     */
+    protected $_query;
+    
+    public function init()
+    {
+        try {
+            parent::init();
+            $this->_query = new Query();
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
     
     /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве, реализуя VisitorInterface
@@ -31,11 +46,67 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
     {
         try {
             $this->_mapperObject = $object;
+            
+            if (!$this->addTableName()) {
+                throw new ErrorException('Ошибка при добавлении имени таблицы к полям!');
+            }
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Добавляет имя таблицы к имени поля
+     * @return string
+     */
+    protected function addTableName()
+    {
+        try {
+            if (empty($this->_mapperObject->fields)) {
+                throw new ErrorException('Не заданы поля!');
+            }
+            if (empty($this->_mapperObject->tableName)) {
+                throw new ErrorException('Не задано имя таблицы!');
+            }
+            
+            $this->_mapperObject->fields = array_map(function($value) {
+                return $this->_mapperObject->tableName . '.' . $value;
+            }, $this->_mapperObject->fields);
+            
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     /**
      * Формирует часть запроса к БД, перечисляющую столбцы данных, которые необходимо включить в выборку
@@ -109,7 +180,7 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
      * Формирует часть запроса к БД, указывающую из какой таблицы берутся данные
      * @return string
      */
-    protected function addTableName()
+    /*protected function addTableName()
     {
         try {
             if (empty($this->_mapperObject->tableName)) {
@@ -119,7 +190,7 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Формирует часть запроса к БД для INSERT, указывающую из какой таблицы берутся данные

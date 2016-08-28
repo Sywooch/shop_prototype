@@ -36,22 +36,32 @@ abstract class AbstractInsertQueryCreator extends AbstractBaseQueryCreator
     public function getInsertQuery()
     {
         try {
-            $this->_mapperObject->query = 'INSERT INTO';
-            $name = $this->addTableNameToInsert();
-            if (!is_string($name)) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (empty($this->_mapperObject->tableName)) {
+                throw new ErrorException('Не задано имя таблицы!');
             }
-            $this->_mapperObject->query .= $name;
-            $fields = $this->addFieldsToInsert();
-            if (!is_string($fields)) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (empty($this->_mapperObject->fields)) {
+                throw new ErrorException('Не заданы поля!');
             }
-            $this->_mapperObject->query .= $fields;
-            $values = $this->addGroupValuesToInsert();
-            if (!is_string($values)) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (empty($this->_mapperObject->objectsArray)) {
+                throw new ErrorException('Не задан массив объектов!');
             }
-            $this->_mapperObject->query .= $values;
+            
+            foreach ($this->_mapperObject->objectsArray as $object) {
+                $dataArray = array();
+                foreach ($this->_mapperObject->fields as $field) {
+                    $dataArray[] = $object->$field;
+                }
+                $this->_mapperObject->params[] = $dataArray;
+            }
+            
+            $query = \Yii::$app->db->createCommand()->batchInsert(
+                $this->_mapperObject->tableName, 
+                $this->_mapperObject->fields, 
+                $this->_mapperObject->params
+            );
+            
+            $this->_mapperObject->query = $query->getRawSql();
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

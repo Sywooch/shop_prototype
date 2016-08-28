@@ -69,9 +69,6 @@ abstract class AbstractInsertMapper extends AbstractBaseMapper
             }
             
             $command = \Yii::$app->db->createCommand($this->query);
-            if (!empty($this->params)) {
-                $command->bindValues($this->params);
-            }
             $result = $command->execute();
             if (YII_DEBUG) {
                 $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД

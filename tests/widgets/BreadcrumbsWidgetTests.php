@@ -40,7 +40,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
             MappersHelper::cleanProperties();
         }
         
-        self::$_categoriesList = MappersHelper::getCategoriesList();
+        self::$_categoriesList = MappersHelper::getCategories();
     }
     
     /**

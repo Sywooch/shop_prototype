@@ -356,7 +356,7 @@ class ProductsModel extends AbstractBaseModel
         try {
             if (is_null($this->_categories)) {
                 if (!empty($this->id_categories)) {
-                    $categoriesModel = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>$this->id_categories]));
+                    $categoriesModel = MappersHelper::getCategoriesById(['model'=>new CategoriesModel(['id'=>$this->id_categories])]);
                     if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
                         return null;
                     }
@@ -397,7 +397,7 @@ class ProductsModel extends AbstractBaseModel
         try {
             if (is_null($this->_categoriesObject)) {
                 if (!empty($this->id_categories)) {
-                    $categoriesModel = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>$this->id_categories]));
+                    $categoriesModel = MappersHelper::getCategoriesById(['model'=>new CategoriesModel(['id'=>$this->id_categories])]);
                     if (!is_object($categoriesModel) || !$categoriesModel instanceof CategoriesModel) {
                         return null;
                     }

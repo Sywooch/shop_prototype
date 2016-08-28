@@ -81,7 +81,7 @@ class SubcategoryModel extends AbstractBaseModel
         try {
             if (is_null($this->_categories)) {
                 if (!empty($this->id_categories)) {
-                    $this->_categories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>$this->id_categories]));
+                    $this->_categories = MappersHelper::getCategoriesById(['model'=>new CategoriesModel(['id'=>$this->id_categories])]);
                 }
             }
             return $this->_categories;

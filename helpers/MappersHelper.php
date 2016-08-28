@@ -15,15 +15,15 @@ use app\mappers\{AddressByAddressMapper,
     BrandsDeleteMapper,
     BrandsForProductMapper,
     BrandsInsertMapper,
-    BrandsMapper,
+    GetBrandsMapper,
     BrandsUpdateMapper,
-    CategoriesByIdMapper,
+    GetCategoriesByIdMapper,
     CategoriesByNameMapper,
     CategoriesBySeocodeMapper,
-    CategoriesDeleteMapper,
-    CategoriesInsertMapper,
-    CategoriesMapper,
-    CategoriesUpdateMapper,
+    DeleteCategoriesMapper,
+    InsertCategoriesMapper,
+    GetCategoriesMapper,
+    UpdateCategoriesMapper,
     ColorsAdminMapper,
     ColorsByColorMapper,
     ColorsByIdMapper,
@@ -139,20 +139,22 @@ class MappersHelper
     
     /**
      * Создает новую запись CategoriesModel в БД
-     * @param array $categoriesModelArray массив объектов CategoriesModel
-     * @return int
+     * @param array $config массив конфигурации маппера
+     * @return int / bool
      */
-    public static function setCategoriesInsert(Array $categoriesModelArray)
+    public static function insertCategories(Array $config=array())
     {
         try {
-            if (empty($categoriesModelArray) || !$categoriesModelArray[0] instanceof CategoriesModel) {
-                throw new ErrorException('Неверный формат данных!');
+            if (empty($config['objectsArray']) || !$config['objectsArray'][0] instanceof CategoriesModel) {
+                throw new ErrorException('Неверный тип данных!');
             }
-            $categoriesInsertMapper = new CategoriesInsertMapper([
-                'tableName'=>'categories',
-                'fields'=>['name', 'seocode'],
-                'objectsArray'=>$categoriesModelArray,
-            ]);
+            if (empty($config['tableName'])) {
+                $config['tableName'] = CategoriesModel::getTableName();
+            }
+            if (empty($config['fields'])) {
+                $config['fields'] = ['name', 'seocode'];
+            }
+            $categoriesInsertMapper = new InsertCategoriesMapper($config);
             if (!$result = $categoriesInsertMapper->setGroup()) {
                 return null;
             }
@@ -164,20 +166,22 @@ class MappersHelper
     
     /**
      * Обновляет записи CategoriesModel в БД
-     * @param array $categoriesModelArray массив объектов CategoriesModel
-     * @return int
+     * @param array $config массив конфигурации маппера
+     * @return int / bool
      */
-    public static function setCategoriesUpdate(Array $categoriesModelArray)
+    public static function updateCategories(Array $config=array())
     {
         try {
-            if (!is_array($categoriesModelArray) || empty($categoriesModelArray) || !$categoriesModelArray[0] instanceof CategoriesModel) {
+            if (empty($config['objectsArray']) || !$config['objectsArray'][0] instanceof CategoriesModel) {
                 throw new ErrorException('Переданы некорректные данные!');
             }
-            $сategoriesUpdateMapper = new CategoriesUpdateMapper([
-                'tableName'=>'categories',
-                'fields'=>['id', 'name', 'seocode'],
-                'objectsArray'=>$categoriesModelArray
-            ]);
+            if (empty($config['tableName'])) {
+                $config['tableName'] = CategoriesModel::getTableName();
+            }
+            if (empty($config['fields'])) {
+                $config['fields'] = ['id', 'name', 'seocode'];
+            }
+            $сategoriesUpdateMapper = new UpdateCategoriesMapper($config);
             $result = $сategoriesUpdateMapper->setGroup();
             if (!$result) {
                 return null;
@@ -190,22 +194,19 @@ class MappersHelper
     
     /**
      * Удаляет записи CategoriesModel из БД
-     * @param array $categoriesModelArray массив CategoriesModel
+     * @param array $config массив конфигурации маппера
      * @return int
      */
-    public static function setCategoriesDelete(Array $categoriesModelArray)
+    public static function deleteCategories(Array $config=array())
     {
         try {
-            if (empty($categoriesModelArray)) {
-                throw new ErrorException('Неверный формат данных!');
+            if (empty($config['objectsArray']) || !$config['objectsArray'][0] instanceof CategoriesModel) {
+                throw new ErrorException('Переданы некорректные данные!');
             }
-            if (!$categoriesModelArray[0] instanceof CategoriesModel) {
-                throw new ErrorException('Неверный тип данных!');
+            if (empty($config['tableName'])) {
+                $config['tableName'] = CategoriesModel::getTableName();
             }
-            $categoriesDeleteMapper = new CategoriesDeleteMapper([
-                'tableName'=>'categories',
-                'objectsArray'=>$categoriesModelArray,
-            ]);
+            $categoriesDeleteMapper = new DeleteCategoriesMapper($config);
             if (!$result = $categoriesDeleteMapper->setGroup()) {
                 return null;
             }
@@ -217,18 +218,24 @@ class MappersHelper
     
     /**
      * Получает массив объектов категорий
+     * @param array $config массив конфигурации маппера
      * @return array of objects CategoriesModel
      */
-    public static function getCategoriesList()
+    public static function getCategories(Array $config=array())
     {
         try {
-            $categoriesMapper = new CategoriesMapper([
-                'tableName'=>'categories',
-                'fields'=>['id', 'name', 'seocode'],
-                'orderByField'=>'name'
-            ]);
+            if (empty($config['tableName'])) {
+                $config['tableName'] = CategoriesModel::getTableName();
+            }
+            if (empty($config['fields'])) {
+                $config['fields'] = ['id', 'name', 'seocode'];
+            }
+            if (empty($config['orderByField'])) {
+                $config['orderByField'] = 'name';
+            }
+            $categoriesMapper = new GetCategoriesMapper($config);
             $hash = self::createHash([
-                CategoriesMapper::className(), 
+                GetCategoriesMapper::className(), 
                 $categoriesMapper->tableName, 
                 implode('', $categoriesMapper->fields), 
                 $categoriesMapper->orderByField,
@@ -249,19 +256,24 @@ class MappersHelper
     
     /**
      * Получает объект CategoriesModel по id
-     * @param object $categoriesModel экземпляр CategoriesModel
+     * @param array $config массив конфигурации маппера
      * @return objects CategoriesModel
      */
-    public static function getCategoriesById(CategoriesModel $categoriesModel)
+    public static function getCategoriesById(Array $config=array())
     {
         try {
-            $categoriesByIdMapper = new CategoriesByIdMapper([
-                'tableName'=>'categories',
-                'fields'=>['id', 'name', 'seocode'],
-                'model'=>$categoriesModel,
-            ]);
+            if (empty($config['model']) || !$config['model'] instanceof CategoriesModel) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            if (empty($config['tableName'])) {
+                $config['tableName'] = CategoriesModel::getTableName();
+            }
+            if (empty($config['fields'])) {
+                $config['fields'] = ['id', 'name', 'seocode'];
+            }
+            $categoriesByIdMapper = new GetCategoriesByIdMapper($config);
             $hash = self::createHash([
-                CategoriesByIdMapper::className(), 
+                GetCategoriesByIdMapper::className(), 
                 $categoriesByIdMapper->tableName, 
                 implode('', $categoriesByIdMapper->fields), 
                 $categoriesByIdMapper->model->id,
@@ -279,6 +291,8 @@ class MappersHelper
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
+    
+    #!!!CONTINUE TESTS
     
     /**
      * Получает объект CategoriesModel по seocode
@@ -998,23 +1012,29 @@ class MappersHelper
     }
     
     /**
-     * Получает массив объектов brands
-     * @param boolean $joinProducts, true - выбирать только те записи, которые связаны с хотя бы одним продуктом
+     * Получает массив объектов BrandsModel
+     * @param array $config массив конфигурации маппера
+     * @param boolean $related, true - выбирать только те записи, которые связаны с хотя бы одним продуктом
      * @return array of objects BrandsModel
      */
-    public static function getBrandsList($joinProducts=true)
+    public static function getBrands(Array $config=array(), $related=true)
     {
         try {
-            $brandsMapper = new BrandsMapper([
-                'tableName'=>'brands',
-                'fields'=>['id', 'brand'],
-                'orderByField'=>'brand',
-            ]);
-            if (!$joinProducts) {
-                $brandsMapper->queryClass = 'app\queries\BrandsQueryCreator';
+            if (empty($config['tableName'])) {
+                $config['tableName'] = BrandsModel::getTableName();
             }
+            if (empty($config['fields'])) {
+                $config['fields'] = ['id', 'brand'];
+            }
+            if (empty($config['orderByField'])) {
+                $config['orderByField'] = 'brand';
+            }
+            if (!$related) {
+                $config['queryClass'] = 'app\queries\GetBrandsQueryCreator';
+            }
+            $brandsMapper = new GetBrandsMapper($config);
             $hash = self::createHash([
-                BrandsMapper::className(), 
+                GetBrandsMapper::className(), 
                 $brandsMapper->tableName, 
                 implode('', $brandsMapper->fields), 
                 $brandsMapper->orderByField,

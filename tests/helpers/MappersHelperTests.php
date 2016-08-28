@@ -112,9 +112,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setCategoriesInsert
+     * Тестирует метод MappersHelper::insertCategories
      */
-    public function testSetCategoriesInsert()
+    public function testInsertCategories()
     {
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll()));
         
@@ -122,7 +122,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $categoriesModel->name = self::$_name;
         $categoriesModel->seocode = self::$_categorySeocode;
         
-        $result = MappersHelper::setCategoriesInsert([$categoriesModel]);
+        $result = MappersHelper::insertCategories(['objectsArray'=>[$categoriesModel]]);
         
         $this->assertEquals(1, $result);
         
@@ -140,9 +140,9 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setCategoriesUpdate
+     * Тестирует метод MappersHelper::updateCategories
      */
-    public function testSetCategoriesUpdate()
+    public function testUpdateCategories()
     {
         $this->assertFalse(empty($id = \Yii::$app->db->createCommand('SELECT [[id]] FROM {{categories}} LIMIT 1')->queryScalar()));
         
@@ -151,7 +151,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $categoriesModel->name = self::$_name . ' another';
         $categoriesModel->seocode = self::$_categorySeocode . ' another';
         
-        $result = MappersHelper::setCategoriesUpdate([$categoriesModel]);
+        $result = MappersHelper::updateCategories(['objectsArray'=>[$categoriesModel]]);
         
         $this->assertEquals(2, $result);
         
@@ -167,26 +167,26 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::setCategoriesDelete
+     * Тестирует метод MappersHelper::deleteCategories
      */
-    public function testSetCategoriesDelete()
+    public function testDeleteCategories()
     {
         $this->assertFalse(empty($categories = \Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll()));
         $this->assertEquals(1, count($categories));
         
-        $model = new CategoriesModel();
-        $model->id = $categories[0]['id'];
+        $categoriesModel = new CategoriesModel();
+        $categoriesModel->id = $categories[0]['id'];
         
-        $result = MappersHelper::setCategoriesDelete([$model]);
+        $result = MappersHelper::deleteCategories(['objectsArray'=>[$categoriesModel]]);
         
         $this->assertEquals(1, $result);
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll()));
     }
     
     /**
-     * Тестирует метод MappersHelper::getCategoriesList
+     * Тестирует метод MappersHelper::getCategories
      */
-    public function testGetCategoriesList()
+    public function testGetCategories()
     {
         \Yii::$app->db->createCommand('DELETE FROM {{categories}}')->execute();
         
@@ -194,7 +194,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
         $command->execute();
         
-        $result = MappersHelper::getCategoriesList();
+        $result = MappersHelper::getCategories();
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
@@ -450,7 +450,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
     }
     
     /**
-     * Тестирует метод MappersHelper::getBrandsList
+     * Тестирует метод MappersHelper::getBrands
      */
     public function testGetBrandsList()
     {
@@ -460,7 +460,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_brands}}')->queryAll()));
         
-        $result = MappersHelper::getBrandsList(false);
+        $result = MappersHelper::getBrands([], false);
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
@@ -473,7 +473,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id_products'=>self::$_id, ':id_brands'=>self::$_id]);
         $command->execute();
         
-        $result = MappersHelper::getBrandsList();
+        $result = MappersHelper::getBrands();
         
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
@@ -1461,7 +1461,7 @@ class MappersHelperTests extends \PHPUnit_Framework_TestCase
         $categoriesModel = new CategoriesModel();
         $categoriesModel->id = self::$_id;
         
-        $result = MappersHelper::getCategoriesById($categoriesModel);
+        $result = MappersHelper::getCategoriesById(['model'=>$categoriesModel]);
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof CategoriesModel);

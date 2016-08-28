@@ -57,10 +57,10 @@ class CategoriesModel extends AbstractBaseModel
             [['seocode'], 'app\validators\CategoriesSeocodeExistsValidator', 'on'=>self::GET_FOR_ADD],
             [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FOR_UPDATE],
             [['name'], 'app\validators\CategoriesNameExistsValidator', 'on'=>self::GET_FOR_UPDATE, 'when'=>function($model) {
-                return $model->name != MappersHelper::getCategoriesById($model)->name;
+                return $model->name != MappersHelper::getCategoriesById(['model'=>$model])->name;
             }],
             [['seocode'], 'app\validators\CategoriesSeocodeExistsValidator', 'on'=>self::GET_FOR_UPDATE, 'when'=>function($model) {
-                return $model->seocode != MappersHelper::getCategoriesById($model)->seocode;
+                return $model->seocode != MappersHelper::getCategoriesById(['model'=>$model])->seocode;
             }],
             [['id', 'name', 'seocode'], 'required', 'on'=>self::GET_FOR_DELETE],
             [['name'], 'app\validators\CategoriesForeignSubcategoryExistsValidator', 'on'=>self::GET_FOR_DELETE],

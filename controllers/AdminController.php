@@ -123,7 +123,7 @@ class AdminController extends AbstractBaseController
             $renderArray['brandsModel'] = $brandsModel;
             $renderArray['colorsModel'] = $colorsModel;
             $renderArray['sizesModel'] = $sizesModel;
-            $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
+            $renderArray['brandsList'] = MappersHelper::getBrands(false);
             $renderArray['colorsList'] = MappersHelper::getColorsList(false);
             $renderArray['sizesList'] = MappersHelper::getSizesList(false);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
@@ -194,7 +194,7 @@ class AdminController extends AbstractBaseController
             $renderArray['sizesModel'] = new SizesModel(['scenario'=>SizesModel::GET_FOR_ADD_PRODUCT, 'idArray'=>ArrayHelper::getColumn($renderArray['productsModel']->sizes, 'id')]);
             $renderArray['colorsList'] = MappersHelper::getColorsList(false);
             $renderArray['sizesList'] = MappersHelper::getSizesList(false);
-            $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
+            $renderArray['brandsList'] = MappersHelper::getBrands(false);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-product-detail.twig', $renderArray);
         } catch (\Exception $e) {
@@ -437,7 +437,7 @@ class AdminController extends AbstractBaseController
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
                     try {
-                        if (!MappersHelper::setCategoriesInsert([$categoriesModel])) {
+                        if (!MappersHelper::insertCategories(['objectsArray'=>[$categoriesModel]])) {
                             throw new ErrorException('Ошибка при сохранении категории!');
                         }
                     } catch(\Exception $e) {
@@ -469,12 +469,12 @@ class AdminController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $categoriesModel->load(\Yii::$app->request->post())) {
                 if ($categoriesModel->validate()) {
-                    if (array_diff_assoc($categoriesModel->attributes, MappersHelper::getCategoriesById($categoriesModel)->attributes)) {
+                    if (array_diff_assoc($categoriesModel->attributes, MappersHelper::getCategoriesById(['model'=>$categoriesModel])->attributes)) {
                         
                         $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                         
                         try {
-                            if (!MappersHelper::setCategoriesUpdate([$categoriesModel])) {
+                            if (!MappersHelper::updateCategories(['objectsArray'=>[$categoriesModel]])) {
                                 throw new ErrorException('Ошибка при обновлении CategoriesModel!');
                             }
                         } catch(\Exception $e) {
@@ -494,7 +494,7 @@ class AdminController extends AbstractBaseController
                     return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
                 
-                if (empty($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                if (empty($currentCategories = MappersHelper::getCategoriesById(['model'=>new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])]))) {
                     return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
                 \Yii::configure($categoriesModel, $currentCategories->attributes);
@@ -524,7 +524,7 @@ class AdminController extends AbstractBaseController
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
                     try {
-                        if (!MappersHelper::setCategoriesDelete([$categoriesModel])) {
+                        if (!MappersHelper::deleteCategories(['objectsArray'=>[$categoriesModel]])) {
                             throw new ErrorException('Ошибка при удалении категории!');
                         }
                     } catch(\Exception $e) {
@@ -533,6 +533,7 @@ class AdminController extends AbstractBaseController
                     }
                     
                     $transaction->commit();
+                    
                     return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
             } else {
@@ -542,7 +543,7 @@ class AdminController extends AbstractBaseController
                 if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                     throw new ErrorException('Ошибка при получении ID!');
                 }
-                if (empty($currentCategories = MappersHelper::getCategoriesById(new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])))) {
+                if (empty($currentCategories = MappersHelper::getCategoriesById(['model'=>new CategoriesModel(['id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])]))) {
                     return $this->redirect(Url::to(['admin/show-add-categories']));
                 }
                 \Yii::configure($categoriesModel, $currentCategories->attributes);
@@ -729,7 +730,7 @@ class AdminController extends AbstractBaseController
             
             $renderArray = array();
             $renderArray['brandsModel'] = $brandsModel;
-            $renderArray['brandsList'] = MappersHelper::getBrandsList(false);
+            $renderArray['brandsList'] = MappersHelper::getBrands([], false);
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('show-add-brands.twig', $renderArray);
         } catch (\Exception $e) {

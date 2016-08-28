@@ -23,7 +23,7 @@ class SubcategoryQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new SubcategoryQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[subcategory.id]],[[subcategory.name]],[[subcategory.seocode]],[[subcategory.id_categories]] FROM {{subcategory}}';
+        $query = "SELECT `id`, `name`, `seocode`, `id_categories` FROM `subcategory`";
         
         $this->assertEquals($query, $mockObject->query);
     }

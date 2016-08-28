@@ -10,6 +10,8 @@ use app\queries\SubcategoryForCategoryQueryCreator;
  */
 class SubcategoryForCategoryQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 2;
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,12 +20,13 @@ class SubcategoryForCategoryQueryCreatorTests extends \PHPUnit_Framework_TestCas
         $mockObject = new MockObject([
             'tableName'=>'subcategory',
             'fields'=>['id', 'name'],
+            'model'=>new MockObject(['id'=>self::$_id])
         ]);
         
         $queryCreator = new SubcategoryForCategoryQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[subcategory.id]],[[subcategory.name]] FROM {{subcategory}} JOIN {{categories}} ON [[subcategory.id_categories]]=[[categories.id]] WHERE [[categories.id]]=:id';
+        $query = "SELECT `id`, `name` FROM `subcategory` INNER JOIN `categories` ON subcategory.id_categories=categories.id WHERE `categories`=" . self::$_id;
         
         $this->assertEquals($query, $mockObject->query);
     }

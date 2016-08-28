@@ -6,6 +6,7 @@ use app\mappers\AbstractBaseMapper;
 
 class MockObject extends AbstractBaseMapper
 {
+    public $id;
     public $query;
     public $tableName;
     public $fields;

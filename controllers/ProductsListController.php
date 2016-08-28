@@ -41,7 +41,7 @@ class ProductsListController extends AbstractBaseController
             $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();
-            $renderArray['brandsList'] = MappersHelper::getBrandsList();
+            $renderArray['brandsList'] = MappersHelper::getBrands();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('products-list.twig', $renderArray);
         } catch (\Exception $e) {
@@ -72,7 +72,7 @@ class ProductsListController extends AbstractBaseController
             
             $renderArray['colorsList'] = MappersHelper::getColorsList();
             $renderArray['sizesList'] = MappersHelper::getSizesList();
-            $renderArray['brandsList'] = MappersHelper::getBrandsList();
+            $renderArray['brandsList'] = MappersHelper::getBrands();
             $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
             return $this->render('products-list.twig', $renderArray);
         } catch (\Exception $e) {

@@ -36,20 +36,18 @@ abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator
     public function getSelectQuery()
     {
         try {
-            $this->_mapperObject->query = 'SELECT ';
-            
-            $fields = $this->addFields();
-            if (!is_string($fields)) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (empty($this->_mapperObject->fields)) {
+                throw new ErrorException('Не заданы поля!');
             }
-            $this->_mapperObject->query .= $fields;
-            
-            $name = $this->addTableName();
-            
-            if (!is_string($name)) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (empty($this->_mapperObject->tableName)) {
+                throw new ErrorException('Не задано имя таблицы!');
             }
-            $this->_mapperObject->query .= $name;
+            
+            $this->_query->select($this->_mapperObject->fields);
+            
+            $this->_query->from($this->_mapperObject->tableName);
+            
+            $this->_mapperObject->query = $this->_query->createCommand()->getRawSql();
             
             return true;
         } catch (\Exception $e) {

@@ -30,34 +30,15 @@ class SubcategoryForCategoryQueryCreator extends AbstractSeletcQueryCreator
     public function getSelectQuery()
     {
         try {
-            if (empty(\Yii::$app->params['categoryKey'])) {
-                throw new ErrorException('Не поределен categoryKey!');
-            }
-            
             if (!parent::getSelectQuery()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $join = $this->getJoin(
-                $this->config[\Yii::$app->params['categoryKey']]['firstTableName'],
-                $this->config[\Yii::$app->params['categoryKey']]['firstTableFieldOn'],
-                $this->config[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->config[\Yii::$app->params['categoryKey']]['secondTableFieldOn']
-            );
-            if (!is_string($join)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $join;
+            $this->_query->innerJoin($this->config['categories']['secondTableName'], $this->config['categories']['firstTableName'] . '.' . $this->config['categories']['firstTableFieldOn'] . '=' . $this->config['categories']['secondTableName'] . '.' . $this->config['categories']['secondTableFieldOn']);
             
-            $where = $this->getWhere(
-                $this->config[\Yii::$app->params['categoryKey']]['secondTableName'],
-                $this->config[\Yii::$app->params['categoryKey']]['secondTableFieldWhere'],
-                \Yii::$app->params['idKey']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_query->where([$this->config['categories']['secondTableName'] . '.' . $this->config['categories']['secondTableFieldWhere']=>$this->_mapperObject->model->id]);
+            
+            $this->_mapperObject->query = $this->_query->createCommand()->getRawSql();
             
             return true;
         } catch (\Exception $e) {
