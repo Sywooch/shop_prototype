@@ -63,4 +63,5 @@ class MockModel extends AbstractBaseModel
     public $currency;
     public $exchange_rate;
     public $main;
+    public $rule;
 }

@@ -23,8 +23,8 @@ class RulesQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new RulesQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[rules.id]],[[rules.rule]] FROM {{rules}}';
+        $query = "SELECT `rules`.`id`, `rules`.`rule` FROM `rules`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

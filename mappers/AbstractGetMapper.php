@@ -57,18 +57,19 @@ abstract class AbstractGetMapper extends AbstractBaseMapper
             if (empty($this->query)) {
                 throw new ErrorException('Не определена строка запроса к БД!');
             }
-            $command = \Yii::$app->db->createCommand($this->query);
-            /*if (!empty($this->params)) {
-                $command->bindValues($this->params);
-            }*/
-            $result = $command->queryAll();
+            
+            $result = $this->query->all();
+            
             if (YII_DEBUG) {
-                $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
+                $this->trigger($this::SENT_REQUESTS_TO_DB);
             }
+            
             if ($this->getDataSorting) {
                 ArrayHelper::multisort($result, [$this->orderByField], [($this->orderByType && $this->orderByType == 'DESC') ? SORT_DESC : SORT_ASC]);
             }
+            
             $this->DbArray = $result;
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

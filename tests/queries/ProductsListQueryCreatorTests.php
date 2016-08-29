@@ -2,6 +2,7 @@
 
 namespace app\tests\queries;
 
+use app\tests\DbManager;
 use app\tests\MockObject;
 use app\queries\ProductsListQueryCreator;
 
@@ -10,15 +11,21 @@ use app\queries\ProductsListQueryCreator;
  */
 class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
+    private static $_id = 1;
+    private static $_categories = 'menswear';
+    private static $_subcategory = 'coats';
     private static $_config = [
         'tableName'=>'products',
         'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images'],
-        'otherTablesFields'=>[
-            ['table'=>'categories', 'fields'=>[['field'=>'seocode', 'as'=>'categories']]],
-            ['table'=>'subcategory', 'fields'=>[['field'=>'seocode', 'as'=>'subcategory']]],
-        ],
         'orderByField'=>'date'
     ];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса без категорий и фильтров ProductsListQueryCreator::queryForAll()
@@ -33,9 +40,9 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
     
     /**
@@ -43,7 +50,7 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForCategory()
     {
-        $_GET = ['categories'=>'menswear'];
+        $_GET = ['categories'=>self::$_categories];
         \Yii::$app->filters->clean();
         
         $mockObject = new MockObject(self::$_config);
@@ -51,9 +58,9 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.seocode]]=:categories ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` WHERE `categories`.`seocode`='" . self::$_categories . "' ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
     
     /**
@@ -61,7 +68,7 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForSubCategory()
     {
-        $_GET = ['categories'=>'menswear', 'subcategory'=>'coats'];
+        $_GET = ['categories'=>self::$_categories, 'subcategory'=>self::$_subcategory];
         \Yii::$app->filters->clean();
         
         $mockObject = new MockObject(self::$_config);
@@ -69,9 +76,9 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] WHERE [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` WHERE (`categories`.`seocode`='" . self::$_categories . "') AND (`subcategory`.`seocode`='" . self::$_subcategory . "') ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
     
     /**
@@ -80,19 +87,19 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForSubCategoryAndFilter()
     {
-        $_GET = ['categories'=>'menswear', 'subcategory'=>'coats'];
+        $_GET = ['categories'=>self::$_categories, 'subcategory'=>self::$_subcategory];
         
         \Yii::$app->filters->clean();
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[1]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id]]);
         
         $mockObject = new MockObject(self::$_config);
         
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] WHERE [[colors.id]] IN (:0colors_id) AND [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id WHERE (`colors`.`id`=" . self::$_id . ") AND ((`categories`.`seocode`='" . self::$_categories . "') AND (`subcategory`.`seocode`='" . self::$_subcategory . "')) ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
     
     /**
@@ -101,19 +108,19 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForSubCategoryAndManyFilters()
     {
-        $_GET = ['categories'=>'mensfootwear', 'subcategory'=>'boots'];
+        $_GET = ['categories'=>self::$_categories, 'subcategory'=>self::$_subcategory];
         
         \Yii::$app->filters->clean();
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[1], 'sizes'=>[2]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id], 'sizes'=>[self::$_id]]);
         
         $mockObject = new MockObject(self::$_config);
         
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_products]] JOIN {{sizes}} ON [[products_sizes.id_sizes]]=[[sizes.id]] WHERE [[colors.id]] IN (:0colors_id) AND [[sizes.id]] IN (:0sizes_id) AND [[categories.seocode]]=:categories AND [[subcategory.seocode]]=:subcategory ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE ((`colors`.`id`=". self::$_id . ") AND (`sizes`.`id`=". self::$_id . ")) AND ((`categories`.`seocode`='" . self::$_categories . "') AND (`subcategory`.`seocode`='" . self::$_subcategory . "')) ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
     
     /**
@@ -124,16 +131,16 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $_GET = [];
         
         \Yii::$app->filters->clean();
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[1], 'sizes'=>[]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id], 'sizes'=>[]]);
         
         $mockObject = new MockObject(self::$_config);
         
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] WHERE [[colors.id]] IN (:0colors_id) ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id WHERE `colors`.`id`=" . self::$_id . " ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
     
     /**
@@ -145,16 +152,16 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $_GET = [];
         
         \Yii::$app->filters->clean();
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[1], 'sizes'=>[3]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id], 'sizes'=>[self::$_id]]);
         
         $mockObject = new MockObject(self::$_config);
         
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_products]] JOIN {{sizes}} ON [[products_sizes.id_sizes]]=[[sizes.id]] WHERE [[colors.id]] IN (:0colors_id) AND [[sizes.id]] IN (:0sizes_id) ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE (`colors`.`id`=" . self::$_id . ") AND (`sizes`.`id`=" . self::$_id . ") ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
     
     /**
@@ -162,18 +169,18 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForCategoryAndFilter()
     {
-        $_GET = ['categories'=>'menswear'];
+        $_GET = ['categories'=>self::$_categories];
         
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[], 'sizes'=>[3]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[], 'sizes'=>[self::$_id]]);
         
         $mockObject = new MockObject(self::$_config);
         
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_products]] JOIN {{sizes}} ON [[products_sizes.id_sizes]]=[[sizes.id]] WHERE [[sizes.id]] IN (:0sizes_id) AND [[categories.seocode]]=:categories ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE (`sizes`.`id`=" . self::$_id . ") AND (`categories`.`seocode`='" . self::$_categories . "') ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
     
     /**
@@ -182,18 +189,23 @@ class ProductsListQueryCreatorTests extends \PHPUnit_Framework_TestCase
      */
     public function testQueryForCategoryAndMenyFilters()
     {
-        $_GET = ['categories'=>'menswear'];
+        $_GET = ['categories'=>self::$_categories];
         
         \Yii::$app->filters->clean();
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[2,4], 'sizes'=>[3]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id,self::$_id + 1], 'sizes'=>[self::$_id]]);
         
         $mockObject = new MockObject(self::$_config);
         
         $queryCreator = new ProductsListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT DISTINCT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.short_description]],[[products.price]],[[products.images]],[[categories.seocode]] AS [[categories]],[[subcategory.seocode]] AS [[subcategory]] FROM {{products}} JOIN {{categories}} ON [[products.id_categories]]=[[categories.id]] JOIN {{subcategory}} ON [[products.id_subcategory]]=[[subcategory.id]] JOIN {{products_colors}} ON [[products.id]]=[[products_colors.id_products]] JOIN {{colors}} ON [[products_colors.id_colors]]=[[colors.id]] JOIN {{products_sizes}} ON [[products.id]]=[[products_sizes.id_products]] JOIN {{sizes}} ON [[products_sizes.id_sizes]]=[[sizes.id]] WHERE [[colors.id]] IN (:0colors_id,:1colors_id) AND [[sizes.id]] IN (:0sizes_id) AND [[categories.seocode]]=:categories ORDER BY [[products.date]] DESC LIMIT 0, 20';
+        $query = "SELECT DISTINCT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`short_description`, `products`.`price`, `products`.`images`, `categories`.`seocode` AS `categories`, `subcategory`.`seocode` AS `subcategory` FROM `products` INNER JOIN `categories` ON `products`.`id_categories`=`categories`.`id` INNER JOIN `subcategory` ON `products`.`id_subcategory`=`subcategory`.`id` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE ((`colors`.`id` IN (" . self::$_id . ', ' . (self::$_id+1) . ")) AND (`sizes`.`id`=" . self::$_id . ")) AND (`categories`.`seocode`='" . self::$_categories . "') ORDER BY `products`.`date` DESC LIMIT 20";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

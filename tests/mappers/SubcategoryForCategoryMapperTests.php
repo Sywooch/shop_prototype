@@ -50,6 +50,7 @@ class SubcategoryForCategoryMapperTests extends \PHPUnit_Framework_TestCase
                 'id'=>self::$_id,
             ]),
         ]);
+        
         $subcategoryList = $subcategoryMapper->getGroup();
         
         $this->assertTrue(is_array($subcategoryList));

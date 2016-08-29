@@ -23,8 +23,8 @@ class SizesQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new SizesQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[sizes.id]],[[sizes.size]] FROM {{sizes}}';
+        $query = "SELECT `sizes`.`id`, `sizes`.`size` FROM `sizes`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

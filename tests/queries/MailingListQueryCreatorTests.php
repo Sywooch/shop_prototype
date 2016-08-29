@@ -23,8 +23,8 @@ class MailingListQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new MailingListQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[mailing_list.id]],[[mailing_list.name]],[[mailing_list.description]] FROM {{mailing_list}}';
+        $query = "SELECT `mailing_list`.`id`, `mailing_list`.`name`, `mailing_list`.`description` FROM `mailing_list`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

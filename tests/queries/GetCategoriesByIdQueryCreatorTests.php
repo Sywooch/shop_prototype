@@ -2,7 +2,8 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{MockModel,
+    MockObject};
 use app\queries\GetCategoriesByIdQueryCreator;
 
 /**
@@ -10,6 +11,8 @@ use app\queries\GetCategoriesByIdQueryCreator;
  */
 class GetCategoriesByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 11;
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,13 +21,14 @@ class GetCategoriesByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'categories',
             'fields'=>['id', 'name', 'seocode'],
+            'model'=>new MockModel(['id'=>self::$_id])
         ]);
         
         $queryCreator = new GetCategoriesByIdQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[categories.id]],[[categories.name]],[[categories.seocode]] FROM {{categories}} WHERE [[categories.id]]=:id';
+        $query = "SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode` FROM `categories` WHERE `categories`.`id`=" . self::$_id;
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

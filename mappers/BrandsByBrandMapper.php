@@ -25,15 +25,8 @@ class BrandsByBrandMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model) || !$this->model instanceof BrandsModel) {
-                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-            }
-            
-            if (empty($this->params)) {
-                if (empty($this->model->brand)) {
-                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
-                }
-                $this->params = [':brand'=>$this->model->brand];
+            if (empty($this->model) || !$this->model instanceof BrandsModel || empty($this->model->brand)) {
+                throw new ErrorException('Не определен объект модели!');
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

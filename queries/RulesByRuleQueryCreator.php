@@ -11,16 +11,6 @@ use app\queries\AbstractSeletcQueryCreator;
 class RulesByRuleQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'rules'=>[
-            'tableName'=>'rules',
-            'tableFieldWhere'=>'rule',
-        ],
-    ];
-    
-    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
@@ -31,15 +21,8 @@ class RulesByRuleQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhere(
-                $this->config['rules']['tableName'],
-                $this->config['rules']['tableFieldWhere'],
-                $this->config['rules']['tableFieldWhere']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->query->where(['rules.rule'=>$this->_mapperObject->model->rule]);
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

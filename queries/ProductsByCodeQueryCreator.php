@@ -11,16 +11,6 @@ use app\queries\AbstractSeletcQueryCreator;
 class ProductsByCodeQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'products'=>[
-            'tableName'=>'products', 
-            'tableFieldWhere'=>'code', 
-        ],
-    ];
-    
-    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
@@ -31,15 +21,8 @@ class ProductsByCodeQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhere(
-                $this->config['products']['tableName'],
-                $this->config['products']['tableFieldWhere'],
-                $this->config['products']['tableFieldWhere']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->query->where(['products.code'=>$this->_mapperObject->model->code]);
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

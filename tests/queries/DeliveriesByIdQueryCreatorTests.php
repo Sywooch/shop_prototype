@@ -2,7 +2,8 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{MockModel,
+    MockObject};
 use app\queries\DeliveriesByIdQueryCreator;
 
 /**
@@ -10,6 +11,8 @@ use app\queries\DeliveriesByIdQueryCreator;
  */
 class DeliveriesByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 46;
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,13 +21,14 @@ class DeliveriesByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'deliveries',
             'fields'=>['id', 'name', 'description', 'price'],
+            'model'=>new MockModel(['id'=>self::$_id])
         ]);
         
         $queryCreator = new DeliveriesByIdQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[deliveries.id]],[[deliveries.name]],[[deliveries.description]],[[deliveries.price]] FROM {{deliveries}} WHERE [[deliveries.id]]=:id';
+        $query = "SELECT `deliveries`.`id`, `deliveries`.`name`, `deliveries`.`description`, `deliveries`.`price` FROM `deliveries` WHERE `deliveries`.`id`=" . self::$_id;
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

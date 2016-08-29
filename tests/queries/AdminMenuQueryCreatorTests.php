@@ -23,8 +23,8 @@ class AdminMenuQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new AdminMenuQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[admin_menu.id]],[[admin_menu.name]],[[admin_menu.route]] FROM {{admin_menu}}';
+        $query = "SELECT `admin_menu`.`id`, `admin_menu`.`name`, `admin_menu`.`route` FROM `admin_menu`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

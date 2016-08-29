@@ -2,7 +2,9 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{DbManager,
+    MockModel,
+    MockObject};
 use app\queries\BrandsByBrandQueryCreator;
 
 /**
@@ -10,6 +12,15 @@ use app\queries\BrandsByBrandQueryCreator;
  */
 class BrandsByBrandQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
+    private static $_brand = 'some';
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,13 +29,19 @@ class BrandsByBrandQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
+            'model'=>new MockModel(['brand'=>self::$_brand])
         ]);
         
         $queryCreator = new BrandsByBrandQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[brands.id]],[[brands.brand]] FROM {{brands}} WHERE [[brands.brand]]=:brand';
+        $query = "SELECT `brands`.`id`, `brands`.`brand` FROM `brands` WHERE `brands`.`brand`='" . self::$_brand . "'";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

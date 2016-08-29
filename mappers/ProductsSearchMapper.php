@@ -39,19 +39,6 @@ class ProductsSearchMapper extends AbstractGetMapper
             parent::init();
             
             $this->_db = \Yii::createObject($this->dbConfig);
-            
-            if (empty($this->params)) {
-                if (empty(\Yii::$app->params['searchKey'])) {
-                    throw new ErrorException('Не поределен searchKey!');
-                }
-                if (empty(\Yii::$app->params['sphynxKey'])) {
-                    throw new ErrorException('Не поределен sphynxKey!');
-                }
-                if (empty(\Yii::$app->request->get(\Yii::$app->params['searchKey']))) {
-                    throw new ErrorException('Ошибка при получении данных из $_GET!');
-                }
-                $this->params[':' . \Yii::$app->params['sphynxKey']] = \Yii::$app->request->get(\Yii::$app->params['searchKey']);
-            }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -67,15 +54,15 @@ class ProductsSearchMapper extends AbstractGetMapper
             if (empty($this->query)) {
                 throw new ErrorException('Не определена строка запроса к БД!');
             }
-            $command = $this->_db->createCommand($this->query);
-            if (!empty($this->params)) {
-                $command->bindValues($this->params);
-            }
-            $result = $command->queryAll();
+            
+            $result = $this->query->all($this->_db);
+            
             if (YII_DEBUG) {
-                $this->trigger($this::SENT_REQUESTS_TO_DB); # Фиксирует выполнение запроса к БД
+                $this->trigger($this::SENT_REQUESTS_TO_DB);
             }
+            
             $this->DbArray = $result;
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

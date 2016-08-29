@@ -43,11 +43,9 @@ abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator
                 throw new ErrorException('Не задано имя таблицы!');
             }
             
-            $this->_query->select($this->_mapperObject->fields);
+            $this->_mapperObject->query->select($this->_mapperObject->fields);
             
-            $this->_query->from($this->_mapperObject->tableName);
-            
-            $this->_mapperObject->query = $this->_query->createCommand()->getRawSql();
+            $this->_mapperObject->query->from($this->_mapperObject->tableName);
             
             return true;
         } catch (\Exception $e) {

@@ -19,17 +19,4 @@ class CurrencyByMainMapper extends AbstractGetMapper
      * @var string имя класса, который создает объекты из данных БД
      */
     public $objectsClass = 'app\factories\CurrencyObjectsFactory';
-    
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->params)) {
-                $this->params = [':main'=>1];
-            }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
 }

@@ -25,15 +25,8 @@ class SubcategoryByNameMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model) || !$this->model instanceof SubcategoryModel) {
+            if (empty($this->model) || !$this->model instanceof SubcategoryModel || empty($this->model->name)) {
                 throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-            }
-            
-            if (empty($this->params)) {
-                if (empty($this->model->name)) {
-                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
-                }
-                $this->params = [':name'=>$this->model->name];
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

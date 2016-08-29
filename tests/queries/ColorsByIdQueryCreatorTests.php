@@ -2,7 +2,8 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{MockModel,
+    MockObject};
 use app\queries\ColorsByIdQueryCreator;
 
 /**
@@ -10,6 +11,7 @@ use app\queries\ColorsByIdQueryCreator;
  */
 class ColorsByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 9;
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,13 +20,14 @@ class ColorsByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'colors',
             'fields'=>['id', 'color'],
+            'model'=>new MockModel(['id'=>self::$_id])
         ]);
         
         $queryCreator = new ColorsByIdQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[colors.id]],[[colors.color]] FROM {{colors}} WHERE [[colors.id]]=:id';
+        $query = "SELECT `colors`.`id`, `colors`.`color` FROM `colors` WHERE `colors`.`id`=" . self::$_id;
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

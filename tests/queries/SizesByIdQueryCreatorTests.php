@@ -2,7 +2,8 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{MockModel,
+    MockObject};
 use app\queries\SizesByIdQueryCreator;
 
 /**
@@ -10,6 +11,8 @@ use app\queries\SizesByIdQueryCreator;
  */
 class SizesByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 97;
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,13 +21,14 @@ class SizesByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'sizes',
             'fields'=>['id', 'size'],
+            'model'=>new MockModel(['id'=>self::$_id])
         ]);
         
         $queryCreator = new SizesByIdQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[sizes.id]],[[sizes.size]] FROM {{sizes}} WHERE [[sizes.id]]=:id';
+        $query = "SELECT `sizes`.`id`, `sizes`.`size` FROM `sizes` WHERE `sizes`.`id`=" . self::$_id;
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

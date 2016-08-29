@@ -11,16 +11,6 @@ use app\queries\AbstractSeletcQueryCreator;
 class DeliveriesByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'deliveries'=>[
-            'tableName'=>'deliveries',
-            'tableFieldWhere'=>'id',
-        ],
-    ];
-    
-    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
@@ -31,15 +21,8 @@ class DeliveriesByIdQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhere(
-                $this->config['deliveries']['tableName'],
-                $this->config['deliveries']['tableFieldWhere'],
-                $this->config['deliveries']['tableFieldWhere']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->query->where(['deliveries.id'=>$this->_mapperObject->model->id]);
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

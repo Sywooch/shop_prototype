@@ -2,7 +2,8 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{MockModel,
+    MockObject};
 use app\queries\CurrencyByMainQueryCreator;
 
 /**
@@ -23,8 +24,8 @@ class CurrencyByMainQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new CurrencyByMainQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[currency.id]],[[currency.currency]],[[currency.exchange_rate]],[[currency.main]] FROM {{currency}} WHERE [[currency.main]]=:main';
+        $query = "SELECT `currency`.`id`, `currency`.`currency`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency` WHERE `currency`.`main`=TRUE";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

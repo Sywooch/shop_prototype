@@ -2,7 +2,8 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{MockModel,
+    MockObject};
 use app\queries\ProductsByIdCategoriesQueryCreator;
 
 /**
@@ -10,6 +11,8 @@ use app\queries\ProductsByIdCategoriesQueryCreator;
  */
 class ProductsByIdCategoriesQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 1;
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,13 +21,14 @@ class ProductsByIdCategoriesQueryCreatorTests extends \PHPUnit_Framework_TestCas
         $mockObject = new MockObject([
             'tableName'=>'products',
             'fields'=>['id', 'date', 'code', 'name', 'description', 'price', 'images', 'id_categories', 'id_subcategory'],
+            'model'=> new MockModel(['id'=>self::$_id])
         ]);
         
         $queryCreator = new ProductsByIdCategoriesQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[products.id]],[[products.date]],[[products.code]],[[products.name]],[[products.description]],[[products.price]],[[products.images]],[[products.id_categories]],[[products.id_subcategory]] FROM {{products}} WHERE [[products.id_categories]]=:id_categories';
+        $query = "SELECT `products`.`id`, `products`.`date`, `products`.`code`, `products`.`name`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory` FROM `products` WHERE `products`.`id_categories`=" . self::$_id;
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

@@ -11,16 +11,6 @@ use app\queries\AbstractSeletcQueryCreator;
 class GetCategoriesByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'categories'=>[
-            'tableName'=>'categories',
-            'tableFieldWhere'=>'id',
-        ],
-    ];
-    
-    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
@@ -31,15 +21,8 @@ class GetCategoriesByIdQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhere(
-                $this->config['categories']['tableName'],
-                $this->config['categories']['tableFieldWhere'],
-                $this->config['categories']['tableFieldWhere']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->query->where(['categories.id'=>$this->_mapperObject->model->id]);
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

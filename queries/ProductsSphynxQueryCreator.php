@@ -17,39 +17,19 @@ class ProductsSphynxQueryCreator extends AbstractSeletcQueryCreator
     public function getSelectQuery()
     {
         try {
-            $this->_mapperObject->query = 'SELECT ';
-            
-            $this->_mapperObject->query .= $this->addFieldsSphynx();
-            
-            $this->_mapperObject->query .= ' FROM ' . $this->_mapperObject->tableName;
-            
-            if (!$this->addFilters()) {
-                throw new ErrorException('Ошибка при построении запроса!');
+            if (empty(\Yii::$app->params['sphynxKey'])) {
+                throw new ErrorException('Не поределен sphynxKey!');
             }
-            
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Формирует часть запроса к БД, добавляющую фильтры
-     * @return boolean
-     */
-    protected function addFilters()
-    {
-        try {
             if (empty(\Yii::$app->params['searchKey'])) {
                 throw new ErrorException('Не поределен searchKey!');
             }
             
-            if (\Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
-                if (!is_string($where = $this->getWhereMatchSphynx())) {
-                    throw new ErrorException('Ошибка при построении запроса!');
-                }
-                $this->_mapperObject->query .= $where;
+            if (!parent::getSelectQuery()) {
+                throw new ErrorException('Ошибка при построении запроса!');
             }
+            
+            $this->_mapperObject->query->where('MATCH(:' . \Yii::$app->params['sphynxKey'] . ')', [':' . \Yii::$app->params['sphynxKey']=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]);
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

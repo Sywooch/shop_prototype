@@ -2,7 +2,8 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{MockModel,
+    MockObject};
 use app\queries\EmailsByIdQueryCreator;
 
 /**
@@ -10,6 +11,8 @@ use app\queries\EmailsByIdQueryCreator;
  */
 class EmailsByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_id = 22;
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,13 +21,14 @@ class EmailsByIdQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'emails',
             'fields'=>['id', 'email'],
+            'model'=> new MockModel(['id'=>self::$_id])
         ]);
         
         $queryCreator = new EmailsByIdQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[emails.id]],[[emails.email]] FROM {{emails}} WHERE [[emails.id]]=:id';
+        $query = "SELECT `emails`.`id`, `emails`.`email` FROM `emails` WHERE `emails`.`id`=" . self::$_id;
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

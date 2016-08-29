@@ -4,7 +4,6 @@ namespace app\queries;
 
 use yii\base\{Object,
     ErrorException};
-use yii\db\Query;
 use app\mappers\AbstractBaseMapper;
 use app\traits\ExceptionsTrait;
 use app\interfaces\VisitorInterface;
@@ -21,20 +20,6 @@ abstract class AbstractBaseQueryCreator extends Object implements VisitorInterfa
      * запрос сохраняется в свойство $query этого объекта
      */
     protected $_mapperObject;
-    /**
-     * @var object экземпляр yii\db\Query для построения запроса
-     */
-    protected $_query;
-    
-    public function init()
-    {
-        try {
-            parent::init();
-            $this->_query = new Query();
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
     
     /**
      * Принимает объект, данные которого необходимо обработать, сохраняет его во внутреннем свойстве, реализуя VisitorInterface

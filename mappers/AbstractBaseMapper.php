@@ -4,6 +4,7 @@ namespace app\mappers;
 
 use yii\base\{Component,
     ErrorException};
+use yii\db\Query;
 use app\traits\ExceptionsTrait;
 use app\interfaces\VisitorInterface;
 
@@ -59,10 +60,6 @@ abstract class AbstractBaseMapper extends Component
      */
     public $objectsClass = null;
     /**
-     * @var string результирующая строка запроса
-     */
-    public $query = null;
-    /**
      * @var array массив данных для подстановки в запрос
      */
     public $params = array();
@@ -78,10 +75,16 @@ abstract class AbstractBaseMapper extends Component
      * @var array массив объектов, созданных из результирующих данных, полученных из БД
      */
     public $objectsArray = array();
+    /**
+     * @var object экземпляр yii\db\Query для построения запроса
+     */
+    public $query;
     
     public function init()
     {
         parent::init();
+        
+        $this->query = new Query();
         
         if (YII_DEBUG) {
             $this->on($this::SENT_REQUESTS_TO_DB, ['app\helpers\FixSentRequests', 'fix']); # Регистрирует обработчик, подсчитывающий обращения к БД

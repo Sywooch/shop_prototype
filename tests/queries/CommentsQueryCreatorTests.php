@@ -23,8 +23,8 @@ class CommentsQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new CommentsQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[comments.id]],[[comments.text]],[[comments.name]],[[comments.id_emails]],[[comments.id_products]],[[comments.active]] FROM {{comments}}';
+        $query = "SELECT `comments`.`id`, `comments`.`text`, `comments`.`name`, `comments`.`id_emails`, `comments`.`id_products`, `comments`.`active` FROM `comments`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }
