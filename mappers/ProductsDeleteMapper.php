@@ -28,6 +28,7 @@ class ProductsDeleteMapper extends AbstractInsertMapper
                 if (!is_object($object) || !$object instanceof ProductsModel) {
                     throw new ErrorException('Неверный тип данных!');
                 }
+                $this->params[] = $object->id;
             }
             
         } catch (\Exception $e) {

@@ -11,16 +11,6 @@ use app\queries\AbstractSeletcQueryCreator;
 class CurrencyByCurrencyQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'currency'=>[
-            'tableName'=>'currency',
-            'tableFieldWhere'=>'currency',
-        ],
-    ];
-    
-    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
@@ -31,15 +21,8 @@ class CurrencyByCurrencyQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhere(
-                $this->config['currency']['tableName'],
-                $this->config['currency']['tableFieldWhere'],
-                $this->config['currency']['tableFieldWhere']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->query->where(['currency.currency'=>$this->_mapperObject->model->currency]);
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

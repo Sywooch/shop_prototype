@@ -11,16 +11,6 @@ use app\queries\AbstractSeletcQueryCreator;
 class MailingListByIdQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'mailing_list'=>[ 
-            'tableName'=>'mailing_list', 
-            'tableFieldWhere'=>'id', 
-        ],
-    ];
-    
-    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
@@ -31,15 +21,8 @@ class MailingListByIdQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhere(
-                $this->config['mailing_list']['tableName'],
-                $this->config['mailing_list']['tableFieldWhere'],
-                $this->config['mailing_list']['tableFieldWhere']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->query->where(['mailing_list.id'=>$this->_mapperObject->model->id]);
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

@@ -28,6 +28,8 @@ class EmailsMailingListDeleteMapper extends AbstractInsertMapper
                 if (!is_object($object) || !$object instanceof EmailsMailingListModel) {
                     throw new ErrorException('Ошибка в переданных данных!');
                 }
+                $this->_mapperObject->params['id_email'][] = $object->id_email;
+                $this->_mapperObject->params['id_mailing_list'][] = $object->id_mailing_list;
             }
             
         } catch (\Exception $e) {

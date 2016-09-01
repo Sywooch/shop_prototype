@@ -25,15 +25,8 @@ class PhonesByPhoneMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model) || !$this->model instanceof PhonesModel) {
-                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-            }
-            
-            if (empty($this->params)) {
-                if (empty($this->model->phone)) {
-                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
-                }
-                $this->params = [':phone'=>$this->model->phone];
+            if (empty($this->model) || !$this->model instanceof PhonesModel || empty($this->model->phone)) {
+                throw new ErrorException('Не определен объект модели!');
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

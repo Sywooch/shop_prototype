@@ -23,8 +23,8 @@ class PaymentsQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new PaymentsQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[payments.id]],[[payments.name]],[[payments.description]] FROM {{payments}}';
+        $query = "SELECT `payments`.`id`, `payments`.`name`, `payments`.`description` FROM `payments`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

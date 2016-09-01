@@ -2,8 +2,7 @@
 
 namespace app\tests\queries;
 
-use app\tests\{MockObject, 
-    MockModel};
+use app\tests\MockObject;
 use app\queries\BrandsDeleteQueryCreator;
 
 /**
@@ -11,7 +10,7 @@ use app\queries\BrandsDeleteQueryCreator;
  */
 class BrandsDeleteQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_id = 1;
+    private static $_params = [1, 2];
     
     /**
      * Тестирует создание строки SQL запроса
@@ -20,17 +19,14 @@ class BrandsDeleteQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'tableName'=>'brands',
-            'objectsArray'=>[
-                new MockModel(['id'=>self::$_id]),
-                new MockModel(['id'=>self::$_id]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new BrandsDeleteQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'DELETE FROM {{brands}} WHERE [[brands.id]] IN (:0_id,:1_id)';
+        $query = "DELETE FROM `brands` WHERE `id` IN (" . implode(', ', self::$_params) . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
     }
 }

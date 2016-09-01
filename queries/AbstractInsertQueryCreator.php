@@ -42,25 +42,15 @@ abstract class AbstractInsertQueryCreator extends AbstractBaseQueryCreator
             if (empty($this->_mapperObject->fields)) {
                 throw new ErrorException('Не заданы поля!');
             }
-            if (empty($this->_mapperObject->objectsArray)) {
-                throw new ErrorException('Не задан массив объектов!');
+            if (empty($this->_mapperObject->params)) {
+                throw new ErrorException('Не заданы параметры запроса!');
             }
             
-            foreach ($this->_mapperObject->objectsArray as $object) {
-                $dataArray = array();
-                foreach ($this->_mapperObject->fields as $field) {
-                    $dataArray[] = $object->$field;
-                }
-                $this->_mapperObject->params[] = $dataArray;
-            }
-            
-            $query = \Yii::$app->db->createCommand()->batchInsert(
+            $this->_mapperObject->execute->batchInsert(
                 $this->_mapperObject->tableName, 
                 $this->_mapperObject->fields, 
                 $this->_mapperObject->params
             );
-            
-            $this->_mapperObject->query = $query->getRawSql();
             
             return true;
         } catch (\Exception $e) {

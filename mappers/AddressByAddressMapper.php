@@ -26,14 +26,7 @@ class AddressByAddressMapper extends AbstractGetMapper
             parent::init();
             
             if (empty($this->model) || !$this->model instanceof AddressModel) {
-                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-            }
-            
-            if (empty($this->params)) {
-                $this->params[':address'] = $this->model->address ? $this->model->address : '';
-                $this->params[':city'] = $this->model->city ? $this->model->city : '';
-                $this->params[':country'] = $this->model->country ? $this->model->country : '';
-                $this->params[':postcode'] = $this->model->postcode ? $this->model->postcode : '';
+                throw new ErrorException('Не определен объект модели!');
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

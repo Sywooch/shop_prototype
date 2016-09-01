@@ -2,8 +2,7 @@
 
 namespace app\tests\queries;
 
-use app\tests\{MockObject, 
-    MockModel};
+use app\tests\MockObject;
 use app\queries\CommentsDeleteQueryCreator;
 
 /**
@@ -11,7 +10,7 @@ use app\queries\CommentsDeleteQueryCreator;
  */
 class CommentsDeleteQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_id = 1;
+    private static $_params = [98, 109];
     
     /**
      * Тестирует создание строки SQL запроса
@@ -20,17 +19,14 @@ class CommentsDeleteQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'tableName'=>'comments',
-            'objectsArray'=>[
-                new MockModel(['id'=>self::$_id]),
-                new MockModel(['id'=>self::$_id]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new CommentsDeleteQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'DELETE FROM {{comments}} WHERE [[comments.id]] IN (:0_id,:1_id)';
+        $query = "DELETE FROM `comments` WHERE `id` IN (" . implode(', ', self::$_params) . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
     }
 }

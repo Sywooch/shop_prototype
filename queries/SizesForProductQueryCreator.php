@@ -2,23 +2,31 @@
 
 namespace app\queries;
 
-use app\queries\AbstractSeletcForAnythingQueryCreator;
+use app\queries\AbstractSeletcQueryCreator;
 
 /**
  * Конструирует запрос к БД для получения списка строк
  */
-class SizesForProductQueryCreator extends AbstractSeletcForAnythingQueryCreator
+class SizesForProductQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
+     * Инициирует создание SELECT запроса
+     * @return boolean
      */
-    public $config = [
-        'id'=>[
-            'firstTableName'=>'sizes',
-            'firstTableFieldOn'=>'id',
-            'secondTableName'=>'products_sizes',
-            'secondTableFieldOn'=>'id_sizes',
-            'secondTableFieldWhere'=>'id_products',
-        ],
-    ];
+    public function getSelectQuery()
+    {
+        try {
+            if (!parent::getSelectQuery()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            
+            $this->_mapperObject->query->innerJoin('products_sizes', '[[sizes.id]]=[[products_sizes.id_sizes]]');
+            
+            $this->_mapperObject->query->where(['products_sizes.id_products'=>$this->_mapperObject->model->id]);
+            
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

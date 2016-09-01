@@ -28,6 +28,7 @@ class SubcategoryDeleteMapper extends AbstractInsertMapper
                 if (!is_object($object) || !$object instanceof SubcategoryModel) {
                     throw new ErrorException('Неверный тип данных!');
                 }
+                $this->_mapperObject->params[] = $object->id;
             }
             
         } catch (\Exception $e) {

@@ -79,12 +79,18 @@ abstract class AbstractBaseMapper extends Component
      * @var object экземпляр yii\db\Query для построения запроса
      */
     public $query;
+    /**
+     * @var object экземпляр yii\db\Command для выполнения запросов INSERT, UPDATE, DELETE
+     */
+    public $execute;
     
     public function init()
     {
         parent::init();
         
         $this->query = new Query();
+        
+        $this->execute = \Yii::$app->db->createCommand();
         
         if (YII_DEBUG) {
             $this->on($this::SENT_REQUESTS_TO_DB, ['app\helpers\FixSentRequests', 'fix']); # Регистрирует обработчик, подсчитывающий обращения к БД

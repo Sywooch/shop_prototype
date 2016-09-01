@@ -11,16 +11,6 @@ use app\queries\AbstractSeletcQueryCreator;
 class CommentsAdminQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'comments'=>[
-            'tableName'=>'comments',
-            'tableFieldWhere'=>'active',
-        ],
-    ];
-    
-    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
@@ -32,23 +22,14 @@ class CommentsAdminQueryCreator extends AbstractSeletcQueryCreator
             }
             
             if (empty(\Yii::$app->filters->getActive) || empty(\Yii::$app->filters->getNotActive)) {
-                $filterActive = null;
+                $filter = null;
                 if (!empty(\Yii::$app->filters->getActive)) {
-                    $filterActive = true;
+                    $filter = true;
                 } elseif (!empty(\Yii::$app->filters->getNotActive)) {
-                    $filterActive = false;
+                    $filter = false;
                 }
-                if (!is_null($filterActive)) {
-                    $where = $this->getWhere(
-                        $this->config['comments']['tableName'],
-                        $this->config['comments']['tableFieldWhere'],
-                        $this->config['comments']['tableFieldWhere']
-                    );
-                    if (!is_string($where)) {
-                        throw new ErrorException('Ошибка при построении запроса!');
-                    }
-                    $this->_mapperObject->query .= $where;
-                    $this->_mapperObject->params[':' . $this->config['comments']['tableFieldWhere']] = $filterActive;
+                if (!is_null($filter)) {
+                    $this->_mapperObject->query->where(['comments.active'=>$filter]);
                 }
             }
             

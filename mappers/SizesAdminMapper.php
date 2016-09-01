@@ -12,7 +12,7 @@ class SizesAdminMapper extends AbstractGetMapper
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\SizesJoinProductsAdminQueryCreator';
+    public $queryClass = 'app\queries\GetSizesRelatedProductsAdminQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */

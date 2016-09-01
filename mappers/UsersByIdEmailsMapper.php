@@ -25,15 +25,8 @@ class UsersByIdEmailsMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model) || !$this->model instanceof UsersModel) {
+            if (empty($this->model) || !$this->model instanceof UsersModel || empty($this->model->id_emails)) {
                 throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-            }
-            
-            if (empty($this->params)) {
-                if (empty($this->model->id_emails)) {
-                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
-                }
-                $this->params = [':id_emails'=>$this->model->id_emails];
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

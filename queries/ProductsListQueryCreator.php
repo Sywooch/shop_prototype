@@ -21,18 +21,27 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
             if (!parent::getSelectQuery()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
+            
             if (!$this->addSelectHead()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
+            
             if (!$this->addFilters()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
+            
             if (!$this->addCategoriesSubcategory()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
-            if (!$this->addSelectEnd()) {
+            
+            if (!$this->addOrder()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
+            
+            if (!$this->addLimit()) {
+                throw new ErrorException('Ошибка при построении запроса!');
+            }
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -106,25 +115,6 @@ class ProductsListQueryCreator extends AbstractSeletcQueryCreator
                 'subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subCategoryKey'])
             ]);
             
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Формирует финальную часть строки запроса к БД
-     * @return boolean
-     */
-    protected function addSelectEnd()
-    {
-        try {
-            if (!$this->addOrder()) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            if (!$this->addLimit()) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

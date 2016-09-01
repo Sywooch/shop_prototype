@@ -11,17 +11,6 @@ use app\queries\AbstractDeleteQueryCreator;
 class EmailsMailingListDeleteQueryCreator extends AbstractDeleteQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'emails_mailing_list'=>[
-            'tableName'=>'emails_mailing_list',
-            'tableFieldWhere'=>'id_email',
-            'tableFieldWhereTwo'=>'id_mailing_list',
-        ],
-    ];
-    
-    /**
      * Инициирует создание DELETE запроса
      * @return boolean
      */
@@ -29,49 +18,13 @@ class EmailsMailingListDeleteQueryCreator extends AbstractDeleteQueryCreator
     {
         try {
             if (!parent::getDeleteQuery()) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            if (empty($this->_mapperObject->objectsArray)) {
-                throw new ErrorException('Отсутствуют данные для построения запроса!');
-            }
-            if (empty($this->_mapperObject->fields)) {
-                throw new ErrorException('Отсутствуют данные для построения запроса!');
+                throw new ErrorException('Не задано имя таблицы!');
             }
             
-            $id_email_array = array();
-            $id_mailing_list_array = array();
-            
-            foreach ($this->_mapperObject->fields as $field) {
-                foreach ($this->_mapperObject->objectsArray as $key=>$object) {
-                    $param = $key . '_' . $field;
-                    $this->_mapperObject->params[':' . $param] = $object->$field;
-                    if ($field == $this->config['emails_mailing_list']['tableFieldWhere']) {
-                        $id_email_array[] = $param;
-                    } else {
-                        $id_mailing_list_array[] = $param;
-                    }
-                }
-            }
-            
-            $where = $this->getWhereIn(
-                $this->config['emails_mailing_list']['tableName'],
-                $this->config['emails_mailing_list']['tableFieldWhere'],
-                implode(',:', $id_email_array)
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
-            
-            $where = $this->getWhereIn(
-                $this->config['emails_mailing_list']['tableName'],
-                $this->config['emails_mailing_list']['tableFieldWhereTwo'],
-                implode(',:', $id_mailing_list_array)
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->execute->delete($this->_mapperObject->tableName, [
+                'id_email'=>$this->_mapperObject->params['id_email'],
+                'id_mailing_list'=>$this->_mapperObject->params['id_mailing_list']
+            ]);
             
             return true;
         } catch (\Exception $e) {

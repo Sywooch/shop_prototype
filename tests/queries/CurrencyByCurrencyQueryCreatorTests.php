@@ -2,7 +2,9 @@
 
 namespace app\tests\queries;
 
-use app\tests\MockObject;
+use app\tests\{DbManager,
+    MockModel,
+    MockObject};
 use app\queries\CurrencyByCurrencyQueryCreator;
 
 /**
@@ -10,6 +12,15 @@ use app\queries\CurrencyByCurrencyQueryCreator;
  */
 class CurrencyByCurrencyQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
+    private static $_currency = 'USD';
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,13 +29,19 @@ class CurrencyByCurrencyQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'currency',
             'fields'=>['id', 'currency', 'exchange_rate', 'main'],
+            'model'=>new MockModel(['currency'=>self::$_currency])
         ]);
         
         $queryCreator = new CurrencyByCurrencyQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[currency.id]],[[currency.currency]],[[currency.exchange_rate]],[[currency.main]] FROM {{currency}} WHERE [[currency.currency]]=:currency';
+        $query = "SELECT `currency`.`id`, `currency`.`currency`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency` WHERE `currency`.`currency`='" . self::$_currency . "'";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

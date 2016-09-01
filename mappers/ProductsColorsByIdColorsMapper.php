@@ -25,15 +25,8 @@ class ProductsColorsByIdColorsMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model) || !$this->model instanceof ColorsModel) {
+            if (empty($this->model) || !$this->model instanceof ColorsModel || empty($this->model->id)) {
                 throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-            }
-            
-            if (empty($this->params)) {
-                if (empty($this->model->id)) {
-                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
-                }
-                $this->params = [':id_colors'=>$this->model->id];
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

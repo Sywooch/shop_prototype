@@ -12,7 +12,7 @@ class BrandsAdminMapper extends AbstractGetMapper
     /**
      * @var string имя класса, который формирует строку запроса
      */
-    public $queryClass = 'app\queries\BrandsJoinProductsAdminQueryCreator';
+    public $queryClass = 'app\queries\GetBrandsRelatedProductsAdminQueryCreator';
     /**
      * @var string имя класса, который создает объекты из данных БД
      */

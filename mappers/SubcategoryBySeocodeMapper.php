@@ -25,15 +25,8 @@ class SubcategoryBySeocodeMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model) || !$this->model instanceof SubcategoryModel) {
-                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-            }
-            
-            if (empty($this->params)) {
-                if (empty($this->model->seocode)) {
-                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
-                }
-                $this->params = [':seocode'=>$this->model->seocode];
+            if (empty($this->model) || !$this->model instanceof SubcategoryModel || empty($this->model->seocode)) {
+                throw new ErrorException('Не определен объект модели!');
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

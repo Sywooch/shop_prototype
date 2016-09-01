@@ -20,6 +20,11 @@ abstract class AbstractSeletcQueryCreator extends AbstractBaseQueryCreator
             if (!parent::update($object)) {
                 throw new ErrorException('Ошибка при сохранении объекта, для которого выполняются действия!');
             }
+            
+            if (!$this->addTableName()) {
+                throw new ErrorException('Ошибка при добавлении имени таблицы к полям!');
+            }
+            
             if (!$this->getSelectQuery()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }

@@ -2,7 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
+use app\tests\{DbManager,
+    MockObject,
     MockModel};
 use app\queries\SizesInsertQueryCreator;
 
@@ -11,7 +12,14 @@ use app\queries\SizesInsertQueryCreator;
  */
 class SizesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_size = '45';
+    private static $_dbClass;
+    private static $_size = 45;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -24,6 +32,9 @@ class SizesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'objectsArray'=>[
                 new MockModel([
                     'size'=>self::$_size, 
+                ]),
+                new MockModel([
+                    'size'=>self::$_size * 1.5, 
                 ])
             ],
         ]);
@@ -31,8 +42,13 @@ class SizesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new SizesInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{sizes}} (size) VALUES (:0_size)';
+        $query = "INSERT INTO `sizes` (`size`) VALUES (" . self::$_size . "), (" . self::$_size*1.5 . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

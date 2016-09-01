@@ -2,7 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
+use app\tests\{DbManager,
+    MockObject,
     MockModel};
 use app\queries\EmailsMailingListInsertQueryCreator;
 
@@ -11,7 +12,14 @@ use app\queries\EmailsMailingListInsertQueryCreator;
  */
 class EmailsMailingListInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_id = 1;
+    private static $_dbClass;
+    private static $_id = 2;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -32,8 +40,13 @@ class EmailsMailingListInsertQueryCreatorTests extends \PHPUnit_Framework_TestCa
         $queryCreator = new EmailsMailingListInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{emails_mailing_list}} (id_email,id_mailing_list) VALUES (:0_id_email,:0_id_mailing_list)';
+        $query = "INSERT INTO `emails_mailing_list` (`id_email`, `id_mailing_list`) VALUES (" . self::$_id . ', ' . self::$_id . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

@@ -28,8 +28,8 @@ class BrandsDeleteMapper extends AbstractInsertMapper
                 if (!is_object($object) || !$object instanceof BrandsModel) {
                     throw new ErrorException('Неверный тип данных!');
                 }
+                $this->_mapperObject->params[] = $object->id;
             }
-            
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -18,11 +18,13 @@ abstract class AbstractDeleteQueryCreator extends AbstractBaseQueryCreator
     {
         try {
             if (!parent::update($object)) {
-                throw new ErrorException('Ошибка при сохранении объекта, для которого выполняются действия!');
+                throw new ErrorException('Ошибка при сохранении объекта!');
             }
+            
             if (!$this->getDeleteQuery()) {
                 throw new ErrorException('Ошибка при построении запроса!');
             }
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
@@ -39,21 +41,9 @@ abstract class AbstractDeleteQueryCreator extends AbstractBaseQueryCreator
             if (empty($this->_mapperObject->tableName)) {
                 throw new ErrorException('Не задано имя таблицы!');
             }
-            if (empty($this->_mapperObject->objectsArray)) {
-                throw new ErrorException('Отсутствуют объекты для удаления!');
+            if (empty($this->_mapperObject->params)) {
+                throw new ErrorException('Ошибка при получении параметров!');
             }
-            
-            foreach ($this->_mapperObject->objectsArray as $object) {
-                $reflectionProperty = (new \ReflectionClass($object))->getProperty($this->fieldWhere);
-                $this->_mapperObject->params[] = $reflectionProperty->getValue($object);
-            }
-            
-            $query = \Yii::$app->db->createCommand()->delete(
-                $this->_mapperObject->tableName,
-                [$this->fieldWhere=>$this->_mapperObject->params]
-            );
-            
-            $this->_mapperObject->query = $query->getRawSql();
             
             return true;
         } catch (\Exception $e) {

@@ -23,8 +23,8 @@ class GetCategoriesQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new GetCategoriesQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[categories.id]],[[categories.name]],[[categories.seocode]] FROM {{categories}}';
+        $query = "SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode` FROM `categories`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

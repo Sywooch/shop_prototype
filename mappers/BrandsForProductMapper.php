@@ -25,18 +25,9 @@ class BrandsForProductMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model) || !$this->model instanceof ProductsModel) {
-                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
+            if (empty($this->model) || !$this->model instanceof ProductsModel || empty($this->model->id)) {
+                throw new ErrorException('Не определен объект модели!');
             }
-            
-            if (empty($this->params)) {
-                if (empty(\Yii::$app->params['idKey'])) {
-                    throw new ErrorException('Не поределен idKey!');
-                }
-                if (empty($this->model->id)) {
-                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
-                }
-                $this->params = [':' . \Yii::$app->params['idKey']=>$this->model->id];
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

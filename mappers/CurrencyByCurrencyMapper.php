@@ -25,15 +25,8 @@ class CurrencyByCurrencyMapper extends AbstractGetMapper
         try {
             parent::init();
             
-            if (empty($this->model) || !$this->model instanceof CurrencyModel) {
-                throw new ErrorException('Не определен объект модели, для которой необходимо получить данные!');
-            }
-            
-            if (empty($this->params)) {
-                if (empty($this->model->currency)) {
-                    throw new ErrorException('Отсутствуют данные для выполнения запроса!');
-                }
-                $this->params = [':currency'=>$this->model->currency];
+            if (empty($this->model) || !$this->model instanceof CurrencyModel || empty($this->model->currency)) {
+                throw new ErrorException('Не определен объект модели!');
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

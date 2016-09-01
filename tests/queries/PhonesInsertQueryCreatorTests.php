@@ -2,7 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
+use app\tests\{DbManager,
+    MockObject,
     MockModel};
 use app\queries\PhonesInsertQueryCreator;
 
@@ -11,6 +12,15 @@ use app\queries\PhonesInsertQueryCreator;
  */
 class PhonesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
+    private static $_phone = '+380683658978';
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -20,15 +30,20 @@ class PhonesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
             'tableName'=>'phones',
             'fields'=>['phone'],
             'objectsArray'=>[
-                new MockModel(['phone'=>'+380683658978'])
+                new MockModel(['phone'=>self::$_phone])
             ],
         ]);
         
         $queryCreator = new PhonesInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{phones}} (phone) VALUES (:0_phone)';
+        $query = "INSERT INTO `phones` (`phone`) VALUES ('" . self::$_phone . "')";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

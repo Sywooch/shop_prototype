@@ -2,8 +2,7 @@
 
 namespace app\tests\queries;
 
-use app\tests\{MockObject, 
-    MockModel};
+use app\tests\MockObject;
 use app\queries\SubcategoryDeleteQueryCreator;
 
 /**
@@ -11,7 +10,7 @@ use app\queries\SubcategoryDeleteQueryCreator;
  */
 class SubcategoryDeleteQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_id = 1;
+    private static $_params = [1, 4];
     
     /**
      * Тестирует создание строки SQL запроса
@@ -20,17 +19,14 @@ class SubcategoryDeleteQueryCreatorTests extends \PHPUnit_Framework_TestCase
     {
         $mockObject = new MockObject([
             'tableName'=>'subcategory',
-            'objectsArray'=>[
-                new MockModel(['id'=>self::$_id]),
-                new MockModel(['id'=>self::$_id]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new SubcategoryDeleteQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'DELETE FROM {{subcategory}} WHERE [[subcategory.id]] IN (:0_id,:1_id)';
+        $query = "DELETE FROM `subcategory` WHERE `id` IN (" . implode(', ', self::$_params) . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
     }
 }

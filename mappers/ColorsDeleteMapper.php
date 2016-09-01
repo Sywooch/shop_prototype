@@ -28,6 +28,7 @@ class ColorsDeleteMapper extends AbstractInsertMapper
                 if (!is_object($object) || !$object instanceof ColorsModel) {
                     throw new ErrorException('Неверный тип данных!');
                 }
+                $this->objectsArray->params[] = $object->id;
             }
             
         } catch (\Exception $e) {

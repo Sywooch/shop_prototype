@@ -2,8 +2,7 @@
 
 namespace app\tests\queries;
 
-use app\tests\{MockObject, 
-    MockModel};
+use app\tests\MockObject;
 use app\queries\EmailsMailingListDeleteQueryCreator;
 
 /**
@@ -11,7 +10,10 @@ use app\queries\EmailsMailingListDeleteQueryCreator;
  */
 class EmailsMailingListDeleteQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_id = 1;
+    private static $_params = [
+        'id_email'=>[1, 23], 
+        'id_mailing_list'=>[2, 32]
+    ];
     
     /**
      * Тестирует создание строки SQL запроса
@@ -21,17 +23,14 @@ class EmailsMailingListDeleteQueryCreatorTests extends \PHPUnit_Framework_TestCa
         $mockObject = new MockObject([
             'tableName'=>'emails_mailing_list',
             'fields'=>['id_email', 'id_mailing_list'],
-            'objectsArray'=>[
-                new MockModel(['id_email'=>self::$_id, 'id_mailing_list'=>self::$_id]),
-                new MockModel(['id_email'=>self::$_id, 'id_mailing_list'=>self::$_id]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new EmailsMailingListDeleteQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'DELETE FROM {{emails_mailing_list}} WHERE [[emails_mailing_list.id_email]] IN (:0_id_email,:1_id_email) AND [[emails_mailing_list.id_mailing_list]] IN (:0_id_mailing_list,:1_id_mailing_list)';
+        $query = "DELETE FROM `emails_mailing_list` WHERE (`id_email` IN (" . implode(', ', self::$_params['id_email']) . ")) AND (`id_mailing_list` IN (" . implode(', ', self::$_params['id_mailing_list']) . "))";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
     }
 }

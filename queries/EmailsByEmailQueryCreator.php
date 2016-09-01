@@ -11,16 +11,6 @@ use app\queries\AbstractSeletcQueryCreator;
 class EmailsByEmailQueryCreator extends AbstractSeletcQueryCreator
 {
     /**
-     * @var array массив данных для построения запроса
-     */
-    public $config = [
-        'emails'=>[
-            'tableName'=>'emails',
-            'tableFieldWhere'=>'email',
-        ],
-    ];
-    
-    /**
      * Инициирует создание SELECT запроса
      * @return boolean
      */
@@ -31,15 +21,8 @@ class EmailsByEmailQueryCreator extends AbstractSeletcQueryCreator
                 throw new ErrorException('Ошибка при построении запроса!');
             }
             
-            $where = $this->getWhere(
-                $this->config['emails']['tableName'],
-                $this->config['emails']['tableFieldWhere'],
-                $this->config['emails']['tableFieldWhere']
-            );
-            if (!is_string($where)) {
-                throw new ErrorException('Ошибка при построении запроса!');
-            }
-            $this->_mapperObject->query .= $where;
+            $this->_mapperObject->query->where(['emails.email'=>$this->_mapperObject->model->email]);
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

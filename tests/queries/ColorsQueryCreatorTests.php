@@ -23,8 +23,8 @@ class ColorsQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ColorsQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[colors.id]],[[colors.color]] FROM {{colors}}';
+        $query = "SELECT `colors`.`id`, `colors`.`color` FROM `colors`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

@@ -2,7 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
+use app\tests\{DbManager,
+    MockObject,
     MockModel};
 use app\queries\CurrencyInsertQueryCreator;
 
@@ -11,9 +12,16 @@ use app\queries\CurrencyInsertQueryCreator;
  */
 class CurrencyInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
     private static $_currency = 'UAH';
     private static $_exchange_rate = '27.05698';
     private static $_main = true;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -35,8 +43,13 @@ class CurrencyInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new CurrencyInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{currency}} (currency,exchange_rate,main) VALUES (:0_currency,:0_exchange_rate,:0_main)';
+        $query = "INSERT INTO `currency` (`currency`, `exchange_rate`, `main`) VALUES ('" . self::$_currency . "', '" . self::$_exchange_rate . "', " . self::$_main . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

@@ -23,8 +23,8 @@ class GetBrandsQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new GetBrandsQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'SELECT [[brands.id]],[[brands.brand]] FROM {{brands}}';
+        $query = "SELECT `brands`.`id`, `brands`.`brand` FROM `brands`";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
     }
 }

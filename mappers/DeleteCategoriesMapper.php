@@ -28,6 +28,7 @@ class DeleteCategoriesMapper extends AbstractInsertMapper
                 if (!is_object($object) || !$object instanceof CategoriesModel) {
                     throw new ErrorException('Неверный тип данных!');
                 }
+                $this->params[] = $object->id;
             }
             
         } catch (\Exception $e) {

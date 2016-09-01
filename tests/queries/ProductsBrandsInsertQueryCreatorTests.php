@@ -2,7 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
+use app\tests\{DbManager,
+    MockObject,
     MockModel};
 use app\queries\ProductsBrandsInsertQueryCreator;
 
@@ -11,7 +12,14 @@ use app\queries\ProductsBrandsInsertQueryCreator;
  */
 class ProductsBrandsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_id = 1;
+    private static $_dbClass;
+    private static $_id = 2;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -32,8 +40,13 @@ class ProductsBrandsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ProductsBrandsInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{products_brands}} (id_products,id_brands) VALUES (:0_id_products,:0_id_brands)';
+        $query = "INSERT INTO `products_brands` (`id_products`, `id_brands`) VALUES (" . self::$_id . ', ' . self::$_id . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

@@ -2,7 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
+use app\tests\{DbManager,
+    MockObject,
     MockModel};
 use app\queries\ColorsInsertQueryCreator;
 
@@ -11,7 +12,14 @@ use app\queries\ColorsInsertQueryCreator;
  */
 class ColorsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
     private static $_color = 'gray';
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -31,8 +39,13 @@ class ColorsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $queryCreator = new ColorsInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{colors}} (color) VALUES (:0_color)';
+        $query = "INSERT INTO `colors` (`color`) VALUES ('" . self::$_color . "')";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }
