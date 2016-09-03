@@ -2,8 +2,8 @@
 
 namespace app\tests\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\UsersUpdateQueryCreator;
 
 /**
@@ -11,7 +11,14 @@ use app\queries\UsersUpdateQueryCreator;
  */
 class UsersUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_some = 1;
+    private static $_dbClass;
+    private static $_params = [[3, 6, 'John', 'Doe', 3, 12]];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -21,23 +28,19 @@ class UsersUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'users',
             'fields'=>['id', 'id_emails', 'name', 'surname', 'id_phones', 'id_address'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id'=>self::$_some, 
-                    'id_emails'=>self::$_some, 
-                    'name'=>self::$_some, 
-                    'surname'=>self::$_some, 
-                    'id_phones'=>self::$_some, 
-                    'id_address'=>self::$_some, 
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new UsersUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{users}} (id,id_emails,name,surname,id_phones,id_address) VALUES (:0_id,:0_id_emails,:0_name,:0_surname,:0_id_phones,:0_id_address) ON DUPLICATE KEY UPDATE id_emails=VALUES(id_emails),name=VALUES(name),surname=VALUES(surname),id_phones=VALUES(id_phones),id_address=VALUES(id_address)';
+        $query = "INSERT INTO `users` (`id`, `id_emails`, `name`, `surname`, `id_phones`, `id_address`) VALUES (" . self::$_params[0][0] . ', ' . self::$_params[0][1] . ", '" . self::$_params[0][2] . "', '" . self::$_params[0][3] . "', " . self::$_params[0][4] . ', ' . self::$_params[0][5] . ") ON DUPLICATE KEY UPDATE `id_emails`=VALUES(`id_emails`), `name`=VALUES(`name`), `surname`=VALUES(`surname`), `id_phones`=VALUES(`id_phones`), `id_address`=VALUES(`id_address`)";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

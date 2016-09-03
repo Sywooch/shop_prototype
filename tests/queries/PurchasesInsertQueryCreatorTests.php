@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\PurchasesInsertQueryCreator;
 
 /**
@@ -11,7 +11,14 @@ use app\queries\PurchasesInsertQueryCreator;
  */
 class PurchasesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_id = 1;
+    private static $_dbClass;
+    private static $_params = [[1, 23, 34, 2, 5, 645, 2, 1, 1456987854]];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -21,26 +28,19 @@ class PurchasesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'purchases',
             'fields'=>['id_users', 'id_products', 'quantity', 'id_colors', 'id_sizes', 'id_deliveries', 'id_payments', 'received', 'received_date'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id_users'=>self::$_id, 
-                    'id_products'=>self::$_id, 
-                    'quantity'=>self::$_id,
-                    'id_colors'=>self::$_id, 
-                    'id_sizes'=>self::$_id,
-                    'id_deliveries'=>self::$_id, 
-                    'id_payments'=>self::$_id,
-                    'received'=>self::$_id,
-                    'received_date'=>self::$_id
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new PurchasesInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{purchases}} (id_users,id_products,quantity,id_colors,id_sizes,id_deliveries,id_payments,received,received_date) VALUES (:0_id_users,:0_id_products,:0_quantity,:0_id_colors,:0_id_sizes,:0_id_deliveries,:0_id_payments,:0_received,:0_received_date)';
+        $query = "INSERT INTO `purchases` (`id_users`, `id_products`, `quantity`, `id_colors`, `id_sizes`, `id_deliveries`, `id_payments`, `received`, `received_date`) VALUES (" . implode(', ', array_slice(self::$_params[0], 0, -1)) . ", '" . array_pop(self::$_params[0]) . "')";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

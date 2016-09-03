@@ -3,8 +3,7 @@
 namespace app\queries;
 
 use app\tests\{DbManager,
-    MockObject,
-    MockModel};
+    MockObject};
 use app\queries\UsersInsertQueryCreator;
 
 /**
@@ -13,12 +12,7 @@ use app\queries\UsersInsertQueryCreator;
 class UsersInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_id_emails = 32;
-    private static $_password = 'ghJh4k';
-    private static $_name = 'Name';
-    private static $_surname = 'Surname';
-    private static $_id_phones = 12;
-    private static $_id_address = 2;
+    private static $_params = [[34, 'hj89Hfk', 'Name', 'Surname', 78, 11]];
     
     public static function setUpBeforeClass()
     {
@@ -34,22 +28,13 @@ class UsersInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'users',
             'fields'=>['id_emails', 'password', 'name', 'surname', 'id_phones', 'id_address'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id_emails'=>self::$_id_emails, 
-                    'password'=>self::$_password, 
-                    'name'=>self::$_name, 
-                    'surname'=>self::$_surname, 
-                    'id_phones'=>self::$_id_phones, 
-                    'id_address'=>self::$_id_address, 
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new UsersInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{users}} (id_emails,password,name,surname,id_phones,id_address) VALUES (:0_id_emails,:0_password,:0_name,:0_surname,:0_id_phones,:0_id_address)';
+        $query = "INSERT INTO `users` (`id_emails`, `password`, `name`, `surname`, `id_phones`, `id_address`) VALUES (" . self::$_params[0][0] . ", '" . self::$_params[0][1] . "', '" . self::$_params[0][2] . "', '" . self::$_params[0][3] . "', " . self::$_params[0][4] . ", " . self::$_params[0][5] . ")";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

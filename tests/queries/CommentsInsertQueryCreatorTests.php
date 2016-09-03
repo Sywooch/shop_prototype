@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\CommentsInsertQueryCreator;
 
 /**
@@ -11,6 +11,15 @@ use app\queries\CommentsInsertQueryCreator;
  */
 class CommentsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
+    private static $_params = [['Some text', 'John', 'some@some.com', 98]];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -19,16 +28,19 @@ class CommentsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'comments',
             'fields'=>['text', 'name', 'email', 'id_products'],
-            'objectsArray'=>[
-                new MockModel(['text'=>'some', 'name'=>'some', 'email'=>'some@some.com', 'id_products'=>'some'])
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new CommentsInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{comments}} (text,name,email,id_products) VALUES (:0_text,:0_name,:0_email,:0_id_products)';
+        $query = "INSERT INTO `comments` (`text`, `name`, `email`, `id_products`) VALUES ('" . self::$_params[0][0] . "', '" . self::$_params[0][1] . "', '" . self::$_params[0][2] . "', " . self::$_params[0][3] . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

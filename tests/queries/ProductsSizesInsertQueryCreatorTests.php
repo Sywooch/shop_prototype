@@ -3,8 +3,7 @@
 namespace app\queries;
 
 use app\tests\{DbManager,
-    MockObject,
-    MockModel};
+    MockObject};
 use app\queries\ProductsSizesInsertQueryCreator;
 
 /**
@@ -13,7 +12,7 @@ use app\queries\ProductsSizesInsertQueryCreator;
 class ProductsSizesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_id = 2;
+    private static $_params = [[29, 67]];
     
     public static function setUpBeforeClass()
     {
@@ -29,18 +28,13 @@ class ProductsSizesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'products_sizes',
             'fields'=>['id_products', 'id_sizes'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id_products'=>self::$_id,
-                    'id_sizes'=>self::$_id,
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new ProductsSizesInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `products_sizes` (`id_products`, `id_sizes`) VALUES (" . self::$_id . ', ' . self::$_id . ")";
+        $query = "INSERT INTO `products_sizes` (`id_products`, `id_sizes`) VALUES (" . implode(', ', self::$_params[0]) . ")";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\SizesUpdateQueryCreator;
 
 /**
@@ -11,7 +11,14 @@ use app\queries\SizesUpdateQueryCreator;
  */
 class SizesUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_some = 1;
+    private static $_dbClass;
+    private static $_params = [[1, 46]];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -21,19 +28,19 @@ class SizesUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'sizes',
             'fields'=>['id', 'size'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id'=>self::$_some, 
-                    'size'=>self::$_some, 
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new SizesUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{sizes}} (id,size) VALUES (:0_id,:0_size) ON DUPLICATE KEY UPDATE size=VALUES(size)';
+        $query = "INSERT INTO `sizes` (`id`, `size`) VALUES (" . implode(', ', self::$_params[0]) . ") ON DUPLICATE KEY UPDATE `size`=VALUES(`size`)";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

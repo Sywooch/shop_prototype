@@ -3,8 +3,7 @@
 namespace app\queries;
 
 use app\tests\{DbManager,
-    MockObject,
-    MockModel};
+    MockObject};
 use app\queries\ColorsInsertQueryCreator;
 
 /**
@@ -13,7 +12,7 @@ use app\queries\ColorsInsertQueryCreator;
 class ColorsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_color = 'gray';
+    private static $_params = [['gray']];
     
     public static function setUpBeforeClass()
     {
@@ -29,17 +28,13 @@ class ColorsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'colors',
             'fields'=>['color'],
-            'objectsArray'=>[
-                new MockModel([
-                    'color'=>self::$_color, 
-                ])
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new ColorsInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `colors` (`color`) VALUES ('" . self::$_color . "')";
+        $query = "INSERT INTO `colors` (`color`) VALUES ('" . self::$_params[0][0] . "')";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

@@ -3,8 +3,7 @@
 namespace app\queries;
 
 use app\tests\{DbManager,
-    MockObject,
-    MockModel};
+    MockObject};
 use app\queries\EmailsInsertQueryCreator;
 
 /**
@@ -13,7 +12,7 @@ use app\queries\EmailsInsertQueryCreator;
 class EmailsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_email = 'some@some.com';
+    private static $_params = [['some@some.com']];
     
     public static function setUpBeforeClass()
     {
@@ -29,15 +28,13 @@ class EmailsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'emails',
             'fields'=>['email'],
-            'objectsArray'=>[
-                new MockModel(['email'=>self::$_email])
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new EmailsInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `emails` (`email`) VALUES ('" . self::$_email . "')";
+        $query = "INSERT INTO `emails` (`email`) VALUES ('" . self::$_params[0][0] . "')";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

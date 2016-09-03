@@ -3,8 +3,7 @@
 namespace app\queries;
 
 use app\tests\{DbManager,
-    MockObject,
-    MockModel};
+    MockObject};
 use app\queries\EmailsMailingListInsertQueryCreator;
 
 /**
@@ -13,7 +12,7 @@ use app\queries\EmailsMailingListInsertQueryCreator;
 class EmailsMailingListInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_id = 2;
+    private static $_params = [[2, 90]];
     
     public static function setUpBeforeClass()
     {
@@ -29,18 +28,13 @@ class EmailsMailingListInsertQueryCreatorTests extends \PHPUnit_Framework_TestCa
         $mockObject = new MockObject([
             'tableName'=>'emails_mailing_list',
             'fields'=>['id_email', 'id_mailing_list'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id_email'=>self::$_id,
-                    'id_mailing_list'=>self::$_id,
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new EmailsMailingListInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `emails_mailing_list` (`id_email`, `id_mailing_list`) VALUES (" . self::$_id . ', ' . self::$_id . ")";
+        $query = "INSERT INTO `emails_mailing_list` (`id_email`, `id_mailing_list`) VALUES (" . implode(', ', self::$_params[0]) . ")";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

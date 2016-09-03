@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\ProductsInsertQueryCreator;
 
 /**
@@ -11,14 +11,14 @@ use app\queries\ProductsInsertQueryCreator;
  */
 class ProductsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_date = 'date';
-    private static $_code = 'code';
-    private static $_name = 'name';
-    private static $_description = 'description';
-    private static $_price = 14.45;
-    private static $_images = 'images';
-    private static $_id_categories = 1;
-    private static $_id_subcategory = 1;
+    private static $_dbClass;
+    private static $_params = [[1456878254, 'HP-17897', 'John', 'Some description', 'Short description', 98.75, 'images/12345432', 23, 12]];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -28,26 +28,19 @@ class ProductsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'products',
             'fields'=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory'],
-            'objectsArray'=>[
-                new MockModel([
-                    'date'=>self::$_date,
-                    'code'=>self::$_code,
-                    'name'=>self::$_name,
-                    'description'=>self::$_description,
-                    'short_description'=>self::$_description,
-                    'price'=>self::$_price,
-                    'images'=>self::$_images,
-                    'id_categories'=>self::$_id_categories,
-                    'id_subcategory'=>self::$_id_subcategory,
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new ProductsInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{products}} (date,code,name,description,short_description,price,images,id_categories,id_subcategory) VALUES (:0_date,:0_code,:0_name,:0_description,:0_short_description,:0_price,:0_images,:0_id_categories,:0_id_subcategory)';
+        $query = "INSERT INTO `products` (`date`, `code`, `name`, `description`, `short_description`, `price`, `images`, `id_categories`, `id_subcategory`) VALUES ('" . implode("', '", array_slice(self::$_params[0], 0, -2)) . "', " . implode(', ', array_slice(self::$_params[0], -2)) . ")";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

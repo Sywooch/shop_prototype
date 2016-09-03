@@ -13,7 +13,7 @@ use app\queries\PhonesInsertQueryCreator;
 class PhonesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_phone = '+380683658978';
+    private static $_params = [['+380683658978']];
     
     public static function setUpBeforeClass()
     {
@@ -29,15 +29,13 @@ class PhonesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'phones',
             'fields'=>['phone'],
-            'objectsArray'=>[
-                new MockModel(['phone'=>self::$_phone])
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new PhonesInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `phones` (`phone`) VALUES ('" . self::$_phone . "')";
+        $query = "INSERT INTO `phones` (`phone`) VALUES ('" . self::$_params[0][0] . "')";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

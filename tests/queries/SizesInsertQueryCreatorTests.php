@@ -3,8 +3,7 @@
 namespace app\queries;
 
 use app\tests\{DbManager,
-    MockObject,
-    MockModel};
+    MockObject};
 use app\queries\SizesInsertQueryCreator;
 
 /**
@@ -13,7 +12,7 @@ use app\queries\SizesInsertQueryCreator;
 class SizesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_size = 45;
+    private static $_params = [[45], [23]];
     
     public static function setUpBeforeClass()
     {
@@ -29,20 +28,13 @@ class SizesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'sizes',
             'fields'=>['size'],
-            'objectsArray'=>[
-                new MockModel([
-                    'size'=>self::$_size, 
-                ]),
-                new MockModel([
-                    'size'=>self::$_size * 1.5, 
-                ])
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new SizesInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `sizes` (`size`) VALUES (" . self::$_size . "), (" . self::$_size*1.5 . ")";
+        $query = "INSERT INTO `sizes` (`size`) VALUES (" . self::$_params[0][0] . "), (" . self::$_params[1][0] . ")";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

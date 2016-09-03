@@ -2,9 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\DbManager;
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\InsertCategoriesQueryCreator;
 
 /**
@@ -13,8 +12,7 @@ use app\queries\InsertCategoriesQueryCreator;
 class InsertCategoriesQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_name = 'Очки';
-    private static $_seocode = 'glasses';
+    private static $_params = [['Очки', 'glasses']];
     
     public static function setUpBeforeClass()
     {
@@ -30,20 +28,15 @@ class InsertCategoriesQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'categories',
             'fields'=>['name', 'seocode'],
-            'objectsArray'=>[
-                new MockModel([
-                    'name'=>self::$_name, 
-                    'seocode'=>self::$_seocode
-                ])
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new InsertCategoriesQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `categories` (`name`, `seocode`) VALUES ('" . self::$_name . "', '" . self::$_seocode . "')";
+        $query = "INSERT INTO `categories` (`name`, `seocode`) VALUES ('" . implode("', '", self::$_params[0]) . "')";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
     }
     
     public static function tearDownAfterClass()

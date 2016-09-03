@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\BrandsUpdateQueryCreator;
 
 /**
@@ -11,7 +11,14 @@ use app\queries\BrandsUpdateQueryCreator;
  */
 class BrandsUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_some = 1;
+    private static $_dbClass;
+    private static $_params = [[3, 'Yusimitomoro']];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -21,19 +28,19 @@ class BrandsUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'brands',
             'fields'=>['id', 'brand'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id'=>self::$_some, 
-                    'brand'=>self::$_some, 
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new BrandsUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{brands}} (id,brand) VALUES (:0_id,:0_brand) ON DUPLICATE KEY UPDATE brand=VALUES(brand)';
+        $query = "INSERT INTO `brands` (`id`, `brand`) VALUES (" . self::$_params[0][0] . ", '" . self::$_params[0][1] . "') ON DUPLICATE KEY UPDATE `brand`=VALUES(`brand`)";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

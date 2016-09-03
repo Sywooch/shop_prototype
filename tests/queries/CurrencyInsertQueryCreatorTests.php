@@ -3,8 +3,7 @@
 namespace app\queries;
 
 use app\tests\{DbManager,
-    MockObject,
-    MockModel};
+    MockObject};
 use app\queries\CurrencyInsertQueryCreator;
 
 /**
@@ -13,9 +12,7 @@ use app\queries\CurrencyInsertQueryCreator;
 class CurrencyInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_currency = 'UAH';
-    private static $_exchange_rate = '27.05698';
-    private static $_main = true;
+    private static $_params = [['UAH', 27.05698, true]];
     
     public static function setUpBeforeClass()
     {
@@ -31,19 +28,13 @@ class CurrencyInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'currency',
             'fields'=>['currency', 'exchange_rate', 'main'],
-            'objectsArray'=>[
-                new MockModel([
-                    'currency'=>self::$_currency,
-                    'exchange_rate'=>self::$_exchange_rate,
-                    'main'=>self::$_main,
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new CurrencyInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `currency` (`currency`, `exchange_rate`, `main`) VALUES ('" . self::$_currency . "', '" . self::$_exchange_rate . "', " . self::$_main . ")";
+        $query = "INSERT INTO `currency` (`currency`, `exchange_rate`, `main`) VALUES ('" . implode("', '", array_slice(self::$_params[0], 0, -1)) . "', " . array_pop(self::$_params[0]) . ")";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

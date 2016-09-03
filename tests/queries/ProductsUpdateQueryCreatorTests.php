@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\ProductsUpdateQueryCreator;
 
 /**
@@ -11,7 +11,14 @@ use app\queries\ProductsUpdateQueryCreator;
  */
 class ProductsUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_some = 1;
+    private static $_dbClass;
+    private static $_params = [[2, 1456102321, 'RU-234', 'John', 'Description', 'Short description', 894.78, 'images/', 8, 2, 1]];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -21,28 +28,19 @@ class ProductsUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'products',
             'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id'=>self::$_some, 
-                    'date'=>self::$_some, 
-                    'code'=>self::$_some, 
-                    'name'=>self::$_some, 
-                    'description'=>self::$_some, 
-                    'short_description'=>self::$_some, 
-                    'price'=>self::$_some, 
-                    'images'=>self::$_some, 
-                    'id_categories'=>self::$_some, 
-                    'id_subcategory'=>self::$_some, 
-                    'active'=>self::$_some,
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new ProductsUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{products}} (id,date,code,name,description,short_description,price,images,id_categories,id_subcategory,active) VALUES (:0_id,:0_date,:0_code,:0_name,:0_description,:0_short_description,:0_price,:0_images,:0_id_categories,:0_id_subcategory,:0_active) ON DUPLICATE KEY UPDATE date=VALUES(date),code=VALUES(code),name=VALUES(name),description=VALUES(description),short_description=VALUES(short_description),price=VALUES(price),images=VALUES(images),id_categories=VALUES(id_categories),id_subcategory=VALUES(id_subcategory),active=VALUES(active)';
+        $query = "INSERT INTO `products` (`id`, `date`, `code`, `name`, `description`, `short_description`, `price`, `images`, `id_categories`, `id_subcategory`, `active`) VALUES (" . self::$_params[0][0] . ", '" . self::$_params[0][1] . "', '" . self::$_params[0][2] . "', '" . self::$_params[0][3] . "', '" . self::$_params[0][4] . "', '" . self::$_params[0][5] . "', '" . self::$_params[0][6] . "', '" . self::$_params[0][7] . "', " . self::$_params[0][8] . ', ' . self::$_params[0][9] . ', ' . self::$_params[0][10] . ") ON DUPLICATE KEY UPDATE `date`=VALUES(`date`), `code`=VALUES(`code`), `name`=VALUES(`name`), `description`=VALUES(`description`), `short_description`=VALUES(`short_description`), `price`=VALUES(`price`), `images`=VALUES(`images`), `id_categories`=VALUES(`id_categories`), `id_subcategory`=VALUES(`id_subcategory`), `active`=VALUES(`active`)";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

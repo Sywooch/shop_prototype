@@ -38,6 +38,8 @@ class ColorsByColorQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $query = "SELECT `colors`.`id`, `colors`.`color` FROM `colors` WHERE `colors`.`color`='" . self::$_color . "'";
         
         $this->assertEquals($query, $mockObject->query->createCommand()->getRawSql());
+        
+        echo $mockObject->query->createCommand()->getSql();
     }
     
     public static function tearDownAfterClass()

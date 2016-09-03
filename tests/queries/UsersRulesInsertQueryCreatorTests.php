@@ -3,8 +3,7 @@
 namespace app\queries;
 
 use app\tests\{DbManager,
-    MockObject,
-    MockModel};
+    MockObject};
 use app\queries\UsersRulesInsertQueryCreator;
 
 /**
@@ -13,7 +12,7 @@ use app\queries\UsersRulesInsertQueryCreator;
 class UsersRulesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_id = 2;
+    private static $_params = [[2, 89], [13, 66]];
     
     public static function setUpBeforeClass()
     {
@@ -29,17 +28,13 @@ class UsersRulesInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'users_rules',
             'fields'=>['id_users', 'id_rules'],
-            'objectsArray'=>[
-                new MockModel(['id_users'=>self::$_id, 'id_rules'=>self::$_id + 2]),
-                new MockModel(['id_users'=>self::$_id + 2, 'id_rules'=>self::$_id * 2]),
-                new MockModel(['id_users'=>self::$_id * 3, 'id_rules'=>self::$_id + 4]),
-            ]
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new UsersRulesInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = "INSERT INTO `users_rules` (`id_users`, `id_rules`) VALUES (" . self::$_id . ', ' . (self::$_id+2) . "), (" . (self::$_id+2) . ', ' . (self::$_id*2) . "), (" . (self::$_id*3) . ', ' . (self::$_id+4) . ")";
+        $query = "INSERT INTO `users_rules` (`id_users`, `id_rules`) VALUES (" . implode(', ', self::$_params[0]) . "), (" . implode(', ', self::$_params[1]) . ")";
         
         $this->assertEquals($query, $mockObject->execute->getRawSql());
     }

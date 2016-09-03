@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\CurrencyUpdateQueryCreator;
 
 /**
@@ -11,7 +11,14 @@ use app\queries\CurrencyUpdateQueryCreator;
  */
 class CurrencyUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_some = 1;
+    private static $_dbClass;
+    private static $_params = [[1, 'UAH', 27.8954, true]];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -21,21 +28,19 @@ class CurrencyUpdateQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'currency',
             'fields'=>['id', 'currency', 'exchange_rate', 'main'],
-            'objectsArray'=>[
-                new MockModel([
-                    'id'=>self::$_some, 
-                    'currency'=>self::$_some,
-                    'exchange_rate'=>self::$_some,
-                    'main'=>self::$_some,
-                ]),
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new CurrencyUpdateQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{currency}} (id,currency,exchange_rate,main) VALUES (:0_id,:0_currency,:0_exchange_rate,:0_main) ON DUPLICATE KEY UPDATE currency=VALUES(currency),exchange_rate=VALUES(exchange_rate),main=VALUES(main)';
+        $query = "INSERT INTO `currency` (`id`, `currency`, `exchange_rate`, `main`) VALUES (" . self::$_params[0][0] . ", '" . self::$_params[0][1] . "', '" . self::$_params[0][2] . "', " . self::$_params[0][3] . ") ON DUPLICATE KEY UPDATE `currency`=VALUES(`currency`), `exchange_rate`=VALUES(`exchange_rate`), `main`=VALUES(`main`)";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

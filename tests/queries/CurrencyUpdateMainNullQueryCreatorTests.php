@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\CurrencyUpdateMainNullQueryCreator;
 
 /**
@@ -11,6 +11,17 @@ use app\queries\CurrencyUpdateMainNullQueryCreator;
  */
 class CurrencyUpdateMainNullQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
+    private static $_dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+        
+        \Yii::$app->filters->clean();
+        \Yii::$app->filters->cleanOther();
+    }
+    
     /**
      * Тестирует создание строки SQL запроса
      */
@@ -18,14 +29,18 @@ class CurrencyUpdateMainNullQueryCreatorTests extends \PHPUnit_Framework_TestCas
     {
         $mockObject = new MockObject([
             'tableName'=>'currency',
-            'fields'=>['main'],
         ]);
         
         $queryCreator = new CurrencyUpdateMainNullQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'UPDATE {{currency}} SET [[main]]=:main';
+        $query = "UPDATE `currency` SET `main`=0";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getRawSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }

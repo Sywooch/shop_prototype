@@ -2,8 +2,8 @@
 
 namespace app\queries;
 
-use app\tests\{MockObject,
-    MockModel};
+use app\tests\{DbManager,
+    MockObject};
 use app\queries\BrandsInsertQueryCreator;
 
 /**
@@ -11,7 +11,14 @@ use app\queries\BrandsInsertQueryCreator;
  */
 class BrandsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
 {
-    private static $_brand = 'Dining massacre';
+    private static $_dbClass;
+    private static $_params = [['Midnight worker']];
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager();
+        self::$_dbClass->createDb();
+    }
     
     /**
      * Тестирует создание строки SQL запроса
@@ -21,18 +28,19 @@ class BrandsInsertQueryCreatorTests extends \PHPUnit_Framework_TestCase
         $mockObject = new MockObject([
             'tableName'=>'brands',
             'fields'=>['brand'],
-            'objectsArray'=>[
-                new MockModel([
-                    'brand'=>self::$_brand, 
-                ])
-            ],
+            'params'=>self::$_params
         ]);
         
         $queryCreator = new BrandsInsertQueryCreator();
         $queryCreator->update($mockObject);
         
-        $query = 'INSERT INTO {{brands}} (brand) VALUES (:0_brand)';
+        $query = "INSERT INTO `brands` (`brand`) VALUES ('" . self::$_params[0][0] . "')";
         
-        $this->assertEquals($query, $mockObject->query);
+        $this->assertEquals($query, $mockObject->execute->getSql());
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->deleteDb();
     }
 }
