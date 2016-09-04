@@ -32,13 +32,13 @@ class ModelsInstancesHelper
     {
         try {
             self::$_instancesArray['filtersModel'] = \Yii::$app->filters;
-            self::$_instancesArray['currencyModel'] = \Yii::$app->shopUser->currency;
-            self::$_instancesArray['categoriesForCurrencyModel'] = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM]);
-            self::$_instancesArray['subcategoryForCurrencyModel'] = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
-            self::$_instancesArray['productsForCurrencyModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM]);
-            self::$_instancesArray['searchForCurrencyModel'] = new SearchModel(['scenario'=>SearchModel::GET_FROM_FORM]);
-            self::$_instancesArray['categoriesList'] = MappersHelper::getCategories();
-            self::$_instancesArray['currencyList'] = MappersHelper::getCurrencyList();
+            //self::$_instancesArray['currencyModel'] = \Yii::$app->shopUser->currency;
+            //self::$_instancesArray['categoriesForCurrencyModel'] = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM]);
+            //self::$_instancesArray['subcategoryForCurrencyModel'] = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
+            //self::$_instancesArray['productsForCurrencyModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM]);
+            //self::$_instancesArray['searchForCurrencyModel'] = new SearchModel(['scenario'=>SearchModel::GET_FROM_FORM]);
+            //self::$_instancesArray['categoriesList'] = MappersHelper::getCategories();
+            //self::$_instancesArray['currencyList'] = MappersHelper::getCurrencyList();
             self::$_instancesArray['productsForCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CART]);
             self::$_instancesArray['clearCartModel'] = new ProductsModel(['scenario'=>ProductsModel::GET_FOR_CLEAR_CART]);
             self::$_instancesArray['usersForLogoutModel'] = new UsersModel(['scenario'=>UsersModel::GET_FOR_LOGOUT]);

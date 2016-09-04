@@ -45,13 +45,16 @@ class CheckScriptInfoFilter extends ActionFilter
     {
         try {
             if (is_string($result) && strpos($result, '</body>')) {
-                $pageGenerated = microtime(true) - $this->_startTime;
+                //$pageGenerated = microtime(true) - $this->_startTime;
+                $pageGenerated = \Yii::getLogger()->getElapsedTime();
                 $memoryUsage = memory_get_usage(true);
                 
-                if (empty(\Yii::$app->params['fixSentRequests'])) {
+                /*if (empty(\Yii::$app->params['fixSentRequests'])) {
                     throw new ErrorException('Не установлена переменная fixSentRequests!');
                 }
-                $sentRequests = \Yii::$app->params['fixSentRequests'];
+                $sentRequests = \Yii::$app->params['fixSentRequests'];*/
+                
+                list($sentRequests, $timeRequests) = \Yii::getLogger()->getDbProfiling();
                 
                 $yiiVersion = \Yii::getVersion();
                 

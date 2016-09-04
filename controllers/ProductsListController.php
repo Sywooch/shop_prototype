@@ -8,6 +8,11 @@ use yii\helpers\{Url,
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper};
+use app\models\{CategoriesModel,
+    CurrencyModel,
+    ProductsModel,
+    SearchModel,
+    SubcategoryModel};
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -34,11 +39,31 @@ class ProductsListController extends AbstractBaseController
     {
         try {
             $renderArray = array();
-            $renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
-            $renderArray['colorsList'] = MappersHelper::getColorsList();
-            $renderArray['sizesList'] = MappersHelper::getSizesList();
-            $renderArray['brandsList'] = MappersHelper::getBrands();
-            $renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            $renderArray['productsList'] = ProductsModel::find()
+                ->orderBy(['date'=>SORT_DESC])
+                ->with('categories', 'subcategory')
+                ->limit(20)
+                ->all();
+            
+            $renderArray['categoriesList'] = CategoriesModel::find()
+                ->orderBy(['name'=>SORT_ASC])
+                ->with('subcategory')
+                ->all();
+            
+            $renderArray['currencyList'] = CurrencyModel::find()->all();
+            
+            $renderArray['currencyModel'] = new CurrencyModel();
+            $renderArray['productsModel'] = new ProductsModel();
+            $renderArray['categoriesModel'] = new CategoriesModel();
+            $renderArray['subcategoryModel'] = new SubcategoryModel();
+            $renderArray['searchModel'] = new SearchModel();
+            
+            //$renderArray['productsList'] = MappersHelper::getProductsList($this->_config);
+            //$renderArray['colorsList'] = MappersHelper::getColorsList();
+            //$renderArray['sizesList'] = MappersHelper::getSizesList();
+            //$renderArray['brandsList'] = MappersHelper::getBrands();
+            //$renderArray = array_merge($renderArray, ModelsInstancesHelper::getInstancesArray());
+            
             return $this->render('products-list.twig', $renderArray);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

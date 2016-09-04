@@ -7,7 +7,7 @@ use app\models\AbstractBaseModel;
 /**
  * Представляет данные, полученные из формы фильтров
  */
-class FiltersModel extends AbstractBaseModel
+class FiltersModel
 {
     public $colors = array();
     public $sizes = array();

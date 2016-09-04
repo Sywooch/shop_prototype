@@ -2,24 +2,30 @@
 
 namespace app\models;
 
-use yii\base\Model;
+use yii\db\ActiveRecord;
 use app\traits\ExceptionsTrait;
 
-abstract class AbstractBaseModel extends Model
+abstract class AbstractBaseModel extends ActiveRecord
 {
     use ExceptionsTrait;
     
     /**
-     * Возвращает имя таблицы, представляемой текущей моделью
+     * Сценарий загрузки из БД
+    */
+    const GET_FROM_DB = 'getFromDb';
+    /**
+     * Сценарий загрузки из формы
+    */
+    const GET_FROM_FORM = 'getFromForm';
+    
+    /**
+     * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
-    public static function getTableName()
+    public static function tableName()
     {
         try {
-            $splitName = array_filter(preg_split('/(?=[A-Z])/', static::className()));
-            $sliceName = array_slice($splitName, 1, -1);
-            $tableName = mb_strtolower(implode('_', $sliceName));
-            return !empty($tableName) ? $tableName : null;
+            return static::$_tableName;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
