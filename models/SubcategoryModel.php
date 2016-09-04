@@ -15,6 +15,14 @@ class SubcategoryModel extends AbstractBaseModel
      */
     public static $_tableName = 'subcategory';
     
+    public function scenarios()
+    {
+        return [
+            self::GET_FROM_DB=>['id', 'name', 'seocode', 'id_categories'],
+            self::GET_FROM_FORM=>['id', 'name', 'seocode', 'id_categories'],
+        ];
+    }
+    
     /**
      * Получает объект категории, с которой связан текущий объект SubcategoryModel
      * @return object CategoriesModel

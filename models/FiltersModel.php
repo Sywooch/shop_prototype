@@ -2,12 +2,12 @@
 
 namespace app\models;
 
-use app\models\AbstractBaseModel;
+use yii\base\Model;
 
 /**
  * Представляет данные, полученные из формы фильтров
  */
-class FiltersModel
+class FiltersModel extends Model
 {
     public $colors = array();
     public $sizes = array();

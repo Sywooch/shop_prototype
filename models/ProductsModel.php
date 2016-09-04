@@ -17,6 +17,14 @@ class ProductsModel extends AbstractBaseModel
      */
     public static $_tableName = 'products';
     
+    public function scenarios()
+    {
+        return [
+            self::GET_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+            self::GET_FROM_FORM=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+        ];
+    }
+    
     /**
      * Получает объект категории, с которой связан текущий объект ProductsModel
      * @return object CategoriesModel

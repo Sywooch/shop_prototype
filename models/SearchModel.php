@@ -2,13 +2,16 @@
 
 namespace app\models;
 
-use app\models\AbstractBaseModel;
+use yii\base\Model;
+use app\traits\ExceptionsTrait;
 
 /**
  * Представляет данные поиска
  */
-class SearchModel extends AbstractBaseModel
+class SearchModel extends Model
 {
+    use ExceptionsTrait;
+    
     /**
      * Сценарий загрузки данных из формы
     */

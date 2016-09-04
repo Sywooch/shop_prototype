@@ -45,8 +45,10 @@ class CheckScriptInfoFilter extends ActionFilter
     {
         try {
             if (is_string($result) && strpos($result, '</body>')) {
+                $logger = \Yii::getLogger();
+                
                 //$pageGenerated = microtime(true) - $this->_startTime;
-                $pageGenerated = \Yii::getLogger()->getElapsedTime();
+                $pageGenerated = $logger->getElapsedTime();
                 $memoryUsage = memory_get_usage(true);
                 
                 /*if (empty(\Yii::$app->params['fixSentRequests'])) {
@@ -54,7 +56,7 @@ class CheckScriptInfoFilter extends ActionFilter
                 }
                 $sentRequests = \Yii::$app->params['fixSentRequests'];*/
                 
-                list($sentRequests, $timeRequests) = \Yii::getLogger()->getDbProfiling();
+                list($sentRequests, $timeRequests) = $logger->getDbProfiling();
                 
                 $yiiVersion = \Yii::getVersion();
                 
