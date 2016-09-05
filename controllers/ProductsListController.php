@@ -8,6 +8,9 @@ use yii\helpers\{Url,
 use app\controllers\AbstractBaseController;
 use app\helpers\{MappersHelper, 
     ModelsInstancesHelper};
+use app\queries\{GetCategoriesListQuery,
+    GetCurrencyListQuery,
+    GetProductsListQuery};
 use app\models\{BrandsModel,
     CategoriesModel,
     ColorsModel,
@@ -23,13 +26,6 @@ use app\models\{BrandsModel,
  */
 class ProductsListController extends AbstractBaseController
 {
-    private $_config = [
-        'tableName'=>'products',
-        'fields'=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'active', 'total_products'],
-        'orderByField'=>'date',
-        'getDataSorting'=>false,
-    ];
-    
     private $_configSphynx = [
         'tableName'=>'shop',
         'fields'=>['id'],
@@ -44,36 +40,25 @@ class ProductsListController extends AbstractBaseController
         try {
             $renderArray = array();
             
-            $productsQuery = ProductsModel::find()
-                ->orderBy(['date'=>SORT_DESC])
-                ->select(['products.id', 'products.date', 'products.code', 'products.name', 'products.description', 'products.short_description', 'products.price', 'products.images', 'products.id_categories', 'products.id_subcategory', 'products.active', 'products.total_products'])
-                ->innerJoinWith('categories')
-                ->innerJoinWith('subcategory')
-                ->andFilterWhere([
-                    'categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey']),
-                    'subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subCategoryKey'])
-                ])
-                ->andWhere(['products.active'=>true])
-                ->limit(20);
-                foreach (\Yii::$app->params['filterKeys'] as $filter) {
-                    if (in_array($filter, array_keys(array_filter(\Yii::$app->filters->attributes)))) {
-                        $productsQuery->innerJoin('products_' . $filter, '[[products.id]]=[[products_' . $filter . '.id_products]]');
-                        $productsQuery->innerJoin($filter, '[[products_' . $filter . '.id_' . $filter . ']]=[[' . $filter . '.id]]');
-                        $productsQuery->andWhere([$filter . '.id'=>\Yii::$app->filters->$filter]);
-                    }
-                }
-            $renderArray['productsList'] = $productsQuery->all();
+            $productsQuery = new GetProductsListQuery([
+                'fields'=>['id', 'date', 'name', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+                'sortingField'=>'date'
+            ]);
+            $renderArray['productsList'] = $productsQuery->getQuery()->all();
             
-            $renderArray['categoriesList'] = CategoriesModel::find()
-                ->select(['categories.id', 'categories.name', 'categories.seocode'])
-                ->orderBy(['categories.name'=>SORT_ASC])
-                ->with('subcategory')
-                ->all();
+            $categoriesQuery = new GetCategoriesListQuery([
+                'fields'=>['id', 'name', 'seocode'],
+                'sortingField'=>'name',
+                'sortingType'=>SORT_ASC
+            ]);
+            $renderArray['categoriesList'] = $categoriesQuery->getQuery()->all();
             
-            $renderArray['currencyList'] = CurrencyModel::find()
-                ->select(['currency.id', 'currency.currency'])
-                ->orderBy(['currency.currency'=>SORT_ASC])
-                ->all();
+            $currencyQuery = new GetCurrencyListQuery([
+                'fields'=>['id', 'currency'],
+                'sortingField'=>'currency',
+                'sortingType'=>SORT_ASC
+            ]);
+            $renderArray['currencyList'] = $currencyQuery->getQuery()->all();
             
             $colorsQuery = ColorsModel::find()
                 ->select(['colors.id', 'colors.color'])

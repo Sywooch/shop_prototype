@@ -26,10 +26,10 @@ class FilterController extends AbstractBaseController
                     $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>\Yii::$app->filters->search];
                 } else {
                     if (!empty(\Yii::$app->filters->categories)) {
-                        $urlArray = array_merge($urlArray, [\Yii::$app->params['categoryKey']=>\Yii::$app->filters->categories]);
+                        $urlArray = array_merge($urlArray, [\Yii::$app->params['categoriesKey']=>\Yii::$app->filters->categories]);
                     }
                     if (!empty(\Yii::$app->filters->subcategory)) {
-                        $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>\Yii::$app->filters->subcategory]);
+                        $urlArray = array_merge($urlArray, [\Yii::$app->params['subcategoryKey']=>\Yii::$app->filters->subcategory]);
                     }
                 }
             }
@@ -118,10 +118,10 @@ class FilterController extends AbstractBaseController
                             $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>\Yii::$app->filters->search];
                         } else {
                             if (!empty(\Yii::$app->filters->categories)) {
-                                $urlArray = array_merge($urlArray, [\Yii::$app->params['categoryKey']=>\Yii::$app->filters->categories]);
+                                $urlArray = array_merge($urlArray, [\Yii::$app->params['categoriesKey']=>\Yii::$app->filters->categories]);
                             }
                             if (!empty(\Yii::$app->filters->subcategory)) {
-                                $urlArray = array_merge($urlArray, [\Yii::$app->params['subCategoryKey']=>\Yii::$app->filters->subcategory]);
+                                $urlArray = array_merge($urlArray, [\Yii::$app->params['subcategoryKey']=>\Yii::$app->filters->subcategory]);
                             }
                         }
                         FiltersHelper::cleanOtherFilters();

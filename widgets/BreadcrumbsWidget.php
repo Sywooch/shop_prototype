@@ -60,10 +60,10 @@ class BreadcrumbsWidget extends Widget
     {
         parent::init();
         
-        if ($categories = \Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
+        if ($categories = \Yii::$app->request->get(\Yii::$app->params['categoriesKey'])) {
             $this->categories = $categories;
         }
-        if ($subcategory = \Yii::$app->request->get(\Yii::$app->params['subCategoryKey'])) {
+        if ($subcategory = \Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
             $this->subcategory = $subcategory;
         }
         if ($id = \Yii::$app->request->get(\Yii::$app->params['idKey'])) {

@@ -19,18 +19,18 @@ class ProductsFilter extends AbstractFilter
     public function beforeAction($action)
     {
         try {
-            if (empty(\Yii::$app->params['categoryKey'])) {
-                throw new ErrorException('Не установлена переменная categoryKey!');
+            if (empty(\Yii::$app->params['categoriesKey'])) {
+                throw new ErrorException('Не установлена переменная categoriesKey!');
             }
-            if (empty(\Yii::$app->params['subCategoryKey'])) {
-                throw new ErrorException('Не установлена переменная subCategoryKey!');
+            if (empty(\Yii::$app->params['subcategoryKey'])) {
+                throw new ErrorException('Не установлена переменная subcategoryKey!');
             }
             if (empty(\Yii::$app->params['searchKey'])) {
                 throw new ErrorException('Не установлена переменная searchKey!');
             }
             
             if (!empty($attributes = parent::before())) {
-                if ($attributes[\Yii::$app->params['categoryKey']] == \Yii::$app->request->get(\Yii::$app->params['categoryKey']) && $attributes[\Yii::$app->params['subCategoryKey']] == \Yii::$app->request->get(\Yii::$app->params['subCategoryKey']) && $attributes[\Yii::$app->params['searchKey']] == \Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
+                if ($attributes[\Yii::$app->params['categoriesKey']] == \Yii::$app->request->get(\Yii::$app->params['categoriesKey']) && $attributes[\Yii::$app->params['subcategoryKey']] == \Yii::$app->request->get(\Yii::$app->params['subcategoryKey']) && $attributes[\Yii::$app->params['searchKey']] == \Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
                     \Yii::configure(\Yii::$app->filters, $attributes);
                 }
             }

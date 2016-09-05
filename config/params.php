@@ -13,15 +13,15 @@ $params = [
     'sphynxKey'=>'sphynxquery', # Ключ для подстановки значения в подготовленный запрос к поисковой машине Sphynx
     
     # Путь к товару
-    'categoryKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
-    'subCategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории
+    'categoriesKey'=>'categories', # Ключ, по которому в $_REQUEST доступно название категории
+    'subcategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступно название подкатегории
     'idKey'=>'id', # Ключ, по которому в $_REQUEST доступно значение id продукта
     
     # Поиск по товарам
     'searchKey'=>'search', # Ключ, по которому в $_REQUEST доступно значение для поиска
     
     # Сортировка данных СУБД
-    'defaultOrderByType'=>SORT_DESC, # Порядок сортировки для БД по умолчанию
+    'defaultSortingType'=>SORT_DESC, # Порядок сортировки для БД по умолчанию
     
     # Отладка
     'fixSentRequests'=>0, #Количество запросов к БД при выполнении скрипта
