@@ -5,14 +5,14 @@ namespace app\helpers;
 use app\traits\ExceptionsTrait;
 
 /**
- * Предоставляет методы для управления сессиями
+ * Коллекция методов для управления сессиями
  */
 class SessionHelper
 {
     use ExceptionsTrait;
     
     /**
-     * Удаляет из сессии переменную, имя которой передано в качестве параметра
+     * Удаляет переменные из сессии
      * @param array $varsArray массив имен переменных
      * @return boolean
      */

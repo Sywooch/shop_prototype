@@ -14,27 +14,6 @@ class CheckScriptInfoFilter extends ActionFilter
     use ExceptionsTrait;
     
     /**
-     * Время начала выполнения скрипта
-     */
-    private $_startTime;
-    
-    /**
-     * Сохраняет время начала выполнения скрипта
-     * @param $action выполняемое в данный момент действие
-     * @return parent result
-     */
-    public function beforeAction($action)
-    {
-        try {
-            $this->_startTime = microtime(true);
-            return parent::beforeAction($action);
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
      * Вычисляет время выполнения скрипта, выделенную память, кол-во отправленных в БД запросов,
      * вставляет рузультат перед закрывающим тегом </body>
      * @param $action выполняемое в данный момент действие
@@ -47,14 +26,8 @@ class CheckScriptInfoFilter extends ActionFilter
             if (is_string($result) && strpos($result, '</body>')) {
                 $logger = \Yii::getLogger();
                 
-                //$pageGenerated = microtime(true) - $this->_startTime;
                 $pageGenerated = $logger->getElapsedTime();
                 $memoryUsage = memory_get_usage(true);
-                
-                /*if (empty(\Yii::$app->params['fixSentRequests'])) {
-                    throw new ErrorException('Не установлена переменная fixSentRequests!');
-                }
-                $sentRequests = \Yii::$app->params['fixSentRequests'];*/
                 
                 list($sentRequests, $timeRequests) = $logger->getDbProfiling();
                 

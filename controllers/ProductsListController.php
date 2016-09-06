@@ -164,7 +164,7 @@ class ProductsListController extends AbstractBaseController
     public function behaviors()
     {
         return [
-            ['class'=>'app\filters\ProductsFilter'],
+            ['class'=>'app\filters\GetFiltersForProducts'],
         ];
     }
 }
