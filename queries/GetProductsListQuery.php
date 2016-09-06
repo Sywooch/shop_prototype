@@ -38,8 +38,6 @@ class GetProductsListQuery extends AbstractBaseQueryCreator
                 $this->_query->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
             }
             
-            $this->_query->with('categories', 'subcategory');
-            
             $this->_query->andWhere(['products.active'=>true]);
             
             if (!$this->addFilters()) {
@@ -53,6 +51,8 @@ class GetProductsListQuery extends AbstractBaseQueryCreator
             if (!$this->addLimit()) {
                 throw new ErrorException('Ошибка при конструировании объекта запроса!');
             }
+            
+            $this->_query->with('categories', 'subcategory');
             
             return $this->_query;
         } catch (\Exception $e) {

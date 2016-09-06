@@ -130,11 +130,8 @@ abstract class AbstractBaseQueryCreator extends Object
     protected function addOrder()
     {
         try {
-            if (!empty($this->sortingField) || !empty(\Yii::$app->filters->sortingField)) {
-                $sortingField = \Yii::$app->filters->sortingField ? \Yii::$app->filters->sortingField : $this->sortingField;
-                $sortingType = (\Yii::$app->filters->sortingType && \Yii::$app->filters->sortingType == 'SORT_ASC') ? SORT_ASC : $this->sortingType;
-                
-                $this->_query->orderBy([$this->_tableName . '.' . $sortingField=>$sortingType]);
+            if (!empty($this->sortingField)) {
+                $this->_query->orderBy([$this->_tableName . '.' . $this->sortingField=>$this->sortingType]);
             }
             
             return true;

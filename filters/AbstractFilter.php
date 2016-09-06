@@ -4,6 +4,7 @@ namespace app\filters;
 
 use yii\base\{ActionFilter, 
     ErrorException};
+use yii\helpers\Url;
 use app\traits\ExceptionsTrait;
 
 /**
@@ -44,17 +45,23 @@ class AbstractFilter extends ActionFilter
                 throw new ErrorException('Не установлена переменная filtersKeyInSession!');
             }
             
+            $key = md5(implode('_', [
+                !empty(\Yii::$app->request->get(\Yii::$app->params['categoriesKey'])) ? \Yii::$app->request->get(\Yii::$app->params['categoriesKey']) : '', 
+                !empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) ? \Yii::$app->request->get(\Yii::$app->params['subcategoryKey']) : '', 
+                !empty(\Yii::$app->request->get(\Yii::$app->params['searchKey'])) ? \Yii::$app->request->get(\Yii::$app->params['searchKey']) : ''
+            ]));
+            
             $session = \Yii::$app->session;
-            if ($session->has($this->_filtersKeyInSession)) {
+            if ($session->has($key)) {
                 $session->open();
-                $attributes = $session->get($this->_filtersKeyInSession);
+                $attributes = $session->get($key);
                 if (!is_array($attributes) || empty($attributes)) {
                     throw new ErrorException('Ошибка при получении данных из сессии!');
                 }
                 $session->close();
                 return $attributes;
             }
-            return null;
+            return false;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -73,9 +80,15 @@ class AbstractFilter extends ActionFilter
                 throw new ErrorException('Не установлена переменная filtersKeyInSession!');
             }
             
+            $key = md5(implode('_', [
+                !empty(\Yii::$app->filters->categories) ? \Yii::$app->filters->categories : '', 
+                !empty(\Yii::$app->filters->subcategory) ? \Yii::$app->filters->subcategory : '', 
+                !empty(\Yii::$app->filters->search) ? \Yii::$app->filters->search : ''
+            ]));
+            
             $session = \Yii::$app->session;
             $session->open();
-            $session->set($this->_filtersKeyInSession, \Yii::$app->filters->attributes);
+            $session->set($key, \Yii::$app->filters->attributes);
             $session->close();
             return parent::afterAction($action, $result);
         } catch (\Exception $e) {

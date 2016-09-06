@@ -21,7 +21,7 @@ class FilterController extends AbstractBaseController
     {
         try {
             $urlArray = ['products-list/index'];
-            if (FiltersHelper::addFilters()) {
+            if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (!empty(\Yii::$app->filters->search)) {
                     $urlArray = ['products-list/search', \Yii::$app->params['searchKey']=>\Yii::$app->filters->search];
                 } else {
@@ -110,8 +110,13 @@ class FilterController extends AbstractBaseController
             $urlArray = ['products-list/index'];
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
-                    if (FiltersHelper::cleanFilters()) {
-                        if (!SessionHelper::removeVarFromSession([\Yii::$app->params['filtersKeyInSession']])) {
+                    if (\Yii::$app->filters->clean()) {
+                        $key = \Yii::$app->params['filtersKeyInSession'] . '.' . md5(implode('_', [
+                            !empty(\Yii::$app->filters->categories) ? \Yii::$app->filters->categories : '', 
+                            !empty(\Yii::$app->filters->subcategory) ? \Yii::$app->filters->subcategory : '', 
+                            !empty(\Yii::$app->filters->search) ? \Yii::$app->filters->search : ''
+                        ]));
+                        if (!SessionHelper::removeVarFromSession([$key])) {
                             throw new ErrorException('Ошибка при удалении фильтров из сесии!');
                         }
                         if (!empty(\Yii::$app->filters->search)) {

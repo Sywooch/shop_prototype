@@ -2,14 +2,14 @@
 
 namespace app\filters;
 
-use yii\base\ErrorException;
+use yii\base\{ActionFilter, 
+    ErrorException};
 use yii\helpers\Url;
-use app\filters\AbstractFilter;
 
 /**
  * Заполняет объект корзины данными сесии
  */
-class ProductsFilter extends AbstractFilter
+class ProductsFilter extends ActionFilter
 {
     /**
      * Конфигурирует \Yii::$app->filters данными из сессионного хранилища
@@ -19,6 +19,9 @@ class ProductsFilter extends AbstractFilter
     public function beforeAction($action)
     {
         try {
+            if (empty(\Yii::$app->params['filtersKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная filtersKeyInSession!');
+            }
             if (empty(\Yii::$app->params['categoriesKey'])) {
                 throw new ErrorException('Не установлена переменная categoriesKey!');
             }
@@ -29,13 +32,57 @@ class ProductsFilter extends AbstractFilter
                 throw new ErrorException('Не установлена переменная searchKey!');
             }
             
-            if (!empty($attributes = parent::before())) {
-                if ($attributes[\Yii::$app->params['categoriesKey']] == \Yii::$app->request->get(\Yii::$app->params['categoriesKey']) && $attributes[\Yii::$app->params['subcategoryKey']] == \Yii::$app->request->get(\Yii::$app->params['subcategoryKey']) && $attributes[\Yii::$app->params['searchKey']] == \Yii::$app->request->get(\Yii::$app->params['searchKey'])) {
-                    \Yii::configure(\Yii::$app->filters, $attributes);
+            $key = \Yii::$app->params['filtersKeyInSession'] . '.' . md5(implode('_', [
+                !empty(\Yii::$app->request->get(\Yii::$app->params['categoriesKey'])) ? \Yii::$app->request->get(\Yii::$app->params['categoriesKey']) : '', 
+                !empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) ? \Yii::$app->request->get(\Yii::$app->params['subcategoryKey']) : '', 
+                !empty(\Yii::$app->request->get(\Yii::$app->params['searchKey'])) ? \Yii::$app->request->get(\Yii::$app->params['searchKey']) : ''
+            ]));
+            
+            $session = \Yii::$app->session;
+            
+            if ($session->has($key)) {
+                $session->open();
+                $attributes = $session->get($key);
+                $session->close();
+                
+                if (!is_array($attributes) || empty($attributes)) {
+                    throw new ErrorException('Ошибка при получении данных из сессии!');
                 }
+                
+                \Yii::configure(\Yii::$app->filters, $attributes);
             }
             
             return parent::beforeAction($action);
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Сохраняет значение свойств-фильтров в сесии
+     * @param $action выполняемое в данный момент действие
+     * @param $result результирующая строка перед отправкой в браузер клиента
+     * @return parent result
+     */
+    public function afterAction($action, $result)
+    {
+        try {
+            if (empty(\Yii::$app->params['filtersKeyInSession'])) {
+                throw new ErrorException('Не установлена переменная filtersKeyInSession!');
+            }
+            
+            $key = \Yii::$app->params['filtersKeyInSession'] . '.' . md5(implode('_', [
+                !empty(\Yii::$app->filters->categories) ? \Yii::$app->filters->categories : '', 
+                !empty(\Yii::$app->filters->subcategory) ? \Yii::$app->filters->subcategory : '', 
+                !empty(\Yii::$app->filters->search) ? \Yii::$app->filters->search : ''
+            ]));
+            
+            $session = \Yii::$app->session;
+            $session->open();
+            $session->set($key, \Yii::$app->filters->attributes);
+            $session->close();
+            return parent::afterAction($action, $result);
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
