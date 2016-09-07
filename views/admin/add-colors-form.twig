@@ -1,9 +1,0 @@
-
-{{ use('yii/widgets/ActiveForm') }}
-
-<p><strong>Добавить цвет</strong></p>
-
-{% set form=active_form_begin({'id':'show-add-colors-form', 'action':url.to({0:'admin/show-add-colors'}), 'method':'POST'}) %}
-    {{ form.field(colorsModel, 'color') | raw }}
-    <input type="submit" value="Create" />
-{{ active_form_end() }}

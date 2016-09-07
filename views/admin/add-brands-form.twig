@@ -1,9 +1,0 @@
-
-{{ use('yii/widgets/ActiveForm') }}
-
-<p><strong>Добавить бренд</strong></p>
-
-{% set form=active_form_begin({'id':'show-add-brands-form', 'action':url.to({0:'admin/show-add-brands'}), 'method':'POST'}) %}
-    {{ form.field(brandsModel, 'brand') | raw }}
-    <input type="submit" value="Create" />
-{{ active_form_end() }}

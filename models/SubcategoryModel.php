@@ -30,7 +30,7 @@ class SubcategoryModel extends AbstractBaseModel
     public function getCategories()
     {
         try {
-            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_categories'])->reverseOf('subcategory');
+            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_categories'])->inverseOf('subcategory');
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -43,14 +43,13 @@ class BreadcrumbsWidget extends Widget
      */
     public $glue = '->';
     /**
+     * @var array объектов CategoriesModel
+     */
+    public $categoriesList;
+     /**
      * @var string имя ссылки на весь каталог
      */
     public $all = 'Весь каталог';
-    /**
-     * @var array of objects массив объектов CategoriesModel
-     */
-    public $categoriesList;
-    
     /**
      * @var array массив ссылок для конструирования breadcrumbs
      */
@@ -59,6 +58,16 @@ class BreadcrumbsWidget extends Widget
     public function init()
     {
         parent::init();
+        
+        if (empty(\Yii::$app->params['categoriesKey'])) {
+            throw new ErrorException('Не определен categoriesKey!');
+        }
+        if (empty(\Yii::$app->params['subcategoryKey'])) {
+            throw new ErrorException('Не определен subcategoryKey!');
+        }
+        if (empty(\Yii::$app->params['idKey'])) {
+            throw new ErrorException('Не определен idKey!');
+        }
         
         if ($categories = \Yii::$app->request->get(\Yii::$app->params['categoriesKey'])) {
             $this->categories = $categories;
@@ -74,7 +83,7 @@ class BreadcrumbsWidget extends Widget
             throw new ErrorException('Не передан массив объектов категорий!');
         }
         
-        if (!$this->getCategoriesSubcategoryNames()) {
+        if (!$this->getNames()) {
             throw new ErrorException('Ошибка при получении имен категорий!');
         }
     }
@@ -120,7 +129,7 @@ class BreadcrumbsWidget extends Widget
      * Выбирает имена категории и подкатегории из массива $this->categoriesList
      * @return boolean
      */
-    private function getCategoriesSubcategoryNames()
+    private function getNames()
     {
         try {
             if (!empty($this->categories)) {

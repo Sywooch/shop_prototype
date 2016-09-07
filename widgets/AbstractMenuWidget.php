@@ -21,15 +21,7 @@ abstract class AbstractMenuWidget extends Widget
      */
     public $route;
     /**
-     * @var string значение поля name записи, которую необходимо вывести первой
-     */
-    public $first;
-    /**
      * @var string результирующая HTML строка меню
      */
     protected $_menu;
-    /**
-     * @var array массив данных для создания URL из текущего объекта
-     */
-    protected $_routeArray = array();
 }

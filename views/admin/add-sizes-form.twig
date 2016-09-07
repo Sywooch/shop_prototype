@@ -1,9 +1,0 @@
-
-{{ use('yii/widgets/ActiveForm') }}
-
-<p><strong>Добавить размер</strong></p>
-
-{% set form=active_form_begin({'id':'show-add-sizes-form', 'action':url.to({0:'admin/show-add-sizes'}), 'method':'POST'}) %}
-    {{ form.field(sizesModel, 'size').input('number', {'step':'any'}) | raw }}
-    <input type="submit" value="Create" />
-{{ active_form_end() }}

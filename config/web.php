@@ -18,18 +18,13 @@ $config = [
                     'class'=>'yii\twig\ViewRenderer',
                     'options'=>['auto_reload'=>true],
                     'globals'=>[
-                        'html'=>'yii\helpers\Html',
-                        'array'=>'yii\helpers\ArrayHelper',
-                        'url'=>'yii\helpers\Url',
-                        'objectsToArrayHelper'=>'app\helpers\ObjectsToArrayHelper',
-                        'picturesHelper'=>'app\helpers\PicturesHelper',
-                        'subcategoryHelper'=>'app\helpers\SubcategoryHelper',
+                        'url'=>'yii\helpers\Url'
                     ],
                 ]
             ],
         ],
         'request'=>[
-            'cookieValidationKey'=>md5('sLkuN'),
+            'cookieValidationKey'=>md5('Tyre7jh'),
         ],
         'log'=>[
             'traceLevel'=>YII_DEBUG ? 3 : 0,
@@ -57,45 +52,23 @@ $config = [
         'urlManager'=>[
             'enablePrettyUrl'=>true,
             'showScriptName'=>false,
-            'enableStrictParsing' => false,
+            'enableStrictParsing' => true,
             'rules'=>require(__DIR__ . '/routes.php'),
-        ],
-        'cart'=>[
-            'class'=>'app\cart\ShoppingCart',
-        ],
-        'filters'=>[
-            'class'=>'app\models\FiltersModel',
-        ],
-        'shopUser'=>[
-            'class'=>'app\models\UsersModel',
         ],
         'session'=>[
             'class'=>'yii\web\DbSession',
             'timeout'=>60*60*24*7
         ],
-        'mailer'=>[
-            'class'=>'yii\swiftmailer\Mailer',
-            'viewPath'=>'@app/views/mail',
-        ],
-        'formatter'=>[
-            'dateFormat'=>'dd.MM.yyyy',
+        'filters'=>[
+            'class'=>'app\models\FiltersModel',
         ],
     ],
-    
-    'aliases'=>[
-        '@pic'=>'/var/www/html/shop/web/sources/images/products',
-        '@wpic'=>'/sources/images/products',
-    ],
-    
-    'as shoppingCartFilter'=>['class'=>'app\filters\ShoppingCartFilter'],
-    'as usersFilter'=>['class'=>'app\filters\UsersFilter'],
     
     'params'=>require(__DIR__ . '/params.php'),
 ];
 
 if (YII_DEBUG) {
     $config['as checkScriptInfoFilter'] = ['class'=>'app\filters\CheckScriptInfoFilter'];
-    $config['as csrfSwitch'] = ['class'=>'app\filters\CsrfSwitch'];
 }
 
 return $config;

@@ -1,47 +1,16 @@
-
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
-{% include '@app/views/parts/user-buttons.twig' %}
+{% include('@app/views/base/menu.twig') %}
 
-{% include '@app/views/parts/short-cart.twig' %}
-
-{% include '@app/views/parts/search.twig' %}
-
-{% include '@app/views/parts/menu.twig' %}
-
-{{ use('app/widgets/BreadcrumbsWidget') }}
-
-{{ breadcrumbs_widget_widget({'categoriesList':categoriesList}) }}
+{% include('@app/views/base/breadcrumbs.twig') %}
 
 {% if productsList %}
     <ol>
     {% for productsModel in productsList %}
-    {% if productsModel.active %}
         <li>
-            {% if productsModel.date %}
-                {{ app.formatter.asDate(productsModel.date) }}<br>
-            {% endif %}
-            <strong><a href="{{ url.to({0:'product-detail/index', 'categories': productsModel.categories.seocode, 'subcategory': productsModel.subcategory.seocode, 'id': productsModel.id}) }}">{{ productsModel.name | raw }}</a></strong>
-            {% if productsModel.images %}
-                <br><img src="{{ picturesHelper.getOneThumbnail(productsModel.images) }}">
-            {% endif %}
-            {% if productsModel.short_description %}
-                <br>{{ productsModel.short_description }}
-            {% endif %}
-            <!--<br>{{ (productsModel.price * app.shopUser.currency.exchange_rate) | number_format(2, '.', ' ') }} {{ app.shopUser.currency.currency }}-->
-            <br>{{ productsModel.price }}
+            {{ productsModel.name }}
+            <br>{{ app.formatter.asDate(productsModel.date) }}
         </li>
-    {% endif %}
     {% endfor %}
     </ol>
-{% else %}
-    <p>Похоже, мы пока не можем предложить эту штуку!</p>
 {% endif %}
-
-{% include 'filters.twig' %}
-
-{% include '@app/views/parts/set-currency-form.twig' %}
-
-<p><a href="{{ url.to({0:'newsletter/subscribe'}) }}">Скидки и новинки на ваш Email!</a></p>
-
-
