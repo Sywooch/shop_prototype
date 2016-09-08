@@ -146,7 +146,7 @@ abstract class AbstractBaseQuery extends Object
             \Yii::configure($this->pagination, [
                 'totalCount'=>$countQuery->count(),
                 'pageSize'=>\Yii::$app->params['limit'],
-                'page'=>!empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) : 0,
+                'page'=>!empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) - 1 : 0,
                 'pageParam'=>\Yii::$app->params['pagePointer']
             ]);
             

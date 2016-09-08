@@ -1,6 +1,6 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
-{{ use('yii/widgets/LinkPager') }}
+{{ use('app/widgets/PaginationWidget') }}
 
 {% include('@app/views/base/menu.twig') %}
 
@@ -17,4 +17,4 @@
     </ol>
 {% endif %}
 
-{{ link_pager_widget({'pagination':paginationObject}) }}
+{{ pagination_widget_widget({'paginator':paginator}) }}

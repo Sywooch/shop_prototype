@@ -26,7 +26,7 @@ class ProductsListController extends AbstractBaseController
                 'sorting'=>['date'=>SORT_DESC]
             ]);
             $renderArray['productsList'] = $productsQuery->getAll()->all();
-            $renderArray['paginationObject'] = $productsQuery->pagination;
+            $renderArray['paginator'] = $productsQuery->pagination;
             
             return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {
