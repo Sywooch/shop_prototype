@@ -63,7 +63,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      * Тестирует метод GetProductsQuery::getAll()
      * без категорий и фильтров
      */
-    public function testGetQuery()
+    public function testGetAll()
     {
         $_GET = [];
         \Yii::$app->filters->clean();
@@ -90,7 +90,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      * Тестирует метод GetProductsQuery::getAll()
      * c выборкой по категории
      */
-    public function testGetQueryTwo()
+    public function testGetAllTwo()
     {
         $_GET = ['categories'=>self::$_categorySeocode];
         \Yii::$app->filters->clean();
@@ -117,7 +117,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      * Тестирует метод GetProductsQuery::getAll()
      * c выборкой по категории и подкатегории
      */
-    public function testGetQueryThree()
+    public function testGetAllThree()
     {
         $_GET = ['categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
         \Yii::$app->filters->clean();
@@ -144,7 +144,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      * Тестирует метод GetProductsQuery::getAll()
      * c выборкой по категории, подкатегории и фильтру
      */
-    public function testGetQueryFour()
+    public function testGetAllFour()
     {
         $_GET = ['categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
         
@@ -173,7 +173,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      * Тестирует метод GetProductsQuery::getAll()
      * c выборкой по категории, подкатегории и нескольким фильтрам
      */
-    public function testGetQueryFive()
+    public function testGetAllFive()
     {
         $_GET = ['categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
         
@@ -202,7 +202,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      * Тестирует метод GetProductsQuery::getAll()
      * c выборкой по категории и нескольким фильтрам
      */
-    public function testGetQuerySix()
+    public function testGetAllSix()
     {
         $_GET = ['categories'=>self::$_categorySeocode];
         
@@ -225,6 +225,32 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_array($result));
         $this->assertTrue($result[0] instanceof ProductsModel);
+    }
+    
+    /**
+     * Тестирует метод GetProductsQuery::getOne()
+     */
+    public function testtestGetOne()
+    {
+         $_GET = [];
+        
+        \Yii::$app->filters->clean();
+        
+        $productsQuery = new GetProductsQuery([
+            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+            'extraWhere'=>['products.id'=>self::$_id]
+        ]);
+        
+        $query = $productsQuery->getOne();
+        $queryRaw = clone $query;
+        
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` WHERE `products`.`id`=1";
+        
+        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $query->one();
+        
+        $this->assertTrue($result instanceof ProductsModel);
     }
     
     public static function tearDownAfterClass()

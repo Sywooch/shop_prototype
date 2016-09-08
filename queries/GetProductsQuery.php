@@ -18,7 +18,7 @@ class GetProductsQuery extends AbstractBaseQuery
     }
     
     /**
-     * Конструирует объект запроса yii\db\ActiveQuery
+     * Конструирует объект запроса yii\db\ActiveQuery для выборки массива строк
      * @return object ActiveQuery
      */
     public function getAll()
@@ -44,7 +44,7 @@ class GetProductsQuery extends AbstractBaseQuery
                 throw new ErrorException('Ошибка при конструировании объекта запроса!');
             }
             
-            if (!$this->addOrder()) {
+            if (!$this->extraWhere()) {
                 throw new ErrorException('Ошибка при конструировании объекта запроса!');
             }
             
@@ -52,9 +52,34 @@ class GetProductsQuery extends AbstractBaseQuery
                 throw new ErrorException('Ошибка при конструировании объекта запроса!');
             }
             
+            if (!$this->addOrder()) {
+                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+            }
+            
             $this->query->with('categories', 'subcategory');
             
             return $this->query;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Конструирует объект запроса yii\db\ActiveQuery для выборки одной строки
+     * @return object ActiveQuery
+     */
+    public function getOne()
+    {
+        try {
+            if (!$this->getSelect()) {
+                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+            }
+            
+            if (!$this->extraWhere()) {
+                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+            }
+            
+           return $this->query; 
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

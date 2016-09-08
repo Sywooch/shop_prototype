@@ -14,14 +14,13 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_id = 1;
-    private static $_categoriesList;
-    private static $_main = 'products';
-    private static $_mainName = 'Весь каталог';
     private static $_productName = 'Ботинки Черный Пионер';
-    private static $_categoriesName = 'Одежда';
-    private static $_subcategoryName = 'Пиджаки';
     private static $_categoriesSeocode = 'mensfootwear';
     private static $_subcategorySeocode = 'boots';
+    private static $_categoriesName = 'Одежда';
+    private static $_subcategoryName = 'Пиджаки';
+    private static $_main = 'products';
+    private static $_mainName = 'Весь каталог';
     
     public static function setUpBeforeClass()
     {
@@ -36,7 +35,9 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_subcategoryName, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        self::$_categoriesList = CategoriesModel::find()->all();
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_productName, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command->execute();
     }
     
     /**
@@ -48,11 +49,11 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>self::$_categoriesSeocode];
         
-        $result = BreadcrumbsWidget::widget(['categoriesList'=>self::$_categoriesList]);
+        $result = BreadcrumbsWidget::widget();
         
-        $expectedUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>->' . self::$_categoriesName;
+        $expectUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>->' . self::$_categoriesName;
         
-        $this->assertEquals($expectedUrl, $result);
+        $this->assertEquals($expectUrl, $result);
     }
     
     /**
@@ -64,11 +65,11 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>self::$_categoriesSeocode, 'subcategory'=>self::$_subcategorySeocode];
         
-        $result = BreadcrumbsWidget::widget(['categoriesList'=>self::$_categoriesList]);
+        $result = BreadcrumbsWidget::widget();
         
-        $expectedUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a>->' . self::$_subcategoryName;
+        $expectUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a>->' . self::$_subcategoryName;
         
-        $this->assertEquals($expectedUrl, $result);
+        $this->assertEquals($expectUrl, $result);
     }
     
     /**
@@ -80,11 +81,11 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['categories'=>self::$_categoriesSeocode, 'subcategory'=>self::$_subcategorySeocode, 'id'=>self::$_id];
         
-        $result = BreadcrumbsWidget::widget(['categoriesList'=>self::$_categoriesList, 'productName'=>self::$_productName]);
+        $result = BreadcrumbsWidget::widget();
         
-        $expectedUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '/' . self::$_subcategorySeocode . '">' . self::$_subcategoryName . '</a>->' . self::$_productName;
+        $expectUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '/' . self::$_subcategorySeocode . '">' . self::$_subcategoryName . '</a>->' . self::$_productName;
         
-        $this->assertEquals($expectedUrl, $result);
+        $this->assertEquals($expectUrl, $result);
     }
     
     public static function tearDownAfterClass()

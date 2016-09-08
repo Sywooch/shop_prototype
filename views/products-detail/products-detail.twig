@@ -1,0 +1,15 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include('@app/views/base/menu.twig') %}
+
+{% include('@app/views/base/breadcrumbs.twig') %}
+
+{% if productsModel %}
+    <h1>{{ productsModel.name }}</h1>
+    <p>
+        {{ app.formatter.asDate(productsModel.date) }}
+    </p>
+    <p>
+        {{ productsModel.description }}
+    </p>
+{% endif %}

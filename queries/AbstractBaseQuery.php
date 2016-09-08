@@ -23,13 +23,11 @@ abstract class AbstractBaseQuery extends Object
      */
     public $tableName;
     /**
-     * @var array массив полей для построения запроса
+     * @var array поля для построения запроса
      */
     public $fields;
     /**
      * @var array массив значений сортировки ['field'=>SORT_DESC],
-     * ключ - поле сортировки
-     * значение - тип сортировки
      */
     public $sorting = array();
     /**
@@ -40,6 +38,11 @@ abstract class AbstractBaseQuery extends Object
      * @var object объект yii\data\Pagination
      */
     public $pagination;
+    /**
+     * @var array массив значений WHERE для дополнительной фильтрации
+     * формат [field=>value,]
+     */
+    public $extraWhere = array();
     
     public function init()
     {
@@ -58,7 +61,7 @@ abstract class AbstractBaseQuery extends Object
     }
     
     /**
-     * Формирует список полей для выборки
+     * Добавляет список полей выборки, дополняя их именем таблицы
      * @return bool
      */
     protected function getSelect()
@@ -79,7 +82,7 @@ abstract class AbstractBaseQuery extends Object
     }
     
     /**
-     * Формирует часть запроса к БД, добавляющую фильтры
+     * Добавляет фильтры, указанные в массиве \Yii::$app->params['filterKeys']
      * @return boolean
      */
     protected function addFilters()
@@ -106,7 +109,7 @@ abstract class AbstractBaseQuery extends Object
     }
     
     /**
-     * Формирует часть запроса к БД, задающую порядок сортировки
+     * Добавляет сортировку ORDERBY
      * @return boolean
      */
     protected function addOrder()
@@ -125,7 +128,7 @@ abstract class AbstractBaseQuery extends Object
     }
     
     /**
-     * Формирует часть запроса orderBy
+     * Добавляет ограничения по условиям OFFSET LIMIT
      * @return boolean
      */
     protected function addLimit()
@@ -149,6 +152,25 @@ abstract class AbstractBaseQuery extends Object
             
             $this->query->offset($this->pagination->offset);
             $this->query->limit($this->pagination->limit);
+            
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Добавляет дополнительную фильтрацию по условию WHERE
+     * @return boolean
+     */
+    protected function extraWhere()
+    {
+        try {
+            if (!empty($this->extraWhere)) {
+                foreach ($this->extraWhere as $key=>$value) {
+                    $this->query->andWhere([$key=>$value]);
+                }
+            }
             
             return true;
         } catch (\Exception $e) {

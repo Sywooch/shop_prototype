@@ -4,9 +4,8 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\models\ProductsModel;
-use app\queries\{GetCategoriesQuery,
-    GetProductsQuery};
+use app\queries\GetProductsQuery;
+use app\helpers\InstancesHelper;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -29,13 +28,7 @@ class ProductsListController extends AbstractBaseController
             $renderArray['productsList'] = $productsQuery->getAll()->all();
             $renderArray['pagination'] = $productsQuery->pagination;
             
-            $categoriesQuery = new GetCategoriesQuery([
-                'fields'=>['id', 'name', 'seocode'],
-                'sorting'=>['name'=>SORT_ASC]
-            ]);
-            $renderArray['categoriesList'] = $categoriesQuery->getAll()->all();
-            
-            return $this->render('products-list.twig', $renderArray);
+            return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

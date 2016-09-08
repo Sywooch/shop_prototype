@@ -27,7 +27,7 @@ class CheckScriptInfoFilter extends ActionFilter
                 $logger = \Yii::getLogger();
                 
                 $pageGenerated = $logger->getElapsedTime();
-                $memoryUsage = memory_get_usage(true);
+                $memoryUsage = memory_get_peak_usage(true);
                 
                 list($sentRequests, $timeRequests) = $logger->getDbProfiling();
                 

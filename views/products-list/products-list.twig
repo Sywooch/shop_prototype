@@ -8,7 +8,7 @@
     <ol>
     {% for productsModel in productsList %}
         <li>
-            {{ productsModel.name }}
+            <a href="{{ url.to({0:'products-detail/index', 'categories':productsModel.categories.seocode, 'subcategory':productsModel.subcategory.seocode, 'id':productsModel.id}) }}">{{ productsModel.name }}</a>
             <br>{{ app.formatter.asDate(productsModel.date) }}
         </li>
     {% endfor %}
