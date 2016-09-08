@@ -26,20 +26,20 @@ class ProductsModel extends AbstractBaseModel
     }
     
     /**
-     * Получает объект категории, с которой связан текущий объект ProductsModel
+     * Получает объект CategoriesModel, с которой связан текущий объект ProductsModel
      * @return object CategoriesModel
      */
     public function getCategories()
     {
         try {
-            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_categories']);
+            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_categories'])->inverseOf('products');
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
     }
     
     /**
-     * Получает объект подкатегории, с которой связан текущий объект ProductsModel
+     * Получает объект SubcategoryModel, с которой связан текущий объект ProductsModel
      * @return object SubcategoryModel
      */
     public function getSubcategory()

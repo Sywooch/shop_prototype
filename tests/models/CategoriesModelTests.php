@@ -4,6 +4,7 @@ namespace app\tests\models;
 
 use app\tests\DbManager;
 use app\models\{CategoriesModel,
+    ProductsModel,
     SubcategoryModel};
 
 /**
@@ -31,6 +32,10 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command->execute();
+        
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
     }
     
@@ -80,6 +85,19 @@ class CategoriesModelTests extends \PHPUnit_Framework_TestCase
         $this->assertFalse(empty($model->subcategory));
         $this->assertTrue(is_object($model->subcategory[0]));
         $this->assertTrue($model->subcategory[0] instanceof SubcategoryModel);
+    }
+    
+    /**
+     * Тестирует метод CategoriesModel::getProducts
+     */
+    public function testGetProducts()
+    {
+        $model = CategoriesModel::find()->where(['categories.id'=>self::$_id])->one();
+        
+        $this->assertTrue(is_array($model->products));
+        $this->assertFalse(empty($model->products));
+        $this->assertTrue(is_object($model->products[0]));
+        $this->assertTrue($model->products[0] instanceof ProductsModel);
     }
     
     public static function tearDownAfterClass()

@@ -20,7 +20,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     private static $_categoriesName = 'Одежда';
     private static $_subcategoryName = 'Пиджаки';
     private static $_main = 'products';
-    private static $_mainName = 'Весь каталог';
+    private static $_mainName = 'Главная';
     
     public static function setUpBeforeClass()
     {
@@ -51,7 +51,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>->' . self::$_categoriesName;
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . self::$_mainName . '</a>&nbsp;->&nbsp;</li><li class="active">' . self::$_categoriesName . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
@@ -67,7 +67,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a>->' . self::$_subcategoryName;
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . self::$_mainName . '</a>&nbsp;->&nbsp;</li><li><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a>&nbsp;->&nbsp;</li><li class="active">' . self::$_subcategoryName . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
@@ -83,7 +83,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<a href="' . Url::home() . self::$_main . '">' . self::$_mainName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a>-><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '/' . self::$_subcategorySeocode . '">' . self::$_subcategoryName . '</a>->' . self::$_productName;
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . self::$_mainName . '</a>&nbsp;->&nbsp;</li><li><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a>&nbsp;->&nbsp;</li><li><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '/' . self::$_subcategorySeocode . '">' . self::$_subcategoryName . '</a>&nbsp;->&nbsp;</li><li class="active">' . self::$_productName . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }

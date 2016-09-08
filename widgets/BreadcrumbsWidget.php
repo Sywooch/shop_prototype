@@ -2,9 +2,8 @@
 
 namespace app\widgets;
 
-use yii\base\{Widget,
-    ErrorException};
-use yii\helpers\Url;
+use yii\base\ErrorException;
+use yii\widgets\Breadcrumbs;
 use app\traits\ExceptionsTrait;
 use app\models\{CategoriesModel,
     ProductsModel,
@@ -13,18 +12,14 @@ use app\models\{CategoriesModel,
 /**
  * Формирует breadcrumbs
  */
-class BreadcrumbsWidget extends Widget
+class BreadcrumbsWidget extends Breadcrumbs
 {
     use ExceptionsTrait;
     
-    /**
-     * @var string символ-разделитель путей в breadcrumbs
-     */
-    public $glue = '->';
      /**
      * @var string имя ссылки на весь каталог
      */
-    public $all = 'Весь каталог';
+    public $homeLabel = 'Главная';
     /**
      * var string seocode категории для подстановки в breadcrumbs
      */
@@ -53,10 +48,14 @@ class BreadcrumbsWidget extends Widget
      * @var array массив ссылок для конструирования breadcrumbs
      */
     private $_breadcrumbs = [];
-    /**
-     * @var string результат в формате HTML
+    /*
+     * @var string шаблон для неактивного пункта
      */
-    private $_url = '';
+    public $itemTemplate = "<li>{link}&nbsp;->&nbsp;</li>";
+    /*
+     * @var string шаблон для активного пункта
+     */
+    public $activeItemTemplate = "<li class=\"active\">{link}</li>";
     
     public function init()
     {
@@ -71,6 +70,11 @@ class BreadcrumbsWidget extends Widget
         if (empty(\Yii::$app->params['idKey'])) {
             throw new ErrorException('Не определен idKey!');
         }
+        
+        $this->homeLink = [
+            'label'=>$this->homeLabel,
+            'url'=>['/'],
+        ];
         
         if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoriesKey']))) {
             $categoriesModel = CategoriesModel::find()->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoriesKey'])])->one();
@@ -95,52 +99,40 @@ class BreadcrumbsWidget extends Widget
                 $this->productsName = $productsModel->name;
             }
         }
-    }
-    
-    /**
-     * Конструирует HTML строку breadcrumbs на основе данных $_GET
-     * @return string
-     */
-    public function run()
-    {
-        try {
-            $this->_breadcrumbs[] = ['url'=>Url::to(['/products-list/index']), 'text'=>$this->all];
-            if (!empty($this->categoriesSeocode)) {
-                $this->_breadcrumbs[] = ['url'=>Url::to(['/products-list/index', 'categories'=>$this->categoriesSeocode]), 'text'=>$this->categoriesName];
-            }
-            if (!empty($this->subcategorySeocode)) {
-                $this->_breadcrumbs[] = ['url'=>Url::to(['/products-list/index', 'categories'=>$this->categoriesSeocode, 'subcategory'=>$this->subcategorySeocode]), 'text'=>$this->subcategoryName];
-            }
-            if (!empty($this->id)) {
-                $this->_breadcrumbs[] = ['url'=>Url::to(['/products-detail/index', 'categories'=>$this->categoriesSeocode, 'subcategory'=>$this->subcategorySeocode, 'id'=>$this->id]), 'text'=>$this->productsName];
-            }
-            
-            if (count($this->_breadcrumbs) > 1) {
-                list($base, $tail) = array_chunk($this->_breadcrumbs, count($this->_breadcrumbs)-1);
-                
-                foreach ($base as $elm) {
-                    $this->_url .= $this->createUrl($elm['url'], $elm['text']) . $this->glue;
-                }
-                
-                $this->_url .= $tail[0]['text'];
-            }
-            
-            return $this->_url;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        
+        if (!$this->setLinks()) {
+            throw new ErrorException('Ошибка при конструировании массива ссылок!');
         }
     }
     
     /**
-     * Конструирует HTML ссылку
-     * @param string $url URL для формирования ссылки
-     * @param string $text текст ссылки
-     * @return string
+     * Конструирует массив ссылок breadcrumbs на основе данных $_GET
+     * @return bool
      */
-    private function createUrl($url, $text)
+    private function setLinks()
     {
         try {
-            return '<a href="' . $url . '">' . $text . '</a>';
+            if (!empty($this->categoriesSeocode)) {
+                $this->_breadcrumbs[] = ['url'=>['/products-list/index', 'categories'=>$this->categoriesSeocode], 'label'=>$this->categoriesName];
+            }
+            if (!empty($this->subcategorySeocode)) {
+                $this->_breadcrumbs[] = ['url'=>['/products-list/index', 'categories'=>$this->categoriesSeocode, 'subcategory'=>$this->subcategorySeocode], 'label'=>$this->subcategoryName];
+            }
+            if (!empty($this->id)) {
+                $this->_breadcrumbs[] = ['url'=>['/products-detail/index', 'categories'=>$this->categoriesSeocode, 'subcategory'=>$this->subcategorySeocode, 'id'=>$this->id], 'label'=>$this->productsName];
+            }
+            
+            if (!empty($this->_breadcrumbs)) {
+                $tail = array_pop($this->_breadcrumbs);
+                
+                $this->links = $this->_breadcrumbs;
+                
+                unset($tail['url']);
+                
+                $this->links[] = $tail;
+            }
+            
+            return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

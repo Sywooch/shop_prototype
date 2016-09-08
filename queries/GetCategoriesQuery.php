@@ -32,7 +32,7 @@ class GetCategoriesQuery extends AbstractBaseQuery
                 throw new ErrorException('Ошибка при конструировании объекта запроса!');
             }
             
-            $this->query->with('subcategory');
+            $this->query->with('subcategory', 'products');
             
             return $this->query;
         } catch (\Exception $e) {

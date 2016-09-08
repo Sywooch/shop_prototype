@@ -24,7 +24,7 @@ class SubcategoryModel extends AbstractBaseModel
     }
     
     /**
-     * Получает объект категории, с которой связан текущий объект SubcategoryModel
+     * Получает объект CategoriesModel, с которой связан текущий объект SubcategoryModel
      * @return object CategoriesModel
      */
     public function getCategories()

@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\base\ErrorException;
 use app\models\{AbstractBaseModel,
+    ProductsModel,
     SubcategoryModel};
 
 /**
@@ -25,13 +26,26 @@ class CategoriesModel extends AbstractBaseModel
     }
     
     /**
-     * Получает массив объектов подкатегорий, с которыми связан текущий объект CategoriesModel
+     * Получает массив SubcategoryModel, с которыми связан текущий объект CategoriesModel
      * @return array SubcategoryModel
      */
     public function getSubcategory()
     {
         try {
-            return $this->hasMany(SubcategoryModel::className(), ['id_categories'=>'id']);
+            return $this->hasMany(SubcategoryModel::className(), ['id_categories'=>'id'])->inverseOf('categories');
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив ProductsModel, с которыми связан текущий объект CategoriesModel
+     * @return array ProductsModel
+     */
+    public function getProducts()
+    {
+        try {
+            return $this->hasMany(ProductsModel::className(), ['id_categories'=>'id'])->inverseOf('categories');
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
