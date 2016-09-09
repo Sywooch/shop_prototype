@@ -23,7 +23,6 @@ class InstancesHelper
     public static function getInstances()
     {
         try {
-            
             # Массив объектов CategoriesModel для формирования меню категорий
             $categoriesQuery = new GetCategoriesQuery([
                 'fields'=>['id', 'name', 'seocode'],

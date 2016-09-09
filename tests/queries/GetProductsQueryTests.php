@@ -76,7 +76,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` WHERE `products`.`active`=TRUE ORDER BY `products`.`date` DESC LIMIT 10";
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` WHERE `products`.`active`=TRUE ORDER BY `products`.`date` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -103,7 +103,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` WHERE (`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE) ORDER BY `products`.`date` LIMIT 10";
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` WHERE (`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE) ORDER BY `products`.`date` LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -130,7 +130,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE) ORDER BY `products`.`price` DESC LIMIT 10";
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -159,7 +159,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1) ORDER BY `products`.`price` DESC LIMIT 10";
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -188,7 +188,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE ((((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1)) AND (`sizes`.`id`=1) ORDER BY `products`.`price` DESC LIMIT 10";
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE ((((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1)) AND (`sizes`.`id`=1) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -217,7 +217,7 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE)) AND (`colors`.`id` IN (1, 2))) AND (`sizes`.`id`=1) ORDER BY `products`.`date` DESC LIMIT 10";
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE)) AND (`colors`.`id` IN (1, 2))) AND (`sizes`.`id`=1) ORDER BY `products`.`date` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         

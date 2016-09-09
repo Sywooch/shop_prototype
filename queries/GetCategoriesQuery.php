@@ -13,8 +13,12 @@ class GetCategoriesQuery extends AbstractBaseQuery
 {
     public function __construct($config=array())
     {
-        $this->className = CategoriesModel::className();
-        parent::__construct($config);
+        try {
+            $this->className = CategoriesModel::className();
+            parent::__construct($config);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**

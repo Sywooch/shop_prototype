@@ -4,7 +4,6 @@ namespace app\widgets;
 
 use yii\base\ErrorException;
 use yii\widgets\Menu;
-use app\models\ProductsModel;
 
 /**
  * Формирует меню
@@ -24,7 +23,7 @@ class CategoriesMenuWidget extends Menu
      */
     public $activateParents = true;
     /**
-     * @var string template для рендеринга sub-menus
+     * @var string template для рендеринга sub-menu
      */
     public $submenuTemplate = "<ul>{items}</ul>";
     /**
@@ -34,17 +33,21 @@ class CategoriesMenuWidget extends Menu
     
     public function init()
     {
-        parent::init();
-        
-        if (empty($this->categoriesList)) {
-            throw new ErrorException('Отсуствуют данные для построения меню!');
-        }
-        if (empty($this->rootRoute)) {
-            throw new ErrorException('Отсуствует route для построения меню!');
-        }
+        try {
+            parent::init();
             
-        if (!$this->setItems()) {
-            throw new ErrorException('Ошибка при формировании массива ссылок');
+            if (empty($this->categoriesList)) {
+                throw new ErrorException('Отсуствуют данные для построения меню!');
+            }
+            if (empty($this->rootRoute)) {
+                throw new ErrorException('Отсуствует route для построения меню!');
+            }
+            
+            if (!$this->setItems()) {
+                throw new ErrorException('Ошибка при формировании массива ссылок');
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
     }
     

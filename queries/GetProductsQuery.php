@@ -13,8 +13,12 @@ class GetProductsQuery extends AbstractBaseQuery
 {
     public function __construct($config=array())
     {
-        $this->className = ProductsModel::className();
-        parent::__construct($config);
+        try {
+            $this->className = ProductsModel::className();
+            parent::__construct($config);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
     }
     
     /**

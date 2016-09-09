@@ -36,6 +36,12 @@ class DbManager extends Object
         parent::init();
         
         $this->dbSchemePath = __DIR__ . '/source/sql/shop.sql';
+        
+        $this->login = escapeshellcmd(escapeshellarg($this->login));
+        $this->password = escapeshellcmd(escapeshellarg($this->password));
+        $this->testDbName = escapeshellcmd(escapeshellarg($this->testDbName));
+        $this->workDbName = escapeshellcmd(escapeshellarg($this->workDbName));
+        $this->dbSchemePath = escapeshellcmd(escapeshellarg($this->dbSchemePath));
     }
     
     /**
@@ -44,13 +50,13 @@ class DbManager extends Object
     public function createDb()
     {
         try {
-            $cmd = escapeshellcmd("mysql -u{$this->login} -p{$this->password} -e 'CREATE DATABASE IF NOT EXISTS {$this->testDbName}'");
+            $cmd = "mysql -u{$this->login} -p{$this->password} -e 'CREATE DATABASE IF NOT EXISTS {$this->testDbName}'";
             shell_exec($cmd);
             
-            $cmd = escapeshellcmd("mysqldump -u{$this->login} -p{$this->password} --no-data {$this->workDbName} > {$this->dbSchemePath}");
+            $cmd = "mysqldump -u{$this->login} -p{$this->password} --no-data {$this->workDbName} > {$this->dbSchemePath}";
             shell_exec($cmd);
             
-            $cmd = escapeshellcmd("mysql -u{$this->login} -p{$this->password} {$this->testDbName} < {$this->dbSchemePath}");
+            $cmd = "mysql -u{$this->login} -p{$this->password} {$this->testDbName} < {$this->dbSchemePath}";
             shell_exec($cmd);
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при создании тестовой БД!\n" . $e->getMessage());
@@ -63,7 +69,7 @@ class DbManager extends Object
     public function deleteDb()
     {
         try {
-            $cmd = escapeshellcmd("mysql -u{$this->login} -p{$this->password} -e 'DROP DATABASE {$this->testDbName}'");
+            $cmd = "mysql -u{$this->login} -p{$this->password} -e 'DROP DATABASE {$this->testDbName}'";
             shell_exec($cmd);
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при удалении тестовой БД!\n" . $e->getMessage());

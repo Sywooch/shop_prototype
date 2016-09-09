@@ -24,12 +24,20 @@ class PaginationWidget extends Widget
      * @var array массив HTML аттрибутов, которые будут применены к тегу-контейнеру
      */
      public $options = ['class'=>'pagination'];
-     /**
+    /**
      * @var string имя тега-контейнера
      * - <ul> маркированный список
      * - <ol> нумерованный
      */
     public $tag = 'ul';
+    /**
+     * @var string имя дочернего для тега-контейнера тега, обрамляющего ссылки на страницы
+     */
+    public $childTag = 'il';
+    /**
+     * @var string символ, разделяющий ссылки
+     */
+    public $separator = ' / ';
     /**
      * @var int общее количество ссылок на страницы, например, 
      * значение 5 создает: указатель на текущую страницу, а также 
@@ -49,19 +57,23 @@ class PaginationWidget extends Widget
      */
     private $_nextMax;
     /**
-     * @var array массив ссылок на страницы, обернутых в тег <li>
+     * @var array массив ссылок на страницы, обернутых в тег $this->childTag
      */
     private $_tags = array();
     
     public function init()
     {
-        parent::init();
-        
-        if (empty($this->paginator)) {
-            throw new ErrorException('Не задан объект Pagination!');
+        try {
+            parent::init();
+            
+            if (empty($this->paginator)) {
+                throw new ErrorException('Не задан объект Pagination!');
+            }
+            
+            $this->pageRange = floor($this->pageRange);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
-        
-        $this->pageRange = floor($this->pageRange);
     }
     
     /**
@@ -86,15 +98,19 @@ class PaginationWidget extends Widget
                     $number = null;
                 }
                 $url = Url::current([\Yii::$app->params['pagePointer']=>$number]);
-                $this->_tags[] = Html::tag('li', Html::a($number ?? 1, $url), Url::current() == $url ? ['class'=>$this->activePageCssClass] : []);
+                if (Url::current() == $url) {
+                    $this->_tags[] = Html::tag($this->childTag, $number ?? 1, ['class'=>$this->activePageCssClass]);
+                    continue;
+                }
+                $this->_tags[] = Html::tag($this->childTag, Html::a($number ?? 1, $url));
             }
             
             if ($this->edges) {
-                array_unshift($this->_tags, Html::tag('li', Html::a('Первая', Url::current([\Yii::$app->params['pagePointer']=>null]))));
-                array_push($this->_tags, Html::tag('li', Html::a('Последняя', Url::current([\Yii::$app->params['pagePointer']=>$this->paginator->pageCount]))));
+                array_unshift($this->_tags, Html::tag($this->childTag, Html::a('Первая', Url::current([\Yii::$app->params['pagePointer']=>null]))));
+                array_push($this->_tags, Html::tag($this->childTag, Html::a('Последняя', Url::current([\Yii::$app->params['pagePointer']=>$this->paginator->pageCount]))));
             }
             
-            return Html::tag($this->tag, implode('', $this->_tags), $this->options);
+            return Html::tag($this->tag, implode(Html::tag($this->childTag, $this->separator), $this->_tags), $this->options);
         } catch(\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -159,7 +175,7 @@ class PaginationWidget extends Widget
                 throw new ErrorException('Переданы некорректные данные!');
             }
             
-            for ($i = 0; $i < $this->pageRange - count(range($this->_prevMin, $this->_nextMax)); ++$i) {
+            for ($i = 0; $i <= $this->pageRange - count(range($this->_prevMin, $this->_nextMax)); ++$i) {
                 $direction == 'up' ? ++$this->_nextMax : --$this->_prevMin;
             }
             

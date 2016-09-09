@@ -37,7 +37,7 @@ abstract class AbstractBaseQuery extends Object
     /**
      * @var object объект yii\data\Pagination
      */
-    public $pagination;
+    public $paginator;
     /**
      * @var array массив значений WHERE для дополнительной фильтрации
      * формат [field=>value,]
@@ -46,17 +46,21 @@ abstract class AbstractBaseQuery extends Object
     
     public function init()
     {
-        parent::init();
-        
-        if (empty($this->className)) {
-            throw new ErrorException('Не определено имя класса!');
-        }
-        
-        $this->query = $this->className::find();
-        $this->tableName = $this->className::tableName();
-        
-        if (empty($this->pagination)) {
-            $this->pagination = new Pagination();
+        try {
+            parent::init();
+            
+            if (empty($this->className)) {
+                throw new ErrorException('Не определено имя класса!');
+            }
+            
+            $this->query = $this->className::find();
+            $this->tableName = $this->className::tableName();
+            
+            if (empty($this->paginator)) {
+                $this->paginator = new Pagination();
+            }
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
         }
     }
     
@@ -143,15 +147,14 @@ abstract class AbstractBaseQuery extends Object
             
             $countQuery = clone $this->query;
             
-            \Yii::configure($this->pagination, [
+            \Yii::configure($this->paginator, [
                 'totalCount'=>$countQuery->count(),
                 'pageSize'=>\Yii::$app->params['limit'],
                 'page'=>!empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) - 1 : 0,
-                'pageParam'=>\Yii::$app->params['pagePointer']
             ]);
             
-            $this->query->offset($this->pagination->offset);
-            $this->query->limit($this->pagination->limit);
+            $this->query->offset($this->paginator->offset);
+            $this->query->limit($this->paginator->limit);
             
             return true;
         } catch (\Exception $e) {

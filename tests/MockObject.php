@@ -2,9 +2,7 @@
 
 namespace app\tests;
 
-use app\mappers\AbstractBaseMapper;
-
-class MockObject extends AbstractBaseMapper
+class MockObject
 {
     public $id;
     public $query;
@@ -47,5 +45,10 @@ class MockObject extends AbstractBaseMapper
     public function saveAs($path)
     {
         return true;
+    }
+    
+    public function getRoute()
+    {
+        
     }
 }
