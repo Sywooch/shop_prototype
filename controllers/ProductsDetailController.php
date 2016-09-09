@@ -29,7 +29,7 @@ class ProductsDetailController extends AbstractBaseController
             $renderArray = array();
             
             $productsQuery = new GetProductsQuery([
-                'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+                'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory'],
                 'extraWhere'=>['products.id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]
             ]);
             $renderArray['productsModel'] = $productsQuery->getOne()->one();

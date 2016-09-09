@@ -6,8 +6,14 @@ $config = [
     'language'=>'ru-RU',
     'sourceLanguage'=>'en-US',
     'timeZone'=>'Europe/Kiev',
-    'layout'=>'main.twig',
     'bootstrap'=>['log'],
+    
+    'aliases'=>[
+        '@theme'=>'@app/themes/basic'
+    ],
+    
+    'layout'=>'main.twig',
+    'layoutPath'=>'@theme/layouts',
     
     'components'=>[
         'db'=>require(__DIR__ . '/db.php'),
@@ -21,6 +27,13 @@ $config = [
                         'url'=>'yii\helpers\Url'
                     ],
                 ]
+            ],
+            'theme'=>[
+                'basePath'=>'@webroot/sources/themes/basic',
+                'baseUrl'=>'@web/sources/themes/basic',
+                'pathMap'=>[
+                    '@app/views'=>'@theme'
+                ],
             ],
         ],
         'request'=>[

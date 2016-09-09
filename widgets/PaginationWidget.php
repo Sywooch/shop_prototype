@@ -43,7 +43,7 @@ class PaginationWidget extends Widget
      * значение 5 создает: указатель на текущую страницу, а также 
      * 2 ссылки на предыдущие и 2 ссылки на следующие страницы за текущей
      */
-    public $pageRange = 3;
+    public $pageRange = 4;
     /**
      * @var bool флаг, определяющий, нужно ли добавлять ссылки на первую и последнюю страницы
      */
@@ -70,7 +70,11 @@ class PaginationWidget extends Widget
                 throw new ErrorException('Не задан объект Pagination!');
             }
             
-            $this->pageRange = floor($this->pageRange);
+            $this->pageRange = ceil($this->pageRange);
+            if ($this->pageRange % 2 === 0) {
+                ++$this->pageRange;
+            }
+            $this->pageRange = $this->pageRange < 3 ? 3 : $this->pageRange;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

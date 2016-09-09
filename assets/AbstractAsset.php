@@ -12,9 +12,9 @@ abstract class AbstractAsset extends AssetBundle
     /**
      * @var string задаёт корневую директорию содержащую файлы ресурса
      */
-    public $basePath = '@webroot/sources';
+    public $basePath = '@webroot/sources/themes/basic';
     /**
      * @var string задаёт Web доступную директорию, которая содержит файлы 
      */
-    public $baseUrl = '@web/sources';
+    public $baseUrl = '@web/sources/themes/basic';
 }

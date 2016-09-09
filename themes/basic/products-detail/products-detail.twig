@@ -1,8 +1,8 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
-{% include('@app/views/base/menu.twig') %}
+{% include('@theme/base/menu.twig') %}
 
-{% include('@app/views/base/breadcrumbs.twig') %}
+{% include('@theme/base/breadcrumbs.twig') %}
 
 {% if productsModel %}
     <h1>{{ productsModel.name }}</h1>
