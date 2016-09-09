@@ -26,8 +26,32 @@ class PaginationWidget extends Widget
      public $options = ['class'=>'pagination'];
      /**
      * @var string имя тега-контейнера
+     * - <ul> маркированный список
+     * - <ol> нумерованный
      */
     public $tag = 'ul';
+    /**
+     * @var int общее количество ссылок на страницы, например, 
+     * значение 5 создает: указатель на текущую страницу, а также 
+     * 2 ссылки на предыдущие и 2 ссылки на следующие страницы за текущей
+     */
+    public $pageRange = 3;
+    /**
+     * @var bool флаг, определяющий, нужно ли добавлять ссылки на первую и последнюю страницы
+     */
+    public $edges = true;
+    /**
+     * @var int минимальный номер для предыдущих страниц
+     */
+    private $_prevMin;
+    /**
+     * @var int максимальный номер для следующих страниц
+     */
+    private $_nextMax;
+    /**
+     * @var array массив ссылок на страницы, обернутых в тег <li>
+     */
+    private $_tags = array();
     
     public function init()
     {
@@ -36,6 +60,8 @@ class PaginationWidget extends Widget
         if (empty($this->paginator)) {
             throw new ErrorException('Не задан объект Pagination!');
         }
+        
+        $this->pageRange = floor($this->pageRange);
     }
     
     /**
@@ -45,18 +71,136 @@ class PaginationWidget extends Widget
     public function run()
     {
         try {
-            $range = range(1, $this->paginator->pageCount);
-            
-            $result = [];
-            
-            foreach ($range as $item) {
-                if ($item == 1) {
-                    $item = null;
-                }
-                $result[] = Html::tag('li', Html::a($item ?? 1, Url::current([\Yii::$app->params['pagePointer']=>$item])), Url::current() == $url ? ['class'=>$this->activePageCssClass] : []);
+            if ($this->paginator->pageCount < 2) {
+                return '';
             }
             
-            return Html::tag($this->tag, implode('', $result), $this->options);
+            $range = $this->getRange();
+            
+            if (!is_array($range) || empty($range)) {
+                throw new ErrorException('Ошибка при получении диапазона ссылок!');
+            }
+            
+            foreach ($range as $number) {
+                if ($number == 1) {
+                    $number = null;
+                }
+                $url = Url::current([\Yii::$app->params['pagePointer']=>$number]);
+                $this->_tags[] = Html::tag('li', Html::a($number ?? 1, $url), Url::current() == $url ? ['class'=>$this->activePageCssClass] : []);
+            }
+            
+            if ($this->edges) {
+                array_unshift($this->_tags, Html::tag('li', Html::a('Первая', Url::current([\Yii::$app->params['pagePointer']=>null]))));
+                array_push($this->_tags, Html::tag('li', Html::a('Последняя', Url::current([\Yii::$app->params['pagePointer']=>$this->paginator->pageCount]))));
+            }
+            
+            return Html::tag($this->tag, implode('', $this->_tags), $this->options);
+        } catch(\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Конструирует диапазон ссылок на страницы в зависимости от номера текущей страницы
+     * @return array
+     */
+    private function getRange()
+    {
+        try {
+            $currentPage = $this->paginator->page + 1;
+            $aroundPages = floor(($this->pageRange - 1) / 2);
+            
+            $this->_prevMin = $currentPage - $aroundPages;
+            if (!$this->checkMinPage()) {
+                throw new ErrorException('Ошибка при вычислении минимального значения!');
+            }
+            
+            $this->_nextMax = $currentPage + $aroundPages;
+            if (!$this->checkMaxPage()) {
+                throw new ErrorException('Ошибка при вычислении максимального значения!');
+            }
+            
+            if (count(range($this->_prevMin, $this->_nextMax)) < $this->pageRange) {
+                if ($this->_prevMin == 1) {
+                    if (!$this->scale('up')) {
+                        throw new ErrorException('Ошибка при изменении диапазона!');
+                    }
+                    if (!$this->checkMaxPage()) {
+                        throw new ErrorException('Ошибка при вычислении максимального значения!');
+                    }
+                } elseif ($this->_nextMax == $this->paginator->pageCount) {
+                    if (!$this->scale('down')) {
+                        throw new ErrorException('Ошибка при изменении диапазона!');
+                    }
+                    if (!$this->checkMinPage()) {
+                        throw new ErrorException('Ошибка при вычислении минимального значения!');
+                    }
+                }
+            }
+            
+            return range($this->_prevMin, $this->_nextMax);
+        } catch(\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Увеличивает максимальный номер следующих страниц, 
+     * или уменьшает минимальный номер предыдущих страниц, 
+     * если диапазон страниц меньше ожидаемого
+     * @param string $direction задает направление изменений: 
+     * - up инкремент максимального номера
+     * - down декремент минимального номера
+     */
+    private function scale($direction)
+    {
+        try {
+            if (empty($direction) || !in_array($direction, ['up', 'down'], true)) {
+                throw new ErrorException('Переданы некорректные данные!');
+            }
+            
+            for ($i = 0; $i < $this->pageRange - count(range($this->_prevMin, $this->_nextMax)); ++$i) {
+                $direction == 'up' ? ++$this->_nextMax : --$this->_prevMin;
+            }
+            
+            return true;
+        } catch(\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Устанавливает минимальный номер для предыдущих страниц, 
+     * устанавливает его равным 1, если полученное в результате вычислений значение меньше 1
+     * @return bool
+     */
+    private function checkMinPage()
+    {
+        try {
+            if ($this->_prevMin < 1) {
+                $this->_prevMin = 1;
+            }
+            
+            return true;
+        } catch(\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Устанавливает максимальный номер для следующих страниц, 
+     * устанавливает его равным $this->paginator->pageCount, 
+     * если полученное в результате вычислений значение больше $this->paginator->pageCount
+     * @return bool
+     */
+    private function checkMaxPage()
+    {
+        try {
+            if ($this->_nextMax > $this->paginator->pageCount) {
+                $this->_nextMax = $this->paginator->pageCount;
+            }
+            
+            return true;
         } catch(\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

@@ -47,26 +47,11 @@ class DbManager extends Object
             $cmd = escapeshellcmd("mysql -u{$this->login} -p{$this->password} -e 'CREATE DATABASE IF NOT EXISTS {$this->testDbName}'");
             shell_exec($cmd);
             
-            shell_exec("mysqldump -u{$this->login} -p{$this->password} --no-data {$this->workDbName} > {$this->dbSchemePath}");
-            
-            shell_exec("mysql -u{$this->login} -p{$this->password} {$this->testDbName} < {$this->dbSchemePath}");
-        } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при создании тестовой БД!\n" . $e->getMessage());
-        }
-    }
-    
-    /**
-     * Создает тестовую БД и заполняет ее данными
-     */
-    public function createDbAndData()
-    {
-        try {
-            $cmd = escapeshellcmd("mysql -u{$this->login} -p{$this->password} -e 'CREATE DATABASE IF NOT EXISTS {$this->testDbName}'");
+            $cmd = escapeshellcmd("mysqldump -u{$this->login} -p{$this->password} --no-data {$this->workDbName} > {$this->dbSchemePath}");
             shell_exec($cmd);
             
-            //shell_exec("mysqldump -u{$this->login} -p{$this->password} {$this->workDbName} > {$this->dbSchemePath}");
-            
-            shell_exec("mysql -u{$this->login} -p{$this->password} {$this->testDbName} < {$this->dbSchemePath}");
+            $cmd = escapeshellcmd("mysql -u{$this->login} -p{$this->password} {$this->testDbName} < {$this->dbSchemePath}");
+            shell_exec($cmd);
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при создании тестовой БД!\n" . $e->getMessage());
         }
