@@ -19,7 +19,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     private static $_subcategorySeocode = 'boots';
     private static $_categoriesName = 'Одежда';
     private static $_subcategoryName = 'Пиджаки';
-    private static $_main = 'products';
+    private static $_main = 'catalog';
     private static $_mainName = 'Главная';
     
     public static function setUpBeforeClass()
@@ -31,12 +31,12 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_categoriesName, ':seocode'=>self::$_categoriesSeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_subcategoryName, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_subcategoryName, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_productName, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[id_subcategory]]=:id_subcategory');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_productName, ':id_category'=>self::$_id, ':id_subcategory'=>self::$_id]);
         $command->execute();
     }
     
@@ -47,7 +47,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
      */
     public function testWidgetForProductsList()
     {
-        $_GET = ['categories'=>self::$_categoriesSeocode];
+        $_GET = ['category'=>self::$_categoriesSeocode];
         
         $result = BreadcrumbsWidget::widget();
         
@@ -63,7 +63,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
      */
     public function testWidgetForProductsListTwo()
     {
-        $_GET = ['categories'=>self::$_categoriesSeocode, 'subcategory'=>self::$_subcategorySeocode];
+        $_GET = ['category'=>self::$_categoriesSeocode, 'subcategory'=>self::$_subcategorySeocode];
         
         $result = BreadcrumbsWidget::widget();
         
@@ -79,7 +79,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
      */
     public function testWidgetForProductsListThree()
     {
-        $_GET = ['categories'=>self::$_categoriesSeocode, 'subcategory'=>self::$_subcategorySeocode, 'id'=>self::$_id];
+        $_GET = ['category'=>self::$_categoriesSeocode, 'subcategory'=>self::$_subcategorySeocode, 'id'=>self::$_id];
         
         $result = BreadcrumbsWidget::widget();
         

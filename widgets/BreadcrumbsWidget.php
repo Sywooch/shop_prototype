@@ -23,7 +23,7 @@ class BreadcrumbsWidget extends Breadcrumbs
     /**
      * var string seocode категории для подстановки в breadcrumbs
      */
-    private $categoriesSeocode;
+    private $categorySeocode;
     /**
      * var string seocode подкатегории для подстановки в breadcrumbs
      */
@@ -39,7 +39,7 @@ class BreadcrumbsWidget extends Breadcrumbs
     /**
      * @var string имя категории для подстановки в breadcrumbs
      */
-    private $categoriesName;
+    private $categoryName;
     /**
      * @var string имя подкатегории для подстановки в breadcrumbs
      */
@@ -66,8 +66,8 @@ class BreadcrumbsWidget extends Breadcrumbs
         try {
             parent::init();
             
-            if (empty(\Yii::$app->params['categoriesKey'])) {
-                throw new ErrorException('Не определен categoriesKey!');
+            if (empty(\Yii::$app->params['categoryKey'])) {
+                throw new ErrorException('Не определен categoryKey!');
             }
             if (empty(\Yii::$app->params['subcategoryKey'])) {
                 throw new ErrorException('Не определен subcategoryKey!');
@@ -83,11 +83,11 @@ class BreadcrumbsWidget extends Breadcrumbs
             
             $this->itemTemplate = sprintf($this->itemTemplate, $this->separator);
             
-            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoriesKey']))) {
-                $categoriesModel = CategoriesModel::find()->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoriesKey'])])->one();
-                if ($categoriesModel instanceof CategoriesModel) {
-                    $this->categoriesSeocode = $categoriesModel->seocode;
-                    $this->categoriesName = $categoriesModel->name;
+            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
+                $categoryModel = CategoriesModel::find()->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])])->one();
+                if ($categoryModel instanceof CategoriesModel) {
+                    $this->categorySeocode = $categoryModel->seocode;
+                    $this->categoryName = $categoryModel->name;
                 }
             }
             
@@ -122,14 +122,14 @@ class BreadcrumbsWidget extends Breadcrumbs
     private function setLinks()
     {
         try {
-            if (!empty($this->categoriesSeocode)) {
-                $this->_breadcrumbs[] = ['url'=>['/products-list/index', 'categories'=>$this->categoriesSeocode], 'label'=>$this->categoriesName];
+            if (!empty($this->categorySeocode)) {
+                $this->_breadcrumbs[] = ['url'=>['/products-list/index', 'category'=>$this->categorySeocode], 'label'=>$this->categoryName];
             }
             if (!empty($this->subcategorySeocode)) {
-                $this->_breadcrumbs[] = ['url'=>['/products-list/index', 'categories'=>$this->categoriesSeocode, 'subcategory'=>$this->subcategorySeocode], 'label'=>$this->subcategoryName];
+                $this->_breadcrumbs[] = ['url'=>['/products-list/index', 'category'=>$this->categorySeocode, 'subcategory'=>$this->subcategorySeocode], 'label'=>$this->subcategoryName];
             }
             if (!empty($this->id)) {
-                $this->_breadcrumbs[] = ['url'=>['/products-detail/index', 'categories'=>$this->categoriesSeocode, 'subcategory'=>$this->subcategorySeocode, 'id'=>$this->id], 'label'=>$this->productsName];
+                $this->_breadcrumbs[] = ['url'=>['/products-detail/index', 'category'=>$this->categorySeocode, 'subcategory'=>$this->subcategorySeocode, 'id'=>$this->id], 'label'=>$this->productsName];
             }
             
             if (!empty($this->_breadcrumbs)) {

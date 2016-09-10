@@ -34,28 +34,28 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[short_description]]=:short_description, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
-        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':short_description'=>self::$_description, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[short_description]]=:short_description, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_category]]=:id_category, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
+        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':short_description'=>self::$_description, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_category'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
         $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_products]]=:id_products, [[id_colors]]=:id_colors');
-        $command->bindValues([':id_products'=>self::$_id, ':id_colors'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_product]]=:id_product, [[id_color]]=:id_color');
+        $command->bindValues([':id_product'=>self::$_id, ':id_color'=>self::$_id]);
         $command->execute();
         
         $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
         $command->bindValues([':id'=>self::$_id, ':size'=>self::$_size]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_sizes}} SET [[id_products]]=:id_products, [[id_sizes]]=:id_sizes');
-        $command->bindValues([':id_products'=>self::$_id, ':id_sizes'=>self::$_id]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_sizes}} SET [[id_product]]=:id_product, [[id_size]]=:id_size');
+        $command->bindValues([':id_product'=>self::$_id, ':id_size'=>self::$_id]);
         $command->execute();
     }
     
@@ -69,14 +69,14 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->filters->clean();
         
         $productsQuery = new GetProductsQuery([
-            'fields'=>['id', 'date', 'name', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+            'fields'=>['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
             'sorting'=>['date'=>SORT_DESC]
         ]);
         
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` WHERE `products`.`active`=TRUE ORDER BY `products`.`date` DESC LIMIT " . \Yii::$app->params['limit'];
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active` FROM `products` WHERE `products`.`active`=TRUE ORDER BY `products`.`date` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -92,18 +92,18 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllTwo()
     {
-        $_GET = ['categories'=>self::$_categorySeocode];
+        $_GET = ['category'=>self::$_categorySeocode];
         \Yii::$app->filters->clean();
         
         $productsQuery = new GetProductsQuery([
-            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
             'sorting'=>['date'=>SORT_ASC]
         ]);
         
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` WHERE (`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE) ORDER BY `products`.`date` LIMIT " . \Yii::$app->params['limit'];
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` WHERE (`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE) ORDER BY `products`.`date` LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -119,18 +119,18 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllThree()
     {
-        $_GET = ['categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
+        $_GET = ['category'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
         \Yii::$app->filters->clean();
         
         $productsQuery = new GetProductsQuery([
-            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
             'sorting'=>['price'=>SORT_DESC]
         ]);
         
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -146,20 +146,20 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllFour()
     {
-        $_GET = ['categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
+        $_GET = ['category'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
         
         \Yii::$app->filters->clean();
         \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id]]);
         
         $productsQuery = new GetProductsQuery([
-            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
             'sorting'=>['price'=>SORT_DESC]
         ]);
         
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -175,20 +175,20 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllFive()
     {
-        $_GET = ['categories'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
+        $_GET = ['category'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
         
         \Yii::$app->filters->clean();
         \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id], 'sizes'=>[self::$_id]]);
         
         $productsQuery = new GetProductsQuery([
-            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
             'sorting'=>['price'=>SORT_DESC]
         ]);
         
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE ((((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1)) AND (`sizes`.`id`=1) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE ((((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1)) AND (`sizes`.`id`=1) ORDER BY `products`.`price` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -204,20 +204,20 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllSix()
     {
-        $_GET = ['categories'=>self::$_categorySeocode];
+        $_GET = ['category'=>self::$_categorySeocode];
         
         \Yii::$app->filters->clean();
         \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id,self::$_id + 1], 'sizes'=>[self::$_id]]);
         
         $productsQuery = new GetProductsQuery([
-            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
             'sorting'=>['date'=>SORT_DESC]
         ]);
         
         $query = $productsQuery->getAll();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_categories` INNER JOIN `products_colors` ON products.id=products_colors.id_products INNER JOIN `colors` ON products_colors.id_colors=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_products INNER JOIN `sizes` ON products_sizes.id_sizes=sizes.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE)) AND (`colors`.`id` IN (1, 2))) AND (`sizes`.`id`=1) ORDER BY `products`.`date` DESC LIMIT " . \Yii::$app->params['limit'];
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE)) AND (`colors`.`id` IN (1, 2))) AND (`sizes`.`id`=1) ORDER BY `products`.`date` DESC LIMIT " . \Yii::$app->params['limit'];
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -237,14 +237,14 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
         \Yii::$app->filters->clean();
         
         $productsQuery = new GetProductsQuery([
-            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+            'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
             'extraWhere'=>['products.id'=>self::$_id]
         ]);
         
         $query = $productsQuery->getOne();
         $queryRaw = clone $query;
         
-        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_categories`, `products`.`id_subcategory`, `products`.`active` FROM `products` WHERE `products`.`id`=1";
+        $expectQuery = "SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active` FROM `products` WHERE `products`.`id`=1";
         
         $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
         

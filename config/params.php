@@ -9,7 +9,7 @@ $params = [
     'filterKeys'=>['colors', 'sizes', 'brands'], # Ключи, по которым доступны значения фильтров
     
     # Путь к товару
-    'categoriesKey'=>'categories', # Ключ, по которому в $_REQUEST доступна текущая категория
+    'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступна текущая категория
     'subcategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступна текущая подкатегория
     'idKey'=>'id', # Ключ, по которому в $_REQUEST доступен id продукта
 ];

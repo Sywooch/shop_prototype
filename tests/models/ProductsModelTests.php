@@ -37,12 +37,12 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[short_description]]=:short_description, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_categories]]=:id_categories, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
-        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':short_description'=>self::$_description, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_categories'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[short_description]]=:short_description, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_category]]=:id_category, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
+        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':short_description'=>self::$_description, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_category'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
         $command->execute();
     }
     
@@ -64,7 +64,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('short_description', $model->attributes));
         $this->assertTrue(array_key_exists('price', $model->attributes));
         $this->assertTrue(array_key_exists('images', $model->attributes));
-        $this->assertTrue(array_key_exists('id_categories', $model->attributes));
+        $this->assertTrue(array_key_exists('id_category', $model->attributes));
         $this->assertTrue(array_key_exists('id_subcategory', $model->attributes));
         $this->assertTrue(array_key_exists('active', $model->attributes));
         $this->assertTrue(array_key_exists('total_products', $model->attributes));
@@ -76,7 +76,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active, 'total_products'=>self::$_total_products];
+        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_category'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active, 'total_products'=>self::$_total_products];
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_date, $model->date);
@@ -86,13 +86,13 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_description, $model->short_description);
         $this->assertEquals(self::$_price, $model->price);
         $this->assertEquals(self::$_images, $model->images);
-        $this->assertEquals(self::$_id, $model->id_categories);
+        $this->assertEquals(self::$_id, $model->id_category);
         $this->assertEquals(self::$_id, $model->id_subcategory);
         $this->assertEquals(self::$_active, $model->active);
         $this->assertEquals(self::$_total_products, $model->total_products);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_categories'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active, 'total_products'=>self::$_total_products];
+        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_category'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active, 'total_products'=>self::$_total_products];
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_date, $model->date);
@@ -102,7 +102,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals(self::$_description, $model->short_description);
         $this->assertEquals(self::$_price, $model->price);
         $this->assertEquals(self::$_images, $model->images);
-        $this->assertEquals(self::$_id, $model->id_categories);
+        $this->assertEquals(self::$_id, $model->id_category);
         $this->assertEquals(self::$_id, $model->id_subcategory);
         $this->assertEquals(self::$_active, $model->active);
         $this->assertEquals(self::$_total_products, $model->total_products);

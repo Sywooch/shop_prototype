@@ -32,9 +32,9 @@ class GetProductsQuery extends AbstractBaseQuery
                 throw new ErrorException('Ошибка при конструировании объекта запроса!');
             }
             
-            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoriesKey']))) {
-                $this->query->innerJoin('categories', '[[categories.id]]=[[products.id_categories]]');
-                $this->query->andWhere(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoriesKey'])]);
+            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
+                $this->query->innerJoin('categories', '[[categories.id]]=[[products.id_category]]');
+                $this->query->andWhere(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
             }
             
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {

@@ -29,8 +29,8 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
         $command->execute();
         
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_categories]]=:id_categories, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_categories'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
+        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
+        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
         $command->execute();
     }
     
@@ -47,7 +47,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('name', $model->attributes));
         $this->assertTrue(array_key_exists('seocode', $model->attributes));
-        $this->assertTrue(array_key_exists('id_categories', $model->attributes));
+        $this->assertTrue(array_key_exists('id_category', $model->attributes));
     }
     
     /**
@@ -56,20 +56,20 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
     public function testScenarios()
     {
         $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_categories'=>self::$_id];
+        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_category'=>self::$_id];
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
-        $this->assertEquals(self::$_id, $model->id_categories);
+        $this->assertEquals(self::$_id, $model->id_category);
         
         $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_categories'=>self::$_id];
+        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_category'=>self::$_id];
         
         $this->assertEquals(self::$_id, $model->id);
         $this->assertEquals(self::$_name, $model->name);
         $this->assertEquals(self::$_categorySeocode, $model->seocode);
-        $this->assertEquals(self::$_id, $model->id_categories);
+        $this->assertEquals(self::$_id, $model->id_category);
     }
     
     /**

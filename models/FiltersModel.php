@@ -19,7 +19,7 @@ class FiltersModel extends Model
     /**
      * Свойства содержат данные для редиректа после обработки запроса
      */
-    public $categories = '';
+    public $category = '';
     public $subcategory = '';
     public $search = '';
     
@@ -32,7 +32,7 @@ class FiltersModel extends Model
     public function rules()
     {
         return [
-            [['colors', 'sizes', 'brands', 'sortingField', 'sortingType', 'categories', 'subcategory', 'search', 'getActive', 'getNotActive'], 'safe'],
+            [['colors', 'sizes', 'brands', 'sortingField', 'sortingType', 'category', 'subcategory', 'search', 'getActive', 'getNotActive'], 'safe'],
         ];
     }
     
@@ -63,7 +63,7 @@ class FiltersModel extends Model
     public function cleanOther()
     {
         try {
-            $this->categories = '';
+            $this->category = '';
             $this->subcategory = '';
             $this->search = '';
             return true;

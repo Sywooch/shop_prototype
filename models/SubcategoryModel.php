@@ -18,8 +18,8 @@ class SubcategoryModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'name', 'seocode', 'id_categories'],
-            self::GET_FROM_FORM=>['id', 'name', 'seocode', 'id_categories'],
+            self::GET_FROM_DB=>['id', 'name', 'seocode', 'id_category'],
+            self::GET_FROM_FORM=>['id', 'name', 'seocode', 'id_category'],
         ];
     }
     
@@ -30,7 +30,7 @@ class SubcategoryModel extends AbstractBaseModel
     public function getCategories()
     {
         try {
-            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_categories'])->inverseOf('subcategory');
+            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_category'])->inverseOf('subcategory');
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

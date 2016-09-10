@@ -87,6 +87,10 @@ abstract class AbstractBaseQuery extends Object
     
     /**
      * Добавляет фильтры, указанные в массиве \Yii::$app->params['filterKeys']
+     * Фильтр опирается на соглашение, что имена таблиц, связывающих таблицы по 
+     * принципу М2М состоят из имен отдельных таблиц, обединенных нижним подчеркиванием
+     * Например, именем М2М таблицы для products и brands будет products_brands
+     * Поля, сылающиеся на связанные таблицы носят имена id_product, id_brand
      * @return boolean
      */
     protected function addFilters()
@@ -99,8 +103,8 @@ abstract class AbstractBaseQuery extends Object
             if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->attributes)))) {
                 foreach (\Yii::$app->params['filterKeys'] as $filter) {
                     if (in_array($filter, $keys)) {
-                        $this->query->innerJoin($this->tableName . '_' . $filter, $this->tableName . '.id=' . $this->tableName . '_' . $filter . '.id_' . $this->tableName);
-                        $this->query->innerJoin($filter, $this->tableName . '_' . $filter . '.id_' . $filter . '=' . $filter . '.id');
+                        $this->query->innerJoin($this->tableName . '_' . $filter, $this->tableName . '.id=' . $this->tableName . '_' . $filter . '.id_' . substr($this->tableName, 0, strlen($this->tableName)-1));
+                        $this->query->innerJoin($filter, $this->tableName . '_' . $filter . '.id_' . substr($filter, 0, strlen($filter)-1) . '=' . $filter . '.id');
                         $this->query->andWhere([$filter . '.id'=>\Yii::$app->filters->$filter]);
                     }
                 }

@@ -22,7 +22,7 @@ class ProductsListController extends AbstractBaseController
             $renderArray = array();
             
             $productsQuery = new GetProductsQuery([
-                'fields'=>['id', 'date', 'name', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active'],
+                'fields'=>['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
                 'sorting'=>['date'=>SORT_DESC]
             ]);
             $renderArray['productsList'] = $productsQuery->getAll()->all();

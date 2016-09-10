@@ -58,19 +58,19 @@ class CategoriesMenuWidget extends Menu
     private function setItems()
     {
         try {
-            foreach ($this->categoriesList as $categories) {
-                if (empty($categories->products)) {
+            foreach ($this->categoriesList as $category) {
+                if (empty($category->products)) {
                     continue;
                 }
                 $pack = [
-                    'label'=>$categories->name,
-                    'url'=>[$this->rootRoute, 'categories'=>$categories->seocode]
+                    'label'=>$category->name,
+                    'url'=>[$this->rootRoute, 'category'=>$category->seocode]
                 ];
-                if (!empty($categories->subcategory)) {
-                    foreach ($categories->subcategory as $subcategory) {
+                if (!empty($category->subcategory)) {
+                    foreach ($category->subcategory as $subcategory) {
                         $pack['items'][] = [
                             'label'=>$subcategory->name,
-                            'url'=>[$this->rootRoute, 'categories'=>$categories->seocode, 'subcategory'=>$subcategory->seocode]
+                            'url'=>[$this->rootRoute, 'category'=>$category->seocode, 'subcategory'=>$subcategory->seocode]
                         ];
                     }
                 }

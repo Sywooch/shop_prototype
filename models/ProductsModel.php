@@ -20,8 +20,8 @@ class ProductsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
-            self::GET_FROM_FORM=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_categories', 'id_subcategory', 'active', 'total_products'],
+            self::GET_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products'],
+            self::GET_FROM_FORM=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products'],
         ];
     }
     
@@ -32,7 +32,7 @@ class ProductsModel extends AbstractBaseModel
     public function getCategories()
     {
         try {
-            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_categories'])->inverseOf('products');
+            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_category'])->inverseOf('products');
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
