@@ -22,7 +22,7 @@ class GetCategoriesQuery extends AbstractBaseQuery
     }
     
     /**
-     * Конструирует объект запроса yii\db\ActiveQuery
+     * Конфигурирует объект запроса yii\db\ActiveQuery
      * @return object ActiveQuery
      */
     public function getAll()
@@ -42,5 +42,14 @@ class GetCategoriesQuery extends AbstractBaseQuery
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
+    }
+    
+    /**
+     * Конфигурирует объект запроса yii\db\ActiveQuery для выборки одной строки
+     * @return object ActiveQuery
+     */
+    public function getOne()
+    {
+        
     }
 }

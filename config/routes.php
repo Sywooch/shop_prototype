@@ -2,9 +2,12 @@
 
 $routes = [
     # Вывод товаров
-    'catalog/<category>/<subcategory>/<id:\d+>'=>'product-detail/index',
-    'catalog/<category>/<subcategory>'=>'products-list/index',
-    'catalog/<category>'=>'products-list/index',
+    'catalog/<category:[a-z]+>/<subcategory:[a-z]+>/<seocode>-<id:\d{1,3}>'=>'product-detail/index',
+    'catalog/<category:[a-z]+>/<subcategory:[a-z]+>/page=<page:\d+>'=>'products-list/index',
+    'catalog/<category:[a-z]+>/<subcategory:[a-z]+>'=>'products-list/index',
+    'catalog/<category:[a-z]+>/page=<page:\d+>'=>'products-list/index',
+    'catalog/<category:[a-z]+>'=>'products-list/index',
+    'catalog/page=<page:\d+>'=>'products-list/index',
     'catalog'=>'products-list/index',
 ];
 

@@ -6,12 +6,18 @@ use yii\base\ErrorException;
 use app\models\{AbstractBaseModel,
     CategoriesModel,
     SubcategoryModel};
+use app\helpers\TransliterationHelper;
 
 /**
  * Представляет данные таблицы products
  */
 class ProductsModel extends AbstractBaseModel
 {
+    /**
+     * @var string seocode текущей записи
+     */
+    private $_seocode;
+    
     /**
      * @var string имя таблицы, связанной с текущим классом AR
      */
@@ -50,4 +56,18 @@ class ProductsModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает seocod товара, основываясь на данных СУБД, или 
+     * конструируя его из данных поля name
+     * return string
+     */
+     public function getSeocode()
+     {
+         try {
+                return TransliterationHelper::getTransliterationSeparate($this->name);
+         } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+     }
 }

@@ -24,7 +24,7 @@ $config = [
                     'class'=>'yii\twig\ViewRenderer',
                     'options'=>['auto_reload'=>true],
                     'globals'=>[
-                        'url'=>'yii\helpers\Url'
+                        'url'=>'yii\helpers\Url',
                     ],
                 ]
             ],

@@ -6,11 +6,12 @@ use yii\base\{ErrorException,
     Object};
 use yii\data\Pagination;
 use app\traits\ExceptionsTrait;
+use app\queries\QueryInterface;
 
 /**
  * Абстрактный суперкласс построения запроса к БД
  */
-abstract class AbstractBaseQuery extends Object
+abstract class AbstractBaseQuery extends Object implements QueryInterface
 {
     use ExceptionsTrait;
     

@@ -10,7 +10,7 @@
     <ol>
     {% for productsModel in productsList %}
         <li>
-            <a href="{{ url.to({0:'product-detail/index', 'category':productsModel.categories.seocode, 'subcategory':productsModel.subcategory.seocode, 'id':productsModel.id}) }}">{{ productsModel.name }}</a>
+            <a href="{{ url.to({0:'product-detail/index', 'category':productsModel.categories.seocode, 'subcategory':productsModel.subcategory.seocode, 'seocode':productsModel.seocode, 'id':productsModel.id}) }}">{{ productsModel.name }}</a>
             <br>{{ app.formatter.asDate(productsModel.date) }}
         </li>
     {% endfor %}

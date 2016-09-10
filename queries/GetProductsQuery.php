@@ -22,7 +22,7 @@ class GetProductsQuery extends AbstractBaseQuery
     }
     
     /**
-     * Конструирует объект запроса yii\db\ActiveQuery для выборки массива строк
+     * Конфигурирует объект запроса yii\db\ActiveQuery для выборки массива строк
      * @return object ActiveQuery
      */
     public function getAll()
@@ -69,7 +69,7 @@ class GetProductsQuery extends AbstractBaseQuery
     }
     
     /**
-     * Конструирует объект запроса yii\db\ActiveQuery для выборки одной строки
+     * Конфигурирует объект запроса yii\db\ActiveQuery для выборки одной строки
      * @return object ActiveQuery
      */
     public function getOne()
