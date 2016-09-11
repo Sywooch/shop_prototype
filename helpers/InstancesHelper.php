@@ -12,8 +12,6 @@ use app\queries\GetCategoriesQuery;
  */
 class InstancesHelper
 {
-    use ExceptionsTrait;
-    
     private static $_instancesArray = array();
     
     /**

@@ -16,7 +16,7 @@ class ProductsModel extends AbstractBaseModel
     /**
      * @var string seocode текущей записи
      */
-    private $_seocode;
+    private $_seocode = '';
     /**
      * @var string имя таблицы, связанной с текущим классом AR
      */
@@ -64,7 +64,10 @@ class ProductsModel extends AbstractBaseModel
      public function getSeocode()
      {
          try {
-                return TransliterationHelper::getTransliterationSeparate($this->name);
+             if (!empty($this->name)) {
+                $this->_seocode = TransliterationHelper::getTransliterationSeparate($this->name);
+            }
+            return $this->_seocode;
          } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

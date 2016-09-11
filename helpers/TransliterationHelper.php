@@ -9,8 +9,6 @@ use app\traits\ExceptionsTrait;
  */
 class TransliterationHelper
 {
-    use ExceptionsTrait;
-    
     /**
      * @var string разделитель слов после транслитерации
      */
@@ -53,6 +51,12 @@ class TransliterationHelper
         'э'=>'e',
         'ю'=>'yu',
         'я'=>'ya',
+        '.'=>'',
+        ','=>'',
+        ';'=>'',
+        '!'=>'',
+        '?'=>'',
+        ':'=>''
     ];
     
     /**

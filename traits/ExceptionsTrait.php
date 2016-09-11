@@ -16,7 +16,7 @@ trait ExceptionsTrait
      */
     public function throwException(\Exception $e, $method)
     {
-        throw new ErrorException(\Yii::t('base/errors', "Error when calling the method {method}\n", ['method'=>$method]) . $e->getMessage());
+        throw new ErrorException(\Yii::t('base/errors', "Method error! {method}\n", ['method'=>$method]) . $e->getMessage());
     }
     
     /**
@@ -27,7 +27,7 @@ trait ExceptionsTrait
      */
     public static function throwStaticException(\Exception $e, $method)
     {
-        throw new ErrorException(\Yii::t('base/errors', "Error when calling the method {method}\n", ['method'=>$method]) . $e->getMessage());
+        throw new ErrorException(\Yii::t('base/errors', "Method error {method}\n", ['method'=>$method]) . $e->getMessage());
     }
     
     /**
@@ -37,6 +37,6 @@ trait ExceptionsTrait
      */
     public function writeErrorInLogs(\Exception $e, $method)
     {
-        \Yii::error(\Yii::t('base/errors', "Error when calling the method {method}\n", ['method'=>$method]) . $e->getMessage(), $method);
+        \Yii::error(\Yii::t('base/errors', "Method error {method}\n", ['method'=>$method]) . $e->getMessage(), $method);
     }
 }

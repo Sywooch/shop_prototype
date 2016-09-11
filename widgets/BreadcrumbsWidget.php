@@ -67,13 +67,13 @@ class BreadcrumbsWidget extends Breadcrumbs
             parent::init();
             
             if (empty(\Yii::$app->params['categoryKey'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {keyName}!', ['keyName'=>\Yii::$app->params['categoryKey']]));
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'categoryKey\']']));
             }
             if (empty(\Yii::$app->params['subcategoryKey'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {keyName}!', ['keyName'=>\Yii::$app->params['categoryKey']]));
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'categoryKey\']']));
             }
             if (empty(\Yii::$app->params['idKey'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {keyName}!', ['keyName'=>\Yii::$app->params['categoryKey']]));
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'categoryKey\']']));
             }
             
             $this->homeLabel = \Yii::t('base', 'Home');
@@ -110,7 +110,7 @@ class BreadcrumbsWidget extends Breadcrumbs
             }
             
             if (!$this->setLinks()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing the array of links!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

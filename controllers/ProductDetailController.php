@@ -20,10 +20,10 @@ class ProductDetailController extends AbstractBaseController
     {
         try {
             if (empty(\Yii::$app->params['idKey'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Не определен {keyName}!', ['keyName'=>\Yii::$app->params['idKey']]));
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'idKey\']']));
             }
             if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
-                throw new ErrorException(\Yii::t('base/errors', 'Error getting the ID of the product!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Incorrect data!'));
             }
             
             $renderArray = array();

@@ -37,14 +37,14 @@ class CategoriesMenuWidget extends Menu
             parent::init();
             
             if (empty($this->categoriesList)) {
-                throw new ErrorException(\Yii::t('base/errors', 'There are no data for the construction of the menu!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$categoriesList']));
             }
             if (empty($this->rootRoute)) {
-                throw new ErrorException(\Yii::t('base/errors', 'There is no route for the construction of the menu!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$rootRoute']));
             }
             
             if (!$this->setItems()) {
-                throw new ErrorException(\Yii::t('base/errors', 'An error in the formation of an array of references!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
