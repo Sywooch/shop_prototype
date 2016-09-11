@@ -33,7 +33,7 @@ class CheckScriptInfoFilter extends ActionFilter
                 
                 $yiiVersion = \Yii::getVersion();
                 
-                $string = '<p>Page generated: ' . round($pageGenerated, 3) . ' sec. / Memory usage: ' . ($memoryUsage / (1024 * 1024)) . ' Mb / Sent Requests: ' . $sentRequests . ' / Yii version: ' . $yiiVersion . '</p>';
+                $string = '<p>Page generated: ' . round($pageGenerated, 3) . ' sec. / Memory usage: ' . ($memoryUsage / (1024 * 1024)) . ' Mb / Sent Requests: ' . $sentRequests . ' / Yii version: ' . $yiiVersion . ' / PHP version: ' . PHP_VERSION . ' / ICU version: ' . INTL_ICU_VERSION . '</p>';
                 $result = str_replace('</body>', $string . '</body>', $result);
             }
             return $result;

@@ -17,7 +17,6 @@ class ProductsModel extends AbstractBaseModel
      * @var string seocode текущей записи
      */
     private $_seocode;
-    
     /**
      * @var string имя таблицы, связанной с текущим классом AR
      */

@@ -29,7 +29,7 @@ class GetProductsQuery extends AbstractBaseQuery
     {
         try {
             if (!$this->getSelect()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
@@ -45,19 +45,19 @@ class GetProductsQuery extends AbstractBaseQuery
             $this->query->andWhere(['products.active'=>true]);
             
             if (!$this->addFilters()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
             if (!$this->extraWhere()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
             if (!$this->addLimit()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
             if (!$this->addOrder()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
             $this->query->with('categories', 'subcategory');
@@ -76,11 +76,11 @@ class GetProductsQuery extends AbstractBaseQuery
     {
         try {
             if (!$this->getSelect()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
             if (!$this->extraWhere()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
            return $this->query; 

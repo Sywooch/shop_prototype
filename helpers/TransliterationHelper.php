@@ -60,7 +60,7 @@ class TransliterationHelper
      * @param string $string транслитерируемая строка
      * @return string
      */
-    public static function getTransliteration($string)
+    public static function getTransliteration(string $string)
     {
         try {
             $inputArray = preg_split('//u', preg_replace('/ /', '', $string), -1, PREG_SPLIT_NO_EMPTY);
@@ -85,7 +85,7 @@ class TransliterationHelper
      * @param string $string транслитерируемая строка
      * @return string
      */
-    public static function getTransliterationSeparate($string)
+    public static function getTransliterationSeparate(string $string)
     {
         try {
             $inputArray = explode(' ', $string);

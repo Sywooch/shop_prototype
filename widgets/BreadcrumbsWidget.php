@@ -19,7 +19,7 @@ class BreadcrumbsWidget extends Breadcrumbs
      /**
      * @var string имя ссылки на весь каталог
      */
-    public $homeLabel = 'Главная';
+    public $homeLabel;
     /**
      * var string seocode категории для подстановки в breadcrumbs
      */
@@ -67,14 +67,16 @@ class BreadcrumbsWidget extends Breadcrumbs
             parent::init();
             
             if (empty(\Yii::$app->params['categoryKey'])) {
-                throw new ErrorException('Не определен categoryKey!');
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {keyName}!', ['keyName'=>\Yii::$app->params['categoryKey']]));
             }
             if (empty(\Yii::$app->params['subcategoryKey'])) {
-                throw new ErrorException('Не определен subcategoryKey!');
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {keyName}!', ['keyName'=>\Yii::$app->params['categoryKey']]));
             }
             if (empty(\Yii::$app->params['idKey'])) {
-                throw new ErrorException('Не определен idKey!');
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {keyName}!', ['keyName'=>\Yii::$app->params['categoryKey']]));
             }
+            
+            $this->homeLabel = \Yii::t('base', 'Home');
             
             $this->homeLink = [
                 'label'=>$this->homeLabel,
@@ -108,7 +110,7 @@ class BreadcrumbsWidget extends Breadcrumbs
             }
             
             if (!$this->setLinks()) {
-                throw new ErrorException('Ошибка при конструировании массива ссылок!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing the array of links!'));
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

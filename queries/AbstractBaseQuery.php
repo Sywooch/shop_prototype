@@ -51,7 +51,7 @@ abstract class AbstractBaseQuery extends Object implements QueryInterface
             parent::init();
             
             if (empty($this->className)) {
-                throw new ErrorException('Не определено имя класса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Undefined class name!'));
             }
             
             $this->query = $this->className::find();
@@ -98,7 +98,7 @@ abstract class AbstractBaseQuery extends Object implements QueryInterface
     {
         try {
             if (empty(\Yii::$app->params['filterKeys'])) {
-                throw new ErrorException('Не определен filterKeys!');
+                throw new ErrorException(\Yii::t('base/errors', 'Не определен {keyName}!', ['keyName'=>\Yii::$app->params['filterKeys']]));
             }
             
             if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->attributes)))) {
@@ -144,10 +144,10 @@ abstract class AbstractBaseQuery extends Object implements QueryInterface
     {
         try {
             if (empty(\Yii::$app->params['pagePointer'])) {
-                throw new ErrorException('Не поределен pagePointer!');
+                throw new ErrorException(\Yii::t('base/errors', 'Не определен {keyName}!', ['keyName'=>\Yii::$app->params['pagePointer']]));
             }
             if (empty(\Yii::$app->params['limit'])) {
-                throw new ErrorException('Не поределен limit!');
+                throw new ErrorException(\Yii::t('base/errors', 'Не определен {keyName}!', ['keyName'=>\Yii::$app->params['limit']]));
             }
             
             $countQuery = clone $this->query;

@@ -67,7 +67,7 @@ class PaginationWidget extends Widget
             parent::init();
             
             if (empty($this->paginator)) {
-                throw new ErrorException('Не задан объект Pagination!');
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {keyName}!', ['keyName'=>'yii\data\Pagination']));
             }
             
             $this->pageRange = ceil($this->pageRange);
@@ -94,7 +94,7 @@ class PaginationWidget extends Widget
             $range = $this->getRange();
             
             if (!is_array($range) || empty($range)) {
-                throw new ErrorException('Ошибка при получении диапазона ссылок!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error retrieving URL range!'));
             }
             
             foreach ($range as $number) {
@@ -110,8 +110,8 @@ class PaginationWidget extends Widget
             }
             
             if ($this->edges) {
-                array_unshift($this->_tags, Html::tag($this->childTag, Html::a('Первая', Url::current([\Yii::$app->params['pagePointer']=>null]))));
-                array_push($this->_tags, Html::tag($this->childTag, Html::a('Последняя', Url::current([\Yii::$app->params['pagePointer']=>$this->paginator->pageCount]))));
+                array_unshift($this->_tags, Html::tag($this->childTag, Html::a(\Yii::t('base', 'First'), Url::current([\Yii::$app->params['pagePointer']=>null]))));
+                array_push($this->_tags, Html::tag($this->childTag, Html::a(\Yii::t('base', 'Last'), Url::current([\Yii::$app->params['pagePointer']=>$this->paginator->pageCount]))));
             }
             
             return Html::tag($this->tag, implode(Html::tag($this->childTag, $this->separator), $this->_tags), $this->options);
@@ -132,28 +132,28 @@ class PaginationWidget extends Widget
             
             $this->_prevMin = $currentPage - $aroundPages;
             if (!$this->checkMinPage()) {
-                throw new ErrorException('Ошибка при вычислении минимального значения!');
+                throw new ErrorException(\Yii::t('base/errors', 'An error in the calculation of the minimum value!'));
             }
             
             $this->_nextMax = $currentPage + $aroundPages;
             if (!$this->checkMaxPage()) {
-                throw new ErrorException('Ошибка при вычислении максимального значения!');
+                throw new ErrorException(\Yii::t('base/errors', 'An error in the calculation of the maximum value!'));
             }
             
             if (count(range($this->_prevMin, $this->_nextMax)) < $this->pageRange) {
                 if ($this->_prevMin == 1) {
                     if (!$this->scale('up')) {
-                        throw new ErrorException('Ошибка при изменении диапазона!');
+                        throw new ErrorException(\Yii::t('base/errors', 'An error occurred while changing the range!'));
                     }
                     if (!$this->checkMaxPage()) {
-                        throw new ErrorException('Ошибка при вычислении максимального значения!');
+                        throw new ErrorException(\Yii::t('base/errors', 'An error in the calculation of the maximum value!'));
                     }
                 } elseif ($this->_nextMax == $this->paginator->pageCount) {
                     if (!$this->scale('down')) {
-                        throw new ErrorException('Ошибка при изменении диапазона!');
+                        throw new ErrorException(\Yii::t('base/errors', 'An error occurred while changing the range!'));
                     }
                     if (!$this->checkMinPage()) {
-                        throw new ErrorException('Ошибка при вычислении минимального значения!');
+                        throw new ErrorException(\Yii::t('base/errors', 'An error in the calculation of the minimum value!'));
                     }
                 }
             }
@@ -176,7 +176,7 @@ class PaginationWidget extends Widget
     {
         try {
             if (empty($direction) || !in_array($direction, ['up', 'down'], true)) {
-                throw new ErrorException('Переданы некорректные данные!');
+                throw new ErrorException(\Yii::t('base/errors', 'Transferred data is incorrect!'));
             }
             
             for ($i = 0; $i <= $this->pageRange - count(range($this->_prevMin, $this->_nextMax)); ++$i) {

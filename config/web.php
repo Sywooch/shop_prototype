@@ -68,6 +68,17 @@ $config = [
             'enableStrictParsing' => true,
             'rules'=>require(__DIR__ . '/routes.php'),
         ],
+        'i18n'=>[
+            'translations'=>[
+                'base*'=>[
+                    'class'=>'yii\i18n\PhpMessageSource',
+                    'fileMap'=>[
+                        'base'=>'baseTranslate.php',
+                        'base/errors'=>'baseErrorsTranslate.php'
+                    ],
+                ],
+            ],
+        ],
         'session'=>[
             'class'=>'yii\web\DbSession',
             'timeout'=>60*60*24*7

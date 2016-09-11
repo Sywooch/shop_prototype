@@ -29,11 +29,11 @@ class GetCategoriesQuery extends AbstractBaseQuery
     {
         try {
             if (!$this->getSelect()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
             if (!$this->addOrder()) {
-                throw new ErrorException('Ошибка при конструировании объекта запроса!');
+                throw new ErrorException(\Yii::t('base/errors', 'Error in constructing a query object!'));
             }
             
             $this->query->with('subcategory', 'products');

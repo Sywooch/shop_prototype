@@ -17,7 +17,7 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     private static $_id = 1;
     private static $_date = 1462453595;
     private static $_code = 'YU-6709';
-    private static $_name = 'name';
+    private static $_name = 'Веселые миниатюры о смерти';
     private static $_description = 'description';
     private static $_price = 14.45;
     private static $_images = 'images/';
@@ -53,6 +53,9 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_seocode'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
         
         $model = new ProductsModel();
         
@@ -128,6 +131,19 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
         
         $this->assertTrue(is_object($model->subcategory));
         $this->assertTrue($model->subcategory instanceof SubcategoryModel);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getSeocode
+     */
+    public function testGetSeocode()
+    {
+        $model = new ProductsModel();
+        $model->name = self::$_name;
+        
+        $expect = 'veselye-miniatyury-o-smerti';
+        
+        $this->assertEquals($expect, $model->seocode);
     }
     
     public static function tearDownAfterClass()
