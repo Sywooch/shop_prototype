@@ -13,10 +13,10 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_reflectionClass;
-    /*private static $_id = 1;
+    private static $_id = 1;
     private static $_name = 'Some name';
     private static $_categorySeocode = 'mensfootwear';
-    private static $_subcategorySeocode = 'boots';*/
+    private static $_subcategorySeocode = 'boots';
     
     public static function setUpBeforeClass()
     {
@@ -85,6 +85,6 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        //self::$_dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

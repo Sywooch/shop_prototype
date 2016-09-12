@@ -29,11 +29,13 @@ class DbManager extends Object
     /**
      * @var string путь по которому будет сохранена и доступна скопированная структура рабочей БД
      */
-    public $dbSchemePath = '/var/www/html/shop/tests/source/sql/shop.sql';
+    public $dbSchemePath;
     
     public function init()
     {
         parent::init();
+        
+        $this->dbSchemePath = __DIR__ . '/source/sql/shop.sql';
         
         $this->login = escapeshellcmd(escapeshellarg($this->login));
         $this->password = escapeshellcmd(escapeshellarg($this->password));
@@ -57,11 +59,11 @@ class DbManager extends Object
             $cmd = "mysql -u{$this->login} -p{$this->password} {$this->testDbName} < {$this->dbSchemePath}";
             shell_exec($cmd);
             
-            /*$cmd = "cd /var/www/html/shop";
+            $cmd = "cd /var/www/html/shop";
             shell_exec($cmd);
             
-            $cmd = "/var/www/html/shop/yii fixture/load Subcategory --namespace='app\\tests\\source\\fixtures'";*/
-            shell_exec($cmd);
+            /*$cmd = "yii fixture/load Subcategory";
+            shell_exec($cmd);*/
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при создании тестовой БД!\n" . $e->getMessage());
         }
