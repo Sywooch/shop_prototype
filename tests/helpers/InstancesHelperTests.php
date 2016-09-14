@@ -2,28 +2,27 @@
 
 namespace app\tests\helpers;
 
+use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
+use app\tests\source\fixtures\CategoriesFixture;
 use app\helpers\InstancesHelper;
 use app\models\CategoriesModel;
 
 /**
  * Тестирует класс app\helpers\InstancesHelper
  */
-class InstancesHelperTests extends \PHPUnit_Framework_TestCase
+class InstancesHelperTests extends TestCase
 {
     private static $_dbClass;
-    private static $_id = 1;
-    private static $_name = 'name';
-    private static $_categorySeocode = 'mensfootwear';
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'categories'=>CategoriesFixture::className(),
+            ],
+        ]);
         self::$_dbClass->createDb();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
-        $command->execute();
     }
     
     /**

@@ -3,6 +3,7 @@
 namespace app\tests\models;
 
 use app\tests\DbManager;
+use app\tests\source\fixtures\SubcategoryFixture;
 use app\models\{CategoriesModel,
     SubcategoryModel};
 
@@ -13,25 +14,17 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
     private static $_reflectionClass;
-    /*private static $_id = 1;
-    private static $_name = 'Some name';
-    private static $_categorySeocode = 'mensfootwear';
-    private static $_subcategorySeocode = 'boots';*/
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'subcategory'=>SubcategoryFixture::className(),
+            ],
+        ]);
         self::$_dbClass->createDb();
         
         self::$_reflectionClass = new \ReflectionClass('\app\models\SubcategoryModel');
-        
-        /*$command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
-        $command->execute();*/
     }
     
     /**
@@ -55,21 +48,23 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testScenarios()
     {
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_category'=>self::$_id];
+        $fixture = self::$_dbClass->subcategory['subcategory_2'];
         
-        $this->assertEquals(self::$_id, $model->id);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_categorySeocode, $model->seocode);
-        $this->assertEquals(self::$_id, $model->id_category);
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DB]);
+        $model->attributes = ['id'=>$fixture['id'], 'name'=>$fixture['name'], 'seocode'=>$fixture['seocode'], 'id_category'=>$fixture['id_category']];
+        
+        $this->assertEquals($fixture['id'], $model->id);
+        $this->assertEquals($fixture['name'], $model->name);
+        $this->assertEquals($fixture['seocode'], $model->seocode);
+        $this->assertEquals($fixture['id_category'], $model->id_category);
         
         $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode, 'id_category'=>self::$_id];
+        $model->attributes = ['id'=>$fixture['id'], 'name'=>$fixture['name'], 'seocode'=>$fixture['seocode'], 'id_category'=>$fixture['id_category']];
         
-        $this->assertEquals(self::$_id, $model->id);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_categorySeocode, $model->seocode);
-        $this->assertEquals(self::$_id, $model->id_category);
+        $this->assertEquals($fixture['id'], $model->id);
+        $this->assertEquals($fixture['name'], $model->name);
+        $this->assertEquals($fixture['seocode'], $model->seocode);
+        $this->assertEquals($fixture['id_category'], $model->id_category);
     }
     
     /**
@@ -77,7 +72,9 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetCategories()
     {
-        $model = SubcategoryModel::find()->where(['subcategory.id'=>self::$_id])->one();
+        $fixture = self::$_dbClass->subcategory['subcategory_1'];
+        
+        $model = SubcategoryModel::find()->where(['subcategory.id'=>$fixture['id']])->one();
         
         $this->assertTrue(is_object($model->categories));
         $this->assertTrue($model->categories instanceof CategoriesModel);
@@ -85,6 +82,6 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        //self::$_dbClass->deleteDb();
+        self::$_dbClass->deleteDb();
     }
 }

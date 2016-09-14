@@ -2,6 +2,7 @@
 
 namespace app\tests\models;
 
+use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
 use app\models\{CategoriesModel,
     ProductsModel,
@@ -10,7 +11,7 @@ use app\models\{CategoriesModel,
 /**
  * Тестирует класс app\models\CategoriesModel
  */
-class CategoriesModelTests extends \PHPUnit_Framework_TestCase
+class CategoriesModelTests extends TestCase
 {
     private static $_dbClass;
     private static $_reflectionClass;

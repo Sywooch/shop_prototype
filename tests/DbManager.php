@@ -2,6 +2,7 @@
 
 namespace app\tests;
 
+use yii\test\FixtureTrait;
 use yii\base\Object;
 use yii\base\ErrorException;
 
@@ -10,6 +11,8 @@ use yii\base\ErrorException;
  */
 class DbManager extends Object
 {
+    use FixtureTrait;
+    
     /**
      * @var string логин к учетной записи с правами создания и удаления тестовой БД
      */
@@ -23,45 +26,71 @@ class DbManager extends Object
      */
     public $testDbName = 'shop_test';
     /**
-     * @var string имя рабочей БД, струкутра которой будет скопирована
+     * @var array фикстуры, которые будут использоваться в текущем TestCase
      */
-    public $workDbName = 'shop';
+    public $fixtures = array();
     /**
-     * @var string путь по которому будет сохранена и доступна скопированная структура рабочей БД
+     * @var string хэш созданной БД
      */
-    public $dbSchemePath = '/var/www/html/shop/tests/source/sql/shop.sql';
+    private $_dbHash;
+    /**
+     * @var array массив объектов фикстур, используемых текущим тестом,
+     * ключ - псевдоним, назначенный в конфигурации
+     */
+    private $_fixturesData = array();
     
     public function init()
     {
         parent::init();
         
-        $this->login = escapeshellcmd(escapeshellarg($this->login));
-        $this->password = escapeshellcmd(escapeshellarg($this->password));
-        $this->testDbName = escapeshellcmd(escapeshellarg($this->testDbName));
-        $this->workDbName = escapeshellcmd(escapeshellarg($this->workDbName));
-        $this->dbSchemePath = escapeshellcmd(escapeshellarg($this->dbSchemePath));
+        $this->escapeArgs();
+        
+        if (!empty($this->fixtures)) {
+            foreach (array_keys($this->fixtures) as $key) {
+                $this->_fixturesData[$key] = $this->getFixture($key);
+            }
+        }
     }
     
     /**
-     * Создает тестовую БД без заполнения данными
+     * Возвращает объект фикстуры, в случае, если параметр $name 
+     * соответствует одному из ключей в $this->_fixturesData
+     * @param string $name имя ключа
+     * @return object/null
+     */
+    public function __get($name)
+    {
+        if (array_key_exists($name, $this->_fixturesData)) {
+            return $this->_fixturesData[$name];
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Возвращает фикстуры, которые будут использоваться в текущем TestCase
+     * @return array
+     */
+    public function fixtures()
+    {
+        return $this->fixtures;
+    }
+    
+    /**
+     * Создает тестовую БД
      */
     public function createDb()
     {
         try {
-            $cmd = "mysql -u{$this->login} -p{$this->password} -e 'CREATE DATABASE IF NOT EXISTS {$this->testDbName}'";
-            shell_exec($cmd);
+            $this->_dbHash = md5($this->login . $this->password . $this->testDbName);
             
-            $cmd = "mysqldump -u{$this->login} -p{$this->password} --no-data {$this->workDbName} > {$this->dbSchemePath}";
-            shell_exec($cmd);
+            $cmd = sprintf("mysql -u%s -p%s -e 'CREATE DATABASE IF NOT EXISTS %s'", $this->login, $this->password, $this->testDbName);
+            exec($cmd);
             
-            $cmd = "mysql -u{$this->login} -p{$this->password} {$this->testDbName} < {$this->dbSchemePath}";
-            shell_exec($cmd);
+            $cmd = "/var/www/html/shop/yii migrate --interactive=0";
+            exec($cmd);
             
-            /*$cmd = "cd /var/www/html/shop";
-            shell_exec($cmd);
-            
-            $cmd = "/var/www/html/shop/yii fixture/load Subcategory --namespace='app\\tests\\source\\fixtures'";*/
-            shell_exec($cmd);
+            $this->loadFixtures();
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при создании тестовой БД!\n" . $e->getMessage());
         }
@@ -73,18 +102,28 @@ class DbManager extends Object
     public function deleteDb()
     {
         try {
-            $cmd = "mysql -u{$this->login} -p{$this->password} -e 'DROP DATABASE {$this->testDbName}'";
-            shell_exec($cmd);
+            if (!empty($this->_dbHash) && $this->_dbHash == md5($this->login . $this->password . $this->testDbName)) {
+                $this->unloadFixtures();
+                
+                $cmd = sprintf("mysql -u%s -p%s -e 'DROP DATABASE %s'", $this->login, $this->password, $this->testDbName);
+                exec($cmd);
+            }
         } catch (\Exception $e) {
             throw new ErrorException("Ошибка при удалении тестовой БД!\n" . $e->getMessage());
         }
-        
+    }
+    
+    /**
+     * Экранирует аргументы
+     */
+    private function escapeArgs()
+    {
         try {
-            if (file_exists($this->dbSchemePath)) {
-                unlink($this->dbSchemePath);
-            }
+            $this->login = escapeshellcmd(escapeshellarg($this->login));
+            $this->password = escapeshellcmd(escapeshellarg($this->password));
+            $this->testDbName = escapeshellcmd(escapeshellarg($this->testDbName));
         } catch (\Exception $e) {
-            throw new ErrorException("Ошибка при удалении файла со структурой БД!\n" . $e->getMessage());
+            throw new ErrorException("Ошибка при экранировании аргументов!\n" . $e->getMessage());
         }
     }
 }

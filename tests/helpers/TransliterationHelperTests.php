@@ -2,12 +2,13 @@
 
 namespace app\tests;
 
+use PHPUnit\Framework\TestCase;
 use app\helpers\TransliterationHelper;
 
 /**
  * Тестирует класс app\helpers\TransliterationHelper
  */
-class TransliterationHelperTests extends \PHPUnit_Framework_TestCase
+class TransliterationHelperTests extends TestCase
 {
     private static $_string = 'обычно он таким не был ontario';
     private static $_expectString = 'obychnoontakimnebylontario';

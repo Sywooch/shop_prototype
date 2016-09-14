@@ -9,17 +9,18 @@
     processIsolation = "false"
     stopOnFailure = "true"
     syntaxCheck = "false" 
+    verbose = "true"
     bootstrap="./bootstrap.php">
     
     <testsuites>
         
-        <testsuite name="Global">
-            <directory suffix="Tests.php">some</directory>
-            <!--<dirctory suffix="Tests.php">helpers</dirctory>
+        <testsuite name="global">
+            <directory suffix="Tests.php">helpers</directory>
             <directory suffix="Tests.php">models</directory>
             <directory suffix="Tests.php">queries</directory>
-            <directory suffix="Tests.php">widgets</directory>-->
+            <directory suffix="Tests.php">widgets</directory>
         </testsuite>
         
     </testsuites>
+    
 </phpunit>

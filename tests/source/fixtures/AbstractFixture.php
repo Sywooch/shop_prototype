@@ -8,4 +8,11 @@ use app\traits\ExceptionsTrait;
 abstract class AbstractFixture extends ActiveFixture
 {
     use ExceptionsTrait;
+    
+    public function unload()
+    {
+        parent::unload();
+        
+        $this->resetTable();
+    }
 }
