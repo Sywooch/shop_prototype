@@ -23,7 +23,7 @@ class SubcategoryModelTests extends TestCase
                 'subcategory'=>SubcategoryFixture::className(),
             ],
         ]);
-        self::$_dbClass->loadData();
+        self::$_dbClass->loadFixtures();
         
         self::$_reflectionClass = new \ReflectionClass('\app\models\SubcategoryModel');
     }
@@ -95,6 +95,6 @@ class SubcategoryModelTests extends TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->unloadData();
+        self::$_dbClass->unloadFixtures();
     }
 }

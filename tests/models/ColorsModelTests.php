@@ -3,9 +3,9 @@
 namespace app\tests\model;
 
 use PHPUnit\Framework\TestCase;
-use app\models\ColorsModel;
-use app\tests\source\fixtures\ColorsFixture;
 use app\tests\DbManager;
+use app\tests\source\fixtures\ColorsFixture;
+use app\models\ColorsModel;
 
 /**
  * Тестирует класс app\models\ColorsModel

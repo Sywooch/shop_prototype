@@ -3,8 +3,10 @@
 namespace app\widgets;
 
 use yii\helpers\Url;
-use app\tests\{DbManager,
-    MockModel};
+use app\tests\DbManager;
+use app\tests\source\fixtures\{CategoriesFixture,
+    ProductsFixture,
+    SubcategoryFixture};
 use app\widgets\CategoriesMenuWidget;
 use app\models\CategoriesModel;
 
@@ -14,28 +16,17 @@ use app\models\CategoriesModel;
 class CategoriesMenuWidgetTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_id = 1;
-    private static $_categoriesName = 'Мужская одежда';
-    private static $_subcategoryName = 'Рубашки';
-    private static $_categoriesSeocode = 'menswear';
-    private static $_subcategorySeocode = 'shirts';
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
-        self::$_dbClass->createDb();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_categoriesName, ':seocode'=>self::$_categoriesSeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_subcategoryName, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[id_category]]=:id_category, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':id_category'=>self::$_id, ':id_subcategory'=>self::$_id]);
-        $command->execute();
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'categories'=>CategoriesFixture::className(),
+                'subcategory'=>SubcategoryFixture::className(),
+                'products'=>ProductsFixture::className()
+            ],
+        ]);
+        self::$_dbClass->loadFixtures();
     }
     
     /**
@@ -43,17 +34,20 @@ class CategoriesMenuWidgetTests extends \PHPUnit_Framework_TestCase
      */
     public function testWidget()
     {
-        $categoriesModel = new CategoriesModel(['id'=>self::$_id, 'name'=>self::$_categoriesName, 'seocode'=>self::$_categoriesSeocode]);
+        $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
+        
+        $categoriesModel = new CategoriesModel(['id'=>$fixture['id'], 'name'=>$fixture['name'], 'seocode'=>$fixture['seocode']]);
         
         $result = CategoriesMenuWidget::widget(['categoriesList'=>[$categoriesModel]]);
         
-        $expectedUrl = '<ul class="categoriesMenu"><li><a href="' . Url::home() . 'catalog/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a><ul><li><a href="' . Url::home() . 'catalog/' . self::$_categoriesSeocode . '/' . self::$_subcategorySeocode . '">' . self::$_subcategoryName . '</a></li></ul></li></ul>';
+        $expectedUrl = '<ul class="categoriesMenu"><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '">' . $fixture['name'] . '</a><ul><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li></ul></li></ul>';
         
         $this->assertEquals($expectedUrl, $result);
     }
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        self::$_dbClass->unloadFixtures();
     }
 }

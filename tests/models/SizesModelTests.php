@@ -3,9 +3,9 @@
 namespace app\tests\model;
 
 use PHPUnit\Framework\TestCase;
-use app\models\SizesModel;
-use app\tests\source\fixtures\SizesFixture;
 use app\tests\DbManager;
+use app\tests\source\fixtures\SizesFixture;
+use app\models\SizesModel;
 
 /**
  * Тестирует класс app\models\SizesModel

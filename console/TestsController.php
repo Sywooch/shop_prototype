@@ -53,10 +53,12 @@ class TestsController extends Controller
     public function actionSet()
     {
         try {
-            $this->stdout(\Yii::t('base/console', "Create database {database} and apply migrations...\n", ['database'=>$this->testDbName]));
+            $this->stdout(\Yii::t('base/console', "Create database {database}...\n", ['database'=>$this->testDbName]));
             
             $cmd = sprintf("mysql -u%s -p%s -e 'CREATE DATABASE IF NOT EXISTS %s'", $this->username, $this->password, $this->testDbName);
             exec($cmd);
+            
+            $this->stdout(\Yii::t('base/console', "Apply migrations...\n", ['database'=>$this->testDbName]));
             
             $cmd = sprintf("/var/www/html/shop/yii migrate --db=%s --interactive=0", $this->db);
             exec($cmd);
@@ -77,10 +79,12 @@ class TestsController extends Controller
     public function actionUnset()
     {
         try {
-            $this->stdout(\Yii::t('base/console', "Erase migrations and delete database {database}...\n", ['database'=>$this->testDbName]));
+            $this->stdout(\Yii::t('base/console', "Erase migrations...\n", ['database'=>$this->testDbName]));
             
             $cmd = sprintf("/var/www/html/shop/yii migrate/down --db=%s --interactive=0", $this->db);
             exec($cmd);
+            
+            $this->stdout(\Yii::t('base/console', "Delete database {database}...\n", ['database'=>$this->testDbName]));
             
             $cmd = sprintf("mysql -u%s -p%s -e 'DROP DATABASE %s'", $this->username, $this->password, $this->testDbName);
             exec($cmd);

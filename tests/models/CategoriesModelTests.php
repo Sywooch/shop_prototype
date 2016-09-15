@@ -3,10 +3,10 @@
 namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
+use app\tests\DbManager;
 use app\tests\source\fixtures\{CategoriesFixture,
     SubcategoryFixture,
     ProductsFixture};
-use app\tests\DbManager;
 use app\models\{CategoriesModel,
     ProductsModel,
     SubcategoryModel};

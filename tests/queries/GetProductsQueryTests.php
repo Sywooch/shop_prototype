@@ -1,8 +1,9 @@
 <?php
 
-namespace app\tests;
+namespace app\tests\queries;
 
 use PHPUnit\Framework\TestCase;
+use app\tests\DbManager;
 use app\tests\source\fixtures\{CategoriesFixture,
     ColorsFixture,
     ProductsColorsFixture,

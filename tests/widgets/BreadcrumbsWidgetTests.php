@@ -4,6 +4,9 @@ namespace app\tests\widgets;
 
 use yii\helpers\Url;
 use app\tests\DbManager;
+use app\tests\source\fixtures\{CategoriesFixture,
+    ProductsFixture,
+    SubcategoryFixture};
 use app\widgets\BreadcrumbsWidget;
 use app\models\CategoriesModel;
 
@@ -13,31 +16,17 @@ use app\models\CategoriesModel;
 class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
 {
     private static $_dbClass;
-    private static $_id = 1;
-    private static $_productName = 'Ботинки Черный Пионер';
-    private static $_categoriesSeocode = 'mensfootwear';
-    private static $_subcategorySeocode = 'boots';
-    private static $_categoriesName = 'Одежда';
-    private static $_subcategoryName = 'Пиджаки';
-    private static $_main = 'catalog';
-    private static $_mainName = 'Главная';
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
-        self::$_dbClass->createDb();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_categoriesName, ':seocode'=>self::$_categoriesSeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_subcategoryName, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_productName, ':id_category'=>self::$_id, ':id_subcategory'=>self::$_id]);
-        $command->execute();
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'categories'=>CategoriesFixture::className(),
+                'subcategory'=>SubcategoryFixture::className(),
+                'products'=>ProductsFixture::className(),
+            ]
+        ]);
+        self::$_dbClass->loadFixtures();
     }
     
     /**
@@ -47,11 +36,13 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
      */
     public function testWidgetForProductsList()
     {
-        $_GET = ['category'=>self::$_categoriesSeocode];
+        $fixture = self::$_dbClass->categories['category_1'];
+        
+        $_GET = ['category'=>$fixture['seocode']];
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . self::$_mainName . '</a></li><li class="separator"> -> </li><li class="active">' . self::$_categoriesName . '</li></ul>';
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li class="active">' . $fixture['name'] . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
@@ -63,11 +54,14 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
      */
     public function testWidgetForProductsListTwo()
     {
-        $_GET = ['category'=>self::$_categoriesSeocode, 'subcategory'=>self::$_subcategorySeocode];
+        $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
+        
+        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode']];
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . self::$_mainName . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a></li><li class="separator"> -> </li><li class="active">' . self::$_subcategoryName . '</li></ul>';
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
@@ -79,17 +73,21 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
      */
     public function testWidgetForProductsListThree()
     {
-        $_GET = ['category'=>self::$_categoriesSeocode, 'subcategory'=>self::$_subcategorySeocode, 'id'=>self::$_id];
+        $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
+        $fixtureProducts = self::$_dbClass->products['product_1'];
+        
+        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode'], 'id'=>$fixtureProducts['id']];
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . self::$_mainName . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '">' . self::$_categoriesName . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . self::$_main . '/' . self::$_categoriesSeocode . '/' . self::$_subcategorySeocode . '">' . self::$_subcategoryName . '</a></li><li class="separator"> -> </li><li class="active">' . self::$_productName . '</li></ul>';
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProducts['name'] . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        self::$_dbClass->unloadFixtures();
     }
 }

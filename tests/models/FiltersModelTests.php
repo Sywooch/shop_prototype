@@ -2,12 +2,13 @@
 
 namespace app\test\models;
 
+use PHPUnit\Framework\TestCase;
 use app\models\FiltersModel;
 
 /**
  * Тестирует FiltersModel
  */
-class FiltersModelTests extends \PHPUnit_Framework_TestCase
+class FiltersModelTests extends TestCase
 {
     private static $_reflectionClass;
     private static $_colors = [1];

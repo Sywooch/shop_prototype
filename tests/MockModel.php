@@ -6,6 +6,8 @@ use app\models\AbstractBaseModel;
 
 class MockModel extends AbstractBaseModel
 {
+    public static $_tableName = 'mock';
+    public $products = true;
     public $id;
     public $text;
     public $name;

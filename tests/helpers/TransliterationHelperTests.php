@@ -1,6 +1,6 @@
 <?php
 
-namespace app\tests;
+namespace app\tests\helpers;
 
 use PHPUnit\Framework\TestCase;
 use app\helpers\TransliterationHelper;

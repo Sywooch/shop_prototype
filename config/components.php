@@ -66,7 +66,7 @@ $components = [
                 'class'=>'yii\i18n\PhpMessageSource',
                 'fileMap'=>[
                     'base'=>'baseTranslate.php',
-                    'base/errors'=>'baseErrorsTranslate.php'
+                    'base/errors'=>'errorsTranslate.php'
                 ],
             ],
         ],
