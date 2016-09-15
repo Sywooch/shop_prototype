@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use yii\base\ErrorException;
 use app\models\{AbstractBaseModel,
     ProductsModel,
     SubcategoryModel};

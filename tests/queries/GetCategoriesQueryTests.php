@@ -2,27 +2,26 @@
 
 namespace app\tests;
 
+use PHPUnit\Framework\TestCase;
+use app\tests\source\fixtures\CategoriesFixture;
 use app\queries\GetCategoriesQuery;
 use app\models\CategoriesModel;
 
 /**
  * Тестирует класс app\queries\GetCategoriesQuery
  */
-class GetCategoriesQueryTests extends \PHPUnit_Framework_TestCase
+class GetCategoriesQueryTests extends TestCase
 {
     private static $_dbClass;
-    private static $_id = 12;
-    private static $_name = 'name';
-    private static $_categorySeocode = 'mensfootwear';
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
-        self::$_dbClass->createDb();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
-        $command->execute();
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'categories'=>CategoriesFixture::className(),
+            ],
+        ]);
+        self::$_dbClass->loadFixtures();
     }
     
     /**
@@ -54,6 +53,6 @@ class GetCategoriesQueryTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        self::$_dbClass->unloadFixtures();
     }
 }

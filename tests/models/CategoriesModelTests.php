@@ -3,6 +3,9 @@
 namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
+use app\tests\source\fixtures\{CategoriesFixture,
+    SubcategoryFixture,
+    ProductsFixture};
 use app\tests\DbManager;
 use app\models\{CategoriesModel,
     ProductsModel,
@@ -15,29 +18,19 @@ class CategoriesModelTests extends TestCase
 {
     private static $_dbClass;
     private static $_reflectionClass;
-    private static $_id = 1;
-    private static $_name = 'Some name';
-    private static $_categorySeocode = 'mensfootwear';
-    private static $_subcategorySeocode = 'boots';
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
-        self::$_dbClass->createDb();
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'categories'=>CategoriesFixture::className(),
+                'subcategory'=>SubcategoryFixture::className(),
+                'products'=>ProductsFixture::className(),
+            ],
+        ]);
+        self::$_dbClass->loadFixtures();
         
         self::$_reflectionClass = new \ReflectionClass('\app\models\CategoriesModel');
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[id_category]]=:id_category, [[id_subcategory]]=:id_subcategory');
-        $command->bindValues([':id'=>self::$_id, ':id_category'=>self::$_id, ':id_subcategory'=>self::$_id]);
-        $command->execute();
     }
     
     /**
@@ -47,6 +40,8 @@ class CategoriesModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
         
         $model = new CategoriesModel();
         
@@ -60,19 +55,29 @@ class CategoriesModelTests extends TestCase
      */
     public function testScenarios()
     {
-        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
+        $fixture = self::$_dbClass->categories['category_1'];
         
-        $this->assertEquals(self::$_id, $model->id);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_categorySeocode, $model->seocode);
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_DB]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+            'name'=>$fixture['name'], 
+            'seocode'=>$fixture['seocode']
+        ];
+        
+        $this->assertEquals($fixture['id'], $model->id);
+        $this->assertEquals($fixture['name'], $model->name);
+        $this->assertEquals($fixture['seocode'], $model->seocode);
         
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'name'=>self::$_name, 'seocode'=>self::$_categorySeocode];
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+            'name'=>$fixture['name'], 
+            'seocode'=>$fixture['seocode']
+        ];
         
-        $this->assertEquals(self::$_id, $model->id);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_categorySeocode, $model->seocode);
+        $this->assertEquals($fixture['id'], $model->id);
+        $this->assertEquals($fixture['name'], $model->name);
+        $this->assertEquals($fixture['seocode'], $model->seocode);
     }
     
     /**
@@ -80,7 +85,9 @@ class CategoriesModelTests extends TestCase
      */
     public function testGetSubcategory()
     {
-        $model = CategoriesModel::find()->where(['categories.id'=>self::$_id])->one();
+        $fixture = self::$_dbClass->categories['category_1'];
+        
+        $model = CategoriesModel::find()->where(['categories.id'=>$fixture['id']])->one();
         
         $this->assertTrue(is_array($model->subcategory));
         $this->assertFalse(empty($model->subcategory));
@@ -93,7 +100,9 @@ class CategoriesModelTests extends TestCase
      */
     public function testGetProducts()
     {
-        $model = CategoriesModel::find()->where(['categories.id'=>self::$_id])->one();
+        $fixture = self::$_dbClass->categories['category_1'];
+        
+        $model = CategoriesModel::find()->where(['categories.id'=>$fixture['id']])->one();
         
         $this->assertTrue(is_array($model->products));
         $this->assertFalse(empty($model->products));
@@ -103,6 +112,6 @@ class CategoriesModelTests extends TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        self::$_dbClass->unloadFixtures();
     }
 }

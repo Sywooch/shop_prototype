@@ -2,61 +2,38 @@
 
 namespace app\tests;
 
+use PHPUnit\Framework\TestCase;
+use app\tests\source\fixtures\{CategoriesFixture,
+    ColorsFixture,
+    ProductsColorsFixture,
+    ProductsFixture,
+    ProductsSizesFixture,
+    SizesFixture,
+    SubcategoryFixture};
 use app\queries\GetProductsQuery;
 use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\queries\GetProductsQuery
  */
-class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
+class GetProductsQueryTests extends TestCase
 {
     private static $_dbClass;
-    private static $_id = 1;
-    private static $_date = 1462453595;
-    private static $_code = 'YU-6709';
-    private static $_name = 'name';
-    private static $_description = 'description';
-    private static $_price = 14.45;
-    private static $_images = 'images/';
-    private static $_active = true;
-    private static $_total_products = 23;
-    private static $_categorySeocode = 'mensfootwear';
-    private static $_subcategorySeocode = 'boots';
-    private static $_color = 'grey';
-    private static $_size = 45;
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
-        self::$_dbClass->createDb();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[short_description]]=:short_description, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_category]]=:id_category, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
-        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':short_description'=>self::$_description, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_category'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{colors}} SET [[id]]=:id, [[color]]=:color');
-        $command->bindValues([':id'=>self::$_id, ':color'=>self::$_color]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_colors}} SET [[id_product]]=:id_product, [[id_color]]=:id_color');
-        $command->bindValues([':id_product'=>self::$_id, ':id_color'=>self::$_id]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{sizes}} SET [[id]]=:id, [[size]]=:size');
-        $command->bindValues([':id'=>self::$_id, ':size'=>self::$_size]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products_sizes}} SET [[id_product]]=:id_product, [[id_size]]=:id_size');
-        $command->bindValues([':id_product'=>self::$_id, ':id_size'=>self::$_id]);
-        $command->execute();
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'categories'=>CategoriesFixture::className(),
+                'subcategory'=>SubcategoryFixture::className(),
+                'products'=>ProductsFixture::className(),
+                'colors'=>ColorsFixture::className(),
+                'products_colors'=>ProductsColorsFixture::className(),
+                'sizes'=>SizesFixture::className(),
+                'products_sizes'=>ProductsSizesFixture::className()
+            ],
+        ]);
+        self::$_dbClass->loadFixtures();
     }
     
     /**
@@ -92,7 +69,9 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllTwo()
     {
-        $_GET = ['category'=>self::$_categorySeocode];
+        $fixture = self::$_dbClass->categories['category_1'];
+        
+        $_GET = ['category'=>$fixture['seocode']];
         \Yii::$app->filters->clean();
         
         $productsQuery = new GetProductsQuery([
@@ -119,7 +98,10 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllThree()
     {
-        $_GET = ['category'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
+        $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
+        
+        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode']];
         \Yii::$app->filters->clean();
         
         $productsQuery = new GetProductsQuery([
@@ -146,10 +128,14 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllFour()
     {
-        $_GET = ['category'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
+        $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
+        $fixtureColors = self::$_dbClass->colors['color_1'];
+        
+        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode']];
         
         \Yii::$app->filters->clean();
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[(int) $fixtureColors['id']]]);
         
         $productsQuery = new GetProductsQuery([
             'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
@@ -175,10 +161,15 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllFive()
     {
-        $_GET = ['category'=>self::$_categorySeocode, 'subcategory'=>self::$_subcategorySeocode];
+        $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
+        $fixtureColors = self::$_dbClass->colors['color_1'];
+        $fixtureSizes = self::$_dbClass->sizes['size_1'];
+        
+        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode']];
         
         \Yii::$app->filters->clean();
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id], 'sizes'=>[self::$_id]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[(int) $fixtureColors['id']], 'sizes'=>[(int) $fixtureSizes['id']]]);
         
         $productsQuery = new GetProductsQuery([
             'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
@@ -204,10 +195,15 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetAllSix()
     {
-        $_GET = ['category'=>self::$_categorySeocode];
+        $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureColors = self::$_dbClass->colors['color_1'];
+        $fixtureColors2 = self::$_dbClass->colors['color_2'];
+        $fixtureSizes = self::$_dbClass->sizes['size_1'];
+        
+        $_GET = ['category'=>$fixture['seocode']];
         
         \Yii::$app->filters->clean();
-        \Yii::configure(\Yii::$app->filters, ['colors'=>[self::$_id,self::$_id + 1], 'sizes'=>[self::$_id]]);
+        \Yii::configure(\Yii::$app->filters, ['colors'=>[(int) $fixtureColors['id'], (int) $fixtureColors2['id']], 'sizes'=>[(int) $fixtureSizes['id']]]);
         
         $productsQuery = new GetProductsQuery([
             'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
@@ -232,13 +228,15 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
      */
     public function testtestGetOne()
     {
+        $fixture = self::$_dbClass->products['product_1'];
+        
          $_GET = [];
         
         \Yii::$app->filters->clean();
         
         $productsQuery = new GetProductsQuery([
             'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
-            'extraWhere'=>['products.id'=>self::$_id]
+            'extraWhere'=>['products.id'=>(int) $fixture['id']]
         ]);
         
         $query = $productsQuery->getOne();
@@ -255,6 +253,6 @@ class GetProductsQueryTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        self::$_dbClass->unloadFixtures();
     }
 }

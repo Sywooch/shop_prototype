@@ -1,7 +1,5 @@
 <?php
 
-namespace app\tests\source\fixtures\data;
-
 $data = [
     'subcategory_1'=>[
         'id'=>1,

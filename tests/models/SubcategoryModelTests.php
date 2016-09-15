@@ -2,6 +2,7 @@
 
 namespace app\tests\models;
 
+use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
 use app\tests\source\fixtures\SubcategoryFixture;
 use app\models\{CategoriesModel,
@@ -10,7 +11,7 @@ use app\models\{CategoriesModel,
 /**
  * Тестирует класс app\models\SubcategoryModel
  */
-class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
+class SubcategoryModelTests extends TestCase
 {
     private static $_dbClass;
     private static $_reflectionClass;
@@ -22,7 +23,7 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
                 'subcategory'=>SubcategoryFixture::className(),
             ],
         ]);
-        self::$_dbClass->createDb();
+        self::$_dbClass->loadData();
         
         self::$_reflectionClass = new \ReflectionClass('\app\models\SubcategoryModel');
     }
@@ -34,6 +35,8 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        
+        $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
         
         $model = new SubcategoryModel();
         
@@ -51,7 +54,12 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $fixture = self::$_dbClass->subcategory['subcategory_2'];
         
         $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>$fixture['id'], 'name'=>$fixture['name'], 'seocode'=>$fixture['seocode'], 'id_category'=>$fixture['id_category']];
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+            'name'=>$fixture['name'], 
+            'seocode'=>$fixture['seocode'], 
+            'id_category'=>$fixture['id_category']
+        ];
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['name'], $model->name);
@@ -59,7 +67,12 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
         $this->assertEquals($fixture['id_category'], $model->id_category);
         
         $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>$fixture['id'], 'name'=>$fixture['name'], 'seocode'=>$fixture['seocode'], 'id_category'=>$fixture['id_category']];
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+            'name'=>$fixture['name'], 
+            'seocode'=>$fixture['seocode'], 
+            'id_category'=>$fixture['id_category']
+        ];
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['name'], $model->name);
@@ -82,6 +95,6 @@ class SubcategoryModelTests extends \PHPUnit_Framework_TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        self::$_dbClass->unloadData();
     }
 }

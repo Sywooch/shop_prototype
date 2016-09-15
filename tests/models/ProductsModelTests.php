@@ -2,7 +2,9 @@
 
 namespace app\tests\models;
 
+use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
+use app\tests\source\fixtures\ProductsFixture;
 use app\models\{CategoriesModel,
     ProductsModel,
     SubcategoryModel};
@@ -10,40 +12,21 @@ use app\models\{CategoriesModel,
 /**
  * Тестирует класс app\models\ProductsModel
  */
-class ProductsModelTests extends \PHPUnit_Framework_TestCase
+class ProductsModelTests extends TestCase
 {
     private static $_dbClass;
     private static $_reflectionClass;
-    private static $_id = 1;
-    private static $_date = 1462453595;
-    private static $_code = 'YU-6709';
-    private static $_name = 'Веселые миниатюры о смерти';
-    private static $_description = 'description';
-    private static $_price = 14.45;
-    private static $_images = 'images/';
-    private static $_active = true;
-    private static $_total_products = 23;
-    private static $_categorySeocode = 'mensfootwear';
-    private static $_subcategorySeocode = 'boots';
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager();
-        self::$_dbClass->createDb();
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'products'=>ProductsFixture::className(),
+            ],
+        ]);
+        self::$_dbClass->loadFixtures();
         
         self::$_reflectionClass = new \ReflectionClass('\app\models\ProductsModel');
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{categories}} SET [[id]]=:id, [[name]]=:name, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':seocode'=>self::$_categorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{subcategory}} SET [[id]]=:id, [[name]]=:name, [[id_category]]=:id_category, [[seocode]]=:seocode');
-        $command->bindValues([':id'=>self::$_id, ':name'=>self::$_name, ':id_category'=>self::$_id, ':seocode'=>self::$_subcategorySeocode]);
-        $command->execute();
-        
-        $command = \Yii::$app->db->createCommand('INSERT INTO {{products}} SET [[id]]=:id, [[date]]=:date, [[code]]=:code, [[name]]=:name, [[short_description]]=:short_description, [[description]]=:description, [[price]]=:price, [[images]]=:images, [[id_category]]=:id_category, [[id_subcategory]]=:id_subcategory, [[active]]=:active, [[total_products]]=:total_products');
-        $command->bindValues([':id'=>self::$_id, ':date'=>self::$_date, ':code'=>self::$_code, ':name'=>self::$_name, ':short_description'=>self::$_description, ':description'=>self::$_description, ':price'=>self::$_price, ':images'=>self::$_images, ':id_category'=>self::$_id, ':id_subcategory'=>self::$_id, ':active'=>self::$_active, ':total_products'=>self::$_total_products]);
-        $command->execute();
     }
     
     /**
@@ -78,37 +61,65 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testScenarios()
     {
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_DB]);
-        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_category'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active, 'total_products'=>self::$_total_products];
+        $fixture = self::$_dbClass->products['product_1'];
         
-        $this->assertEquals(self::$_id, $model->id);
-        $this->assertEquals(self::$_date, $model->date);
-        $this->assertEquals(self::$_code, $model->code);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_description, $model->description);
-        $this->assertEquals(self::$_description, $model->short_description);
-        $this->assertEquals(self::$_price, $model->price);
-        $this->assertEquals(self::$_images, $model->images);
-        $this->assertEquals(self::$_id, $model->id_category);
-        $this->assertEquals(self::$_id, $model->id_subcategory);
-        $this->assertEquals(self::$_active, $model->active);
-        $this->assertEquals(self::$_total_products, $model->total_products);
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_DB]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+            'date'=>$fixture['date'], 
+            'code'=>$fixture['code'], 
+            'name'=>$fixture['name'], 
+            'short_description'=>$fixture['short_description'], 
+            'description'=>$fixture['description'], 
+            'price'=>$fixture['price'], 
+            'images'=>$fixture['images'], 
+            'id_category'=>$fixture['id_category'], 
+            'id_subcategory'=>$fixture['id_subcategory'], 
+            'active'=>$fixture['active'], 
+            'total_products'=>$fixture['total_products']
+        ];
+        
+        $this->assertEquals($fixture['id'], $model->id);
+        $this->assertEquals($fixture['date'], $model->date);
+        $this->assertEquals($fixture['code'], $model->code);
+        $this->assertEquals($fixture['name'], $model->name);
+        $this->assertEquals($fixture['short_description'], $model->short_description);
+        $this->assertEquals($fixture['description'], $model->description);
+        $this->assertEquals($fixture['price'], $model->price);
+        $this->assertEquals($fixture['images'], $model->images);
+        $this->assertEquals($fixture['id_category'], $model->id_category);
+        $this->assertEquals($fixture['id_subcategory'], $model->id_subcategory);
+        $this->assertEquals($fixture['active'], $model->active);
+        $this->assertEquals($fixture['total_products'], $model->total_products);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM]);
-        $model->attributes = ['id'=>self::$_id, 'date'=>self::$_date, 'code'=>self::$_code, 'name'=>self::$_name, 'description'=>self::$_description, 'short_description'=>self::$_description, 'price'=>self::$_price, 'images'=>self::$_images, 'id_category'=>self::$_id, 'id_subcategory'=>self::$_id, 'active'=>self::$_active, 'total_products'=>self::$_total_products];
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+            'date'=>$fixture['date'], 
+            'code'=>$fixture['code'], 
+            'name'=>$fixture['name'], 
+            'short_description'=>$fixture['short_description'], 
+            'description'=>$fixture['description'], 
+            'price'=>$fixture['price'], 
+            'images'=>$fixture['images'], 
+            'id_category'=>$fixture['id_category'], 
+            'id_subcategory'=>$fixture['id_subcategory'], 
+            'active'=>$fixture['active'], 
+            'total_products'=>$fixture['total_products']
+        ];
         
-        $this->assertEquals(self::$_id, $model->id);
-        $this->assertEquals(self::$_date, $model->date);
-        $this->assertEquals(self::$_code, $model->code);
-        $this->assertEquals(self::$_name, $model->name);
-        $this->assertEquals(self::$_description, $model->description);
-        $this->assertEquals(self::$_description, $model->short_description);
-        $this->assertEquals(self::$_price, $model->price);
-        $this->assertEquals(self::$_images, $model->images);
-        $this->assertEquals(self::$_id, $model->id_category);
-        $this->assertEquals(self::$_id, $model->id_subcategory);
-        $this->assertEquals(self::$_active, $model->active);
-        $this->assertEquals(self::$_total_products, $model->total_products);
+        $this->assertEquals($fixture['id'], $model->id);
+        $this->assertEquals($fixture['date'], $model->date);
+        $this->assertEquals($fixture['code'], $model->code);
+        $this->assertEquals($fixture['name'], $model->name);
+        $this->assertEquals($fixture['short_description'], $model->short_description);
+        $this->assertEquals($fixture['description'], $model->description);
+        $this->assertEquals($fixture['price'], $model->price);
+        $this->assertEquals($fixture['images'], $model->images);
+        $this->assertEquals($fixture['id_category'], $model->id_category);
+        $this->assertEquals($fixture['id_subcategory'], $model->id_subcategory);
+        $this->assertEquals($fixture['active'], $model->active);
+        $this->assertEquals($fixture['total_products'], $model->total_products);
     }
     
     /**
@@ -116,7 +127,9 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetCategories()
     {
-        $model = ProductsModel::find()->where(['products.id'=>self::$_id])->one();
+        $fixture = self::$_dbClass->products['product_2'];
+        
+        $model = ProductsModel::find()->where(['products.id'=>$fixture['id']])->one();
         
         $this->assertTrue(is_object($model->categories));
         $this->assertTrue($model->categories instanceof CategoriesModel);
@@ -127,7 +140,9 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSubcategory()
     {
-        $model = ProductsModel::find()->where(['products.id'=>self::$_id])->one();
+        $fixture = self::$_dbClass->products['product_1'];
+        
+        $model = ProductsModel::find()->where(['products.id'=>$fixture['id']])->one();
         
         $this->assertTrue(is_object($model->subcategory));
         $this->assertTrue($model->subcategory instanceof SubcategoryModel);
@@ -138,16 +153,18 @@ class ProductsModelTests extends \PHPUnit_Framework_TestCase
      */
     public function testGetSeocode()
     {
-        $model = new ProductsModel();
-        $model->name = self::$_name;
+        $fixture = self::$_dbClass->products['product_1'];
         
-        $expect = 'veselye-miniatyury-o-smerti';
+        $model = new ProductsModel();
+        $model->name = $fixture['name'];
+        
+        $expect = 'bryuki-sinie-modnogo-fasona';
         
         $this->assertEquals($expect, $model->seocode);
     }
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        self::$_dbClass->unloadFixtures();
     }
 }

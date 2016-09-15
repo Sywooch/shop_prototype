@@ -22,7 +22,7 @@ class InstancesHelperTests extends TestCase
                 'categories'=>CategoriesFixture::className(),
             ],
         ]);
-        self::$_dbClass->createDb();
+        self::$_dbClass->loadData();
     }
     
     /**
@@ -42,6 +42,6 @@ class InstancesHelperTests extends TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->deleteDb();
+        self::$_dbClass->unloadData();
     }
 }

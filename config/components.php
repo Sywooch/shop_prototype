@@ -2,6 +2,7 @@
 
 $components = [
     'db'=>require(__DIR__ . '/db.php'),
+    'dbTest'=>require(__DIR__ . '/dbTest.php'),
     
     'view'=>[
         'class'=>'yii\web\View',

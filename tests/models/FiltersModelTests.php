@@ -51,7 +51,18 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     public function testRules()
     {
         $model = new FiltersModel();
-        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType, 'category'=>self::$_category, 'subcategory'=>self::$_subcategory, 'search'=>self::$_search, 'getActive'=>self::$_getActive, 'getNotActive'=>self::$_getNotActive];
+        $model->attributes = [
+            'colors'=>self::$_colors, 
+            'sizes'=>self::$_sizes, 
+            'brands'=>self::$_brands, 
+            'sortingField'=>self::$_sortingField, 
+            'sortingType'=>self::$_sortingType, 
+            'category'=>self::$_category, 
+            'subcategory'=>self::$_subcategory, 
+            'search'=>self::$_search, 
+            'getActive'=>self::$_getActive, 
+            'getNotActive'=>self::$_getNotActive
+        ];
         
         $this->assertEquals(self::$_colors, $model->colors);
         $this->assertEquals(self::$_sizes, $model->sizes);
@@ -71,7 +82,15 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     public function testClean()
     {
         $model = new FiltersModel();
-        $model->attributes = ['colors'=>self::$_colors, 'sizes'=>self::$_sizes, 'brands'=>self::$_brands, 'sortingField'=>self::$_sortingField, 'sortingType'=>self::$_sortingType, 'getActive'=>self::$_getActive, 'getNotActive'=>self::$_getNotActive];
+        $model->attributes = [
+            'colors'=>self::$_colors, 
+            'sizes'=>self::$_sizes, 
+            'brands'=>self::$_brands, 
+            'sortingField'=>self::$_sortingField, 
+            'sortingType'=>self::$_sortingType, 
+            'getActive'=>self::$_getActive, 
+            'getNotActive'=>self::$_getNotActive
+        ];
         
         $this->assertFalse(empty($model->colors));
         $this->assertFalse(empty($model->sizes));
@@ -98,7 +117,11 @@ class FiltersModelTests extends \PHPUnit_Framework_TestCase
     public function testCleanOther()
     {
         $model = new FiltersModel();
-        $model->attributes = ['category'=>self::$_category, 'subcategory'=>self::$_subcategory, 'search'=>self::$_search];
+        $model->attributes = [
+            'category'=>self::$_category, 
+            'subcategory'=>self::$_subcategory, 
+            'search'=>self::$_search
+        ];
         
         $this->assertFalse(empty($model->category));
         $this->assertFalse(empty($model->subcategory));
