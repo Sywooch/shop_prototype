@@ -5,13 +5,11 @@ namespace app\queries;
 interface QueryInterface
 {
     /**
-     * Конфигурирует объект запроса yii\db\ActiveQuery для выборки массива строк
-     * @return object ActiveQuery
+     * Конфигурирует объект запроса для выборки массива строк
      */
     public function getAll();
     /**
-     * Конфигурирует объект запроса yii\db\ActiveQuery для выборки одной строки
-     * @return object ActiveQuery
+     * Конфигурирует объект запроса для выборки одной строки
      */
     public function getOne();
 }

@@ -63,7 +63,7 @@ class TestsController extends Controller
             $cmd = sprintf("/var/www/html/shop/yii migrate --db=%s --interactive=0", $this->db);
             exec($cmd);
             
-            $this->stdout(\Yii::t('base/console', "Database {database} created successfully, migrations applied!\n", ['database'=>$this->testDbName]), Console::FG_GREEN);
+            $this->stdout(\Yii::t('base/console', "Database {database} created successfully, migrations applied!\n", ['database'=>$this->testDbName]));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -89,7 +89,7 @@ class TestsController extends Controller
             $cmd = sprintf("mysql -u%s -p%s -e 'DROP DATABASE %s'", $this->username, $this->password, $this->testDbName);
             exec($cmd);
             
-            $this->stdout(\Yii::t('base/console', "Migrations erased, database {database} deleted successfully!\n", ['database'=>$this->testDbName]), Console::FG_GREEN);
+            $this->stdout(\Yii::t('base/console', "Migrations erased, database {database} deleted successfully!\n", ['database'=>$this->testDbName]));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

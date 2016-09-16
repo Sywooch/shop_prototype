@@ -29,7 +29,7 @@ class GetCategoriesQueryTests extends TestCase
      * Тестирует метод GetCategoriesQuery::getAll()
      * без категорий и фильтров
      */
-    public function testGetQuery()
+    public function testGetAll()
     {
         $_GET = [];
         \Yii::$app->filters->clean();

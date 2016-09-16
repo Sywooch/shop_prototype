@@ -6,7 +6,8 @@ use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
 use app\tests\source\fixtures\CategoriesFixture;
 use app\helpers\InstancesHelper;
-use app\models\CategoriesModel;
+use app\models\{CategoriesModel,
+    SearchModel};
 
 /**
  * Тестирует класс app\helpers\InstancesHelper
@@ -38,6 +39,10 @@ class InstancesHelperTests extends TestCase
         $this->assertTrue(array_key_exists('categoriesList', $result));
         $this->assertTrue(is_array($result['categoriesList']));
         $this->assertTrue($result['categoriesList'][0] instanceof CategoriesModel);
+        
+        $this->assertTrue(array_key_exists('searchModel', $result));
+        $this->assertTrue(is_object($result['searchModel']));
+        $this->assertTrue($result['searchModel'] instanceof SearchModel);
     }
     
     public static function tearDownAfterClass()

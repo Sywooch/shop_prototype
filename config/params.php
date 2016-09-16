@@ -12,6 +12,9 @@ $params = [
     'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступна текущая категория
     'subcategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступна текущая подкатегория
     'idKey'=>'id', # Ключ, по которому в $_REQUEST доступен id продукта
+    
+    # Поиск по товарам
+    'searchKey'=>'search', # Ключ, по которому в $_REQUEST доступно значение для поиска
 ];
 
 return $params;

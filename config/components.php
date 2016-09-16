@@ -77,6 +77,14 @@ $components = [
         'timeout'=>60*60*24*7
     ],
     
+    'sphinx'=>[
+        'class'=>'yii\sphinx\Connection',
+        'dsn'=>'mysql:host=127.0.0.1;port=9306;dbname=shop',
+        'username'=>'shopadmin',
+        'password'=>'shopadmin',
+        'charset'=>'utf8',
+    ],
+    
     'filters'=>[
         'class'=>'app\models\FiltersModel',
     ],
