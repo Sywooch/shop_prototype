@@ -1,7 +1,5 @@
 
-{{ use('yii/widgets/ActiveForm') }}
-
-{% set form=active_form_begin({'id':'search-form', 'action':url.to({0:'/search'}), 'method':'POST'}) %}
-    {{ form.field(searchModel, 'text').textInput({'size':40, 'value':app.request.get('search')}).label(false) | raw }}
+<form name="search" action="{{ url.to({0:'/search'}) }}" method="GET">
+    <input type="text" name="{{ app.params.searchKey }}" size="40" value="{{ app.request.get(app.params.searchKey) }}">
     <input type="submit" value="Search">
-{{ active_form_end() }}
+</form>

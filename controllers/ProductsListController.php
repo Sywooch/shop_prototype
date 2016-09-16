@@ -47,26 +47,25 @@ class ProductsListController extends AbstractBaseController
     public function actionSearch()
     {
         try {
-            if (\Yii::$app->request->isGet) {
+            if (empty(\Yii::$app->params['searchKey'])) {
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'searchKey\']']));
+            }
+            if (empty(\Yii::$app->request->get(\Yii::$app->params['searchKey']))) {
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
-            $instances = InstancesHelper::getInstances();
+            $sphinxQuery = new GetSphinxQuery([
+                'tableName'=>'shop',
+                'fields'=>['id'],
+                'text'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])
+            ]);
+            $sphinxArray = $sphinxQuery->getAll()->all();
             
-            if (\Yii::$app->request->isPost && $instances['searchModel']->load(\Yii::$app->request->post())) {
-                $sphinxQuery = new GetSphinxQuery([
-                    'tableName'=>'shop',
-                    'fields'=>['id'],
-                    'text'=>$instances['searchModel']->text
-                ]);
-                $sphinxArray = $sphinxQuery->getAll()->all();
-                
-                $this->_config['extraWhere'] = ['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')];
-            }
+            $this->_config['extraWhere'] = ['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')];
             
             $renderArray = $this->common();
             
-            return $this->render('products-list.twig', array_merge($renderArray, $instances));
+            return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -80,7 +79,7 @@ class ProductsListController extends AbstractBaseController
     private function common()
     {
         try {
-            $result = [];
+            $result = array();
             $productsQuery = new GetProductsQuery($this->_config);
             $result['productsList'] = $productsQuery->getAll()->all();
             $result['paginator'] = $productsQuery->paginator;

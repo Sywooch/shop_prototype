@@ -24,6 +24,7 @@ class GetSphinxQueryTests extends TestCase
         $sphinxQuery = new GetSphinxQuery([
             'tableName'=>'shop',
             'fields'=>['id'],
+            'text'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])
         ]);
         
         $query = $sphinxQuery->getAll();
