@@ -12,6 +12,7 @@ $components = [
                 'options'=>['auto_reload'=>true],
                 'globals'=>[
                     'url'=>'yii\helpers\Url',
+                    'yii'=>'\Yii',
                 ],
             ]
         ],
