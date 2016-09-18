@@ -102,7 +102,7 @@ class PaginationWidget extends Widget
                     $number = null;
                 }
                 $url = Url::current([\Yii::$app->params['pagePointer']=>$number]);
-                if (Url::current() == $url) {
+                if ($this->paginator->page == $number - 1) {
                     $this->_tags[] = Html::tag($this->childTag, $number ?? 1, ['class'=>$this->activePageCssClass]);
                     continue;
                 }
@@ -124,7 +124,7 @@ class PaginationWidget extends Widget
      * Конструирует диапазон ссылок на страницы в зависимости от номера текущей страницы
      * @return array
      */
-    private function getRange()
+    private function getRange(): array
     {
         try {
             $currentPage = $this->paginator->page + 1;

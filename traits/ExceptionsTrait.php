@@ -11,7 +11,7 @@ trait ExceptionsTrait
 {
     /**
      * Принимает любое исключение, маркирует и выбрасывает как yii\base\ErrorException
-     * @param $e экзкмпляр \Exception
+     * @param $e экземпляр \Exception
      * @param $method полностью определенное имя метода, поймавшего исключение
      */
     public function throwException(\Exception $e, $method)
@@ -22,7 +22,7 @@ trait ExceptionsTrait
     /**
      * Статический метод
      * Принимает любое исключение, маркирует и выбрасывает как yii\base\ErrorException
-     * @param $e экзкмпляр \Exception
+     * @param $e экземпляр \Exception
      * @param $method полностью определенное имя метода, поймавшего исключение
      */
     public static function throwStaticException(\Exception $e, $method)
@@ -32,7 +32,7 @@ trait ExceptionsTrait
     
     /**
      * Записывает в логи исключение уровня error
-     * @param $e экзкмпляр \Exception
+     * @param $e экземпляр \Exception
      * @param $method полностью определенное имя метода, поймавшего исключение
      */
     public function writeErrorInLogs(\Exception $e, $method)

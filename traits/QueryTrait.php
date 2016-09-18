@@ -123,12 +123,17 @@ trait QueryTrait
             }
             
             $countQuery = clone $this->query;
+            $page = !empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) - 1 : 0;
             
             \Yii::configure($this->paginator, [
                 'totalCount'=>$countQuery->count(),
                 'pageSize'=>\Yii::$app->params['limit'],
-                'page'=>!empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) - 1 : 0,
+                'page'=>$page,
             ]);
+            
+            if ($this->paginator->page > $this->paginator->pageCount - 1) {
+                $this->paginator->page = $this->paginator->pageCount - 1;
+            }
             
             $this->query->offset($this->paginator->offset);
             $this->query->limit($this->paginator->limit);

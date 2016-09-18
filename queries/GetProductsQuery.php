@@ -3,6 +3,7 @@
 namespace app\queries;
 
 use yii\base\ErrorException;
+use yii\db\ActiveQuery;
 use app\queries\AbstractBaseQuery;
 use app\models\ProductsModel;
 
@@ -11,7 +12,7 @@ use app\models\ProductsModel;
  */
 class GetProductsQuery extends AbstractBaseQuery
 {
-    public function __construct($config=array())
+    public function __construct($config=[])
     {
         try {
             $this->className = ProductsModel::className();
@@ -25,7 +26,7 @@ class GetProductsQuery extends AbstractBaseQuery
      * Конфигурирует объект запроса yii\db\ActiveQuery для выборки массива строк
      * @return object ActiveQuery
      */
-    public function getAll()
+    public function getAll(): ActiveQuery
     {
         try {
             if (!$this->getSelect()) {
@@ -72,7 +73,7 @@ class GetProductsQuery extends AbstractBaseQuery
      * Конфигурирует объект запроса yii\db\ActiveQuery для выборки одной строки
      * @return object ActiveQuery
      */
-    public function getOne()
+    public function getOne(): ActiveQuery
     {
         try {
             if (!$this->getSelect()) {

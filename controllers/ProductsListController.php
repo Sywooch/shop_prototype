@@ -73,10 +73,13 @@ class ProductsListController extends AbstractBaseController
     }
     
     /**
-     * Инкапсулирует общую для actions функциональность
+     * Инкапсулирует общую для 
+     * - ProductsListController::actionIndex 
+     * - ProductsListController::actionSearch
+     * функциональность
      * @return array
      */
-    private function common()
+    private function common(): array
     {
         try {
             $result = array();

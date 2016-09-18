@@ -3,6 +3,7 @@
 namespace app\queries;
 
 use yii\base\ErrorException;
+use yii\db\ActiveQuery;
 use app\queries\AbstractBaseQuery;
 use app\models\CategoriesModel;
 
@@ -11,7 +12,7 @@ use app\models\CategoriesModel;
  */
 class GetCategoriesQuery extends AbstractBaseQuery
 {
-    public function __construct($config=array())
+    public function __construct($config=[])
     {
         try {
             $this->className = CategoriesModel::className();
@@ -22,10 +23,10 @@ class GetCategoriesQuery extends AbstractBaseQuery
     }
     
     /**
-     * Конфигурирует объект запроса yii\db\ActiveQuery
+     * Конфигурирует объект запроса yii\db\ActiveQuery для выборки массива строк
      * @return object ActiveQuery
      */
-    public function getAll()
+    public function getAll(): ActiveQuery
     {
         try {
             if (!$this->getSelect()) {
@@ -44,12 +45,7 @@ class GetCategoriesQuery extends AbstractBaseQuery
         }
     }
     
-    /**
-     * Конфигурирует объект запроса yii\db\ActiveQuery для выборки одной строки
-     * @return object ActiveQuery
-     */
     public function getOne()
     {
-        
     }
 }

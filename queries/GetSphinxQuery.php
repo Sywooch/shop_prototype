@@ -46,10 +46,10 @@ class GetSphinxQuery extends Object implements QueryInterface
     }
     
     /**
-     * Конфигурирует объект запроса для выборки массива строк
-     * @return object ActiveQuery
+     * Конфигурирует объект запроса yii\sphinx\Query для выборки массива строк
+     * @return object Query
      */
-    public function getAll()
+    public function getAll(): Query
     {
         try {
             $this->query->select($this->fields);

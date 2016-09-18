@@ -17,15 +17,15 @@ class TestsController extends Controller
     /**
      * @var string логин к учетной записи с правами создания и удаления тестовой БД
      */
-    public $username = null;
+    private $username = null;
     /**
      * @var string пароль к учетной записи с правами создания и удаления тестовой БД
      */
-    public $password = null;
+    private $password = null;
     /**
      * @var string имя тестовой БД, которая будет создана
      */
-    public $testDbName = null;
+    private $testDbName = null;
     
     public function init()
     {
@@ -35,10 +35,10 @@ class TestsController extends Controller
             $db = $this->db;
             $currentDb = \Yii::$app->$db;
             
-            $this->username = $this->username ?? $currentDb->username;
-            $this->password = $this->password ?? $currentDb->password;
+            $this->username = $currentDb->username;
+            $this->password = $currentDb->password;
             preg_match('/.*dbname=([a-z1-9_]+)$/', $currentDb->dsn, $matches);
-            $this->testDbName = $this->testDbName ?? $matches[1];
+            $this->testDbName = $matches[1];
             
             $this->escapeArgs();
         } catch (\Exception $e) {
@@ -47,8 +47,19 @@ class TestsController extends Controller
         }
     }
     
+    public function options($actionID)
+    {
+        try {
+            return ['db'];
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
     /**
      * Создает БД, применяет миграции
+     * @return int
      */
     public function actionSet()
     {

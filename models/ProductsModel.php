@@ -14,13 +14,13 @@ use app\helpers\TransliterationHelper;
 class ProductsModel extends AbstractBaseModel
 {
     /**
-     * @var string seocode текущей записи
-     */
-    private $_seocode = '';
-    /**
      * @var string имя таблицы, связанной с текущим классом AR
      */
     public static $_tableName = 'products';
+    /**
+     * @var string seocode текущей записи
+     */
+    private $_seocode = '';
     
     public function scenarios()
     {
@@ -61,7 +61,7 @@ class ProductsModel extends AbstractBaseModel
      * конструируя его из данных поля name
      * return string
      */
-     public function getSeocode()
+     public function getSeocode(): string
      {
          try {
              if (!empty($this->name)) {

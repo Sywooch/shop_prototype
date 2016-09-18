@@ -18,7 +18,7 @@ class InstancesHelper
      * Конструирует объекты для рендеринга
      * @return array
      */
-    public static function getInstances()
+    public static function getInstances(): array
     {
         try {
             # Массив объектов CategoriesModel для формирования меню категорий

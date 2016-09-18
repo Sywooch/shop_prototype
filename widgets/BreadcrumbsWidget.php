@@ -86,10 +86,10 @@ class BreadcrumbsWidget extends Breadcrumbs
             $this->itemTemplate = sprintf($this->itemTemplate, $this->separator);
             
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
-                $categoryModel = CategoriesModel::find()->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])])->one();
-                if ($categoryModel instanceof CategoriesModel) {
-                    $this->categorySeocode = $categoryModel->seocode;
-                    $this->categoryName = $categoryModel->name;
+                $categoriesModel = CategoriesModel::find()->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])])->one();
+                if ($categoriesModel instanceof CategoriesModel) {
+                    $this->categorySeocode = $categoriesModel->seocode;
+                    $this->categoryName = $categoriesModel->name;
                 }
             }
             
