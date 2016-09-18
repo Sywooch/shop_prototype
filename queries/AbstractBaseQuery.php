@@ -5,9 +5,9 @@ namespace app\queries;
 use yii\base\{ErrorException,
     Object};
 use yii\data\Pagination;
-use app\traits\{ExceptionsTrait,
+use app\exceptions\ExceptionsTrait;
+use app\queries\{QueryInterface,
     QueryTrait};
-use app\queries\QueryInterface;
 
 /**
  * Абстрактный суперкласс построения запроса к БД

@@ -6,7 +6,7 @@ use yii\base\{ErrorException,
     Widget};
 use yii\helpers\{Html,
     Url};
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 
 class PaginationWidget extends Widget
 {
@@ -91,6 +91,10 @@ class PaginationWidget extends Widget
                 return '';
             }
             
+            if (empty(\Yii::$app->params['pagePointer'])) {
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'pagePointer\']']));
+            }
+            
             $range = $this->getRange();
             
             if (!is_array($range) || empty($range)) {
@@ -102,7 +106,7 @@ class PaginationWidget extends Widget
                     $number = null;
                 }
                 $url = Url::current([\Yii::$app->params['pagePointer']=>$number]);
-                if ($this->paginator->page == $number - 1) {
+                if (Url::current() == $url || (\Yii::$app->request->get(\Yii::$app->params['pagePointer']) > $this->paginator->pageCount && $number == $this->paginator->pageCount)) {
                     $this->_tags[] = Html::tag($this->childTag, $number ?? 1, ['class'=>$this->activePageCssClass]);
                     continue;
                 }

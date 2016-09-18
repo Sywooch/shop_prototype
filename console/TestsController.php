@@ -4,7 +4,7 @@ namespace app\console;
 
 use yii\console\Controller;
 use yii\helpers\Console;
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 
 class TestsController extends Controller
 {

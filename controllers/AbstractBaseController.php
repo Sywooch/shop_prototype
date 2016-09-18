@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Определяет методы, общие для разных типов контроллеров

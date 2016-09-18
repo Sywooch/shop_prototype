@@ -1,6 +1,6 @@
 <?php
 
-namespace app\traits;
+namespace app\queries;
 
 /**
  * Коллекция свойств и методов для Query классов

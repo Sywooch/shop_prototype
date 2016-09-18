@@ -6,9 +6,9 @@ use yii\base\{ErrorException,
     Object};
 use yii\sphinx\{MatchExpression,
     Query};
-use app\queries\QueryInterface;
-use app\traits\{ExceptionsTrait,
+use app\queries\{QueryInterface,
     QueryTrait};
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Конструирует объект запроса, возвращающий массив данных сервера Sphinx

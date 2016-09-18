@@ -2,7 +2,7 @@
 
 namespace app\helpers;
 
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Коллекция методов для транслитерации

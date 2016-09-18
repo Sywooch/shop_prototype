@@ -3,7 +3,7 @@
 namespace app\tests\source\fixtures;
 
 use yii\test\ActiveFixture;
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Абстрактный класс, коллекция свойств и методов, 

@@ -3,7 +3,7 @@
 namespace app\helpers;
 
 use yii\base\ErrorException;
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 use app\queries\GetCategoriesQuery;
 
 /**

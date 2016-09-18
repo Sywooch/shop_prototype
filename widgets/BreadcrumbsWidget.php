@@ -4,7 +4,7 @@ namespace app\widgets;
 
 use yii\base\ErrorException;
 use yii\widgets\Breadcrumbs;
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 use app\models\{CategoriesModel,
     ProductsModel,
     SubcategoryModel};

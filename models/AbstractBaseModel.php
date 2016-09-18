@@ -3,7 +3,7 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 
 abstract class AbstractBaseModel extends ActiveRecord
 {

@@ -5,7 +5,7 @@ namespace app\tests;
 use yii\test\FixtureTrait;
 use yii\base\Object;
 use yii\base\ErrorException;
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Управляет созданием и удалением тестовой БД
