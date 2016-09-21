@@ -17,7 +17,7 @@ class CategoriesMenuWidget extends Menu
     /**
      * @var string основной route
      */
-    public $rootRoute = '/products-list/index';
+    public $rootRoute = '/products-list/inside';
     /**
      * @var boolean помечать ли активным родительский пункт, если активен дочерний
      */

@@ -25,15 +25,27 @@ class ProductsListController extends AbstractBaseController
     ];
     
     /**
-     * Обрабатывает запрос к списку продуктов
+     * Обрабатывает запрос к списку продуктов без учета категорий
      * @return string
      */
     public function actionIndex()
     {
         try {
-            $renderArray = $this->common();
-            
-            return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+            return $this->common();
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обрабатывает запрос к списку продуктов с учетом категории
+     * @return string
+     */
+    public function actionInside()
+    {
+        try {
+            return $this->common();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -63,9 +75,7 @@ class ProductsListController extends AbstractBaseController
             
             $this->_config['extraWhere'] = ['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')];
             
-            $renderArray = $this->common();
-            
-            return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+            return $this->common();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -74,19 +84,21 @@ class ProductsListController extends AbstractBaseController
     
     /**
      * Инкапсулирует общую для 
-     * - ProductsListController::actionIndex 
+     * - ProductsListController::actionIndex
+     * - ProductsListController::actionInside
      * - ProductsListController::actionSearch
      * функциональность
-     * @return array
+     * @return string
      */
-    private function common(): array
+    private function common()
     {
         try {
-            $result = array();
+            $renderArray = array();
             $productsQuery = new GetProductsQuery($this->_config);
-            $result['productsList'] = $productsQuery->getAll()->all();
-            $result['paginator'] = $productsQuery->paginator;
-            return $result;
+            $renderArray['productsList'] = $productsQuery->getAll()->all();
+            $renderArray['paginator'] = $productsQuery->paginator;
+            
+            return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

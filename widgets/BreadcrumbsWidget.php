@@ -125,10 +125,10 @@ class BreadcrumbsWidget extends Breadcrumbs
     {
         try {
             if (!empty($this->categorySeocode)) {
-                $this->_breadcrumbs[] = ['url'=>['/products-list/index', 'category'=>$this->categorySeocode], 'label'=>$this->categoryName];
+                $this->_breadcrumbs[] = ['url'=>['/products-list/inside', 'category'=>$this->categorySeocode], 'label'=>$this->categoryName];
             }
             if (!empty($this->subcategorySeocode)) {
-                $this->_breadcrumbs[] = ['url'=>['/products-list/index', 'category'=>$this->categorySeocode, 'subcategory'=>$this->subcategorySeocode], 'label'=>$this->subcategoryName];
+                $this->_breadcrumbs[] = ['url'=>['/products-list/inside', 'category'=>$this->categorySeocode, 'subcategory'=>$this->subcategorySeocode], 'label'=>$this->subcategoryName];
             }
             if (!empty($this->id)) {
                 $this->_breadcrumbs[] = ['url'=>['/products-detail/index', 'category'=>$this->categorySeocode, 'subcategory'=>$this->subcategorySeocode, 'id'=>$this->id], 'label'=>$this->productsName];
