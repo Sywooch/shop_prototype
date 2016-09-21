@@ -17,7 +17,7 @@ class CategoriesMenuWidget extends Menu
     /**
      * @var string основной route
      */
-    public $rootRoute = '/products-list/inside';
+    public $rootRoute = '/products-list/index';
     /**
      * @var boolean помечать ли активным родительский пункт, если активен дочерний
      */
@@ -59,18 +59,21 @@ class CategoriesMenuWidget extends Menu
     {
         try {
             foreach ($this->categoriesList as $category) {
-                if (empty($category->products)) {
+                /*if (empty($category->products)) {
                     continue;
-                }
+                }*/
                 $pack = [
                     'label'=>$category->name,
-                    'url'=>[$this->rootRoute, 'category'=>$category->seocode]
+                    'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode]
                 ];
                 if (!empty($category->subcategory)) {
                     foreach ($category->subcategory as $subcategory) {
+                        /*if (empty($subcategory->products)) {
+                            continue;
+                        }*/
                         $pack['items'][] = [
                             'label'=>$subcategory->name,
-                            'url'=>[$this->rootRoute, 'category'=>$category->seocode, 'subcategory'=>$subcategory->seocode]
+                            'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode, \Yii::$app->params['subcategoryKey']=>$subcategory->seocode]
                         ];
                     }
                 }

@@ -4,8 +4,10 @@ namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\tests\source\fixtures\SubcategoryFixture;
+use app\tests\source\fixtures\{ProductsFixture,
+    SubcategoryFixture};
 use app\models\{CategoriesModel,
+    ProductsModel,
     SubcategoryModel};
 
 /**
@@ -20,6 +22,7 @@ class SubcategoryModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
+                'products'=>ProductsFixture::className(),
                 'subcategory'=>SubcategoryFixture::className(),
             ],
         ]);
@@ -91,6 +94,20 @@ class SubcategoryModelTests extends TestCase
         
         $this->assertTrue(is_object($model->categories));
         $this->assertTrue($model->categories instanceof CategoriesModel);
+    }
+    
+    /**
+     * Тестирует метод SubcategoryModel::getProducts
+     */
+    public function testGetProducts()
+    {
+        $fixture = self::$_dbClass->subcategory['subcategory_1'];
+        
+        $model = SubcategoryModel::find()->where(['subcategory.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue(is_array($model->products));
+        $this->assertFalse(empty($model->products));
+        $this->assertTrue($model->products[0] instanceof ProductsModel);
     }
     
     public static function tearDownAfterClass()

@@ -17,9 +17,15 @@ class CategoriesRoute extends Object implements UrlRuleInterface
     use ExceptionsTrait;
     
     /**
-     * @var array массив данных
+     * @var array массив данных, 
+     * используется при парсинге и построении URL
      */
-    private $_route = [];
+    private $_params = [];
+    /**
+     * @var string строка, представляющая в URL ссылку на список всех товаров,
+     * без разбиения на категории
+     */
+    public $all = 'catalog';
     
     /**
      * Парсит запрос и возвращает подходящий маршрут и параметры
@@ -36,25 +42,28 @@ class CategoriesRoute extends Object implements UrlRuleInterface
                 list($category, $subcategory) = explode('/', $pathInfo);
                 
                 if (!empty($category)) {
-                    $this->run($category, 'category', $categoriesArray);
+                    if (!$this->parseChunk($category, \Yii::$app->params['categoryKey'], $categoriesArray)) {
+                        return false;
+                    }
                 }
                 
                 if (!empty($subcategory)) {
                     $subcategoryArray = ArrayHelper::getColumn(SubcategoryModel::find()->all(), 'seocode');
-                    $this->run($subcategory, 'subcategory', $subcategoryArray);
+                    if (!$this->parseChunk($subcategory, \Yii::$app->params['subcategoryKey'], $subcategoryArray)) {
+                        return false;
+                    }
                 }
-                
-                if (!empty($this->_route)) {
-                    return array_merge(['products-list/inside'], [$this->_route]);
-                }
-            
+            } elseif (preg_match('/^' . $this->all . '/', $pathInfo)) {
+                $this->parseChunk($pathInfo);
+            } else {
+                return false;
             }
-            return false;
+            return ['products-list/index', $this->_params];
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         } finally {
-            $this->_route = [];
+            $this->_params = [];
         }
     }
     
@@ -65,21 +74,21 @@ class CategoriesRoute extends Object implements UrlRuleInterface
     public function createUrl($manager, $route, $params)
     {
         try {
-            if ($route !== 'products-list/inside') {
+            if ($route !== 'products-list/index') {
                 return false;
             }
             
-            if (!empty($params['category'])) {
-                $this->_route[] = $params['category'];
+            if (!empty($params[\Yii::$app->params['categoryKey']])) {
+                $this->_params[] = $params[\Yii::$app->params['categoryKey']];
             }
-            if (!empty($params['subcategory'])) {
-                $this->_route[] = $params['subcategory'];
+            if (!empty($params[\Yii::$app->params['subcategoryKey']])) {
+                $this->_params[] = $params[\Yii::$app->params['subcategoryKey']];
             }
             
-            $result = implode('/', $this->_route);
+            $result = !empty($this->_params) ? implode('/', $this->_params) : $this->all;
             
-            if (!empty($params['page'])) {
-                $result .= '-' . $params['page'];
+            if (!empty($params[\Yii::$app->params['pagePointer']])) {
+                $result .= '-' . $params[\Yii::$app->params['pagePointer']];
             }
             
             return $result;
@@ -87,30 +96,32 @@ class CategoriesRoute extends Object implements UrlRuleInterface
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         } finally {
-            $this->_route = [];
+            $this->_params = [];
         }
     }
     
     /**
      * Парсит данные из URL
+     * @param string $chunk часть URL
+     * @param string $key ключ, по которому будут сохранены данные, представляющие параметр $_GET
+     * @param array $array массив возможных значений параметра $key
      * @return bool
      */
-    private function run(string $name, string $key, array $array)
+    private function parseChunk(string $chunk, string $key='', array $array=[])
     {
         try {
-            if (preg_match('/^(.+)-(\d{1,3})$/', $name, $matches)) {
-                $name = $matches[1];
-                $page = $matches[2];
+            if (preg_match('/^(.+)-(\d{1,3})$/', $chunk, $matches)) {
+                $chunk = $matches[1];
+                $this->_params[\Yii::$app->params['pagePointer']] = $matches[2];
             }
-            if (in_array($name, $array)) {
-                $this->_route[$key] = $name;
-                if (!empty($page)) {
-                    $this->_route['page'] = $page;
+            if (!empty($array)) {
+                if (!in_array($chunk, $array)) {
+                    $this->_params = [];
+                    return false;
                 }
-                return true;
+                $this->_params[$key] = $chunk;
             }
-            $this->_route = [];
-            return false;
+            return true;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

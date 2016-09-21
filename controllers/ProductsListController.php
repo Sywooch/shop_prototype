@@ -25,24 +25,10 @@ class ProductsListController extends AbstractBaseController
     ];
     
     /**
-     * Обрабатывает запрос к списку продуктов без учета категорий
+     * Обрабатывает запрос к списку продуктов
      * @return string
      */
     public function actionIndex()
-    {
-        try {
-            return $this->common();
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Обрабатывает запрос к списку продуктов с учетом категории
-     * @return string
-     */
-    public function actionInside()
     {
         try {
             return $this->common();
@@ -59,9 +45,6 @@ class ProductsListController extends AbstractBaseController
     public function actionSearch()
     {
         try {
-            if (empty(\Yii::$app->params['searchKey'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'searchKey\']']));
-            }
             if (empty(\Yii::$app->request->get(\Yii::$app->params['searchKey']))) {
                 return $this->redirect(Url::to(['products-list/index']));
             }

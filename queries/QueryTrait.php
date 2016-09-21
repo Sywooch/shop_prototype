@@ -69,10 +69,6 @@ trait QueryTrait
     protected function addFilters()
     {
         try {
-            if (empty(\Yii::$app->params['filterKeys'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'filterKeys\']']));
-            }
-            
             if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->attributes)))) {
                 foreach (\Yii::$app->params['filterKeys'] as $filter) {
                     if (in_array($filter, $keys)) {
@@ -115,13 +111,6 @@ trait QueryTrait
     protected function addLimit()
     {
         try {
-            if (empty(\Yii::$app->params['pagePointer'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'pagePointer\']']));
-            }
-            if (empty(\Yii::$app->params['limit'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'limit\']']));
-            }
-            
             $countQuery = clone $this->query;
             $page = !empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) - 1 : 0;
             

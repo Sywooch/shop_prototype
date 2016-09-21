@@ -35,4 +35,17 @@ class SubcategoryModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Получает массив ProductsModel, с которыми связан текущий объект SubcategoryModel
+     * @return array ProductsModel
+     */
+    public function getProducts()
+    {
+        try {
+            return $this->hasMany(ProductsModel::className(), ['id_subcategory'=>'id'])->inverseOf('subcategory');
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

@@ -41,7 +41,7 @@ class CategoriesMenuWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = CategoriesMenuWidget::widget(['categoriesList'=>[$categoriesModel]]);
         
-        $expectedUrl = '<ul class="categoriesMenu"><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '">' . $fixture['name'] . '</a><ul><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li></ul></li></ul>';
+        $expectedUrl = '<ul class="categoriesMenu"><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a><ul><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li></ul></li></ul>';
         
         $this->assertEquals($expectedUrl, $result);
     }

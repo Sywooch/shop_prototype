@@ -61,7 +61,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
@@ -81,7 +81,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . 'catalog/' . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProducts['name'] . '</li></ul>';
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProducts['name'] . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }

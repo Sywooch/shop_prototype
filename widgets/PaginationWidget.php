@@ -91,10 +91,6 @@ class PaginationWidget extends Widget
                 return '';
             }
             
-            if (empty(\Yii::$app->params['pagePointer'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'pagePointer\']']));
-            }
-            
             $range = $this->getRange();
             
             if (!is_array($range) || empty($range)) {

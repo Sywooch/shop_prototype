@@ -19,9 +19,6 @@ class ProductDetailController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            if (empty(\Yii::$app->params['idKey'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$app->params[\'idKey\']']));
-            }
             if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
                 throw new ErrorException(\Yii::t('base/errors', 'Incorrect data!'));
             }
