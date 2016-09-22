@@ -13,7 +13,8 @@ $data = [
         'id_category'=>1,
         'id_subcategory'=>1,
         'active'=>true,
-        'total_products'=>23
+        'total_products'=>23,
+        'seocode'=>'bryuki-sinie-modnogo-fasona'
     ],
     'product_2'=>[
         'id'=>2,
@@ -27,7 +28,8 @@ $data = [
         'id_category'=>1,
         'id_subcategory'=>2,
         'active'=>true,
-        'total_products'=>18
+        'total_products'=>18,
+        'seocode'=>'rubashka-zheltaya-modnogo-fasona'
     ],
 ];
 

@@ -29,13 +29,13 @@ class BreadcrumbsWidget extends Breadcrumbs
      */
     private $_subcategorySeocode;
     /**
-     * var int ID продукта для подстановки в breadcrumbs
+     * var string seocode продукта для подстановки в breadcrumbs
      */
-    private $_id;
+    private $_productSeocode;
     /**
      * @var string название товара для подстановки в breadcrumbs
      */
-    private $_productsName;
+    private $_productName;
     /**
      * @var string имя категории для подстановки в breadcrumbs
      */
@@ -75,28 +75,31 @@ class BreadcrumbsWidget extends Breadcrumbs
             
             $this->itemTemplate = sprintf($this->itemTemplate, $this->separator);
             
-            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
-                $categoriesModel = CategoriesModel::find()->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])])->one();
-                if ($categoriesModel instanceof CategoriesModel) {
-                    $this->_categorySeocode = $categoriesModel->seocode;
-                    $this->_categoryName = $categoriesModel->name;
-                }
-            }
-            
-            if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
-                $subcategoryModel = SubcategoryModel::find()->where(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])])->one();
-                if ($subcategoryModel instanceof SubcategoryModel) {
-                    $this->_subcategorySeocode = $subcategoryModel->seocode;
-                    $this->_subcategoryName = $subcategoryModel->name;
-                }
-            }
-            
-            if (!empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
-                $productsModel = ProductsModel::find()->where(['products.id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])])->one();
+            if (!empty(\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey']))) {
+                $productsModel = ProductsModel::find()->where(['products.seocode'=>\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey'])])->one();
                 if ($productsModel instanceof ProductsModel) {
-                    $this->_id = $productsModel->id;
-                    $this->_productsName = $productsModel->name;
+                    $this->_productSeocode = $productsModel->seocode;
+                    $this->_productName = $productsModel->name;
+                    $categoriesModel = $productsModel->categories;
+                    $subcategoryModel = $productsModel->subcategory;
                 }
+            } else {
+                if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
+                    $categoriesModel = CategoriesModel::find()->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])])->one();
+                }
+                if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
+                    $subcategoryModel = SubcategoryModel::find()->where(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])])->one();
+                }
+            }
+            
+            if (!empty($categoriesModel) && $categoriesModel instanceof CategoriesModel) {
+                $this->_categorySeocode = $categoriesModel->seocode;
+                $this->_categoryName = $categoriesModel->name;
+            }
+            
+            if (!empty($subcategoryModel) && $subcategoryModel instanceof SubcategoryModel) {
+                $this->_subcategorySeocode = $subcategoryModel->seocode;
+                $this->_subcategoryName = $subcategoryModel->name;
             }
             
             if (!$this->setLinks()) {
@@ -120,8 +123,8 @@ class BreadcrumbsWidget extends Breadcrumbs
             if (!empty($this->_subcategorySeocode)) {
                 $this->_breadcrumbs[] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$this->_categorySeocode, \Yii::$app->params['subcategoryKey']=>$this->_subcategorySeocode], 'label'=>$this->_subcategoryName];
             }
-            if (!empty($this->_id)) {
-                $this->_breadcrumbs[] = ['url'=>['/product-detail/index', \Yii::$app->params['categoryKey']=>$this->_categorySeocode, \Yii::$app->params['subcategoryKey']=>$this->_subcategorySeocode, \Yii::$app->params['idKey']=>$this->_id], 'label'=>$this->_productsName];
+            if (!empty($this->_productSeocode)) {
+                $this->_breadcrumbs[] = ['url'=>['/product-detail/index', \Yii::$app->params['productSeocodeKey']=>$this->_productSeocode], 'label'=>$this->_productName];
             }
             
             if (!empty($this->_breadcrumbs)) {

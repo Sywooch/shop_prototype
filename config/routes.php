@@ -11,7 +11,7 @@ $routes = [
     ],
     
     # Вывод одного товара
-    '<id:\d{1,3}>'=>'product-detail/index',
+    '<product-seocode>'=>'product-detail/index',
 ];
 
 return $routes;

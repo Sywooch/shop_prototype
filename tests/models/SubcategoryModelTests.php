@@ -47,6 +47,7 @@ class SubcategoryModelTests extends TestCase
         $this->assertTrue(array_key_exists('name', $model->attributes));
         $this->assertTrue(array_key_exists('seocode', $model->attributes));
         $this->assertTrue(array_key_exists('id_category', $model->attributes));
+        $this->assertTrue(array_key_exists('active', $model->attributes));
     }
     
     /**
@@ -61,26 +62,30 @@ class SubcategoryModelTests extends TestCase
             'id'=>$fixture['id'], 
             'name'=>$fixture['name'], 
             'seocode'=>$fixture['seocode'], 
-            'id_category'=>$fixture['id_category']
+            'id_category'=>$fixture['id_category'],
+            'active'=>$fixture['active']
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['name'], $model->name);
         $this->assertEquals($fixture['seocode'], $model->seocode);
         $this->assertEquals($fixture['id_category'], $model->id_category);
+        $this->assertEquals($fixture['active'], $model->active);
         
         $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
         $model->attributes = [
             'id'=>$fixture['id'], 
             'name'=>$fixture['name'], 
             'seocode'=>$fixture['seocode'], 
-            'id_category'=>$fixture['id_category']
+            'id_category'=>$fixture['id_category'],
+            'active'=>$fixture['active']
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['name'], $model->name);
         $this->assertEquals($fixture['seocode'], $model->seocode);
         $this->assertEquals($fixture['id_category'], $model->id_category);
+        $this->assertEquals($fixture['active'], $model->active);
     }
     
     /**

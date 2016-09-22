@@ -37,7 +37,7 @@ class CategoriesMenuWidgetTests extends \PHPUnit_Framework_TestCase
         $fixture = self::$_dbClass->categories['category_1'];
         $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
         
-        $categoriesModel = new CategoriesModel(['id'=>$fixture['id'], 'name'=>$fixture['name'], 'seocode'=>$fixture['seocode']]);
+        $categoriesModel = new CategoriesModel(['id'=>$fixture['id'], 'name'=>$fixture['name'], 'seocode'=>$fixture['seocode'], 'active'=>$fixture['active']]);
         
         $result = CategoriesMenuWidget::widget(['categoriesList'=>[$categoriesModel]]);
         

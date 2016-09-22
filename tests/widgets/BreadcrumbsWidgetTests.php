@@ -77,7 +77,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
         $fixtureProducts = self::$_dbClass->products['product_1'];
         
-        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode'], 'id'=>$fixtureProducts['id']];
+        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode'], 'product-seocode'=>$fixtureProducts['seocode']];
         
         $result = BreadcrumbsWidget::widget();
         

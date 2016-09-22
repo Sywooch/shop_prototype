@@ -24,6 +24,7 @@ $config = [
     
     'controllerMap'=>[
         'tests'=>'app\console\TestsController',
+        'seocode'=>'app\console\ProductsSeocodeController',
     ],
 ];
 

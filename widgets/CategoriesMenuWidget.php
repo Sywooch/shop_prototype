@@ -59,18 +59,18 @@ class CategoriesMenuWidget extends Menu
     {
         try {
             foreach ($this->categoriesList as $category) {
-                /*if (empty($category->products)) {
+                if (empty($category->active)) {
                     continue;
-                }*/
+                }
                 $pack = [
                     'label'=>$category->name,
                     'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode]
                 ];
                 if (!empty($category->subcategory)) {
                     foreach ($category->subcategory as $subcategory) {
-                        /*if (empty($subcategory->products)) {
+                        if (empty($subcategory->active)) {
                             continue;
-                        }*/
+                        }
                         $pack['items'][] = [
                             'label'=>$subcategory->name,
                             'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode, \Yii::$app->params['subcategoryKey']=>$subcategory->seocode]

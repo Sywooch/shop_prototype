@@ -20,7 +20,7 @@ class ProductsListController extends AbstractBaseController
      * @var array конфигурация для получения списка записей
      */
     private $_config = [
-        'fields'=>['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active'],
+        'fields'=>['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'seocode'],
         'sorting'=>['date'=>SORT_DESC]
     ];
     

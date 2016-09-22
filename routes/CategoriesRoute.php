@@ -54,7 +54,9 @@ class CategoriesRoute extends Object implements UrlRuleInterface
                     }
                 }
             } elseif (preg_match('/^' . $this->all . '/', $pathInfo)) {
-                $this->parseChunk($pathInfo);
+                if (!$this->parseChunk($pathInfo)) {
+                    return false;
+                }
             } else {
                 return false;
             }

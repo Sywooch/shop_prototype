@@ -48,6 +48,7 @@ class CategoriesModelTests extends TestCase
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('name', $model->attributes));
         $this->assertTrue(array_key_exists('seocode', $model->attributes));
+        $this->assertTrue(array_key_exists('active', $model->attributes));
     }
     
     /**
@@ -61,23 +62,27 @@ class CategoriesModelTests extends TestCase
         $model->attributes = [
             'id'=>$fixture['id'], 
             'name'=>$fixture['name'], 
-            'seocode'=>$fixture['seocode']
+            'seocode'=>$fixture['seocode'],
+            'active'=>$fixture['active']
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['name'], $model->name);
         $this->assertEquals($fixture['seocode'], $model->seocode);
+        $this->assertEquals($fixture['active'], $model->active);
         
         $model = new CategoriesModel(['scenario'=>CategoriesModel::GET_FROM_FORM]);
         $model->attributes = [
             'id'=>$fixture['id'], 
             'name'=>$fixture['name'], 
-            'seocode'=>$fixture['seocode']
+            'seocode'=>$fixture['seocode'],
+            'active'=>$fixture['active']
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['name'], $model->name);
         $this->assertEquals($fixture['seocode'], $model->seocode);
+        $this->assertEquals($fixture['active'], $model->active);
     }
     
     /**

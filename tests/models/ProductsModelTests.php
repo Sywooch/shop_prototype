@@ -37,7 +37,6 @@ class ProductsModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_seocode'));
         $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
         
         $model = new ProductsModel();
@@ -54,6 +53,7 @@ class ProductsModelTests extends TestCase
         $this->assertTrue(array_key_exists('id_subcategory', $model->attributes));
         $this->assertTrue(array_key_exists('active', $model->attributes));
         $this->assertTrue(array_key_exists('total_products', $model->attributes));
+        $this->assertTrue(array_key_exists('seocode', $model->attributes));
     }
     
     /**
@@ -76,7 +76,8 @@ class ProductsModelTests extends TestCase
             'id_category'=>$fixture['id_category'], 
             'id_subcategory'=>$fixture['id_subcategory'], 
             'active'=>$fixture['active'], 
-            'total_products'=>$fixture['total_products']
+            'total_products'=>$fixture['total_products'],
+            'seocode'=>$fixture['seocode']
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
@@ -91,6 +92,7 @@ class ProductsModelTests extends TestCase
         $this->assertEquals($fixture['id_subcategory'], $model->id_subcategory);
         $this->assertEquals($fixture['active'], $model->active);
         $this->assertEquals($fixture['total_products'], $model->total_products);
+        $this->assertEquals($fixture['seocode'], $model->seocode);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM]);
         $model->attributes = [
@@ -105,7 +107,8 @@ class ProductsModelTests extends TestCase
             'id_category'=>$fixture['id_category'], 
             'id_subcategory'=>$fixture['id_subcategory'], 
             'active'=>$fixture['active'], 
-            'total_products'=>$fixture['total_products']
+            'total_products'=>$fixture['total_products'],
+            'seocode'=>$fixture['seocode']
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
@@ -120,6 +123,7 @@ class ProductsModelTests extends TestCase
         $this->assertEquals($fixture['id_subcategory'], $model->id_subcategory);
         $this->assertEquals($fixture['active'], $model->active);
         $this->assertEquals($fixture['total_products'], $model->total_products);
+        $this->assertEquals($fixture['seocode'], $model->seocode);
     }
     
     /**
@@ -146,21 +150,6 @@ class ProductsModelTests extends TestCase
         
         $this->assertTrue(is_object($model->subcategory));
         $this->assertTrue($model->subcategory instanceof SubcategoryModel);
-    }
-    
-    /**
-     * Тестирует метод ProductsModel::getSeocode
-     */
-    public function testGetSeocode()
-    {
-        $fixture = self::$_dbClass->products['product_1'];
-        
-        $model = new ProductsModel();
-        $model->name = $fixture['name'];
-        
-        $expect = 'bryuki-sinie-modnogo-fasona';
-        
-        $this->assertEquals($expect, $model->seocode);
     }
     
     public static function tearDownAfterClass()

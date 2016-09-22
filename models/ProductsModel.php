@@ -17,16 +17,12 @@ class ProductsModel extends AbstractBaseModel
      * @var string имя таблицы, связанной с текущим классом AR
      */
     public static $_tableName = 'products';
-    /**
-     * @var string seocode текущей записи
-     */
-    private $_seocode = '';
     
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products'],
-            self::GET_FROM_FORM=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products'],
+            self::GET_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products', 'seocode'],
+            self::GET_FROM_FORM=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products', 'seocode'],
         ];
     }
     
@@ -55,21 +51,4 @@ class ProductsModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
     }
-    
-    /**
-     * Возвращает seocod товара, основываясь на данных СУБД, или 
-     * конструируя его из данных поля name
-     * return string
-     */
-     public function getSeocode(): string
-     {
-         try {
-             if (!empty($this->name)) {
-                $this->_seocode = TransliterationHelper::getTransliterationSeparate($this->name);
-            }
-            return $this->_seocode;
-         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-     }
 }

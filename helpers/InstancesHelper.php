@@ -23,7 +23,7 @@ class InstancesHelper
         try {
             # Массив объектов CategoriesModel для формирования меню категорий
             $categoriesQuery = new GetCategoriesQuery([
-                'fields'=>['id', 'name', 'seocode'],
+                'fields'=>['id', 'name', 'seocode', 'active'],
                 'sorting'=>['name'=>SORT_ASC]
             ]);
             self::$_instancesArray['categoriesList'] = $categoriesQuery->getAll()->all();

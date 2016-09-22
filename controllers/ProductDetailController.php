@@ -19,7 +19,7 @@ class ProductDetailController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            if (empty(\Yii::$app->request->get(\Yii::$app->params['idKey']))) {
+            if (empty(\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey']))) {
                 throw new ErrorException(\Yii::t('base/errors', 'Incorrect data!'));
             }
             
@@ -27,7 +27,7 @@ class ProductDetailController extends AbstractBaseController
             
             $productsQuery = new GetProductsQuery([
                 'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory'],
-                'extraWhere'=>['products.id'=>\Yii::$app->request->get(\Yii::$app->params['idKey'])]
+                'extraWhere'=>['products.seocode'=>\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey'])]
             ]);
             $renderArray['productsModel'] = $productsQuery->getOne()->one();
             

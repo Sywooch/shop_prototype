@@ -19,8 +19,8 @@ class CategoriesModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'name', 'seocode'],
-            self::GET_FROM_FORM=>['id', 'name', 'seocode'],
+            self::GET_FROM_DB=>['id', 'name', 'seocode', 'active'],
+            self::GET_FROM_FORM=>['id', 'name', 'seocode', 'active'],
         ];
     }
     
