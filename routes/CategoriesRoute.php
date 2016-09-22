@@ -109,7 +109,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
      * @param array $array массив возможных значений параметра $key
      * @return bool
      */
-    private function parseChunk(string $chunk, string $key='', array $array=[])
+    private function parseChunk(string $chunk, string $key='', array $array=[]): boolean
     {
         try {
             if (preg_match('/^(.+)-(\d{1,3})$/', $chunk, $matches)) {

@@ -16,7 +16,7 @@ class ProductsSeocodeController extends Controller
     use ExceptionsTrait;
     
     /**
-     * Записывает значение поля seocode для всех записей в БД
+     * Заполняет значение поля seocode для всех записей
      */
     public function actionSet()
     {
