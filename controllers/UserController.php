@@ -22,7 +22,7 @@ class UserController extends AbstractBaseController
     {
         try {
             $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
-            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
+            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
             
             if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post())) {
                 if ($emailsModel->validate() && $usersModel->validate()) {

@@ -5,42 +5,25 @@ namespace app\queries;
 use yii\base\ErrorException;
 use yii\db\ActiveQuery;
 use app\queries\AbstractBaseQuery;
-use app\models\CategoriesModel;
+use app\models\EmailsModel;
 
 /**
- * Конструирует объект запроса, возвращающий массив объектов CategoriesModel
+ * Конструирует объект запроса, возвращающий массив объектов EmailsModel
  */
-class GetCategoriesQuery extends AbstractBaseQuery
+class GetEmailsQuery extends AbstractBaseQuery
 {
     public function __construct($config=[])
     {
         try {
-            $this->className = CategoriesModel::className();
+            $this->className = EmailsModel::className();
             parent::__construct($config);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
     }
     
-    /**
-     * Конфигурирует объект запроса yii\db\ActiveQuery для выборки массива строк
-     * @return object ActiveQuery
-     */
-    public function getAll(): ActiveQuery
+    public function getAll()
     {
-        try {
-            if (!$this->getSelect()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
-            }
-            
-            if (!$this->addOrder()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
-            }
-            
-            return $this->query;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
     }
     
     /**

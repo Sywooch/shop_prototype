@@ -34,6 +34,7 @@ class UsersModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
         
         $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
         
@@ -92,6 +93,36 @@ class UsersModelTests extends TestCase
         $this->assertEquals($fixture['surname'], $model->surname);
         $this->assertEquals($fixture['id_phone'], $model->id_phone);
         $this->assertEquals($fixture['id_address'], $model->id_address);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
+        $model->attributes = [
+            'password'=>$fixture['password'],
+        ];
+        
+        $this->assertEquals($fixture['password'], $model->password);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('password', $model->errors));
+        
+        $fixture = self::$_dbClass->users['user_2'];
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
+        $model->attributes = [
+            'password'=>$fixture['password'],
+        ];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
     
     /**

@@ -61,8 +61,6 @@ class GetProductsQuery extends AbstractBaseQuery
                 throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
             }
             
-            $this->query->with('categories', 'subcategory');
-            
             return $this->query;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

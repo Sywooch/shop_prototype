@@ -5,17 +5,17 @@ namespace app\queries;
 use yii\base\ErrorException;
 use yii\db\ActiveQuery;
 use app\queries\AbstractBaseQuery;
-use app\models\CategoriesModel;
+use app\models\SubcategoryModel;
 
 /**
- * Конструирует объект запроса, возвращающий массив объектов CategoriesModel
+ * Конструирует объект запроса, возвращающий массив объектов SubcategoryModel
  */
-class GetCategoriesQuery extends AbstractBaseQuery
+class GetSubcategoryQuery extends AbstractBaseQuery
 {
     public function __construct($config=[])
     {
         try {
-            $this->className = CategoriesModel::className();
+            $this->className = SubcategoryModel::className();
             parent::__construct($config);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

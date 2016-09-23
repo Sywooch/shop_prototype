@@ -26,7 +26,7 @@ class InstancesHelper
                 'fields'=>['id', 'name', 'seocode', 'active'],
                 'sorting'=>['name'=>SORT_ASC]
             ]);
-            self::$_instancesArray['categoriesList'] = $categoriesQuery->getAll()->all();
+            self::$_instancesArray['categoriesList'] = $categoriesQuery->getAll()->with('subcategory')->all();
             
             return self::$_instancesArray;
         } catch (\Exception $e) {

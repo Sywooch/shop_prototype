@@ -12,6 +12,11 @@ use app\models\{AbstractBaseModel,
 class UsersModel extends AbstractBaseModel implements IdentityInterface
 {
     /**
+     * Сценарий сохранения данных из формы аутентификации
+    */
+    const GET_FROM_AUTHENTICATION = 'getFromAuthentication';
+    
+    /**
      * @var string имя таблицы, связанной с текущим классом AR
      */
     public static $_tableName = 'users';
@@ -21,6 +26,14 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
         return [
             self::GET_FROM_DB=>['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'],
             self::GET_FROM_FORM=>['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'],
+            self::GET_FROM_AUTHENTICATION=>['password'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['password'], 'required', 'on'=>self::GET_FROM_AUTHENTICATION],
         ];
     }
     

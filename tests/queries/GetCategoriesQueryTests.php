@@ -26,13 +26,9 @@ class GetCategoriesQueryTests extends TestCase
     
     /**
      * Тестирует метод GetCategoriesQuery::getAll()
-     * без категорий и фильтров
      */
     public function testGetAll()
     {
-        $_GET = [];
-        \Yii::$app->filters->clean();
-        
         $categoriesQuery = new GetCategoriesQuery([
             'fields'=>['id', 'name', 'seocode'],
             'sorting'=>['name'=>SORT_DESC]
@@ -49,6 +45,31 @@ class GetCategoriesQueryTests extends TestCase
         
         $this->assertTrue(is_array($result));
         $this->assertTrue($result[0] instanceof CategoriesModel);
+    }
+    
+    /**
+     * Тестирует метод GetCategoriesQuery::getOne()
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->categories['category_1'];
+        
+        $categoriesQuery = new GetCategoriesQuery([
+            'fields'=>['id', 'name', 'seocode'],
+            'extraWhere'=>['categories.seocode'=>$fixture['seocode']]
+        ]);
+        
+        $query = $categoriesQuery->getOne();
+        $queryRaw = clone $query;
+        
+        $expectQuery = sprintf("SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode` FROM `categories` WHERE `categories`.`seocode`='%s'", $fixture['seocode']);
+        
+        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $query->one();
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof CategoriesModel);
     }
     
     public static function tearDownAfterClass()

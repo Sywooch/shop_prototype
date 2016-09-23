@@ -94,7 +94,7 @@ trait QueryTrait
         try {
             if (is_array($this->sorting) && !empty($this->sorting)) {
                 foreach ($this->sorting as $field=>$sort) {
-                    $this->query->orderBy([$this->tableName . '.' . $field=>$sort]);
+                    $this->query->addOrderBy([$this->tableName . '.' . $field=>$sort]);
                 }
             }
             
