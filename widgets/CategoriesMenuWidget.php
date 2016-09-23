@@ -4,12 +4,15 @@ namespace app\widgets;
 
 use yii\base\ErrorException;
 use yii\widgets\Menu;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Формирует меню
  */
 class CategoriesMenuWidget extends Menu
 {
+    use ExceptionsTrait;
+    
     /**
      * @var array массив объектов CategoriesModel
      */

@@ -86,6 +86,11 @@ $components = [
         'charset'=>'utf8',
     ],
     
+    'user'=>[
+        'class'=>'yii\web\User',
+        'identityClass'=>'app\models\UsersModel',
+    ],
+    
     'filters'=>[
         'class'=>'app\models\FiltersModel',
     ],

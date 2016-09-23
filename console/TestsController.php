@@ -17,28 +17,20 @@ class TestsController extends Controller
     /**
      * @var string логин к учетной записи с правами создания и удаления тестовой БД
      */
-    private $_username = null;
+    private $_username = 'root';
     /**
      * @var string пароль к учетной записи с правами создания и удаления тестовой БД
      */
-    private $_password = null;
+    private $_password = 'estet234';
     /**
      * @var string имя тестовой БД, которая будет создана
      */
-    private $_testDbName = null;
+    private $_testDbName = 'shop_test';
     
     public function init()
     {
         try {
             parent::init();
-            
-            $db = $this->db;
-            $currentDb = \Yii::$app->$db;
-            
-            $this->_username = $currentDb->username;
-            $this->_password = $currentDb->password;
-            preg_match('/.*dbname=([a-z1-9_]+)$/', $currentDb->dsn, $matches);
-            $this->_testDbName = $matches[1];
             
             $this->escapeArgs();
         } catch (\Exception $e) {

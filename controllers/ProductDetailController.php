@@ -31,6 +31,8 @@ class ProductDetailController extends AbstractBaseController
             ]);
             $renderArray['productsModel'] = $productsQuery->getOne()->one();
             
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            
             return $this->render('product-detail.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);

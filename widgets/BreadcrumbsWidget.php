@@ -16,10 +16,6 @@ class BreadcrumbsWidget extends Breadcrumbs
 {
     use ExceptionsTrait;
     
-     /**
-     * @var string имя ссылки на весь каталог
-     */
-    public $homeLabel;
     /**
      * var string seocode категории для подстановки в breadcrumbs
      */
@@ -66,10 +62,8 @@ class BreadcrumbsWidget extends Breadcrumbs
         try {
             parent::init();
             
-            $this->homeLabel = \Yii::t('base', 'Home');
-            
             $this->homeLink = [
-                'label'=>$this->homeLabel,
+                'label'=>\Yii::t('base', 'Home'),
                 'url'=>['/'],
             ];
             
@@ -100,6 +94,10 @@ class BreadcrumbsWidget extends Breadcrumbs
             if (!empty($subcategoryModel) && $subcategoryModel instanceof SubcategoryModel) {
                 $this->_subcategorySeocode = $subcategoryModel->seocode;
                 $this->_subcategoryName = $subcategoryModel->name;
+            }
+            
+            if (!empty(\Yii::$app->params['breadcrumbs'])) {
+                $this->_breadcrumbs[] = \Yii::$app->params['breadcrumbs'];
             }
             
             if (!$this->setLinks()) {

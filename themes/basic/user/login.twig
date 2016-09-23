@@ -1,0 +1,20 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include('@theme/base/user-info.twig') %}
+
+{% include '@theme/base/search.twig' %}
+
+{% include('@theme/base/menu.twig') %}
+
+{% include('@theme/base/breadcrumbs.twig') %}
+
+<p><strong>Login</strong></p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:''}), method: 'POST'}) %}
+    {{ form.field(emailsModel, 'email') | raw }}
+    {{ form.field(usersModel, 'password').passwordInput() | raw }}
+    <input type="submit" value="Login" />
+{{ active_form_end() }}
+

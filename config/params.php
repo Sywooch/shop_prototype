@@ -15,6 +15,9 @@ $params = [
     
     # Поиск по товарам
     'searchKey'=>'search', # Ключ, по которому в $_REQUEST доступно значение для поиска
+    
+    # Компоненты Breadcrumbs
+    'breadcrumbs'=>[],
 ];
 
 return $params;

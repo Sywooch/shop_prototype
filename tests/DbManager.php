@@ -15,10 +15,6 @@ class DbManager extends Object
     use FixtureTrait, ExceptionsTrait;
     
     /**
-     * @var string ID компонента базы данных, подключенного в файле конфигурации
-     */
-    public $db = 'dbTest';
-    /**
      * @var array фикстуры, которые будут использоваться в текущем TestCase
      */
     public $fixtures = array();
@@ -33,14 +29,9 @@ class DbManager extends Object
         try {
             parent::init();
             
-            $db = $this->db;
-            $currentDb = \Yii::$app->$db;
-            
             if (!empty($this->fixtures)) {
                 foreach (array_keys($this->fixtures) as $key) {
-                    $fixture = $this->getFixture($key);
-                    $fixture->db = $currentDb;
-                    $this->_fixturesData[$key] = $fixture;
+                    $this->_fixturesData[$key] = $this->getFixture($key);
                 }
             }
         } catch (\Exception $e) {

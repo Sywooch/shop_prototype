@@ -2,13 +2,14 @@
 
 namespace app\models;
 
+use yii\web\IdentityInterface;
 use app\models\{AbstractBaseModel,
     EmailsModel};
 
 /**
  * Представляет данные таблицы users
  */
-class UsersModel extends AbstractBaseModel
+class UsersModel extends AbstractBaseModel implements IdentityInterface
 {
     /**
      * @var string имя таблицы, связанной с текущим классом AR
@@ -34,5 +35,48 @@ class UsersModel extends AbstractBaseModel
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
+    }
+    
+    /**
+     * Возвращает объект UsersModel по $id
+     * @params int $id 
+     * @return UsersModel/null
+     */
+    public static function findIdentity($id)
+    {
+        try {
+            $usersModel = static::findOne($id);
+            if ($usersModel instanceof $this) {
+                return $usersModel;
+            }
+            return null;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает ID текущего пользователя
+     * @return int
+     */
+    public function getId()
+    {
+        try {
+            return $this->id;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+    }
+    
+    public function getAuthKey()
+    {
+    }
+    
+    public function validateAuthKey($authKey)
+    {
     }
 }

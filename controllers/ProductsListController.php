@@ -31,6 +31,8 @@ class ProductsListController extends AbstractBaseController
     public function actionIndex()
     {
         try {
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            
             return $this->common();
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
@@ -57,6 +59,8 @@ class ProductsListController extends AbstractBaseController
             $sphinxArray = $sphinxQuery->getAll()->all();
             
             $this->_config['extraWhere'] = ['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')];
+            
+            \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
             
             return $this->common();
         } catch (\Exception $e) {

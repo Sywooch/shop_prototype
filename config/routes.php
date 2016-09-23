@@ -1,14 +1,17 @@
 <?php
 
 $routes = [
-    # Поиск
-    'search-<page:\d{1,3}>'=>'products-list/search',
-    'search'=>'products-list/search',
-    
     # Вывод списка товаров
     [
         'class'=>'app\routes\CategoriesRoute',
     ],
+    
+    # Поиск
+    'search-<page:\d{1,3}>'=>'products-list/search',
+    'search'=>'products-list/search',
+    
+    # Пользователь
+    'login'=>'user/login',
     
     # Вывод одного товара
     '<product-seocode>'=>'product-detail/index',

@@ -54,7 +54,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
                     }
                 }
             } elseif (preg_match('/^' . $this->all . '/', $pathInfo)) {
-                if (!$this->parseChunk($pathInfo)) {
+                if (!$this->parseChunk($pathInfo, '', [$this->all])) {
                     return false;
                 }
             } else {
@@ -109,7 +109,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
      * @param array $array массив возможных значений параметра $key
      * @return bool
      */
-    private function parseChunk(string $chunk, string $key='', array $array=[]): boolean
+    private function parseChunk(string $chunk, string $key='', array $array=[]): bool
     {
         try {
             if (preg_match('/^(.+)-(\d{1,3})$/', $chunk, $matches)) {

@@ -40,9 +40,11 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $_GET = ['category'=>$fixture['seocode']];
         
+        \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+        
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li class="active">' . $fixture['name'] . '</li></ul>';
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Home') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li class="active">' . $fixture['name'] . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
@@ -59,9 +61,11 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode']];
         
+        \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+        
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
@@ -79,9 +83,28 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode'], 'product-seocode'=>$fixtureProducts['seocode']];
         
+        \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+        
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProducts['name'] . '</li></ul>';
+        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProducts['name'] . '</li></ul>';
+        
+        $this->assertEquals($expectUrl, $result);
+    }
+    
+    /**
+     * Тестирует метод BreadcrumbsWidget::widget()
+     * для результатов поиска
+     */
+    public function testWidgetForSearch()
+    {
+        $_GET = [];
+        
+        \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
+        
+        $result = BreadcrumbsWidget::widget();
+        
+        $expectUrl = '<ul class="breadcrumb"><li><a href="../vendor/phpunit/phpunit/">Главная</a></li><li class="separator"> -> </li><li class="active">' . \Yii::t('base', 'Searching results') . '</li></ul>';
         
         $this->assertEquals($expectUrl, $result);
     }
