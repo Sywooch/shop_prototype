@@ -4,9 +4,6 @@ namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\tests\source\fixtures\{CategoriesFixture,
-    SubcategoryFixture,
-    ProductsFixture};
 use app\models\{CategoriesModel,
     ProductsModel,
     SubcategoryModel};
@@ -23,9 +20,9 @@ class CategoriesModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>CategoriesFixture::className(),
-                'subcategory'=>SubcategoryFixture::className(),
-                'products'=>ProductsFixture::className(),
+                'categories'=>'app\tests\source\fixtures\CategoriesFixture',
+                'subcategory'=>'app\tests\source\fixtures\SubcategoryFixture',
+                'products'=>'app\tests\source\fixtures\ProductsFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

@@ -4,7 +4,6 @@ namespace app\tests\model;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\tests\source\fixtures\SizesFixture;
 use app\models\SizesModel;
 
 /**
@@ -19,7 +18,7 @@ class SizesModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'sizes'=>SizesFixture::className(),
+                'sizes'=>'app\tests\source\fixtures\SizesFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

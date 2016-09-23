@@ -4,9 +4,6 @@ namespace app\widgets;
 
 use yii\helpers\Url;
 use app\tests\DbManager;
-use app\tests\source\fixtures\{CategoriesFixture,
-    ProductsFixture,
-    SubcategoryFixture};
 use app\widgets\CategoriesMenuWidget;
 use app\models\CategoriesModel;
 
@@ -21,9 +18,9 @@ class CategoriesMenuWidgetTests extends \PHPUnit_Framework_TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>CategoriesFixture::className(),
-                'subcategory'=>SubcategoryFixture::className(),
-                'products'=>ProductsFixture::className()
+                'categories'=>'app\tests\source\fixtures\CategoriesFixture',
+                'subcategory'=>'app\tests\source\fixtures\SubcategoryFixture',
+                'products'=>'app\tests\source\fixtures\ProductsFixture'
             ],
         ]);
         self::$_dbClass->loadFixtures();

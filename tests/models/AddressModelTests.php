@@ -4,7 +4,6 @@ namespace app\tests\model;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\tests\source\fixtures\AddressFixture;
 use app\models\AddressModel;
 
 /**
@@ -19,7 +18,7 @@ class AddressModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'address'=>AddressFixture::className(),
+                'address'=>'app\tests\source\fixtures\AddressFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

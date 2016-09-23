@@ -4,7 +4,6 @@ namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\tests\source\fixtures\UsersFixture;
 use app\models\{EmailsModel,
     UsersModel};
 
@@ -20,7 +19,7 @@ class UsersModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'users'=>UsersFixture::className(),
+                'users'=>'app\tests\source\fixtures\UsersFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

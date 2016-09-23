@@ -4,13 +4,6 @@ namespace app\tests\queries;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\tests\source\fixtures\{CategoriesFixture,
-    ColorsFixture,
-    ProductsColorsFixture,
-    ProductsFixture,
-    ProductsSizesFixture,
-    SizesFixture,
-    SubcategoryFixture};
 use app\queries\GetProductsQuery;
 use app\models\ProductsModel;
 
@@ -25,13 +18,13 @@ class GetProductsQueryTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>CategoriesFixture::className(),
-                'subcategory'=>SubcategoryFixture::className(),
-                'products'=>ProductsFixture::className(),
-                'colors'=>ColorsFixture::className(),
-                'products_colors'=>ProductsColorsFixture::className(),
-                'sizes'=>SizesFixture::className(),
-                'products_sizes'=>ProductsSizesFixture::className()
+                'categories'=>'app\tests\source\fixtures\CategoriesFixture',
+                'subcategory'=>'app\tests\source\fixtures\SubcategoryFixture',
+                'products'=>'app\tests\source\fixtures\ProductsFixture',
+                'colors'=>'app\tests\source\fixtures\ColorsFixture',
+                'products_colors'=>'app\tests\source\fixtures\ProductsColorsFixture',
+                'sizes'=>'app\tests\source\fixtures\SizesFixture',
+                'products_sizes'=>'app\tests\source\fixtures\ProductsSizesFixture'
             ],
         ]);
         self::$_dbClass->loadFixtures();

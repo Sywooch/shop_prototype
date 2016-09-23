@@ -4,7 +4,6 @@ namespace app\tests\helpers;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\tests\source\fixtures\CategoriesFixture;
 use app\helpers\InstancesHelper;
 use app\models\CategoriesModel;
 
@@ -19,7 +18,7 @@ class InstancesHelperTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>CategoriesFixture::className(),
+                'categories'=>'app\tests\source\fixtures\CategoriesFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

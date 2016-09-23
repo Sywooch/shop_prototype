@@ -21,7 +21,7 @@ class EmailExistsAuthValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            if (!EmailsModel::findOne(['email'=>$model->$attribute])) {
+            if (!EmailsModel::find()->where(['email'=>$model->$attribute])->exists()) {
                 $this->addError($model, $attribute, \Yii::t('base', 'Account with this email does not exist!'));
             }
         } catch (\Exception $e) {

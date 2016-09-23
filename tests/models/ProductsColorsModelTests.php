@@ -4,7 +4,6 @@ namespace app\tests\model;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\tests\source\fixtures\ProductsColorsFixture;
 use app\models\ProductsColorsModel;
 
 /**
@@ -19,7 +18,7 @@ class ProductsColorsModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'products_colors'=>ProductsColorsFixture::className(),
+                'products_colors'=>'app\tests\source\fixtures\ProductsColorsFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

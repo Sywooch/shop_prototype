@@ -13,7 +13,7 @@ class EmailsModel extends AbstractBaseModel
     /**
      * Сценарий сохранения данных из формы аутентификации
     */
-    const GET_FROM_AUTHENTICATION = 'getFromAuthentication'; #!!!
+    const GET_FROM_AUTHENTICATION = 'getFromAuthentication';
     
     /**
      * @var string имя таблицы, связанной с текущим классом AR
@@ -25,16 +25,16 @@ class EmailsModel extends AbstractBaseModel
         return [
             self::GET_FROM_DB=>['id', 'email'],
             self::GET_FROM_FORM=>['id', 'email'],
-            self::GET_FROM_AUTHENTICATION=>['email'], #!!!
+            self::GET_FROM_AUTHENTICATION=>['email'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['email'], 'email'], #!!!
-            [['email'], 'required', 'on'=>self::GET_FROM_AUTHENTICATION], #!!!
-            [['email'], 'app\validators\EmailExistsAuthValidator', 'on'=>self::GET_FROM_AUTHENTICATION], #!!!
+            [['email'], 'email'],
+            [['email'], 'required', 'on'=>self::GET_FROM_AUTHENTICATION],
+            [['email'], 'app\validators\EmailExistsAuthValidator', 'on'=>self::GET_FROM_AUTHENTICATION],
         ];
     }
     
