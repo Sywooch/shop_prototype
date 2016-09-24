@@ -171,7 +171,7 @@ class ProductsModelTests extends TestCase
         $_GET = [];
         \Yii::$app->filters->clean();
         
-        $productsQuery = $this->commonProducts()['productsQuery'];
+        $productsQuery = $this->productsListQuery();
         
         $queryRaw = clone $productsQuery;
         
@@ -196,7 +196,7 @@ class ProductsModelTests extends TestCase
         $_GET = ['category'=>$fixture['seocode']];
         \Yii::$app->filters->clean();
         
-        $productsQuery = $this->commonProducts()['productsQuery'];
+        $productsQuery = $this->productsListQuery();
         
         $queryRaw = clone $productsQuery;
         
@@ -222,7 +222,7 @@ class ProductsModelTests extends TestCase
         $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode']];
         \Yii::$app->filters->clean();
         
-        $productsQuery = $this->commonProducts()['productsQuery'];
+        $productsQuery = $this->productsListQuery();
         
         $queryRaw = clone $productsQuery;
         
@@ -251,7 +251,7 @@ class ProductsModelTests extends TestCase
         \Yii::$app->filters->clean();
         \Yii::configure(\Yii::$app->filters, ['colors'=>[(int) $fixtureColors['id']]]);
         
-        $productsQuery = $this->commonProducts()['productsQuery'];
+        $productsQuery = $this->productsListQuery();
         
         $queryRaw = clone $productsQuery;
         
@@ -281,7 +281,7 @@ class ProductsModelTests extends TestCase
         \Yii::$app->filters->clean();
         \Yii::configure(\Yii::$app->filters, ['colors'=>[(int) $fixtureColors['id']], 'sizes'=>[(int) $fixtureSizes['id']], 'sortingField'=>'price']);
         
-        $productsQuery = $this->commonProducts()['productsQuery'];
+        $productsQuery = $this->productsListQuery();
         
         $queryRaw = clone $productsQuery;
         
@@ -311,7 +311,7 @@ class ProductsModelTests extends TestCase
         \Yii::$app->filters->clean();
         \Yii::configure(\Yii::$app->filters, ['colors'=>[(int) $fixtureColors['id'], (int) $fixtureColors2['id']], 'sizes'=>[(int) $fixtureSizes['id']]]);
         
-        $productsQuery = $this->commonProducts()['productsQuery'];
+        $productsQuery = $this->productsListQuery();
         
         $queryRaw = clone $productsQuery;
         

@@ -3,7 +3,7 @@
 namespace app\queries;
 
 use yii\base\ErrorException;
-use yii\data\Pagination;
+use yii\db\ActiveQuery;
 use app\models\ProductsModel;
 
 /**
@@ -19,11 +19,9 @@ trait QueryTrait
      * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
      * @return array
      */
-    private function commonProducts(array $extraWhere=[])
+    private function productsListQuery(array $extraWhere=[]): ActiveQuery
     {
         try {
-            $renderArray = array();
-            
             $productsQuery = ProductsModel::find();
             $productsQuery->extendSelect(['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'seocode']);
             
@@ -55,19 +53,7 @@ trait QueryTrait
             $sortingType = (\Yii::$app->filters->sortingType && \Yii::$app->filters->sortingType === 'ASC') ? SORT_ASC : SORT_DESC;
             $productsQuery->orderBy(['products.' . $sortingField=>$sortingType]);
             
-            $renderArray['productsQuery'] = $productsQuery;
-            
-            $renderArray['paginator'] = $productsQuery->paginator;
-            if (!$renderArray['paginator'] instanceof Pagination) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']));
-            }
-            
-            $renderArray['productsList'] = $productsQuery->all();
-            if (!is_array($renderArray['productsList']) || !$renderArray['productsList'][0] instanceof ProductsModel) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
-            }
-            
-            return $renderArray;
+            return $productsQuery;
         } catch (\Exception $e) {
             throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
         }

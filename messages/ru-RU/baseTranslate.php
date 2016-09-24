@@ -10,7 +10,8 @@ $translate = [
     "Hello, {placeholder}!"=>"Привет, {placeholder}!",
     'Guest'=>'Гость',
     'Authentication'=>'Аутентификация',
-    'Account with this email does not exist!'=>'Аккаунт с таким email не существует!'
+    'Account with this email does not exist!'=>'Аккаунт с таким email не существует!',
+    'Password incorrect!'=>'Неверный пароль!'
 ];
 
 return $translate;

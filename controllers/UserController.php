@@ -21,18 +21,31 @@ class UserController extends AbstractBaseController
     public function actionLogin()
     {
         try {
-            $emailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
-            $usersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
+            $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
+            $rawUsersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
             
-            if (\Yii::$app->request->isPost && $emailsModel->load(\Yii::$app->request->post()) && $usersModel->load(\Yii::$app->request->post())) {
-                if ($emailsModel->validate() && $usersModel->validate()) {
+            if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post())) {
+                if ($rawEmailsModel->validate() && $rawUsersModel->validate()) {
+                    $usersQuery = UsersModel::find();
+                    $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
+                    $usersQuery->innerJoin('emails', '[[users.id_email]]=[[emails.id]]');
+                    $usersQuery->where(['emails.email'=>$rawEmailsModel->email]);
+                    $usersModel = $usersQuery->one();
+                    if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
+                        $rawEmailsModel->addError('email', \Yii::t('base', 'Account with this email does not exist!'));
+                    }
                     
+                    if (!password_verify($rawUsersModel->password, $usersModel->password)) {
+                        $rawUsersModel->addError('password', \Yii::t('base', 'Password incorrect!'));
+                    }
+                    
+                    \Yii::$app->user->login($usersModel);
                 }
             }
             
             $renderArray = array();
-            $renderArray['emailsModel'] = $emailsModel;
-            $renderArray['usersModel'] = $usersModel;
+            $renderArray['emailsModel'] = $rawEmailsModel;
+            $renderArray['usersModel'] = $rawUsersModel;
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/login'], 'label'=>\Yii::t('base', 'Authentication')];
             

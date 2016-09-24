@@ -10,6 +10,7 @@ use yii\sphinx\{MatchExpression,
 use app\controllers\AbstractBaseController;
 use app\helpers\InstancesHelper;
 use app\queries\QueryTrait;
+use app\models\ProductsModel;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -25,9 +26,13 @@ class ProductsListController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            $productsQuery = $this->productsListQuery();
             
-            $renderArray = $this->commonProducts();
+            $renderArray = array();
+            $renderArray['paginator'] = $productsQuery->paginator;
+            $renderArray['productsList'] = $productsQuery->all();
+            
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
             return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {
@@ -53,9 +58,13 @@ class ProductsListController extends AbstractBaseController
             $sphinxQuery->match(new MatchExpression(['*'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]));
             $sphinxArray = $sphinxQuery->all();
             
-            \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
+            $productsQuery = $this->productsListQuery(['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
             
-            $renderArray = $this->commonProducts(['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            $renderArray = array();
+            $renderArray['paginator'] = $productsQuery->paginator;
+            $renderArray['productsList'] = $productsQuery->all();
+            
+            \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
             
             return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {

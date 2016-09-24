@@ -26,7 +26,7 @@ class ExtendActiveQuery extends ActiveQuery
     public function extendLimit()
     {
         try {
-            if (empty($this->paginator)) {
+            if (empty($this->paginator) || !$this->paginator instanceof Pagination) {
                 $this->paginator = new Pagination();
             }
             
@@ -65,7 +65,6 @@ class ExtendActiveQuery extends ActiveQuery
         try {
             if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->attributes)))) {
                 $tableName = $this->modelClass::tableName();
-                
                 foreach (\Yii::$app->params['filterKeys'] as $filter) {
                     if (in_array($filter, $keys)) {
                         $this->innerJoin($tableName . '_' . $filter, $tableName . '.id=' . $tableName . '_' . $filter . '.id_' . substr($tableName, 0, strlen($tableName)-1));

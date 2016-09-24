@@ -19,6 +19,7 @@ class EmailExistsAuthValidatorTests extends TestCase
         self::$_dbClass = new DbManager([
             'fixtures'=>[
                 'emails'=>'app\tests\source\fixtures\EmailsFixture',
+                'users'=>'app\tests\source\fixtures\UsersFixture',
             ],
         ]);
         
