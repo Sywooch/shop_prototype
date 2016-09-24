@@ -112,6 +112,50 @@ class CategoriesModelTests extends TestCase
         $this->assertTrue($model->products[0] instanceof ProductsModel);
     }
     
+    /**
+     * Тестирует запрос на получение массива объектов
+     */
+    public function testGetAll()
+    {
+        $categoriesQuery = CategoriesModel::find();
+        $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
+        $categoriesQuery->orderBy(['categories.name'=>SORT_DESC]);
+        
+        $queryRaw = clone $categoriesQuery;
+        
+        $expectQuery = "SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories` ORDER BY `categories`.`name` DESC";
+        
+        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $categoriesQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof CategoriesModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->categories['category_1'];
+        
+        $categoriesQuery = CategoriesModel::find();
+        $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
+        $categoriesQuery->where(['categories.seocode'=>$fixture['seocode']]);
+        
+        $queryRaw = clone $categoriesQuery;
+        
+        $expectQuery = sprintf("SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories` WHERE `categories`.`seocode`='%s'", $fixture['seocode']);
+        
+        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $categoriesQuery->one();
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof CategoriesModel);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

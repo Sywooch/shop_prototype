@@ -5,24 +5,18 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
+use yii\sphinx\{MatchExpression,
+    Query};
 use app\controllers\AbstractBaseController;
-use app\queries\{GetProductsQuery,
-    GetSphinxQuery};
 use app\helpers\InstancesHelper;
-use app\models\SearchModel;
+use app\queries\QueryTrait;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
  */
 class ProductsListController extends AbstractBaseController
 {
-    /**
-     * @var array конфигурация для получения списка записей
-     */
-    private $_config = [
-        'fields'=>['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'seocode'],
-        'sorting'=>['date'=>SORT_DESC]
-    ];
+    use QueryTrait;
     
     /**
      * Обрабатывает запрос к списку продуктов
@@ -33,7 +27,9 @@ class ProductsListController extends AbstractBaseController
         try {
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
-            return $this->common();
+            $renderArray = $this->commonProducts();
+            
+            return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
@@ -51,39 +47,15 @@ class ProductsListController extends AbstractBaseController
                 return $this->redirect(Url::to(['products-list/index']));
             }
             
-            $sphinxQuery = new GetSphinxQuery([
-                'tableName'=>'shop',
-                'fields'=>['id'],
-                'text'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])
-            ]);
-            $sphinxArray = $sphinxQuery->getAll()->all();
-            
-            $this->_config['extraWhere'] = ['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')];
+            $sphinxQuery = new Query();
+            $sphinxQuery->select(['id']);
+            $sphinxQuery->from('shop');
+            $sphinxQuery->match(new MatchExpression(['*'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]));
+            $sphinxArray = $sphinxQuery->all();
             
             \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
             
-            return $this->common();
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Инкапсулирует общую для 
-     * - ProductsListController::actionIndex
-     * - ProductsListController::actionInside
-     * - ProductsListController::actionSearch
-     * функциональность
-     * @return string
-     */
-    private function common()
-    {
-        try {
-            $renderArray = array();
-            $productsQuery = new GetProductsQuery($this->_config);
-            $renderArray['productsList'] = $productsQuery->getAll()->all();
-            $renderArray['paginator'] = $productsQuery->paginator;
+            $renderArray = $this->commonProducts(['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
             
             return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {

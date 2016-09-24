@@ -133,6 +133,29 @@ class EmailsModelTests extends TestCase
         $this->assertTrue($model->users instanceof UsersModel);
     }
     
+    /**
+     * Тестирует запрос на получение 1 объекта
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->emails['email_1'];
+        
+        $emailsQuery = EmailsModel::find();
+        $emailsQuery->extendSelect(['id', 'email']);
+        $emailsQuery->where(['emails.email'=>$fixture['email']]);
+        
+        $queryRaw = clone $emailsQuery;
+        
+        $expectQuery = sprintf("SELECT `emails`.`id`, `emails`.`email` FROM `emails` WHERE `emails`.`email`='%s'", $fixture['email']);
+        
+        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $emailsQuery->one();
+        
+        $this->assertTrue(is_object($result));
+        $this->assertTrue($result instanceof EmailsModel);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

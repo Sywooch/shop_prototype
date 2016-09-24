@@ -8,9 +8,9 @@ use yii\data\Pagination;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Абстрактный суперкласс построения запроса к БД
+ * Расширяет класс ActiveQuery
  */
-abstract class ExtendActiveQuery extends ActiveQuery
+class ExtendActiveQuery extends ActiveQuery
 {
     use ExceptionsTrait;
     
@@ -23,10 +23,12 @@ abstract class ExtendActiveQuery extends ActiveQuery
      * Добавляет ограничения по условиям OFFSET LIMIT
      * @return bool
      */
-    public function addLimit(Pagination $paginator=new Pagination())
+    public function extendLimit()
     {
         try {
-            $this->paginator = $paginator;
+            if (empty($this->paginator)) {
+                $this->paginator = new Pagination();
+            }
             
             $countQuery = clone $this;
             $page = !empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) - 1 : 0;
@@ -41,8 +43,8 @@ abstract class ExtendActiveQuery extends ActiveQuery
                 $this->paginator->page = $this->paginator->pageCount - 1;
             }
             
-            $this->query->offset($this->paginator->offset);
-            $this->query->limit($this->paginator->limit);
+            $this->offset($this->paginator->offset);
+            $this->limit($this->paginator->limit);
             
             return true;
         } catch (\Exception $e) {
@@ -66,11 +68,32 @@ abstract class ExtendActiveQuery extends ActiveQuery
                 
                 foreach (\Yii::$app->params['filterKeys'] as $filter) {
                     if (in_array($filter, $keys)) {
-                        $this->query->innerJoin($tableName . '_' . $filter, $tableName . '.id=' . $tableName . '_' . $filter . '.id_' . substr($tableName, 0, strlen($tableName)-1));
-                        $this->query->innerJoin($filter, $tableName . '_' . $filter . '.id_' . substr($filter, 0, strlen($filter)-1) . '=' . $filter . '.id');
-                        $this->query->andWhere([$filter . '.id'=>\Yii::$app->filters->$filter]);
+                        $this->innerJoin($tableName . '_' . $filter, $tableName . '.id=' . $tableName . '_' . $filter . '.id_' . substr($tableName, 0, strlen($tableName)-1));
+                        $this->innerJoin($filter, $tableName . '_' . $filter . '.id_' . substr($filter, 0, strlen($filter)-1) . '=' . $filter . '.id');
+                        $this->andWhere([$filter . '.id'=>\Yii::$app->filters->$filter]);
                     }
                 }
+            }
+            
+            return true;
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Добавляет список полей выборки, дополняя их именем таблицы
+     * @return bool
+     */
+    public function extendSelect(array $fields=[])
+    {
+        try {
+            if (!empty($fields)) {
+                $fields = array_map(function($value) {
+                    return $this->modelClass::tableName() . '.' . $value;
+                }, $fields);
+                
+                $this->select($fields);
             }
             
             return true;

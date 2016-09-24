@@ -2,153 +2,74 @@
 
 namespace app\queries;
 
+use yii\base\ErrorException;
+use yii\data\Pagination;
+use app\models\ProductsModel;
+
 /**
- * Коллекция свойств и методов для Query классов
+ * Коллекция методов для конструирования Query объектов 
  */
 trait QueryTrait
 {
     /**
-     * @var string имя класса модели
+     * Инкапсулирует общую для 
+     * - ProductsListController::actionIndex
+     * - ProductsListController::actionSearch
+     * функциональность
+     * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
+     * @return array
      */
-    public $className;
-    /**
-     * @var string имя таблицы в БД
-     */
-    public $tableName;
-    /**
-     * @var array поля для построения запроса
-     */
-    public $fields;
-    /**
-     * @var array массив значений сортировки ['field'=>SORT_DESC],
-     */
-    public $sorting = array();
-    /**
-     * @var object yii\db\ActiveQuery, yii\sphinx\Query
-     */
-    public $query;
-    /**
-     * @var object объект yii\data\Pagination
-     */
-    public $paginator;
-    /**
-     * @var array массив значений WHERE для дополнительной фильтрации
-     * формат [field=>value,]
-     */
-    public $extraWhere = array();
-    
-    /**
-     * Добавляет список полей выборки, дополняя их именем таблицы
-     * @return bool
-     */
-    protected function getSelect()
+    private function commonProducts(array $extraWhere=[])
     {
         try {
-            if (!empty($this->fields)) {
-                $this->fields = array_map(function($value) {
-                    return $this->tableName . '.' . $value;
-                }, $this->fields);
-                
-                $this->query->select($this->fields);
+            $renderArray = array();
+            
+            $productsQuery = ProductsModel::find();
+            $productsQuery->extendSelect(['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'seocode']);
+            
+            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
+                $productsQuery->innerJoin('categories', '[[categories.id]]=[[products.id_category]]');
+                $productsQuery->andWhere(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
             }
             
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Добавляет фильтры, указанные в массиве \Yii::$app->params['filterKeys']
-     * Фильтр опирается на соглашение, что имена таблиц, связывающих таблицы по 
-     * принципу М2М состоят из имен отдельных таблиц, обединенных нижним подчеркиванием
-     * Например, именем М2М таблицы для products и brands будет products_brands
-     * Поля, сылающиеся на связанные таблицы носят имена id_product, id_brand
-     * @return boolean
-     */
-    protected function addFilters()
-    {
-        try {
-            if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->attributes)))) {
-                foreach (\Yii::$app->params['filterKeys'] as $filter) {
-                    if (in_array($filter, $keys)) {
-                        $this->query->innerJoin($this->tableName . '_' . $filter, $this->tableName . '.id=' . $this->tableName . '_' . $filter . '.id_' . substr($this->tableName, 0, strlen($this->tableName)-1));
-                        $this->query->innerJoin($filter, $this->tableName . '_' . $filter . '.id_' . substr($filter, 0, strlen($filter)-1) . '=' . $filter . '.id');
-                        $this->query->andWhere([$filter . '.id'=>\Yii::$app->filters->$filter]);
-                    }
-                }
+            if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
+                $productsQuery->innerJoin('subcategory', '[[subcategory.id]]=[[products.id_subcategory]]');
+                $productsQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
             }
             
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Добавляет сортировку ORDERBY
-     * @return boolean
-     */
-    protected function addOrder()
-    {
-        try {
-            if (is_array($this->sorting) && !empty($this->sorting)) {
-                foreach ($this->sorting as $field=>$sort) {
-                    $this->query->addOrderBy([$this->tableName . '.' . $field=>$sort]);
-                }
+            $productsQuery->andWhere(['products.active'=>true]);
+            
+            if (!empty($extraWhere)) {
+                $productsQuery->andWhere($extraWhere);
             }
             
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Добавляет ограничения по условиям OFFSET LIMIT
-     * @return boolean
-     */
-    protected function addLimit()
-    {
-        try {
-            $countQuery = clone $this->query;
-            $page = !empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) - 1 : 0;
-            
-            \Yii::configure($this->paginator, [
-                'totalCount'=>$countQuery->count(),
-                'pageSize'=>\Yii::$app->params['limit'],
-                'page'=>$page,
-            ]);
-            
-            if ($this->paginator->page > $this->paginator->pageCount - 1) {
-                $this->paginator->page = $this->paginator->pageCount - 1;
+            if (!$productsQuery->addFilters()) {
+                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'addFilters()']));
             }
             
-            $this->query->offset($this->paginator->offset);
-            $this->query->limit($this->paginator->limit);
-            
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Добавляет дополнительную фильтрацию по условию WHERE
-     * @return boolean
-     */
-    protected function extraWhere()
-    {
-        try {
-            if (!empty($this->extraWhere)) {
-                foreach ($this->extraWhere as $key=>$value) {
-                    $this->query->andWhere([$key=>$value]);
-                }
+            if (!$productsQuery->extendLimit()) {
+                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'extendLimit()']));
             }
             
-            return true;
+            $sortingField = \Yii::$app->filters->sortingField ? \Yii::$app->filters->sortingField : 'date';
+            $sortingType = (\Yii::$app->filters->sortingType && \Yii::$app->filters->sortingType === 'ASC') ? SORT_ASC : SORT_DESC;
+            $productsQuery->orderBy(['products.' . $sortingField=>$sortingType]);
+            
+            $renderArray['productsQuery'] = $productsQuery;
+            
+            $renderArray['paginator'] = $productsQuery->paginator;
+            if (!$renderArray['paginator'] instanceof Pagination) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']));
+            }
+            
+            $renderArray['productsList'] = $productsQuery->all();
+            if (!is_array($renderArray['productsList']) || !$renderArray['productsList'][0] instanceof ProductsModel) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
+            }
+            
+            return $renderArray;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
         }
     }
 }

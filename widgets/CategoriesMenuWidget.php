@@ -40,14 +40,14 @@ class CategoriesMenuWidget extends Menu
             parent::init();
             
             if (empty($this->categoriesList)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$categoriesList']));
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'array $categoriesList']));
             }
             if (empty($this->rootRoute)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$rootRoute']));
+                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'string $rootRoute']));
             }
             
             if (!$this->setItems()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'setItems()']));
             }
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

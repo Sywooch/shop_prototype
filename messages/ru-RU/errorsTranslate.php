@@ -2,9 +2,9 @@
 
 $translate = [
     'Not Evaluated {placeholder}!'=>'Не определен {placeholder}!',
-    'Incorrect data!'=>'Переданы некорректные данные!',
-    'Method error!'=>'Ошибка при вызове метода!',
+    'Method error {placeholder}!'=>'Ошибка при вызове метода {placeholder}!',
     "Method error {method}!\n"=>"Ошибка при вызове метода {method}!\n",
+    'Received invalid data type instead {placeholder}!'=>'Получен неверный тип данных вместо {placeholder}!',
 ];
 
 return $translate;

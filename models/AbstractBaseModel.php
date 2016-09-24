@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\db\ActiveRecord;
 use app\exceptions\ExceptionsTrait;
+use app\queries\ExtendActiveQuery;
 
 abstract class AbstractBaseModel extends ActiveRecord
 {
@@ -27,7 +28,20 @@ abstract class AbstractBaseModel extends ActiveRecord
         try {
             return static::$_tableName;
         } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * @inheritdoc
+     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     */
+    public static function find()
+    {
+        try {
+            return \Yii::createObject(ExtendActiveQuery::className(), [get_called_class()]);
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
         }
     }
 }

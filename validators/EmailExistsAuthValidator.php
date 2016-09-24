@@ -5,7 +5,6 @@ namespace app\validators;
 use yii\validators\Validator;
 use app\exceptions\ExceptionsTrait;
 use app\models\EmailsModel;
-use app\queries\GetEmailsQuery;
 
 /**
  * Проверяет атрибуты модели EmailsModel
@@ -22,11 +21,7 @@ class EmailExistsAuthValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $emailsQuery = new GetEmailsQuery([
-                'fields'=>['id'],
-                'extraWhere'=>['emails.email'=>$model->$attribute]
-            ]);
-            $result = $emailsQuery->getOne()->one();
+            $result = EmailsModel::find()->where(['emails.email'=>$model->$attribute])->exists();
             
             if (!$result) {
                 $this->addError($model, $attribute, \Yii::t('base', 'Account with this email does not exist!'));

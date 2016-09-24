@@ -94,7 +94,7 @@ class PaginationWidget extends Widget
             $range = $this->getRange();
             
             if (!is_array($range) || empty($range)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Incorrect data!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $range']));
             }
             
             foreach ($range as $number) {
@@ -132,28 +132,28 @@ class PaginationWidget extends Widget
             
             $this->_prevMin = $currentPage - $aroundPages;
             if (!$this->checkMinPage()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'checkMinPage()']));
             }
             
             $this->_nextMax = $currentPage + $aroundPages;
             if (!$this->checkMaxPage()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'checkMaxPage()']));
             }
             
             if (count(range($this->_prevMin, $this->_nextMax)) < $this->pageRange) {
                 if ($this->_prevMin == 1) {
                     if (!$this->scale('up')) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
+                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'scale()']));
                     }
                     if (!$this->checkMaxPage()) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
+                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'checkMaxPage()']));
                     }
                 } elseif ($this->_nextMax == $this->paginator->pageCount) {
                     if (!$this->scale('down')) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
+                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'scale()']));
                     }
                     if (!$this->checkMinPage()) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error!'));
+                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'checkMinPage()']));
                     }
                 }
             }
@@ -176,7 +176,7 @@ class PaginationWidget extends Widget
     {
         try {
             if (empty($direction) || !in_array($direction, ['up', 'down'], true)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Incorrect data!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $direction']));
             }
             
             for ($i = 0; $i <= $this->pageRange - count(range($this->_prevMin, $this->_nextMax)); ++$i) {

@@ -4,7 +4,7 @@ namespace app\helpers;
 
 use yii\base\ErrorException;
 use app\exceptions\ExceptionsTrait;
-use app\queries\GetCategoriesQuery;
+use app\models\CategoriesModel;
 
 /**
  * Коллекция методов для создания объектов,
@@ -22,11 +22,15 @@ class InstancesHelper
     {
         try {
             # Массив объектов CategoriesModel для формирования меню категорий
-            $categoriesQuery = new GetCategoriesQuery([
-                'fields'=>['id', 'name', 'seocode', 'active'],
-                'sorting'=>['name'=>SORT_ASC]
-            ]);
-            self::$_instancesArray['categoriesList'] = $categoriesQuery->getAll()->with('subcategory')->all();
+            $categoriesQuery = CategoriesModel::find();
+            $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
+            $categoriesQuery->orderBy(['categories.name'=>SORT_ASC]);
+            $categoriesQuery->with('subcategory');
+            self::$_instancesArray['categoriesList'] = $categoriesQuery->all();
+            
+            if (!is_array(self::$_instancesArray['categoriesList']) || !self::$_instancesArray['categoriesList'][0] instanceof CategoriesModel) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CategoriesModel']));
+            }
             
             return self::$_instancesArray;
         } catch (\Exception $e) {

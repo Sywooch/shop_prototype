@@ -4,8 +4,8 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\queries\GetProductsQuery;
 use app\helpers\InstancesHelper;
+use app\models\ProductsModel;
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
@@ -20,16 +20,19 @@ class ProductDetailController extends AbstractBaseController
     {
         try {
             if (empty(\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey']))) {
-                throw new ErrorException(\Yii::t('base/errors', 'Incorrect data!'));
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'productSeocodeKey']));
             }
             
             $renderArray = array();
             
-            $productsQuery = new GetProductsQuery([
-                'fields'=>['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory'],
-                'extraWhere'=>['products.seocode'=>\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey'])]
-            ]);
-            $renderArray['productsModel'] = $productsQuery->getOne()->one();
+            $productsQuery = ProductsModel::find();
+            $productsQuery->extendSelect(['id', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory']);
+            $productsQuery->where(['products.seocode'=>\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey'])]);
+            $renderArray['productsModel'] = $productsQuery->one();
+            
+            if (!$renderArray['productsModel'] instanceof ProductsModel) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
+            }
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
