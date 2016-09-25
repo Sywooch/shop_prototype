@@ -4,29 +4,37 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
+use yii\helpers\{Html,
+    Url};
 use app\exceptions\ExceptionsTrait;
-use app\models\UsersModel;
 
 class UserInfoWidget extends Widget
 {
     use ExceptionsTrait;
     
-    public function run()
+    /**
+     * @var array массив результирующих строк
+     */
+    private $_result = [];
+    
+    /**
+     * Конструирует HTML строку с информацией и текущем пользователе
+     * @return string
+     */
+    public function run(): string
     {
         try {
             if (\Yii::$app->user->isGuest) {
                 $user = \Yii::t('base', 'Guest');
+                $this->_result[] = Html::tag('p', Html::a(\Yii::t('base', 'Login'), ['/user/login']));
             } else {
-                if (\Yii::$app->user->identity && \Yii::$app->user->identity instanceof UsersModel) {
-                    if (!empty(\Yii::$app->user->identity->name)) {
-                        $user = \Yii::$app->user->identity->name;
-                    } else {
-                        $user = \Yii::$app->user->identity->emails->email;
-                    }
-                }
+                $user = \Yii::$app->user->identity->name ? \Yii::$app->user->identity->name : \Yii::$app->user->identity->emails->email;
+                $this->_result[] = Html::tag('p', Html::a(\Yii::t('base', 'Logout'), ['/user/logout']));
             }
             
-            return '<p>' . \Yii::t('base', "Hello, {placeholder}!", ['placeholder'=>$user]) . '</p>';
+            array_unshift($this->_result, Html::tag('p', \Yii::t('base', "Hello, {placeholder}!", ['placeholder'=>Html::encode($user)])));
+            
+            return implode('', $this->_result);
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

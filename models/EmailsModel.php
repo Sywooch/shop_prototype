@@ -32,6 +32,7 @@ class EmailsModel extends AbstractBaseModel
     public function rules()
     {
         return [
+            [['email'], 'app\validators\StripTagsValidator'],
             [['email'], 'email'],
             [['email'], 'required', 'on'=>self::GET_FROM_AUTHENTICATION],
             [['email'], 'app\validators\EmailExistsAuthValidator', 'on'=>self::GET_FROM_AUTHENTICATION],

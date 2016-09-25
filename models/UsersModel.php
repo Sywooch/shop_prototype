@@ -33,6 +33,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function rules()
     {
         return [
+            [['password'], 'app\validators\StripTagsValidator'],
             [['password'], 'required', 'on'=>self::GET_FROM_AUTHENTICATION],
         ];
     }

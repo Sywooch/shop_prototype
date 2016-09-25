@@ -11,7 +11,9 @@ $translate = [
     'Guest'=>'Гость',
     'Authentication'=>'Аутентификация',
     'Account with this email does not exist!'=>'Аккаунт с таким email не существует!',
-    'Password incorrect!'=>'Неверный пароль!'
+    'Password incorrect!'=>'Неверный пароль!',
+    'Login'=>'Войти',
+    'Logout'=>'Выйти',
 ];
 
 return $translate;

@@ -12,6 +12,7 @@ $routes = [
     
     # Пользователь
     'login'=>'user/login',
+    'logout'=>'user/logout',
     
     # Вывод одного товара
     '<product-seocode>'=>'product-detail/index',

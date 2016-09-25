@@ -2,8 +2,17 @@
 
 namespace app\tests;
 
-class MockObject
+use yii\base\Object;
+
+class MockObject extends Object
 {
+    public $description;
+    
+    public static function className()
+    {
+        return 'app\tests\MockObject';
+    }
+    
     public function getRoute()
     {
     }
