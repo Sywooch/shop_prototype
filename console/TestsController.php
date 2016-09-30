@@ -15,13 +15,9 @@ class TestsController extends Controller
      */
     public $db = 'dbTest';
     /**
-     * @var string логин к учетной записи с правами создания и удаления тестовой БД
+     * @var string имя профиля, созданного коммандой mysql_config_editor
      */
-    private $_username = 'root';
-    /**
-     * @var string пароль к учетной записи с правами создания и удаления тестовой БД
-     */
-    private $_password = 'estet234';
+    public $_loginPath = 'root';
     /**
      * @var string имя тестовой БД, которая будет создана
      */
@@ -58,7 +54,7 @@ class TestsController extends Controller
         try {
             $this->stdout(\Yii::t('base/console', "Create database {database}...\n", ['database'=>$this->_testDbName]));
             
-            $cmd = sprintf("mysql -u%s -p%s -e 'CREATE DATABASE IF NOT EXISTS %s'", $this->_username, $this->_password, $this->_testDbName);
+            $cmd = sprintf("mysql --login-path=%s -e 'CREATE DATABASE IF NOT EXISTS %s'",$this->_loginPath, $this->_testDbName);
             exec($cmd);
             
             $this->stdout(\Yii::t('base/console', "Apply migrations...\n", ['database'=>$this->_testDbName]));
@@ -89,7 +85,7 @@ class TestsController extends Controller
             
             $this->stdout(\Yii::t('base/console', "Delete database {database}...\n", ['database'=>$this->_testDbName]));
             
-            $cmd = sprintf("mysql -u%s -p%s -e 'DROP DATABASE %s'", $this->_username, $this->_password, $this->_testDbName);
+            $cmd = sprintf("mysql --login-path=%s -e 'DROP DATABASE %s'", $this->_loginPath, $this->_testDbName);
             exec($cmd);
             
             $this->stdout(\Yii::t('base/console', "Migrations erased, database {database} deleted successfully!\n", ['database'=>$this->_testDbName]));
@@ -108,8 +104,6 @@ class TestsController extends Controller
     private function escapeArgs()
     {
         try {
-            $this->_username = escapeshellcmd(escapeshellarg($this->_username));
-            $this->_password = escapeshellcmd(escapeshellarg($this->_password));
             $this->_testDbName = escapeshellcmd(escapeshellarg($this->_testDbName));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
