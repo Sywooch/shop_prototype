@@ -11,6 +11,7 @@ $components = [
                 'class'=>'yii\twig\ViewRenderer',
                 'options'=>['auto_reload'=>true],
                 'globals'=>[
+                    'array'=>'yii\helpers\ArrayHelper',
                     'url'=>'yii\helpers\Url',
                     'yii'=>'\Yii',
                 ],

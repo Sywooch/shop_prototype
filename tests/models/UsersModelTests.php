@@ -36,6 +36,7 @@ class UsersModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
         
         $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
         
@@ -101,6 +102,13 @@ class UsersModelTests extends TestCase
         ];
         
         $this->assertEquals($fixture['password'], $model->password);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION]);
+        $model->attributes = [
+            'password'=>$fixture['password'],
+        ];
+        
+        $this->assertEquals($fixture['password'], $model->password);
     }
     
     /**
@@ -108,6 +116,8 @@ class UsersModelTests extends TestCase
      */
     public function testRules()
     {
+        $fixture = self::$_dbClass->users['user_2'];
+        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
         $model->attributes = [];
         $model->validate();
@@ -115,9 +125,22 @@ class UsersModelTests extends TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('password', $model->errors));
         
-        $fixture = self::$_dbClass->users['user_2'];
-        
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
+        $model->attributes = [
+            'password'=>$fixture['password'],
+        ];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('password', $model->errors));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION]);
         $model->attributes = [
             'password'=>$fixture['password'],
         ];

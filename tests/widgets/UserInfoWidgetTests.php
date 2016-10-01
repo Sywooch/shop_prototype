@@ -29,7 +29,7 @@ class UserInfoWidgetTests extends TestCase
     {
         $result = UserInfoWidget::widget();
         
-        $expectedString = '<p>Привет, ' . \Yii::t('base', 'Guest') . '!</p><p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a></p>';
+        $expectedString = '<p>Привет, ' . \Yii::t('base', 'Guest') . '!</p><p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a> <a href="../vendor/phpunit/phpunit/registration">' . \Yii::t('base', 'Registration') . '</a></p>';
         
         $this->assertEquals($expectedString, $result);
     }

@@ -1,0 +1,24 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include('@theme/base/user-info.twig') %}
+
+{% include '@theme/base/search.twig' %}
+
+{% include('@theme/base/menu.twig') %}
+
+{% include('@theme/base/breadcrumbs.twig') %}
+
+<p><strong>{{ yii.t('base', 'Registration') }}</strong></p>
+
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form = active_form_begin({'id': 'registration-form', 'action': url.to({0:'user/registration'}), method: 'POST'}) %}
+    {{ form.field(emailsModel, 'email') | raw }}
+    {{ form.field(usersModel, 'password').passwordInput() | raw }}
+    
+    <p>Подписывайтесь на рассылки!</p>
+    {{ form.field(mailingListModel, 'id').checkboxList(array.map(mailingListList, 'id', 'name'), {'multiple':true}).label(false) | raw }}<br>
+    
+    <input type="submit" value="{{ yii.t('base', 'Registration') }}" />
+{{ active_form_end() }}
+

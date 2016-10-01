@@ -8,13 +8,13 @@
 
 {% include('@theme/base/breadcrumbs.twig') %}
 
-<p><strong>Login</strong></p>
+<p><strong>{{ yii.t('base', 'Login') }}</strong></p>
 
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:''}), method: 'POST'}) %}
     {{ form.field(emailsModel, 'email') | raw }}
     {{ form.field(usersModel, 'password').passwordInput() | raw }}
-    <input type="submit" value="Login" />
+    <input type="submit" value="{{ yii.t('base', 'Login') }}" />
 {{ active_form_end() }}
 

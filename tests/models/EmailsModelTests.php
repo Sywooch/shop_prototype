@@ -36,6 +36,7 @@ class EmailsModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
         
         $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
         
@@ -71,6 +72,13 @@ class EmailsModelTests extends TestCase
         $this->assertEquals($fixture['email'], $model->email);
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
+        $model->attributes = [
+            'email'=>$fixture['email'], 
+        ];
+        
+        $this->assertEquals($fixture['email'], $model->email);
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
         $model->attributes = [
             'email'=>$fixture['email'], 
         ];
@@ -115,6 +123,27 @@ class EmailsModelTests extends TestCase
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
         $model->email = $fixture['email'];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
+        $model->email = $fixture['email'];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        $this->assertEquals(\Yii::t('base', 'Account with this email already exist!'), $model->errors['email'][0]);
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
+        $model->email = 'some@some.com';
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));

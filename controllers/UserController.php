@@ -7,6 +7,7 @@ use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\helpers\InstancesHelper;
 use app\models\{EmailsModel,
+    MailingListModel,
     UsersModel};
 
 /**
@@ -72,6 +73,40 @@ class UserController extends AbstractBaseController
             }
             
             return $this->redirect(Url::to(['/products-list/index']));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет процессом создания учетной записи
+     * @return string
+     */
+    public function actionRegistration()
+    {
+        try {
+            $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
+            $rawUsersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION]);
+            $rawMailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_REGISTRATION]);
+            
+            if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post()) && $rawMailingListModel->load(\Yii::$app->request->post())) {
+                if ($rawEmailsModel->validate() && $rawUsersModel->validate() && $rawMailingListModel->validate()) {
+                    
+                }
+            }
+            
+            $renderArray = array();
+            $renderArray['emailsModel'] = $rawEmailsModel;
+            $renderArray['usersModel'] = $rawUsersModel;
+            $renderArray['mailingListModel'] = $rawMailingListModel;
+            
+            $mailingListQuery = MailingListModel::find();
+            $renderArray['mailingListList'] = $mailingListQuery->all();
+            
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/registration'], 'label'=>\Yii::t('base', 'Registration')];
+            
+            return $this->render('registration.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

@@ -13,6 +13,7 @@ $routes = [
     # Пользователь
     'login'=>'user/login',
     'logout'=>'user/logout',
+    'registration'=>'user/registration',
     
     # Вывод одного товара
     '<product-seocode>'=>'product-detail/index', #!!! Make Class!
