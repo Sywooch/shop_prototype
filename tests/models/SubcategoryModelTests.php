@@ -113,6 +113,29 @@ class SubcategoryModelTests extends TestCase
         $this->assertTrue($model->products[0] instanceof ProductsModel);
     }
     
+    /**
+     * Тестирует запрос на получение 1 объекта для 
+     * - app\widgets\BreadcrumbsWidget
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->subcategory['subcategory_1'];
+        
+        $subcategoryQuery = SubcategoryModel::find();
+        $subcategoryQuery->extendSelect(['id', 'name', 'seocode', 'id_category', 'active']);
+        $subcategoryQuery->where(['subcategory.seocode'=>$fixture['seocode']]);
+        
+        $queryRaw = clone $subcategoryQuery;
+        
+        $expectedQuery = sprintf("SELECT `subcategory`.`id`, `subcategory`.`name`, `subcategory`.`seocode`, `subcategory`.`id_category`, `subcategory`.`active` FROM `subcategory` WHERE `subcategory`.`seocode`='%s'", $fixture['seocode']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $subcategoryQuery->one();
+        
+        $this->assertTrue($result instanceof SubcategoryModel);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

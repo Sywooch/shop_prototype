@@ -38,9 +38,9 @@ class CategoriesMenuWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = CategoriesMenuWidget::widget(['categoriesList'=>[$categoriesModel]]);
         
-        $expectedUrl = '<ul class="categoriesMenu"><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a><ul><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li></ul></li></ul>';
+        $expectedString = '<ul class="categoriesMenu"><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a><ul><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li></ul></li></ul>';
         
-        $this->assertEquals($expectedUrl, $result);
+        $this->assertEquals($expectedString, $result);
     }
     
     public static function tearDownAfterClass()

@@ -15,7 +15,7 @@ $routes = [
     'logout'=>'user/logout',
     
     # Вывод одного товара
-    '<product-seocode>'=>'product-detail/index',
+    '<product-seocode>'=>'product-detail/index', #!!! Make Class!
 ];
 
 return $routes;

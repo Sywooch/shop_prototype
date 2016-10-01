@@ -41,9 +41,9 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Home') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li class="active">' . $fixture['name'] . '</li></ul>';
+        $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Home') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li class="active">' . $fixture['name'] . '</li></ul>';
         
-        $this->assertEquals($expectUrl, $result);
+        $this->assertEquals($expectedString, $result);
     }
     
     /**
@@ -62,9 +62,9 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
+        $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
         
-        $this->assertEquals($expectUrl, $result);
+        $this->assertEquals($expectedString, $result);
     }
     
     /**
@@ -84,9 +84,9 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProducts['name'] . '</li></ul>';
+        $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProducts['name'] . '</li></ul>';
         
-        $this->assertEquals($expectUrl, $result);
+        $this->assertEquals($expectedString, $result);
     }
     
     /**
@@ -101,9 +101,9 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         $result = BreadcrumbsWidget::widget();
         
-        $expectUrl = '<ul class="breadcrumb"><li><a href="../vendor/phpunit/phpunit/">Главная</a></li><li class="separator"> -> </li><li class="active">' . \Yii::t('base', 'Searching results') . '</li></ul>';
+        $expectedString = '<ul class="breadcrumb"><li><a href="../vendor/phpunit/phpunit/">Главная</a></li><li class="separator"> -> </li><li class="active">' . \Yii::t('base', 'Searching results') . '</li></ul>';
         
-        $this->assertEquals($expectUrl, $result);
+        $this->assertEquals($expectedString, $result);
     }
     
     public static function tearDownAfterClass()

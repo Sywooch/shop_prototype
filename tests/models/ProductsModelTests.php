@@ -164,7 +164,8 @@ class ProductsModelTests extends TestCase
     
     /**
      * Тестирует запрос на получение массива объектов
-     * без категорий и фильтров
+     * без категорий и фильтров для 
+     * - app\controllers\ProductsListController
      */
     public function testGetAll()
     {
@@ -175,9 +176,9 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` WHERE `products`.`active`=TRUE ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` WHERE `products`.`active`=TRUE ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $productsQuery->all();
         
@@ -187,7 +188,8 @@ class ProductsModelTests extends TestCase
     
     /**
      * Тестирует запрос на получение массива объектов
-     * c выборкой по категории
+     * c выборкой по категории для 
+     * - app\controllers\ProductsListController
      */
     public function testGetAllTwo()
     {
@@ -200,9 +202,9 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` WHERE (`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE) ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` WHERE (`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE) ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $productsQuery->all();
         
@@ -212,7 +214,8 @@ class ProductsModelTests extends TestCase
     
     /**
      * Тестирует запрос на получение массива объектов
-     * c выборкой по категории и подкатегории
+     * c выборкой по категории и подкатегории для 
+     * - app\controllers\ProductsListController
      */
     public function testGetAllThree()
     {
@@ -226,9 +229,9 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE) ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE) ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $productsQuery->all();
         
@@ -238,7 +241,8 @@ class ProductsModelTests extends TestCase
     
     /**
      * Тестирует запрос на получение массива объектов
-     * c выборкой по категории, подкатегории и фильтру
+     * c выборкой по категории, подкатегории и фильтру для 
+     * - app\controllers\ProductsListController
      */
     public function testGetAllFour()
     {
@@ -255,9 +259,9 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1) ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1) ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $productsQuery->all();
         
@@ -267,7 +271,8 @@ class ProductsModelTests extends TestCase
     
     /**
      * Тестирует запрос на получение массива объектов
-     * c выборкой по категории, подкатегории и нескольким фильтрам
+     * c выборкой по категории, подкатегории и нескольким фильтрам для 
+     * - app\controllers\ProductsListController
      */
     public function testGetAllFive()
     {
@@ -285,9 +290,9 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE ((((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1)) AND (`sizes`.`id`=1) ORDER BY `products`.`price` DESC LIMIT %d", \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE ((((`categories`.`seocode`='mensfootwear') AND (`subcategory`.`seocode`='boots')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=1)) AND (`sizes`.`id`=1) ORDER BY `products`.`price` DESC LIMIT %d", \Yii::$app->params['limit']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $productsQuery->all();
         
@@ -297,7 +302,8 @@ class ProductsModelTests extends TestCase
     
     /**
      * Тестирует запрос на получение массива объектов
-     * c выборкой по категории и нескольким фильтрам
+     * c выборкой по категории и нескольким фильтрам для 
+     * - app\controllers\ProductsListController
      */
     public function testGetAllSix()
     {
@@ -315,9 +321,9 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE)) AND (`colors`.`id` IN (1, 2))) AND (`sizes`.`id`=1) ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE (((`categories`.`seocode`='mensfootwear') AND (`products`.`active`=TRUE)) AND (`colors`.`id` IN (1, 2))) AND (`sizes`.`id`=1) ORDER BY `products`.`date` DESC LIMIT %d", \Yii::$app->params['limit']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $productsQuery->all();
         
@@ -326,7 +332,8 @@ class ProductsModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение 1 объекта
+     * Тестирует запрос на получение 1 объекта для 
+     * - app\controllers\ProductDetailController
      */
     public function testGetOne()
     {
@@ -341,9 +348,32 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`seocode` FROM `products` WHERE `products`.`seocode`='%s'", $fixture['seocode']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`seocode` FROM `products` WHERE `products`.`seocode`='%s'", $fixture['seocode']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $productsQuery->one();
+        
+        $this->assertTrue($result instanceof ProductsModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта для 
+     * - app\widgets\BreadcrumbsWidget
+     */
+    public function testGetOneTwo()
+    {
+        $fixture = self::$_dbClass->products['product_1'];
+        
+        $productsQuery = ProductsModel::find();
+        $productsQuery->extendSelect(['seocode', 'name', 'id_category', 'id_subcategory']);
+        $productsQuery->where(['products.seocode'=>$fixture['seocode']]);
+        
+        $queryRaw = clone $productsQuery;
+        
+        $expectedQuery = sprintf("SELECT `products`.`seocode`, `products`.`name`, `products`.`id_category`, `products`.`id_subcategory` FROM `products` WHERE `products`.`seocode`='%s'", $fixture['seocode']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $productsQuery->one();
         
@@ -365,9 +395,9 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $sphinxQuery;
         
-        $expectQuery = sprintf("SELECT `id` FROM `shop` WHERE MATCH('@* \\\"%s\\\"')", \Yii::$app->request->get(\Yii::$app->params['searchKey']));
+        $expectedQuery = sprintf("SELECT `id` FROM `shop` WHERE MATCH('@* \\\"%s\\\"')", \Yii::$app->request->get(\Yii::$app->params['searchKey']));
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
     }
     
     public static function tearDownAfterClass()

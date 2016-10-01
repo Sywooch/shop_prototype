@@ -29,9 +29,9 @@ class UserInfoWidgetTests extends TestCase
     {
         $result = UserInfoWidget::widget();
         
-        $expected = '<p>Привет, ' . \Yii::t('base', 'Guest') . '!</p><p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a></p>';
+        $expectedString = '<p>Привет, ' . \Yii::t('base', 'Guest') . '!</p><p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a></p>';
         
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expectedString, $result);
     }
     
     /**
@@ -47,9 +47,9 @@ class UserInfoWidgetTests extends TestCase
         
         $result = UserInfoWidget::widget();
         
-        $expected = '<p>Привет, ' . $user->name . '!</p><p><a href="../vendor/phpunit/phpunit/logout">' . \Yii::t('base', 'Logout') . '</a></p>';
+        $expectedString = '<p>Привет, ' . $user->name . "!</p><form action=\"../vendor/phpunit/phpunit/logout\" method=\"POST\">\n" . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expectedString, $result);
     }
     
     /**
@@ -66,9 +66,9 @@ class UserInfoWidgetTests extends TestCase
         
         $result = UserInfoWidget::widget();
         
-        $expected = '<p>Привет, ' . $user->emails->email . '!</p><p><a href="../vendor/phpunit/phpunit/logout">' . \Yii::t('base', 'Logout') . '</a></p>';
+        $expectedString = '<p>Привет, ' . $user->emails->email . "!</p><form action=\"../vendor/phpunit/phpunit/logout\" method=\"POST\">\n" . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
-        $this->assertEquals($expected, $result);
+        $this->assertEquals($expectedString, $result);
     }
     
     public static function tearDownAfterClass()

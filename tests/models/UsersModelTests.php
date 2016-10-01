@@ -20,6 +20,7 @@ class UsersModelTests extends TestCase
         self::$_dbClass = new DbManager([
             'fixtures'=>[
                 'users'=>'app\tests\source\fixtures\UsersFixture',
+                'emails'=>'app\tests\source\fixtures\EmailsFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -136,6 +137,31 @@ class UsersModelTests extends TestCase
         
         $this->assertTrue(is_object($model->emails));
         $this->assertTrue($model->emails instanceof EmailsModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта 
+     * в процессе авторизации для 
+     * - app\controllers\UserController
+     */
+    public function testGetOne()
+    {
+        $fixtureEmail = self::$_dbClass->emails['email_1'];
+        
+        $usersQuery = UsersModel::find();
+        $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
+        $usersQuery->innerJoin('emails', '[[users.id_email]]=[[emails.id]]');
+        $usersQuery->where(['emails.email'=>$fixtureEmail['email']]);
+        
+        $queryRaw = clone $usersQuery;
+        
+        $expectedQuery = sprintf("SELECT `users`.`id`, `users`.`id_email`, `users`.`password`, `users`.`name`, `users`.`surname`, `users`.`id_phone`, `users`.`id_address` FROM `users` INNER JOIN `emails` ON `users`.`id_email`=`emails`.`id` WHERE `emails`.`email`='%s'", $fixtureEmail['email']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $usersQuery->one();
+        
+        $this->assertTrue($result instanceof UsersModel);
     }
     
     public static function tearDownAfterClass()

@@ -113,7 +113,8 @@ class CategoriesModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение массива объектов
+     * Тестирует запрос на получение массива объектов для 
+     * app\helpers\InstancesHelper
      */
     public function testGetAll()
     {
@@ -123,9 +124,9 @@ class CategoriesModelTests extends TestCase
         
         $queryRaw = clone $categoriesQuery;
         
-        $expectQuery = "SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories` ORDER BY `categories`.`name` DESC";
+        $expectedQuery = "SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories` ORDER BY `categories`.`name` DESC";
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $categoriesQuery->all();
         
@@ -134,7 +135,8 @@ class CategoriesModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение 1 объекта
+     * Тестирует запрос на получение 1 объекта для 
+     * - app\widgets\BreadcrumbsWidget
      */
     public function testGetOne()
     {
@@ -146,13 +148,12 @@ class CategoriesModelTests extends TestCase
         
         $queryRaw = clone $categoriesQuery;
         
-        $expectQuery = sprintf("SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories` WHERE `categories`.`seocode`='%s'", $fixture['seocode']);
+        $expectedQuery = sprintf("SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories` WHERE `categories`.`seocode`='%s'", $fixture['seocode']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $categoriesQuery->one();
         
-        $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof CategoriesModel);
     }
     

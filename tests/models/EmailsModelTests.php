@@ -146,14 +146,37 @@ class EmailsModelTests extends TestCase
         
         $queryRaw = clone $emailsQuery;
         
-        $expectQuery = sprintf("SELECT `emails`.`id`, `emails`.`email` FROM `emails` WHERE `emails`.`email`='%s'", $fixture['email']);
+        $expectedQuery = sprintf("SELECT `emails`.`id`, `emails`.`email` FROM `emails` WHERE `emails`.`email`='%s'", $fixture['email']);
         
-        $this->assertEquals($expectQuery, $queryRaw->createCommand()->getRawSql());
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
         $result = $emailsQuery->one();
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof EmailsModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта для 
+     * - app\validators\EmailExistsAuthValidator
+     */
+    public function testGetOneTwo()
+    {
+        $fixture = self::$_dbClass->emails['email_1'];
+        
+        $emailsQuery = EmailsModel::find();
+        $emailsQuery->innerJoin('users', '[[emails.id]]=[[users.id_email]]');
+        $emailsQuery->where(['emails.email'=>$fixture['email']]);
+        
+        $queryRaw = clone $emailsQuery;
+        
+        $expectedQuery = sprintf("SELECT `emails`.* FROM `emails` INNER JOIN `users` ON `emails`.`id`=`users`.`id_email` WHERE `emails`.`email`='%s'", $fixture['email']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $emailsQuery->exists();
+        
+        $this->assertTrue($result);
     }
     
     public static function tearDownAfterClass()

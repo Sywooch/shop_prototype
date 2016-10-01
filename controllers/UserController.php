@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
+use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\helpers\InstancesHelper;
 use app\models\{EmailsModel,
@@ -15,7 +16,7 @@ use app\models\{EmailsModel,
 class UserController extends AbstractBaseController
 {
     /**
-     * Управляет процессом авторизации
+     * Управляет процессом аутентификации
      * @return string
      */
     public function actionLogin()
@@ -35,11 +36,12 @@ class UserController extends AbstractBaseController
                         $rawEmailsModel->addError('email', \Yii::t('base', 'Account with this email does not exist!'));
                     }
                     
-                    if (!password_verify($rawUsersModel->password, $usersModel->password)) {
-                        $rawUsersModel->addError('password', \Yii::t('base', 'Password incorrect!'));
+                    if (password_verify($rawUsersModel->password, $usersModel->password)) {
+                        \Yii::$app->user->login($usersModel);
+                        return $this->redirect(Url::to(['/products-list/index']));
                     }
                     
-                    \Yii::$app->user->login($usersModel);
+                    $rawUsersModel->addError('password', \Yii::t('base', 'Password incorrect!'));
                 }
             }
             
@@ -50,6 +52,26 @@ class UserController extends AbstractBaseController
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/login'], 'label'=>\Yii::t('base', 'Authentication')];
             
             return $this->render('login.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет процессом logout
+     * @return string
+     */
+    public function actionLogout()
+    {
+        try {
+            if (\Yii::$app->request->isPost && !empty(\Yii::$app->request->post('userId'))) {
+                if (\Yii::$app->user->id === (int) \Yii::$app->request->post('userId')) {
+                    \Yii::$app->user->logout();
+                }
+            }
+            
+            return $this->redirect(Url::to(['/products-list/index']));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);

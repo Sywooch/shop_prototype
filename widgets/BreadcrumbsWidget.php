@@ -70,7 +70,10 @@ class BreadcrumbsWidget extends Breadcrumbs
             $this->itemTemplate = sprintf($this->itemTemplate, $this->separator);
             
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey']))) {
-                $productsModel = ProductsModel::find()->where(['products.seocode'=>\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey'])])->one();
+                $productsQuery = ProductsModel::find();
+                $productsQuery->extendSelect(['seocode', 'name', 'id_category', 'id_subcategory']);
+                $productsQuery->where(['products.seocode'=>\Yii::$app->request->get(\Yii::$app->params['productSeocodeKey'])]);
+                $productsModel = $productsQuery->one();
                 if ($productsModel instanceof ProductsModel) {
                     $this->_productSeocode = $productsModel->seocode;
                     $this->_productName = $productsModel->name;
@@ -79,10 +82,16 @@ class BreadcrumbsWidget extends Breadcrumbs
                 }
             } else {
                 if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
-                    $categoriesModel = CategoriesModel::find()->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])])->one();
+                    $categoriesQuery = CategoriesModel::find();
+                    $categoriesQuery->extendSelect(['name', 'seocode']);
+                    $categoriesQuery->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                    $categoriesModel = $categoriesQuery->one();
                 }
                 if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
-                    $subcategoryModel = SubcategoryModel::find()->where(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])])->one();
+                    $subcategoryQuery = SubcategoryModel::find();
+                    $subcategoryQuery->extendSelect(['name', 'seocode']);
+                    $subcategoryQuery->where(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    $subcategoryModel = $subcategoryQuery->one();
                 }
             }
             

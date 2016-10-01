@@ -8,6 +8,10 @@ use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
 
+/**
+ * Формирует HTML строку с информацией о текущем статусе аутентификации,
+ * кнопки Login, Registration, Logout
+ */
 class UserInfoWidget extends Widget
 {
     use ExceptionsTrait;
@@ -29,7 +33,12 @@ class UserInfoWidget extends Widget
                 $this->_result[] = Html::tag('p', Html::a(\Yii::t('base', 'Login'), ['/user/login']));
             } else {
                 $user = \Yii::$app->user->identity->name ? \Yii::$app->user->identity->name : \Yii::$app->user->identity->emails->email;
-                $this->_result[] = Html::tag('p', Html::a(\Yii::t('base', 'Logout'), ['/user/logout']));
+                
+                $form = Html::beginForm(['/user/logout'], 'POST');
+                $form .= Html::input('hidden', 'userId', \Yii::$app->user->id);
+                $form .= Html::submitButton(\Yii::t('base', 'Logout'));
+                $form .= Html::endForm();
+                $this->_result[] = $form;
             }
             
             array_unshift($this->_result, Html::tag('p', \Yii::t('base', "Hello, {placeholder}!", ['placeholder'=>Html::encode($user)])));
