@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\models\{AbstractBaseModel,
     UsersModel};
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы emails
@@ -20,9 +21,17 @@ class EmailsModel extends AbstractBaseModel
     const GET_FROM_REGISTRATION = 'getFromRegistration';
     
     /**
-     * @var string имя таблицы, связанной с текущим классом AR
+     * Возвращает имя таблицы, связанной с текущим классом AR
+     * @return string
      */
-    public static $_tableName = 'emails';
+    public static function tableName()
+    {
+        try {
+            return 'emails';
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
     
     public function scenarios()
     {

@@ -35,8 +35,6 @@ class MailingListModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
         
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
-        
         $model = new MailingListModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
@@ -79,6 +77,27 @@ class MailingListModelTests extends TestCase
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
+    }
+    
+    /**
+     * Тестирует запрос на получение массива объектов для 
+     * - app\controllers\UserController
+     */
+    public function testGetAll()
+    {
+        $mailingListQuery = MailingListModel::find();
+        $mailingListQuery->extendSelect(['id', 'name']);
+        
+        $queryRaw = clone $mailingListQuery;
+        
+        $expectedQuery = "SELECT `mailing_list`.`id`, `mailing_list`.`name` FROM `mailing_list`";
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $mailingListQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof MailingListModel);
     }
     
     public static function tearDownAfterClass()

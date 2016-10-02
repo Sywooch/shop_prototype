@@ -38,8 +38,6 @@ class UsersModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
         
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
-        
         $model = new UsersModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));

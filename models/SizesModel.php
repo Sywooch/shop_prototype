@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы sizes
@@ -10,9 +11,17 @@ use app\models\AbstractBaseModel;
 class SizesModel extends AbstractBaseModel
 {
     /**
-     * @var string имя таблицы, связанной с текущим классом AR
+     * Возвращает имя таблицы, связанной с текущим классом AR
+     * @return string
      */
-    public static $_tableName = 'sizes';
+    public static function tableName()
+    {
+        try {
+            return 'sizes';
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
     
     public function scenarios()
     {

@@ -34,8 +34,6 @@ class ProductsColorsModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         
-        $this->assertTrue(self::$_reflectionClass->hasProperty('_tableName'));
-        
         $model = new ProductsColorsModel();
         
         $this->assertTrue(array_key_exists('id_product', $model->attributes));

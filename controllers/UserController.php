@@ -92,7 +92,7 @@ class UserController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post()) && $rawMailingListModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate() && $rawMailingListModel->validate()) {
-                    
+                    print_r($rawMailingListModel->id);
                 }
             }
             
@@ -102,6 +102,7 @@ class UserController extends AbstractBaseController
             $renderArray['mailingListModel'] = $rawMailingListModel;
             
             $mailingListQuery = MailingListModel::find();
+            $mailingListQuery->extendSelect(['id', 'name']);
             $renderArray['mailingListList'] = $mailingListQuery->all();
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/registration'], 'label'=>\Yii::t('base', 'Registration')];

@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\base\ErrorException;
 use app\models\AbstractBaseModel;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы subcategory
@@ -11,9 +12,17 @@ use app\models\AbstractBaseModel;
 class SubcategoryModel extends AbstractBaseModel
 {
     /**
-     * @var string имя таблицы, связанной с текущим классом AR
+     * Возвращает имя таблицы, связанной с текущим классом AR
+     * @return string
      */
-    public static $_tableName = 'subcategory';
+    public static function tableName()
+    {
+        try {
+            return 'subcategory';
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
     
     public function scenarios()
     {

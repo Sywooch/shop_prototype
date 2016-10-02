@@ -7,6 +7,7 @@ use app\models\{AbstractBaseModel,
     CategoriesModel,
     SubcategoryModel};
 use app\helpers\TransliterationHelper;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы products
@@ -14,9 +15,17 @@ use app\helpers\TransliterationHelper;
 class ProductsModel extends AbstractBaseModel
 {
     /**
-     * @var string имя таблицы, связанной с текущим классом AR
+     * Возвращает имя таблицы, связанной с текущим классом AR
+     * @return string
      */
-    public static $_tableName = 'products';
+    public static function tableName()
+    {
+        try {
+            return 'products';
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
     
     public function scenarios()
     {

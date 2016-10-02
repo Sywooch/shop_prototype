@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы colors
@@ -10,9 +11,17 @@ use app\models\AbstractBaseModel;
 class ColorsModel extends AbstractBaseModel
 {
     /**
-     * @var string имя таблицы, связанной с текущим классом AR
+     * Возвращает имя таблицы, связанной с текущим классом AR
+     * @return string
      */
-    public static $_tableName = 'colors';
+    public static function tableName()
+    {
+        try {
+            return 'colors';
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
     
     public function scenarios()
     {

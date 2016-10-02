@@ -20,19 +20,6 @@ abstract class AbstractBaseModel extends ActiveRecord
     const GET_FROM_FORM = 'getFromForm';
     
     /**
-     * Возвращает имя таблицы, связанной с текущим классом AR
-     * @return string
-     */
-    public static function tableName()
-    {
-        try {
-            return static::$_tableName;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
-        }
-    }
-    
-    /**
      * @inheritdoc
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */

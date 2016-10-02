@@ -5,6 +5,7 @@ namespace app\models;
 use yii\web\IdentityInterface;
 use app\models\{AbstractBaseModel,
     EmailsModel};
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы users
@@ -21,9 +22,17 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     const GET_FROM_REGISTRATION = 'getFromRegistration';
     
     /**
-     * @var string имя таблицы, связанной с текущим классом AR
+     * Возвращает имя таблицы, связанной с текущим классом AR
+     * @return string
      */
-    public static $_tableName = 'users';
+    public static function tableName()
+    {
+        try {
+            return 'users';
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
     
     public function scenarios()
     {

@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы mailing_list
@@ -15,9 +16,17 @@ class MailingListModel extends AbstractBaseModel
     const GET_FROM_REGISTRATION = 'getFromRegistration';
     
     /**
-     * @var string имя таблицы, связанной с текущим классом AR
+     * Возвращает имя таблицы, связанной с текущим классом AR
+     * @return string
      */
-    public static $_tableName = 'mailing_list';
+    public static function tableName()
+    {
+        try {
+            return 'mailing_list';
+        } catch (\Exception $e) {
+            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        }
+    }
     
     public function scenarios()
     {
