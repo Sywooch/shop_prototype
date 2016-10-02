@@ -14,7 +14,7 @@ class EmailExistsRegistValidator extends Validator
     use ExceptionsTrait;
     
     /**
-     * Проверяет, существует ли учетная запись с таким логином
+     * Проверяет, существует ли учетная запись с текущим email
      * @param object $model текущий экземпляр модели, атрибут которой проверяется
      * @param string $attribute имя атрибута, значение которого проверяется
      */

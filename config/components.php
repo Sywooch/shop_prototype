@@ -92,6 +92,10 @@ $components = [
         'identityClass'=>'app\models\UsersModel',
     ],
     
+    'authManager'=>[
+        'class'=>'yii\rbac\PhpManager',
+    ],
+    
     'filters'=>[
         'class'=>'app\models\FiltersModel',
     ],

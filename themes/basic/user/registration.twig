@@ -16,7 +16,7 @@
     {{ form.field(emailsModel, 'email') | raw }}
     {{ form.field(usersModel, 'password').passwordInput() | raw }}
     
-    <p>Подписывайтесь на рассылки!</p>
+    <p>{{ yii.t('base', 'Subscribe to the mailing list!') }}</p>
     {{ form.field(mailingListModel, 'id').checkboxList(array.map(mailingListList, 'id', 'name'), {'multiple':true}).label(false) | raw }}<br>
     
     <input type="submit" value="{{ yii.t('base', 'Registration') }}" />

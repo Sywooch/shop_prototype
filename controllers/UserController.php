@@ -4,11 +4,13 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
+use yii\db\Transaction;
 use app\controllers\AbstractBaseController;
 use app\helpers\InstancesHelper;
 use app\models\{EmailsModel,
     MailingListModel,
     UsersModel};
+use app\validators\EmailExistsCreateValidator;
 
 /**
  * Управляет работой с пользователями
@@ -92,7 +94,16 @@ class UserController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post()) && $rawMailingListModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate() && $rawMailingListModel->validate()) {
-                    print_r($rawMailingListModel->id);
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    try {
+                        if (!(new EmailExistsCreateValidator())->validate($rawEmailsModel->email)) {
+                            $rawEmailsModel->save();
+                        }
+                        $transaction->commit();
+                    } catch (\Exception $e) {
+                        $transaction->rollBack();
+                        throw $e;
+                    }
                 }
             }
             

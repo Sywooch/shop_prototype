@@ -184,10 +184,10 @@ class EmailsModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение 1 объекта для 
+     * Тестирует запрос, проверяющий существование объекта для 
      * - app\validators\EmailExistsAuthValidator
      */
-    public function testGetOneTwo()
+    public function testGetExists()
     {
         $fixture = self::$_dbClass->emails['email_1'];
         
@@ -204,6 +204,26 @@ class EmailsModelTests extends TestCase
         $result = $emailsQuery->exists();
         
         $this->assertTrue($result);
+    }
+    
+    /**
+     * Тестирует запрос, проверяющий существование объекта для 
+     * - app\validators\EmailExistsCreateValidator
+     */
+    public function testGetExistsTwo()
+    {
+        $emailsQuery = EmailsModel::find();
+        $emailsQuery->where(['emails.email'=>'some@some.com']);
+        
+        $queryRaw = clone $emailsQuery;
+        
+        $expectedQuery = sprintf("SELECT * FROM `emails` WHERE `emails`.`email`='%s'", 'some@some.com');
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $emailsQuery->exists();
+        
+        $this->assertFalse($result);
     }
     
     public static function tearDownAfterClass()

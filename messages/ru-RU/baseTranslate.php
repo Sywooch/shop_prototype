@@ -15,7 +15,9 @@ $translate = [
     'Password incorrect!'=>'Неверный пароль!',
     'Login'=>'Войти',
     'Logout'=>'Выйти',
-    'Registration'=>'Регистрация'
+    'Registration'=>'Регистрация',
+    'This email is already registered!'=>'Этот email уже зарегистрирован!',
+    'Subscribe to the mailing list!'=>'Подписывайтесь на рассылки!'
 ];
 
 return $translate;
