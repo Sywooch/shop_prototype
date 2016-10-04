@@ -17,7 +17,10 @@ $translate = [
     'Logout'=>'Выйти',
     'Registration'=>'Регистрация',
     'This email is already registered!'=>'Этот email уже зарегистрирован!',
-    'Subscribe to the mailing list!'=>'Подписывайтесь на рассылки!'
+    'Subscribe to the mailing list!'=>'Подписывайтесь на рассылки!',
+    'Authorized user'=>'Авторизованный пользователь',
+    'Administrator'=>'Администратор',
+    'User data editing'=>'Редактирование данных пользователя'
 ];
 
 return $translate;

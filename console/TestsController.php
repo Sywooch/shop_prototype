@@ -30,7 +30,6 @@ class TestsController extends Controller
             
             $this->escapeArgs();
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
     }
@@ -40,7 +39,6 @@ class TestsController extends Controller
         try {
             return ['db'];
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
     }
@@ -66,7 +64,6 @@ class TestsController extends Controller
             return parent::EXIT_CODE_NORMAL;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
             $this->stderr(\Y::t('base/console', "Error creating database {database}!\n", ['database'=>$this->_testDbName]), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
@@ -92,7 +89,6 @@ class TestsController extends Controller
             return parent::EXIT_CODE_NORMAL;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
             $this->stderr(\Y::t('base/console', "Error delete database {database}!\n", ['database'=>$this->_testDbName]), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
@@ -106,7 +102,6 @@ class TestsController extends Controller
         try {
             $this->_testDbName = escapeshellcmd(escapeshellarg($this->_testDbName));
         } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
             $this->throwException($e, __METHOD__);
         }
     }

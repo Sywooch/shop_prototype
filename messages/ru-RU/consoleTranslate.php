@@ -16,6 +16,12 @@ $translate = [
     "Begin delete...\n"=>"Удаляю...\n",
     "Delete successful!\n"=>"Удаление успешно завершено!\n",
     "Delete error!\n"=>"Ошибка при удалении!\n",
+    "Create RBAC authorization data...\n"=>"Создание данных авторизации RBAC...\n",
+    "Error creating RBAC!\n"=>"Ошибка при создании RBAC!\n",
+    "Create an authorization RBAC successfully completed!\n"=>"Создание данных авторизации RBAC успешно завершено!\n",
+    "Removing RBAC authorization data...\n"=>"Удаление данных авторизации RBAC...\n",
+    "Error removing RBAC!\n"=>"Ошибка при удалении RBAC!\n",
+    "Removing an authorization RBAC successfully completed!\n"=>"Удаление данных авторизации RBAC успешно завершено!\n",
 ];
 
 return $translate;

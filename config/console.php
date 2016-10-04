@@ -20,11 +20,16 @@ $config = [
                 ],
             ],
         ],
+        
+        'authManager'=>[
+            'class'=>'yii\rbac\PhpManager',
+        ],
     ],
     
     'controllerMap'=>[
         'tests'=>'app\console\TestsController',
         'seocode'=>'app\console\ProductsSeocodeController',
+        'rbac'=>'app\console\RbacController',
     ],
 ];
 

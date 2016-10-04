@@ -38,7 +38,6 @@ class ProductsSeocodeController extends Controller
             return parent::EXIT_CODE_NORMAL;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
             $this->stderr(\Y::t('base/console', "Update error!\n"), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
@@ -55,7 +54,6 @@ class ProductsSeocodeController extends Controller
             $this->stdout(\Yii::t('base/console', "Delete successful!\n"));
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
             $this->stderr(\Y::t('base/console', "Delete error!\n"), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
