@@ -96,6 +96,11 @@ $components = [
         'class'=>'yii\rbac\PhpManager',
     ],
     
+    'mailer'=>[
+        'class'=>'yii\swiftmailer\Mailer',
+        'viewPath'=>'@theme/mail',
+    ],
+    
     'filters'=>[
         'class'=>'app\models\FiltersModel',
     ],
