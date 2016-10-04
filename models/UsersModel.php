@@ -40,7 +40,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
             self::GET_FROM_DB=>['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'],
             self::GET_FROM_FORM=>['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'],
             self::GET_FROM_AUTHENTICATION=>['password'],
-            self::GET_FROM_REGISTRATION=>['password'],
+            self::GET_FROM_REGISTRATION=>['password', 'name', 'surname', 'id_phone', 'id_address'],
         ];
     }
     
@@ -48,6 +48,8 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     {
         return [
             [['password'], 'app\validators\StripTagsValidator'],
+            [['name', 'surname'], 'default', 'value'=>''],
+            [['id_phone', 'id_address'], 'default', 'value'=>0],
             [['password'], 'required', 'on'=>self::GET_FROM_AUTHENTICATION],
             [['password'], 'required', 'on'=>self::GET_FROM_REGISTRATION],
         ];

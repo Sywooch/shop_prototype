@@ -22,6 +22,8 @@ class m160913_172703_create_users_table extends Migration
             'id_address'=>$this->integer(5)->unsigned()->notNull()
         ], 'ENGINE=InnoDB');
         
+        $this->createIndex('id_email', 'users', 'id_email', true);
+        
         $this->addForeignKey('users_id_email', 'users', 'id_email', 'emails', 'id', 'RESTRICT', 'CASCADE');
     }
 

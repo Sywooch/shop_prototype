@@ -7,7 +7,8 @@ use yii\helpers\Url;
 use yii\db\Transaction;
 use app\controllers\AbstractBaseController;
 use app\helpers\InstancesHelper;
-use app\models\{EmailsModel,
+use app\models\{EmailsMailingListModel,
+    EmailsModel,
     MailingListModel,
     UsersModel};
 use app\validators\EmailExistsCreateValidator;
@@ -30,11 +31,7 @@ class UserController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate()) {
-                    $usersQuery = UsersModel::find();
-                    $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
-                    $usersQuery->innerJoin('emails', '[[users.id_email]]=[[emails.id]]');
-                    $usersQuery->where(['emails.email'=>$rawEmailsModel->email]);
-                    $usersModel = $usersQuery->one();
+                    $usersModel = UsersModel::find()->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'])->innerJoin('emails', '[[users.id_email]]=[[emails.id]]')->where(['emails.email'=>$rawEmailsModel->email])->one();
                     if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
                         $rawEmailsModel->addError('email', \Yii::t('base', 'Account with this email does not exist!'));
                     }
@@ -95,15 +92,42 @@ class UserController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post()) && $rawMailingListModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate() && $rawMailingListModel->validate()) {
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
                     try {
                         if (!(new EmailExistsCreateValidator())->validate($rawEmailsModel->email)) {
-                            $rawEmailsModel->save();
+                            if (!$rawEmailsModel->save()) {
+                                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsModel::save']));
+                            }
                         }
+                        $emailsModel = EmailsModel::find()->extendSelect(['id'])->where(['emails.email'=>$rawEmailsModel->email])->one();
+                        if (!$emailsModel instanceof EmailsModel) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
+                        }
+                        $rawUsersModel->id_email = $emailsModel->id;
+                        
+                        if (!$rawUsersModel->save()) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'UsersModel::save']));
+                        }
+                        $usersModel = UsersModel::find()->extendSelect(['id'])->where(['users.id_email'=>$rawUsersModel->id_email])->one();
+                        if (!$usersModel instanceof UsersModel) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UsersModel']));
+                        }
+                        
+                        \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $usersModel->id);
+                        
+                        if (!empty($rawMailingListModel->id)) {
+                            if (!$result = EmailsMailingListModel::batchInsert($rawMailingListModel, $emailsModel)) {
+                                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));
+                            }
+                        }
+                        
                         $transaction->commit();
                     } catch (\Exception $e) {
                         $transaction->rollBack();
                         throw $e;
                     }
+                    
+                    return $this->redirect(Url::to(['/user/login']));
                 }
             }
             

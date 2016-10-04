@@ -21,7 +21,7 @@ class ExtendActiveQuery extends ActiveQuery
     
     /**
      * Добавляет ограничения по условиям OFFSET LIMIT
-     * @return bool
+     * @return object ExtendActiveQuery
      */
     public function extendLimit()
     {
@@ -46,7 +46,7 @@ class ExtendActiveQuery extends ActiveQuery
             $this->offset($this->paginator->offset);
             $this->limit($this->paginator->limit);
             
-            return true;
+            return $this;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -58,7 +58,7 @@ class ExtendActiveQuery extends ActiveQuery
      * принципу М2М состоят из имен отдельных таблиц, обединенных нижним подчеркиванием
      * Например, именем М2М таблицы для products и brands будет products_brands
      * Поля, сылающиеся на связанные таблицы носят имена id_product, id_brand
-     * @return boolean
+     * @return object ExtendActiveQuery
      */
     public function addFilters()
     {
@@ -74,7 +74,7 @@ class ExtendActiveQuery extends ActiveQuery
                 }
             }
             
-            return true;
+            return $this;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -82,7 +82,7 @@ class ExtendActiveQuery extends ActiveQuery
     
     /**
      * Добавляет список полей выборки, дополняя их именем таблицы
-     * @return bool
+     * @return object ExtendActiveQuery
      */
     public function extendSelect(array $fields=[])
     {
@@ -95,7 +95,7 @@ class ExtendActiveQuery extends ActiveQuery
                 $this->select($fields);
             }
             
-            return true;
+            return $this;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
