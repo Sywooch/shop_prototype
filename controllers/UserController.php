@@ -132,8 +132,7 @@ class UserController extends AbstractBaseController
                                 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 
                                 'setSubject'=>\Yii::t('base', 'Registration on shop.com'), 
                                 'dataForTemplate'=>[
-                                    'login'=>$rawEmailsModel->email, 
-                                    'password'=>$rawUsersModel->password,
+                                    'username'=>$rawEmailsModel->email, 
                                     'subscribes'=>isset($subscribes) ? $subscribes : false,
                                 ],
                             ]

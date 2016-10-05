@@ -23,7 +23,7 @@ $translate = [
     'User data editing'=>'Редактирование данных пользователя',
     'Hello! This is information about your account!'=>'Привет! Это информация о вашем аккаунте!',
     'You can track it in <a href="{href}">your personal account</a>.'=>'Вы можете отслеживать его в <a href="{href}">личном кабинете</a>.',
-    'Your username and password:'=>'Ваши логин и пароль:',
+    'Your username: {placeholder}'=>'Ваш логин: {placeholder}',
     'login:'=>'логин:',
     'password:'=>'пароль:',
     'You also subscribed to the list:'=>'Вы также подписались на рассылки:',
