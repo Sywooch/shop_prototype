@@ -66,6 +66,48 @@ class ColorsModelTests extends TestCase
         $this->assertEquals($fixture['color'], $model->color);
     }
     
+    /**
+     * Тестирует запрос на получение массива объектов
+     */
+    public function testGetAll()
+    {
+        $colorsQuery = ColorsModel::find();
+        $colorsQuery->extendSelect(['id', 'color']);
+        
+        $queryRaw = clone $colorsQuery;
+        
+        $expectedQuery = "SELECT `colors`.`id`, `colors`.`color` FROM `colors`";
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $colorsQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof ColorsModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->colors['color_1'];
+        
+        $colorsQuery = ColorsModel::find();
+        $colorsQuery->extendSelect(['id', 'color']);
+        $colorsQuery->where(['colors.color'=>$fixture['color']]);
+        
+        $queryRaw = clone $colorsQuery;
+        
+        $expectedQuery = sprintf("SELECT `colors`.`id`, `colors`.`color` FROM `colors` WHERE `colors`.`color`='%s'", $fixture['color']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $colorsQuery->one();
+        
+        $this->assertTrue($result instanceof ColorsModel);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

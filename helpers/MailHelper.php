@@ -3,7 +3,7 @@
 namespace app\helpers;
 
 use yii\base\ErrorException;
-use app\traits\ExceptionsTrait;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Предоставляет функциональность для отправки E-mail сообщений
@@ -34,28 +34,28 @@ class MailHelper
     {
         try {
             if (empty($messagesArray)) {
-                throw new ErrorException('Массив данных для отправки пуст!');
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Array $messagesArray']));
             }
             
             foreach ($messagesArray as $messageArray) {
                 if (!is_array($messageArray) || empty($messageArray)) {
-                    throw new ErrorException('Массив данных письма пуст!');
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Array $messageArray']));
                 }
                 
                 if (empty($messageArray['template'])) {
-                    throw new ErrorException('Не указано имя шаблона!');
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'template name']));
                 }
                 if (empty($messageArray['dataForTemplate'])) {
                     $messageArray['dataForTemplate'] = array();
                 }
                 if (empty($messageArray['setFrom'])) {
-                    throw new ErrorException('Не указан отправитель!');
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'setFrom']));
                 }
                 if (empty($messageArray['setTo'])) {
-                    throw new ErrorException('Не указаны получатели!');
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'setTo']));
                 }
                 if (empty($messageArray['setSubject'])) {
-                    throw new ErrorException('Не указана тема письма!');
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'setSubject']));
                 }
             
                 $message = \Yii::$app->mailer->compose();
@@ -69,7 +69,7 @@ class MailHelper
                 self::$_messages[] = $message;
             }
             if (empty(self::$_messages)) {
-                throw new ErrorException('Массив готовых к отправке писем пуст!');
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Array $_messages']));
             }
             \Yii::$app->mailer->sendMultiple(self::$_messages);
             return true;

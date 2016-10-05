@@ -6,7 +6,8 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use yii\db\Transaction;
 use app\controllers\AbstractBaseController;
-use app\helpers\InstancesHelper;
+use app\helpers\{MailHelper,
+    InstancesHelper};
 use app\models\{EmailsMailingListModel,
     EmailsModel,
     MailingListModel,
@@ -32,7 +33,7 @@ class UserController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate()) {
                     $usersModel = UsersModel::find()->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'])->innerJoin('emails', '[[users.id_email]]=[[emails.id]]')->where(['emails.email'=>$rawEmailsModel->email])->one();
-                    if (!is_object($usersModel) || !$usersModel instanceof UsersModel) {
+                    if (!$usersModel instanceof UsersModel) {
                         $rawEmailsModel->addError('email', \Yii::t('base', 'Account with this email does not exist!'));
                     }
                     
@@ -103,7 +104,9 @@ class UserController extends AbstractBaseController
                         if (!$emailsModel instanceof EmailsModel) {
                             throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
                         }
+                        
                         $rawUsersModel->id_email = $emailsModel->id;
+                        $rawUsersModel->password = password_hash($rawUsersModel->password, PASSWORD_DEFAULT);
                         
                         if (!$rawUsersModel->save()) {
                             throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'UsersModel::save']));
@@ -116,9 +119,26 @@ class UserController extends AbstractBaseController
                         \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $usersModel->id);
                         
                         if (!empty($rawMailingListModel->id)) {
-                            if (!$result = EmailsMailingListModel::batchInsert($rawMailingListModel, $emailsModel)) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));
+                            $diff = EmailsMailingListModel::batchInsert($rawMailingListModel, $emailsModel);
+                            if (!empty($diff)) {
+                                $subscribes = MailingListModel::find()->extendSelect(['name'])->where(['mailing_list.id'=>$diff])->all();
                             }
+                        }
+                        
+                        if (!MailHelper::send([
+                            [
+                                'template'=>'@theme/mail/registration-mail.twig', 
+                                'setFrom'=>['admin@shop.com'=>'Shop'], 
+                                'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 
+                                'setSubject'=>\Yii::t('base', 'Registration on shop.com'), 
+                                'dataForTemplate'=>[
+                                    'login'=>$rawEmailsModel->email, 
+                                    'password'=>$rawUsersModel->password,
+                                    'subscribes'=>isset($subscribes) ? $subscribes : false,
+                                ],
+                            ]
+                        ])) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
                         }
                         
                         $transaction->commit();

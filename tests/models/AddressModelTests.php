@@ -81,6 +81,48 @@ class AddressModelTests extends TestCase
         $this->assertEquals($fixture['postcode'], $model->postcode);
     }
     
+    /**
+     * Тестирует запрос на получение массива объектов
+     */
+    public function testGetAll()
+    {
+        $addressQuery = AddressModel::find();
+        $addressQuery->extendSelect(['id', 'address', 'city', 'country', 'postcode']);
+        
+        $queryRaw = clone $addressQuery;
+        
+        $expectedQuery = "SELECT `address`.`id`, `address`.`address`, `address`.`city`, `address`.`country`, `address`.`postcode` FROM `address`";
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $addressQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof AddressModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->address['address_1'];
+        
+        $addressQuery = AddressModel::find();
+        $addressQuery->extendSelect(['id', 'address', 'city', 'country', 'postcode']);
+        $addressQuery->where(['address.id'=>(int) $fixture['id']]);
+        
+        $queryRaw = clone $addressQuery;
+        
+        $expectedQuery = sprintf("SELECT `address`.`id`, `address`.`address`, `address`.`city`, `address`.`country`, `address`.`postcode` FROM `address` WHERE `address`.`id`=%d", $fixture['id']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $addressQuery->one();
+        
+        $this->assertTrue($result instanceof AddressModel);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

@@ -112,8 +112,27 @@ class SubcategoryModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение 1 объекта для 
-     * - app\widgets\BreadcrumbsWidget
+     * Тестирует запрос на получение массива объектов
+     */
+    public function testGetAll()
+    {
+        $subcategoryQuery = SubcategoryModel::find();
+        $subcategoryQuery->extendSelect(['id', 'name', 'seocode', 'id_category', 'active']);
+        
+        $queryRaw = clone $subcategoryQuery;
+        
+        $expectedQuery = "SELECT `subcategory`.`id`, `subcategory`.`name`, `subcategory`.`seocode`, `subcategory`.`id_category`, `subcategory`.`active` FROM `subcategory`";
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $subcategoryQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof SubcategoryModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта
      */
     public function testGetOne()
     {

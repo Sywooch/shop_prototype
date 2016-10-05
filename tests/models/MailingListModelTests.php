@@ -80,17 +80,16 @@ class MailingListModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение массива объектов для 
-     * - app\controllers\UserController
+     * Тестирует запрос на получение массива объектов
      */
     public function testGetAll()
     {
         $mailingListQuery = MailingListModel::find();
-        $mailingListQuery->extendSelect(['id', 'name']);
+        $mailingListQuery->extendSelect(['id', 'name', 'description']);
         
         $queryRaw = clone $mailingListQuery;
         
-        $expectedQuery = "SELECT `mailing_list`.`id`, `mailing_list`.`name` FROM `mailing_list`";
+        $expectedQuery = "SELECT `mailing_list`.`id`, `mailing_list`.`name`, `mailing_list`.`description` FROM `mailing_list`";
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -98,6 +97,28 @@ class MailingListModelTests extends TestCase
         
         $this->assertTrue(is_array($result));
         $this->assertTrue($result[0] instanceof MailingListModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->mailing_list['mailing_list_1'];
+        
+        $mailingListQuery = MailingListModel::find();
+        $mailingListQuery->extendSelect(['id', 'name', 'description']);
+        $mailingListQuery->where(['mailing_list.name'=>$fixture['name']]);
+        
+        $queryRaw = clone $mailingListQuery;
+        
+        $expectedQuery = sprintf("SELECT `mailing_list`.`id`, `mailing_list`.`name`, `mailing_list`.`description` FROM `mailing_list` WHERE `mailing_list`.`name`='%s'", $fixture['name']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $mailingListQuery->one();
+        
+        $this->assertTrue($result instanceof MailingListModel);
     }
     
     public static function tearDownAfterClass()

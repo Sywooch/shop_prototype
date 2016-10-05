@@ -83,10 +83,53 @@ class EmailsMailingListModelTests extends TestCase
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM [[emails_mailing_list]]')->queryAll()));
         
         $result = EmailsMailingListModel::batchInsert($mailingListModel, $emailsModel);
-        $this->assertTrue((bool) $result);
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
         
         $this->assertFalse(empty($result = \Yii::$app->db->createCommand('SELECT * FROM [[emails_mailing_list]]')->queryAll()));
         $this->assertEquals(2, count($result));
+    }
+    
+    /**
+     * Тестирует запрос на получение массива объектов
+     */
+    public function testGetAll()
+    {
+        $emailsMailingListQuery = EmailsMailingListModel::find();
+        $emailsMailingListQuery->extendSelect(['id_mailing_list', 'id_email']);
+        
+        $queryRaw = clone $emailsMailingListQuery;
+        
+        $expectedQuery = "SELECT `emails_mailing_list`.`id_mailing_list`, `emails_mailing_list`.`id_email` FROM `emails_mailing_list`";
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $emailsMailingListQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof EmailsMailingListModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->emails_mailing_list['emails_mailing_list_1'];
+        
+        $emailsMailingListQuery = EmailsMailingListModel::find();
+        $emailsMailingListQuery->extendSelect(['id_mailing_list', 'id_email']);
+        $emailsMailingListQuery->where(['emails_mailing_list.id_email'=>$fixture['id_email']]);
+        
+        $queryRaw = clone $emailsMailingListQuery;
+        
+        $expectedQuery = sprintf("SELECT `emails_mailing_list`.`id_mailing_list`, `emails_mailing_list`.`id_email` FROM `emails_mailing_list` WHERE `emails_mailing_list`.`id_email`=%d", $fixture['id_email']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $emailsMailingListQuery->one();
+        
+        $this->assertTrue($result instanceof EmailsMailingListModel);
     }
     
     public static function tearDownAfterClass()

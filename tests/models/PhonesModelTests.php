@@ -66,6 +66,48 @@ class PhonesModelTests extends TestCase
         $this->assertEquals($fixture['phone'], $model->phone);
     }
     
+    /**
+     * Тестирует запрос на получение массива объектов
+     */
+    public function testGetAll()
+    {
+        $phonesQuery = PhonesModel::find();
+        $phonesQuery->extendSelect(['id', 'phone']);
+        
+        $queryRaw = clone $phonesQuery;
+        
+        $expectedQuery = "SELECT `phones`.`id`, `phones`.`phone` FROM `phones`";
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $phonesQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof PhonesModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->phones['phone_1'];
+        
+        $phonesQuery = PhonesModel::find();
+        $phonesQuery->extendSelect(['id', 'phone']);
+        $phonesQuery->where(['phones.phone'=>$fixture['phone']]);
+        
+        $queryRaw = clone $phonesQuery;
+        
+        $expectedQuery = sprintf("SELECT `phones`.`id`, `phones`.`phone` FROM `phones` WHERE `phones`.`phone`='%s'", $fixture['phone']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $phonesQuery->one();
+        
+        $this->assertTrue($result instanceof PhonesModel);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

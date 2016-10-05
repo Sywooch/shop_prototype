@@ -10,6 +10,8 @@ require(__DIR__ . '/../vendor/yiisoft/yii2/Yii.php');
 $config = require(__DIR__ . '/../config/web.php');
 
 $config['components']['db'] = $config['components']['dbTest'];
+$config['components']['mailer']['useFileTransport'] = true;
+$config['components']['mailer']['fileTransportPath'] = '@app/tests/source/mail/letters';
 
 (new yii\web\Application($config));
 

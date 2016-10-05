@@ -111,18 +111,16 @@ class CategoriesModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение массива объектов для 
-     * - app\helpers\InstancesHelper
+     * Тестирует запрос на получение массива объектов
      */
     public function testGetAll()
     {
         $categoriesQuery = CategoriesModel::find();
         $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
-        $categoriesQuery->orderBy(['categories.name'=>SORT_DESC]);
         
         $queryRaw = clone $categoriesQuery;
         
-        $expectedQuery = "SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories` ORDER BY `categories`.`name` DESC";
+        $expectedQuery = "SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories`";
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -133,8 +131,7 @@ class CategoriesModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение 1 объекта для 
-     * - app\widgets\BreadcrumbsWidget
+     * Тестирует запрос на получение 1 объекта
      */
     public function testGetOne()
     {

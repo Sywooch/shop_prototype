@@ -38,12 +38,12 @@ class EmailsMailingListModel extends AbstractBaseModel
      * Выполняет пакетное сохранение
      * @param object $rawMailingListModel экземпляр MailingListModel
      * @param object $emailsModel экземпляр EmailsModel
-     * @return bool
+     * @return array
      */
     public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $emailsModel)
     {
         try {
-            $emailsMailingListList = self::find()->where(['emails_mailing_list.id_email'=>$emailsModel->id])->all();
+            $emailsMailingListList = self::find()->extendSelect(['id_mailing_list'])->where(['emails_mailing_list.id_email'=>$emailsModel->id])->all();
             $diff = array_diff($rawMailingListModel->id, ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
             if (!empty($diff)) {
                 $toRecord = [];
@@ -55,7 +55,7 @@ class EmailsMailingListModel extends AbstractBaseModel
                 }
             }
             
-            return true;
+            return $diff;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

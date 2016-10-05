@@ -161,6 +161,26 @@ class EmailsModelTests extends TestCase
     }
     
     /**
+     * Тестирует запрос на получение массива объектов
+     */
+    public function testGetAll()
+    {
+        $emailsQuery = EmailsModel::find();
+        $emailsQuery->extendSelect(['id', 'email']);
+        
+        $queryRaw = clone $emailsQuery;
+        
+        $expectedQuery = "SELECT `emails`.`id`, `emails`.`email` FROM `emails`";
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $emailsQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof EmailsModel);
+    }
+    
+    /**
      * Тестирует запрос на получение 1 объекта
      */
     public function testGetOne()
@@ -181,49 +201,6 @@ class EmailsModelTests extends TestCase
         
         $this->assertTrue(is_object($result));
         $this->assertTrue($result instanceof EmailsModel);
-    }
-    
-    /**
-     * Тестирует запрос, проверяющий существование объекта для 
-     * - app\validators\EmailExistsAuthValidator
-     */
-    public function testGetExists()
-    {
-        $fixture = self::$_dbClass->emails['email_1'];
-        
-        $emailsQuery = EmailsModel::find();
-        $emailsQuery->innerJoin('users', '[[emails.id]]=[[users.id_email]]');
-        $emailsQuery->where(['emails.email'=>$fixture['email']]);
-        
-        $queryRaw = clone $emailsQuery;
-        
-        $expectedQuery = sprintf("SELECT `emails`.* FROM `emails` INNER JOIN `users` ON `emails`.`id`=`users`.`id_email` WHERE `emails`.`email`='%s'", $fixture['email']);
-        
-        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
-        
-        $result = $emailsQuery->exists();
-        
-        $this->assertTrue($result);
-    }
-    
-    /**
-     * Тестирует запрос, проверяющий существование объекта для 
-     * - app\validators\EmailExistsCreateValidator
-     */
-    public function testGetExistsTwo()
-    {
-        $emailsQuery = EmailsModel::find();
-        $emailsQuery->where(['emails.email'=>'some@some.com']);
-        
-        $queryRaw = clone $emailsQuery;
-        
-        $expectedQuery = sprintf("SELECT * FROM `emails` WHERE `emails`.`email`='%s'", 'some@some.com');
-        
-        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
-        
-        $result = $emailsQuery->exists();
-        
-        $this->assertFalse($result);
     }
     
     public static function tearDownAfterClass()

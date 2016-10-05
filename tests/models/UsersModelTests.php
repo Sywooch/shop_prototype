@@ -173,46 +173,39 @@ class UsersModelTests extends TestCase
     }
     
     /**
-     * Тестирует запрос на получение 1 объекта 
-     * в процессе авторизации для 
-     * - app\controllers\UserController
+     * Тестирует запрос на получение массива объектов
      */
-    public function testGetOne()
+    public function testGetAll()
     {
-        $fixtureEmail = self::$_dbClass->emails['email_1'];
-        
         $usersQuery = UsersModel::find();
         $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
-        $usersQuery->innerJoin('emails', '[[users.id_email]]=[[emails.id]]');
-        $usersQuery->where(['emails.email'=>$fixtureEmail['email']]);
         
         $queryRaw = clone $usersQuery;
         
-        $expectedQuery = sprintf("SELECT `users`.`id`, `users`.`id_email`, `users`.`password`, `users`.`name`, `users`.`surname`, `users`.`id_phone`, `users`.`id_address` FROM `users` INNER JOIN `emails` ON `users`.`id_email`=`emails`.`id` WHERE `emails`.`email`='%s'", $fixtureEmail['email']);
+        $expectedQuery = "SELECT `users`.`id`, `users`.`id_email`, `users`.`password`, `users`.`name`, `users`.`surname`, `users`.`id_phone`, `users`.`id_address` FROM `users`";
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
-        $result = $usersQuery->one();
+        $result = $usersQuery->all();
         
-        $this->assertTrue($result instanceof UsersModel);
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof UsersModel);
     }
     
     /**
      * Тестирует запрос на получение 1 объекта 
-     * в процессе регистрации
-     * - app\controllers\UserController
      */
-    public function testGetOneTwo()
+    public function testGetOne()
     {
         $fixture = self::$_dbClass->users['user_1'];
         
         $usersQuery = UsersModel::find();
-        $usersQuery->extendSelect(['id']);
+        $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
         $usersQuery->where(['users.id_email'=>$fixture['id_email']]);
         
         $queryRaw = clone $usersQuery;
         
-        $expectedQuery = sprintf("SELECT `users`.`id` FROM `users` WHERE `users`.`id_email`=%d", $fixture['id_email']);
+        $expectedQuery = sprintf("SELECT `users`.`id`, `users`.`id_email`, `users`.`password`, `users`.`name`, `users`.`surname`, `users`.`id_phone`, `users`.`id_address` FROM `users` WHERE `users`.`id_email`=%d", $fixture['id_email']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         

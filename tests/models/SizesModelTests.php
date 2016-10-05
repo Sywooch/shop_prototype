@@ -66,6 +66,48 @@ class SizesModelTests extends TestCase
         $this->assertEquals($fixture['size'], $model->size);
     }
     
+    /**
+     * Тестирует запрос на получение массива объектов
+     */
+    public function testGetAll()
+    {
+        $sizesQuery = SizesModel::find();
+        $sizesQuery->extendSelect(['id', 'size']);
+        
+        $queryRaw = clone $sizesQuery;
+        
+        $expectedQuery = "SELECT `sizes`.`id`, `sizes`.`size` FROM `sizes`";
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $sizesQuery->all();
+        
+        $this->assertTrue(is_array($result));
+        $this->assertTrue($result[0] instanceof SizesModel);
+    }
+    
+    /**
+     * Тестирует запрос на получение 1 объекта
+     */
+    public function testGetOne()
+    {
+        $fixture = self::$_dbClass->sizes['size_1'];
+        
+        $sizesQuery = SizesModel::find();
+        $sizesQuery->extendSelect(['id', 'size']);
+        $sizesQuery->where(['sizes.size'=>$fixture['size']]);
+        
+        $queryRaw = clone $sizesQuery;
+        
+        $expectedQuery = sprintf("SELECT `sizes`.`id`, `sizes`.`size` FROM `sizes` WHERE `sizes`.`size`=%d", $fixture['size']);
+        
+        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+        
+        $result = $sizesQuery->one();
+        
+        $this->assertTrue($result instanceof SizesModel);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();
