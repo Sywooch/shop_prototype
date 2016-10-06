@@ -1,0 +1,24 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{% include('@theme/base/user-info.twig') %}
+
+{% include '@theme/base/search.twig' %}
+
+{% include('@theme/base/menu.twig') %}
+
+{% include('@theme/base/breadcrumbs.twig') %}
+
+<p><strong>{{ yii.t('base', 'Password change') }}</strong></p>
+
+{% if allow %}
+    {{ use('yii/widgets/ActiveForm') }}
+    
+    {% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:''}), method: 'POST'}) %}
+        {{ form.field(usersModel, 'password').passwordInput().label(yii.t('base', 'New password')) | raw }}
+        {{ form.field(usersModelConfirm, 'password').passwordInput().label(yii.t('base', 'Confirm password')) | raw }}
+        <input type="submit" value="{{ yii.t('base', 'Send') }}" />
+    {{ active_form_end() }}
+{% else %}
+    <p>{{ yii.t('base', 'Unfortunately, the link you\'ve followed is invalid. To solve this problem you can contact the administrator') }}</p>
+{% endif %}
+

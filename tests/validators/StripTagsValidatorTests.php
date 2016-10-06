@@ -3,7 +3,6 @@
 namespace app\tests\validators;
 
 use PHPUnit\Framework\TestCase;
-use app\tests\MockObject;
 use app\validators\StripTagsValidator;
 
 /**
@@ -51,7 +50,13 @@ class StripTagsValidatorTests extends TestCase
         $result = $validator->validate(self::$_withJavascriptRequireTags);
         $this->assertEquals(self::$_withoutJavascriptRequireTags, $result);
         
-        $model = new MockObject(['description'=>self::$_withHtmlTags]);
+        $model = new class(['description'=>self::$_withHtmlTags]) extends \yii\base\Object{
+            public $description;
+            public static function className()
+            {
+                return 'app\tests\MockObject';
+            }
+        };
         $validator = new StripTagsValidator();
         $validator->allowable_tags = '<p></p><ul></ul><li></li><strong></strong>';
         $validator->exceptProreties = ['app\tests\MockObject::description'];

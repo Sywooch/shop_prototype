@@ -18,6 +18,9 @@ $params = [
     
     # Компоненты Breadcrumbs
     'breadcrumbs'=>[],
+    
+    # Хэш
+    'hashSalt'=>'l2WYXNJwH=B*GPW;0R&H', # строка данных, которая передаётся хеш-функции
 ];
 
 return $params;

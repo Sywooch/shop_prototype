@@ -3,7 +3,6 @@
 namespace app\tests\widgets;
 
 use yii\data\Pagination;
-use app\tests\MockObject;
 use app\widgets\PaginationWidget;
 
 /**
@@ -32,7 +31,9 @@ class PaginationWidgetTests extends \PHPUnit_Framework_TestCase
     {
         $_GET = ['page'=>self::$_page];
         
-        \Yii::$app->controller = new MockObject();
+        \Yii::$app->controller = new class {
+            public function getRoute() {}
+        };
         
         $result = PaginationWidget::widget(['paginator'=>self::$_paginator, 'pageRange'=>3]);
         
