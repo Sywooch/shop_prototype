@@ -8,7 +8,8 @@ use yii\db\Transaction;
 use app\controllers\AbstractBaseController;
 use app\helpers\{HashHelper,
     MailHelper,
-    InstancesHelper};
+    InstancesHelper,
+    SessionHelper};
 use app\models\{EmailsMailingListModel,
     EmailsModel,
     MailingListModel,
@@ -190,6 +191,10 @@ class UserController extends AbstractBaseController
                     if (!$usersModel instanceof UsersModel || $usersModel->id_email != $emailsModel->id) {
                         throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UsersModel']));
                     }
+                    $salt = random_bytes(12);
+                    if (!SessionHelper::writeFlash('restore.' . $emailsModel->email, $salt)) {
+                        throw new ErrorException(\Yii::t('base', 'Method error {placeholder}!', ['placeholder'=>'SessionHelper::writeFlash']));
+                    }
                     if (!MailHelper::send([
                         [
                             'template'=>'@theme/mail/forgot-mail.twig', 
@@ -198,7 +203,7 @@ class UserController extends AbstractBaseController
                             'setSubject'=>\Yii::t('base', 'Password restore to shop.com'), 
                             'dataForTemplate'=>[
                                 'email'=>$emailsModel->email,
-                                'restoreKey'=>HashHelper::createHash([$emailsModel->email, $emailsModel->id, $usersModel->id]),
+                                'restoreKey'=>HashHelper::createHash([$emailsModel->email, $emailsModel->id, $usersModel->id, $salt]),
                             ],
                         ]
                     ])) {
@@ -235,7 +240,8 @@ class UserController extends AbstractBaseController
                 $emailsModel = EmailsModel::find()->extendSelect(['id', 'email'])->where(['emails.email'=>\Yii::$app->request->get('email')])->one();
                 $usersModel = UsersModel::find()->extendSelect(['id'])->where(['users.id_email'=>$emailsModel->id])->one();
                 
-                $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $usersModel->id]);
+                $salt = SessionHelper::readFlash('restore.' . $emailsModel->email);
+                $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $usersModel->id, $salt]);
                 $renderArray['allow'] = ($expectedHash == \Yii::$app->request->get('key')) ? true : false;
             }
             
