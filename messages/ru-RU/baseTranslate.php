@@ -24,19 +24,21 @@ $translate = [
     'Hello! This is information about your account!'=>'Привет! Это информация о вашем аккаунте!',
     'You can operate it in his <a href="{href}">personal account</a>'=>'Вы можете управлять им в своем <a href="{href}">личном кабинете</a>',
     'Your username: {placeholder}'=>'Ваш логин: {placeholder}',
-    'login:'=>'логин:',
-    'password:'=>'пароль:',
     'You also subscribed to the list:'=>'Вы также подписались на рассылки:',
     'Every week you\'ll get reviews of new products, discounts and special offers for subscribers!'=>'Еженедельно вы будете получать обзоры новых товаров, скидки и специальные предложения для подписчиков!',
     'If you wish to unsubscribe, click here'=>'Если вы хотите отписаться от рассылки, перейдите по этой ссылке',
     'Registration on shop.com'=>'Регистрация на shop.com',
-    'If you forgot your password, <a href="{href}">click here to create a new</a>'=>'Если вы забыли свой пароль, <a href="{href}">нажмите здесь, чтобы создать новый</a>',
-    'Password change'=>'Замена пароля',
+    'Password restore'=>'Восстановление пароля',
     'Send'=>'Отправить',
     'New password'=>'Новый пароль',
     'Confirm password'=>'Повторите пароль',
     'Unfortunately, the link you\'ve followed is invalid. To solve this problem you can contact the administrator'=>'К сожалению, ссылка по которой вы перешли недействительна. Для решения этой проблемы вы можете обратиться к администратору',
     'Forgot your password?'=>'Забыли пароль?',
+    'Password restore to shop.com'=>'Восстановление пароля к shop.com',
+    'Hello! You have requested to restore the password to chop.com'=>'Привет! Вы отправили запрос на восстановление пароля к chop.com',
+    'To restore the password, click on the link <a href="{href}">restore password</a>'=>'Чтобы восстановить пароль, перейдите по ссылке <a href="{href}">восстановить пароль</a>',
+    'Instructions for restoring the password sent to {email}'=>'Инструкции о восстановлении пароля отправлены на {email}'
+    
 ];
 
 return $translate;

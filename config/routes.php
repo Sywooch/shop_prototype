@@ -15,6 +15,7 @@ $routes = [
     'logout'=>'user/logout',
     'registration'=>'user/registration',
     'restore'=>'user/restore',
+    'forgot'=>'user/forgot',
     
     # Вывод одного товара
     '<product-seocode>'=>'product-detail/index', #!!! Make Class!

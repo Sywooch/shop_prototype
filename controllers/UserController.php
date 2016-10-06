@@ -133,9 +133,8 @@ class UserController extends AbstractBaseController
                                 'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 
                                 'setSubject'=>\Yii::t('base', 'Registration on shop.com'), 
                                 'dataForTemplate'=>[
-                                    'username'=>$rawEmailsModel->email,
+                                    'email'=>$rawEmailsModel->email,
                                     'subscribes'=>isset($subscribes) ? $subscribes : false,
-                                    'restoreKey'=>HashHelper::createHash([$emailsModel->email, $emailsModel->id, $usersModel->id]),
                                 ],
                             ]
                         ])) {
@@ -171,7 +170,57 @@ class UserController extends AbstractBaseController
     }
     
     /**
-     * Управляет процессом восстановления пароля
+     * Управляет процессом отправки ссылки для смены пароля
+     * @return string
+     */
+    public function actionForgot()
+    {
+        try {
+            $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
+            
+            $renderArray = array();
+            
+            if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post())) {
+                if ($rawEmailsModel->validate()) {
+                    $emailsModel = EmailsModel::find()->extendSelect(['id', 'email'])->where(['emails.email'=>$rawEmailsModel->email])->one();
+                    if (!$emailsModel instanceof EmailsModel || $emailsModel->email != $rawEmailsModel->email) {
+                        throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
+                    }
+                    $usersModel = UsersModel::find()->extendSelect(['id', 'id_email'])->where(['users.id_email'=>$emailsModel->id])->one();
+                    if (!$usersModel instanceof UsersModel || $usersModel->id_email != $emailsModel->id) {
+                        throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UsersModel']));
+                    }
+                    if (!MailHelper::send([
+                        [
+                            'template'=>'@theme/mail/forgot-mail.twig', 
+                            'setFrom'=>['admin@shop.com'=>'Shop'], 
+                            'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 
+                            'setSubject'=>\Yii::t('base', 'Password restore to shop.com'), 
+                            'dataForTemplate'=>[
+                                'email'=>$emailsModel->email,
+                                'restoreKey'=>HashHelper::createHash([$emailsModel->email, $emailsModel->id, $usersModel->id]),
+                            ],
+                        ]
+                    ])) {
+                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
+                    }
+                    $renderArray['sent'] = true;
+                }
+            }
+            
+            $renderArray['emailsModel'] = $rawEmailsModel;
+            
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
+            
+            return $this->render('forgot.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+        } catch (\Exception $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            $this->throwException($e, __METHOD__);
+        }
+    }
+    
+    /**
+     * Управляет процессом замены пароля при восстановлении
      * @return string
      */
     public function actionRestore()
@@ -193,7 +242,7 @@ class UserController extends AbstractBaseController
             $renderArray['usersModel'] = $rawUsersModel;
             $renderArray['usersModelConfirm'] = $rawUsersModelConfirm;
             
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password change')];
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
             
             return $this->render('restore.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Exception $e) {

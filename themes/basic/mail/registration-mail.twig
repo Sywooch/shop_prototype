@@ -1,10 +1,8 @@
 
 <h1>{{ yii.t('base', 'Hello! This is information about your account!') }}</h2>
 
-<p>{{ yii.t('base', 'You can operate it in his <a href="{href}">personal account</a>', {'href':url.to({0:'/user/login'}, true)}) | raw }}</p>
-
-<p>{{ yii.t('base', 'Your username: {placeholder}', {'placeholder':username}) }}</p>
-<p>{{ yii.t('base', 'If you forgot your password, <a href="{href}">click here to create a new</a>', {'href':url.to({0:'/user/restore', 'email':username, 'key':restoreKey}, true)}) | raw }}</p>
+<p>{{ yii.t('base', 'You can operate it in his <a href="{href}">personal account</a>', {'href':url.to({0:'/user/login'}, true)}) | raw }}
+<br>{{ yii.t('base', 'Your username: {email}', {'email':email}) }}</p>
 
 {% if subscribes %}
     <p>{{ yii.t('base', 'You also subscribed to the list:') }}</p>
