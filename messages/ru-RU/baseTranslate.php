@@ -37,8 +37,9 @@ $translate = [
     'Password restore to shop.com'=>'Восстановление пароля к shop.com',
     'Hello! You have requested to restore the password to chop.com'=>'Привет! Вы отправили запрос на восстановление пароля к chop.com',
     'To restore the password, click on the link <a href="{href}">restore password</a>'=>'Чтобы восстановить пароль, перейдите по ссылке <a href="{href}">восстановить пароль</a>',
-    'Instructions for restoring the password sent to {email}'=>'Инструкции о восстановлении пароля отправлены на {email}'
-    
+    'Instructions for restoring the password sent to {email}'=>'Инструкции о восстановлении пароля отправлены на {email}',
+    'Your password was successfully changed!'=>'Ваш пароль был успешно изменен!',
+    'Passwords do not match!'=>'Пароли не совпадают!'
 ];
 
 return $translate;

@@ -34,6 +34,8 @@ class m160913_172703_create_users_table extends Migration
     {
         $this->dropForeignKey('users_id_email', 'users');
         
+        $this->dropIndex('id_email', 'users');
+        
         $this->dropTable('users');
     }
 }
