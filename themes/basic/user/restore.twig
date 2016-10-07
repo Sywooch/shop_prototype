@@ -14,8 +14,8 @@
     {{ use('yii/widgets/ActiveForm') }}
     
     {% set form = active_form_begin({'id': 'join-form', 'action': url.to({0:''}), method: 'POST'}) %}
-        {{ form.field(usersModel, 'password').passwordInput().label(yii.t('base', 'New password')) | raw }}
-        {{ form.field(usersModelConfirm, 'password').passwordInput().label(yii.t('base', 'Confirm password')) | raw }}
+        {{ form.field(usersModel[0], '[0]password').passwordInput().label(yii.t('base', 'New password')) | raw }}
+        {{ form.field(usersModel[1], '[1]password').passwordInput().label(yii.t('base', 'Confirm password')) | raw }}
         <input type="submit" value="{{ yii.t('base', 'Send') }}" />
     {{ active_form_end() }}
 {% else %}
