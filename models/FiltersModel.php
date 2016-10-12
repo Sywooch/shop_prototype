@@ -9,30 +9,16 @@ use yii\base\Model;
  */
 class FiltersModel extends Model
 {
+    public $sortingField;
+    public $sortingType;
     public $colors = array();
     public $sizes = array();
     public $brands = array();
     
-    public $sortingField;
-    public $sortingType;
-    
-    /**
-     * Свойства содержат данные для редиректа после обработки запроса
-     */
-    public $category = '';
-    public $subcategory = '';
-    public $search = '';
-    
-    /**
-     * Свойства для фильтрации активных/неактивных товаров в административном разделе
-     */
-    public $getActive = true;
-    public $getNotActive = true;
-    
     public function rules()
     {
         return [
-            [['colors', 'sizes', 'brands', 'sortingField', 'sortingType', 'category', 'subcategory', 'search', 'getActive', 'getNotActive'], 'safe'],
+            [['sortingField', 'sortingType', 'colors', 'sizes', 'brands'], 'safe'],
         ];
     }
     
@@ -43,29 +29,11 @@ class FiltersModel extends Model
     public function clean()
     {
         try {
+            $this->sortingField = '';
+            $this->sortingType = '';
             $this->colors = array();
             $this->sizes = array();
             $this->brands = array();
-            $this->sortingField = '';
-            $this->sortingType = '';
-            $this->getActive = true;
-            $this->getNotActive = true;
-            return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
-        }
-    }
-    
-    /**
-     * Обнуляет значение свойств, необходимых для построения URL
-     * @return boolean
-     */
-    public function cleanOther()
-    {
-        try {
-            $this->category = '';
-            $this->subcategory = '';
-            $this->search = '';
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

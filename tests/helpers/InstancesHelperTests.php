@@ -5,7 +5,8 @@ namespace app\tests\helpers;
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
 use app\helpers\InstancesHelper;
-use app\models\CategoriesModel;
+use app\models\{CategoriesModel,
+    FiltersModel};
 
 /**
  * Тестирует класс app\helpers\InstancesHelper
@@ -37,6 +38,9 @@ class InstancesHelperTests extends TestCase
         $this->assertTrue(array_key_exists('categoriesList', $result));
         $this->assertTrue(is_array($result['categoriesList']));
         $this->assertTrue($result['categoriesList'][0] instanceof CategoriesModel);
+        
+        $this->assertTrue(array_key_exists('filtersModel', $result));
+        $this->assertTrue($result['filtersModel'] instanceof FiltersModel);
     }
     
     public static function tearDownAfterClass()

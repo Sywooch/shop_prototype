@@ -22,6 +22,7 @@ $translate = [
     "Removing RBAC authorization data...\n"=>"Удаление данных авторизации RBAC...\n",
     "Error removing RBAC!\n"=>"Ошибка при удалении RBAC!\n",
     "Removing an authorization RBAC successfully completed!\n"=>"Удаление данных авторизации RBAC успешно завершено!\n",
+    'Method error {placeholder}!'=>'Ошибка при вызове метода {placeholder}!',
 ];
 
 return $translate;

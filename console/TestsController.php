@@ -4,6 +4,7 @@ namespace app\console;
 
 use yii\console\Controller;
 use yii\helpers\Console;
+use yii\base\ErrorException;
 use app\exceptions\ExceptionsTrait;
 
 class TestsController extends Controller
@@ -17,11 +18,22 @@ class TestsController extends Controller
     /**
      * @var string имя профиля, созданного коммандой mysql_config_editor
      */
-    public $_loginPath = 'root';
+    public $loginPath = 'yii';
     /**
      * @var string имя тестовой БД, которая будет создана
      */
-    private $_testDbName = 'shop_test';
+    public $testDbName = 'shop_test';
+    /**
+     * @var int код возврата exec
+     * - 0 в случае успешного выполнения
+     * - 1 в случае некритичных ошибок
+     * - 2 в случае критичных системных ошибок
+     */
+    private $_returnCode;
+    /**
+     * @var массив будет заполнен строками вывода программы
+     */
+    private $_outputArray = [];
     
     public function init()
     {
@@ -37,7 +49,7 @@ class TestsController extends Controller
     public function options($actionID)
     {
         try {
-            return ['db'];
+            return ['db', 'loginPath', 'testDbName'];
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }
@@ -50,21 +62,27 @@ class TestsController extends Controller
     public function actionSet()
     {
         try {
-            $this->stdout(\Yii::t('base/console', "Create database {database}...\n", ['database'=>$this->_testDbName]));
+            $this->stdout(\Yii::t('base/console', "Create database {database}...\n", ['database'=>$this->testDbName]));
             
-            $cmd = sprintf("mysql --login-path=%s -e 'CREATE DATABASE IF NOT EXISTS %s'",$this->_loginPath, $this->_testDbName);
-            exec($cmd);
+            $cmd = sprintf("mysql --login-path=%s -e 'CREATE DATABASE IF NOT EXISTS %s'", $this->loginPath, $this->testDbName);
+            exec($cmd, $this->_outputArray, $this->_returnCode);
+            if ($this->_returnCode != 0) {
+                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>"CREATE DATABASE $this->testDbName"]));
+            }
             
-            $this->stdout(\Yii::t('base/console', "Apply migrations...\n", ['database'=>$this->_testDbName]));
+            $this->stdout(\Yii::t('base/console', "Apply migrations...\n", ['database'=>$this->testDbName]));
             
             $cmd = sprintf("/var/www/html/shop/yii migrate --db=%s --interactive=0", $this->db);
-            exec($cmd);
+            exec($cmd, $this->_outputArray, $this->_returnCode);
+            if ($this->_returnCode != 0) {
+                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>"Apply migrations"]));
+            }
             
-            $this->stdout(\Yii::t('base/console', "Database {database} created successfully, migrations applied!\n", ['database'=>$this->_testDbName]));
+            $this->stdout(\Yii::t('base/console', "Database {database} created successfully, migrations applied!\n", ['database'=>$this->testDbName]));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
-            $this->stderr(\Y::t('base/console', "Error creating database {database}!\n", ['database'=>$this->_testDbName]), Console::FG_RED);
+            $this->stderr(\Yii::t('base/console', "Error creating database {database}!\n", ['database'=>$this->testDbName]) . $e->getMessage() . "\n", Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }
@@ -75,21 +93,27 @@ class TestsController extends Controller
     public function actionUnset()
     {
         try {
-            $this->stdout(\Yii::t('base/console', "Erase migrations...\n", ['database'=>$this->_testDbName]));
+            $this->stdout(\Yii::t('base/console', "Erase migrations...\n", ['database'=>$this->testDbName]));
             
             $cmd = sprintf("/var/www/html/shop/yii migrate/down --db=%s --interactive=0", $this->db);
-            exec($cmd);
+            exec($cmd, $this->_outputArray, $this->_returnCode);
+            if ($this->_returnCode != 0) {
+                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>"Erase migrations"]));
+            }
             
-            $this->stdout(\Yii::t('base/console', "Delete database {database}...\n", ['database'=>$this->_testDbName]));
+            $this->stdout(\Yii::t('base/console', "Delete database {database}...\n", ['database'=>$this->testDbName]));
             
-            $cmd = sprintf("mysql --login-path=%s -e 'DROP DATABASE %s'", $this->_loginPath, $this->_testDbName);
-            exec($cmd);
+            $cmd = sprintf("mysql --login-path=%s -e 'DROP DATABASE %s'", $this->loginPath, $this->testDbName);
+            exec($cmd, $this->_outputArray, $this->_returnCode);
+            if ($this->_returnCode != 0) {
+                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>"DROP DATABASE $this->testDbName"]));
+            }
             
-            $this->stdout(\Yii::t('base/console', "Migrations erased, database {database} deleted successfully!\n", ['database'=>$this->_testDbName]));
+            $this->stdout(\Yii::t('base/console', "Migrations erased, database {database} deleted successfully!\n", ['database'=>$this->testDbName]));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Exception $e) {
             $this->writeErrorInLogs($e, __METHOD__);
-            $this->stderr(\Y::t('base/console', "Error delete database {database}!\n", ['database'=>$this->_testDbName]), Console::FG_RED);
+            $this->stderr(\Yii::t('base/console', "Error delete database {database}!\n", ['database'=>$this->testDbName]) . $e->getMessage() . "\n", Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }
@@ -100,7 +124,9 @@ class TestsController extends Controller
     private function escapeArgs()
     {
         try {
-            $this->_testDbName = escapeshellcmd(escapeshellarg($this->_testDbName));
+            $this->db = escapeshellcmd(escapeshellarg($this->db));
+            $this->loginPath = escapeshellcmd(escapeshellarg($this->loginPath));
+            $this->testDbName = escapeshellcmd(escapeshellarg($this->testDbName));
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);
         }

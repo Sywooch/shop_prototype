@@ -35,11 +35,15 @@ $translate = [
     'Unfortunately, the link you\'ve followed is invalid. To solve this problem you can contact the administrator'=>'К сожалению, ссылка по которой вы перешли недействительна. Для решения этой проблемы вы можете обратиться к администратору',
     'Forgot your password?'=>'Забыли пароль?',
     'Password restore to shop.com'=>'Восстановление пароля к shop.com',
-    'Hello! You have requested to restore the password to chop.com'=>'Привет! Вы отправили запрос на восстановление пароля к chop.com',
+    'Hello! You have requested to restore the password to shop.com'=>'Привет! Вы отправили запрос на восстановление пароля к shop.com',
     'To restore the password, click on the link <a href="{href}">restore password</a>'=>'Чтобы восстановить пароль, перейдите по ссылке <a href="{href}">восстановить пароль</a>',
     'Instructions for restoring the password sent to {email}'=>'Инструкции о восстановлении пароля отправлены на {email}',
     'Your password was successfully changed!'=>'Ваш пароль был успешно изменен!',
-    'Passwords do not match!'=>'Пароли не совпадают!'
+    'Passwords do not match!'=>'Пароли не совпадают!',
+    'Sorting by date'=>'Сортировать по дате',
+    'Sorting by price'=>'Сортировать по цене',
+    'Sort descending'=>'Сортировать по убыванию',
+    'Sort ascending'=>'Сортировать по возрастанию',
 ];
 
 return $translate;

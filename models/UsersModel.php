@@ -76,7 +76,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public static function findIdentity($id)
     {
         try {
-            $usersModel = static::findOne($id);
+            $usersModel = self::findOne($id);
             if ($usersModel instanceof UsersModel) {
                 return $usersModel;
             }
