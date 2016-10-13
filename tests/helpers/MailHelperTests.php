@@ -38,7 +38,7 @@ class MailHelperTests extends \PHPUnit_Framework_TestCase
         
         $result = MailHelper::send([$messageArray]);
         
-        $this->assertTrue($result);
+        $this->assertEquals(1, $result);
         
         $emlFiles = glob(self::$_saveDir . '/*.eml');
         

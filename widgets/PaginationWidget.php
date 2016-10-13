@@ -84,7 +84,7 @@ class PaginationWidget extends Widget
      * Конструирует HTML строку пагинации
      * @return string
      */
-    public function run()
+    public function run(): string
     {
         try {
             if ($this->paginator->pageCount < 2) {

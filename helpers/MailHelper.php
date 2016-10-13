@@ -29,8 +29,9 @@ class MailHelper
      * - setSubject - string тема письма
      * - dataForTemplate - array данные для генерации шаблона
      * - template, setFrom, setTo, setSubject являются обязательными
+     * @return int количество отправленных писем
      */
-    public static function send(Array $messagesArray)
+    public static function send(Array $messagesArray): int
     {
         try {
             if (empty($messagesArray)) {
@@ -71,8 +72,10 @@ class MailHelper
             if (empty(self::$_messages)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Array $_messages']));
             }
-            \Yii::$app->mailer->sendMultiple(self::$_messages);
-            return true;
+            
+            $sent = \Yii::$app->mailer->sendMultiple(self::$_messages);
+            
+            return $sent;
         } catch (\Exception $e) {
             ExceptionsTrait::throwStaticException($e, __METHOD__);
         }

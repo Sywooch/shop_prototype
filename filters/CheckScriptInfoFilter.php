@@ -20,7 +20,7 @@ class CheckScriptInfoFilter extends ActionFilter
      * @param $result результирующая строка перед отправкой в браузер клиента
      * @return string модифицированная строка ответа
      */
-    public function afterAction($action, $result)
+    public function afterAction($action, $result): string
     {
         try {
             if (is_string($result) && strpos($result, '</body>')) {

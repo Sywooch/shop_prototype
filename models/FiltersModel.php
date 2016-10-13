@@ -29,7 +29,7 @@ class FiltersModel extends Model
     
     /**
      * Обнуляет значение всех свойств, очищая фильтры
-     * @return boolean
+     * @return bool
      */
     public function clean()
     {
@@ -39,6 +39,7 @@ class FiltersModel extends Model
             $this->colors = array();
             $this->sizes = array();
             $this->brands = array();
+            
             return true;
         } catch (\Exception $e) {
             $this->throwException($e, __METHOD__);

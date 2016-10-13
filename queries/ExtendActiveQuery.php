@@ -23,7 +23,7 @@ class ExtendActiveQuery extends ActiveQuery
      * Добавляет ограничения по условиям OFFSET LIMIT
      * @return object ExtendActiveQuery
      */
-    public function extendLimit()
+    public function extendLimit(): ActiveQuery
     {
         try {
             if (empty($this->paginator) || !$this->paginator instanceof Pagination) {
@@ -60,7 +60,7 @@ class ExtendActiveQuery extends ActiveQuery
      * Поля, сылающиеся на связанные таблицы носят имена id_product, id_brand
      * @return object ExtendActiveQuery
      */
-    public function addFilters()
+    public function addFilters(): ActiveQuery
     {
         try {
             if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->attributes)))) {
@@ -84,7 +84,7 @@ class ExtendActiveQuery extends ActiveQuery
      * Добавляет список полей выборки, дополняя их именем таблицы
      * @return object ExtendActiveQuery
      */
-    public function extendSelect(array $fields=[])
+    public function extendSelect(array $fields=[]): ActiveQuery
     {
         try {
             if (!empty($fields)) {
