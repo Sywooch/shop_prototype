@@ -5,8 +5,10 @@ namespace app\queries;
 use yii\base\ErrorException;
 use yii\db\ActiveQuery;
 use yii\helpers\ArrayHelper;
-use app\models\{ColorsModel,
-    ProductsModel};
+use app\models\{BrandsModel,
+    ColorsModel,
+    ProductsModel,
+    SizesModel};
 
 /**
  * Коллекция методов для конструирования Query объектов 
@@ -63,8 +65,7 @@ trait QueryTrait
     
     /**
      * Конструирует ActiveQuery для выборки объектов 
-     * ColorsModel в контексте фильтрации выборки списка продуктов
-     * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
+     * ColorsModel в контексте фильтрации выборки ProductsModel
      * @return ActiveQuery
      */
     private function colorsListQuery(): ActiveQuery
@@ -74,21 +75,142 @@ trait QueryTrait
             $colorsQuery->extendSelect(['id', 'color']);
             $colorsQuery->distinct();
             $colorsQuery->innerJoin('products_colors', '[[colors.id]]=[[products_colors.id_color]]');
-            
             if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
-                $productsQuery = ProductsModel::find();
-                $productsQuery->extendSelect(['id']);
-                $productsQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
-                $productsQuery->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                $colorsQuery->innerJoin('products', '[[products_colors.id_product]]=[[products.id]]');
+                $colorsQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
+                $colorsQuery->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
-                    $productsQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
-                    $productsQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    $colorsQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
+                    $colorsQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
                 }
-            
-                $colorsQuery->where(['products_colors.id_product'=>ArrayHelper::getColumn($productsQuery->all(), 'id')]);
             }
+            $colorsQuery->orderBy(['colors.color'=>SORT_ASC]);
             
             return $colorsQuery;
+        } catch (\Exception $e) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * SizesModel в контексте фильтрации выборки ProductsModel
+     * @return ActiveQuery
+     */
+    private function sizesListQuery(): ActiveQuery
+    {
+        try {
+            $sizesQuery = SizesModel::find();
+            $sizesQuery->extendSelect(['id', 'size']);
+            $sizesQuery->distinct();
+            $sizesQuery->innerJoin('products_sizes', '[[sizes.id]]=[[products_sizes.id_size]]');
+            if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
+                $sizesQuery->innerJoin('products', '[[products_sizes.id_product]]=[[products.id]]');
+                $sizesQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
+                $sizesQuery->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
+                    $sizesQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
+                    $sizesQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                }
+            }
+            $sizesQuery->orderBy(['sizes.size'=>SORT_ASC]);
+            
+            return $sizesQuery;
+        } catch (\Exception $e) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * BrandsModel в контексте фильтрации выборки ProductsModel
+     * @return ActiveQuery
+     */
+    private function brandsListQuery(): ActiveQuery
+    {
+        try {
+            $brandsQuery = BrandsModel::find();
+            $brandsQuery->extendSelect(['id', 'brand']);
+            $brandsQuery->distinct();
+            $brandsQuery->innerJoin('products_brands', '[[brands.id]]=[[products_brands.id_brand]]');
+            if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
+                $brandsQuery->innerJoin('products', '[[products_brands.id_product]]=[[products.id]]');
+                $brandsQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
+                $brandsQuery->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
+                    $brandsQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
+                    $brandsQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                }
+            }
+            $brandsQuery->orderBy(['brands.brand'=>SORT_ASC]);
+            
+            return $brandsQuery;
+        } catch (\Exception $e) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * ColorsModel в контексте фильтрации выборки результатов поиска ProductsModel 
+     * @params array $sphinxArray массив id ProductsModel
+     * @return ActiveQuery
+     */
+    private function colorsListQuerySearch(array $sphinxArray): ActiveQuery
+    {
+        try {
+            $colorsQuery = ColorsModel::find();
+            $colorsQuery->extendSelect(['id', 'color']);
+            $colorsQuery->distinct();
+            $colorsQuery->innerJoin('products_colors', '[[colors.id]]=[[products_colors.id_color]]');
+            $colorsQuery->where(['products_colors.id_product'=>$sphinxArray]);
+            $colorsQuery->orderBy(['colors.color'=>SORT_ASC]);
+            
+            return $colorsQuery;
+        } catch (\Exception $e) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * SizesModel в контексте фильтрации выборки результатов поиска ProductsModel
+     * @params array $sphinxArray массив id ProductsModel
+     * @return ActiveQuery
+     */
+    private function sizesListQuerySearch(array $sphinxArray): ActiveQuery
+    {
+        try {
+            $sizesQuery = SizesModel::find();
+            $sizesQuery->extendSelect(['id', 'size']);
+            $sizesQuery->distinct();
+            $sizesQuery->innerJoin('products_sizes', '[[sizes.id]]=[[products_sizes.id_size]]');
+            $sizesQuery->where(['products_sizes.id_product'=>$sphinxArray]);
+            $sizesQuery->orderBy(['sizes.size'=>SORT_ASC]);
+            
+            return $sizesQuery;
+        } catch (\Exception $e) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * BrandsModel в контексте фильтрации выборки результатов поиска ProductsModel 
+     * @params array $sphinxArray массив id ProductsModel
+     * @return ActiveQuery
+     */
+    private function brandsListQuerySearch(array $sphinxArray): ActiveQuery
+    {
+        try {
+            $brandsQuery = BrandsModel::find();
+            $brandsQuery->extendSelect(['id', 'brand']);
+            $brandsQuery->distinct();
+            $brandsQuery->innerJoin('products_brands', '[[brands.id]]=[[products_brands.id_brand]]');
+            $brandsQuery->where(['products_brands.id_product'=>$sphinxArray]);
+            $brandsQuery->orderBy(['brands.brand'=>SORT_ASC]);
+            
+            return $brandsQuery;
         } catch (\Exception $e) {
             throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
         }
