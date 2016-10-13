@@ -16,4 +16,10 @@
     <p>
         {{ productsModel.description }}
     </p>
+    <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
+    <ul>
+        {% for color in array.getColumn(productsModel.colors, 'color') %}
+            <li>{{ color }}</li>
+        {% endfor %}
+    </ul>
 {% endif %}

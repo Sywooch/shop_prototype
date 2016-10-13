@@ -29,6 +29,8 @@ class FiltersModelTests extends TestCase
     {
         $model = new FiltersModel();
         
+        self::$_reflectionClass->hasConstant('GET_FROM_FORM');
+        
         self::$_reflectionClass->hasProperty('sortingField');
         self::$_reflectionClass->hasProperty('sortingType');
         self::$_reflectionClass->hasProperty('colors');
@@ -37,11 +39,11 @@ class FiltersModelTests extends TestCase
     }
     
     /**
-     * Тестирует правила проверки
+     * Тестирует сценарии
      */
-    public function testRules()
+    public function testScenarios()
     {
-        $model = new FiltersModel();
+        $model = new FiltersModel(['scenario'=>FiltersModel::GET_FROM_FORM]);
         $model->attributes = [
             'sortingField'=>self::$_sortingField, 
             'sortingType'=>self::$_sortingType, 
@@ -63,13 +65,11 @@ class FiltersModelTests extends TestCase
     public function testClean()
     {
         $model = new FiltersModel();
-        $model->attributes = [
-            'sortingField'=>self::$_sortingField, 
-            'sortingType'=>self::$_sortingType,
-            'colors'=>self::$_colors, 
-            'sizes'=>self::$_sizes, 
-            'brands'=>self::$_brands, 
-        ];
+        $model->sortingField = self::$_sortingField;
+        $model->sortingType = self::$_sortingType;
+        $model->colors = self::$_colors;
+        $model->sizes = self::$_sizes;
+        $model->brands = self::$_brands;
         
         $this->assertFalse(empty($model->sortingField));
         $this->assertFalse(empty($model->sortingType));

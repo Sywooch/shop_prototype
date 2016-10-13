@@ -35,7 +35,12 @@ class UserController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate()) {
-                    $usersModel = UsersModel::find()->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'])->innerJoin('emails', '[[users.id_email]]=[[emails.id]]')->where(['emails.email'=>$rawEmailsModel->email])->one();
+                    $usersQuery = UsersModel::find();
+                    $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
+                    $usersQuery->distinct();
+                    $usersQuery->innerJoin('emails', '[[users.id_email]]=[[emails.id]]');
+                    $usersQuery->where(['emails.email'=>$rawEmailsModel->email]);
+                    $usersModel = $usersQuery->one();
                     if (!$usersModel instanceof UsersModel) {
                         $rawEmailsModel->addError('email', \Yii::t('base', 'Account with this email does not exist!'));
                     }
@@ -103,7 +108,10 @@ class UserController extends AbstractBaseController
                                 throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsModel::save']));
                             }
                         }
-                        $emailsModel = EmailsModel::find()->extendSelect(['id', 'email'])->where(['emails.email'=>$rawEmailsModel->email])->one();
+                        $emailsQuery = EmailsModel::find();
+                        $emailsQuery->extendSelect(['id', 'email']);
+                        $emailsQuery->where(['emails.email'=>$rawEmailsModel->email]);
+                        $emailsModel = $emailsQuery->one();
                         if (!$emailsModel instanceof EmailsModel || $rawEmailsModel->email != $emailsModel->email) {
                             throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
                         }
@@ -114,7 +122,10 @@ class UserController extends AbstractBaseController
                         if (!$rawUsersModel->save(false)) {
                             throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'UsersModel::save']));
                         }
-                        $usersModel = UsersModel::find()->extendSelect(['id', 'id_email'])->where(['users.id_email'=>$rawUsersModel->id_email])->one();
+                        $usersQuery = UsersModel::find();
+                        $usersQuery->extendSelect(['id', 'id_email']);
+                        $usersQuery->where(['users.id_email'=>$rawUsersModel->id_email]);
+                        $usersModel = $usersQuery->one();
                         if (!$usersModel instanceof UsersModel || $rawUsersModel->id_email != $usersModel->id_email) {
                             throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UsersModel']));
                         }
@@ -124,7 +135,10 @@ class UserController extends AbstractBaseController
                         if (!empty($rawMailingListModel->id)) {
                             $diff = EmailsMailingListModel::batchInsert($rawMailingListModel, $emailsModel);
                             if (!empty($diff)) {
-                                $subscribes = MailingListModel::find()->extendSelect(['name'])->where(['mailing_list.id'=>$diff])->all();
+                                $mailingListQuery = MailingListModel::find();
+                                $mailingListQuery->extendSelect(['name']);
+                                $mailingListQuery->where(['mailing_list.id'=>$diff]);
+                                $subscribes = $mailingListQuery->all();
                             }
                         }
                         
@@ -184,7 +198,10 @@ class UserController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate()) {
-                    $emailsModel = EmailsModel::find()->extendSelect(['id', 'email'])->where(['emails.email'=>$rawEmailsModel->email])->one();
+                    $emailsQuery = EmailsModel::find();
+                    $emailsQuery->extendSelect(['id', 'email']);
+                    $emailsQuery->where(['emails.email'=>$rawEmailsModel->email]);
+                    $emailsModel = $emailsQuery->one();
                     if (!$emailsModel instanceof EmailsModel || $emailsModel->email != $rawEmailsModel->email) {
                         throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
                     }
@@ -230,7 +247,10 @@ class UserController extends AbstractBaseController
             $renderArray = array();
             
             if (\Yii::$app->request->isGet && \Yii::$app->request->get('email') && \Yii::$app->request->get('key')) {
-                $emailsModel = EmailsModel::find()->extendSelect(['id', 'email'])->where(['emails.email'=>\Yii::$app->request->get('email')])->one();
+                $emailsQuery = EmailsModel::find();
+                $emailsQuery->extendSelect(['id', 'email']);
+                $emailsQuery->where(['emails.email'=>\Yii::$app->request->get('email')]);
+                $emailsModel = $emailsQuery->one();
                 if ($emailsModel instanceof EmailsModel) {
                     $salt = SessionHelper::readFlash('restore.' . \Yii::$app->request->get('email'));
                     $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
@@ -242,7 +262,10 @@ class UserController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && Model::loadMultiple([$rawUsersModel, $rawUsersModelConfirm], \Yii::$app->request->post())) {
                 if (Model::validateMultiple([$rawUsersModel, $rawUsersModelConfirm])) {
-                    $emailsModel = EmailsModel::find()->extendSelect(['id', 'email'])->where(['emails.email'=>\Yii::$app->request->post('email')])->one();
+                    $emailsQuery = EmailsModel::find();
+                    $emailsQuery->extendSelect(['id', 'email']);
+                    $emailsQuery->where(['emails.email'=>\Yii::$app->request->post('email')]);
+                    $emailsModel = $emailsQuery->one();
                     if ($emailsModel instanceof EmailsModel) {
                         $salt = SessionHelper::readFlash('restore.' . \Yii::$app->request->post('email'));
                         $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);

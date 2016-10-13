@@ -19,5 +19,6 @@ class ProductsFixture extends AbstractFixture
     public $depends = [
         'app\tests\source\fixtures\CategoriesFixture',
         'app\tests\source\fixtures\SubcategoryFixture',
+        'app\tests\source\fixtures\ColorsFixture',
     ];
 }

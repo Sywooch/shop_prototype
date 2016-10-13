@@ -9,16 +9,21 @@ use yii\base\Model;
  */
 class FiltersModel extends Model
 {
-    public $sortingField;
-    public $sortingType;
+    /**
+     * Сценарий загрузки из формы
+    */
+    const GET_FROM_FORM = 'getFromForm';
+    
+    public $sortingField = '';
+    public $sortingType = '';
     public $colors = array();
     public $sizes = array();
     public $brands = array();
     
-    public function rules()
+    public function scenarios()
     {
         return [
-            [['sortingField', 'sortingType', 'colors', 'sizes', 'brands'], 'safe'],
+            self::GET_FROM_FORM=>['sortingField', 'sortingType', 'colors', 'sizes', 'brands'],
         ];
     }
     

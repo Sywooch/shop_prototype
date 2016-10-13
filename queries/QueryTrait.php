@@ -4,7 +4,9 @@ namespace app\queries;
 
 use yii\base\ErrorException;
 use yii\db\ActiveQuery;
-use app\models\ProductsModel;
+use yii\helpers\ArrayHelper;
+use app\models\{ColorsModel,
+    ProductsModel};
 
 /**
  * Коллекция методов для конструирования Query объектов 
@@ -17,7 +19,7 @@ trait QueryTrait
      * - ProductsListController::actionSearch
      * функциональность
      * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
-     * @return array
+     * @return ActiveQuery
      */
     private function productsListQuery(array $extraWhere=[]): ActiveQuery
     {
@@ -54,6 +56,39 @@ trait QueryTrait
             $productsQuery->orderBy(['products.' . $sortingField=>$sortingType]);
             
             return $productsQuery;
+        } catch (\Exception $e) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * ColorsModel в контексте фильтрации выборки списка продуктов
+     * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
+     * @return ActiveQuery
+     */
+    private function colorsListQuery(): ActiveQuery
+    {
+        try {
+            $colorsQuery = ColorsModel::find();
+            $colorsQuery->extendSelect(['id', 'color']);
+            $colorsQuery->distinct();
+            $colorsQuery->innerJoin('products_colors', '[[colors.id]]=[[products_colors.id_color]]');
+            
+            if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
+                $productsQuery = ProductsModel::find();
+                $productsQuery->extendSelect(['id']);
+                $productsQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
+                $productsQuery->where(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
+                    $productsQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
+                    $productsQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                }
+            
+                $colorsQuery->where(['products_colors.id_product'=>ArrayHelper::getColumn($productsQuery->all(), 'id')]);
+            }
+            
+            return $colorsQuery;
         } catch (\Exception $e) {
             throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
         }

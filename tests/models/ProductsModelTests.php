@@ -8,6 +8,7 @@ use yii\sphinx\{MatchExpression,
 use app\tests\DbManager;
 use app\queries\QueryTrait;
 use app\models\{CategoriesModel,
+    ColorsModel,
     ProductsModel,
     SubcategoryModel};
 
@@ -366,6 +367,19 @@ class ProductsModelTests extends TestCase
         $expectedQuery = sprintf("SELECT `id` FROM `shop` WHERE MATCH('@* \\\"%s\\\"')", \Yii::$app->request->get(\Yii::$app->params['searchKey']));
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getColors
+     */
+    public function testGetColors()
+    {
+        $fixture = self::$_dbClass->products['product_1'];
+        
+        $model = ProductsModel::find()->where(['products.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue(is_array($model->colors));
+        $this->assertTrue($model->colors[0] instanceof ColorsModel);
     }
     
     public static function tearDownAfterClass()

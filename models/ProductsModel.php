@@ -60,4 +60,17 @@ class ProductsModel extends AbstractBaseModel
             $this->throwException($e, __METHOD__);
         }
     }
+    
+    /**
+     * Получает массив ColorsModel, с которыми связан текущий объект ProductsModel
+     * @return array ColorsModel
+     */
+    public function getColors()
+    {
+        try {
+            return $this->hasMany(ColorsModel::className(), ['id'=>'id_color'])->viaTable('products_colors', ['id_product'=>'id']);
+        } catch (\Exception $e) {
+            $this->throwException($e, __METHOD__);
+        }
+    }
 }

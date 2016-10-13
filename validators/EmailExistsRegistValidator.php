@@ -22,6 +22,7 @@ class EmailExistsRegistValidator extends Validator
     {
         try {
             $emailsQuery = EmailsModel::find();
+            $emailsQuery->distinct();
             $emailsQuery->innerJoin('users', '[[emails.id]]=[[users.id_email]]');
             $emailsQuery->where(['emails.email'=>$model->$attribute]);
             $result = $emailsQuery->exists();
