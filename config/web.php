@@ -6,7 +6,7 @@ $config = [
     'language'=>'ru-RU',
     'sourceLanguage'=>'en-US',
     'timeZone'=>'Europe/Kiev',
-    'bootstrap'=>['log'],
+    'bootstrap'=>['log', 'debug'],
     
     'aliases'=>[
         '@theme'=>'@app/themes/basic'
@@ -17,11 +17,9 @@ $config = [
     
     'components'=>require(__DIR__ . '/components.php'),
     
+    'modules'=>require(__DIR__ . '/modules.php'),
+    
     'params'=>require(__DIR__ . '/params.php'),
 ];
-
-if (YII_ENV_DEV) {
-    $config['as checkScriptInfoFilter'] = ['class'=>'app\filters\CheckScriptInfoFilter'];
-}
 
 return $config;
