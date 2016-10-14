@@ -41,8 +41,8 @@ class TestsController extends Controller
             parent::init();
             
             $this->escapeArgs();
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -50,8 +50,8 @@ class TestsController extends Controller
     {
         try {
             return ['db', 'loginPath', 'testDbName'];
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -80,9 +80,9 @@ class TestsController extends Controller
             
             $this->stdout(\Yii::t('base/console', "Database {database} created successfully, migrations applied!\n", ['database'=>$this->testDbName]));
             return parent::EXIT_CODE_NORMAL;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->stderr(\Yii::t('base/console', "Error creating database {database}!\n", ['database'=>$this->testDbName]) . $e->getMessage() . "\n", Console::FG_RED);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->stderr(\Yii::t('base/console', "Error creating database {database}!\n", ['database'=>$this->testDbName]) . $t->getMessage() . "\n", Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }
@@ -111,9 +111,9 @@ class TestsController extends Controller
             
             $this->stdout(\Yii::t('base/console', "Migrations erased, database {database} deleted successfully!\n", ['database'=>$this->testDbName]));
             return parent::EXIT_CODE_NORMAL;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->stderr(\Yii::t('base/console', "Error delete database {database}!\n", ['database'=>$this->testDbName]) . $e->getMessage() . "\n", Console::FG_RED);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->stderr(\Yii::t('base/console', "Error delete database {database}!\n", ['database'=>$this->testDbName]) . $t->getMessage() . "\n", Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }
@@ -127,8 +127,8 @@ class TestsController extends Controller
             $this->db = escapeshellcmd(escapeshellarg($this->db));
             $this->loginPath = escapeshellcmd(escapeshellarg($this->loginPath));
             $this->testDbName = escapeshellcmd(escapeshellarg($this->testDbName));
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

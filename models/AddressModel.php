@@ -18,8 +18,8 @@ class AddressModel extends AbstractBaseModel
     {
         try {
             return 'address';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     

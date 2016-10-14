@@ -30,8 +30,8 @@ class EmailExistsCreateValidator extends Validator
             if ($result) {
                 $this->addError($model, $attribute, \Yii::t('base', $this->_errorText));
             }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -39,9 +39,9 @@ class EmailExistsCreateValidator extends Validator
      * Проверяет, существует ли текущий email в БД, 
      * вызывается вне контекста модели
      * @param mixed $value значение, которое должно быть проверено
-     * @param string $error сообщение об ошибке, которое будет возвращено, если проверка провалится
+     * @param string $trror сообщение об ошибке, которое будет возвращено, если проверка провалится
      */
-    public function validate($value, &$error=null)
+    public function validate($value, &$trror=null)
     {
         try {
             $emailsQuery = EmailsModel::find();
@@ -52,8 +52,8 @@ class EmailExistsCreateValidator extends Validator
                 return true;
             }
             return false;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

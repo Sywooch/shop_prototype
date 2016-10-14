@@ -33,8 +33,8 @@ class InstancesHelper
             }
             
             return self::$_instancesArray;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
 }

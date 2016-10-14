@@ -41,8 +41,8 @@ class FiltersModel extends Model
             $this->brands = array();
             
             return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

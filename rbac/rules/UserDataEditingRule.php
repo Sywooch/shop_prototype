@@ -21,6 +21,7 @@ class UserDataEditingRule extends Rule
     
     /**
      * Выполняет проверку
+     * @return bool
      */
     public function execute($user, $item, $params)
     {
@@ -30,8 +31,8 @@ class UserDataEditingRule extends Rule
             }
             
             return false;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

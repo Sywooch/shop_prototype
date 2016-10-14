@@ -30,8 +30,8 @@ class EmailExistsRegistValidator extends Validator
             if ($result) {
                 $this->addError($model, $attribute, \Yii::t('base', 'Account with this email already exist!'));
             }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

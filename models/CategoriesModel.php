@@ -20,8 +20,8 @@ class CategoriesModel extends AbstractBaseModel
     {
         try {
             return 'categories';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     
@@ -41,8 +41,8 @@ class CategoriesModel extends AbstractBaseModel
     {
         try {
             return $this->hasMany(SubcategoryModel::className(), ['id_category'=>'id'])->inverseOf('categories');
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -54,8 +54,8 @@ class CategoriesModel extends AbstractBaseModel
     {
         try {
             return $this->hasMany(ProductsModel::className(), ['id_category'=>'id'])->inverseOf('categories');
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

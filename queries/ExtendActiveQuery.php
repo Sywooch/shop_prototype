@@ -47,8 +47,8 @@ class ExtendActiveQuery extends ActiveQuery
             $this->limit($this->paginator->limit);
             
             return $this;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -75,8 +75,8 @@ class ExtendActiveQuery extends ActiveQuery
             }
             
             return $this;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -96,8 +96,8 @@ class ExtendActiveQuery extends ActiveQuery
             }
             
             return $this;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

@@ -18,8 +18,8 @@ class PhonesModel extends AbstractBaseModel
     {
         try {
             return 'phones';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     

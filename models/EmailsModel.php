@@ -28,8 +28,8 @@ class EmailsModel extends AbstractBaseModel
     {
         try {
             return 'emails';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     
@@ -63,8 +63,8 @@ class EmailsModel extends AbstractBaseModel
     {
         try {
             return $this->hasOne(UsersModel::className(), ['id_email'=>'id'])->inverseOf('emails');
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

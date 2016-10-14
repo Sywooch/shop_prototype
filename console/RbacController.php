@@ -39,8 +39,8 @@ class RbacController extends Controller
             
             $this->stdout(\Yii::t('base/console', "Create an authorization RBAC successfully completed!\n"));
             return parent::EXIT_CODE_NORMAL;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
             $this->stderr(\Y::t('base/console', "Error creating RBAC!\n"), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
@@ -63,8 +63,8 @@ class RbacController extends Controller
             
             $this->stdout(\Yii::t('base/console', "Removing an authorization RBAC successfully completed!\n"));
             return parent::EXIT_CODE_NORMAL;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
             $this->stderr(\Y::t('base/console', "Error removing RBAC!\n"), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }

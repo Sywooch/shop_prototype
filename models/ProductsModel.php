@@ -22,8 +22,8 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             return 'products';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     
@@ -43,8 +43,8 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             return $this->hasOne(CategoriesModel::className(), ['id'=>'id_category'])->inverseOf('products');
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -56,8 +56,8 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             return $this->hasOne(SubcategoryModel::className(), ['id'=>'id_subcategory']);
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -69,8 +69,8 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             return $this->hasMany(ColorsModel::className(), ['id'=>'id_color'])->viaTable('products_colors', ['id_product'=>'id']);
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

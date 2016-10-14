@@ -18,8 +18,8 @@ class SizesModel extends AbstractBaseModel
     {
         try {
             return 'sizes';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     

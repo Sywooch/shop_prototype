@@ -21,8 +21,8 @@ class EmailsMailingListModel extends AbstractBaseModel
     {
         try {
             return 'emails_mailing_list';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     
@@ -37,18 +37,18 @@ class EmailsMailingListModel extends AbstractBaseModel
     /**
      * Выполняет пакетное сохранение
      * @param object $rawMailingListModel экземпляр MailingListModel
-     * @param object $emailsModel экземпляр EmailsModel
+     * @param object $tmailsModel экземпляр EmailsModel
      * @return array
      */
-    public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $emailsModel)
+    public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $tmailsModel)
     {
         try {
-            $emailsMailingListList = self::find()->extendSelect(['id_mailing_list'])->where(['emails_mailing_list.id_email'=>$emailsModel->id])->all();
-            $diff = array_diff($rawMailingListModel->id, ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
+            $tmailsMailingListList = self::find()->extendSelect(['id_mailing_list'])->where(['emails_mailing_list.id_email'=>$tmailsModel->id])->all();
+            $diff = array_diff($rawMailingListModel->id, ArrayHelper::getColumn($tmailsMailingListList, 'id_mailing_list'));
             if (!empty($diff)) {
                 $toRecord = [];
                 foreach ($diff as $mailingListId) {
-                    $toRecord[] = [$emailsModel->id, $mailingListId];
+                    $toRecord[] = [$tmailsModel->id, $mailingListId];
                 }
                 if (!\Yii::$app->db->createCommand()->batchInsert('emails_mailing_list', ['id_email', 'id_mailing_list'], $toRecord)->execute()) {
                     throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));
@@ -56,8 +56,8 @@ class EmailsMailingListModel extends AbstractBaseModel
             }
             
             return $diff;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
 }

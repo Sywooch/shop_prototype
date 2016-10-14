@@ -23,8 +23,8 @@ class MailingListModel extends AbstractBaseModel
     {
         try {
             return 'mailing_list';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     

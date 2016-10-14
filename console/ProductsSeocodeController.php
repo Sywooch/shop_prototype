@@ -36,8 +36,8 @@ class ProductsSeocodeController extends Controller
             }
             $this->stdout(\Yii::t('base/console', "Update successful!\n"));
             return parent::EXIT_CODE_NORMAL;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
             $this->stderr(\Y::t('base/console', "Update error!\n"), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
@@ -52,8 +52,8 @@ class ProductsSeocodeController extends Controller
             $this->stdout(\Yii::t('base/console', "Begin delete...\n"));
             \Yii::$app->db->createCommand()->update('products', ['seocode'=>''])->execute();
             $this->stdout(\Yii::t('base/console', "Delete successful!\n"));
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
             $this->stderr(\Y::t('base/console', "Delete error!\n"), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }

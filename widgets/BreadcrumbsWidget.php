@@ -112,8 +112,8 @@ class BreadcrumbsWidget extends Breadcrumbs
             if (!$this->setLinks()) {
                 throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'setLinks()']));
             }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -145,8 +145,8 @@ class BreadcrumbsWidget extends Breadcrumbs
             }
             
             return true;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

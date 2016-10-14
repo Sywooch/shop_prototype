@@ -38,8 +38,8 @@ class StripTagsValidator extends Validator
             if ($result = $this->strip($model->$attribute, $allowable_tags)) {
                 $model->$attribute = $result;
             }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -48,15 +48,15 @@ class StripTagsValidator extends Validator
      * @param string $value проверяемая строка
      * @return string
      */
-    public function validate($value, &$error=null)
+    public function validate($value, &$trror=null)
     {
         try {
             if ($result = $this->strip($value)) {
                 return $result;
             }
             return $value;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -77,8 +77,8 @@ class StripTagsValidator extends Validator
                 return $value;
             }
             return false;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

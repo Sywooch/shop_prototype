@@ -19,8 +19,8 @@ class SubcategoryModel extends AbstractBaseModel
     {
         try {
             return 'subcategory';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     
@@ -40,8 +40,8 @@ class SubcategoryModel extends AbstractBaseModel
     {
         try {
             return $this->hasOne(CategoriesModel::className(), ['id'=>'id_category'])->inverseOf('subcategory');
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -53,8 +53,8 @@ class SubcategoryModel extends AbstractBaseModel
     {
         try {
             return $this->hasMany(ProductsModel::className(), ['id_subcategory'=>'id'])->inverseOf('subcategory');
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

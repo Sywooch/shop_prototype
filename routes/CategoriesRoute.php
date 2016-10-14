@@ -61,9 +61,9 @@ class CategoriesRoute extends Object implements UrlRuleInterface
                 return false;
             }
             return ['products-list/index', $this->_params];
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         } finally {
             $this->_params = [];
         }
@@ -94,9 +94,9 @@ class CategoriesRoute extends Object implements UrlRuleInterface
             }
             
             return $result;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         } finally {
             $this->_params = [];
         }
@@ -124,9 +124,9 @@ class CategoriesRoute extends Object implements UrlRuleInterface
                 $this->_params[$key] = $chunk;
             }
             return true;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         }
     }
 }

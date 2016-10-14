@@ -29,8 +29,8 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     {
         try {
             return 'users';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     
@@ -63,8 +63,8 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     {
         try {
             return $this->hasOne(EmailsModel::className(), ['id'=>'id_email'])->inverseOf('users');
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -81,8 +81,8 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
                 return $usersModel;
             }
             return null;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -94,8 +94,8 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     {
         try {
             return $this->id;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     

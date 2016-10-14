@@ -18,8 +18,8 @@ class ColorsModel extends AbstractBaseModel
     {
         try {
             return 'colors';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     

@@ -27,8 +27,8 @@ abstract class AbstractBaseModel extends ActiveRecord
     {
         try {
             return \Yii::createObject(ExtendActiveQuery::className(), [get_called_class()]);
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
 }

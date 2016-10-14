@@ -76,8 +76,8 @@ class MailHelper
             $sent = \Yii::$app->mailer->sendMultiple(self::$_messages);
             
             return $sent;
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
 }

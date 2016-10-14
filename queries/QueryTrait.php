@@ -20,10 +20,10 @@ trait QueryTrait
      * - ProductsListController::actionIndex
      * - ProductsListController::actionSearch
      * функциональность
-     * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
+     * @param array $txtraWhere массив дополнительный условий, будет добавлен к WHERE
      * @return ActiveQuery
      */
-    private function productsListQuery(array $extraWhere=[]): ActiveQuery
+    private function productsListQuery(array $txtraWhere=[]): ActiveQuery
     {
         try {
             $productsQuery = ProductsModel::find();
@@ -41,8 +41,8 @@ trait QueryTrait
             
             $productsQuery->andWhere(['products.active'=>true]);
             
-            if (!empty($extraWhere)) {
-                $productsQuery->andWhere($extraWhere);
+            if (!empty($txtraWhere)) {
+                $productsQuery->andWhere($txtraWhere);
             }
             
             if (!$productsQuery->addFilters()) {
@@ -58,8 +58,8 @@ trait QueryTrait
             $productsQuery->orderBy(['products.' . $sortingField=>$sortingType]);
             
             return $productsQuery;
-        } catch (\Exception $e) {
-            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
         }
     }
     
@@ -87,8 +87,8 @@ trait QueryTrait
             $colorsQuery->orderBy(['colors.color'=>SORT_ASC]);
             
             return $colorsQuery;
-        } catch (\Exception $e) {
-            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
         }
     }
     
@@ -116,8 +116,8 @@ trait QueryTrait
             $sizesQuery->orderBy(['sizes.size'=>SORT_ASC]);
             
             return $sizesQuery;
-        } catch (\Exception $e) {
-            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
         }
     }
     
@@ -145,8 +145,8 @@ trait QueryTrait
             $brandsQuery->orderBy(['brands.brand'=>SORT_ASC]);
             
             return $brandsQuery;
-        } catch (\Exception $e) {
-            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
         }
     }
     
@@ -167,8 +167,8 @@ trait QueryTrait
             $colorsQuery->orderBy(['colors.color'=>SORT_ASC]);
             
             return $colorsQuery;
-        } catch (\Exception $e) {
-            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
         }
     }
     
@@ -189,8 +189,8 @@ trait QueryTrait
             $sizesQuery->orderBy(['sizes.size'=>SORT_ASC]);
             
             return $sizesQuery;
-        } catch (\Exception $e) {
-            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
         }
     }
     
@@ -211,8 +211,8 @@ trait QueryTrait
             $brandsQuery->orderBy(['brands.brand'=>SORT_ASC]);
             
             return $brandsQuery;
-        } catch (\Exception $e) {
-            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $e->getMessage());
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
         }
     }
 }

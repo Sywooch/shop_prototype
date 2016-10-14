@@ -37,9 +37,9 @@ class CheckScriptInfoFilter extends ActionFilter
                 $result = str_replace('</body>', $string . '</body>', $result);
             }
             return $result;
-        } catch (\Exception $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         }
     }
 }

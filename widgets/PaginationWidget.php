@@ -75,8 +75,8 @@ class PaginationWidget extends Widget
                 ++$this->pageRange;
             }
             $this->pageRange = $this->pageRange < 3 ? 3 : $this->pageRange;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -115,8 +115,8 @@ class PaginationWidget extends Widget
             }
             
             return Html::tag($this->tag, implode(Html::tag($this->childTag, $this->separator), $this->_tags), $this->options);
-        } catch(\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch(\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -159,8 +159,8 @@ class PaginationWidget extends Widget
             }
             
             return range($this->_prevMin, $this->_nextMax);
-        } catch(\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch(\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -184,8 +184,8 @@ class PaginationWidget extends Widget
             }
             
             return true;
-        } catch(\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch(\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -202,8 +202,8 @@ class PaginationWidget extends Widget
             }
             
             return true;
-        } catch(\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch(\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -221,8 +221,8 @@ class PaginationWidget extends Widget
             }
             
             return true;
-        } catch(\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch(\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

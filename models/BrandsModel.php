@@ -3,7 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
-use app\exceptions\ExceptionsTarit;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы brands
@@ -18,8 +18,8 @@ class BrandsModel extends AbstractBaseModel
     {
         try {
             return 'brands';
-        } catch (\Exception $e) {
-            ExceptionsTrait::throwStaticException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     
