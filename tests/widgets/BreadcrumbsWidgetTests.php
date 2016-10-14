@@ -34,12 +34,23 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     public function testWidgetForProductsList()
     {
         $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureProduct = self::$_dbClass->products['product_1'];
+        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
         
         $_GET = ['category'=>$fixture['seocode']];
         
         \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
         
-        $result = BreadcrumbsWidget::widget();
+        $productsModel = new class(['name'=>$fixtureProduct['name'], 'seocode'=>$fixtureProduct['seocode'], 'categoryName'=>$fixture['name'], 'categorySeocode'=>$fixture['seocode'], 'subcategoryName'=>$fixtureSubcategory['name'], 'subcategorySeocode'=>$fixtureSubcategory['seocode']]) extends \yii\base\Object {
+            public $name;
+            public $seocode;
+            public $categoryName;
+            public $categorySeocode;
+            public $subcategoryName;
+            public $subcategorySeocode;
+        };
+        
+        $result = BreadcrumbsWidget::widget(['productsModel'=>$productsModel]);
         
         $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Home') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li class="active">' . $fixture['name'] . '</li></ul>';
         
@@ -54,13 +65,23 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     public function testWidgetForProductsListTwo()
     {
         $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureProduct = self::$_dbClass->products['product_1'];
         $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
         
         $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode']];
         
         \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
         
-        $result = BreadcrumbsWidget::widget();
+        $productsModel = new class(['name'=>$fixtureProduct['name'], 'seocode'=>$fixtureProduct['seocode'], 'categoryName'=>$fixture['name'], 'categorySeocode'=>$fixture['seocode'], 'subcategoryName'=>$fixtureSubcategory['name'], 'subcategorySeocode'=>$fixtureSubcategory['seocode']]) extends \yii\base\Object {
+            public $name;
+            public $seocode;
+            public $categoryName;
+            public $categorySeocode;
+            public $subcategoryName;
+            public $subcategorySeocode;
+        };
+        
+        $result = BreadcrumbsWidget::widget(['productsModel'=>$productsModel]);
         
         $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
         
@@ -75,16 +96,25 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     public function testWidgetForProductsListThree()
     {
         $fixture = self::$_dbClass->categories['category_1'];
+        $fixtureProduct = self::$_dbClass->products['product_1'];
         $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
-        $fixtureProducts = self::$_dbClass->products['product_1'];
         
-        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode'], 'product-seocode'=>$fixtureProducts['seocode']];
+        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode'], 'product'=>$fixtureProduct['seocode']];
         
         \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
         
-        $result = BreadcrumbsWidget::widget();
+        $productsModel = new class(['name'=>$fixtureProduct['name'], 'seocode'=>$fixtureProduct['seocode'], 'categoryName'=>$fixture['name'], 'categorySeocode'=>$fixture['seocode'], 'subcategoryName'=>$fixtureSubcategory['name'], 'subcategorySeocode'=>$fixtureSubcategory['seocode']]) extends \yii\base\Object {
+            public $name;
+            public $seocode;
+            public $categoryName;
+            public $categorySeocode;
+            public $subcategoryName;
+            public $subcategorySeocode;
+        };
         
-        $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProducts['name'] . '</li></ul>';
+        $result = BreadcrumbsWidget::widget(['productsModel'=>$productsModel]);
+        
+        $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProduct['name'] . '</li></ul>';
         
         $this->assertEquals($expectedString, $result);
     }

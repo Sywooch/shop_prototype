@@ -1,5 +1,7 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
+{{ use('app/widgets/BreadcrumbsWidget') }}
+
 {{ use('app/widgets/PaginationWidget') }}
 
 {% include('@theme/base/user-info.twig') %}
@@ -8,15 +10,17 @@
 
 {% include('@theme/base/menu.twig') %}
 
-{% include('@theme/base/breadcrumbs.twig') %}
-
 {% if productsList %}
+    {{ breadcrumbs_widget_widget({'productsModel':productsList[0]}) }}
+
     <ol>
     {% for productsModel in productsList %}
-        <li>
-            <a href="{{ url.to({0:'product-detail/index', 'product-seocode':productsModel.seocode}) }}">{{ productsModel.name }}</a>
-            <br>{{ app.formatter.asDate(productsModel.date) }}
-        </li>
+        {% if productsModel.active %}
+            <li>
+                <a href="{{ url.to({0:'product-detail/index', 'product-seocode':productsModel.seocode}) }}">{{ productsModel.name }}</a>
+                <br>{{ app.formatter.asDate(productsModel.date) }}
+            </li>
+        {% endif %}
     {% endfor %}
     </ol>
 {% endif %}

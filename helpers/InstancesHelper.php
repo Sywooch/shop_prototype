@@ -28,7 +28,7 @@ class InstancesHelper
             $categoriesQuery->with('subcategory');
             self::$_instancesArray['categoriesList'] = $categoriesQuery->all();
             
-            if (!is_array(self::$_instancesArray['categoriesList']) || !self::$_instancesArray['categoriesList'][0] instanceof CategoriesModel) {
+            if (!self::$_instancesArray['categoriesList'][0] instanceof CategoriesModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CategoriesModel']));
             }
             

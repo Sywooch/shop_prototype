@@ -1,14 +1,16 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
+{{ use('app/widgets/BreadcrumbsWidget') }}
+
 {% include('@theme/base/user-info.twig') %}
 
 {% include '@theme/base/search.twig' %}
 
 {% include('@theme/base/menu.twig') %}
 
-{% include('@theme/base/breadcrumbs.twig') %}
-
 {% if productsModel %}
+    {{ breadcrumbs_widget_widget({'productsModel':productsModel}) }}
+    
     <h1>{{ productsModel.name }}</h1>
     <p>
         {{ app.formatter.asDate(productsModel.date) }}

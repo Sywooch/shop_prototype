@@ -15,6 +15,23 @@ use app\exceptions\ExceptionsTrait;
 class ProductsModel extends AbstractBaseModel
 {
     /**
+     * @var string имя категории, связанной с текущим экземпляром ProductsModel
+     */
+    public $categoryName;
+    /**
+     * @var string seocode категории, связанной с текущим экземпляром ProductsModel
+     */
+    public $categorySeocode;
+    /**
+     * @var string имя подкатегории, связанной с текущим экземпляром ProductsModel
+     */
+    public $subcategoryName;
+    /**
+     * @var string seocode подкатегории, связанной с текущим экземпляром ProductsModel
+     */
+    public $subcategorySeocode;
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
