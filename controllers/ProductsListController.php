@@ -37,7 +37,7 @@ class ProductsListController extends AbstractBaseController
             $renderArray['productsList'] = $productsQuery->all();
             
             if (!empty($renderArray['productsList'])) {
-                $renderArray['filtersModel'] = new FiltersModel(['scenario'=>FiltersModel::GET_FROM_FORM]);
+                $renderArray['filtersModel'] = \Yii::configure(\Yii::$app->filters, ['scenario'=>FiltersModel::GET_FROM_FORM]);
                 
                 $renderArray['colorsList'] = $this->colorsListQuery()->all();
                 if (!$renderArray['colorsList'][0] instanceof ColorsModel) {
@@ -56,6 +56,8 @@ class ProductsListController extends AbstractBaseController
             }
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            
+            Url::remember();
             
             return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Throwable $t) {
@@ -88,7 +90,7 @@ class ProductsListController extends AbstractBaseController
             $renderArray['productsList'] = $productsQuery->all();
             
             if (!empty($sphinxArray)) {
-                $renderArray['filtersModel'] = new FiltersModel(['scenario'=>FiltersModel::GET_FROM_FORM]);
+                $renderArray['filtersModel'] = \Yii::configure(\Yii::$app->filters, ['scenario'=>FiltersModel::GET_FROM_FORM]);
                 
                 $renderArray['colorsList'] = $this->colorsListQuerySearch(ArrayHelper::getColumn($sphinxArray, 'id'))->all();
                 if (!$renderArray['colorsList'][0] instanceof ColorsModel) {
@@ -108,10 +110,21 @@ class ProductsListController extends AbstractBaseController
             
             \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
             
+            Url::remember();
+            
             return $this->render('products-list.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
+    }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class'=>'app\filters\ProductsFilter',
+            ],
+        ];
     }
 }

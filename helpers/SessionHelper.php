@@ -30,6 +30,27 @@ class SessionHelper
     }
     
     /**
+     * Читает сообщение из сессии
+     * @param array $name имя переменной
+     * @return mixed
+     */
+    public static function read(string $name)
+    {
+        try {
+            $session = \Yii::$app->session;
+            $session->open();
+            if ($session->has($name)) {
+                $data = $session->get($name);
+            }
+            $session->close();
+            
+            return isset($data) ? $data : false;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Добавляет Flash-сообщение к данным сессии
      * @param array $name имя переменной
      * @param mixed $data данные для добавления в сессию
