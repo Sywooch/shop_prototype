@@ -15,7 +15,7 @@ class MailHelper
     /**
      * @var array массив готовых к отправке сообщений
      */
-    private static $_messages = array();
+    private static $_messages = [];
     
     /**
      * Формирует и отправляет сообщение пользователю
@@ -47,7 +47,7 @@ class MailHelper
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'template name']));
                 }
                 if (empty($messageArray['dataForTemplate'])) {
-                    $messageArray['dataForTemplate'] = array();
+                    $messageArray['dataForTemplate'] = [];
                 }
                 if (empty($messageArray['setFrom'])) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'setFrom']));

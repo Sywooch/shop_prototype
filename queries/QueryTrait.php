@@ -20,32 +20,30 @@ trait QueryTrait
      * - ProductsListController::actionIndex
      * - ProductsListController::actionSearch
      * функциональность
-     * @param array $txtraWhere массив дополнительный условий, будет добавлен к WHERE
+     * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
      * @return ActiveQuery
      */
-    private function productsListQuery(array $txtraWhere=[]): ActiveQuery
+    private function productsListQuery(array $extraWhere=[]): ActiveQuery
     {
         try {
             $productsQuery = ProductsModel::find();
             $productsQuery->extendSelect(['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'seocode']);
             
+            $productsQuery->where(['[[products.active]]'=>true]);
+            
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
                 $productsQuery->innerJoin('categories', '[[categories.id]]=[[products.id_category]]');
-                $productsQuery->addSelect(['categoryName'=>'[[categories.name]]', 'categorySeocode'=>'[[categories.seocode]]']);
-                $productsQuery->andWhere(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                $productsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 
             }
             
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
                 $productsQuery->innerJoin('subcategory', '[[subcategory.id]]=[[products.id_subcategory]]');
-                $productsQuery->addSelect(['subcategoryName'=>'[[subcategory.name]]', 'subcategorySeocode'=>'[[subcategory.seocode]]']);
-                $productsQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                $productsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
             }
             
-            $productsQuery->andWhere(['products.active'=>true]);
-            
-            if (!empty($txtraWhere)) {
-                $productsQuery->andWhere($txtraWhere);
+            if (!empty($extraWhere)) {
+                $productsQuery->andWhere($extraWhere);
             }
             
             if (!$productsQuery->addFilters()) {
@@ -56,8 +54,8 @@ trait QueryTrait
                 throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'extendLimit()']));
             }
             
-            $sortingField = \Yii::$app->filters->sortingField ? \Yii::$app->filters->sortingField : 'date';
-            $sortingType = (\Yii::$app->filters->sortingType && \Yii::$app->filters->sortingType === 'ASC') ? SORT_ASC : SORT_DESC;
+            $sortingField = !empty(\Yii::$app->filters->sortingField) ? \Yii::$app->filters->sortingField : 'date';
+            $sortingType = (!empty(\Yii::$app->filters->sortingType) && \Yii::$app->filters->sortingType === 'SORT_ASC') ? SORT_ASC : SORT_DESC;
             $productsQuery->orderBy(['products.' . $sortingField=>$sortingType]);
             
             return $productsQuery;

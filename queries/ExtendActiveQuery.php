@@ -89,7 +89,7 @@ class ExtendActiveQuery extends ActiveQuery
         try {
             if (!empty($fields)) {
                 $fields = array_map(function($value) {
-                    return $this->modelClass::tableName() . '.' . $value;
+                    return '[[' . $this->modelClass::tableName() . '.' . $value . ']]';
                 }, $fields);
                 
                 $this->select($fields);

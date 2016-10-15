@@ -104,6 +104,10 @@ $components = [
     'filters'=>[
         'class'=>'app\models\FiltersModel',
     ],
+    
+    'currency'=>[
+        'class'=>'app\models\CurrencyModel',
+    ],
 ];
 
 return $components;

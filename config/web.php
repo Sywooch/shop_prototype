@@ -20,6 +20,10 @@ $config = [
     'modules'=>require(__DIR__ . '/modules.php'),
     
     'params'=>require(__DIR__ . '/params.php'),
+    
+    'as currencyFilter'=>[
+        'class'=>'app\filters\CurrencyFilter',
+    ],
 ];
 
 return $config;

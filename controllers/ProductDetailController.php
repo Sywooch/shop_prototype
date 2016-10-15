@@ -23,14 +23,11 @@ class ProductDetailController extends AbstractBaseController
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'productKey']));
             }
             
-            $renderArray = array();
+            $renderArray = [];
             
             $productsQuery = ProductsModel::find();
-            $productsQuery->extendSelect(['id', 'date', 'name', 'seocode', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory']);
-            $productsQuery->innerJoin('categories', '[[categories.id]]=[[products.id_category]]');
-            $productsQuery->innerJoin('subcategory', '[[subcategory.id]]=[[products.id_subcategory]]');
-            $productsQuery->addSelect(['categoryName'=>'[[categories.name]]', 'categorySeocode'=>'[[categories.seocode]]', 'subcategoryName'=>'[[subcategory.name]]', 'subcategorySeocode'=>'[[subcategory.seocode]]']);
-            $productsQuery->where(['products.seocode'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
+            $productsQuery->extendSelect(['id', 'code', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory']);
+            $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
             $renderArray['productsModel'] = $productsQuery->one();
             
             if (!$renderArray['productsModel'] instanceof ProductsModel) {

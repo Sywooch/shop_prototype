@@ -17,12 +17,12 @@ class DbManager extends Object
     /**
      * @var array фикстуры, которые будут использоваться в текущем TestCase
      */
-    public $fixtures = array();
+    public $fixtures = [];
     /**
      * @var array массив объектов фикстур, используемых текущим тестом,
      * ключ - псевдоним, назначенный в конфигурации
      */
-    private $_fixturesData = array();
+    private $_fixturesData = [];
     
     public function init()
     {
@@ -34,8 +34,8 @@ class DbManager extends Object
                     $this->_fixturesData[$key] = $this->getFixture($key);
                 }
             }
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -53,8 +53,8 @@ class DbManager extends Object
             }
             
             return null;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -66,8 +66,8 @@ class DbManager extends Object
     {
         try {
             return $this->fixtures;
-        } catch (\Exception $e) {
-            $this->throwException($e, __METHOD__);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

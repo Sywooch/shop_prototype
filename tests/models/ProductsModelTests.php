@@ -10,6 +10,7 @@ use app\queries\QueryTrait;
 use app\models\{CategoriesModel,
     ColorsModel,
     ProductsModel,
+    SizesModel,
     SubcategoryModel};
 
 /**
@@ -47,11 +48,6 @@ class ProductsModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
-        
-        $this->assertTrue(self::$_reflectionClass->hasProperty('categoryName'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('categorySeocode'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('subcategoryName'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('subcategorySeocode'));
         
         $model = new ProductsModel();
         
@@ -204,7 +200,7 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode`, `categories`.`name` AS `categoryName`, `categories`.`seocode` AS `categorySeocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` WHERE (`categories`.`seocode`='%s') AND (`products`.`active`=TRUE) ORDER BY `products`.`date` DESC LIMIT %d", $fixture['seocode'], \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` WHERE (`products`.`active`=TRUE) AND (`categories`.`seocode`='%s') ORDER BY `products`.`date` DESC LIMIT %d", $fixture['seocode'], \Yii::$app->params['limit']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -230,7 +226,7 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode`, `categories`.`name` AS `categoryName`, `categories`.`seocode` AS `categorySeocode`, `subcategory`.`name` AS `subcategoryName`, `subcategory`.`seocode` AS `subcategorySeocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`categories`.`seocode`='%s') AND (`subcategory`.`seocode`='%s')) AND (`products`.`active`=TRUE) ORDER BY `products`.`date` DESC LIMIT %d", $fixture['seocode'], $fixtureSubcategory['seocode'], \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`products`.`active`=TRUE) AND (`categories`.`seocode`='%s')) AND (`subcategory`.`seocode`='%s') ORDER BY `products`.`date` DESC LIMIT %d", $fixture['seocode'], $fixtureSubcategory['seocode'], \Yii::$app->params['limit']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -259,7 +255,7 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode`, `categories`.`name` AS `categoryName`, `categories`.`seocode` AS `categorySeocode`, `subcategory`.`name` AS `subcategoryName`, `subcategory`.`seocode` AS `subcategorySeocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id WHERE (((`categories`.`seocode`='%s') AND (`subcategory`.`seocode`='%s')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=%d) ORDER BY `products`.`date` DESC LIMIT %d", $fixture['seocode'], $fixtureSubcategory['seocode'], $fixtureColors['id'], \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id WHERE (((`products`.`active`=TRUE) AND (`categories`.`seocode`='%s')) AND (`subcategory`.`seocode`='%s')) AND (`colors`.`id`=%d) ORDER BY `products`.`date` DESC LIMIT %d", $fixture['seocode'], $fixtureSubcategory['seocode'], $fixtureColors['id'], \Yii::$app->params['limit']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -289,7 +285,7 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode`, `categories`.`name` AS `categoryName`, `categories`.`seocode` AS `categorySeocode`, `subcategory`.`name` AS `subcategoryName`, `subcategory`.`seocode` AS `subcategorySeocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE ((((`categories`.`seocode`='%s') AND (`subcategory`.`seocode`='%s')) AND (`products`.`active`=TRUE)) AND (`colors`.`id`=%d)) AND (`sizes`.`id`=%d) ORDER BY `products`.`price` DESC LIMIT %d", $fixture['seocode'], $fixtureSubcategory['seocode'], $fixtureColors['id'], $fixtureSizes['id'], \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE ((((`products`.`active`=TRUE) AND (`categories`.`seocode`='%s')) AND (`subcategory`.`seocode`='%s')) AND (`colors`.`id`=%d)) AND (`sizes`.`id`=%d) ORDER BY `products`.`price` DESC LIMIT %d", $fixture['seocode'], $fixtureSubcategory['seocode'], $fixtureColors['id'], $fixtureSizes['id'], \Yii::$app->params['limit']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -319,7 +315,7 @@ class ProductsModelTests extends TestCase
         
         $queryRaw = clone $productsQuery;
         
-        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode`, `categories`.`name` AS `categoryName`, `categories`.`seocode` AS `categorySeocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE (((`categories`.`seocode`='%s') AND (`products`.`active`=TRUE)) AND (`colors`.`id` IN (%s))) AND (`sizes`.`id`=%d) ORDER BY `products`.`date` DESC LIMIT %d", $fixture['seocode'], implode(', ', [$fixtureColors['id'], $fixtureColors2['id']]), $fixtureSizes['id'], \Yii::$app->params['limit']);
+        $expectedQuery = sprintf("SELECT `products`.`id`, `products`.`date`, `products`.`name`, `products`.`short_description`, `products`.`price`, `products`.`images`, `products`.`id_category`, `products`.`id_subcategory`, `products`.`active`, `products`.`seocode` FROM `products` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `products_colors` ON products.id=products_colors.id_product INNER JOIN `colors` ON products_colors.id_color=colors.id INNER JOIN `products_sizes` ON products.id=products_sizes.id_product INNER JOIN `sizes` ON products_sizes.id_size=sizes.id WHERE (((`products`.`active`=TRUE) AND (`categories`.`seocode`='%s')) AND (`colors`.`id` IN (%s))) AND (`sizes`.`id`=%d) ORDER BY `products`.`date` DESC LIMIT %d", $fixture['seocode'], implode(', ', [$fixtureColors['id'], $fixtureColors2['id']]), $fixtureSizes['id'], \Yii::$app->params['limit']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -385,6 +381,19 @@ class ProductsModelTests extends TestCase
         
         $this->assertTrue(is_array($model->colors));
         $this->assertTrue($model->colors[0] instanceof ColorsModel);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getSizes
+     */
+    public function testGetSizes()
+    {
+        $fixture = self::$_dbClass->products['product_1'];
+        
+        $model = ProductsModel::find()->where(['products.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue(is_array($model->sizes));
+        $this->assertTrue($model->sizes[0] instanceof SizesModel);
     }
     
     public static function tearDownAfterClass()

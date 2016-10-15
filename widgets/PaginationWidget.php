@@ -59,7 +59,7 @@ class PaginationWidget extends Widget
     /**
      * @var array массив ссылок на страницы, обернутых в тег $this->childTag
      */
-    private $_tags = array();
+    private $_tags = [];
     
     public function init()
     {

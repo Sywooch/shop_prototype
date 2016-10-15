@@ -5,8 +5,7 @@ namespace app\filters;
 use yii\base\ActionFilter;
 use yii\helpers\Url;
 use app\exceptions\ExceptionsTrait;
-use app\helpers\{HashHelper,
-    SessionHelper,
+use app\helpers\{SessionHelper,
     StringHelper};
 
 /**

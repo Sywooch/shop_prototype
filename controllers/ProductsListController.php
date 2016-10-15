@@ -83,7 +83,7 @@ class ProductsListController extends AbstractBaseController
             
             $productsQuery = $this->productsListQuery(['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
             
-            $renderArray = array();
+            $renderArray = [];
             $renderArray['paginator'] = $productsQuery->paginator;
             $renderArray['productsList'] = $productsQuery->all();
             

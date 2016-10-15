@@ -5,6 +5,7 @@ namespace app\models;
 use yii\base\ErrorException;
 use app\models\{AbstractBaseModel,
     CategoriesModel,
+    SizesModel,
     SubcategoryModel};
 use app\helpers\TransliterationHelper;
 use app\exceptions\ExceptionsTrait;
@@ -14,23 +15,6 @@ use app\exceptions\ExceptionsTrait;
  */
 class ProductsModel extends AbstractBaseModel
 {
-    /**
-     * @var string имя категории, связанной с текущим экземпляром ProductsModel
-     */
-    public $categoryName;
-    /**
-     * @var string seocode категории, связанной с текущим экземпляром ProductsModel
-     */
-    public $categorySeocode;
-    /**
-     * @var string имя подкатегории, связанной с текущим экземпляром ProductsModel
-     */
-    public $subcategoryName;
-    /**
-     * @var string seocode подкатегории, связанной с текущим экземпляром ProductsModel
-     */
-    public $subcategorySeocode;
-    
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
@@ -86,6 +70,19 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             return $this->hasMany(ColorsModel::className(), ['id'=>'id_color'])->viaTable('products_colors', ['id_product'=>'id']);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив SizesModel, с которыми связан текущий объект ProductsModel
+     * @return array SizesModel
+     */
+    public function getSizes()
+    {
+        try {
+            return $this->hasMany(SizesModel::className(), ['id'=>'id_size'])->viaTable('products_sizes', ['id_product'=>'id']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

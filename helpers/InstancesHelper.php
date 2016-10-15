@@ -12,7 +12,7 @@ use app\models\CategoriesModel;
  */
 class InstancesHelper
 {
-    private static $_instancesArray = array();
+    private static $_instancesArray = [];
     
     /**
      * Конструирует объекты для рендеринга

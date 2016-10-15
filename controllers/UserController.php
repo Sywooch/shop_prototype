@@ -54,7 +54,7 @@ class UserController extends AbstractBaseController
                 }
             }
             
-            $renderArray = array();
+            $renderArray = [];
             $renderArray['emailsModel'] = $rawEmailsModel;
             $renderArray['usersModel'] = $rawUsersModel;
             
@@ -167,7 +167,7 @@ class UserController extends AbstractBaseController
                 }
             }
             
-            $renderArray = array();
+            $renderArray = [];
             $renderArray['emailsModel'] = $rawEmailsModel;
             $renderArray['usersModel'] = $rawUsersModel;
             $renderArray['mailingListModel'] = $rawMailingListModel;
@@ -194,7 +194,7 @@ class UserController extends AbstractBaseController
         try {
             $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
             
-            $renderArray = array();
+            $renderArray = [];
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate()) {
@@ -244,7 +244,7 @@ class UserController extends AbstractBaseController
             $rawUsersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
             $rawUsersModelConfirm = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
             
-            $renderArray = array();
+            $renderArray = [];
             
             if (\Yii::$app->request->isGet && \Yii::$app->request->get('email') && \Yii::$app->request->get('key')) {
                 $emailsQuery = EmailsModel::find();

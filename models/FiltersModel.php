@@ -16,9 +16,9 @@ class FiltersModel extends Model
     
     public $sortingField = '';
     public $sortingType = '';
-    public $colors = array();
-    public $sizes = array();
-    public $brands = array();
+    public $colors = [];
+    public $sizes = [];
+    public $brands = [];
     
     public function scenarios()
     {
@@ -36,9 +36,9 @@ class FiltersModel extends Model
         try {
             $this->sortingField = '';
             $this->sortingType = '';
-            $this->colors = array();
-            $this->sizes = array();
-            $this->brands = array();
+            $this->colors = [];
+            $this->sizes = [];
+            $this->brands = [];
             
             return true;
         } catch (\Throwable $t) {

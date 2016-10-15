@@ -22,4 +22,16 @@
             <li>{{ color }}</li>
         {% endfor %}
     </ul>
+    <p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
+    <ul>
+        {% for size in array.getColumn(productsModel.sizes, 'size') %}
+            <li>{{ size }}</li>
+        {% endfor %}
+    </ul>
+    <p>
+        <strong>{{ yii.t('base', 'Price:') }}</strong> {{ productsModel.price }}
+    </p>
+    <p>
+        <strong>{{ yii.t('base', 'Code:') }}</strong> {{ productsModel.code }}
+    </p>
 {% endif %}
