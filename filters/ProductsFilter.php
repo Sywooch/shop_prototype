@@ -6,7 +6,8 @@ use yii\base\ActionFilter;
 use yii\helpers\Url;
 use app\exceptions\ExceptionsTrait;
 use app\helpers\{HashHelper,
-    SessionHelper};
+    SessionHelper,
+    StringHelper};
 
 /**
  * Применяет фильтры к выборке ProductsModel
@@ -24,11 +25,8 @@ class ProductsFilter extends ActionFilter
     public function beforeAction($action)
     {
         try {
-            $key = Url::current();
-            if (preg_match('/(.*)-\d+$/', $key, $matches) === 1) {
-                $key = $matches[1];
-            }
-            $data = SessionHelper::read(HashHelper::createHash([$key]));
+            $key = StringHelper::cutPage(Url::current());
+            $data = SessionHelper::read($key);
             if (!empty($data)) {
                 \Yii::configure(\Yii::$app->filters, $data);
             }

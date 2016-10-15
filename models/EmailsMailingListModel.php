@@ -37,18 +37,18 @@ class EmailsMailingListModel extends AbstractBaseModel
     /**
      * Выполняет пакетное сохранение
      * @param object $rawMailingListModel экземпляр MailingListModel
-     * @param object $tmailsModel экземпляр EmailsModel
+     * @param object $emailsModel экземпляр EmailsModel
      * @return array
      */
-    public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $tmailsModel)
+    public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $emailsModel)
     {
         try {
-            $tmailsMailingListList = self::find()->extendSelect(['id_mailing_list'])->where(['emails_mailing_list.id_email'=>$tmailsModel->id])->all();
+            $tmailsMailingListList = self::find()->extendSelect(['id_mailing_list'])->where(['emails_mailing_list.id_email'=>$emailsModel->id])->all();
             $diff = array_diff($rawMailingListModel->id, ArrayHelper::getColumn($tmailsMailingListList, 'id_mailing_list'));
             if (!empty($diff)) {
                 $toRecord = [];
                 foreach ($diff as $mailingListId) {
-                    $toRecord[] = [$tmailsModel->id, $mailingListId];
+                    $toRecord[] = [$emailsModel->id, $mailingListId];
                 }
                 if (!\Yii::$app->db->createCommand()->batchInsert('emails_mailing_list', ['id_email', 'id_mailing_list'], $toRecord)->execute()) {
                     throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));

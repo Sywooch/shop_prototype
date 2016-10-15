@@ -12,5 +12,9 @@
         
         <input type="submit" value="{{ yii.t('base', 'Apply') }}">
     {{ active_form_end() }}
+    
+    {% set form = active_form_begin({'id':'filters-clean', 'action':url.to({0:'filters/unset'}), 'method':'POST'}) %}
+        <input type="submit" value="{{ yii.t('base', 'Clean') }}">
+    {{ active_form_end() }}
 
 {% endif %}

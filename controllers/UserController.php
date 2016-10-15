@@ -111,12 +111,12 @@ class UserController extends AbstractBaseController
                         $emailsQuery = EmailsModel::find();
                         $emailsQuery->extendSelect(['id', 'email']);
                         $emailsQuery->where(['emails.email'=>$rawEmailsModel->email]);
-                        $tmailsModel = $emailsQuery->one();
-                        if (!$tmailsModel instanceof EmailsModel || $rawEmailsModel->email != $tmailsModel->email) {
+                        $emailsModel = $emailsQuery->one();
+                        if (!$emailsModel instanceof EmailsModel || $rawEmailsModel->email != $emailsModel->email) {
                             throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
                         }
                         
-                        $rawUsersModel->id_email = $tmailsModel->id;
+                        $rawUsersModel->id_email = $emailsModel->id;
                         $rawUsersModel->password = password_hash($rawUsersModel->password, PASSWORD_DEFAULT);
                         
                         if (!$rawUsersModel->save(false)) {
@@ -133,7 +133,7 @@ class UserController extends AbstractBaseController
                         \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $usersModel->id);
                         
                         if (!empty($rawMailingListModel->id)) {
-                            $diff = EmailsMailingListModel::batchInsert($rawMailingListModel, $tmailsModel);
+                            $diff = EmailsMailingListModel::batchInsert($rawMailingListModel, $emailsModel);
                             if (!empty($diff)) {
                                 $mailingListQuery = MailingListModel::find();
                                 $mailingListQuery->extendSelect(['name']);
@@ -201,8 +201,8 @@ class UserController extends AbstractBaseController
                     $emailsQuery = EmailsModel::find();
                     $emailsQuery->extendSelect(['id', 'email']);
                     $emailsQuery->where(['emails.email'=>$rawEmailsModel->email]);
-                    $tmailsModel = $emailsQuery->one();
-                    if (!$tmailsModel instanceof EmailsModel || $tmailsModel->email != $rawEmailsModel->email) {
+                    $emailsModel = $emailsQuery->one();
+                    if (!$emailsModel instanceof EmailsModel || $emailsModel->email != $rawEmailsModel->email) {
                         throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
                     }
                     if (!MailHelper::send([
@@ -212,8 +212,8 @@ class UserController extends AbstractBaseController
                             'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 
                             'setSubject'=>\Yii::t('base', 'Password restore to shop.com'), 
                             'dataForTemplate'=>[
-                                'email'=>$tmailsModel->email,
-                                'key'=>HashHelper::createHashRestore($tmailsModel),
+                                'email'=>$emailsModel->email,
+                                'key'=>HashHelper::createHashRestore($emailsModel),
                             ],
                         ]
                     ])) {
@@ -250,13 +250,13 @@ class UserController extends AbstractBaseController
                 $emailsQuery = EmailsModel::find();
                 $emailsQuery->extendSelect(['id', 'email']);
                 $emailsQuery->where(['emails.email'=>\Yii::$app->request->get('email')]);
-                $tmailsModel = $emailsQuery->one();
-                if ($tmailsModel instanceof EmailsModel) {
+                $emailsModel = $emailsQuery->one();
+                if ($emailsModel instanceof EmailsModel) {
                     $salt = SessionHelper::readFlash('restore.' . \Yii::$app->request->get('email'));
-                    $txpectedHash = HashHelper::createHash([$tmailsModel->email, $tmailsModel->id, $tmailsModel->users->id, $salt]);
+                    $txpectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
                     $renderArray['allow'] = ($txpectedHash == \Yii::$app->request->get('key')) ? true : false;
-                    $renderArray['key'] = HashHelper::createHashRestore($tmailsModel);
-                    $renderArray['email'] = $tmailsModel->email;
+                    $renderArray['key'] = HashHelper::createHashRestore($emailsModel);
+                    $renderArray['email'] = $emailsModel->email;
                 }
             }
             
@@ -265,20 +265,20 @@ class UserController extends AbstractBaseController
                     $emailsQuery = EmailsModel::find();
                     $emailsQuery->extendSelect(['id', 'email']);
                     $emailsQuery->where(['emails.email'=>\Yii::$app->request->post('email')]);
-                    $tmailsModel = $emailsQuery->one();
-                    if ($tmailsModel instanceof EmailsModel) {
+                    $emailsModel = $emailsQuery->one();
+                    if ($emailsModel instanceof EmailsModel) {
                         $salt = SessionHelper::readFlash('restore.' . \Yii::$app->request->post('email'));
-                        $txpectedHash = HashHelper::createHash([$tmailsModel->email, $tmailsModel->id, $tmailsModel->users->id, $salt]);
+                        $txpectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
                         if ($txpectedHash == \Yii::$app->request->post('key')) {
                             if ($rawUsersModel->password != $rawUsersModelConfirm->password) {
                                 $rawUsersModelConfirm->addError('password', \Yii::t('base', 'Passwords do not match!'));
                                 $renderArray['allow'] = true;
-                                $renderArray['key'] = HashHelper::createHashRestore($tmailsModel);
-                                $renderArray['email'] = $tmailsModel->email;
+                                $renderArray['key'] = HashHelper::createHashRestore($emailsModel);
+                                $renderArray['email'] = $emailsModel->email;
                             } else {
                                 $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                                 try {
-                                    $usersModel = $tmailsModel->users;
+                                    $usersModel = $emailsModel->users;
                                     $usersModel->scenario = UsersModel::GET_FROM_AUTHENTICATION;
                                     $usersModel->password = password_hash($rawUsersModel->password, PASSWORD_DEFAULT);
                                     $usersModel->save();

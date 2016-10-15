@@ -11,7 +11,7 @@ class SessionHelper
 {
     /**
      * Добавляет переменную к данным сессии
-     * @param array $name имя переменной
+     * @param string $name имя переменной
      * @param mixed $data данные для добавления в сессию
      * @return bool
      */
@@ -31,7 +31,7 @@ class SessionHelper
     
     /**
      * Читает сообщение из сессии
-     * @param array $name имя переменной
+     * @param string $name имя переменной
      * @return mixed
      */
     public static function read(string $name)
@@ -52,7 +52,7 @@ class SessionHelper
     
     /**
      * Добавляет Flash-сообщение к данным сессии
-     * @param array $name имя переменной
+     * @param string $name имя переменной
      * @param mixed $data данные для добавления в сессию
      * @return bool
      */
@@ -72,7 +72,7 @@ class SessionHelper
     
     /**
      * Читает Flash-сообщение из сессии
-     * @param array $name имя переменной
+     * @param string $name имя переменной
      * @return mixed
      */
     public static function readFlash(string $name)
@@ -93,22 +93,43 @@ class SessionHelper
     
     /**
      * Удаляет переменные из сессии
-     * @param array $varsArray массив имен переменных
+     * @param array $keysArray массив имен переменных
      * @return bool
      */
-    public static function remove(Array $varsArray)
+    public static function remove(Array $keysArray)
     {
         try {
             $session = \Yii::$app->session;
             $session->open();
-            foreach ($varsArray as $var) {
-                if ($session->has($var)) {
-                    $session->remove($var);
+            foreach ($keysArray as $key) {
+                if ($session->has($key)) {
+                    $session->remove($key);
                 }
             }
             $session->close();
             
             return true;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Проверяет существование записи по ключу
+     * @param string $name имя переменной
+     * @return bool
+     */
+    public static function has(string $name): bool
+    {
+        try {
+            $session = \Yii::$app->session;
+            $session->open();
+            if ($session->has($key)) {
+                return true;
+            }
+            $session->close();
+            
+            return false;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

@@ -41,16 +41,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
         
-        $productsModel = new class(['name'=>$fixtureProduct['name'], 'seocode'=>$fixtureProduct['seocode'], 'categoryName'=>$fixture['name'], 'categorySeocode'=>$fixture['seocode'], 'subcategoryName'=>$fixtureSubcategory['name'], 'subcategorySeocode'=>$fixtureSubcategory['seocode']]) extends \yii\base\Object {
-            public $name;
-            public $seocode;
-            public $categoryName;
-            public $categorySeocode;
-            public $subcategoryName;
-            public $subcategorySeocode;
-        };
-        
-        $result = BreadcrumbsWidget::widget(['productsModel'=>$productsModel]);
+        $result = BreadcrumbsWidget::widget();
         
         $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Home') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li class="active">' . $fixture['name'] . '</li></ul>';
         
@@ -72,16 +63,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
         
-        $productsModel = new class(['name'=>$fixtureProduct['name'], 'seocode'=>$fixtureProduct['seocode'], 'categoryName'=>$fixture['name'], 'categorySeocode'=>$fixture['seocode'], 'subcategoryName'=>$fixtureSubcategory['name'], 'subcategorySeocode'=>$fixtureSubcategory['seocode']]) extends \yii\base\Object {
-            public $name;
-            public $seocode;
-            public $categoryName;
-            public $categorySeocode;
-            public $subcategoryName;
-            public $subcategorySeocode;
-        };
-        
-        $result = BreadcrumbsWidget::widget(['productsModel'=>$productsModel]);
+        $result = BreadcrumbsWidget::widget();
         
         $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
         
@@ -103,16 +85,7 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
         
         \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
         
-        $productsModel = new class(['name'=>$fixtureProduct['name'], 'seocode'=>$fixtureProduct['seocode'], 'categoryName'=>$fixture['name'], 'categorySeocode'=>$fixture['seocode'], 'subcategoryName'=>$fixtureSubcategory['name'], 'subcategorySeocode'=>$fixtureSubcategory['seocode']]) extends \yii\base\Object {
-            public $name;
-            public $seocode;
-            public $categoryName;
-            public $categorySeocode;
-            public $subcategoryName;
-            public $subcategorySeocode;
-        };
-        
-        $result = BreadcrumbsWidget::widget(['productsModel'=>$productsModel]);
+        $result = BreadcrumbsWidget::widget();
         
         $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProduct['name'] . '</li></ul>';
         

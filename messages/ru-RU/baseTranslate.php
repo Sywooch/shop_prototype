@@ -46,6 +46,7 @@ $translate = [
     'Sort ascending'=>'Сортировать по возрастанию',
     'Apply'=>'Применить',
     'Colors:'=>'Цвета:',
+    'Clean'=>'Очистить',
 ];
 
 return $translate;

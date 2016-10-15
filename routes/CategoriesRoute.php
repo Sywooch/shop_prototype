@@ -109,7 +109,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
      * @param array $array массив возможных значений параметра $key
      * @return bool
      */
-    private function parseChunk(string $chunk, string $key='', array $array=[]): bool
+    private function parseChunk(string $chunk, string $key='', array $array=[])
     {
         try {
             if (preg_match('/^(.+)-(\d{1,3})$/', $chunk, $matches)) {
@@ -123,6 +123,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
                 }
                 $this->_params[$key] = $chunk;
             }
+            
             return true;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
