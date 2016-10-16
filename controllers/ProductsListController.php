@@ -36,8 +36,6 @@ class ProductsListController extends AbstractBaseController
             $renderArray['paginator'] = $productsQuery->paginator;
             $renderArray['productsList'] = $productsQuery->all();
             
-            $renderArray['filtersModel'] = \Yii::configure(\Yii::$app->filters, ['scenario'=>FiltersModel::GET_FROM_FORM]);
-            
             $renderArray['colorsList'] = $this->colorsListQuery()->all();
             if (!$renderArray['colorsList'][0] instanceof ColorsModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ColorsModel']));
@@ -81,13 +79,11 @@ class ProductsListController extends AbstractBaseController
             $sphinxQuery->match(new MatchExpression('@* :search', ['search'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]));
             $sphinxArray = $sphinxQuery->all();
             
-            $productsQuery = $this->productsListQuery(['products.id'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            $productsQuery = $this->productsListQuery(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
             
             $renderArray = [];
             $renderArray['paginator'] = $productsQuery->paginator;
             $renderArray['productsList'] = $productsQuery->all();
-            
-               $renderArray['filtersModel'] = \Yii::configure(\Yii::$app->filters, ['scenario'=>FiltersModel::GET_FROM_FORM]);
             
             $renderArray['colorsList'] = $this->colorsListQuerySearch(ArrayHelper::getColumn($sphinxArray, 'id'))->all();
             if (!$renderArray['colorsList'][0] instanceof ColorsModel) {
@@ -120,6 +116,9 @@ class ProductsListController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\ProductsFilter',
+            ],
+            [
+                'class'=>'app\filters\CurrencyFilter',
             ],
         ];
     }

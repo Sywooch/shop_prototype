@@ -28,13 +28,17 @@ class CurrencyFilter extends ActionFilter
             
             if (empty($currency)) {
                 $currencyQuery = CurrencyModel::find();
-                $currencyQuery->extendSelect(['id', 'currency', 'exchange_rate', 'main']);
-                $currencyQuery->where(['[[main]]'=>true]);
+                $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
+                $currencyQuery->where(['[[currency.main]]'=>true]);
                 $currencyModel = $currencyQuery->one();
                 if (!$currencyModel instanceof CurrencyModel) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CurrencyModel']));
                 }
                 $currency = $currencyModel->attributes;
+                if (empty($currency)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $currency']));
+                }
+                SessionHelper::write('currency', $currency);
             }
             
             \Yii::configure(\Yii::$app->currency, $currency);

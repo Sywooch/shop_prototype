@@ -56,7 +56,7 @@ trait QueryTrait
             
             $sortingField = !empty(\Yii::$app->filters->sortingField) ? \Yii::$app->filters->sortingField : 'date';
             $sortingType = (!empty(\Yii::$app->filters->sortingType) && \Yii::$app->filters->sortingType === 'SORT_ASC') ? SORT_ASC : SORT_DESC;
-            $productsQuery->orderBy(['products.' . $sortingField=>$sortingType]);
+            $productsQuery->orderBy(['[[products.' . $sortingField . ']]'=>$sortingType]);
             
             return $productsQuery;
         } catch (\Throwable $t) {
@@ -77,16 +77,16 @@ trait QueryTrait
             $colorsQuery->distinct();
             $colorsQuery->innerJoin('products_colors', '[[colors.id]]=[[products_colors.id_color]]');
             $colorsQuery->innerJoin('products', '[[products_colors.id_product]]=[[products.id]]');
-            $colorsQuery->where(['products.active'=>true]);
+            $colorsQuery->where(['[[products.active]]'=>true]);
             if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
                 $colorsQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
-                $colorsQuery->andWhere(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                $colorsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
                     $colorsQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
-                    $colorsQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    $colorsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
                 }
             }
-            $colorsQuery->orderBy(['colors.color'=>SORT_ASC]);
+            $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
             
             return $colorsQuery;
         } catch (\Throwable $t) {
@@ -107,16 +107,16 @@ trait QueryTrait
             $sizesQuery->distinct();
             $sizesQuery->innerJoin('products_sizes', '[[sizes.id]]=[[products_sizes.id_size]]');
             $sizesQuery->innerJoin('products', '[[products_sizes.id_product]]=[[products.id]]');
-            $sizesQuery->where(['products.active'=>true]);
+            $sizesQuery->where(['[[products.active]]'=>true]);
             if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
                 $sizesQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
-                $sizesQuery->andWhere(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                $sizesQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
                     $sizesQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
-                    $sizesQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    $sizesQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
                 }
             }
-            $sizesQuery->orderBy(['sizes.size'=>SORT_ASC]);
+            $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
             
             return $sizesQuery;
         } catch (\Throwable $t) {
@@ -137,16 +137,16 @@ trait QueryTrait
             $brandsQuery->distinct();
             $brandsQuery->innerJoin('products_brands', '[[brands.id]]=[[products_brands.id_brand]]');
             $brandsQuery->innerJoin('products', '[[products_brands.id_product]]=[[products.id]]');
-            $brandsQuery->where(['products.active'=>true]);
+            $brandsQuery->where(['[[products.active]]'=>true]);
             if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
                 $brandsQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
-                $brandsQuery->andWhere(['categories.seocode'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                $brandsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
                     $brandsQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
-                    $brandsQuery->andWhere(['subcategory.seocode'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    $brandsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
                 }
             }
-            $brandsQuery->orderBy(['brands.brand'=>SORT_ASC]);
+            $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
             
             return $brandsQuery;
         } catch (\Throwable $t) {
@@ -168,9 +168,9 @@ trait QueryTrait
             $colorsQuery->distinct();
             $colorsQuery->innerJoin('products_colors', '[[colors.id]]=[[products_colors.id_color]]');
             $colorsQuery->innerJoin('products', '[[products_colors.id_product]]=[[products.id]]');
-            $colorsQuery->where(['products.active'=>true]);
-            $colorsQuery->andWhere(['products.id'=>$sphinxArray]);
-            $colorsQuery->orderBy(['colors.color'=>SORT_ASC]);
+            $colorsQuery->where(['[[products.active]]'=>true]);
+            $colorsQuery->andWhere(['[[products.id]]'=>$sphinxArray]);
+            $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
             
             return $colorsQuery;
         } catch (\Throwable $t) {
@@ -192,9 +192,9 @@ trait QueryTrait
             $sizesQuery->distinct();
             $sizesQuery->innerJoin('products_sizes', '[[sizes.id]]=[[products_sizes.id_size]]');
             $sizesQuery->innerJoin('products', '[[products_sizes.id_product]]=[[products.id]]');
-            $sizesQuery->where(['products.active'=>true]);
-            $sizesQuery->andWhere(['products.id'=>$sphinxArray]);
-            $sizesQuery->orderBy(['sizes.size'=>SORT_ASC]);
+            $sizesQuery->where(['[[products.active]]'=>true]);
+            $sizesQuery->andWhere(['[[products.id]]'=>$sphinxArray]);
+            $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
             
             return $sizesQuery;
         } catch (\Throwable $t) {
@@ -216,9 +216,9 @@ trait QueryTrait
             $brandsQuery->distinct();
             $brandsQuery->innerJoin('products_brands', '[[brands.id]]=[[products_brands.id_brand]]');
             $brandsQuery->innerJoin('products', '[[products_brands.id_product]]=[[products.id]]');
-            $brandsQuery->where(['products.active'=>true]);
-            $brandsQuery->andWhere(['products.id'=>$sphinxArray]);
-            $brandsQuery->orderBy(['brands.brand'=>SORT_ASC]);
+            $brandsQuery->where(['[[products.active]]'=>true]);
+            $brandsQuery->andWhere(['[[products.id]]'=>$sphinxArray]);
+            $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
             
             return $brandsQuery;
         } catch (\Throwable $t) {

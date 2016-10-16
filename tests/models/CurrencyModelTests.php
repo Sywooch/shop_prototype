@@ -33,12 +33,11 @@ class CurrencyModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_SESSION'));
         
         $model = new CurrencyModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
-        $this->assertTrue(array_key_exists('currency', $model->attributes));
+        $this->assertTrue(array_key_exists('code', $model->attributes));
         $this->assertTrue(array_key_exists('exchange_rate', $model->attributes));
         $this->assertTrue(array_key_exists('main', $model->attributes));
     }
@@ -53,39 +52,26 @@ class CurrencyModelTests extends TestCase
         $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_DB]);
         $model->attributes = [
             'id'=>$fixture['id'], 
-            'currency'=>$fixture['currency'],
+            'code'=>$fixture['code'],
             'exchange_rate'=>$fixture['exchange_rate'], 
             'main'=>$fixture['main'], 
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['currency'], $model->currency);
+        $this->assertEquals($fixture['code'], $model->code);
         $this->assertEquals($fixture['exchange_rate'], $model->exchange_rate);
         $this->assertEquals($fixture['main'], $model->main);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_FORM]);
         $model->attributes = [
             'id'=>$fixture['id'], 
-            'currency'=>$fixture['currency'],
+            'code'=>$fixture['code'],
             'exchange_rate'=>$fixture['exchange_rate'], 
             'main'=>$fixture['main'], 
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['currency'], $model->currency);
-        $this->assertEquals($fixture['exchange_rate'], $model->exchange_rate);
-        $this->assertEquals($fixture['main'], $model->main);
-        
-        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_SESSION]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'currency'=>$fixture['currency'],
-            'exchange_rate'=>$fixture['exchange_rate'], 
-            'main'=>$fixture['main'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['currency'], $model->currency);
+        $this->assertEquals($fixture['code'], $model->code);
         $this->assertEquals($fixture['exchange_rate'], $model->exchange_rate);
         $this->assertEquals($fixture['main'], $model->main);
     }
@@ -96,11 +82,11 @@ class CurrencyModelTests extends TestCase
     public function testGetAll()
     {
         $currencyQuery = CurrencyModel::find();
-        $currencyQuery->extendSelect(['id', 'currency', 'exchange_rate', 'main']);
+        $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
         
         $queryRaw = clone $currencyQuery;
         
-        $expectedQuery = "SELECT `currency`.`id`, `currency`.`currency`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency`";
+        $expectedQuery = "SELECT `currency`.`id`, `currency`.`code`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency`";
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -118,12 +104,12 @@ class CurrencyModelTests extends TestCase
         $fixture = self::$_dbClass->currency['currency_1'];
         
         $currencyQuery = CurrencyModel::find();
-        $currencyQuery->extendSelect(['id', 'currency', 'exchange_rate', 'main']);
-        $currencyQuery->where(['[[currency.currency]]'=>$fixture['currency']]);
+        $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
+        $currencyQuery->where(['[[currency.code]]'=>$fixture['code']]);
         
         $queryRaw = clone $currencyQuery;
         
-        $expectedQuery = sprintf("SELECT `currency`.`id`, `currency`.`currency`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency` WHERE `currency`.`currency`='%s'", $fixture['currency']);
+        $expectedQuery = sprintf("SELECT `currency`.`id`, `currency`.`code`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency` WHERE `currency`.`code`='%s'", $fixture['code']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         

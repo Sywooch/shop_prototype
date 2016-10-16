@@ -11,11 +11,6 @@ use app\exceptions\ExceptionsTrait;
 class CurrencyModel extends AbstractBaseModel
 {
     /**
-     * Сценарий загрузки из сессии
-    */
-    const GET_FROM_SESSION = 'getFromSession';
-    
-    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -31,9 +26,8 @@ class CurrencyModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'currency', 'exchange_rate', 'main'],
-            self::GET_FROM_FORM=>['id', 'currency', 'exchange_rate', 'main'],
-            self::GET_FROM_SESSION=>['id', 'currency', 'exchange_rate', 'main'],
+            self::GET_FROM_DB=>['id', 'code', 'exchange_rate', 'main'],
+            self::GET_FROM_FORM=>['id', 'code', 'exchange_rate', 'main'],
         ];
     }
 }

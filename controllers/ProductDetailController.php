@@ -42,4 +42,13 @@ class ProductDetailController extends AbstractBaseController
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class'=>'app\filters\CurrencyFilter',
+            ],
+        ];
+    }
 }
