@@ -32,13 +32,13 @@ trait QueryTrait
             $productsQuery->where(['[[products.active]]'=>true]);
             
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
-                $productsQuery->innerJoin('categories', '[[categories.id]]=[[products.id_category]]');
+                $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
                 $productsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 
             }
             
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
-                $productsQuery->innerJoin('subcategory', '[[subcategory.id]]=[[products.id_subcategory]]');
+                $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
                 $productsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
             }
             
@@ -75,14 +75,14 @@ trait QueryTrait
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
             $colorsQuery->distinct();
-            $colorsQuery->innerJoin('products_colors', '[[colors.id]]=[[products_colors.id_color]]');
-            $colorsQuery->innerJoin('products', '[[products_colors.id_product]]=[[products.id]]');
+            $colorsQuery->innerJoin('{{products_colors}}', '[[colors.id]]=[[products_colors.id_color]]');
+            $colorsQuery->innerJoin('{{products}}', '[[products_colors.id_product]]=[[products.id]]');
             $colorsQuery->where(['[[products.active]]'=>true]);
             if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
-                $colorsQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
+                $colorsQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
                 $colorsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
-                    $colorsQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
+                    $colorsQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
                     $colorsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
                 }
             }
@@ -105,14 +105,14 @@ trait QueryTrait
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
             $sizesQuery->distinct();
-            $sizesQuery->innerJoin('products_sizes', '[[sizes.id]]=[[products_sizes.id_size]]');
-            $sizesQuery->innerJoin('products', '[[products_sizes.id_product]]=[[products.id]]');
+            $sizesQuery->innerJoin('{{products_sizes}}', '[[sizes.id]]=[[products_sizes.id_size]]');
+            $sizesQuery->innerJoin('{{products}}', '[[products_sizes.id_product]]=[[products.id]]');
             $sizesQuery->where(['[[products.active]]'=>true]);
             if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
-                $sizesQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
+                $sizesQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
                 $sizesQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
-                    $sizesQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
+                    $sizesQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
                     $sizesQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
                 }
             }
@@ -135,14 +135,14 @@ trait QueryTrait
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
             $brandsQuery->distinct();
-            $brandsQuery->innerJoin('products_brands', '[[brands.id]]=[[products_brands.id_brand]]');
-            $brandsQuery->innerJoin('products', '[[products_brands.id_product]]=[[products.id]]');
+            $brandsQuery->innerJoin('{{products_brands}}', '[[brands.id]]=[[products_brands.id_brand]]');
+            $brandsQuery->innerJoin('{{products}}', '[[products_brands.id_product]]=[[products.id]]');
             $brandsQuery->where(['[[products.active]]'=>true]);
             if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
-                $brandsQuery->innerJoin('categories', '[[products.id_category]]=[[categories.id]]');
+                $brandsQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
                 $brandsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
                 if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
-                    $brandsQuery->innerJoin('subcategory', '[[products.id_subcategory]]=[[subcategory.id]]');
+                    $brandsQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
                     $brandsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
                 }
             }
@@ -166,8 +166,8 @@ trait QueryTrait
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
             $colorsQuery->distinct();
-            $colorsQuery->innerJoin('products_colors', '[[colors.id]]=[[products_colors.id_color]]');
-            $colorsQuery->innerJoin('products', '[[products_colors.id_product]]=[[products.id]]');
+            $colorsQuery->innerJoin('{{products_colors}}', '[[colors.id]]=[[products_colors.id_color]]');
+            $colorsQuery->innerJoin('{{products}}', '[[products_colors.id_product]]=[[products.id]]');
             $colorsQuery->where(['[[products.active]]'=>true]);
             $colorsQuery->andWhere(['[[products.id]]'=>$sphinxArray]);
             $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
@@ -190,8 +190,8 @@ trait QueryTrait
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
             $sizesQuery->distinct();
-            $sizesQuery->innerJoin('products_sizes', '[[sizes.id]]=[[products_sizes.id_size]]');
-            $sizesQuery->innerJoin('products', '[[products_sizes.id_product]]=[[products.id]]');
+            $sizesQuery->innerJoin('{{products_sizes}}', '[[sizes.id]]=[[products_sizes.id_size]]');
+            $sizesQuery->innerJoin('{{products}}', '[[products_sizes.id_product]]=[[products.id]]');
             $sizesQuery->where(['[[products.active]]'=>true]);
             $sizesQuery->andWhere(['[[products.id]]'=>$sphinxArray]);
             $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
@@ -214,8 +214,8 @@ trait QueryTrait
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
             $brandsQuery->distinct();
-            $brandsQuery->innerJoin('products_brands', '[[brands.id]]=[[products_brands.id_brand]]');
-            $brandsQuery->innerJoin('products', '[[products_brands.id_product]]=[[products.id]]');
+            $brandsQuery->innerJoin('{{products_brands}}', '[[brands.id]]=[[products_brands.id_brand]]');
+            $brandsQuery->innerJoin('{{products}}', '[[products_brands.id_product]]=[[products.id]]');
             $brandsQuery->where(['[[products.active]]'=>true]);
             $brandsQuery->andWhere(['[[products.id]]'=>$sphinxArray]);
             $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);

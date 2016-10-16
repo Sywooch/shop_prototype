@@ -24,7 +24,7 @@ class CurrencyFilter extends ActionFilter
     public function beforeAction($action)
     {
         try {
-            $currency = SessionHelper::read('currency');
+            $currency = SessionHelper::read(\Yii::$app->params['currencyKey']);
             
             if (empty($currency)) {
                 $currencyQuery = CurrencyModel::find();
@@ -38,7 +38,7 @@ class CurrencyFilter extends ActionFilter
                 if (empty($currency)) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $currency']));
                 }
-                SessionHelper::write('currency', $currency);
+                SessionHelper::write(\Yii::$app->params['currencyKey'], $currency);
             }
             
             \Yii::configure(\Yii::$app->currency, $currency);

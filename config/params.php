@@ -21,6 +21,9 @@ $params = [
     
     # Хэш
     'hashSalt'=>'l2WYXNJwH=B*GPW;0R&H', # строка данных, которая передаётся хеш-функции
+    
+    # Валюта
+    'currencyKey'=>'currency', # Ключ, по которому в $_SESSION доступны данные текущей валюты
 ];
 
 return $params;

@@ -24,7 +24,7 @@ class InstancesHelper
             # Массив объектов CategoriesModel для формирования меню категорий
             $categoriesQuery = CategoriesModel::find();
             $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
-            $categoriesQuery->orderBy(['categories.name'=>SORT_ASC]);
+            $categoriesQuery->orderBy(['[[categories.name]]'=>SORT_ASC]);
             $categoriesQuery->with('subcategory');
             self::$_instancesArray['categoriesList'] = $categoriesQuery->all();
             

@@ -24,7 +24,7 @@ class EmailExistsCreateValidator extends Validator
     {
         try {
             $emailsQuery = EmailsModel::find();
-            $emailsQuery->where(['emails.email'=>$model->$attribute]);
+            $emailsQuery->where(['[[emails.email]]'=>$model->$attribute]);
             $result = $emailsQuery->exists();
             
             if ($result) {
@@ -45,7 +45,7 @@ class EmailExistsCreateValidator extends Validator
     {
         try {
             $emailsQuery = EmailsModel::find();
-            $emailsQuery->where(['emails.email'=>$value]);
+            $emailsQuery->where(['[[emails.email]]'=>$value]);
             $result = $emailsQuery->exists();
             
             if ($result) {

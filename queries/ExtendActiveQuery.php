@@ -67,9 +67,9 @@ class ExtendActiveQuery extends ActiveQuery
                 $tableName = $this->modelClass::tableName();
                 foreach (\Yii::$app->params['filterKeys'] as $filter) {
                     if (in_array($filter, $keys)) {
-                        $this->innerJoin($tableName . '_' . $filter, $tableName . '.id=' . $tableName . '_' . $filter . '.id_' . substr($tableName, 0, strlen($tableName)-1));
-                        $this->innerJoin($filter, $tableName . '_' . $filter . '.id_' . substr($filter, 0, strlen($filter)-1) . '=' . $filter . '.id');
-                        $this->andWhere([$filter . '.id'=>\Yii::$app->filters->$filter]);
+                        $this->innerJoin('{{' . $tableName . '_' . $filter . '}}', '[[' . $tableName . '.id]]=[[' . $tableName . '_' . $filter . '.id_' . substr($tableName, 0, strlen($tableName)-1) . ']]');
+                        $this->innerJoin('{{' . $filter . '}}', '[[' . $tableName . '_' . $filter . '.id_' . substr($filter, 0, strlen($filter)-1) . ']]=[[' . $filter . '.id]]');
+                        $this->andWhere(['[[' . $filter . '.id]]'=>\Yii::$app->filters->$filter]);
                     }
                 }
             }

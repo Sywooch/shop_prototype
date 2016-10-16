@@ -75,8 +75,8 @@ class ProductsListController extends AbstractBaseController
             
             $sphinxQuery = new Query();
             $sphinxQuery->select(['id']);
-            $sphinxQuery->from('shop');
-            $sphinxQuery->match(new MatchExpression('@* :search', ['search'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]));
+            $sphinxQuery->from('{{shop}}');
+            $sphinxQuery->match(new MatchExpression('[[@* :search]]', ['search'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]));
             $sphinxArray = $sphinxQuery->all();
             
             $productsQuery = $this->productsListQuery(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);

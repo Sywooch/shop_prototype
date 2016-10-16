@@ -75,7 +75,7 @@ $components = [
     ],
     
     'session'=>[
-        'class'=>'yii\web\DbSession',
+        'class'=>'yii\web\Session',
         'timeout'=>60*60*24*7
     ],
     
