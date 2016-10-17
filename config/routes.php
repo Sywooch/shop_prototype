@@ -6,6 +6,11 @@ $routes = [
         'class'=>'app\routes\CategoriesRoute',
     ],
     
+    # Вывод одного товара
+    [
+        'class'=>'app\routes\ProductsRoute',
+    ],
+    
     # Фильтры
     'set-filters'=>'filters/set',
     'unset-filters'=>'filters/unset',
@@ -20,9 +25,6 @@ $routes = [
     'registration'=>'user/registration',
     'restore'=>'user/restore',
     'forgot'=>'user/forgot',
-    
-    # Вывод одного товара
-    '<product>'=>'product-detail/index', #!!! Make Class!
 ];
 
 return $routes;

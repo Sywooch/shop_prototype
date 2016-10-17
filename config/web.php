@@ -3,8 +3,8 @@
 $config = [
     'id'=>'shop',
     'basePath'=>dirname(__DIR__),
-    'language'=>'ru-RU',
     'sourceLanguage'=>'en-US',
+    'language'=>'ru-RU',
     'timeZone'=>'Europe/Kiev',
     'bootstrap'=>['log', 'debug'],
     

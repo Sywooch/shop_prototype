@@ -25,7 +25,7 @@ class UserInfoWidget extends Widget
      * Конструирует HTML строку с информацией и текущем пользователе
      * @return string
      */
-    public function run(): string
+    public function run()
     {
         try {
             if (\Yii::$app->user->isGuest) {

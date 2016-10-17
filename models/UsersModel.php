@@ -71,12 +71,12 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     /**
      * Возвращает объект UsersModel по $id
      * @params int $id 
-     * @return object UsersModel/null
+     * @return mixed UsersModel/null
      */
     public static function findIdentity($id)
     {
         try {
-            $usersModel = self::findOne($id);
+            $usersModel = static::findOne($id);
             if ($usersModel instanceof UsersModel) {
                 return $usersModel;
             }

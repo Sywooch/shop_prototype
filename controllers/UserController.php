@@ -37,7 +37,6 @@ class UserController extends AbstractBaseController
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate()) {
                     $usersQuery = UsersModel::find();
                     $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
-                    $usersQuery->distinct();
                     $usersQuery->innerJoin('{{emails}}', '[[users.id_email]]=[[emails.id]]');
                     $usersQuery->where(['[[emails.email]]'=>$rawEmailsModel->email]);
                     $usersModel = $usersQuery->one();

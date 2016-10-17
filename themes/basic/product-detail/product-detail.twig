@@ -1,5 +1,7 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
+{{ use('app/widgets/PriceWidget') }}
+
 {% include('@theme/base/user-info.twig') %}
 
 {% include '@theme/base/search.twig' %}
@@ -28,9 +30,7 @@
             <li>{{ size }}</li>
         {% endfor %}
     </ul>
-    <p>
-        <strong>{{ yii.t('base', 'Price:') }}</strong> {{ productsModel.price }}
-    </p>
+    {{ price_widget_widget({'price':productsModel.price}) }}
     <p>
         <strong>{{ yii.t('base', 'Code:') }}</strong> {{ productsModel.code }}
     </p>

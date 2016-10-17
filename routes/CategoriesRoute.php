@@ -4,7 +4,6 @@ namespace app\routes;
 
 use yii\base\Object;
 use yii\web\UrlRuleInterface;
-use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\models\{CategoriesModel,
     SubcategoryModel};
@@ -47,6 +46,8 @@ class CategoriesRoute extends Object implements UrlRuleInterface
                         $subcategory = $this->parseChunk($subcategory);
                         if (SubcategoryModel::find()->where(['[[subcategory.seocode]]'=>$subcategory])->exists()) {
                             $this->_params[\Yii::$app->params['subcategoryKey']] = $subcategory;
+                        } else {
+                            return false;
                         }
                     }
                 } else {

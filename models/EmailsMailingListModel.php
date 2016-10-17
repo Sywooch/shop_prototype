@@ -43,7 +43,7 @@ class EmailsMailingListModel extends AbstractBaseModel
     public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $emailsModel)
     {
         try {
-            $tmailsMailingListList = self::find()->extendSelect(['id_mailing_list'])->where(['emails_mailing_list.id_email'=>$emailsModel->id])->all();
+            $tmailsMailingListList = self::find()->extendSelect(['id_mailing_list'])->where(['[[emails_mailing_list.id_email]]'=>$emailsModel->id])->all();
             $diff = array_diff($rawMailingListModel->id, ArrayHelper::getColumn($tmailsMailingListList, 'id_mailing_list'));
             if (!empty($diff)) {
                 $toRecord = [];

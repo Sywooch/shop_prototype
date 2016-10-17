@@ -8,6 +8,9 @@ use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
 
+/**
+ * Формирует HTML строку с данными пагинации
+ */
 class PaginationWidget extends Widget
 {
     use ExceptionsTrait;
@@ -84,7 +87,7 @@ class PaginationWidget extends Widget
      * Конструирует HTML строку пагинации
      * @return string
      */
-    public function run(): string
+    public function run()
     {
         try {
             if ($this->paginator->pageCount < 2) {
