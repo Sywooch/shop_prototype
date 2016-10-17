@@ -5,7 +5,8 @@ namespace app\tests\helpers;
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
 use app\helpers\InstancesHelper;
-use app\models\CategoriesModel;
+use app\models\{CategoriesModel,
+    CurrencyModel};
 
 /**
  * Тестирует класс app\helpers\InstancesHelper
@@ -19,6 +20,7 @@ class InstancesHelperTests extends TestCase
         self::$_dbClass = new DbManager([
             'fixtures'=>[
                 'categories'=>'app\tests\source\fixtures\CategoriesFixture',
+                'currency'=>'app\tests\source\fixtures\CurrencyFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -37,6 +39,10 @@ class InstancesHelperTests extends TestCase
         $this->assertTrue(array_key_exists('categoriesList', $result));
         $this->assertTrue(is_array($result['categoriesList']));
         $this->assertTrue($result['categoriesList'][0] instanceof CategoriesModel);
+        
+        $this->assertTrue(array_key_exists('currencyList', $result));
+        $this->assertTrue(is_array($result['currencyList']));
+        $this->assertTrue($result['currencyList'][0] instanceof CurrencyModel);
     }
     
     public static function tearDownAfterClass()

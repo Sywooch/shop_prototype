@@ -32,8 +32,8 @@ class PriceWidget extends Widget
     public function run()
     {
         try {
-            $correctPrice = \Yii::$app->formatter->asDecimal($this->price * \Yii::$app->currency->exchange_rate, 2);
-            return '<p><strong>' . \Yii::t('base', 'Price:') . '</strong> ' . $correctPrice . ' ' . \Yii::$app->currency->code . '</p>';
+            $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * \Yii::$app->currency->exchange_rate, 2);
+            return $correctedPrice . ' ' . \Yii::$app->currency->code;
         } catch(\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

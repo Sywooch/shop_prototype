@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
+use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\helpers\InstancesHelper;
 use app\models\ProductsModel;
@@ -35,6 +36,8 @@ class ProductDetailController extends AbstractBaseController
             }
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            
+            Url::remember();
             
             return $this->render('product-detail.twig', array_merge($renderArray, InstancesHelper::getInstances()));
         } catch (\Throwable $t) {

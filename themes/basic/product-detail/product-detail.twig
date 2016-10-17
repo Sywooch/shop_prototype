@@ -30,8 +30,12 @@
             <li>{{ size }}</li>
         {% endfor %}
     </ul>
-    {{ price_widget_widget({'price':productsModel.price}) }}
+    <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':productsModel.price}) }}</p>
     <p>
         <strong>{{ yii.t('base', 'Code:') }}</strong> {{ productsModel.code }}
     </p>
 {% endif %}
+
+<p>
+    {% include('@theme/base/currency-form.twig') %}
+</p>

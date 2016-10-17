@@ -25,6 +25,9 @@ $routes = [
     'registration'=>'user/registration',
     'restore'=>'user/restore',
     'forgot'=>'user/forgot',
+    
+    # Валюта
+    'set-currency'=>'currency/set',
 ];
 
 return $routes;

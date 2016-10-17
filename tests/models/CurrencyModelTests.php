@@ -33,6 +33,7 @@ class CurrencyModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_CHANGE_CURRENCY'));
         
         $model = new CurrencyModel();
         
@@ -74,6 +75,15 @@ class CurrencyModelTests extends TestCase
         $this->assertEquals($fixture['code'], $model->code);
         $this->assertEquals($fixture['exchange_rate'], $model->exchange_rate);
         $this->assertEquals($fixture['main'], $model->main);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_CHANGE_CURRENCY]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+            'code'=>$fixture['code'],
+        ];
+        
+        $this->assertEquals($fixture['id'], $model->id);
+        $this->assertEquals($fixture['code'], $model->code);
     }
     
     /**

@@ -101,6 +101,11 @@ $components = [
         'viewPath'=>'@theme/mail',
     ],
     
+    'formatter'=>[
+        'thousandSeparator'=>'',
+        'decimalSeparator'=>',',
+    ],
+    
     'filters'=>[
         'class'=>'app\models\FiltersModel',
     ],

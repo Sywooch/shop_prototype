@@ -4,7 +4,8 @@ namespace app\helpers;
 
 use yii\base\ErrorException;
 use app\exceptions\ExceptionsTrait;
-use app\models\CategoriesModel;
+use app\models\{CategoriesModel,
+    CurrencyModel};
 
 /**
  * Коллекция методов для создания объектов,
@@ -27,9 +28,17 @@ class InstancesHelper
             $categoriesQuery->orderBy(['[[categories.name]]'=>SORT_ASC]);
             $categoriesQuery->with('subcategory');
             self::$_instancesArray['categoriesList'] = $categoriesQuery->all();
-            
             if (!self::$_instancesArray['categoriesList'][0] instanceof CategoriesModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CategoriesModel']));
+            }
+            
+            # Массив объектов CurrencyModel для формирования формы замены валюты
+            $currencyQuery = CurrencyModel::find();
+            $currencyQuery->extendSelect(['id', 'code']);
+            $currencyQuery->orderBy(['[[currency.code]]'=>SORT_ASC]);
+            self::$_instancesArray['currencyList'] = $currencyQuery->all();
+            if (!self::$_instancesArray['currencyList'][0] instanceof CurrencyModel) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CurrencyModel']));
             }
             
             return self::$_instancesArray;

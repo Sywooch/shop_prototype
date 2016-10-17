@@ -11,6 +11,11 @@ use app\exceptions\ExceptionsTrait;
 class CurrencyModel extends AbstractBaseModel
 {
     /**
+     * Сценарий изменения текущей валюты
+    */
+    const GET_FROM_CHANGE_CURRENCY = 'getFromChangeCurrency';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -28,6 +33,7 @@ class CurrencyModel extends AbstractBaseModel
         return [
             self::GET_FROM_DB=>['id', 'code', 'exchange_rate', 'main'],
             self::GET_FROM_FORM=>['id', 'code', 'exchange_rate', 'main'],
+            self::GET_FROM_CHANGE_CURRENCY=>['id', 'code'],
         ];
     }
 }

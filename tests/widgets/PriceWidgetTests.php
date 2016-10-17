@@ -36,7 +36,15 @@ class PriceWidgetTests extends TestCase
         
         $result = PriceWidget::widget(['price'=>self::$_price]);
         
-        $expectedString = sprintf("<p><strong>%s</strong> %s %s</p>", \Yii::t('base', 'Price:'), number_format((self::$_price * \Yii::$app->currency->exchange_rate), 2, ',', ' '), \Yii::$app->currency->code);
+        $expectedString = number_format((self::$_price * \Yii::$app->currency->exchange_rate), 2, ',', '') . ' ' . \Yii::$app->currency->code;
+        
+        $this->assertEquals($expectedString, $result);
+        
+        \Yii::configure(\Yii::$app->currency, $fixture_2);
+        
+        $result = PriceWidget::widget(['price'=>self::$_price]);
+        
+        $expectedString = number_format((self::$_price * \Yii::$app->currency->exchange_rate), 2, ',', '') . ' ' . \Yii::$app->currency->code;
         
         $this->assertEquals($expectedString, $result);
     }

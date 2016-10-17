@@ -2,6 +2,8 @@
 
 {{ use('app/widgets/PaginationWidget') }}
 
+{{ use('app/widgets/PriceWidget') }}
+
 {% include('@theme/base/user-info.twig') %}
 
 {% include '@theme/base/search.twig' %}
@@ -17,11 +19,16 @@
             <li>
                 <a href="{{ url.to({0:'product-detail/index', 'product':productsModel.seocode}) }}">{{ productsModel.name }}</a>
                 <br>{{ app.formatter.asDate(productsModel.date) }}
+                <br>{{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':productsModel.price}) }}
             </li>
         {% endif %}
     {% endfor %}
     </ol>
 {% endif %}
+
+<p>
+    {% include('@theme/base/currency-form.twig') %}
+</p>
 
 {% include('filters.twig') %}
 

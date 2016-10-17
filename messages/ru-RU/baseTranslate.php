@@ -50,6 +50,7 @@ $translate = [
     'Price:'=>'Цена:',
     'Code:'=>'Код:',
     'Clean'=>'Очистить',
+    'Change'=>'Изменить',
 ];
 
 return $translate;
