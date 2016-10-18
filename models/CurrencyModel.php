@@ -36,4 +36,12 @@ class CurrencyModel extends AbstractBaseModel
             self::GET_FROM_CHANGE_CURRENCY=>['id', 'code'],
         ];
     }
+    
+    public function rules()
+    {
+        return [
+            [['code'], 'app\validators\StripTagsValidator'],
+            [['id'], 'required', 'on'=>self::GET_FROM_CHANGE_CURRENCY],
+        ];
+    }
 }

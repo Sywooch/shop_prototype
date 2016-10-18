@@ -18,7 +18,7 @@ class AddressModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'address'=>'app\tests\source\fixtures\AddressFixture',
+                'address'=>'app\tests\sources\fixtures\AddressFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

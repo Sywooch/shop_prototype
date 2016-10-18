@@ -24,6 +24,9 @@ $params = [
     
     # Валюта
     'currencyKey'=>'currency', # Ключ, по которому в $_SESSION доступны данные текущей валюты
+    
+    # Формы
+    'form-filler'=>'------------------------',
 ];
 
 return $params;

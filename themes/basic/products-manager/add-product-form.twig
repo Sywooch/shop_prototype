@@ -1,0 +1,18 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+{% set form=active_form_begin({'id':'add-product-form', 'action':url.to({0:'/products-manager/add-one'}), 'method':'POST', 'options':{'enctype':'multipart/form-data'}}) %}
+    {{ form.field(productsModel, 'code') | raw }}
+    {{ form.field(productsModel, 'name') | raw }}
+    {{ form.field(productsModel, 'seocode') | raw }}
+    {{ form.field(productsModel, 'short_description').textarea() | raw }}
+    {{ form.field(productsModel, 'description').textarea() | raw }}
+    {{ form.field(productsModel, 'price') | raw }}
+    {{ form.field(productsModel, 'images[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
+    {{ form.field(productsModel, 'id_category').dropDownList(array.merge({'':app.params['form-filler']}, array.map(categoriesList, 'id', 'name'))) | raw }}
+    {{ form.field(productsModel, 'id_subcategory').dropDownList({'':app.params['form-filler']}) | raw }}
+    {{ form.field(colorsModel, 'id').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
+    {{ form.field(sizesModel, 'id').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
+    {{ form.field(productsModel, 'total_products') | raw }}
+    {{ form.field(productsModel, 'active').checkbox() | raw }}
+    <input type="submit" value="{{ yii.t('base', 'Send') }}">
+{{ active_form_end() }}

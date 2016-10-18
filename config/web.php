@@ -9,7 +9,9 @@ $config = [
     'bootstrap'=>['log', 'debug'],
     
     'aliases'=>[
-        '@theme'=>'@app/themes/basic'
+        '@theme'=>'@app/themes/basic',
+        '@imagesroot'=>'@app/web/sources/images/products',
+        '@imagesweb'=>'/sources/images/products',
     ],
     
     'layout'=>'main.twig',

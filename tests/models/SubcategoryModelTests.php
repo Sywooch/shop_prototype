@@ -20,8 +20,8 @@ class SubcategoryModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'products'=>'app\tests\source\fixtures\ProductsFixture',
-                'subcategory'=>'app\tests\source\fixtures\SubcategoryFixture',
+                'products'=>'app\tests\sources\fixtures\ProductsFixture',
+                'subcategory'=>'app\tests\sources\fixtures\SubcategoryFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

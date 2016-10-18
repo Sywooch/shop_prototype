@@ -18,9 +18,9 @@ class CategoriesMenuWidgetTests extends \PHPUnit_Framework_TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>'app\tests\source\fixtures\CategoriesFixture',
-                'subcategory'=>'app\tests\source\fixtures\SubcategoryFixture',
-                'products'=>'app\tests\source\fixtures\ProductsFixture'
+                'categories'=>'app\tests\sources\fixtures\CategoriesFixture',
+                'subcategory'=>'app\tests\sources\fixtures\SubcategoryFixture',
+                'products'=>'app\tests\sources\fixtures\ProductsFixture'
             ],
         ]);
         self::$_dbClass->loadFixtures();

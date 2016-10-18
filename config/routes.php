@@ -28,6 +28,9 @@ $routes = [
     
     # Валюта
     'set-currency'=>'currency/set',
+    
+    # Управление товарами
+    'admin/add-product'=>'products-manager/add-one',
 ];
 
 return $routes;

@@ -16,6 +16,11 @@ use app\exceptions\ExceptionsTrait;
 class ProductsModel extends AbstractBaseModel
 {
     /**
+     * Сценарий сохранения данных из формы добавления товара
+    */
+    const GET_FROM_ADD_PRODUCT = 'getFromAddProduct';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -33,6 +38,15 @@ class ProductsModel extends AbstractBaseModel
         return [
             self::GET_FROM_DB=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products', 'seocode'],
             self::GET_FROM_FORM=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products', 'seocode'],
+            self::GET_FROM_ADD_PRODUCT=>['code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products', 'seocode'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['date', 'code', 'name', 'description', 'short_description', 'total_products', 'seocode'], 'app\validators\StripTagsValidator'],
+            [['code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'total_products'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT],
         ];
     }
     

@@ -18,7 +18,7 @@ class PriceWidgetTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'currency'=>'app\tests\source\fixtures\CurrencyFixture',
+                'currency'=>'app\tests\sources\fixtures\CurrencyFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

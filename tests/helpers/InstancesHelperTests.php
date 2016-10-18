@@ -19,8 +19,8 @@ class InstancesHelperTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>'app\tests\source\fixtures\CategoriesFixture',
-                'currency'=>'app\tests\source\fixtures\CurrencyFixture',
+                'categories'=>'app\tests\sources\fixtures\CategoriesFixture',
+                'currency'=>'app\tests\sources\fixtures\CurrencyFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

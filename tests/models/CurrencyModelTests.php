@@ -18,7 +18,7 @@ class CurrencyModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'currency'=>'app\tests\source\fixtures\CurrencyFixture',
+                'currency'=>'app\tests\sources\fixtures\CurrencyFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -84,6 +84,29 @@ class CurrencyModelTests extends TestCase
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['code'], $model->code);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $fixture = self::$_dbClass->currency['currency_1'];
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_CHANGE_CURRENCY]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_CHANGE_CURRENCY]);
+        $model->attributes = [
+            'id'=>$fixture['id'],
+        ];
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
     }
     
     /**

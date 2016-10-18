@@ -18,7 +18,7 @@ class BrandsModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'brands'=>'app\tests\source\fixtures\BrandsFixture',
+                'brands'=>'app\tests\sources\fixtures\BrandsFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

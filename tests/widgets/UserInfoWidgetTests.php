@@ -15,7 +15,7 @@ class UserInfoWidgetTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'users'=>'app\tests\source\fixtures\UsersFixture',
+                'users'=>'app\tests\sources\fixtures\UsersFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

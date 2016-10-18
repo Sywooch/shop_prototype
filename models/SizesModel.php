@@ -11,6 +11,11 @@ use app\exceptions\ExceptionsTrait;
 class SizesModel extends AbstractBaseModel
 {
     /**
+     * Сценарий сохранения данных из формы добавления товара
+    */
+    const GET_FROM_ADD_PRODUCT = 'getFromAddProduct';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -28,6 +33,15 @@ class SizesModel extends AbstractBaseModel
         return [
             self::GET_FROM_DB=>['id', 'size'],
             self::GET_FROM_FORM=>['id', 'size'],
+            self::GET_FROM_ADD_PRODUCT=>['id'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['size'], 'app\validators\StripTagsValidator'],
+            [['id'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT],
         ];
     }
 }

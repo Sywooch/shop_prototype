@@ -18,7 +18,7 @@ class ProductsColorsModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'products_colors'=>'app\tests\source\fixtures\ProductsColorsFixture',
+                'products_colors'=>'app\tests\sources\fixtures\ProductsColorsFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

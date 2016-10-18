@@ -27,13 +27,13 @@ class ProductsModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>'app\tests\source\fixtures\CategoriesFixture',
-                'subcategory'=>'app\tests\source\fixtures\SubcategoryFixture',
-                'products'=>'app\tests\source\fixtures\ProductsFixture',
-                'colors'=>'app\tests\source\fixtures\ColorsFixture',
-                'products_colors'=>'app\tests\source\fixtures\ProductsColorsFixture',
-                'sizes'=>'app\tests\source\fixtures\SizesFixture',
-                'products_sizes'=>'app\tests\source\fixtures\ProductsSizesFixture'
+                'categories'=>'app\tests\sources\fixtures\CategoriesFixture',
+                'subcategory'=>'app\tests\sources\fixtures\SubcategoryFixture',
+                'products'=>'app\tests\sources\fixtures\ProductsFixture',
+                'colors'=>'app\tests\sources\fixtures\ColorsFixture',
+                'products_colors'=>'app\tests\sources\fixtures\ProductsColorsFixture',
+                'sizes'=>'app\tests\sources\fixtures\SizesFixture',
+                'products_sizes'=>'app\tests\sources\fixtures\ProductsSizesFixture'
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -48,6 +48,7 @@ class ProductsModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         
         $model = new ProductsModel();
         
@@ -134,6 +135,72 @@ class ProductsModelTests extends TestCase
         $this->assertEquals($fixture['active'], $model->active);
         $this->assertEquals($fixture['total_products'], $model->total_products);
         $this->assertEquals($fixture['seocode'], $model->seocode);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [
+            'code'=>$fixture['code'], 
+            'name'=>$fixture['name'], 
+            'short_description'=>$fixture['short_description'], 
+            'description'=>$fixture['description'], 
+            'price'=>$fixture['price'], 
+            'images'=>$fixture['images'], 
+            'id_category'=>$fixture['id_category'], 
+            'id_subcategory'=>$fixture['id_subcategory'], 
+            'active'=>$fixture['active'], 
+            'total_products'=>$fixture['total_products'],
+            'seocode'=>$fixture['seocode']
+        ];
+        
+        $this->assertEquals($fixture['code'], $model->code);
+        $this->assertEquals($fixture['name'], $model->name);
+        $this->assertEquals($fixture['short_description'], $model->short_description);
+        $this->assertEquals($fixture['description'], $model->description);
+        $this->assertEquals($fixture['price'], $model->price);
+        $this->assertEquals($fixture['images'], $model->images);
+        $this->assertEquals($fixture['id_category'], $model->id_category);
+        $this->assertEquals($fixture['id_subcategory'], $model->id_subcategory);
+        $this->assertEquals($fixture['active'], $model->active);
+        $this->assertEquals($fixture['total_products'], $model->total_products);
+        $this->assertEquals($fixture['seocode'], $model->seocode);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $fixture = self::$_dbClass->products['product_1'];
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(9, count($model->errors));
+        $this->assertTrue(array_key_exists('code', $model->errors));
+        $this->assertTrue(array_key_exists('name', $model->errors));
+        $this->assertTrue(array_key_exists('short_description', $model->errors));
+        $this->assertTrue(array_key_exists('description', $model->errors));
+        $this->assertTrue(array_key_exists('price', $model->errors));
+        $this->assertTrue(array_key_exists('images', $model->errors));
+        $this->assertTrue(array_key_exists('id_category', $model->errors));
+        $this->assertTrue(array_key_exists('id_subcategory', $model->errors));
+        $this->assertTrue(array_key_exists('total_products', $model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [
+            'code'=>$fixture['code'], 
+            'name'=>$fixture['name'], 
+            'short_description'=>$fixture['short_description'], 
+            'description'=>$fixture['description'], 
+            'price'=>$fixture['price'], 
+            'images'=>$fixture['images'], 
+            'id_category'=>$fixture['id_category'], 
+            'id_subcategory'=>$fixture['id_subcategory'], 
+            'total_products'=>$fixture['total_products'],
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
     }
     
     /**

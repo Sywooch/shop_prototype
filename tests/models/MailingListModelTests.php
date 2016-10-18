@@ -18,7 +18,7 @@ class MailingListModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'mailing_list'=>'app\tests\source\fixtures\MailingListFixture',
+                'mailing_list'=>'app\tests\sources\fixtures\MailingListFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();

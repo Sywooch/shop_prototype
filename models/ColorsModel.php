@@ -11,6 +11,11 @@ use app\exceptions\ExceptionsTrait;
 class ColorsModel extends AbstractBaseModel
 {
     /**
+     * Сценарий сохранения данных из формы добавления товара
+    */
+    const GET_FROM_ADD_PRODUCT = 'getFromAddProduct';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -28,6 +33,15 @@ class ColorsModel extends AbstractBaseModel
         return [
             self::GET_FROM_DB=>['id', 'color'],
             self::GET_FROM_FORM=>['id', 'color'],
+            self::GET_FROM_ADD_PRODUCT=>['id'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['color'], 'app\validators\StripTagsValidator'],
+            [['id'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT],
         ];
     }
 }

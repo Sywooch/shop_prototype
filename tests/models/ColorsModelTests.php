@@ -18,7 +18,7 @@ class ColorsModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'colors'=>'app\tests\source\fixtures\ColorsFixture',
+                'colors'=>'app\tests\sources\fixtures\ColorsFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -33,6 +33,7 @@ class ColorsModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         
         $model = new ColorsModel();
         
@@ -64,6 +65,36 @@ class ColorsModelTests extends TestCase
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['color'], $model->color);
+        
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+        ];
+        
+        $this->assertEquals($fixture['id'], $model->id);
+    }
+    
+     /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $fixture = self::$_dbClass->colors['color_1'];
+        
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
     }
     
     /**

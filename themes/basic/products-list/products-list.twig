@@ -1,8 +1,8 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/PaginationWidget') }}
-
 {{ use('app/widgets/PriceWidget') }}
+{{ use('app/widgets/ThumbnailsWidget') }}
 
 {% include('@theme/base/user-info.twig') %}
 
@@ -20,6 +20,9 @@
                 <a href="{{ url.to({0:'product-detail/index', 'product':productsModel.seocode}) }}">{{ productsModel.name }}</a>
                 <br>{{ app.formatter.asDate(productsModel.date) }}
                 <br>{{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':productsModel.price}) }}
+                {% if productsModel.images %}
+                    <br>{{ thumbnails_widget_widget({'path':productsModel.images}) }}
+                {% endif %}
             </li>
         {% endif %}
     {% endfor %}
@@ -34,4 +37,8 @@
 
 <p>
     {{ pagination_widget_widget({'paginator':paginator}) }}
+</p>
+
+<p>
+    <a href="{{ url.to({0:'products-manager/add-one'}) }}">{{ yii.t('base', 'Add product') }}</a>
 </p>

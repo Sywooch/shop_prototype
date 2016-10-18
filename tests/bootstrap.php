@@ -11,7 +11,8 @@ $config = require(__DIR__ . '/../config/web.php');
 
 $config['components']['db'] = $config['components']['dbTest'];
 $config['components']['mailer']['useFileTransport'] = true;
-$config['components']['mailer']['fileTransportPath'] = '@app/tests/source/mail/letters';
+$config['components']['mailer']['fileTransportPath'] = '@app/tests/sources/mail/letters';
+$config['aliases']['@imagesroot'] = '@app/tests/sources/images/products';
 
 (new yii\web\Application($config));
 

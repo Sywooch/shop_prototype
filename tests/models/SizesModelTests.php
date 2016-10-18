@@ -18,7 +18,7 @@ class SizesModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'sizes'=>'app\tests\source\fixtures\SizesFixture',
+                'sizes'=>'app\tests\sources\fixtures\SizesFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -33,6 +33,7 @@ class SizesModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         
         $model = new SizesModel();
         
@@ -64,6 +65,36 @@ class SizesModelTests extends TestCase
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['size'], $model->size);
+        
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+        ];
+        
+        $this->assertEquals($fixture['id'], $model->id);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $fixture = self::$_dbClass->sizes['size_1'];
+        
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
     }
     
     /**
