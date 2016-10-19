@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
+use yii\web\UploadedFile;
 use app\controllers\AbstractBaseController;
 use app\models\{BrandsModel,
     ColorsModel,
@@ -30,7 +31,13 @@ class ProductsManagerController extends AbstractBaseController
             $rawBrandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT]);
             
             if (\Yii::$app->request->isPost && $rawProductsModel->load(\Yii::$app->request->post()) && $rawColorsModel->load(\Yii::$app->request->post()) && $rawSizesModel->load(\Yii::$app->request->post()) && $rawBrandsModel->load(\Yii::$app->request->post())) {
-                
+                if ($rawProductsModel->validate() && $rawColorsModel->validate() && $rawSizesModel->validate() && $rawBrandsModel->validate()) {
+                    if (!empty($rawProductsModel->images)) {
+                        $rawProductsModel->images = UploadedFile::getInstances($rawProductsModel, 'images');
+                        $folderName = $rawProductsModel->upload();
+                        $rawProductsModel->images = $folderName;
+                    }
+                }
             }
             
             $renderArray = [];
