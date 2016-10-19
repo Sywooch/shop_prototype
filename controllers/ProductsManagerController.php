@@ -4,9 +4,11 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\models\{ColorsModel,
+use app\models\{BrandsModel,
+    ColorsModel,
     ProductsModel,
     SizesModel};
+use app\queries\QueryTrait;
 use app\helpers\InstancesHelper;
 
 /**
@@ -14,6 +16,8 @@ use app\helpers\InstancesHelper;
  */
 class ProductsManagerController extends AbstractBaseController
 {
+    use QueryTrait;
+    
     /**
      * Управляет процессом добавления 1 товара
      */
@@ -23,22 +27,33 @@ class ProductsManagerController extends AbstractBaseController
             $rawProductsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT]);
             $rawColorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
             $rawSizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT]);
+            $rawBrandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT]);
+            
+            if (\Yii::$app->request->isPost && $rawProductsModel->load(\Yii::$app->request->post()) && $rawColorsModel->load(\Yii::$app->request->post()) && $rawSizesModel->load(\Yii::$app->request->post()) && $rawBrandsModel->load(\Yii::$app->request->post())) {
+                
+            }
             
             $renderArray = [];
             
             $renderArray['productsModel'] = $rawProductsModel;
             
             $renderArray['colorsModel'] = $rawColorsModel;
-            $colorsQuery = ColorsModel::find();
-            $colorsQuery->extendSelect(['id', 'color']);
-            $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
-            $renderArray['colorsList'] = $colorsQuery->all();
+            $renderArray['colorsList'] = $this->colorsListQueryAll()->all();
             if (!$renderArray['colorsList'][0] instanceof ColorsModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ColorsModel']));
             }
             
             $renderArray['sizesModel'] = $rawSizesModel;
-            $renderArray['sizesList'] = SizesModel::find()->extendSelect(['id', 'size'])->orderBy(['[[sizes.size]]'=>SORT_ASC])->all();
+            $renderArray['sizesList'] = $this->sizesListQueryAll()->all();
+            if (!$renderArray['sizesList'][0] instanceof SizesModel) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'SizesModel']));
+            }
+            
+            $renderArray['brandsModel'] = $rawBrandsModel;
+            $renderArray['brandsList'] = $this->brandsListQueryAll()->all();
+            if (!$renderArray['brandsList'][0] instanceof BrandsModel) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'BrandsModel']));
+            }
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
             

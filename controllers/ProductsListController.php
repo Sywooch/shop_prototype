@@ -36,17 +36,17 @@ class ProductsListController extends AbstractBaseController
             $renderArray['paginator'] = $productsQuery->paginator;
             $renderArray['productsList'] = $productsQuery->all();
             
-            $renderArray['colorsList'] = $this->colorsListQuery()->all();
+            $renderArray['colorsList'] = $this->colorsListQueryFilter()->all();
             if (!$renderArray['colorsList'][0] instanceof ColorsModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ColorsModel']));
             }
             
-            $renderArray['sizesList'] = $this->sizesListQuery()->all();
+            $renderArray['sizesList'] = $this->sizesListQueryFilter()->all();
             if (!$renderArray['sizesList'][0] instanceof SizesModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'SizesModel']));
             }
             
-            $renderArray['brandsList'] = $this->brandsListQuery()->all();
+            $renderArray['brandsList'] = $this->brandsListQueryFilter()->all();
             if (!$renderArray['brandsList'][0] instanceof BrandsModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'BrandsModel']));
             }

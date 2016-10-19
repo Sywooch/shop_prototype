@@ -31,8 +31,6 @@ class ColorsModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         
         $model = new ColorsModel();
@@ -47,24 +45,6 @@ class ColorsModelTests extends TestCase
     public function testScenarios()
     {
         $fixture = self::$_dbClass->colors['color_1'];
-        
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'color'=>$fixture['color'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['color'], $model->color);
-        
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'color'=>$fixture['color'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['color'], $model->color);
         
         $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
         $model->attributes = [

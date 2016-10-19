@@ -31,8 +31,6 @@ class CurrencyModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'code', 'exchange_rate', 'main'],
-            self::GET_FROM_FORM=>['id', 'code', 'exchange_rate', 'main'],
             self::GET_FROM_CHANGE_CURRENCY=>['id', 'code'],
         ];
     }

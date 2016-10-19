@@ -22,12 +22,4 @@ class ProductsSizesModel extends AbstractBaseModel
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
-    
-    public function scenarios()
-    {
-        return [
-            self::GET_FROM_DB=>['id_product', 'id_size'],
-            self::GET_FROM_FORM=>['id_product', 'id_size'],
-        ];
-    }
 }

@@ -69,7 +69,7 @@ trait QueryTrait
      * ColorsModel в контексте фильтрации выборки ProductsModel
      * @return ActiveQuery
      */
-    private function colorsListQuery(): ActiveQuery
+    private function colorsListQueryFilter(): ActiveQuery
     {
         try {
             $colorsQuery = ColorsModel::find();
@@ -99,7 +99,7 @@ trait QueryTrait
      * SizesModel в контексте фильтрации выборки ProductsModel
      * @return ActiveQuery
      */
-    private function sizesListQuery(): ActiveQuery
+    private function sizesListQueryFilter(): ActiveQuery
     {
         try {
             $sizesQuery = SizesModel::find();
@@ -129,7 +129,7 @@ trait QueryTrait
      * BrandsModel в контексте фильтрации выборки ProductsModel
      * @return ActiveQuery
      */
-    private function brandsListQuery(): ActiveQuery
+    private function brandsListQueryFilter(): ActiveQuery
     {
         try {
             $brandsQuery = BrandsModel::find();
@@ -218,6 +218,60 @@ trait QueryTrait
             $brandsQuery->innerJoin('{{products}}', '[[products_brands.id_product]]=[[products.id]]');
             $brandsQuery->where(['[[products.active]]'=>true]);
             $brandsQuery->andWhere(['[[products.id]]'=>$sphinxArray]);
+            $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
+            
+            return $brandsQuery;
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * ColorsModel в контексте создания формы добавления товара в БД
+     * @return ActiveQuery
+     */
+    private function colorsListQueryAll(): ActiveQuery
+    {
+        try {
+            $colorsQuery = ColorsModel::find();
+            $colorsQuery->extendSelect(['id', 'color']);
+            $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
+            
+            return $colorsQuery;
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * SizesModel в контексте создания формы добавления товара в БД
+     * @return ActiveQuery
+     */
+    private function sizesListQueryAll(): ActiveQuery
+    {
+        try {
+            $sizesQuery = SizesModel::find();
+            $sizesQuery->extendSelect(['id', 'size']);
+            $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
+            
+            return $sizesQuery;
+        } catch (\Throwable $t) {
+            throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>__METHOD__]) . $t->getMessage());
+        }
+    }
+    
+    /**
+     * Конструирует ActiveQuery для выборки объектов 
+     * BrandsModel в контексте создания формы добавления товара в БД
+     * @return ActiveQuery
+     */
+    private function brandsListQueryAll(): ActiveQuery
+    {
+        try {
+            $brandsQuery = BrandsModel::find();
+            $brandsQuery->extendSelect(['id', 'brand']);
             $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
             
             return $brandsQuery;

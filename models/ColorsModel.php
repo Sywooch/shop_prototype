@@ -31,8 +31,6 @@ class ColorsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'color'],
-            self::GET_FROM_FORM=>['id', 'color'],
             self::GET_FROM_ADD_PRODUCT=>['id'],
         ];
     }

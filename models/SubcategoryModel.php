@@ -24,14 +24,6 @@ class SubcategoryModel extends AbstractBaseModel
         }
     }
     
-    public function scenarios()
-    {
-        return [
-            self::GET_FROM_DB=>['id', 'name', 'seocode', 'id_category', 'active'],
-            self::GET_FROM_FORM=>['id', 'name', 'seocode', 'id_category', 'active'],
-        ];
-    }
-    
     /**
      * Получает объект CategoriesModel, с которой связан текущий объект SubcategoryModel
      * @return object CategoriesModel

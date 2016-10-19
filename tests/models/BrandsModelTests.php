@@ -31,8 +31,7 @@ class BrandsModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         
         $model = new BrandsModel();
         
@@ -47,23 +46,35 @@ class BrandsModelTests extends TestCase
     {
         $fixture = self::$_dbClass->brands['brand_1'];
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_DB]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT]);
         $model->attributes = [
             'id'=>$fixture['id'], 
-            'brand'=>$fixture['brand'], 
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['brand'], $model->brand);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $fixture = self::$_dbClass->brands['brand_1'];
         
-        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_FORM]);
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT]);
         $model->attributes = [
             'id'=>$fixture['id'], 
-            'brand'=>$fixture['brand'], 
         ];
+        $model->validate();
         
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['brand'], $model->brand);
+        $this->assertTrue(empty($model->errors));
     }
     
     /**

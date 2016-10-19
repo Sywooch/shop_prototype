@@ -37,8 +37,6 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'],
-            self::GET_FROM_FORM=>['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address'],
             self::GET_FROM_AUTHENTICATION=>['password'],
             self::GET_FROM_REGISTRATION=>['password', 'name', 'surname', 'id_phone', 'id_address'],
         ];

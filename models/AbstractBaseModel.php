@@ -11,15 +11,6 @@ abstract class AbstractBaseModel extends ActiveRecord
     use ExceptionsTrait;
     
     /**
-     * Сценарий загрузки из БД
-    */
-    const GET_FROM_DB = 'getFromDb';
-    /**
-     * Сценарий загрузки из формы
-    */
-    const GET_FROM_FORM = 'getFromForm';
-    
-    /**
      * @inheritdoc
      * @return ActiveQuery the newly created [[ActiveQuery]] instance.
      */

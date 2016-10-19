@@ -1,0 +1,33 @@
+<?php
+
+namespace app\assets;
+
+use app\assets\AbstractAsset;
+
+/**
+ * Задает основной пакет ресурсов
+ */
+class AddProductAsset extends AbstractAsset
+{
+    /**
+     * @var array массив js параметров
+     */
+    public $jsOptions = [
+        'defer'=>true,
+    ];
+    /**
+     * @var array массив, перечисляющий JavaScript файлы, 
+     * содержащиеся в данном комплекте
+     */
+    public $js = [
+        'js/getSubcategoryWithDisable.js',
+    ];
+    /**
+     * @var array зависимости пакета
+     */
+    public $depends = [
+        'app\assets\MainAsset',
+        'app\assets\AbstractDropDownDisable',
+        'app\assets\AbstractGetSubcategory',
+    ];
+}

@@ -22,12 +22,4 @@ class PhonesModel extends AbstractBaseModel
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
-    
-    public function scenarios()
-    {
-        return [
-            self::GET_FROM_DB=>['id', 'phone'],
-            self::GET_FROM_FORM=>['id', 'phone'],
-        ];
-    }
 }

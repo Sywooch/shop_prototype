@@ -36,8 +36,6 @@ class EmailsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'email'],
-            self::GET_FROM_FORM=>['id', 'email'],
             self::GET_FROM_AUTHENTICATION=>['email'],
             self::GET_FROM_REGISTRATION=>['email'],
         ];

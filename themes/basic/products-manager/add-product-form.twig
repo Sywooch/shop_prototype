@@ -12,6 +12,7 @@
     {{ form.field(productsModel, 'id_subcategory').dropDownList({'':app.params['form-filler']}) | raw }}
     {{ form.field(colorsModel, 'id').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
     {{ form.field(sizesModel, 'id').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
+    {{ form.field(brandsModel, 'id').checkboxList(array.map(brandsList, 'id', 'brand'), {'multiple':true}).label('Brands') | raw }}
     {{ form.field(productsModel, 'total_products') | raw }}
     {{ form.field(productsModel, 'active').checkbox() | raw }}
     <input type="submit" value="{{ yii.t('base', 'Send') }}">

@@ -4,6 +4,7 @@ jQuery(function() {
         var self = this;
         SendRequestAbstract.apply(this, arguments);
         this._allText = '------------------------';
+        this._url = '/admin/subcategory-get-for-category';
         var parentSuccess = this.success;
         this.success = function(data, status, jqXHR) {
             parentSuccess.apply(this, arguments);
@@ -12,7 +13,7 @@ jQuery(function() {
         
     };
     
-    $('select#productsmodel-id_categories').change(function(event) {
+    $('select#productsmodel-id_category').change(function(event) {
         (new SendRequest()).send(event);
     });
     

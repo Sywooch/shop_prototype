@@ -33,8 +33,6 @@ class UsersModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
         
@@ -55,44 +53,6 @@ class UsersModelTests extends TestCase
     public function testScenarios()
     {
         $fixture = self::$_dbClass->users['user_1'];
-        
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'id_email'=>$fixture['id_email'],
-            'password'=>$fixture['password'],
-            'name'=>$fixture['name'],
-            'surname'=>$fixture['surname'],
-            'id_phone'=>$fixture['id_phone'],
-            'id_address'=>$fixture['id_address'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['id_email'], $model->id_email);
-        $this->assertEquals($fixture['password'], $model->password);
-        $this->assertEquals($fixture['name'], $model->name);
-        $this->assertEquals($fixture['surname'], $model->surname);
-        $this->assertEquals($fixture['id_phone'], $model->id_phone);
-        $this->assertEquals($fixture['id_address'], $model->id_address);
-        
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'id_email'=>$fixture['id_email'],
-            'password'=>$fixture['password'],
-            'name'=>$fixture['name'],
-            'surname'=>$fixture['surname'],
-            'id_phone'=>$fixture['id_phone'],
-            'id_address'=>$fixture['id_address'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['id_email'], $model->id_email);
-        $this->assertEquals($fixture['password'], $model->password);
-        $this->assertEquals($fixture['name'], $model->name);
-        $this->assertEquals($fixture['surname'], $model->surname);
-        $this->assertEquals($fixture['id_phone'], $model->id_phone);
-        $this->assertEquals($fixture['id_address'], $model->id_address);
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
         $model->attributes = [

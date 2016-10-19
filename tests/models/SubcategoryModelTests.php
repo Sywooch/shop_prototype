@@ -34,9 +34,6 @@ class SubcategoryModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
-        
         $model = new SubcategoryModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
@@ -44,44 +41,6 @@ class SubcategoryModelTests extends TestCase
         $this->assertTrue(array_key_exists('seocode', $model->attributes));
         $this->assertTrue(array_key_exists('id_category', $model->attributes));
         $this->assertTrue(array_key_exists('active', $model->attributes));
-    }
-    
-    /**
-     * Тестирует сценарии
-     */
-    public function testScenarios()
-    {
-        $fixture = self::$_dbClass->subcategory['subcategory_2'];
-        
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'name'=>$fixture['name'], 
-            'seocode'=>$fixture['seocode'], 
-            'id_category'=>$fixture['id_category'],
-            'active'=>$fixture['active']
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['name'], $model->name);
-        $this->assertEquals($fixture['seocode'], $model->seocode);
-        $this->assertEquals($fixture['id_category'], $model->id_category);
-        $this->assertEquals($fixture['active'], $model->active);
-        
-        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'name'=>$fixture['name'], 
-            'seocode'=>$fixture['seocode'], 
-            'id_category'=>$fixture['id_category'],
-            'active'=>$fixture['active']
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['name'], $model->name);
-        $this->assertEquals($fixture['seocode'], $model->seocode);
-        $this->assertEquals($fixture['id_category'], $model->id_category);
-        $this->assertEquals($fixture['active'], $model->active);
     }
     
     /**

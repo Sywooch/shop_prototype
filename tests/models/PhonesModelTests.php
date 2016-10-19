@@ -31,39 +31,10 @@ class PhonesModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
-        
         $model = new PhonesModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('phone', $model->attributes));
-    }
-    
-    /**
-     * Тестирует сценарии
-     */
-    public function testScenarios()
-    {
-        $fixture = self::$_dbClass->phones['phone_1'];
-        
-        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'phone'=>$fixture['phone'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['phone'], $model->phone);
-        
-        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'phone'=>$fixture['phone'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['phone'], $model->phone);
     }
     
     /**

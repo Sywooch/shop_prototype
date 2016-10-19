@@ -11,6 +11,11 @@ use app\exceptions\ExceptionsTrait;
 class BrandsModel extends AbstractBaseModel
 {
     /**
+     * Сценарий сохранения данных из формы добавления товара
+    */
+    const GET_FROM_ADD_PRODUCT = 'getFromAddProduct';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -26,8 +31,15 @@ class BrandsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'brand'],
-            self::GET_FROM_FORM=>['id', 'brand'],
+            self::GET_FROM_ADD_PRODUCT=>['id'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['brand'], 'app\validators\StripTagsValidator'],
+            [['id'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT],
         ];
     }
 }

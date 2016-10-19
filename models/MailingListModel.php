@@ -31,8 +31,6 @@ class MailingListModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'name', 'description'],
-            self::GET_FROM_FORM=>['id', 'name', 'description'],
             self::GET_FROM_REGISTRATION=>['id'],
         ];
     }

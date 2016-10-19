@@ -31,8 +31,6 @@ class SizesModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_DB=>['id', 'size'],
-            self::GET_FROM_FORM=>['id', 'size'],
             self::GET_FROM_ADD_PRODUCT=>['id'],
         ];
     }

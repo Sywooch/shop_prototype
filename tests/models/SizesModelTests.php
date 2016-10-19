@@ -31,8 +31,6 @@ class SizesModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         
         $model = new SizesModel();
@@ -47,24 +45,6 @@ class SizesModelTests extends TestCase
     public function testScenarios()
     {
         $fixture = self::$_dbClass->sizes['size_1'];
-        
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'size'=>$fixture['size'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['size'], $model->size);
-        
-        $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'size'=>$fixture['size'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['size'], $model->size);
         
         $model = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT]);
         $model->attributes = [

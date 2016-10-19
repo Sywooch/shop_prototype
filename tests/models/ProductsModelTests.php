@@ -46,8 +46,6 @@ class ProductsModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         
         $model = new ProductsModel();
@@ -73,68 +71,6 @@ class ProductsModelTests extends TestCase
     public function testScenarios()
     {
         $fixture = self::$_dbClass->products['product_1'];
-        
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'date'=>$fixture['date'], 
-            'code'=>$fixture['code'], 
-            'name'=>$fixture['name'], 
-            'short_description'=>$fixture['short_description'], 
-            'description'=>$fixture['description'], 
-            'price'=>$fixture['price'], 
-            'images'=>$fixture['images'], 
-            'id_category'=>$fixture['id_category'], 
-            'id_subcategory'=>$fixture['id_subcategory'], 
-            'active'=>$fixture['active'], 
-            'total_products'=>$fixture['total_products'],
-            'seocode'=>$fixture['seocode']
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['date'], $model->date);
-        $this->assertEquals($fixture['code'], $model->code);
-        $this->assertEquals($fixture['name'], $model->name);
-        $this->assertEquals($fixture['short_description'], $model->short_description);
-        $this->assertEquals($fixture['description'], $model->description);
-        $this->assertEquals($fixture['price'], $model->price);
-        $this->assertEquals($fixture['images'], $model->images);
-        $this->assertEquals($fixture['id_category'], $model->id_category);
-        $this->assertEquals($fixture['id_subcategory'], $model->id_subcategory);
-        $this->assertEquals($fixture['active'], $model->active);
-        $this->assertEquals($fixture['total_products'], $model->total_products);
-        $this->assertEquals($fixture['seocode'], $model->seocode);
-        
-        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'date'=>$fixture['date'], 
-            'code'=>$fixture['code'], 
-            'name'=>$fixture['name'], 
-            'short_description'=>$fixture['short_description'], 
-            'description'=>$fixture['description'], 
-            'price'=>$fixture['price'], 
-            'images'=>$fixture['images'], 
-            'id_category'=>$fixture['id_category'], 
-            'id_subcategory'=>$fixture['id_subcategory'], 
-            'active'=>$fixture['active'], 
-            'total_products'=>$fixture['total_products'],
-            'seocode'=>$fixture['seocode']
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['date'], $model->date);
-        $this->assertEquals($fixture['code'], $model->code);
-        $this->assertEquals($fixture['name'], $model->name);
-        $this->assertEquals($fixture['short_description'], $model->short_description);
-        $this->assertEquals($fixture['description'], $model->description);
-        $this->assertEquals($fixture['price'], $model->price);
-        $this->assertEquals($fixture['images'], $model->images);
-        $this->assertEquals($fixture['id_category'], $model->id_category);
-        $this->assertEquals($fixture['id_subcategory'], $model->id_subcategory);
-        $this->assertEquals($fixture['active'], $model->active);
-        $this->assertEquals($fixture['total_products'], $model->total_products);
-        $this->assertEquals($fixture['seocode'], $model->seocode);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT]);
         $model->attributes = [

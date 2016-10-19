@@ -33,8 +33,6 @@ class EmailsModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
         
@@ -50,24 +48,6 @@ class EmailsModelTests extends TestCase
     public function testScenarios()
     {
         $fixture = self::$_dbClass->emails['email_1'];
-        
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'email'=>$fixture['email'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['email'], $model->email);
-        
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'email'=>$fixture['email'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['email'], $model->email);
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
         $model->attributes = [
@@ -89,19 +69,6 @@ class EmailsModelTests extends TestCase
      */
     public function testRules()
     {
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-        $model->email = 'some@some';
-        $model->validate();
-        
-        $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('email', $model->errors));
-        
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_FORM]);
-        $model->email = 'some@some.com';
-        $model->validate();
-        
-        $this->assertEquals(0, count($model->errors));
-        
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
         $model->attributes = [];
         $model->validate();

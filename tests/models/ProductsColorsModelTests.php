@@ -31,39 +31,10 @@ class ProductsColorsModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
-        
         $model = new ProductsColorsModel();
         
         $this->assertTrue(array_key_exists('id_product', $model->attributes));
         $this->assertTrue(array_key_exists('id_color', $model->attributes));
-    }
-    
-    /**
-     * Тестирует сценарии
-     */
-    public function testScenarios()
-    {
-        $fixture = self::$_dbClass->products_colors['product_color_1'];
-        
-        $model = new ProductsColorsModel(['scenario'=>ProductsColorsModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id_product'=>$fixture['id_product'], 
-            'id_color'=>$fixture['id_color'], 
-        ];
-        
-        $this->assertEquals($fixture['id_product'], $model->id_product);
-        $this->assertEquals($fixture['id_color'], $model->id_color);
-        
-        $model = new ProductsColorsModel(['scenario'=>ProductsColorsModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id_product'=>$fixture['id_product'], 
-            'id_color'=>$fixture['id_color'], 
-        ];
-        
-        $this->assertEquals($fixture['id_product'], $model->id_product);
-        $this->assertEquals($fixture['id_color'], $model->id_color);
     }
     
     /**

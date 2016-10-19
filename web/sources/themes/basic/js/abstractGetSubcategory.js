@@ -2,17 +2,19 @@ function SendRequestAbstract() {
     var self = this;
     self._formID;
     self._value;
-    self._token = $('meta[name="csrf-token"]').attr('content');
-    self._allText = 'Все';
+    self._url;
+    self._token = $('form').find('input[name="_csrf"]').val();
+    self._allText = '';
     
     self.success = function(data, status, jqXHR) {
         self.clean();
         $('#' + self._formID).find('#productsmodel-id_subcategory').empty();
         $('#' + self._formID).find('#productsmodel-id_subcategory').append('<option>' + self._allText + '</option>');
         if (data) {
+            var formField = $('#' + self._formID).find('#productsmodel-id_subcategory');
             for (var i in data) {
                 var option = $('<option></option>').val(i).html(data[i]);
-                $('#' + self._formID).find('#productsmodel-id_subcategory').append(option);
+                formField.append(option);
             }
         }
     };
@@ -32,9 +34,9 @@ function SendRequestAbstract() {
         if (self._value) {
             $.ajax({
                 'headers': {'X-CSRF-Token': self._token},
-                'url': '/get-subcategory-ajax',
+                'url': self._url,
                 'type': 'POST',
-                'data': {'categoriesId':self._value},
+                'data': {'categoryId':self._value},
                 'dataType': 'json',
                 'success': self.success,
                 'error': self.error,

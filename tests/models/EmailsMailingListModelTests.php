@@ -33,39 +33,10 @@ class EmailsMailingListModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DB'));
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_FORM'));
-        
         $model = new EmailsMailingListModel();
         
         $this->assertTrue(array_key_exists('id_email', $model->attributes));
         $this->assertTrue(array_key_exists('id_mailing_list', $model->attributes));
-    }
-    
-    /**
-     * Тестирует сценарии
-     */
-    public function testScenarios()
-    {
-        $fixture = self::$_dbClass->emails_mailing_list['emails_mailing_list_1'];
-        
-        $model = new EmailsMailingListModel(['scenario'=>EmailsMailingListModel::GET_FROM_DB]);
-        $model->attributes = [
-            'id_email'=>$fixture['id_email'], 
-            'id_mailing_list'=>$fixture['id_mailing_list'],
-        ];
-        
-        $this->assertEquals($fixture['id_email'], $model->id_email);
-        $this->assertEquals($fixture['id_mailing_list'], $model->id_mailing_list);
-        
-        $model = new EmailsMailingListModel(['scenario'=>EmailsMailingListModel::GET_FROM_FORM]);
-        $model->attributes = [
-            'id_email'=>$fixture['id_email'], 
-            'id_mailing_list'=>$fixture['id_mailing_list'],
-        ];
-        
-        $this->assertEquals($fixture['id_email'], $model->id_email);
-        $this->assertEquals($fixture['id_mailing_list'], $model->id_mailing_list);
     }
     
     /**
