@@ -81,6 +81,7 @@ class TransliterationHelper
                 }
                 $outputArray[] = $letter;
             }
+            
             return implode('', $outputArray);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
@@ -101,6 +102,7 @@ class TransliterationHelper
             foreach ($inputArray as $word) {
                 $outputArray[] = self::getTransliteration($word);
             }
+            
             return implode(self::$separator, $outputArray);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);

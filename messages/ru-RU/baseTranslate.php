@@ -52,6 +52,7 @@ $translate = [
     'Clean'=>'Очистить',
     'Change'=>'Изменить',
     'Add product'=>'Добавить товар',
+    'Product with this code already exists!'=>'Товар с этим кодом уже существует!'
 ];
 
 return $translate;

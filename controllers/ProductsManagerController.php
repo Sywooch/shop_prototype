@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use yii\web\UploadedFile;
+use yii\db\Transaction;
 use app\controllers\AbstractBaseController;
 use app\models\{BrandsModel,
     ColorsModel,
@@ -32,11 +33,22 @@ class ProductsManagerController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $rawProductsModel->load(\Yii::$app->request->post()) && $rawColorsModel->load(\Yii::$app->request->post()) && $rawSizesModel->load(\Yii::$app->request->post()) && $rawBrandsModel->load(\Yii::$app->request->post())) {
                 if ($rawProductsModel->validate() && $rawColorsModel->validate() && $rawSizesModel->validate() && $rawBrandsModel->validate()) {
-                    if (!empty($rawProductsModel->images)) {
-                        $rawProductsModel->images = UploadedFile::getInstances($rawProductsModel, 'images');
-                        $folderName = $rawProductsModel->upload();
-                        $rawProductsModel->images = $folderName;
+                    
+                    $transaction = \Yii::$db->beginTransaction(Transaction::REPEATABLE_READ);
+                    
+                    try {
+                        if (!empty($rawProductsModel->images)) {
+                            $rawProductsModel->images = UploadedFile::getInstances($rawProductsModel, 'images');
+                            $folderName = $rawProductsModel->upload();
+                            $rawProductsModel->images = $folderName;
+                        }
+                        
+                        $transaction->commit();
+                    } catch (\Throwable $t) {
+                        $transaction->rollBack();
+                        throw $t;
                     }
+                    
                 }
             }
             

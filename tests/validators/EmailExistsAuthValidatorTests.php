@@ -22,7 +22,6 @@ class EmailExistsAuthValidatorTests extends TestCase
                 'users'=>'app\tests\sources\fixtures\UsersFixture',
             ],
         ]);
-        
         self::$_dbClass->loadFixtures();
     }
     

@@ -32,15 +32,15 @@ class PicturesHelperTests extends TestCase
         
         $this->assertFalse(empty($imagePath));
         
-        $rawImage = new \Imagick($imagePath);
-        $this->assertTrue($rawImage->getImageWidth() > \Yii::$app->params['maxWidth'] || $rawImage->getImageHeight() > \Yii::$app->params['maxHeight']);
+        $image = new \Imagick($imagePath);
+        $this->assertTrue($image->getImageWidth() > \Yii::$app->params['maxWidth'] || $image->getImageHeight() > \Yii::$app->params['maxHeight']);
         
         PicturesHelper::resize(new class(['tempName'=>$imagePath]) extends UploadedFile {
             public $tempName;
         });
         
-        $rawImage = new \Imagick($imagePath);
-        $this->assertTrue($rawImage->getImageWidth() <= \Yii::$app->params['maxWidth'] && $rawImage->getImageHeight() <= \Yii::$app->params['maxHeight']);
+        $image = new \Imagick($imagePath);
+        $this->assertTrue($image->getImageWidth() <= \Yii::$app->params['maxWidth'] && $image->getImageHeight() <= \Yii::$app->params['maxHeight']);
     }
     
     /**
@@ -54,8 +54,8 @@ class PicturesHelperTests extends TestCase
         
         $this->assertFalse(empty($imagePath));
         
-        $rawImage = new \Imagick($imagePath);
-        $this->assertTrue($rawImage->getImageWidth() <= \Yii::$app->params['maxThumbnailWidth'] && $rawImage->getImageHeight() <= \Yii::$app->params['maxThumbnailHeight']);
+        $image = new \Imagick($imagePath);
+        $this->assertTrue($image->getImageWidth() <= \Yii::$app->params['maxThumbnailWidth'] && $image->getImageHeight() <= \Yii::$app->params['maxThumbnailHeight']);
     }
     
     public static function tearDownAfterClass()
