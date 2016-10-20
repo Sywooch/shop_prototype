@@ -76,14 +76,6 @@ class EmailsModelTests extends TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
         
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
-        $model->email = 'some@some.com';
-        $model->validate();
-        
-        $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('email', $model->errors));
-        $this->assertEquals(\Yii::t('base', 'Account with this email does not exist!'), $model->errors['email'][0]);
-        
         $fixture = self::$_dbClass->emails['email_1'];
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
@@ -98,14 +90,6 @@ class EmailsModelTests extends TestCase
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('email', $model->errors));
-        
-        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
-        $model->email = $fixture['email'];
-        $model->validate();
-        
-        $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('email', $model->errors));
-        $this->assertEquals(\Yii::t('base', 'Account with this email already exist!'), $model->errors['email'][0]);
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
         $model->email = 'some@some.com';

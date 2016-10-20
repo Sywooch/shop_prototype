@@ -22,6 +22,7 @@ class ProductsModelTests extends TestCase
     
     private static $_dbClass;
     private static $_reflectionClass;
+    private static $_freshCode = 'YUIHFDK';
     
     public static function setUpBeforeClass()
     {
@@ -124,7 +125,7 @@ class ProductsModelTests extends TestCase
         
         $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT]);
         $model->attributes = [
-            'code'=>$fixture['code'], 
+            'code'=>self::$_freshCode, 
             'name'=>$fixture['name'], 
             'short_description'=>$fixture['short_description'], 
             'description'=>$fixture['description'], 

@@ -47,8 +47,10 @@ class ProductsModel extends AbstractBaseModel
             [['date', 'code', 'name', 'description', 'short_description', 'total_products', 'seocode'], 'app\validators\StripTagsValidator'],
             [['code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'total_products'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT],
             [['code'], 'app\validators\ProductCodeValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
-            [['seocode'], 'app\validators\ProductSeocodeValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
+            [['price'], 'app\validators\ProductPriceValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
             [['images'], 'image', 'extensions'=>['jpeg', 'jpg', 'gif', 'png'], 'mimeTypes'=>'image/*', 'maxSize'=>1024*1024, 'maxFiles'=>5, 'on'=>self::GET_FROM_ADD_PRODUCT],
+            [['seocode'], 'app\validators\ProductSeocodeValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
+            [['date'], 'app\validators\ProductDateValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
         ];
     }
     

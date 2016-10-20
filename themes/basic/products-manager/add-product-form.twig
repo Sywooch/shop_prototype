@@ -6,7 +6,7 @@
     {{ form.field(productsModel, 'seocode') | raw }}
     {{ form.field(productsModel, 'short_description').textarea() | raw }}
     {{ form.field(productsModel, 'description').textarea() | raw }}
-    {{ form.field(productsModel, 'price') | raw }}
+    {{ form.field(productsModel, 'price').hint(yii.t('base', 'To separate cents use the point or the comma! For example: 123.87 corresponds to a price of 123 dollars 87 cents')) | raw }}
     {{ form.field(productsModel, 'images[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
     {{ form.field(productsModel, 'id_category').dropDownList(array.merge({'':app.params['form-filler']}, array.map(categoriesList, 'id', 'name'))) | raw }}
     {{ form.field(productsModel, 'id_subcategory').dropDownList({'':app.params['form-filler']}) | raw }}
