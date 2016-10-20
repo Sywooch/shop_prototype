@@ -51,7 +51,7 @@ $translate = [
     'Code:'=>'Код:',
     'Clean'=>'Очистить',
     'Change'=>'Изменить',
-    'Add product'=>'Добавить продукт',
+    'Add product'=>'Добавить товар',
 ];
 
 return $translate;

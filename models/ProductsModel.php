@@ -7,7 +7,8 @@ use app\models\{AbstractBaseModel,
     CategoriesModel,
     SizesModel,
     SubcategoryModel};
-use app\helpers\TransliterationHelper;
+use app\helpers\{PicturesHelper,
+    TransliterationHelper};
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -15,10 +16,6 @@ use app\exceptions\ExceptionsTrait;
  */
 class ProductsModel extends AbstractBaseModel
 {
-    /**
-     * Событие, возникающее после сохранения изображений
-     */
-    const EVENT_AFTER_SAVE_IMAGE = 'afterSaveImage';
     /**
      * Сценарий сохранения данных из формы добавления товара
     */
@@ -107,9 +104,11 @@ class ProductsModel extends AbstractBaseModel
     
     /**
      * Загружает изображения
-     * @return string/bool
+     * @param bool $thumbn будут ли созданы эскизы, 
+     * по умолчанию true, эскизы будут созданы
+     * @return string
      */
-    public function upload()
+    public function upload($thumbn=true): string
     {
         try {
             $folderName = time();
@@ -119,9 +118,19 @@ class ProductsModel extends AbstractBaseModel
                     throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'mkdir']));
                 }
             }
+            
             foreach ($this->images as $image) {
+                if (!PicturesHelper::resize($image)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PicturesHelper::createPictures']));
+                }
                 if (!$image->saveAs($directoryPath . '/' . $image->baseName . '.' . $image->extension)) {
                     throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'$image->saveAs']));
+                }
+            }
+            
+            if ($thumbn) {
+                if (!PicturesHelper::createThumbnails($directoryPath)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PicturesHelper::createThumbnails']));
                 }
             }
             

@@ -13,6 +13,7 @@ $config['components']['db'] = $config['components']['dbTest'];
 $config['components']['mailer']['useFileTransport'] = true;
 $config['components']['mailer']['fileTransportPath'] = '@app/tests/sources/mail/letters';
 $config['aliases']['@imagesroot'] = '@app/tests/sources/images/products';
+$config['aliases']['@imagestemp'] = '@app/tests/sources/images/temp';
 
 (new yii\web\Application($config));
 
