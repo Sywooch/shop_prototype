@@ -6,13 +6,15 @@
     {{ form.field(productsModel, 'seocode') | raw }}
     {{ form.field(productsModel, 'short_description').textarea() | raw }}
     {{ form.field(productsModel, 'description').textarea() | raw }}
-    {{ form.field(productsModel, 'price').hint(yii.t('base', 'To separate cents use the point or the comma! For example: 123.87 corresponds to a price of 123 dollars 87 cents')) | raw }}
+    {{ form.field(productsModel, 'price').hint(yii.t('base', 'To separate cents use the point or the comma! For example: 2123.87 corresponds to a price of 2123 dollars 87 cents')) | raw }}
     {{ form.field(productsModel, 'images[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
-    {{ form.field(productsModel, 'id_category').dropDownList(array.merge({'':app.params['form-filler']}, array.map(categoriesList, 'id', 'name'))) | raw }}
-    {{ form.field(productsModel, 'id_subcategory').dropDownList({'':app.params['form-filler']}) | raw }}
-    {{ form.field(colorsModel, 'id').checkboxList(array.map(colorsList, 'id', 'color'), {'multiple':true}).label('Colors') | raw }}
-    {{ form.field(sizesModel, 'id').checkboxList(array.map(sizesList, 'id', 'size'), {'multiple':true}).label('Sizes') | raw }}
-    {{ form.field(brandsModel, 'id').checkboxList(array.map(brandsList, 'id', 'brand'), {'multiple':true}).label('Brands') | raw }}
+    
+    {{ form.field(productsModel, 'id_category').dropDownList(categoriesList) | raw }}
+    {{ form.field(productsModel, 'id_subcategory').dropDownList(subcategoryList) | raw }}
+    
+    {{ form.field(colorsModel, 'id').checkboxList(colorsList, {'multiple':true}).label('Colors') | raw }}
+    {{ form.field(sizesModel, 'id').checkboxList(sizesList, {'multiple':true}).label('Sizes') | raw }}
+    {{ form.field(brandsModel, 'id').checkboxList(brandsList, {'multiple':true}).label('Brands') | raw }}
     {{ form.field(productsModel, 'total_products') | raw }}
     {{ form.field(productsModel, 'active').checkbox() | raw }}
     <input type="submit" value="{{ yii.t('base', 'Send') }}">

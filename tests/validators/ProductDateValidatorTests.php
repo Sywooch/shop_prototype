@@ -22,6 +22,17 @@ class ProductDateValidatorTests extends TestCase
         $validator = new ProductDateValidator();
         $validator->validateAttribute($model, 'date');
         
-        echo $model->date;
+        $this->assertFalse(empty($model->date));
+        $this->assertEquals(10, strlen($model->date));
+        
+        $currentDateTime = new \DateTime();
+        $currentDateTime->setTimestamp(time());
+        $expectedDate = $currentDateTime->format('d.m.Y');
+        
+        $modelDateTime = new \DateTime();
+        $modelDateTime->setTimestamp($model->date);
+        $modelDate = $modelDateTime->format('d.m.Y');
+        
+        $this->assertEquals($expectedDate, $modelDate);
     }
 }

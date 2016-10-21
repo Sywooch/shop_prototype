@@ -5,13 +5,21 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use yii\web\UploadedFile;
 use yii\db\Transaction;
+use yii\helpers\ArrayHelper;
 use app\controllers\AbstractBaseController;
 use app\models\{BrandsModel,
+    CategoriesModel,
     ColorsModel,
     ProductsModel,
-    SizesModel};
+    SizesModel,
+    SubcategoryModel};
 use app\queries\QueryTrait;
-use app\helpers\InstancesHelper;
+use app\helpers\{BrandsHelper,
+    CategoriesHelper,
+    ColorsHelper,
+    InstancesHelper,
+    SizesHelper,
+    SubcategoryHelper};
 
 /**
  * Управляет добавлением, удвлением, изменением товаров
@@ -56,27 +64,26 @@ class ProductsManagerController extends AbstractBaseController
             
             $renderArray['productsModel'] = $rawProductsModel;
             
-            $renderArray['colorsModel'] = $rawColorsModel;
-            $renderArray['colorsList'] = $this->colorsListQueryAll()->all();
-            if (!$renderArray['colorsList'][0] instanceof ColorsModel) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ColorsModel']));
+            $renderArray['categoriesList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], CategoriesModel::allMap('id', 'name'));
+            
+            $renderArray['subcategoryList'] = [''=>\Yii::$app->params['formFiller']];
+            
+            if ($rawProductsModel->id_category) {
+                $renderArray['subcategoryList'] = ArrayHelper::merge($renderArray['subcategoryList'], SubcategoryHelper::forCategoryMap($rawProductsModel->id_category, 'id', 'name'));
             }
+            
+            $renderArray['colorsModel'] = $rawColorsModel;
+            $renderArray['colorsList'] = ColorsModel::allMap('id', 'color');
             
             $renderArray['sizesModel'] = $rawSizesModel;
-            $renderArray['sizesList'] = $this->sizesListQueryAll()->all();
-            if (!$renderArray['sizesList'][0] instanceof SizesModel) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'SizesModel']));
-            }
+            $renderArray['sizesList'] = SizesHelper::allMap('id', 'size');
             
             $renderArray['brandsModel'] = $rawBrandsModel;
-            $renderArray['brandsList'] = $this->brandsListQueryAll()->all();
-            if (!$renderArray['brandsList'][0] instanceof BrandsModel) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'BrandsModel']));
-            }
+            $renderArray['brandsList'] = BrandsHelper::allMap('id', 'brand');
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
             
-            return $this->render('add-one.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+            return $this->render('add-one.twig', $renderArray);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

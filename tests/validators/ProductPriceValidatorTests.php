@@ -16,6 +16,8 @@ class ProductPriceValidatorTests extends TestCase
     private static $_expectedPrice = '132.45';
     private static $_price2 = '12895.4';
     private static $_expectedPrice2 = '12895.40';
+    private static $_price3 = '25 854.1';
+    private static $_expectedPrice3 = '25854.10';
     private static $_nonePrice = 'none';
     
     /**
@@ -48,5 +50,13 @@ class ProductPriceValidatorTests extends TestCase
         $validator->validateAttribute($model, 'price');
         
         $this->assertEquals(self::$_expectedPrice2, $model->price);
+        
+        $model = new ProductsModel();
+        $model->price = self::$_price3;
+        
+        $validator = new ProductPriceValidator();
+        $validator->validateAttribute($model, 'price');
+        
+        $this->assertEquals(self::$_expectedPrice3, $model->price);
     }
 }

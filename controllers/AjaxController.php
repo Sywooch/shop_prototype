@@ -12,12 +12,12 @@ use app\models\SubcategoryModel;
 /**
  * Управляет обработкой запросов данных подкатегорий
  */
-class SubcategoryController extends AbstractBaseController
+class AjaxController extends AbstractBaseController
 {
     /**
      * Обрабатывает Ajax запрос на получений подкатегорий для категории
      */
-    public function actionGetForCategory()
+    public function actionGetSubcategory()
     {
         try {
             if (!\Yii::$app->request->isAjax || empty(\Yii::$app->request->post('categoryId'))) {

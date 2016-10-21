@@ -31,7 +31,9 @@ $routes = [
     
     # Управление товарами
     'admin/add-product'=>'products-manager/add-one',
-    'admin/subcategory-get-for-category'=>'subcategory/get-for-category',
+    
+    #Ajax
+    'ajax/get-subcategory'=>'ajax/get-subcategory',
 ];
 
 return $routes;

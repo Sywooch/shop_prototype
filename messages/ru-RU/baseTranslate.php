@@ -53,7 +53,7 @@ $translate = [
     'Change'=>'Изменить',
     'Add product'=>'Добавить товар',
     'Product with this code already exists!'=>'Товар с этим кодом уже существует!',
-    'To separate cents use the point or the comma! For example: 123.87 corresponds to a price of 123 dollars 87 cents'=>'Для отделения копеек используйте точку или запятую! Например: 123.87 соответствует цене 123 гривны 87 копеек',
+    'To separate cents use the point or the comma! For example: 2123.87 corresponds to a price of 2123 dollars 87 cents'=>'Для отделения копеек используйте точку или запятую! Например: 2123.87 соответствует цене 2123 гривны 87 копеек',
     'Wrong format!'=>'Неверный формат!'
 ];
 

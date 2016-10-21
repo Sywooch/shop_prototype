@@ -115,6 +115,24 @@ class CategoriesModelTests extends TestCase
         $this->assertTrue($result instanceof CategoriesModel);
     }
     
+    /**
+     * Тестирует метод CategoriesModel::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture1 = self::$_dbClass->categories['category_1'];
+        $fixture2 = self::$_dbClass->categories['category_2'];
+        
+        $result = CategoriesModel::allMap('id', 'name');
+        
+        $this->assertTrue(is_array($result));
+        $this->assertFalse(empty($result));
+        $this->assertTrue(array_key_exists($fixture1['id'], $result));
+        $this->assertTrue(array_key_exists($fixture2['id'], $result));
+        $this->assertTrue(in_array($fixture1['name'], $result));
+        $this->assertTrue(in_array($fixture2['name'], $result));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();
