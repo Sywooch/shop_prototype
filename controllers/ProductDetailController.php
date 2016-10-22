@@ -21,25 +21,21 @@ class ProductDetailController extends AbstractBaseController
     {
         try {
             if (empty(\Yii::$app->request->get(\Yii::$app->params['productKey']))) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'productKey']));
+                $this->redirect(Url::to(['/products-list/index']));
             }
             
-            $renderArray = [];
+            $renderArray = InstancesHelper::getInstances();
             
             $productsQuery = ProductsModel::find();
             $productsQuery->extendSelect(['id', 'code', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory']);
             $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
             $renderArray['productsModel'] = $productsQuery->one();
             
-            if (!$renderArray['productsModel'] instanceof ProductsModel) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
-            }
-            
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
             Url::remember();
             
-            return $this->render('product-detail.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+            return $this->render('product-detail.twig', $renderArray);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

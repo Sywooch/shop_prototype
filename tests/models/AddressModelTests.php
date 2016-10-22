@@ -82,6 +82,25 @@ class AddressModelTests extends TestCase
         $this->assertTrue($result instanceof AddressModel);
     }
     
+    /**
+     * Тестирует метод ExtendActiveQuery::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture = self::$_dbClass->address['address_1'];
+        $fixture2 = self::$_dbClass->address['address_2'];
+        
+        $addressQuery = AddressModel::find();
+        $addressQuery->extendSelect(['id', 'city']);
+        $addressArray = $addressQuery->allMap('id', 'city');
+        
+        $this->assertFalse(empty($addressArray));
+        $this->assertTrue(array_key_exists($fixture['id'], $addressArray));
+        $this->assertTrue(array_key_exists($fixture2['id'], $addressArray));
+        $this->assertTrue(in_array($fixture['city'], $addressArray));
+        $this->assertTrue(in_array($fixture2['city'], $addressArray));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

@@ -123,6 +123,25 @@ class CurrencyModelTests extends TestCase
         $this->assertTrue($result instanceof CurrencyModel);
     }
     
+    /**
+     * Тестирует метод ExtendActiveQuery::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture = self::$_dbClass->currency['currency_1'];
+        $fixture2 = self::$_dbClass->currency['currency_2'];
+        
+        $currencyQuery = CurrencyModel::find();
+        $currencyQuery->extendSelect(['id', 'code']);
+        $currencyArray = $currencyQuery->allMap('id', 'code');
+        
+        $this->assertFalse(empty($currencyArray));
+        $this->assertTrue(array_key_exists($fixture['id'], $currencyArray));
+        $this->assertTrue(array_key_exists($fixture2['id'], $currencyArray));
+        $this->assertTrue(in_array($fixture['code'], $currencyArray));
+        $this->assertTrue(in_array($fixture2['code'], $currencyArray));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

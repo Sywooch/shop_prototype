@@ -119,6 +119,25 @@ class BrandsModelTests extends TestCase
         $this->assertTrue($result instanceof BrandsModel);
     }
     
+    /**
+     * Тестирует метод ExtendActiveQuery::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture = self::$_dbClass->brands['brand_1'];
+        $fixture2 = self::$_dbClass->brands['brand_2'];
+        
+        $brandsQuery = BrandsModel::find();
+        $brandsQuery->extendSelect(['id', 'brand']);
+        $brandsArray = $brandsQuery->allMap('id', 'brand');
+        
+        $this->assertFalse(empty($brandsArray));
+        $this->assertTrue(array_key_exists($fixture['id'], $brandsArray));
+        $this->assertTrue(array_key_exists($fixture2['id'], $brandsArray));
+        $this->assertTrue(in_array($fixture['brand'], $brandsArray));
+        $this->assertTrue(in_array($fixture2['brand'], $brandsArray));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

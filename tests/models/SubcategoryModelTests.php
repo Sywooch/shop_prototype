@@ -112,6 +112,25 @@ class SubcategoryModelTests extends TestCase
         $this->assertTrue($result instanceof SubcategoryModel);
     }
     
+    /**
+     * Тестирует метод ExtendActiveQuery::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture = self::$_dbClass->subcategory['subcategory_1'];
+        $fixture2 = self::$_dbClass->subcategory['subcategory_2'];
+        
+        $subcategoryQuery = SubcategoryModel::find();
+        $subcategoryQuery->extendSelect(['id', 'name']);
+        $subcategoryArray = $subcategoryQuery->allMap('id', 'name');
+        
+        $this->assertFalse(empty($subcategoryArray));
+        $this->assertTrue(array_key_exists($fixture['id'], $subcategoryArray));
+        $this->assertTrue(array_key_exists($fixture2['id'], $subcategoryArray));
+        $this->assertTrue(in_array($fixture['name'], $subcategoryArray));
+        $this->assertTrue(in_array($fixture2['name'], $subcategoryArray));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

@@ -26,15 +26,11 @@ class CurrencyController extends AbstractBaseController
                     $currencyQuery = CurrencyModel::find();
                     $currencyQuery->extendSelect(['id', 'code', 'exchange_rate']);
                     $currencyQuery->where(['[[currency.id]]'=>$rawCurrencyModel->id]);
-                    $currencyModel = $currencyQuery->one();
-                    if (!$currencyModel instanceof CurrencyModel) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CurrencyModel']));
+                    $currencyQuery->asArray();
+                    $currency = $currencyQuery->one();
+                    if (!empty($currency)) {
+                        SessionHelper::write(\Yii::$app->params['currencyKey'], $currency);
                     }
-                    $currency = $currencyModel->attributes;
-                    if (empty($currency)) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $currency']));
-                    }
-                    SessionHelper::write(\Yii::$app->params['currencyKey'], $currency);
                 }
             }
             

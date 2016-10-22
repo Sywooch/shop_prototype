@@ -97,6 +97,25 @@ class MailingListModelTests extends TestCase
         $this->assertTrue($result instanceof MailingListModel);
     }
     
+    /**
+     * Тестирует метод ExtendActiveQuery::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture = self::$_dbClass->mailing_list['mailing_list_1'];
+        $fixture2 = self::$_dbClass->mailing_list['mailing_list_2'];
+        
+        $mailingListQuery = MailingListModel::find();
+        $mailingListQuery->extendSelect(['id', 'name']);
+        $mailingListArray = $mailingListQuery->allMap('id', 'name');
+        
+        $this->assertFalse(empty($mailingListArray));
+        $this->assertTrue(array_key_exists($fixture['id'], $mailingListArray));
+        $this->assertTrue(array_key_exists($fixture2['id'], $mailingListArray));
+        $this->assertTrue(in_array($fixture['name'], $mailingListArray));
+        $this->assertTrue(in_array($fixture2['name'], $mailingListArray));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

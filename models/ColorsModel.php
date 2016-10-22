@@ -43,30 +43,4 @@ class ColorsModel extends AbstractBaseModel
             [['id'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT],
         ];
     }
-    
-    /**
-     * Получает данные из БД, конструирует массив, 
-     * представляющий все строки таблицы colors в формате пар ключ-значение, 
-     * где одно из полей станет ключем, а второе значение
-     * @params string $fieldKey поле, которое станет ключем
-     * @params string $fieldKey поле, которое станет значением
-     * @return array
-     */
-    public static function allMap(string $fieldKey, string $fieldValue): array
-    {
-        try {
-            $colorsQuery = self::find();
-            $colorsQuery->extendSelect([$fieldKey, $fieldValue]);
-            $colorsQuery->orderBy(['[[colors.' . $fieldValue . ']]'=>SORT_ASC]);
-            
-            $colorsArray = $colorsQuery->all();
-            if (!$colorsArray[0] instanceof self) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>__CLASS__]));
-            }
-            
-            return ArrayHelper::map($colorsArray, $fieldKey, $fieldValue);
-        } catch (\Throwable $t) {
-           ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
 }

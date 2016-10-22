@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\models\FiltersModel;
@@ -31,7 +30,7 @@ class FiltersController extends AbstractBaseController
                 }
             }
             
-            return $this->redirect(isset($key) ? $key : Url::previous());
+            return $this->redirect($key ?? Url::previous());
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
@@ -53,7 +52,7 @@ class FiltersController extends AbstractBaseController
                 }
             }
             
-            return $this->redirect(isset($key) ? $key : Url::previous());
+            return $this->redirect($key ?? Url::previous());
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

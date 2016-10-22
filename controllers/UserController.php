@@ -19,7 +19,6 @@ use app\validators\EmailExistsCreateValidator;
 
 /**
  * Управляет работой с пользователями
- * @return string
  */
 class UserController extends AbstractBaseController
 {
@@ -40,26 +39,22 @@ class UserController extends AbstractBaseController
                     $usersQuery->innerJoin('{{emails}}', '[[users.id_email]]=[[emails.id]]');
                     $usersQuery->where(['[[emails.email]]'=>$rawEmailsModel->email]);
                     $usersModel = $usersQuery->one();
-                    if (!$usersModel instanceof UsersModel) {
-                        $rawEmailsModel->addError('email', \Yii::t('base', 'Account with this email does not exist!'));
-                    }
                     
                     if (password_verify($rawUsersModel->password, $usersModel->password)) {
                         \Yii::$app->user->login($usersModel);
                         return $this->redirect(Url::to(['/products-list/index']));
                     }
-                    
                     $rawUsersModel->addError('password', \Yii::t('base', 'Password incorrect!'));
                 }
             }
             
-            $renderArray = [];
+            $renderArray = InstancesHelper::getInstances();
             $renderArray['emailsModel'] = $rawEmailsModel;
             $renderArray['usersModel'] = $rawUsersModel;
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/login'], 'label'=>\Yii::t('base', 'Authentication')];
             
-            return $this->render('login.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+            return $this->render('login.twig', $renderArray);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
@@ -141,7 +136,7 @@ class UserController extends AbstractBaseController
                             }
                         }
                         
-                        if (!MailHelper::send([
+                        MailHelper::send([
                             [
                                 'template'=>'@theme/mail/registration-mail.twig', 
                                 'setFrom'=>['admin@shop.com'=>'Shop'], 
@@ -149,12 +144,10 @@ class UserController extends AbstractBaseController
                                 'setSubject'=>\Yii::t('base', 'Registration on shop.com'), 
                                 'dataForTemplate'=>[
                                     'email'=>$rawEmailsModel->email,
-                                    'subscribes'=>isset($subscribes) ? $subscribes : false,
+                                    'subscribes'=>$subscribes ?? false,
                                 ],
                             ]
-                        ])) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
-                        }
+                        ]);
                         
                         $transaction->commit();
                     } catch (\Throwable $t) {
@@ -166,7 +159,7 @@ class UserController extends AbstractBaseController
                 }
             }
             
-            $renderArray = [];
+            $renderArray = InstancesHelper::getInstances();
             $renderArray['emailsModel'] = $rawEmailsModel;
             $renderArray['usersModel'] = $rawUsersModel;
             $renderArray['mailingListModel'] = $rawMailingListModel;
@@ -177,7 +170,7 @@ class UserController extends AbstractBaseController
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/registration'], 'label'=>\Yii::t('base', 'Registration')];
             
-            return $this->render('registration.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+            return $this->render('registration.twig', $renderArray);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
@@ -193,7 +186,7 @@ class UserController extends AbstractBaseController
         try {
             $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
             
-            $renderArray = [];
+            $renderArray = InstancesHelper::getInstances();
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate()) {
@@ -201,23 +194,18 @@ class UserController extends AbstractBaseController
                     $emailsQuery->extendSelect(['id', 'email']);
                     $emailsQuery->where(['[[emails.email]]'=>$rawEmailsModel->email]);
                     $emailsModel = $emailsQuery->one();
-                    if (!$emailsModel instanceof EmailsModel || $emailsModel->email != $rawEmailsModel->email) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
-                    }
-                    if (!MailHelper::send([
+                    MailHelper::send([
                         [
                             'template'=>'@theme/mail/forgot-mail.twig', 
                             'setFrom'=>['admin@shop.com'=>'Shop'], 
-                            'setTo'=>['timofey@localhost.localdomain'=>'Timofey'], 
+                            'setTo'=>['timofey@localhost'=>'Timofey'], 
                             'setSubject'=>\Yii::t('base', 'Password restore to shop.com'), 
                             'dataForTemplate'=>[
                                 'email'=>$emailsModel->email,
                                 'key'=>HashHelper::createHashRestore($emailsModel),
                             ],
                         ]
-                    ])) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
-                    }
+                    ]);
                     $renderArray['sent'] = true;
                 }
             }
@@ -226,7 +214,7 @@ class UserController extends AbstractBaseController
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
             
-            return $this->render('forgot.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+            return $this->render('forgot.twig', $renderArray);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
@@ -243,7 +231,7 @@ class UserController extends AbstractBaseController
             $rawUsersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
             $rawUsersModelConfirm = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
             
-            $renderArray = [];
+            $renderArray = InstancesHelper::getInstances();
             
             if (\Yii::$app->request->isGet && \Yii::$app->request->get('email') && \Yii::$app->request->get('key')) {
                 $emailsQuery = EmailsModel::find();
@@ -252,8 +240,8 @@ class UserController extends AbstractBaseController
                 $emailsModel = $emailsQuery->one();
                 if ($emailsModel instanceof EmailsModel) {
                     $salt = SessionHelper::readFlash('restore.' . \Yii::$app->request->get('email'));
-                    $txpectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
-                    $renderArray['allow'] = ($txpectedHash == \Yii::$app->request->get('key')) ? true : false;
+                    $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
+                    $renderArray['allow'] = ($expectedHash == \Yii::$app->request->get('key')) ? true : false;
                     $renderArray['key'] = HashHelper::createHashRestore($emailsModel);
                     $renderArray['email'] = $emailsModel->email;
                 }
@@ -267,8 +255,8 @@ class UserController extends AbstractBaseController
                     $emailsModel = $emailsQuery->one();
                     if ($emailsModel instanceof EmailsModel) {
                         $salt = SessionHelper::readFlash('restore.' . \Yii::$app->request->post('email'));
-                        $txpectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
-                        if ($txpectedHash == \Yii::$app->request->post('key')) {
+                        $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
+                        if ($expectedHash == \Yii::$app->request->post('key')) {
                             if ($rawUsersModel->password != $rawUsersModelConfirm->password) {
                                 $rawUsersModelConfirm->addError('password', \Yii::t('base', 'Passwords do not match!'));
                                 $renderArray['allow'] = true;
@@ -297,7 +285,7 @@ class UserController extends AbstractBaseController
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
             
-            return $this->render('restore.twig', array_merge($renderArray, InstancesHelper::getInstances()));
+            return $this->render('restore.twig', $renderArray);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

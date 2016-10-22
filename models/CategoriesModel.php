@@ -51,30 +51,4 @@ class CategoriesModel extends AbstractBaseModel
             $this->throwException($t, __METHOD__);
         }
     }
-    
-    /**
-     * Получает данные из БД, конструирует массив, 
-     * представляющий все строки таблицы categories в формате пар ключ-значение, 
-     * где одно из полей станет ключем, а второе значение
-     * @params string $fieldKey поле, которое станет ключем
-     * @params string $fieldKey поле, которое станет значением
-     * @return array
-     */
-    public static function allMap(string $fieldKey, string $fieldValue): array
-    {
-        try {
-            $categoriesQuery = self::find();
-            $categoriesQuery->extendSelect([$fieldKey, $fieldValue]);
-            $categoriesQuery->orderBy(['[[categories.' . $fieldValue . ']]'=>SORT_ASC]);
-            
-            $categoriesArray = $categoriesQuery->all();
-            if (!$categoriesArray[0] instanceof self) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>__CLASS__]));
-            }
-            
-            return ArrayHelper::map($categoriesArray, $fieldKey, $fieldValue);
-        } catch (\Throwable $t) {
-           ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
 }

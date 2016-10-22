@@ -64,19 +64,38 @@ class ProductsSizesModelTests extends TestCase
     {
         $fixture = self::$_dbClass->products_sizes['product_size_1'];
         
-        $productssizesQuery = ProductsSizesModel::find();
-        $productssizesQuery->extendSelect(['id_product', 'id_size']);
-        $productssizesQuery->where(['products_sizes.id_product'=>$fixture['id_product']]);
+        $productsSizesQuery = ProductsSizesModel::find();
+        $productsSizesQuery->extendSelect(['id_product', 'id_size']);
+        $productsSizesQuery->where(['products_sizes.id_product'=>$fixture['id_product']]);
         
-        $queryRaw = clone $productssizesQuery;
+        $queryRaw = clone $productsSizesQuery;
         
         $expectedQuery = sprintf("SELECT `products_sizes`.`id_product`, `products_sizes`.`id_size` FROM `products_sizes` WHERE `products_sizes`.`id_product`=%d", $fixture['id_product']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
-        $result = $productssizesQuery->one();
+        $result = $productsSizesQuery->one();
         
         $this->assertTrue($result instanceof ProductsSizesModel);
+    }
+    
+    /**
+     * Тестирует метод ExtendActiveQuery::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture = self::$_dbClass->products_sizes['product_size_1'];
+        $fixture2 = self::$_dbClass->products_sizes['product_size_2'];
+        
+        $productsSizesQuery = ProductsSizesModel::find();
+        $productsSizesQuery->extendSelect(['id_product', 'id_size']);
+        $productsSizesArray = $productsSizesQuery->allMap('id_product', 'id_size');
+        
+        $this->assertFalse(empty($productsSizesArray));
+        $this->assertTrue(array_key_exists($fixture['id_product'], $productsSizesArray));
+        $this->assertTrue(array_key_exists($fixture2['id_product'], $productsSizesArray));
+        $this->assertTrue(in_array($fixture['id_size'], $productsSizesArray));
+        $this->assertTrue(in_array($fixture2['id_size'], $productsSizesArray));
     }
     
     public static function tearDownAfterClass()

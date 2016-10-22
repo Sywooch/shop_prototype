@@ -3,10 +3,7 @@
 namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
-use yii\sphinx\{MatchExpression,
-    Query};
 use app\tests\DbManager;
-use app\queries\QueryTrait;
 use app\models\{CategoriesModel,
     ColorsModel,
     ProductsModel,
@@ -18,8 +15,6 @@ use app\models\{CategoriesModel,
  */
 class ProductsModelTests extends TestCase
 {
-    use QueryTrait;
-    
     private static $_dbClass;
     private static $_reflectionClass;
     private static $_freshCode = 'YUIHFDK';
@@ -398,6 +393,25 @@ class ProductsModelTests extends TestCase
         
         $this->assertTrue(is_array($model->sizes));
         $this->assertTrue($model->sizes[0] instanceof SizesModel);
+    }
+    
+    /**
+     * Тестирует метод ExtendActiveQuery::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture = self::$_dbClass->products['product_1'];
+        $fixture2 = self::$_dbClass->products['product_2'];
+        
+        $productsQuery = ProductsModel::find();
+        $productsQuery->extendSelect(['id', 'name']);
+        $productsArray = $productsQuery->allMap('id', 'name');
+        
+        $this->assertFalse(empty($productsArray));
+        $this->assertTrue(array_key_exists($fixture['id'], $productsArray));
+        $this->assertTrue(array_key_exists($fixture2['id'], $productsArray));
+        $this->assertTrue(in_array($fixture['name'], $productsArray));
+        $this->assertTrue(in_array($fixture2['name'], $productsArray));
     }
     
     public static function tearDownAfterClass()

@@ -5,6 +5,7 @@ namespace app\queries;
 use yii\base\ErrorException;
 use yii\db\ActiveQuery;
 use yii\data\Pagination;
+use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -96,6 +97,26 @@ class ExtendActiveQuery extends ActiveQuery
             }
             
             return $this;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает данные из СУБД в формате массива, форматирует полученный массив, 
+     * представляя выбранные столбцы в формате пар ключ-значение, 
+     * где одно из полей станет ключем, а второе значением
+     * @params string $fieldKey поле, которое станет ключем
+     * @params string $fieldKey поле, которое станет значением
+     * @return array
+     */
+    public function allMap(string $fieldKey, string $fieldValue): array
+    {
+        try {
+            $this->asArray();
+            $colorsArray = $this->all();
+            
+            return empty($colorsArray) ? [] : ArrayHelper::map($colorsArray, $fieldKey, $fieldValue);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

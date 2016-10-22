@@ -2,10 +2,7 @@
 
 namespace app\controllers;
 
-use yii\base\ErrorException;
 use yii\web\Response;
-use yii\helpers\{ArrayHelper,
-    Url};
 use app\controllers\AbstractBaseController;
 use app\models\SubcategoryModel;
 
@@ -21,20 +18,22 @@ class AjaxController extends AbstractBaseController
     {
         try {
             if (!\Yii::$app->request->isAjax || empty(\Yii::$app->request->post('categoryId'))) {
-                $this->redirect(Url::to(['products-list/index']));
+                $this->redirect(Url::to(['/products-list/index']));
             }
+            
+            $renderArray = [];
             
             \Yii::$app->response->format = Response::FORMAT_JSON;
             $subcategoryQuery = SubcategoryModel::find();
             $subcategoryQuery->extendSelect(['id', 'name']);
             $subcategoryQuery->where(['[[subcategory.id_category]]'=>\Yii::$app->request->post('categoryId')]);
-            $subcategoryQuery->asArray();
-            $subcategoryArray = $subcategoryQuery->all();
+            $subcategoryArray = $subcategoryQuery->allMap('id', 'name');
+            
             if (!empty($subcategoryArray)) {
-                $result = ArrayHelper::map($subcategoryArray, 'id', 'name');
+                $renderArray = $subcategoryArray;
             }
             
-            return !empty($result) ? $result : [];
+            return $renderArray;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

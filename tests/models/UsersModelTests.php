@@ -174,6 +174,25 @@ class UsersModelTests extends TestCase
         $this->assertTrue($result instanceof UsersModel);
     }
     
+    /**
+     * Тестирует метод ExtendActiveQuery::allMap
+     */
+    public function testAllMap()
+    {
+        $fixture = self::$_dbClass->users['user_1'];
+        $fixture2 = self::$_dbClass->users['user_1'];
+        
+        $usersQuery = UsersModel::find();
+        $usersQuery->extendSelect(['id', 'name']);
+        $usersArray = $usersQuery->allMap('id', 'name');
+        
+        $this->assertFalse(empty($usersArray));
+        $this->assertTrue(array_key_exists($fixture['id'], $usersArray));
+        $this->assertTrue(array_key_exists($fixture2['id'], $usersArray));
+        $this->assertTrue(in_array($fixture['name'], $usersArray));
+        $this->assertTrue(in_array($fixture2['name'], $usersArray));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

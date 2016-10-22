@@ -17,7 +17,7 @@ class EmailsMailingListFixture extends AbstractFixture
      * @var array массив имен классов-фикстур, представляющих данные, от которых зависит emails_mailing_list
      */
     public $depends = [
-        'app\tests\sources\fixtures\EmailsFixture',
         'app\tests\sources\fixtures\MailingListFixture',
+        'app\tests\sources\fixtures\EmailsFixture',
     ];
 }

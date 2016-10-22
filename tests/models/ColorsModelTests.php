@@ -120,21 +120,22 @@ class ColorsModelTests extends TestCase
     }
     
     /**
-     * Тестирует метод ColorsModel::allMap
+     * Тестирует метод ExtendActiveQuery::allMap
      */
     public function testAllMap()
     {
-        $fixture1 = self::$_dbClass->colors['color_1'];
+        $fixture = self::$_dbClass->colors['color_1'];
         $fixture2 = self::$_dbClass->colors['color_2'];
         
-        $result = ColorsModel::allMap('id', 'color');
+        $colorsQuery = ColorsModel::find();
+        $colorsQuery->extendSelect(['id', 'color']);
+        $colorsArray = $colorsQuery->allMap('id', 'color');
         
-        $this->assertTrue(is_array($result));
-        $this->assertFalse(empty($result));
-        $this->assertTrue(array_key_exists($fixture1['id'], $result));
-        $this->assertTrue(array_key_exists($fixture2['id'], $result));
-        $this->assertTrue(in_array($fixture1['color'], $result));
-        $this->assertTrue(in_array($fixture2['color'], $result));
+        $this->assertFalse(empty($colorsArray));
+        $this->assertTrue(array_key_exists($fixture['id'], $colorsArray));
+        $this->assertTrue(array_key_exists($fixture2['id'], $colorsArray));
+        $this->assertTrue(in_array($fixture['color'], $colorsArray));
+        $this->assertTrue(in_array($fixture2['color'], $colorsArray));
     }
     
     public static function tearDownAfterClass()

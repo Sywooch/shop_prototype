@@ -10,8 +10,6 @@ use app\exceptions\ExceptionsTrait;
  */
 class MailHelper
 {
-    use ExceptionsTrait;
-    
     /**
      * @var array массив готовых к отправке сообщений
      */

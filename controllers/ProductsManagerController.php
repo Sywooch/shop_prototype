@@ -2,32 +2,23 @@
 
 namespace app\controllers;
 
-use yii\base\ErrorException;
+use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 use yii\db\Transaction;
-use yii\helpers\ArrayHelper;
-use app\controllers\AbstractBaseController;
+use app\exceptions\ExceptionsTrait;
 use app\models\{BrandsModel,
     CategoriesModel,
     ColorsModel,
     ProductsModel,
     SizesModel,
     SubcategoryModel};
-use app\queries\QueryTrait;
-use app\helpers\{BrandsHelper,
-    CategoriesHelper,
-    ColorsHelper,
-    InstancesHelper,
-    SizesHelper,
-    SubcategoryHelper};
+use app\controllers\AbstractBaseController;
 
 /**
  * Управляет добавлением, удвлением, изменением товаров
  */
 class ProductsManagerController extends AbstractBaseController
 {
-    use QueryTrait;
-    
     /**
      * Управляет процессом добавления 1 товара
      */
@@ -62,24 +53,40 @@ class ProductsManagerController extends AbstractBaseController
             
             $renderArray = [];
             
-            $renderArray['productsModel'] = $rawProductsModel;
-            
-            $renderArray['categoriesList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], CategoriesModel::allMap('id', 'name'));
+            $categoriesQuery = CategoriesModel::find();
+            $categoriesQuery->extendSelect(['id', 'name']);
+            $categoriesQuery->orderBy(['[[categories.name]]'=>SORT_ASC]);
+            $renderArray['categoriesList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $categoriesQuery->allMap('id', 'name'));
             
             $renderArray['subcategoryList'] = [''=>\Yii::$app->params['formFiller']];
             
             if ($rawProductsModel->id_category) {
-                $renderArray['subcategoryList'] = ArrayHelper::merge($renderArray['subcategoryList'], SubcategoryHelper::forCategoryMap($rawProductsModel->id_category, 'id', 'name'));
+                $subcategoryQuery = SubcategoryModel::find();
+                $subcategoryQuery->extendSelect(['id', 'name']);
+                $subcategoryQuery->where(['[[subcategory.id_category]]'=>$rawProductsModel->id_category]);
+                $subcategoryQuery->orderBy(['[[subcategory.name]]'=>SORT_ASC]);
+                $renderArray['subcategoryList'] = ArrayHelper::merge($renderArray['subcategoryList'], $subcategoryQuery->allMap('id', 'name'));
             }
             
+            $colorsQuery = ColorsModel::find();
+            $colorsQuery->extendSelect(['id', 'color']);
+            $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
+            $renderArray['colorsList'] = $colorsQuery->allMap('id', 'color');
+            
+            $sizesQuery = SizesModel::find();
+            $sizesQuery->extendSelect(['id', 'size']);
+            $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
+            $renderArray['sizesList'] = $sizesQuery->allMap('id', 'size');
+            
+            $brandsQuery = BrandsModel::find();
+            $brandsQuery->extendSelect(['id', 'brand']);
+            $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
+            $renderArray['brandsList'] = $brandsQuery->allMap('id', 'brand');
+            
+            $renderArray['productsModel'] = $rawProductsModel;
             $renderArray['colorsModel'] = $rawColorsModel;
-            $renderArray['colorsList'] = ColorsModel::allMap('id', 'color');
-            
             $renderArray['sizesModel'] = $rawSizesModel;
-            $renderArray['sizesList'] = SizesHelper::allMap('id', 'size');
-            
             $renderArray['brandsModel'] = $rawBrandsModel;
-            $renderArray['brandsList'] = BrandsHelper::allMap('id', 'brand');
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
             
