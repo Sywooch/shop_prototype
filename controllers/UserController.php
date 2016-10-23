@@ -39,16 +39,28 @@ class UserController extends AbstractBaseController
                     $usersQuery->innerJoin('{{emails}}', '[[users.id_email]]=[[emails.id]]');
                     $usersQuery->where(['[[emails.email]]'=>$rawEmailsModel->email]);
                     $usersModel = $usersQuery->one();
-                    
-                    if (password_verify($rawUsersModel->password, $usersModel->password)) {
-                        \Yii::$app->user->login($usersModel);
-                        return $this->redirect(Url::to(['/products-list/index']));
+                    if (!$usersModel instanceof UsersModel) {
+                        if (YII_ENV_DEV) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UsersModel / email: ' . $rawEmailsModel->email]));
+                        } else {
+                            $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UsersModel / email: ' . $rawEmailsModel->email]), __METHOD__);
+                            $rawEmailsModel->addError('email', \Yii::t('base', 'Account with this email does not exist!'));
+                        }
+                    } else {
+                        if (password_verify($rawUsersModel->password, $usersModel->password)) {
+                            \Yii::$app->user->login($usersModel);
+                            return $this->redirect(Url::to(['/products-list/index']));
+                        }
+                        $rawUsersModel->addError('password', \Yii::t('base', 'Password incorrect!'));
                     }
-                    $rawUsersModel->addError('password', \Yii::t('base', 'Password incorrect!'));
                 }
             }
             
             $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
+            
             $renderArray['emailsModel'] = $rawEmailsModel;
             $renderArray['usersModel'] = $rawUsersModel;
             
@@ -85,7 +97,7 @@ class UserController extends AbstractBaseController
      * Управляет процессом создания учетной записи
      * @return string
      */
-    public function actionRegistration()
+    public function actionRegistration() #!!! CONTINUE
     {
         try {
             $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);

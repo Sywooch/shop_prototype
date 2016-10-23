@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 use yii\db\Transaction;
