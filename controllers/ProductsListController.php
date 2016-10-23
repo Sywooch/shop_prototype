@@ -125,7 +125,7 @@ class ProductsListController extends AbstractBaseController
                 if (YII_ENV_DEV) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']));
                 } else {
-                    $renderArray['paginator'] = null;
+                    $renderArray['paginator'] = [];
                     $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']), __METHOD__);
                 }
             }
@@ -135,7 +135,7 @@ class ProductsListController extends AbstractBaseController
                 if (YII_ENV_DEV) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']));
                 } else {
-                    $renderArray['productsList'] = null;
+                    $renderArray['productsList'] = [];
                     $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']), __METHOD__);
                 }
             }

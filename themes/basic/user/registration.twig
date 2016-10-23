@@ -10,14 +10,20 @@
 
 <p><strong>{{ yii.t('base', 'Registration') }}</strong></p>
 
+{% if errorMessage %}
+    <p><strong>{{ errorMessage }}</strong></p>
+{% endif %}
+
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form = active_form_begin({'id': 'registration-form', 'action': url.to({0:'user/registration'}), method: 'POST'}) %}
     {{ form.field(emailsModel, 'email') | raw }}
     {{ form.field(usersModel, 'password').passwordInput() | raw }}
     
-    <p>{{ yii.t('base', 'Subscribe to the mailing list!') }}</p>
-    {{ form.field(mailingListModel, 'id').checkboxList(array.map(mailingListList, 'id', 'name'), {'multiple':true}).label(false) | raw }}<br>
+    {% if mailingListList %}
+        <p>{{ yii.t('base', 'Subscribe to the mailing list!') }}</p>
+        {{ form.field(mailingListModel, 'id').checkboxList(array.map(mailingListList, 'id', 'name'), {'multiple':true}).label(false) | raw }}<br>
+    {% endif %}
     
     <input type="submit" value="{{ yii.t('base', 'Registration') }}" />
 {{ active_form_end() }}

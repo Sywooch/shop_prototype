@@ -16,6 +16,7 @@ use app\models\{EmailsMailingListModel,
     MailingListModel,
     UsersModel};
 use app\validators\EmailExistsCreateValidator;
+use app\exceptions\ExecutionException;
 
 /**
  * Управляет работой с пользователями
@@ -104,6 +105,8 @@ class UserController extends AbstractBaseController
             $rawUsersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION]);
             $rawMailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_REGISTRATION]);
             
+            $renderArray = InstancesHelper::getInstances();
+            
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post()) && $rawMailingListModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate() && $rawMailingListModel->validate()) {
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
@@ -111,7 +114,7 @@ class UserController extends AbstractBaseController
                     try {
                         if (!(new EmailExistsCreateValidator())->validate($rawEmailsModel->email)) {
                             if (!$rawEmailsModel->save(false)) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsModel::save']));
+                                throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsModel::save']));
                             }
                         }
                         $emailsQuery = EmailsModel::find();
@@ -119,24 +122,26 @@ class UserController extends AbstractBaseController
                         $emailsQuery->where(['[[emails.email]]'=>$rawEmailsModel->email]);
                         $emailsModel = $emailsQuery->one();
                         if (!$emailsModel instanceof EmailsModel || $rawEmailsModel->email != $emailsModel->email) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
+                            throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel']));
                         }
                         
                         $rawUsersModel->id_email = $emailsModel->id;
                         $rawUsersModel->password = password_hash($rawUsersModel->password, PASSWORD_DEFAULT);
                         
                         if (!$rawUsersModel->save(false)) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'UsersModel::save']));
+                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'UsersModel::save']));
                         }
                         $usersQuery = UsersModel::find();
                         $usersQuery->extendSelect(['id', 'id_email']);
                         $usersQuery->where(['[[users.id_email]]'=>$rawUsersModel->id_email]);
                         $usersModel = $usersQuery->one();
                         if (!$usersModel instanceof UsersModel || $rawUsersModel->id_email != $usersModel->id_email) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UsersModel']));
+                            throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UsersModel']));
                         }
                         
-                        \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $usersModel->id);
+                        if (!\Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $usersModel->id)) {
+                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'\Yii::$app->authManager']));
+                        }
                         
                         if (!empty($rawMailingListModel->id)) {
                             $diff = EmailsMailingListModel::batchInsert($rawMailingListModel, $emailsModel);
@@ -145,10 +150,13 @@ class UserController extends AbstractBaseController
                                 $mailingListQuery->extendSelect(['name']);
                                 $mailingListQuery->where(['[[mailing_list.id]]'=>$diff]);
                                 $subscribes = $mailingListQuery->all();
+                                if (!is_array($subscribes) || (!empty($subscribes) && !$subscribes[0] instanceof MailingListModel)) {
+                                    throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'MailingListModel']));
+                                }
                             }
                         }
                         
-                        MailHelper::send([
+                        $sent = MailHelper::send([
                             [
                                 'template'=>'@theme/mail/registration-mail.twig', 
                                 'setFrom'=>['admin@shop.com'=>'Shop'], 
@@ -160,25 +168,42 @@ class UserController extends AbstractBaseController
                                 ],
                             ]
                         ]);
+                        if ($sent < 1) {
+                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
+                        }
                         
                         $transaction->commit();
+                        return $this->redirect(Url::to(['/user/login']));
+                    } catch (ExecutionException $t) {
+                        $transaction->rollBack();
+                        if (YII_ENV_DEV) {
+                            throw $t;
+                        } else {
+                            $this->writeErrorInLogs($t, __METHOD__);
+                            $renderArray['errorMessage'] = \Yii::t('base', 'Registration error!');
+                        }
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;
                     }
-                    
-                    return $this->redirect(Url::to(['/user/login']));
                 }
             }
             
-            $renderArray = InstancesHelper::getInstances();
             $renderArray['emailsModel'] = $rawEmailsModel;
             $renderArray['usersModel'] = $rawUsersModel;
             $renderArray['mailingListModel'] = $rawMailingListModel;
             
             $mailingListQuery = MailingListModel::find();
             $mailingListQuery->extendSelect(['id', 'name']);
-            $renderArray['mailingListList'] = $mailingListQuery->all();
+            $renderArray['mailingListList'] = $mailingListQuery->allMap('id', 'name');
+            if (!is_array($renderArray['mailingListList']) || empty($renderArray['mailingListList'])) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'mailingListList\']']));
+                } else {
+                    $renderArray['mailingListList'] = [];
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'mailingListList\']']), __METHOD__);
+                }
+            }
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/registration'], 'label'=>\Yii::t('base', 'Registration')];
             
