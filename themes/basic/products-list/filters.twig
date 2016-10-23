@@ -3,12 +3,22 @@
     {{ use('yii/widgets/ActiveForm') }}
     
     {% set form = active_form_begin({'id':'filters-form', 'action':url.to({0:'filters/set'}), 'method':'POST'}) %}
-        {{ form.field(app.filters, 'sortingField').dropDownList({'date':yii.t('base', 'Sorting by date'), 'price':yii.t('base', 'Sorting by price')}) | raw }}
-        {{ form.field(app.filters, 'sortingType').dropDownList({'SORT_DESC':yii.t('base', 'Sort descending'), 'SORT_ASC':yii.t('base', 'Sort ascending')}) | raw }}
+        {% if sortingFieldList %}
+            {{ form.field(app.filters, 'sortingField').dropDownList(sortingFieldList) | raw }}
+        {% endif %}
+        {% if sortingTypeList %}
+            {{ form.field(app.filters, 'sortingType').dropDownList(sortingTypeList) | raw }}
+        {% endif %}
         
-        {{ form.field(app.filters, 'colors').checkboxList(array.map(colorsList, 'id', 'color')) | raw }}
-        {{ form.field(app.filters, 'sizes').checkboxList(array.map(sizesList, 'id', 'size')) | raw }}
-        {{ form.field(app.filters, 'brands').checkboxList(array.map(brandsList, 'id', 'brand')) | raw }}
+        {% if colorsList %}
+            {{ form.field(app.filters, 'colors').checkboxList(colorsList) | raw }}
+        {% endif %}
+        {% if sizesList %}
+            {{ form.field(app.filters, 'sizes').checkboxList(sizesList) | raw }}
+        {% endif %}
+        {% if brandsList %}
+            {{ form.field(app.filters, 'brands').checkboxList(brandsList) | raw }}
+        {% endif %}
         
         <input type="submit" value="{{ yii.t('base', 'Apply') }}">
     {{ active_form_end() }}

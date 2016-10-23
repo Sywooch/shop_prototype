@@ -6,7 +6,7 @@ $config = [
     'sourceLanguage'=>'en-US',
     'language'=>'ru-RU',
     'timeZone'=>'Europe/Kiev',
-    'bootstrap'=>['log', 'debug'],
+    'bootstrap'=>['log'],
     
     'aliases'=>[
         '@theme'=>'@app/themes/basic',
@@ -23,5 +23,9 @@ $config = [
     
     'params'=>require(__DIR__ . '/params.php'),
 ];
+
+if (YII_ENV_DEV) {
+    $config['bootstrap'][] = 'debug';
+}
 
 return $config;

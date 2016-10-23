@@ -39,4 +39,14 @@ trait ExceptionsTrait
     {
         \Yii::error(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>$method]) . $t->getMessage(), $method);
     }
+    
+    /**
+     * Записывает в логи исключение уровня error
+     * @param $message сообщение для записи
+     * @param $method полностью определенное имя метода, поймавшего исключение
+     */
+    public function writeMessageInLogs(string $message, $method)
+    {
+        \Yii::error(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>$method]) . $message, $method);
+    }
 }

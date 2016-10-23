@@ -2,11 +2,13 @@
 
 namespace app\controllers;
 
+use yii\base\ErrorException;
 use yii\db\ActiveQuery;
 use yii\helpers\{ArrayHelper,
     Url};
 use yii\sphinx\{MatchExpression,
     Query};
+use yii\data\Pagination;
 use app\helpers\InstancesHelper;
 use app\models\{BrandsModel,
     ColorsModel,
@@ -27,10 +29,34 @@ class ProductsListController extends AbstractBaseController
     {
         try {
             $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
             
             $productsQuery = $this->productsListQuery();
+            if (!$productsQuery instanceof ActiveQuery) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ActiveQuery $productsQuery']));
+            }
+            
             $renderArray['paginator'] = $productsQuery->paginator;
+            if (!$renderArray['paginator'] instanceof Pagination) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']));
+                } else {
+                    $renderArray['paginator'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']), __METHOD__);
+                }
+            }
+            
             $renderArray['productsList'] = $productsQuery->all();
+            if (!is_array($renderArray['productsList']) || (!empty($renderArray['productsList']) && !$renderArray['productsList'][0] instanceof ProductsModel)) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']));
+                } else {
+                    $renderArray['productsList'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']), __METHOD__);
+                }
+            }
             
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
@@ -47,7 +73,15 @@ class ProductsListController extends AbstractBaseController
                 }
             }
             $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
-            $renderArray['colorsList'] = $colorsQuery->all();
+            $renderArray['colorsList'] = $colorsQuery->allMap('id', 'color');
+            if (!is_array($renderArray['colorsList']) || empty($renderArray['colorsList'])) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'colorsList\']']));
+                } else {
+                    $renderArray['colorsList'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'colorsList\']']), __METHOD__);
+                }
+            }
             
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
@@ -64,7 +98,15 @@ class ProductsListController extends AbstractBaseController
                 }
             }
             $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
-            $renderArray['sizesList'] = $sizesQuery->all();
+            $renderArray['sizesList'] = $sizesQuery->allMap('id', 'size');
+            if (!is_array($renderArray['sizesList']) || empty($renderArray['sizesList'])) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'sizesList\']']));
+                } else {
+                    $renderArray['sizesList'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'sizesList\']']), __METHOD__);
+                }
+            }
             
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
@@ -81,7 +123,18 @@ class ProductsListController extends AbstractBaseController
                 }
             }
             $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
-            $renderArray['brandsList'] = $brandsQuery->all();
+            $renderArray['brandsList'] = $brandsQuery->allMap('id', 'brand');
+            if (!is_array($renderArray['brandsList']) || empty($renderArray['brandsList'])) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'brandsList\']']));
+                } else {
+                    $renderArray['brandsList'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'brandsList\']']), __METHOD__);
+                }
+            }
+            
+            $renderArray['sortingFieldList'] = ['date'=>\Yii::t('base', 'Sorting by date'), 'price'=>\Yii::t('base', 'Sorting by price')];
+            $renderArray['sortingTypeList'] = ['SORT_DESC'=>\Yii::t('base', 'Sort descending'), 'SORT_ASC'=>\Yii::t('base', 'Sort ascending')];
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
@@ -105,17 +158,49 @@ class ProductsListController extends AbstractBaseController
                 return $this->redirect(Url::to(['/products-list/index']));
             }
             
+            $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
+            
             $sphinxQuery = new Query();
             $sphinxQuery->select(['id']);
             $sphinxQuery->from('{{shop}}');
             $sphinxQuery->match(new MatchExpression('[[@* :search]]', ['search'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]));
             $sphinxArray = $sphinxQuery->all();
+            if (!is_array($sphinxArray)) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sphinxArray']));
+                } else {
+                    $sphinxArray = [];
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sphinxArray']), __METHOD__);
+                }
+            }
             
-            $renderArray = InstancesHelper::getInstances();
+            $productsQuery = $this->productsListQuery(!empty($sphinxArray) ? ['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')] : []);
+            if (!$productsQuery instanceof ActiveQuery) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ActiveQuery $productsQuery']));
+            }
             
-            $productsQuery = $this->productsListQuery(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
             $renderArray['paginator'] = $productsQuery->paginator;
+            if (!$renderArray['paginator'] instanceof Pagination) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']));
+                } else {
+                    $renderArray['paginator'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']), __METHOD__);
+                }
+            }
+            
             $renderArray['productsList'] = $productsQuery->all();
+            if (!is_array($renderArray['productsList']) || (!empty($renderArray['productsList']) && !$renderArray['productsList'][0] instanceof ProductsModel)) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']));
+                } else {
+                    $renderArray['productsList'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']), __METHOD__);
+                }
+            }
             
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
@@ -123,9 +208,19 @@ class ProductsListController extends AbstractBaseController
             $colorsQuery->innerJoin('{{products_colors}}', '[[colors.id]]=[[products_colors.id_color]]');
             $colorsQuery->innerJoin('{{products}}', '[[products_colors.id_product]]=[[products.id]]');
             $colorsQuery->where(['[[products.active]]'=>true]);
-            $colorsQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            if (!empty($sphinxArray)) {
+                $colorsQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            }
             $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
-            $renderArray['colorsList'] = $colorsQuery->all();
+            $renderArray['colorsList'] = $colorsQuery->allMap('id', 'color');
+            if (!is_array($renderArray['colorsList']) || empty($renderArray['colorsList'])) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'colorsList\']']));
+                } else {
+                    $renderArray['colorsList'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'colorsList\']']), __METHOD__);
+                }
+            }
             
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
@@ -133,9 +228,19 @@ class ProductsListController extends AbstractBaseController
             $sizesQuery->innerJoin('{{products_sizes}}', '[[sizes.id]]=[[products_sizes.id_size]]');
             $sizesQuery->innerJoin('{{products}}', '[[products_sizes.id_product]]=[[products.id]]');
             $sizesQuery->where(['[[products.active]]'=>true]);
-            $sizesQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            if (!empty($sphinxArray)) {
+                $sizesQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            }
             $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
-            $renderArray['sizesList'] = $sizesQuery->all();
+            $renderArray['sizesList'] = $sizesQuery->allMap('id', 'size');
+            if (!is_array($renderArray['sizesList']) || empty($renderArray['sizesList'])) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'sizesList\']']));
+                } else {
+                    $renderArray['sizesList'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'sizesList\']']), __METHOD__);
+                }
+            }
             
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
@@ -143,9 +248,22 @@ class ProductsListController extends AbstractBaseController
             $brandsQuery->innerJoin('{{products_brands}}', '[[brands.id]]=[[products_brands.id_brand]]');
             $brandsQuery->innerJoin('{{products}}', '[[products_brands.id_product]]=[[products.id]]');
             $brandsQuery->where(['[[products.active]]'=>true]);
-            $brandsQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            if (!empty($sphinxArray)) {
+                $brandsQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            }
             $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
-            $renderArray['brandsList'] = $brandsQuery->all();
+            $renderArray['brandsList'] = $brandsQuery->allMap('id', 'brand');
+            if (!is_array($renderArray['brandsList']) || empty($renderArray['brandsList'])) {
+                if (YII_ENV_DEV) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'brandsList\']']));
+                } else {
+                    $renderArray['brandsList'] = null;
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'brandsList\']']), __METHOD__);
+                }
+            }
+            
+            $renderArray['sortingFieldList'] = ['date'=>\Yii::t('base', 'Sorting by date'), 'price'=>\Yii::t('base', 'Sorting by price')];
+            $renderArray['sortingTypeList'] = ['SORT_DESC'=>\Yii::t('base', 'Sort descending'), 'SORT_ASC'=>\Yii::t('base', 'Sort ascending')];
             
             \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
             
@@ -159,10 +277,9 @@ class ProductsListController extends AbstractBaseController
     }
     
     /**
-     * Инкапсулирует общую для 
+     * Конструирует ProductsModel ActiveQuery для
      * - ProductsListController::actionIndex
      * - ProductsListController::actionSearch
-     * функциональность
      * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
      * @return ActiveQuery
      */

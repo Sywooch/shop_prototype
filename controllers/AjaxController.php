@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use yii\base\ErrorException;
 use yii\web\Response;
 use app\controllers\AbstractBaseController;
 use app\models\SubcategoryModel;
@@ -21,19 +22,16 @@ class AjaxController extends AbstractBaseController
                 $this->redirect(Url::to(['/products-list/index']));
             }
             
-            $renderArray = [];
-            
             \Yii::$app->response->format = Response::FORMAT_JSON;
             $subcategoryQuery = SubcategoryModel::find();
             $subcategoryQuery->extendSelect(['id', 'name']);
             $subcategoryQuery->where(['[[subcategory.id_category]]'=>\Yii::$app->request->post('categoryId')]);
             $subcategoryArray = $subcategoryQuery->allMap('id', 'name');
-            
-            if (!empty($subcategoryArray)) {
-                $renderArray = $subcategoryArray;
+            if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $subcategoryArray']));
             }
             
-            return $renderArray;
+            return $subcategoryArray;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

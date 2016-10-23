@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\models\FiltersModel;
@@ -26,7 +27,15 @@ class FiltersController extends AbstractBaseController
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
                 if (\Yii::$app->filters->validate()) {
                     $key = StringHelper::cutPage(Url::previous());
-                    SessionHelper::write($key, \Yii::$app->filters->attributes);
+                    if (!is_string($key) || empty($key)) {
+                        if (YII_ENV_DEV) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
+                        } else {
+                            $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']), __METHOD__);
+                        }
+                    } else {
+                        SessionHelper::write($key, \Yii::$app->filters->attributes);
+                    }
                 }
             }
             
@@ -46,9 +55,17 @@ class FiltersController extends AbstractBaseController
         try {
             if (\Yii::$app->request->isPost) {
                 $key = StringHelper::cutPage(Url::previous());
-                SessionHelper::remove([$key]);
-                if (SessionHelper::has($key) === false) {
-                    \Yii::$app->filters->clean();
+                if (!is_string($key) || empty($key)) {
+                    if (YII_ENV_DEV) {
+                        throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
+                    } else {
+                        $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']), __METHOD__);
+                    }
+                } else {
+                    SessionHelper::remove([$key]);
+                    if (SessionHelper::has($key) === false) {
+                        \Yii::$app->filters->clean();
+                    }
                 }
             }
             

@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\models\CurrencyModel;
@@ -27,9 +28,15 @@ class CurrencyController extends AbstractBaseController
                     $currencyQuery->extendSelect(['id', 'code', 'exchange_rate']);
                     $currencyQuery->where(['[[currency.id]]'=>$rawCurrencyModel->id]);
                     $currencyQuery->asArray();
-                    $currency = $currencyQuery->one();
-                    if (!empty($currency)) {
-                        SessionHelper::write(\Yii::$app->params['currencyKey'], $currency);
+                    $currencyArray = $currencyQuery->one();
+                    if (!is_array($currencyArray) || empty($currencyArray)) {
+                        if (YII_ENV_DEV) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $currencyArray']));
+                        } else {
+                            $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $currencyArray']), __METHOD__);
+                        }
+                    } else {
+                        SessionHelper::write(\Yii::$app->params['currencyKey'], $currencyArray);
                     }
                 }
             }

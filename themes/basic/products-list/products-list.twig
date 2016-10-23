@@ -35,9 +35,11 @@
 
 {% include('filters.twig') %}
 
-<p>
-    {{ pagination_widget_widget({'paginator':paginator}) }}
-</p>
+{% if paginator %}
+    <p>
+        {{ pagination_widget_widget({'paginator':paginator}) }}
+    </p>
+{% endif %}
 
 <p>
     <a href="{{ url.to({0:'products-manager/add-one'}) }}">{{ yii.t('base', 'Add product') }}</a>

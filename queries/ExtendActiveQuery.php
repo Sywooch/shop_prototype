@@ -16,9 +16,9 @@ class ExtendActiveQuery extends ActiveQuery
     use ExceptionsTrait;
     
     /**
-     * @var object объект yii\data\Pagination
+     * @var object yii\data\Pagination
      */
-    public $paginator;
+    private $_paginator = null;
     
     /**
      * Добавляет ограничения по условиям OFFSET LIMIT
@@ -27,9 +27,7 @@ class ExtendActiveQuery extends ActiveQuery
     public function extendLimit(): ActiveQuery
     {
         try {
-            if (empty($this->paginator) || !$this->paginator instanceof Pagination) {
-                $this->paginator = new Pagination();
-            }
+            $this->_paginator = new Pagination();
             
             $countQuery = clone $this;
             $page = !empty(\Yii::$app->request->get(\Yii::$app->params['pagePointer'])) ? \Yii::$app->request->get(\Yii::$app->params['pagePointer']) - 1 : 0;
@@ -117,6 +115,20 @@ class ExtendActiveQuery extends ActiveQuery
             $colorsArray = $this->all();
             
             return empty($colorsArray) ? [] : ArrayHelper::map($colorsArray, $fieldKey, $fieldValue);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект yii\data\Pagination, 
+     * созданный в процессе выполнения метода ExtendActiveQuery::extendLimit
+     * @return object
+     */
+    public function getPaginator(): Pagination
+    {
+        try {
+            return $this->_paginator;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
