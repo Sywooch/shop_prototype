@@ -21,7 +21,7 @@ class ProductDetailController extends AbstractBaseController
     {
         try {
             if (empty(\Yii::$app->request->get(\Yii::$app->params['productKey']))) {
-                $this->redirect(Url::to(['/products-list/index']));
+                return $this->redirect(Url::previous());
             }
             
             $renderArray = InstancesHelper::getInstances();
@@ -34,12 +34,7 @@ class ProductDetailController extends AbstractBaseController
             $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
             $renderArray['productsModel'] = $productsQuery->one();
             if (!$renderArray['productsModel'] instanceof ProductsModel) {
-                if (YII_ENV_DEV) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
-                } else {
-                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']), __METHOD__);
-                    return $this->redirect(Url::previous());
-                }
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
             }
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];

@@ -16,7 +16,7 @@ class ProductTotalProductsValidator extends Validator
     {
         try {
             if (!is_numeric($model->$attribute)) {
-                $this->addError($model, $attribute, \Yii::t('base', 'Wrong format!'));
+                $this->addError($model, $attribute, \Yii::t('base/errors', 'Wrong format!'));
             } else {
                 $model->$attribute = (int) $model->$attribute;
             }

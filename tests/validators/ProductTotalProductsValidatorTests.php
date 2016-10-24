@@ -30,7 +30,7 @@ class ProductTotalProductsValidatorTests extends TestCase
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('total_products', $model->errors));
-        $this->assertEquals(\Yii::t('base', 'Wrong format!'), $model->errors['total_products'][0]);
+        $this->assertEquals(\Yii::t('base/errors', 'Wrong format!'), $model->errors['total_products'][0]);
         
         $model = new ProductsModel();
         $model->total_products = self::$_totalProducts;

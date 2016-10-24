@@ -36,9 +36,9 @@ class InstancesHelper
             $currencyQuery = CurrencyModel::find();
             $currencyQuery->extendSelect(['id', 'code']);
             $currencyQuery->orderBy(['[[currency.code]]'=>SORT_ASC]);
-            self::$_instancesArray['currencyList'] = $currencyQuery->all();
-            if (!self::$_instancesArray['currencyList'][0] instanceof CurrencyModel) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CurrencyModel']));
+            self::$_instancesArray['currencyList'] = $currencyQuery->allMap('id', 'code');
+            if (!is_array(self::$_instancesArray['currencyList']) || empty(self::$_instancesArray['currencyList'])) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array currencyList']));
             }
             
             return self::$_instancesArray;

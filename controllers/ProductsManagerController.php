@@ -6,7 +6,6 @@ use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
 use yii\db\Transaction;
-use app\exceptions\ExceptionsTrait;
 use app\models\{BrandsModel,
     CategoriesModel,
     ColorsModel,
@@ -14,6 +13,7 @@ use app\models\{BrandsModel,
     SizesModel,
     SubcategoryModel};
 use app\controllers\AbstractBaseController;
+use app\exceptions\ExecutionException;
 
 /**
  * Управляет добавлением, удвлением, изменением товаров
@@ -31,25 +31,36 @@ class ProductsManagerController extends AbstractBaseController
             $rawSizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT]);
             $rawBrandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT]);
             
+            $renderArray = [];
+            
             if (\Yii::$app->request->isPost && $rawProductsModel->load(\Yii::$app->request->post()) && $rawColorsModel->load(\Yii::$app->request->post()) && $rawSizesModel->load(\Yii::$app->request->post()) && $rawBrandsModel->load(\Yii::$app->request->post())) {
                 if ($rawProductsModel->validate() && $rawColorsModel->validate() && $rawSizesModel->validate() && $rawBrandsModel->validate()) {
                     
-                    $transaction = \Yii::$db->beginTransaction(Transaction::REPEATABLE_READ);
+                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
                     try {
+                        throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $folderName']));
                         if (!empty($rawProductsModel->images)) {
                             $rawProductsModel->images = UploadedFile::getInstances($rawProductsModel, 'images');
                             if (empty($rawProductsModel->images) || !$rawProductsModel->images[0] instanceof UploadedFile) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UploadedFile']));
+                                throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UploadedFile']));
                             }
                             $folderName = $rawProductsModel->upload();
                             if (!is_string($folderName) || empty($folderName)) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $folderName']));
+                                throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $folderName']));
                             }
                             $rawProductsModel->images = $folderName;
                         }
                         
                         $transaction->commit();
+                    } catch (ExecutionException $t) {
+                        $transaction->rollBack();
+                        if (YII_ENV_DEV) {
+                            throw $t;
+                        } else {
+                            $this->writeErrorInLogs($t, __METHOD__);
+                            $renderArray['errorMessage'] = \Yii::t('base/errors', 'Creating product error!');
+                        }
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;
@@ -57,8 +68,6 @@ class ProductsManagerController extends AbstractBaseController
                     
                 }
             }
-            
-            $renderArray = [];
             
             $categoriesQuery = CategoriesModel::find();
             $categoriesQuery->extendSelect(['id', 'name']);

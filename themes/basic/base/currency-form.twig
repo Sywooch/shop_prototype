@@ -1,6 +1,6 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form=active_form_begin({'id':'currency-form', 'action':url.to({0:'currency/set'}), 'method':'POST'}) %}
-    {{ form.field(app.currency, 'id').dropDownList(array.map(currencyList, 'id', 'code')) | raw }}
+    {{ form.field(app.currency, 'id').dropDownList(currencyList) | raw }}
     <input type="submit" value="{{ yii.t('base', 'Change') }}">
 {{ active_form_end() }}

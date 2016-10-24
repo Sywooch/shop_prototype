@@ -7,10 +7,21 @@ function SendRequestAbstract() {
     self._allText = '';
     
     self.success = function(data, status, jqXHR) {
-        self.clean();
-        $('#' + self._formID).find('#productsmodel-id_subcategory').empty();
-        $('#' + self._formID).find('#productsmodel-id_subcategory').append('<option>' + self._allText + '</option>');
-        if (data) {
+        if (typeof data == 'string') {
+            var processingError = $('#processingError > strong');
+            if (processingError.length > 0) {
+                processingError.text(data);
+            } else {
+                $('#add-product-form').before('<p id="processingError"><strong>' + data + '</strong></p>');
+            }
+        } else {
+            var processingError = $('#processingError');
+            if (processingError.length > 0) {
+                processingError.remove();
+            }
+            self.clean();
+            $('#' + self._formID).find('#productsmodel-id_subcategory').empty();
+            $('#' + self._formID).find('#productsmodel-id_subcategory').append('<option>' + self._allText + '</option>');
             var formField = $('#' + self._formID).find('#productsmodel-id_subcategory');
             for (var i in data) {
                 var option = $('<option></option>').val(i).html(data[i]);

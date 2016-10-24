@@ -10,6 +10,10 @@
 
 <p><strong>{{ yii.t('base', 'Password restore') }}</strong></p>
 
+{% if errorMessage %}
+    <p><strong>{{ errorMessage }}</strong></p>
+{% endif %}
+
 {% if allow %}
     {{ use('yii/widgets/ActiveForm') }}
     

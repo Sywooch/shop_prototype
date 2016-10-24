@@ -98,7 +98,7 @@ class UserController extends AbstractBaseController
      * Управляет процессом создания учетной записи
      * @return string
      */
-    public function actionRegistration() #!!! CONTINUE
+    public function actionRegistration()
     {
         try {
             $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
@@ -106,6 +106,9 @@ class UserController extends AbstractBaseController
             $rawMailingListModel = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_REGISTRATION]);
             
             $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post()) && $rawMailingListModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate() && $rawMailingListModel->validate()) {
@@ -179,8 +182,8 @@ class UserController extends AbstractBaseController
                         if (YII_ENV_DEV) {
                             throw $t;
                         } else {
-                            $this->writeErrorInLogs($t, __METHOD__);
-                            $renderArray['errorMessage'] = \Yii::t('base', 'Registration error!');
+                            $this->writeMessageInLogs(\Yii::t('base/errors', 'Registration error!'), __METHOD__);
+                            $renderArray['errorMessage'] = \Yii::t('base/errors', 'Registration error!');
                         }
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
@@ -224,6 +227,9 @@ class UserController extends AbstractBaseController
             $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_AUTHENTICATION]);
             
             $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
             
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate()) {
@@ -231,19 +237,37 @@ class UserController extends AbstractBaseController
                     $emailsQuery->extendSelect(['id', 'email']);
                     $emailsQuery->where(['[[emails.email]]'=>$rawEmailsModel->email]);
                     $emailsModel = $emailsQuery->one();
-                    MailHelper::send([
-                        [
-                            'template'=>'@theme/mail/forgot-mail.twig', 
-                            'setFrom'=>['admin@shop.com'=>'Shop'], 
-                            'setTo'=>['timofey@localhost'=>'Timofey'], 
-                            'setSubject'=>\Yii::t('base', 'Password restore to shop.com'), 
-                            'dataForTemplate'=>[
-                                'email'=>$emailsModel->email,
-                                'key'=>HashHelper::createHashRestore($emailsModel),
-                            ],
-                        ]
-                    ]);
-                    $renderArray['sent'] = true;
+                    if (!$emailsModel instanceof EmailsModel) {
+                        if (YII_ENV_DEV) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel / email: ' . $rawEmailsModel->email]));
+                        } else {
+                            $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsModel / email: ' . $rawEmailsModel->email]), __METHOD__);
+                            $rawEmailsModel->addError('email', \Yii::t('base', 'Account with this email does not exist!'));
+                        }
+                    } else {
+                        $sent = MailHelper::send([
+                            [
+                                'template'=>'@theme/mail/forgot-mail.twig', 
+                                'setFrom'=>['admin@shop.com'=>'Shop'], 
+                                'setTo'=>['timofey@localhost'=>'Timofey'], 
+                                'setSubject'=>\Yii::t('base', 'Password restore to shop.com'), 
+                                'dataForTemplate'=>[
+                                    'email'=>$emailsModel->email,
+                                    'key'=>HashHelper::createHashRestore($emailsModel),
+                                ],
+                            ]
+                        ]);
+                        if ($sent < 1) {
+                            if (YII_ENV_DEV) {
+                                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
+                            } else {
+                                $this->writeMessageInLogs(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']), __METHOD__);
+                                $renderArray['errorMessage'] = \Yii::t('base/errors', 'Error in password recovery!');
+                            }
+                        } else {
+                            $renderArray['sent'] = true;
+                        }
+                    }
                 }
             }
             
@@ -269,6 +293,9 @@ class UserController extends AbstractBaseController
             $rawUsersModelConfirm = new UsersModel(['scenario'=>UsersModel::GET_FROM_AUTHENTICATION]);
             
             $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
             
             if (\Yii::$app->request->isGet && \Yii::$app->request->get('email') && \Yii::$app->request->get('key')) {
                 $emailsQuery = EmailsModel::find();
@@ -307,11 +334,16 @@ class UserController extends AbstractBaseController
                                     $usersModel->password = password_hash($rawUsersModel->password, PASSWORD_DEFAULT);
                                     $usersModel->save();
                                     $transaction->commit();
+                                    $renderArray['complete'] = true;
                                 } catch (\Throwable $t) {
                                     $transaction->rollBack();
-                                    throw $t;
+                                    if (YII_ENV_DEV) {
+                                        throw $t;
+                                    } else {
+                                        $this->writeMessageInLogs(\Yii::t('base/errors', 'Error in password recovery!'), __METHOD__);
+                                        $renderArray['errorMessage'] = \Yii::t('base/errors', 'Error in password recovery!');
+                                    }
                                 }
-                                $renderArray['complete'] = true;
                             }
                         }
                     }

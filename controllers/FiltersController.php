@@ -28,21 +28,20 @@ class FiltersController extends AbstractBaseController
                 if (\Yii::$app->filters->validate()) {
                     $key = StringHelper::cutPage(Url::previous());
                     if (!is_string($key) || empty($key)) {
-                        if (YII_ENV_DEV) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
-                        } else {
-                            $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']), __METHOD__);
-                        }
-                    } else {
-                        SessionHelper::write($key, \Yii::$app->filters->attributes);
+                        throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
                     }
+                    SessionHelper::write($key, \Yii::$app->filters->attributes);
                 }
             }
             
             return $this->redirect($key ?? Url::previous());
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
+            if (YII_ENV_DEV) {
+                $this->throwException($t, __METHOD__);
+            } else {
+                return $this->redirect($key ?? Url::previous());
+            }
         }
     }
     
@@ -56,23 +55,22 @@ class FiltersController extends AbstractBaseController
             if (\Yii::$app->request->isPost) {
                 $key = StringHelper::cutPage(Url::previous());
                 if (!is_string($key) || empty($key)) {
-                    if (YII_ENV_DEV) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
-                    } else {
-                        $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']), __METHOD__);
-                    }
-                } else {
-                    SessionHelper::remove([$key]);
-                    if (SessionHelper::has($key) === false) {
-                        \Yii::$app->filters->clean();
-                    }
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
+                }
+                SessionHelper::remove([$key]);
+                if (SessionHelper::has($key) === false) {
+                    \Yii::$app->filters->clean();
                 }
             }
             
             return $this->redirect($key ?? Url::previous());
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
+            if (YII_ENV_DEV) {
+                $this->throwException($t, __METHOD__);
+            } else {
+                return $this->redirect($key ?? Url::previous());
+            }
         }
     }
 }

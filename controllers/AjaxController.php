@@ -14,6 +14,7 @@ class AjaxController extends AbstractBaseController
 {
     /**
      * Обрабатывает Ajax запрос на получений подкатегорий для категории
+     * @return mixed $response
      */
     public function actionGetSubcategory()
     {
@@ -26,15 +27,15 @@ class AjaxController extends AbstractBaseController
             $subcategoryQuery = SubcategoryModel::find();
             $subcategoryQuery->extendSelect(['id', 'name']);
             $subcategoryQuery->where(['[[subcategory.id_category]]'=>\Yii::$app->request->post('categoryId')]);
-            $subcategoryArray = $subcategoryQuery->allMap('id', 'name');
-            if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
+            $response = $subcategoryQuery->allMap('id', 'name');
+            if (!is_array($response) || empty($response)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $subcategoryArray']));
             }
-            
-            return $subcategoryArray;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
+            $response = \Yii::t('base/errors', 'Data processing error!');
+        } finally {
+            return $response;
         }
     }
 }

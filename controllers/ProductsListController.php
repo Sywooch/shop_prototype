@@ -54,7 +54,7 @@ class ProductsListController extends AbstractBaseController
     {
         try {
             if (empty(\Yii::$app->request->get(\Yii::$app->params['searchKey']))) {
-                return $this->redirect(Url::to(['/products-list/index']));
+                return $this->redirect(Url::previous());
             }
             
             $sphinxQuery = new Query();
@@ -63,13 +63,10 @@ class ProductsListController extends AbstractBaseController
             $sphinxQuery->match(new MatchExpression('[[@* :search]]', ['search'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]));
             $sphinxArray = $sphinxQuery->all();
             if (!is_array($sphinxArray)) {
-                if (YII_ENV_DEV) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sphinxArray']));
-                } else {
-                    $sphinxArray = [];
-                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sphinxArray']), __METHOD__);
-                }
+                $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sphinxArray']), __METHOD__);
+                return $this->redirect(Url::previous());
             }
+            
             $renderArray = $this->getInstances();
             $renderArray = ArrayHelper::merge($renderArray, $this->getProductsPaginator(!empty($sphinxArray) ? ['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')] : []));
             $renderArray = ArrayHelper::merge($renderArray, $this->getColorsList($sphinxArray));
@@ -122,22 +119,12 @@ class ProductsListController extends AbstractBaseController
             
             $renderArray['paginator'] = $productsQuery->paginator;
             if (!$renderArray['paginator'] instanceof Pagination) {
-                if (YII_ENV_DEV) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']));
-                } else {
-                    $renderArray['paginator'] = [];
-                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']), __METHOD__);
-                }
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']));
             }
             
             $renderArray['productsList'] = $productsQuery->all();
             if (!is_array($renderArray['productsList']) || (!empty($renderArray['productsList']) && !$renderArray['productsList'][0] instanceof ProductsModel)) {
-                if (YII_ENV_DEV) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']));
-                } else {
-                    $renderArray['productsList'] = [];
-                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']), __METHOD__);
-                }
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']));
             }
             
             return $renderArray;

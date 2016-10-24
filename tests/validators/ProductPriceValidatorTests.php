@@ -33,7 +33,7 @@ class ProductPriceValidatorTests extends TestCase
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('price', $model->errors));
-        $this->assertEquals(\Yii::t('base', 'Wrong format!'), $model->errors['price'][0]);
+        $this->assertEquals(\Yii::t('base/errors', 'Wrong format!'), $model->errors['price'][0]);
         
         $model = new ProductsModel();
         $model->price = self::$_price;
