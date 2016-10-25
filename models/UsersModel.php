@@ -55,7 +55,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     
     /**
      * Получает объект EmailsModel, с которой связан текущий объект UsersModel
-     * @return object EmailsModel
+     * @return ActiveQueryInterface the relational query object
      */
     public function getEmails()
     {
@@ -78,6 +78,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
             if ($usersModel instanceof UsersModel) {
                 return $usersModel;
             }
+            
             return null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -88,7 +89,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
      * Возвращает ID текущего пользователя
      * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         try {
             return $this->id;
@@ -97,7 +98,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
         }
     }
     
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type=null)
     {
     }
     

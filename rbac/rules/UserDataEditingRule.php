@@ -6,9 +6,9 @@ use yii\rbac\Rule;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Задает правило, проверяющее соответствие ID аккаунта, 
+ * Задает правило, проверяющее равенство ID аккаунта, 
  * к которому пытается получить доступ текущий пользователь, 
- * с ID его аккаунта
+ * и ID его аккаунта
  */
 class UserDataEditingRule extends Rule
 {
@@ -23,7 +23,7 @@ class UserDataEditingRule extends Rule
      * Выполняет проверку
      * @return bool
      */
-    public function execute($user, $item, $params)
+    public function execute($user, $item, $params): bool
     {
         try {
             if (\Yii::$app->request->get('userId')) {

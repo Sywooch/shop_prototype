@@ -26,7 +26,7 @@ class SubcategoryModel extends AbstractBaseModel
     
     /**
      * Получает объект CategoriesModel, с которой связан текущий объект SubcategoryModel
-     * @return object CategoriesModel
+     * @return ActiveQueryInterface the relational query object
      */
     public function getCategories()
     {
@@ -39,7 +39,7 @@ class SubcategoryModel extends AbstractBaseModel
     
     /**
      * Получает массив ProductsModel, с которыми связан текущий объект SubcategoryModel
-     * @return array ProductsModel
+     * @return ActiveQueryInterface the relational query object
      */
     public function getProducts()
     {

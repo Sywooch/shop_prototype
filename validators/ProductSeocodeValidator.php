@@ -8,7 +8,7 @@ use app\helpers\TransliterationHelper;
 use app\models\ProductsModel;
 
 /**
- * Создает seocode товара, если свойство ProductsModel::seocode не заполнено
+ * Создает seocode товара, если ProductsModel::seocode не заполнено
  */
 class ProductSeocodeValidator extends Validator
 {
@@ -23,12 +23,17 @@ class ProductSeocodeValidator extends Validator
         try {
             if (empty($model->$attribute)) {
                 $seocode = TransliterationHelper::getTransliterationSeparate($model->name);
-                if (ProductsModel::find()->where(['[[products.seocode]]'=>$seocode])->exists()) {
-                    $seocode .= '-' . $model->code;
+                if (is_string($seocode) && !empty($seocode)) {
+                    $productsQuery = ProductsModel::find();
+                    $productsQuery->where(['[[products.code]]'=>$seocode]);
+                    $result = $productsQuery->exists();
+                    
+                    if ($result) {
+                        $seocode .= '-' . $model->code;
+                    }
+                    $model->$attribute = $seocode;
                 }
-                $model->$attribute = $seocode;
             }
-            
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

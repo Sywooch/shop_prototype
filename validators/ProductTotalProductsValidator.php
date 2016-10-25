@@ -6,7 +6,7 @@ use yii\validators\Validator;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Нормализует значение свойства ProductsModel::price
+ * Нормализует значение свойства ProductsModel::total_products
  */
 class ProductTotalProductsValidator extends Validator
 {

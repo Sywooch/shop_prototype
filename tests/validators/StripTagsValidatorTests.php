@@ -59,7 +59,7 @@ class StripTagsValidatorTests extends TestCase
         };
         $validator = new StripTagsValidator();
         $validator->allowable_tags = '<p></p><ul></ul><li></li><strong></strong>';
-        $validator->exceptProreties = ['app\tests\MockObject::description'];
+        $validator->exceptProperties = ['app\tests\MockObject::description'];
         $validator->validateAttribute($model, 'description');
         $this->assertEquals(self::$_withHtmlTags, $model->description);
     }

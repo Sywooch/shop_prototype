@@ -112,9 +112,9 @@ class ExtendActiveQuery extends ActiveQuery
     {
         try {
             $this->asArray();
-            $colorsArray = $this->all();
+            $resultArray = $this->all();
             
-            return empty($colorsArray) ? [] : ArrayHelper::map($colorsArray, $fieldKey, $fieldValue);
+            return empty($resultArray) ? [] : ArrayHelper::map($resultArray, $fieldKey, $fieldValue);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

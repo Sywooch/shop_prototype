@@ -2,7 +2,8 @@
 
 namespace app\filters;
 
-use yii\base\ActionFilter;
+use yii\base\{ActionFilter,
+    ErrorException};
 use yii\helpers\Url;
 use app\exceptions\ExceptionsTrait;
 use app\helpers\{SessionHelper,
@@ -25,6 +26,9 @@ class ProductsFilter extends ActionFilter
     {
         try {
             $key = StringHelper::cutPage(Url::current());
+            if (!is_string($key) || empty($key)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
+            }
             $data = SessionHelper::read($key);
             if (!empty($data)) {
                 \Yii::configure(\Yii::$app->filters, $data);
@@ -32,7 +36,12 @@ class ProductsFilter extends ActionFilter
             
             return parent::beforeAction($action);
         } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
+            if (YII_ENV_DEV) {
+                $this->throwException($t, __METHOD__);
+            } else {
+                $this->writeErrorInLogs($t, __METHOD__);
+                return parent::beforeAction($action);
+            }
         }
     }
 }

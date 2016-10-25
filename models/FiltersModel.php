@@ -31,7 +31,7 @@ class FiltersModel extends Model
      * Обнуляет значение всех свойств, очищая фильтры
      * @return bool
      */
-    public function clean()
+    public function clean(): bool
     {
         try {
             $this->sortingField = '';

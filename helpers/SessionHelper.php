@@ -2,6 +2,7 @@
 
 namespace app\helpers;
 
+use yii\base\ErrorExceptions;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -15,7 +16,7 @@ class SessionHelper
      * @param mixed $data данные для добавления в сессию
      * @return bool
      */
-    public static function write(string $name, $data)
+    public static function write(string $name, $data): bool
     {
         try {
             $session = \Yii::$app->session;
@@ -44,7 +45,7 @@ class SessionHelper
             }
             $session->close();
             
-            return isset($data) ? $data : false;
+            return $data ?? false;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -56,7 +57,7 @@ class SessionHelper
      * @param mixed $data данные для добавления в сессию
      * @return bool
      */
-    public static function writeFlash(string $name, $data)
+    public static function writeFlash(string $name, $data): bool
     {
         try {
             $session = \Yii::$app->session;
@@ -85,7 +86,7 @@ class SessionHelper
             }
             $session->close();
             
-            return isset($data) ? $data : false;
+            return $data ?? false;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -96,7 +97,7 @@ class SessionHelper
      * @param array $keysArray массив имен переменных
      * @return bool
      */
-    public static function remove(Array $keysArray)
+    public static function remove(array $keysArray): bool
     {
         try {
             $session = \Yii::$app->session;

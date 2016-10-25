@@ -55,7 +55,7 @@ class EmailsModel extends AbstractBaseModel
     
     /**
      * Получает объект UsersModel, с которым связан текущий объект EmailsModel
-     * @return object UsersModel
+     * @return ActiveQueryInterface the relational query object
      */
     public function getUsers()
     {

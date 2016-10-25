@@ -47,7 +47,7 @@ class CategoriesMenuWidget extends Menu
             }
             
             if (!$this->setItems()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'setItems()']));
+                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'CategoriesMenuWidget::setItems']));
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

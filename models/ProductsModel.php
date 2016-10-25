@@ -58,7 +58,7 @@ class ProductsModel extends AbstractBaseModel
     
     /**
      * Получает объект CategoriesModel, с которой связан текущий объект ProductsModel
-     * @return object CategoriesModel
+     * @return ActiveQueryInterface the relational query object
      */
     public function getCategories()
     {
@@ -71,7 +71,7 @@ class ProductsModel extends AbstractBaseModel
     
     /**
      * Получает объект SubcategoryModel, с которой связан текущий объект ProductsModel
-     * @return object SubcategoryModel
+     * @return ActiveQueryInterface the relational query object
      */
     public function getSubcategory()
     {
@@ -84,7 +84,7 @@ class ProductsModel extends AbstractBaseModel
     
     /**
      * Получает массив ColorsModel, с которыми связан текущий объект ProductsModel
-     * @return array ColorsModel
+     * @return ActiveQueryInterface the relational query object
      */
     public function getColors()
     {
@@ -97,7 +97,7 @@ class ProductsModel extends AbstractBaseModel
     
     /**
      * Получает массив SizesModel, с которыми связан текущий объект ProductsModel
-     * @return array SizesModel
+     * @return ActiveQueryInterface the relational query object
      */
     public function getSizes()
     {
@@ -120,9 +120,7 @@ class ProductsModel extends AbstractBaseModel
             $folderName = time();
             $directoryPath = \Yii::getAlias('@imagesroot/' . $folderName);
             if (!file_exists($directoryPath)) {
-                if (!mkdir($directoryPath, 0775)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'mkdir']));
-                }
+                mkdir($directoryPath, 0775);
             }
             
             foreach ($this->images as $image) {

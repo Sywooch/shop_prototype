@@ -37,21 +37,23 @@ class CategoriesRoute extends Object implements UrlRuleInterface
             
             list($category, $subcategory) = explode('/', $pathInfo);
             
-            $category = $this->parseChunk($category);
-            
-            if ($category != $this->all) {
-                if (CategoriesModel::find()->where(['[[categories.seocode]]'=>$category])->exists()) {
-                    $this->_params[\Yii::$app->params['categoryKey']] = $category;
-                    if (!empty($subcategory)) {
-                        $subcategory = $this->parseChunk($subcategory);
-                        if (SubcategoryModel::find()->where(['[[subcategory.seocode]]'=>$subcategory])->exists()) {
-                            $this->_params[\Yii::$app->params['subcategoryKey']] = $subcategory;
-                        } else {
-                            return false;
+            if (!empty($category)) {
+                $category = $this->parseChunk($category);
+                
+                if ($category != $this->all) {
+                    if (CategoriesModel::find()->where(['[[categories.seocode]]'=>$category])->exists()) {
+                        $this->_params[\Yii::$app->params['categoryKey']] = $category;
+                        if (!empty($subcategory)) {
+                            $subcategory = $this->parseChunk($subcategory);
+                            if (SubcategoryModel::find()->where(['[[subcategory.seocode]]'=>$subcategory])->exists()) {
+                                $this->_params[\Yii::$app->params['subcategoryKey']] = $subcategory;
+                            } else {
+                                return false;
+                            }
                         }
+                    } else {
+                        return false;
                     }
-                } else {
-                    return false;
                 }
             }
             

@@ -16,14 +16,17 @@ class HashHelper
      * @param array $inputArray массив данных для конструирования хеша
      * @return string
      */
-    public static function createHash(Array $inputArray): string
+    public static function createHash(array $inputArray): string
     {
         try {
             if (empty($inputArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Array $inputArray']));
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $inputArray']));
             }
             
-            $inputArray[] = \Yii::$app->params['hashSalt'];
+            if (!empty(\Yii::$app->params['hashSalt'])) {
+                $inputArray[] = \Yii::$app->params['hashSalt'];
+            }
+            
             return sha1(implode('', $inputArray));
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
@@ -40,7 +43,9 @@ class HashHelper
         try {
             $salt = random_bytes(12);
             
-            SessionHelper::writeFlash('restore.' . $emailsModel->email, $salt);
+            if (!SessionHelper::writeFlash('restore.' . $emailsModel->email, $salt)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'SessionHelper::writeFlash']));
+            }
             
             return self::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
         } catch (\Throwable $t) {

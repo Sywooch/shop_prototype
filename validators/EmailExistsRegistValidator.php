@@ -4,7 +4,7 @@ namespace app\validators;
 
 use yii\validators\Validator;
 use app\exceptions\ExceptionsTrait;
-use app\models\EmailsModel;
+use app\models\UsersModel;
 
 /**
  * Проверяет атрибуты модели EmailsModel
@@ -21,11 +21,10 @@ class EmailExistsRegistValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $emailsQuery = EmailsModel::find();
-            $emailsQuery->distinct();
-            $emailsQuery->innerJoin('{{users}}', '[[emails.id]]=[[users.id_email]]');
-            $emailsQuery->where(['[[emails.email]]'=>$model->$attribute]);
-            $result = $emailsQuery->exists();
+            $usersQuery = UsersModel::find();
+            $usersQuery->innerJoin('{{emails}}', '[[users.id_email]]=[[emails.id]]');
+            $usersQuery->where(['[[emails.email]]'=>$model->$attribute]);
+            $result = $usersQuery->exists();
             
             if ($result) {
                 $this->addError($model, $attribute, \Yii::t('base', 'Account with this email already exist!'));

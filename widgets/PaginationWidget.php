@@ -95,7 +95,6 @@ class PaginationWidget extends Widget
             }
             
             $range = $this->getRange();
-            
             if (!is_array($range) || empty($range)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $range']));
             }

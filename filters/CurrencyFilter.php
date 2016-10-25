@@ -16,7 +16,7 @@ class CurrencyFilter extends ActionFilter
     use ExceptionsTrait;
     
     /**
-     * Пытается получить значение валюты из сессии, 
+     * Получает данные для валюты из сессии, 
      * если терпит неудачу, загружает валюту по умолчанию 
      * @param object $action объект текущего действия
      * @return bool
@@ -38,7 +38,9 @@ class CurrencyFilter extends ActionFilter
                 if (empty($currency)) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $currency']));
                 }
-                SessionHelper::write(\Yii::$app->params['currencyKey'], $currency);
+                if (!SessionHelper::write(\Yii::$app->params['currencyKey'], $currency)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'SessionHelper::write']));
+                }
             }
             
             \Yii::configure(\Yii::$app->currency, $currency);

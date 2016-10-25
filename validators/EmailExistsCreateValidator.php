@@ -13,8 +13,6 @@ class EmailExistsCreateValidator extends Validator
 {
     use ExceptionsTrait;
     
-    private $_errorText = 'This email is already registered!';
-    
     /**
      * Проверяет, существует ли текущий email в БД
      * @param object $model текущий экземпляр модели, атрибут которой проверяется
@@ -28,7 +26,7 @@ class EmailExistsCreateValidator extends Validator
             $result = $emailsQuery->exists();
             
             if ($result) {
-                $this->addError($model, $attribute, \Yii::t('base', $this->_errorText));
+                $this->addError($model, $attribute, \Yii::t('base', 'This email is already registered!'));
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -39,9 +37,10 @@ class EmailExistsCreateValidator extends Validator
      * Проверяет, существует ли текущий email в БД, 
      * вызывается вне контекста модели
      * @param mixed $value значение, которое должно быть проверено
-     * @param string $trror сообщение об ошибке, которое будет возвращено, если проверка провалится
+     * @param string $error сообщение об ошибке, которое будет возвращено, если проверка провалится
+     * @return bool
      */
-    public function validate($value, &$trror=null)
+    public function validate($value, &$error=null): bool
     {
         try {
             $emailsQuery = EmailsModel::find();
@@ -51,6 +50,7 @@ class EmailExistsCreateValidator extends Validator
             if ($result) {
                 return true;
             }
+            
             return false;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

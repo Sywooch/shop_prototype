@@ -12,7 +12,7 @@ abstract class AbstractBaseModel extends ActiveRecord
     
     /**
      * @inheritdoc
-     * @return ActiveQuery the newly created [[ActiveQuery]] instance.
+     * @return ActiveQuery the newly created ActiveQuery instance
      */
     public static function find()
     {

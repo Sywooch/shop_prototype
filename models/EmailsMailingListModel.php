@@ -32,17 +32,24 @@ class EmailsMailingListModel extends AbstractBaseModel
      * @param object $emailsModel экземпляр EmailsModel
      * @return array
      */
-    public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $emailsModel)
+    public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $emailsModel): array
     {
         try {
-            $tmailsMailingListList = self::find()->extendSelect(['id_mailing_list'])->where(['[[emails_mailing_list.id_email]]'=>$emailsModel->id])->all();
-            $diff = array_diff($rawMailingListModel->id, ArrayHelper::getColumn($tmailsMailingListList, 'id_mailing_list'));
+            $emailsMailingListQuery = self::find();
+            $emailsMailingListQuery->extendSelect(['id_mailing_list']);
+            $emailsMailingListQuery->where(['[[emails_mailing_list.id_email]]'=>$emailsModel->id]);
+            $emailsMailingListList = $emailsMailingListQuery->all();
+            if (!is_array($emailsMailingListList) || (!empty($emailsMailingListList) && !$emailsMailingListList[0] instanceof self)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsMailingListModel']));
+            }
+            
+            $diff = array_diff($rawMailingListModel->id, ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
             if (!empty($diff)) {
                 $toRecord = [];
                 foreach ($diff as $mailingListId) {
                     $toRecord[] = [$emailsModel->id, $mailingListId];
                 }
-                if (!\Yii::$app->db->createCommand()->batchInsert('emails_mailing_list', ['id_email', 'id_mailing_list'], $toRecord)->execute()) {
+                if (!\Yii::$app->db->createCommand()->batchInsert('{{emails_mailing_list}}', ['[[id_email]]', '[[id_mailing_list]]'], $toRecord)->execute()) {
                     throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));
                 }
             }

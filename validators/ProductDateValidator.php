@@ -6,8 +6,7 @@ use yii\validators\Validator;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Назначает свойству ProductsModel::date дату 
- * создания записи в формате UNIX TIMESTAMP
+ * Присваивает ProductsModel::date значение текущей даты в формате UNIX TIMESTAMP
  */
 class ProductDateValidator extends Validator
 {

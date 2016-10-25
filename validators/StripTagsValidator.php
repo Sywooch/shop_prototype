@@ -21,7 +21,7 @@ class StripTagsValidator extends Validator
      * @var array массив имен свойств, к значениям которых применяются исключения при очистке от тегов, 
      * в полностью определенном формате app\some\ClassName::propertyName
      */
-    public $exceptProreties = [];
+    public $exceptProperties = [];
     
     /**
      * Инициирует удаление HTML и PHP-тегов из строки, являющейся значением свойства модели
@@ -32,12 +32,12 @@ class StripTagsValidator extends Validator
     {
         try {
             $allowable_tags = '';
-            if (in_array($model::className() . '::' . $attribute, $this->exceptProreties)) {
+            
+            if (in_array($model::className() . '::' . $attribute, $this->exceptProperties)) {
                 $allowable_tags = $this->allowable_tags;
             }
-            if ($result = $this->strip($model->$attribute, $allowable_tags)) {
-                $model->$attribute = $result;
-            }
+            
+            $model->$attribute = $this->strip($model->$attribute, $allowable_tags);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -48,13 +48,10 @@ class StripTagsValidator extends Validator
      * @param string $value проверяемая строка
      * @return string
      */
-    public function validate($value, &$trror=null)
+    public function validate($value, &$error=null)
     {
         try {
-            if ($result = $this->strip($value)) {
-                return $result;
-            }
-            return $value;
+            return $this->strip($value);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -66,17 +63,15 @@ class StripTagsValidator extends Validator
      * @param string $allowable_tags теги, которые не нужно удалять
      * @return string
      */
-    private function strip($value, $allowable_tags='')
+    private function strip(string $value='', string $allowable_tags=''): string
     {
         try {
-            if (is_string($value)) {
-                $value = HtmlPurifier::process($value);
-                $value = preg_replace('/\s+/', ' ', $value);
-                $value = trim($value);
-                $value = strip_tags($value, $allowable_tags);
-                return $value;
-            }
-            return false;
+            $value = HtmlPurifier::process($value);
+            $value = preg_replace('/\s+/', ' ', $value);
+            $value = trim($value);
+            $value = strip_tags($value, $allowable_tags);
+            
+            return $value;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

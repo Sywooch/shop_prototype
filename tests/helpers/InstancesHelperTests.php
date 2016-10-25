@@ -42,7 +42,7 @@ class InstancesHelperTests extends TestCase
         
         $this->assertTrue(array_key_exists('currencyList', $result));
         $this->assertTrue(is_array($result['currencyList']));
-        $this->assertTrue($result['currencyList'][0] instanceof CurrencyModel);
+        $this->assertFalse(empty($result['currencyList']));
     }
     
     public static function tearDownAfterClass()

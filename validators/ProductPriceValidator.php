@@ -19,10 +19,11 @@ class ProductPriceValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            if (!is_numeric($model->$attribute)) {
+            $priceString = str_replace([',', ' '], ['.', ''], $model->$attribute);
+            
+            if (!is_numeric($priceString)) {
                 $this->addError($model, $attribute, \Yii::t('base/errors', 'Wrong format!'));
             } else {
-                $priceString = str_replace([',', ' '], ['.', ''], $model->$attribute);
                 $model->$attribute = number_format((float) $priceString, 2, '.', '');
             }
         } catch (\Throwable $t) {

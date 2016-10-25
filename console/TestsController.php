@@ -18,7 +18,7 @@ class TestsController extends Controller
     /**
      * @var string имя профиля, созданного коммандой mysql_config_editor
      */
-    public $loginPath = 'root';
+    public $loginPath = 'yii';
     /**
      * @var string имя тестовой БД, которая будет создана
      */

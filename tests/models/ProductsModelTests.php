@@ -3,6 +3,8 @@
 namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
+use yii\sphinx\{MatchExpression,
+    Query};
 use app\tests\DbManager;
 use app\models\{CategoriesModel,
     ColorsModel,
@@ -412,6 +414,31 @@ class ProductsModelTests extends TestCase
         $this->assertTrue(array_key_exists($fixture2['id'], $productsArray));
         $this->assertTrue(in_array($fixture['name'], $productsArray));
         $this->assertTrue(in_array($fixture2['name'], $productsArray));
+    }
+    
+    private function productsListQuery(array $extraWhere=[])
+    {
+        $productsQuery = ProductsModel::find();
+        $productsQuery->extendSelect(['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'seocode']);
+        $productsQuery->where(['[[products.active]]'=>true]);
+        if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
+            $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
+            $productsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+        }
+        if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
+            $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
+            $productsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+        }
+        if (!empty($extraWhere)) {
+            $productsQuery->andWhere($extraWhere);
+        }
+        $productsQuery->addFilters();
+        $productsQuery->extendLimit();
+        $sortingField = !empty(\Yii::$app->filters->sortingField) ? \Yii::$app->filters->sortingField : 'date';
+        $sortingType = (!empty(\Yii::$app->filters->sortingType) && \Yii::$app->filters->sortingType === 'SORT_ASC') ? SORT_ASC : SORT_DESC;
+        $productsQuery->orderBy(['[[products.' . $sortingField . ']]'=>$sortingType]);
+        
+        return $productsQuery;
     }
     
     public static function tearDownAfterClass()

@@ -11,14 +11,12 @@ use app\exceptions\ExceptionsTrait;
  */
 class PicturesHelper
 {
-    use ExceptionsTrait;
-    
     /**
      * Обрабатывает переданный объект yii\web\UploadedFile
      * @param array $image объект yii\web\UploadedFile
-     * @return boolean
+     * @return bool
      */
-    public static function resize(UploadedFile $image)
+    public static function resize(UploadedFile $image): bool
     {
         try {
            $imageImagick = new \Imagick($image->tempName);
@@ -35,17 +33,17 @@ class PicturesHelper
     /**
      * Создает эскизы изображений
      * @param string $path путь к папке, в которой необходимо создать эскизы
-     * @return boolean
+     * @return bool
      */
-    public static function createThumbnails($path)
+    public static function createThumbnails(string $path): bool
     {
         try {
             if (!file_exists($path) && !is_dir($path)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PicturesHelper::createThumbnails']));
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'$path']));
             }
             $imagesArray = glob($path . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
             if (empty($imagesArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'$imagesArray']));
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $imagesArray']));
             }
             foreach ($imagesArray as $image) {
                 $imageImagick = new \Imagick($image);
@@ -66,23 +64,19 @@ class PicturesHelper
     /**
      * Анализирует и обрабатывает изображение
      * @param object $imageImagick объект Imagick, который будет обработан
-     * @param string $maxWidth максимально допустимая ширина
-     * @param string $maxHeight максимально допустимая высота
+     * @param int $maxWidth максимально допустимая ширина
+     * @param int $maxHeight максимально допустимая высота
      * @param string $path путь сохранения обработанного изображения
-     * @return boolean
+     * @return bool
      */
-    private static function process($imageImagick, $maxWidth, $maxHeight, $path)
+    private static function process(\Imagick $imageImagick, int $maxWidth, int $maxHeight, string $path): bool
     {
         try {
             $currentWidth = $imageImagick->getImageWidth();
             $currentHeight = $imageImagick->getImageHeight();
             if ($currentWidth > $maxWidth || $currentHeight > $maxHeight) {
-                if (!$imageImagick->thumbnailImage($maxWidth, $maxHeight, true)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'$imageImagick->thumbnailImage']));
-                }
-                if (!$imageImagick->writeImage($path)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'$imageImagick->writeImage']));
-                }
+                $imageImagick->thumbnailImage($maxWidth, $maxHeight, true);
+                $imageImagick->writeImage($path);
             }
             
             return true;
