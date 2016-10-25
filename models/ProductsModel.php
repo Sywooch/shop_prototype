@@ -38,7 +38,7 @@ class ProductsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_ADD_PRODUCT=>['code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products', 'seocode'],
+            self::GET_FROM_ADD_PRODUCT=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products', 'seocode'],
         ];
     }
     
@@ -51,7 +51,7 @@ class ProductsModel extends AbstractBaseModel
             [['seocode'], 'app\validators\ProductSeocodeValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
             [['price'], 'app\validators\ProductPriceValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
             [['images'], 'image', 'extensions'=>['jpeg', 'jpg', 'gif', 'png'], 'mimeTypes'=>'image/*', 'maxSize'=>1024*1024, 'maxFiles'=>5, 'on'=>self::GET_FROM_ADD_PRODUCT],
-            [['date'], 'app\validators\ProductDateValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
+            [['date'], 'app\validators\ProductDateValidator', 'skipOnEmpty'=>false, 'on'=>self::GET_FROM_ADD_PRODUCT],
             [['total_products'], 'app\validators\ProductTotalProductsValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
         ];
     }

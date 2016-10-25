@@ -84,4 +84,31 @@ class PicturesHelper
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Удаляет директорию с изображениями
+     * @param string $path путь к удаляемой директории
+     */
+    public static function remove(string $path): bool
+    {
+        try {
+            if (file_exists($path) && is_dir($path)) {
+                $imagesArray = glob($path . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+                if (!empty($imagesArray)) {
+                    foreach ($imagesArray as $image) {
+                        if (!unlink($image)) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'unlink']));
+                        }
+                    }
+                }
+                if (!rmdir($path)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'rmdir']));
+                }
+            }
+            
+            return true;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
 }

@@ -4,8 +4,10 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
-use yii\web\UploadedFile;
+use yii\web\{UploadedFile,
+    Response};
 use yii\db\Transaction;
+use yii\widgets\ActiveForm;
 use app\models\{BrandsModel,
     CategoriesModel,
     ColorsModel,
@@ -13,7 +15,7 @@ use app\models\{BrandsModel,
     SizesModel,
     SubcategoryModel};
 use app\controllers\AbstractBaseController;
-use app\exceptions\ExecutionException;
+use app\helpers\PicturesHelper;
 
 /**
  * Управляет добавлением, удвлением, изменением товаров
@@ -33,39 +35,41 @@ class ProductsManagerController extends AbstractBaseController
             
             $renderArray = [];
             
+            if (\Yii::$app->request->isAjax && $rawProductsModel->load(\Yii::$app->request->post())) {
+                \Yii::$app->response->format = Response::FORMAT_JSON;
+                return ActiveForm::validate($rawProductsModel);
+            }
+            
             if (\Yii::$app->request->isPost && $rawProductsModel->load(\Yii::$app->request->post()) && $rawColorsModel->load(\Yii::$app->request->post()) && $rawSizesModel->load(\Yii::$app->request->post()) && $rawBrandsModel->load(\Yii::$app->request->post())) {
                 if ($rawProductsModel->validate() && $rawColorsModel->validate() && $rawSizesModel->validate() && $rawBrandsModel->validate()) {
                     
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
                     try {
-                        throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $folderName']));
                         if (!empty($rawProductsModel->images)) {
                             $rawProductsModel->images = UploadedFile::getInstances($rawProductsModel, 'images');
                             if (empty($rawProductsModel->images) || !$rawProductsModel->images[0] instanceof UploadedFile) {
-                                throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UploadedFile']));
+                                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UploadedFile']));
                             }
                             $folderName = $rawProductsModel->upload();
                             if (!is_string($folderName) || empty($folderName)) {
-                                throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $folderName']));
+                                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $folderName']));
                             }
                             $rawProductsModel->images = $folderName;
                         }
                         
-                        $transaction->commit();
-                    } catch (ExecutionException $t) {
-                        $transaction->rollBack();
-                        if (YII_ENV_DEV) {
-                            throw $t;
-                        } else {
-                            $this->writeErrorInLogs($t, __METHOD__);
-                            $renderArray['errorMessage'] = \Yii::t('base/errors', 'Creating product error!');
+                        if (!$rawProductsModel->save(false)) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsModel::save']));
                         }
+                        
+                        $transaction->commit();
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
+                        if (!empty($folderName)) {
+                            PicturesHelper::remove(\Yii::getAlias('@imagesroot/' . $folderName));
+                        }
                         throw $t;
                     }
-                    
                 }
             }
             

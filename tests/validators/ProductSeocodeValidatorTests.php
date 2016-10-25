@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use yii\base\Object;
 use app\tests\DbManager;
 use app\validators\ProductSeocodeValidator;
+use app\models\ProductsModel;
 
 /**
  * Тестирует класс app\validators\ProductSeocodeValidator
@@ -15,8 +16,7 @@ class ProductSeocodeValidatorTests extends TestCase
     private static $_dbClass;
     private static $_name = 'Коричневый шерстяной шарф';
     private static $_expectedSeocode = 'korichnevyi-sherstyanoi-sharf';
-    private static $_existsSeocode = 'exist-seocode-ready';
-    private static $_code = 'UYJ98O';
+    private static $_notExistsSeocode = 'full-blood-moon';
     
     public static function setUpBeforeClass()
     {
@@ -33,27 +33,42 @@ class ProductSeocodeValidatorTests extends TestCase
      */
      public function testValidateAttribute()
     {
-        $model = new class(['name'=>self::$_name, 'code'=>self::$_code]) extends Object {
-            public $name;
-            public $code;
-            public $seocode;
-        };
+        $fixture = self::$_dbClass->products['product_1'];
+        
+        $model = new ProductsModel();
+        $model->seocode = $fixture['seocode'];
+        
+        $validator = new ProductSeocodeValidator();
+        $validator->validateAttribute($model, 'seocode');
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('seocode', $model->errors));
+        $this->assertEquals(\Yii::t('base', 'Product with this seocode already exists!'), $model->errors['seocode'][0]);
+        
+        $model = new ProductsModel();
+        $model->seocode = self::$_notExistsSeocode;
+        
+        $validator = new ProductSeocodeValidator();
+        $validator->validateAttribute($model, 'seocode');
+        
+        $this->assertTrue(empty($model->errors));
+        
+        $model = new ProductsModel();
+        $model->name = self::$_name;
         
         $validator = new ProductSeocodeValidator();
         $validator->validateAttribute($model, 'seocode');
         
         $this->assertEquals(self::$_expectedSeocode, $model->seocode);
         
-        $model = new class(['name'=>self::$_name, 'code'=>self::$_code, 'seocode'=>self::$_existsSeocode]) extends Object {
-            public $name;
-            public $code;
-            public $seocode;
-        };
+        $model = new ProductsModel();
+        $model->name = $fixture['name'];
+        $model->code = $fixture['code'];
         
         $validator = new ProductSeocodeValidator();
         $validator->validateAttribute($model, 'seocode');
         
-        $this->assertEquals(self::$_existsSeocode, $model->seocode);
+        $this->assertEquals($fixture['seocode'] . '-' . $fixture['code'], $model->seocode);
     }
     
     public static function tearDownAfterCLass()

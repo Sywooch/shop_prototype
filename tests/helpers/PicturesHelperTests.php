@@ -58,6 +58,15 @@ class PicturesHelperTests extends TestCase
         $this->assertTrue($image->getImageWidth() <= \Yii::$app->params['maxThumbnailWidth'] && $image->getImageHeight() <= \Yii::$app->params['maxThumbnailHeight']);
     }
     
+    /**
+     * Тестирует метод PicturesHelper::remove
+     */
+    public function testRemove()
+    {
+       $this->assertTrue(file_exists(self::$_tempPath));
+       $this->assertTrue(is_dir(self::$_tempPath));
+    }
+    
     public static function tearDownAfterClass()
     {
         if (file_exists(self::$_tempPath)) {
