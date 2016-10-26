@@ -111,14 +111,14 @@ class EmailsMailingListModelTests extends TestCase
         $emailsModel = new EmailsModel(['id'=>$fixture_1['id_email']]);
         $mailingListModel = new MailingListModel(['id'=>[$fixture_1['id_mailing_list'], $fixture_2['id_mailing_list']]]);
         
-        \Yii::$app->db->createCommand('DELETE FROM [[emails_mailing_list]]')->execute();
-        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM [[emails_mailing_list]]')->queryAll()));
+        \Yii::$app->db->createCommand('DELETE FROM {{emails_mailing_list}}')->execute();
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails_mailing_list}}')->queryAll()));
         
         $result = EmailsMailingListModel::batchInsert($mailingListModel, $emailsModel);
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
         
-        $this->assertFalse(empty($result = \Yii::$app->db->createCommand('SELECT * FROM [[emails_mailing_list]]')->queryAll()));
+        $this->assertFalse(empty($result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailing_list}}')->queryAll()));
         $this->assertEquals(2, count($result));
     }
     

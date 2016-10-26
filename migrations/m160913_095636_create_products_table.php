@@ -24,8 +24,13 @@ class m160913_095636_create_products_table extends Migration
             'id_category'=>$this->integer(3)->unsigned()->notNull(),
             'id_subcategory'=>$this->integer(3)->unsigned()->notNull(),
             'active'=>$this->boolean()->notNull()->defaultValue(true),
-            'total_products'=>$this->smallInteger(5)->unsigned()->notNull()->defaultValue(0)
+            'total_products'=>$this->smallInteger(5)->unsigned()->notNull()->defaultValue(0),
+            'seocode'=>$this->string(255)->notNull()
         ], 'ENGINE=InnoDB');
+        
+        $this->createIndex('seocode', 'products', 'seocode(255)', true);
+        
+        $this->createIndex('code', 'products', 'code(100)', true);
         
         $this->addForeignKey('products_id_category', 'products', 'id_category', 'categories', 'id', 'RESTRICT', 'CASCADE');
         
@@ -40,6 +45,10 @@ class m160913_095636_create_products_table extends Migration
         $this->dropForeignKey('products_id_subcategory', 'products');
         
         $this->dropForeignKey('products_id_category', 'products');
+        
+        $this->dropIndex('code', 'products');
+        
+        $this->dropIndex('seocode', 'products');
         
         $this->dropTable('products');
     }

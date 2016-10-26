@@ -120,6 +120,7 @@ class UserController extends AbstractBaseController
                                 throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsModel::save']));
                             }
                         }
+                        
                         $emailsQuery = EmailsModel::find();
                         $emailsQuery->extendSelect(['id', 'email']);
                         $emailsQuery->where(['[[emails.email]]'=>$rawEmailsModel->email]);
@@ -134,6 +135,7 @@ class UserController extends AbstractBaseController
                         if (!$rawUsersModel->save(false)) {
                             throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'UsersModel::save']));
                         }
+                        
                         $usersQuery = UsersModel::find();
                         $usersQuery->extendSelect(['id', 'id_email']);
                         $usersQuery->where(['[[users.id_email]]'=>$rawUsersModel->id_email]);
@@ -171,6 +173,7 @@ class UserController extends AbstractBaseController
                                 ],
                             ]
                         ]);
+                        
                         if ($sent < 1) {
                             throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
                         }

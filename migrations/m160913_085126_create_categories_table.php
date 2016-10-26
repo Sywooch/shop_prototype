@@ -15,7 +15,8 @@ class m160913_085126_create_categories_table extends Migration
         $this->createTable('categories', [
             'id'=>$this->primaryKey(3)->unsigned()->notNull(),
             'name'=>$this->string(255)->notNull()->unique(),
-            'seocode'=>$this->string(255)->notNull()->unique()
+            'seocode'=>$this->string(255)->notNull()->unique(),
+            'active'=>$this->boolean()->notNull()->defaultValue(true)
         ], 'ENGINE=InnoDB');
         
         $this->createIndex('categories_name_seocode', 'categories', ['name', 'seocode'], true);

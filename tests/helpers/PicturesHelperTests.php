@@ -65,6 +65,10 @@ class PicturesHelperTests extends TestCase
     {
        $this->assertTrue(file_exists(self::$_tempPath));
        $this->assertTrue(is_dir(self::$_tempPath));
+       
+       PicturesHelper::remove(self::$_tempPath);
+       
+       $this->assertFalse(file_exists(self::$_tempPath));
     }
     
     public static function tearDownAfterClass()

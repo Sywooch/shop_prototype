@@ -11,7 +11,10 @@ use yii\widgets\ActiveForm;
 use app\models\{BrandsModel,
     CategoriesModel,
     ColorsModel,
+    ProductsBrandsModel,
+    ProductsColorsModel,
     ProductsModel,
+    ProductsSizesModel,
     SizesModel,
     SubcategoryModel};
 use app\controllers\AbstractBaseController;
@@ -60,6 +63,29 @@ class ProductsManagerController extends AbstractBaseController
                         
                         if (!$rawProductsModel->save(false)) {
                             throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsModel::save']));
+                        }
+                        
+                        $productsQuery = ProductsModel::find();
+                        $productsQuery->extendSelect(['id', 'seocode']);
+                        $productsQuery->where(['[[products.seocode]]'=>$rawProductsModel->seocode]);
+                        $productsModel = $productsQuery->one();
+                        if (!$productsModel instanceof ProductsModel || $rawProductsModel->seocode != $productsModel->seocode) {
+                            throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
+                        }
+                        
+                        $count = ProductsColorsModel::batchInsert($productsModel, $rawColorsModel);
+                        if ($count < 1) {
+                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsColorsModel::batchInsert']));
+                        }
+                        
+                        $count = ProductsSizesModel::batchInsert($productsModel, $rawSizesModel);
+                        if ($count < 1) {
+                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsSizesModel::batchInsert']));
+                        }
+                        
+                        $rawProductsBrandsModel = new ProductsBrandsModel(['scenario'=>ProductsBrandsModel::GET_FROM_ADD_PRODUCT, 'id_product'=>$productsModel->id, 'id_brand'=>$rawBrandsModel->id]);
+                        if (!$rawProductsBrandsModel->save()) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsBrandsModel::save']));
                         }
                         
                         $transaction->commit();
@@ -121,7 +147,7 @@ class ProductsManagerController extends AbstractBaseController
             if (!is_array($brandsArray) || empty($brandsArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $brandsArray']));
             }
-            $renderArray['brandsList'] = $brandsArray;
+            $renderArray['brandsList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $brandsArray);
             
             $renderArray['productsModel'] = $rawProductsModel;
             $renderArray['colorsModel'] = $rawColorsModel;

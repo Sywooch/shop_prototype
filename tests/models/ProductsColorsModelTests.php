@@ -4,7 +4,9 @@ namespace app\tests\model;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\models\ProductsColorsModel;
+use app\models\{ColorsModel,
+    ProductsColorsModel,
+    ProductsModel};
 
 /**
  * Тестирует класс app\models\ProductsColorsModel
@@ -96,6 +98,28 @@ class ProductsColorsModelTests extends TestCase
         $this->assertTrue(array_key_exists($fixture2['id_product'], $productsColorsArray));
         $this->assertTrue(in_array($fixture['id_color'], $productsColorsArray));
         $this->assertTrue(in_array($fixture2['id_color'], $productsColorsArray));
+    }
+    
+    /**
+     * Тестирует метод ProductsColorsModel::batchInsert
+     */
+    public function testBatchInsert()
+    {
+        $fixture_1 = self::$_dbClass->products_colors['product_color_1'];
+        $fixture_2 = self::$_dbClass->products_colors['product_color_2'];
+        
+        $productsModel = new ProductsModel(['id'=>$fixture_1['id_product']]);
+        $colorsModel = new ColorsModel(['id'=>[$fixture_1['id_color'], $fixture_2['id_color']]]);
+        
+        \Yii::$app->db->createCommand('DELETE FROM {{products_colors}}')->execute();
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{products_colors}}')->queryAll()));
+        
+        $result = ProductsColorsModel::batchInsert($productsModel, $colorsModel);
+        $this->assertTrue(is_int($result));
+        $this->assertEquals(2, $result);
+        
+        $this->assertFalse(empty($result = \Yii::$app->db->createCommand('SELECT * FROM {{products_colors}}')->queryAll()));
+        $this->assertEquals(2, count($result));
     }
     
     public static function tearDownAfterClass()

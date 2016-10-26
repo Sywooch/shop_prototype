@@ -28,11 +28,11 @@ class EmailsMailingListModel extends AbstractBaseModel
     
     /**
      * Выполняет пакетное сохранение
-     * @param object $rawMailingListModel экземпляр MailingListModel
+     * @param object $mailingListModel экземпляр MailingListModel
      * @param object $emailsModel экземпляр EmailsModel
      * @return array
      */
-    public static function batchInsert(MailingListModel $rawMailingListModel, EmailsModel $emailsModel): array
+    public static function batchInsert(MailingListModel $mailingListModel, EmailsModel $emailsModel): array
     {
         try {
             $emailsMailingListQuery = self::find();
@@ -43,7 +43,7 @@ class EmailsMailingListModel extends AbstractBaseModel
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsMailingListModel']));
             }
             
-            $diff = array_diff($rawMailingListModel->id, ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
+            $diff = array_diff($mailingListModel->id, ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
             if (!empty($diff)) {
                 $toRecord = [];
                 foreach ($diff as $mailingListId) {

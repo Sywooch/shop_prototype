@@ -16,7 +16,8 @@ class m160913_091219_create_subcategory_table extends Migration
             'id'=>$this->primaryKey(3)->unsigned()->notNull(),
             'name'=>$this->string(255)->notNull()->unique(),
             'seocode'=>$this->string(255)->notNull()->unique(),
-            'id_category'=>$this->integer(3)->unsigned()->notNull()
+            'id_category'=>$this->integer(3)->unsigned()->notNull(),
+            'active'=>$this->boolean()->notNull()->defaultValue(true)
         ], 'ENGINE=InnoDB');
         
         $this->createIndex('subcategory_name_seocode', 'subcategory', ['name', 'seocode'], true);
