@@ -23,13 +23,15 @@ class ProductSeocodeValidator extends Validator
     {
         try {
             if (empty($model->$attribute)) {
-                $seocode = TransliterationHelper::getTransliterationSeparate($model->name);
-                if (!empty($seocode)) {
-                    if ($this->exists($seocode)) {
-                        $seocode .= '-' . $model->code;
+                if (!empty($model->name)) {
+                    $seocode = TransliterationHelper::getTransliterationSeparate($model->name);
+                    if (!empty($seocode)) {
+                        if ($this->exists($seocode)) {
+                            $seocode .= '-' . (!empty($model->code) ? $model->code : random_bytes(3));
+                        }
+                        $model->$attribute = $seocode;
                     }
                 }
-                $model->$attribute = $seocode;
             } else {
                 if ($this->exists($model->$attribute)) {
                     $this->addError($model, $attribute, \Yii::t('base', 'Product with this seocode already exists!'));

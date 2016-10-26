@@ -20,13 +20,13 @@
     </p>
     <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
     <ul>
-        {% for color in array.getColumn(productsModel.colors, 'color') %}
+        {% for color in productsModel.single('colors', 'color') %}
             <li>{{ color }}</li>
         {% endfor %}
     </ul>
     <p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
     <ul>
-        {% for size in array.getColumn(productsModel.sizes, 'size') %}
+        {% for size in productsModel.single('sizes', 'size') %}
             <li>{{ size }}</li>
         {% endfor %}
     </ul>
@@ -39,3 +39,30 @@
 <p>
     {% include('@theme/base/currency-form.twig') %}
 </p>
+
+{% if similarList %}
+    <p><strong>{{ yii.t('base', 'Similar products:') }}</strong></p>
+    <ul>
+        {% for similarModel in similarList %}
+            <li>
+                <a href="{{ similarModel.seocode }}">{{ similarModel.name }}</a><br/>
+                {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':similarModel.price}) }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if relatedList %}
+    <p><strong>{{ yii.t('base', 'Related products:') }}</strong></p>
+    <ul>
+        {% for relatedModel in relatedList %}
+            <li>
+                <a href="{{ relatedModel.seocode }}">{{ relatedModel.name }}</a><br/>
+                {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':relatedModel.price}) }}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+

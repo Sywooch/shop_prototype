@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\ArrayHelper;
+use yii\helpers\{ArrayHelper,
+    Url};
 use yii\web\{UploadedFile,
     Response};
 use yii\db\Transaction;
@@ -83,12 +84,16 @@ class ProductsManagerController extends AbstractBaseController
                             throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsSizesModel::batchInsert']));
                         }
                         
-                        $rawProductsBrandsModel = new ProductsBrandsModel(['scenario'=>ProductsBrandsModel::GET_FROM_ADD_PRODUCT, 'id_product'=>$productsModel->id, 'id_brand'=>$rawBrandsModel->id]);
+                        $rawProductsBrandsModel = new ProductsBrandsModel(['scenario'=>ProductsBrandsModel::GET_FROM_ADD_PRODUCT]);
+                        $rawProductsBrandsModel->id_product = $productsModel->id;
+                        $rawProductsBrandsModel->id_brand = $rawBrandsModel->id;
                         if (!$rawProductsBrandsModel->save()) {
                             throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsBrandsModel::save']));
                         }
                         
                         $transaction->commit();
+                        
+                        return $this->redirect(Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$productsModel->seocode]));
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         if (!empty($folderName)) {

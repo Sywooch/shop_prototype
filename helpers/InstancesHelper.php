@@ -41,6 +41,8 @@ class InstancesHelper
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array currencyList']));
             }
             
+            # Объект PurchasesModel для кнопки заказа
+            
             return self::$_instancesArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
