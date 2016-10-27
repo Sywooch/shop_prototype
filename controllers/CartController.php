@@ -38,7 +38,36 @@ class CartController extends AbstractBaseController
             return $this->redirect(Url::previous());
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
+            if (YII_ENV_DEV) {
+                $this->throwException($t, __METHOD__);
+            } else {
+                return $this->redirect(Url::previous());
+            }
+        }
+    }
+    
+    /**
+     * Обрабатывает запрос на удаление всех товаров из корзины
+     * @return string
+     */
+    public function actionClean()
+    {
+        try {
+            if (\Yii::$app->request->isPost) {
+                SessionHelper::remove([\Yii::$app->params['cartKey']]);
+                if (SessionHelper::has(\Yii::$app->params['cartKey']) === false) {
+                    \Yii::$app->params['cartArray'] = [];
+                }
+            }
+            
+            return $this->redirect(Url::previous());
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            if (YII_ENV_DEV) {
+                $this->throwException($t, __METHOD__);
+            } else {
+                return $this->redirect(Url::previous());
+            }
         }
     }
 }

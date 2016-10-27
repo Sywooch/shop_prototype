@@ -24,9 +24,9 @@ class CartWidget extends Widget
      */
     private $_totalCost = 0.00;
     /**
-     * @var string результирубщая HTML строка
+     * @var array массив результирующих строк
      */
-    private $_html = '';
+    private $_result = [];
     
     /**
      * Конструирует HTML строку с информацией о текущем статусе корзины заказов
@@ -37,16 +37,23 @@ class CartWidget extends Widget
         try {
             if (!empty(\Yii::$app->params['cartArray'])) {
                 foreach (\Yii::$app->params['cartArray'] as $purchase) {
-                    ++$this->_productsCount;
-                    $this->_totalCost += $purchase['price'];
+                    $this->_productsCount += $purchase['quantity'];
+                    $this->_totalCost += ($purchase['price'] * $purchase['quantity']);
                 }
                 
-                $correctedTotalCost = \Yii::$app->formatter->asDecimal($this->_totalCost * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
+                if (!empty(\Yii::$app->currency->exchange_rate) && !empty(\Yii::$app->currency->code)) {
+                    $this->_totalCost = \Yii::$app->formatter->asDecimal($this->_totalCost * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
+                }
                 
-                $this->_html = Html::tag('p', \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>$this->_productsCount, 'totalCost'=>$correctedTotalCost]));
+                $this->_result[] = Html::tag('p', \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>$this->_productsCount, 'totalCost'=>$this->_totalCost]) . ' ' . Html::a(\Yii::t('base', 'Shopping details'), ''));
+                
+                $form = Html::beginForm(Url::to(['/cart/clean']), 'POST', ['id'=>'clean-cart-form']);
+                $form .= Html::submitButton(\Yii::t('base', 'Clean'));
+                $form .= Html::endForm();
+                $this->_result[] = $form;
             }
             
-            return $this->_html;
+            return implode('', $this->_result);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

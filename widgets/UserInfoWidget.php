@@ -37,7 +37,7 @@ class UserInfoWidget extends Widget
             } else {
                 $user = \Yii::$app->user->identity->name ? \Yii::$app->user->identity->name : \Yii::$app->user->identity->emails->email;
                 
-                $form = Html::beginForm(['/user/logout'], 'POST');
+                $form = Html::beginForm(['/user/logout'], 'POST', ['id'=>'user-logout-form']);
                 $form .= Html::input('hidden', 'userId', \Yii::$app->user->id);
                 $form .= Html::submitButton(\Yii::t('base', 'Logout'));
                 $form .= Html::endForm();
