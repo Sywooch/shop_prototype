@@ -329,6 +329,9 @@ class ProductsListController extends AbstractBaseController
             [
                 'class'=>'app\filters\CurrencyFilter',
             ],
+            [
+                'class'=>'app\filters\CartFilter',
+            ],
         ];
     }
 }

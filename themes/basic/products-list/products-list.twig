@@ -3,8 +3,11 @@
 {{ use('app/widgets/PaginationWidget') }}
 {{ use('app/widgets/PriceWidget') }}
 {{ use('app/widgets/ThumbnailsWidget') }}
+{{ use('app/widgets/CartWidget') }}
 
 {% include('@theme/base/user-info.twig') %}
+
+{{ cart_widget_widget() }}
 
 {% include '@theme/base/search.twig' %}
 

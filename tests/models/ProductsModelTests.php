@@ -45,6 +45,7 @@ class ProductsModelTests extends TestCase
     public function testProperties()
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_TO_CART'));
         
         $model = new ProductsModel();
         
@@ -96,6 +97,13 @@ class ProductsModelTests extends TestCase
         $this->assertEquals($fixture['active'], $model->active);
         $this->assertEquals($fixture['total_products'], $model->total_products);
         $this->assertEquals($fixture['seocode'], $model->seocode);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_TO_CART]);
+        $model->attributes = [
+            'price'=>$fixture['price'], 
+        ];
+        
+        $this->assertEquals($fixture['price'], $model->price);
     }
     
     /**
@@ -131,6 +139,21 @@ class ProductsModelTests extends TestCase
             'id_category'=>$fixture['id_category'], 
             'id_subcategory'=>$fixture['id_subcategory'], 
             'total_products'=>$fixture['total_products'],
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_TO_CART]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('price', $model->errors));
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_TO_CART]);
+        $model->attributes = [
+            'price'=>$fixture['price'], 
         ];
         $model->validate();
         

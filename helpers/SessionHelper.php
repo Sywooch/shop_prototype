@@ -45,7 +45,7 @@ class SessionHelper
             }
             $session->close();
             
-            return $data ?? false;
+            return $data ?? null;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -86,7 +86,7 @@ class SessionHelper
             }
             $session->close();
             
-            return $data ?? false;
+            return $data ?? null;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

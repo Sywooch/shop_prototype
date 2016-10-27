@@ -22,7 +22,7 @@ class UserInfoWidget extends Widget
     private $_result = [];
     
     /**
-     * Конструирует HTML строку с информацией и текущем пользователе
+     * Конструирует HTML строку с информацией о текущем пользователе
      * @return string
      */
     public function run()

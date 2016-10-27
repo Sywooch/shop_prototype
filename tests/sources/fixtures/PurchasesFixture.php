@@ -17,11 +17,11 @@ class PurchasesFixture extends AbstractFixture
      * @var array массив имен классов-фикстур, представляющих данные, от которых зависит purchases
      */
     public $depends = [
-        'app\tests\sources\fixtures\UsersFixture',
-        'app\tests\sources\fixtures\ProductsFixture',
         'app\tests\sources\fixtures\ColorsFixture',
         'app\tests\sources\fixtures\SizesFixture',
         'app\tests\sources\fixtures\DeliveriesFixture',
         'app\tests\sources\fixtures\PaymentsFixture',
+        'app\tests\sources\fixtures\UsersFixture',
+        'app\tests\sources\fixtures\ProductsFixture',
     ];
 }

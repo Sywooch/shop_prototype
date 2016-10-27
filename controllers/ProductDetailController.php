@@ -7,7 +7,8 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\controllers\AbstractBaseController;
 use app\helpers\InstancesHelper;
-use app\models\ProductsModel;
+use app\models\{ProductsModel,
+    PurchasesModel};
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
@@ -67,6 +68,28 @@ class ProductDetailController extends AbstractBaseController
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'relatedList\']']));
             }
             
+            $renderArray['colorsColorList'] = ArrayHelper::getColumn($renderArray['productsModel']->colors, 'color');
+            if (!is_array($renderArray['colorsColorList'])) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'colorsColorList\']']));
+            }
+            
+            $renderArray['colorsMapList'] = ArrayHelper::map($renderArray['productsModel']->colors, 'id', 'color');
+            if (!is_array($renderArray['colorsMapList'])) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'colorsMapList\']']));
+            }
+            
+            $renderArray['sizesSizeList'] = ArrayHelper::getColumn($renderArray['productsModel']->sizes, 'size');
+            if (!is_array($renderArray['sizesSizeList'])) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'sizesSizeList\']']));
+            }
+            
+            $renderArray['sizesMapList'] = ArrayHelper::map($renderArray['productsModel']->sizes, 'id', 'size');
+            if (!is_array($renderArray['sizesMapList'])) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'sizesMapList\']']));
+            }
+            
+            $renderArray['purchasesModel'] = new PurchasesModel(['quantity'=>1]);
+            
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
             Url::remember();
@@ -83,6 +106,9 @@ class ProductDetailController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\CurrencyFilter',
+            ],
+            [
+                'class'=>'app\filters\CartFilter',
             ],
         ];
     }

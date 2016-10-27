@@ -3,7 +3,8 @@
         "yiisoft/yii2": "~2.0.9",
         "yiisoft/yii2-twig": "~2.0.4",
         "yiisoft/yii2-swiftmailer": "~2.0.5",
-        "yiisoft/yii2-sphinx": "^2.0"
+        "yiisoft/yii2-sphinx": "^2.0",
+        "yiisoft/yii2-redis": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "~5.5.0",

@@ -105,7 +105,7 @@ class ExtendActiveQuery extends ActiveQuery
      * представляя выбранные столбцы в формате пар ключ-значение, 
      * где одно из полей станет ключем, а второе значением
      * @params string $fieldKey поле, которое станет ключем
-     * @params string $fieldKey поле, которое станет значением
+     * @params string $fieldValue поле, которое станет значением
      * @return array
      */
     public function allMap(string $fieldKey, string $fieldValue): array

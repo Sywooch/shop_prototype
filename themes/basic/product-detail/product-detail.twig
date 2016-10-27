@@ -1,8 +1,11 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/PriceWidget') }}
+{{ use('app/widgets/CartWidget') }}
 
 {% include('@theme/base/user-info.twig') %}
+
+{{ cart_widget_widget() }}
 
 {% include '@theme/base/search.twig' %}
 
@@ -20,13 +23,13 @@
     </p>
     <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
     <ul>
-        {% for color in productsModel.single('colors', 'color') %}
+        {% for color in colorsColorList %}
             <li>{{ color }}</li>
         {% endfor %}
     </ul>
     <p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
     <ul>
-        {% for size in productsModel.single('sizes', 'size') %}
+        {% for size in sizesSizeList %}
             <li>{{ size }}</li>
         {% endfor %}
     </ul>
@@ -34,6 +37,8 @@
     <p>
         <strong>{{ yii.t('base', 'Code:') }}</strong> {{ productsModel.code }}
     </p>
+    
+    {% include('add-to-cart-form.twig') %}
 {% endif %}
 
 <p>
@@ -45,7 +50,7 @@
     <ul>
         {% for similarModel in similarList %}
             <li>
-                <a href="{{ similarModel.seocode }}">{{ similarModel.name }}</a><br/>
+                <a href="{{ url.to({0:'/product-detail/index', 'product':similarModel.seocode}) }}">{{ similarModel.name }}</a><br/>
                 {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':similarModel.price}) }}
             </li>
         {% endfor %}
@@ -57,7 +62,7 @@
     <ul>
         {% for relatedModel in relatedList %}
             <li>
-                <a href="{{ relatedModel.seocode }}">{{ relatedModel.name }}</a><br/>
+                <a href="{{ url.to({0:'/product-detail/index', 'product':relatedModel.seocode}) }}">{{ relatedModel.name }}</a><br/>
                 {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':relatedModel.price}) }}
             </li>
         {% endfor %}

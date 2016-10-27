@@ -56,7 +56,10 @@ $translate = [
     'To separate cents use the point or the comma! For example: 2123.87 corresponds to a price of 2123 dollars 87 cents'=>'Для отделения копеек используйте точку или запятую! Например: 2123.87 соответствует цене 2123 гривны 87 копеек',
     'Product with this seocode already exists!'=>'Товар с таким seocode уже существует!',
     'Similar products:'=>'Похожие товары:',
-    'Related products:'=>'Связанные товары:'
+    'Related products:'=>'Связанные товары:',
+    'Add to cart'=>'Добавить в корзину',
+    'Currency:'=>'Валюта:',
+    'Products in cart: {productsCount}, Total cost: {totalCost}'=>'Товаров в корзине: {productsCount}, Общая стоимость: {totalCost}'
 ];
 
 return $translate;

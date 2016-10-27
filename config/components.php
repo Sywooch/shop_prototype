@@ -11,7 +11,6 @@ $components = [
                 'class'=>'yii\twig\ViewRenderer',
                 'options'=>['auto_reload'=>true],
                 'globals'=>[
-                    'array'=>'yii\helpers\ArrayHelper',
                     'url'=>'yii\helpers\Url',
                     'yii'=>'\Yii',
                 ],
@@ -75,7 +74,7 @@ $components = [
     ],
     
     'session'=>[
-        'class'=>'yii\web\Session',
+        'class'=>'yii\redis\Session',
         'timeout'=>60*60*24*7
     ],
     
@@ -85,6 +84,14 @@ $components = [
         'username'=>'shopadmin',
         'password'=>'shopadmin',
         'charset'=>'utf8',
+    ],
+    
+    'redis'=>[
+        'class'=>'yii\redis\Connection',
+        'hostname'=>'localhost',
+        'port'=>6379,
+        'database'=>0,
+        'password'=>'01321d2b9eecce37ab71db2e20ad67f9'
     ],
     
     'user'=>[
