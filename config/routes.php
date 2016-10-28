@@ -38,6 +38,7 @@ $routes = [
     # Корзина
     'set-cart'=>'cart/set',
     'clean-cart'=>'cart/clean',
+    'cart'=>'cart/index',
 ];
 
 return $routes;

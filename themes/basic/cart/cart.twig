@@ -1,0 +1,37 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('app/widgets/PriceWidget') }}
+{{ use('app/widgets/ThumbnailsWidget') }}
+{{ use('yii/widgets/ActiveForm') }}
+
+{% include('@theme/base/user-info.twig') %}
+
+{% include '@theme/base/search.twig' %}
+
+{% include('@theme/base/menu.twig') %}
+
+{% include('@theme/base/breadcrumbs.twig') %}
+
+{% if purchasesList %}
+    {% for purchase in purchasesList %}
+        <p>
+            <a href="{{ url.to({0:'product-detail/index', 'product':purchase.product.seocode}) }}">{{ purchase.product.name }}</a>
+            <br>{{ purchase.product.short_description }}
+            <br>{{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':purchase.product.price}) }}
+            {% if purchase.product.images %}
+                <br>{{ thumbnails_widget_widget({'path':purchase.product.images}) }}
+            {% endif %}
+            
+            {% set form=active_form_begin({'action':'', 'method':'POST'}) %}
+                {{ form.field(purchase, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
+                {{ form.field(purchase, 'id_color').dropDownList(array.map(purchase.product.colors, 'id', 'color')) | raw }}
+                {{ form.field(purchase, 'id_size').dropDownList(array.map(purchase.product.sizes, 'id', 'size')) | raw }}
+                <input type="submit" value="{{ yii.t('base', 'Update') }}">
+            {{ active_form_end() }}
+        </p>
+    {% endfor %}
+{% endif %}
+
+<p>
+    {% include('@theme/base/currency-form.twig') %}
+</p>

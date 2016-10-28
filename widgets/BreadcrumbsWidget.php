@@ -77,8 +77,8 @@ class BreadcrumbsWidget extends Breadcrumbs
                 if ($productsModel instanceof ProductsModel) {
                     $this->_productSeocode = $productsModel->seocode;
                     $this->_productName = $productsModel->name;
-                    $this->_categorySeocode = $productsModel->categories->seocode;
-                    $this->_categoryName = $productsModel->categories->name;
+                    $this->_categorySeocode = $productsModel->category->seocode;
+                    $this->_categoryName = $productsModel->category->name;
                     $this->_subcategorySeocode = $productsModel->subcategory->seocode;
                     $this->_subcategoryName = $productsModel->subcategory->name;
                 }

@@ -3,12 +3,12 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\models\FiltersModel;
 use app\helpers\{HashHelper,
     SessionHelper,
-    StringHelper};
+    StringHelper,
+    UrlHelper};
 
 /**
  * Обрабатывает запросы, связанные с применением фильтров
@@ -25,8 +25,8 @@ class FiltersController extends AbstractBaseController
             \Yii::configure(\Yii::$app->filters, ['scenario'=>FiltersModel::GET_FROM_FORM]);
             
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
-                if (\Yii::$app->filters->validate()) {
-                    $key = StringHelper::cutPage(Url::previous());
+                if (\Yii::$app->filters->validate('shop')) {
+                    $key = StringHelper::cutPage(UrlHelper::previous('shop'));
                     if (!is_string($key) || empty($key)) {
                         throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
                     }
@@ -34,13 +34,13 @@ class FiltersController extends AbstractBaseController
                 }
             }
             
-            return $this->redirect($key ?? Url::previous());
+            return $this->redirect($key ?? UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             if (YII_ENV_DEV) {
                 $this->throwException($t, __METHOD__);
             } else {
-                return $this->redirect($key ?? Url::previous());
+                return $this->redirect($key ?? UrlHelper::previous('shop'));
             }
         }
     }
@@ -53,7 +53,7 @@ class FiltersController extends AbstractBaseController
     {
         try {
             if (\Yii::$app->request->isPost) {
-                $key = StringHelper::cutPage(Url::previous());
+                $key = StringHelper::cutPage(UrlHelper::previous('shop'));
                 if (!is_string($key) || empty($key)) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
                 }
@@ -63,13 +63,13 @@ class FiltersController extends AbstractBaseController
                 }
             }
             
-            return $this->redirect($key ?? Url::previous());
+            return $this->redirect($key ?? UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             if (YII_ENV_DEV) {
                 $this->throwException($t, __METHOD__);
             } else {
-                return $this->redirect($key ?? Url::previous());
+                return $this->redirect($key ?? UrlHelper::previous('shop'));
             }
         }
     }

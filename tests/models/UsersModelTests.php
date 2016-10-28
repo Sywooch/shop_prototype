@@ -120,16 +120,15 @@ class UsersModelTests extends TestCase
     }
     
     /**
-     * Тестирует метод UsersModel::getEmails
+     * Тестирует метод UsersModel::getEmail
      */
-    public function testGetEmails()
+    public function testGetEmail()
     {
         $fixture = self::$_dbClass->users['user_1'];
         
         $model = UsersModel::find()->where(['users.id'=>$fixture['id']])->one();
         
-        $this->assertTrue(is_object($model->emails));
-        $this->assertTrue($model->emails instanceof EmailsModel);
+        $this->assertTrue($model->email instanceof EmailsModel);
     }
     
     /**

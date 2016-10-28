@@ -161,16 +161,15 @@ class ProductsModelTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductsModel::getCategories
+     * Тестирует метод ProductsModel::getCategory
      */
-    public function testGetCategories()
+    public function testGetCategory()
     {
         $fixture = self::$_dbClass->products['product_2'];
         
         $model = ProductsModel::find()->where(['products.id'=>$fixture['id']])->one();
         
-        $this->assertTrue(is_object($model->categories));
-        $this->assertTrue($model->categories instanceof CategoriesModel);
+        $this->assertTrue($model->category instanceof CategoriesModel);
     }
     
     /**

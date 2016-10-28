@@ -13,6 +13,7 @@ $components = [
                 'globals'=>[
                     'url'=>'yii\helpers\Url',
                     'yii'=>'\Yii',
+                    'array'=>'yii\helpers\ArrayHelper'
                 ],
             ]
         ],

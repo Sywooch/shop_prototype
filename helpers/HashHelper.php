@@ -47,7 +47,7 @@ class HashHelper
                 throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'SessionHelper::writeFlash']));
             }
             
-            return self::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, $salt]);
+            return self::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->user->id, $salt]);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

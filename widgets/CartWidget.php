@@ -45,7 +45,7 @@ class CartWidget extends Widget
                     $this->_totalCost = \Yii::$app->formatter->asDecimal($this->_totalCost * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
                 }
                 
-                $this->_result[] = Html::tag('p', \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>$this->_productsCount, 'totalCost'=>$this->_totalCost]) . ' ' . Html::a(\Yii::t('base', 'Shopping details'), ''));
+                $this->_result[] = Html::tag('p', \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>$this->_productsCount, 'totalCost'=>$this->_totalCost]) . ' ' . Html::a(\Yii::t('base', 'To cart'), Url::to(['/cart/index'])));
                 
                 $form = Html::beginForm(Url::to(['/cart/clean']), 'POST', ['id'=>'clean-cart-form']);
                 $form .= Html::submitButton(\Yii::t('base', 'Clean'));

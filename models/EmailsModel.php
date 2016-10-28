@@ -57,10 +57,10 @@ class EmailsModel extends AbstractBaseModel
      * Получает объект UsersModel, с которым связан текущий объект EmailsModel
      * @return ActiveQueryInterface the relational query object
      */
-    public function getUsers()
+    public function getUser()
     {
         try {
-            return $this->hasOne(UsersModel::className(), ['id_email'=>'id'])->inverseOf('emails');
+            return $this->hasOne(UsersModel::className(), ['id_email'=>'id'])->inverseOf('email');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -66,7 +66,7 @@ class ProductsModel extends AbstractBaseModel
      * Получает объект CategoriesModel, с которой связан текущий объект ProductsModel
      * @return ActiveQueryInterface the relational query object
      */
-    public function getCategories()
+    public function getCategory()
     {
         try {
             return $this->hasOne(CategoriesModel::className(), ['id'=>'id_category'])->inverseOf('products');

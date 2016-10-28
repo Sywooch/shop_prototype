@@ -8,13 +8,46 @@ use yii\helpers\{ArrayHelper,
 use app\controllers\AbstractBaseController;
 use app\models\{ProductsModel,
     PurchasesModel};
-use app\helpers\SessionHelper;
+use app\helpers\{InstancesHelper,
+    SessionHelper,
+    UrlHelper};
 
 /**
  * Обрабатывает запросы, связанные с данными корзины
  */
 class CartController extends AbstractBaseController
 {
+    public function actionIndex()
+    {
+        try {
+            if (empty(\Yii::$app->params['cartArray'])) {
+                return $this->redirect(UrlHelper::previous('shop'));
+            }
+            
+            $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
+            
+            if (!empty(\Yii::$app->params['cartArray'])) {
+                foreach (\Yii::$app->params['cartArray'] as $purchase) {
+                    $renderArray['purchasesList'][] = \Yii::configure((new PurchasesModel()), array_filter($purchase, function($key) {
+                        return array_key_exists($key, (new PurchasesModel())->attributes);
+                    }, ARRAY_FILTER_USE_KEY));
+                }
+            }
+            
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/cart/index'], 'label'=>\Yii::t('base', 'Cart')];
+            
+            Url::remember(Url::current(), 'shop');
+            
+            return $this->render('cart.twig', $renderArray);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     /**
      * Обрабатывает запрос на добавление товара в корзину
      * @return string
@@ -35,13 +68,13 @@ class CartController extends AbstractBaseController
                 }
             }
             
-            return $this->redirect(Url::previous());
+            return $this->redirect(UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             if (YII_ENV_DEV) {
                 $this->throwException($t, __METHOD__);
             } else {
-                return $this->redirect(Url::previous());
+                return $this->redirect(UrlHelper::previous('shop'));
             }
         }
     }
@@ -60,14 +93,28 @@ class CartController extends AbstractBaseController
                 }
             }
             
-            return $this->redirect(Url::previous());
+            return $this->redirect(UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             if (YII_ENV_DEV) {
                 $this->throwException($t, __METHOD__);
             } else {
-                return $this->redirect(Url::previous());
+                return $this->redirect(UrlHelper::previous('shop'));
             }
         }
+    }
+    
+    public function behaviors()
+    {
+        return [
+            [
+                'class'=>'app\filters\CurrencyFilter',
+                'only'=>['index']
+            ],
+            [
+                'class'=>'app\filters\CartFilter',
+                'only'=>['index']
+            ],
+        ];
     }
 }

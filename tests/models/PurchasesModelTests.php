@@ -4,7 +4,8 @@ namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\models\PurchasesModel;
+use app\models\{ProductsModel,
+    PurchasesModel};
 
 /**
  * Тестирует класс app\models\PurchasesModel
@@ -159,6 +160,18 @@ class PurchasesModelTests extends TestCase
         $this->assertTrue(array_key_exists($fixture2['id'], $purchasesArray));
         $this->assertTrue(in_array($fixture['id_user'], $purchasesArray));
         $this->assertTrue(in_array($fixture2['id_user'], $purchasesArray));
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getProduct
+     */
+    public function testGetProduct()
+    {
+        $fixture = self::$_dbClass->purchases['purchase_2'];
+        
+        $model = PurchasesModel::find()->where(['purchases.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->product instanceof ProductsModel);
     }
     
     public static function tearDownAfterClass()

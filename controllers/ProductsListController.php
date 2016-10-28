@@ -9,7 +9,8 @@ use yii\helpers\{ArrayHelper,
 use yii\sphinx\{MatchExpression,
     Query};
 use yii\data\Pagination;
-use app\helpers\InstancesHelper;
+use app\helpers\{InstancesHelper,
+    UrlHelper};
 use app\models\{BrandsModel,
     ColorsModel,
     ProductsModel,
@@ -37,7 +38,7 @@ class ProductsListController extends AbstractBaseController
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
-            Url::remember();
+            Url::remember(Url::current(), 'shop');
             
             return $this->render('products-list.twig', $renderArray);
         } catch (\Throwable $t) {
@@ -54,7 +55,7 @@ class ProductsListController extends AbstractBaseController
     {
         try {
             if (empty(\Yii::$app->request->get(\Yii::$app->params['searchKey']))) {
-                return $this->redirect(Url::previous());
+                return $this->redirect(UrlHelper::previous('shop'));
             }
             
             $sphinxQuery = new Query();
@@ -64,7 +65,7 @@ class ProductsListController extends AbstractBaseController
             $sphinxArray = $sphinxQuery->all();
             if (!is_array($sphinxArray)) {
                 $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sphinxArray']), __METHOD__);
-                return $this->redirect(Url::previous());
+                return $this->redirect(UrlHelper::previous('shop'));
             }
             
             $renderArray = $this->getInstances();
@@ -76,7 +77,7 @@ class ProductsListController extends AbstractBaseController
             
             \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
             
-            Url::remember();
+            Url::remember(Url::current(), 'shop');
             
             return $this->render('products-list.twig', $renderArray);
         } catch (\Throwable $t) {

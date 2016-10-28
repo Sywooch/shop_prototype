@@ -57,10 +57,10 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
      * Получает объект EmailsModel, с которой связан текущий объект UsersModel
      * @return ActiveQueryInterface the relational query object
      */
-    public function getEmails()
+    public function getEmail()
     {
         try {
-            return $this->hasOne(EmailsModel::className(), ['id'=>'id_email'])->inverseOf('users');
+            return $this->hasOne(EmailsModel::className(), ['id'=>'id_email'])->inverseOf('user');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

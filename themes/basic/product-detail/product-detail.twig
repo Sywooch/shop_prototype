@@ -23,13 +23,13 @@
     </p>
     <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
     <ul>
-        {% for color in colorsColorList %}
+        {% for color in array.getColumn(productsModel.colors, 'color') %}
             <li>{{ color }}</li>
         {% endfor %}
     </ul>
     <p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
     <ul>
-        {% for size in sizesSizeList %}
+        {% for size in array.getColumn(productsModel.sizes, 'size') %}
             <li>{{ size }}</li>
         {% endfor %}
     </ul>

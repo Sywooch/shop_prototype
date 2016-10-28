@@ -44,16 +44,15 @@ class SubcategoryModelTests extends TestCase
     }
     
     /**
-     * Тестирует метод SubcategoryModel::getCategories
+     * Тестирует метод SubcategoryModel::getCategory
      */
-    public function testGetCategories()
+    public function testGetCategory()
     {
         $fixture = self::$_dbClass->subcategory['subcategory_1'];
         
         $model = SubcategoryModel::find()->where(['subcategory.id'=>$fixture['id']])->one();
         
-        $this->assertTrue(is_object($model->categories));
-        $this->assertTrue($model->categories instanceof CategoriesModel);
+        $this->assertTrue($model->category instanceof CategoriesModel);
     }
     
     /**

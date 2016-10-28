@@ -3,10 +3,10 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\models\CurrencyModel;
-use app\helpers\SessionHelper;
+use app\helpers\{SessionHelper,
+    UrlHelper};
 
 /**
  * Обрабатывает запросы на изменение текущей валюты
@@ -36,13 +36,13 @@ class CurrencyController extends AbstractBaseController
                 }
             }
             
-            return $this->redirect(Url::previous());
+            return $this->redirect(UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             if (YII_ENV_DEV) {
                 $this->throwException($t, __METHOD__);
             } else {
-                return $this->redirect(Url::previous());
+                return $this->redirect(UrlHelper::previous('shop'));
             }
         }
     }

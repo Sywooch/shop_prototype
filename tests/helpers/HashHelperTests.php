@@ -55,7 +55,7 @@ class HashHelperTests extends TestCase
         
         $this->assertEquals(40, strlen($hash));
         
-        $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->users->id, \Yii::$app->session->getFlash('restore.' . $fixture['email'])]);
+        $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->user->id, \Yii::$app->session->getFlash('restore.' . $fixture['email'])]);
         
         $this->assertEquals($expectedHash, $hash);
     }
