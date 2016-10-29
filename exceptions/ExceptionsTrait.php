@@ -16,7 +16,7 @@ trait ExceptionsTrait
      */
     public function throwException(\Throwable $t, $method)
     {
-        throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>$method]) . $t->getMessage());
+        throw new ErrorException(\Yii::t('base/errors', 'Method error {method}!' . PHP_EOL, ['method'=>$method]) . $t->getMessage());
     }
     
     /**
@@ -27,7 +27,7 @@ trait ExceptionsTrait
      */
     public static function throwStaticException(\Throwable $t, $method)
     {
-        throw new ErrorException(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>$method]) . $t->getMessage());
+        throw new ErrorException(\Yii::t('base/errors', 'Method error {method}!' . PHP_EOL, ['method'=>$method]) . $t->getMessage());
     }
     
     /**
@@ -37,7 +37,7 @@ trait ExceptionsTrait
      */
     public function writeErrorInLogs(\Throwable $t, $method)
     {
-        \Yii::error(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>$method]) . $t->getMessage(), $method);
+        \Yii::error(\Yii::t('base/errors', 'Method error {method}!' . PHP_EOL, ['method'=>$method]) . $t->getMessage(), $method);
     }
     
     /**
@@ -47,6 +47,6 @@ trait ExceptionsTrait
      */
     public function writeMessageInLogs(string $message, $method)
     {
-        \Yii::error(\Yii::t('base/errors', "Method error {method}!\n", ['method'=>$method]) . $message, $method);
+        \Yii::error(\Yii::t('base/errors', 'Method error {method}!' . PHP_EOL, ['method'=>$method]) . $message, $method);
     }
 }

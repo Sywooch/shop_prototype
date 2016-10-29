@@ -16,8 +16,7 @@ class ThumbnailsWidgetTests extends TestCase
     {
         $result = ThumbnailsWidget::widget(['path'=>self::$_path]);
         
-        $basename = basename($result);
-        
-        $this->assertRegExp('/thumbn_.+\.(jpg|jpeg|png|gif)/', $basename);
+        $this->assertRegExp('/^<img src=".+">$/', $result);
+        $this->assertRegExp('/thumbn_.+\.(jpg|jpeg|png|gif)/', $result);
     }
 }

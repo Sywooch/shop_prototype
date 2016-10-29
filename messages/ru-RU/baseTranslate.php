@@ -61,7 +61,9 @@ $translate = [
     'Currency:'=>'Валюта:',
     'Products in cart: {productsCount}, Total cost: {totalCost}'=>'Товаров в корзине: {productsCount}, Общая стоимость: {totalCost}',
     'To cart'=>'В корзину',
-    'Cart'=>'Корзина'
+    'Cart'=>'Корзина',
+    'Update'=>'Обновить',
+    'Delete'=>'Удалить'
 ];
 
 return $translate;

@@ -21,7 +21,7 @@ class CartWidgetTests extends TestCase
         
         $text = \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>\Yii::$app->params['cartArray'][0]['quantity'] , 'totalCost'=>(\Yii::$app->params['cartArray'][0]['price'] * \Yii::$app->params['cartArray'][0]['quantity'])]);
         
-        $expectedString = '<p>' . $text . ' <a href="../vendor/phpunit/phpunit/cart">' . \Yii::t('base', 'To cart') . '</a></p><form id="clean-cart-form" action="../vendor/phpunit/phpunit/clean-cart" method="POST"' . ">\n" . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><button type="submit">' . \Yii::t('base', 'Clean') . '</button></form>';
+        $expectedString = '<p>' . $text . ' <a href="../vendor/phpunit/phpunit/cart">' . \Yii::t('base', 'To cart') . '</a></p><form id="clean-cart-form" action="../vendor/phpunit/phpunit/clean-cart" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><button type="submit">' . \Yii::t('base', 'Clean') . '</button></form>';
         
         $this->assertEquals($expectedString, $result);
     }

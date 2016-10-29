@@ -22,8 +22,8 @@ class ProductsSeocodeController extends Controller
     {
         try {
             $productsArray = ProductsModel::find()->all();
-            $this->stdout(\Yii::t('base/console', "Fount {count} objects...\n", ['count'=>count($productsArray)]));
-            $this->stdout(\Yii::t('base/console', "Begin update...\n"));
+            $this->stdout(\Yii::t('base/console', 'Fount {count} objects...' . PHP_EOL, ['count'=>count($productsArray)]));
+            $this->stdout(\Yii::t('base/console', 'Begin update...' . PHP_EOL));
             foreach ($productsArray as $product) {
                 $product->scenario = ProductsModel::GET_FROM_DB;
                 $seocode = TransliterationHelper::getTransliterationSeparate($product->name);
@@ -31,14 +31,14 @@ class ProductsSeocodeController extends Controller
                     $seocode .= '-' . $product->id;
                 }
                 $product->seocode = $seocode;
-                $this->stdout('id: ' . $product->id . ', seocode: ' . $seocode . "\n");
+                $this->stdout('id: ' . $product->id . ', seocode: ' . $seocode . '' . PHP_EOL);
                 $product->update();
             }
-            $this->stdout(\Yii::t('base/console', "Update successful!\n"));
+            $this->stdout(\Yii::t('base/console', 'Update successful!' . PHP_EOL));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->stderr(\Y::t('base/console', "Update error!\n"), Console::FG_RED);
+            $this->stderr(\Y::t('base/console', 'Update error!' . PHP_EOL), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }
@@ -49,12 +49,12 @@ class ProductsSeocodeController extends Controller
     public function actionUnset()
     {
         try {
-            $this->stdout(\Yii::t('base/console', "Begin delete...\n"));
+            $this->stdout(\Yii::t('base/console', 'Begin delete...' . PHP_EOL));
             \Yii::$app->db->createCommand()->update('products', ['seocode'=>''])->execute();
-            $this->stdout(\Yii::t('base/console', "Delete successful!\n"));
+            $this->stdout(\Yii::t('base/console', 'Delete successful!' . PHP_EOL));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->stderr(\Y::t('base/console', "Delete error!\n"), Console::FG_RED);
+            $this->stderr(\Y::t('base/console', 'Delete error!' . PHP_EOL), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }

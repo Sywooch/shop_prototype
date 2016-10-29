@@ -22,7 +22,7 @@ class RbacController extends Controller
         try {
             $auth = \Yii::$app->authManager;
             
-            $this->stdout(\Yii::t('base/console', "Create RBAC authorization data...\n"));
+            $this->stdout(\Yii::t('base/console', 'Create RBAC authorization data...' . PHP_EOL));
             
             # Права на просмотр и редактирование данных зарегистрированного пользователя
             $userDataEditingRule = new UserDataEditingRule();
@@ -37,11 +37,11 @@ class RbacController extends Controller
             $auth->add($user);
             $auth->addChild($user, $userDataEditingPermission);
             
-            $this->stdout(\Yii::t('base/console', "Create an authorization RBAC successfully completed!\n"));
+            $this->stdout(\Yii::t('base/console', 'Create an authorization RBAC successfully completed!' . PHP_EOL));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->stderr(\Y::t('base/console', "Error creating RBAC!\n"), Console::FG_RED);
+            $this->stderr(\Y::t('base/console', 'Error creating RBAC!' . PHP_EOL), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }
@@ -52,7 +52,7 @@ class RbacController extends Controller
     public function actionUnset()
     {
         try {
-            $this->stdout(\Yii::t('base/console', "Removing RBAC authorization data...\n"));
+            $this->stdout(\Yii::t('base/console', 'Removing RBAC authorization data...' . PHP_EOL));
             
             $filePaths = glob('/var/www/html/shop/rbac/*.php');
             if (!empty($filePaths)) {
@@ -61,11 +61,11 @@ class RbacController extends Controller
                 }
             }
             
-            $this->stdout(\Yii::t('base/console', "Removing an authorization RBAC successfully completed!\n"));
+            $this->stdout(\Yii::t('base/console', 'Removing an authorization RBAC successfully completed!' . PHP_EOL));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->stderr(\Y::t('base/console', "Error removing RBAC!\n"), Console::FG_RED);
+            $this->stderr(\Y::t('base/console', 'Error removing RBAC!' . PHP_EOL), Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }

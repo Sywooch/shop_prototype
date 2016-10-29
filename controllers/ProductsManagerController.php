@@ -106,11 +106,11 @@ class ProductsManagerController extends AbstractBaseController
             
             $categoriesQuery = CategoriesModel::find();
             $categoriesQuery->extendSelect(['id', 'name']);
-            $categoriesQuery->orderBy(['[[categories.name]]'=>SORT_ASC]);
             $categoriesArray = $categoriesQuery->allMap('id', 'name');
             if (!is_array($categoriesArray) || empty($categoriesArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $categoriesArray']));
             }
+            asort($categoriesArray, SORT_STRING);
             $renderArray['categoriesList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $categoriesArray);
             
             $renderArray['subcategoryList'] = [''=>\Yii::$app->params['formFiller']];
@@ -119,39 +119,39 @@ class ProductsManagerController extends AbstractBaseController
                 $subcategoryQuery = SubcategoryModel::find();
                 $subcategoryQuery->extendSelect(['id', 'name']);
                 $subcategoryQuery->where(['[[subcategory.id_category]]'=>$rawProductsModel->id_category]);
-                $subcategoryQuery->orderBy(['[[subcategory.name]]'=>SORT_ASC]);
                 $subcategoryArray = $subcategoryQuery->allMap('id', 'name');
                 if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $subcategoryArray']));
                 }
+                asort($subcategoryArray, SORT_STRING);
                 $renderArray['subcategoryList'] = ArrayHelper::merge($renderArray['subcategoryList'], $subcategoryArray);
             }
             
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
-            $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
             $colorsArray = $colorsQuery->allMap('id', 'color');
             if (!is_array($colorsArray) || empty($colorsArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $colorsArray']));
             }
+            asort($colorsArray, SORT_STRING);
             $renderArray['colorsList'] = $colorsArray;
             
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
-            $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
             $sizesArray = $sizesQuery->allMap('id', 'size');
             if (!is_array($sizesArray) || empty($sizesArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sizesArray']));
             }
+            asort($sizesArray, SORT_STRING);
             $renderArray['sizesList'] = $sizesArray;
             
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
-            $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
             $brandsArray = $brandsQuery->allMap('id', 'brand');
             if (!is_array($brandsArray) || empty($brandsArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $brandsArray']));
             }
+            asort($brandsArray, SORT_STRING);
             $renderArray['brandsList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $brandsArray);
             
             $renderArray['productsModel'] = $rawProductsModel;

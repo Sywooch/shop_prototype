@@ -62,12 +62,12 @@ class ProductDetailController extends AbstractBaseController
             $relatedQuery->extendSelect(['name', 'price', 'images', 'seocode']);
             $relatedQuery->innerJoin('{{related_products}}', '[[products.id]]=[[related_products.id_related_product]]');
             $relatedQuery->where(['[[related_products.id_product]]'=>$renderArray['productsModel']->id]);
-            $relatedQuery->orderBy(['[[products.date]]'=>SORT_DESC]);
             $relatedQuery->asArray();
             $renderArray['relatedList'] = $relatedQuery->all();
             if (!is_array($renderArray['relatedList'])) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'relatedList\']']));
             }
+            ArrayHelper::multisort($renderArray['relatedList'], 'date', SORT_DESC);
             
             $renderArray['purchasesModel'] = new PurchasesModel(['quantity'=>1]);
             

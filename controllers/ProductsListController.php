@@ -186,7 +186,6 @@ class ProductsListController extends AbstractBaseController
                 }
             }
             
-            $colorsQuery->orderBy(['[[colors.color]]'=>SORT_ASC]);
             $renderArray['colorsList'] = $colorsQuery->allMap('id', 'color');
             if (!is_array($renderArray['colorsList']) || empty($renderArray['colorsList'])) {
                 if (YII_ENV_DEV) {
@@ -196,6 +195,8 @@ class ProductsListController extends AbstractBaseController
                     $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'colorsList\']']), __METHOD__);
                 }
             }
+            asort($renderArray['colorsList'], SORT_STRING);
+            
             
             return $renderArray;
         } catch (\Throwable $t) {
@@ -235,7 +236,6 @@ class ProductsListController extends AbstractBaseController
                 }
             }
             
-            $sizesQuery->orderBy(['[[sizes.size]]'=>SORT_ASC]);
             $renderArray['sizesList'] = $sizesQuery->allMap('id', 'size');
             if (!is_array($renderArray['sizesList']) || empty($renderArray['sizesList'])) {
                 if (YII_ENV_DEV) {
@@ -245,6 +245,7 @@ class ProductsListController extends AbstractBaseController
                     $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'sizesList\']']), __METHOD__);
                 }
             }
+            asort($renderArray['sizesList'], SORT_NUMERIC);
             
             return $renderArray;
         } catch (\Throwable $t) {
@@ -284,7 +285,6 @@ class ProductsListController extends AbstractBaseController
                 }
             }
             
-            $brandsQuery->orderBy(['[[brands.brand]]'=>SORT_ASC]);
             $renderArray['brandsList'] = $brandsQuery->allMap('id', 'brand');
             if (!is_array($renderArray['brandsList']) || empty($renderArray['brandsList'])) {
                 if (YII_ENV_DEV) {
@@ -294,6 +294,7 @@ class ProductsListController extends AbstractBaseController
                     $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'brandsList\']']), __METHOD__);
                 }
             }
+            asort($renderArray['brandsList'], SORT_STRING);
             
             return $renderArray;
         } catch (\Throwable $t) {

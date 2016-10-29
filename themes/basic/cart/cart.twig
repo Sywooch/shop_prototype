@@ -15,18 +15,25 @@
 {% if purchasesList %}
     {% for purchase in purchasesList %}
         <p>
-            <a href="{{ url.to({0:'product-detail/index', 'product':purchase.product.seocode}) }}">{{ purchase.product.name }}</a>
+            <a href="{{ url.to({0:'/product-detail/index', 'product':purchase.product.seocode}) }}">{{ purchase.product.name }}</a>
             <br>{{ purchase.product.short_description }}
             <br>{{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':purchase.product.price}) }}
             {% if purchase.product.images %}
                 <br>{{ thumbnails_widget_widget({'path':purchase.product.images}) }}
             {% endif %}
             
-            {% set form=active_form_begin({'action':'', 'method':'POST'}) %}
+            {% set form=active_form_begin({'id':'cart-update-form-%d' | format(purchase.id_product), 'action':url.to({0:'/cart/update'}), 'method':'POST'}) %}
                 {{ form.field(purchase, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
                 {{ form.field(purchase, 'id_color').dropDownList(array.map(purchase.product.colors, 'id', 'color')) | raw }}
                 {{ form.field(purchase, 'id_size').dropDownList(array.map(purchase.product.sizes, 'id', 'size')) | raw }}
+                {{ form.field(purchase, 'id_product').hiddenInput({'value':purchase.id_product}).label(false) | raw }}
+                {{ form.field(purchase.product, 'price').hiddenInput({'value':purchase.product.price}).label(false) | raw }}
                 <input type="submit" value="{{ yii.t('base', 'Update') }}">
+            {{ active_form_end() }}
+            
+            {% set form=active_form_begin({'id':'cart-delete-form-%d' | format(purchase.id_product), 'action':url.to({0:'/cart/delete'}), 'method':'POST'}) %}
+                {{ form.field(purchase, 'id_product').hiddenInput({'value':purchase.id_product}).label(false) | raw }}
+                <input type="submit" value="{{ yii.t('base', 'Delete') }}">
             {{ active_form_end() }}
         </p>
     {% endfor %}

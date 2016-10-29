@@ -15,6 +15,10 @@ class PurchasesModel extends AbstractBaseModel
      * Сценарий сохранения данных из формы добавления товара в корзину
     */
     const GET_FROM_ADD_TO_CART = 'getFromAddToCart';
+    /**
+     * Сценарий удаления 1 товара из корзины
+    */
+    const GET_FROM_DELETE_FROM_CART = 'getFromDeleteFromCart';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -33,6 +37,7 @@ class PurchasesModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_ADD_TO_CART=>['id_product', 'quantity', 'id_color', 'id_size'],
+            self::GET_FROM_DELETE_FROM_CART=>['id_product'],
         ];
     }
     
@@ -40,6 +45,7 @@ class PurchasesModel extends AbstractBaseModel
     {
         return [
             [['id_product', 'quantity', 'id_color', 'id_size'], 'required', 'on'=>self::GET_FROM_ADD_TO_CART],
+            [['id_product'], 'required', 'on'=>self::GET_FROM_DELETE_FROM_CART],
         ];
     }
     

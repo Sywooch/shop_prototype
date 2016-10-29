@@ -62,27 +62,27 @@ class TestsController extends Controller
     public function actionSet()
     {
         try {
-            $this->stdout(\Yii::t('base/console', "Create database {database}...\n", ['database'=>$this->testDbName]));
+            $this->stdout(\Yii::t('base/console', 'Create database {database}...' . PHP_EOL, ['database'=>$this->testDbName]));
             
             $cmd = sprintf("mysql --login-path=%s -e 'CREATE DATABASE IF NOT EXISTS %s'", $this->loginPath, $this->testDbName);
             exec($cmd, $this->_outputArray, $this->_returnCode);
             if ($this->_returnCode != 0) {
-                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>"CREATE DATABASE $this->testDbName"]));
+                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>'CREATE DATABASE $this->testDbName']));
             }
             
-            $this->stdout(\Yii::t('base/console', "Apply migrations...\n", ['database'=>$this->testDbName]));
+            $this->stdout(\Yii::t('base/console', 'Apply migrations...' . PHP_EOL, ['database'=>$this->testDbName]));
             
             $cmd = sprintf("/var/www/html/shop/yii migrate --db=%s --interactive=0", $this->db);
             exec($cmd, $this->_outputArray, $this->_returnCode);
             if ($this->_returnCode != 0) {
-                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>"Apply migrations"]));
+                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>'Apply migrations']));
             }
             
-            $this->stdout(\Yii::t('base/console', "Database {database} created successfully, migrations applied!\n", ['database'=>$this->testDbName]));
+            $this->stdout(\Yii::t('base/console', 'Database {database} created successfully, migrations applied!' . PHP_EOL, ['database'=>$this->testDbName]));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->stderr(\Yii::t('base/console', "Error creating database {database}!\n", ['database'=>$this->testDbName]) . $t->getMessage() . "\n", Console::FG_RED);
+            $this->stderr(\Yii::t('base/console', 'Error creating database {database}!' . PHP_EOL, ['database'=>$this->testDbName]) . $t->getMessage() . '' . PHP_EOL, Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }
@@ -93,27 +93,27 @@ class TestsController extends Controller
     public function actionUnset()
     {
         try {
-            $this->stdout(\Yii::t('base/console', "Erase migrations...\n", ['database'=>$this->testDbName]));
+            $this->stdout(\Yii::t('base/console', 'Erase migrations...' . PHP_EOL, ['database'=>$this->testDbName]));
             
             $cmd = sprintf("/var/www/html/shop/yii migrate/down --db=%s --interactive=0", $this->db);
             exec($cmd, $this->_outputArray, $this->_returnCode);
             if ($this->_returnCode != 0) {
-                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>"Erase migrations"]));
+                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>'Erase migrations']));
             }
             
-            $this->stdout(\Yii::t('base/console', "Delete database {database}...\n", ['database'=>$this->testDbName]));
+            $this->stdout(\Yii::t('base/console', 'Delete database {database}...' . PHP_EOL, ['database'=>$this->testDbName]));
             
             $cmd = sprintf("mysql --login-path=%s -e 'DROP DATABASE %s'", $this->loginPath, $this->testDbName);
             exec($cmd, $this->_outputArray, $this->_returnCode);
             if ($this->_returnCode != 0) {
-                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>"DROP DATABASE $this->testDbName"]));
+                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>'DROP DATABASE $this->testDbName']));
             }
             
-            $this->stdout(\Yii::t('base/console', "Migrations erased, database {database} deleted successfully!\n", ['database'=>$this->testDbName]));
+            $this->stdout(\Yii::t('base/console', 'Migrations erased, database {database} deleted successfully!' . PHP_EOL, ['database'=>$this->testDbName]));
             return parent::EXIT_CODE_NORMAL;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->stderr(\Yii::t('base/console', "Error delete database {database}!\n", ['database'=>$this->testDbName]) . $t->getMessage() . "\n", Console::FG_RED);
+            $this->stderr(\Yii::t('base/console', 'Error delete database {database}!' . PHP_EOL, ['database'=>$this->testDbName]) . $t->getMessage() . '' . PHP_EOL, Console::FG_RED);
             return parent::EXIT_CODE_ERROR;
         }
     }

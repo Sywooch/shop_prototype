@@ -7,10 +7,10 @@ use yii\base\{ErrorExceptions,
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Формирует HTML строку с тегом img, 
- * содержащим ссылку на миниатюру товара
+ * Формирует HTML строку с тегами img, 
+ * содержащими ссылки на изображения товара
  */
-class ThumbnailsWidget extends Widget
+class ImagesWidget extends Widget
 {
     use ExceptionsTrait;
     
@@ -27,10 +27,15 @@ class ThumbnailsWidget extends Widget
     {
         try {
             if (!empty($this->path)) {
-                $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+                $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
                 
                 if (!empty($imagesArray)) {
-                    $this->_result = '<img src="' . \Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]) . '">';
+                    foreach ($imagesArray as $image) {
+                        $position = strpos(basename($image), 'thumbn_');
+                        if ($position === false || $position > 0) {
+                            $this->_result .= '<br><img src="' . \Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($image) . '">';
+                        }
+                    }
                 }
             }
             

@@ -33,6 +33,7 @@ class PurchasesModelTests extends TestCase
     public function testProperties()
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_TO_CART'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DELETE_FROM_CART'));
         
         $model = new PurchasesModel();
         
@@ -70,6 +71,13 @@ class PurchasesModelTests extends TestCase
         $this->assertEquals($fixture['quantity'], $model->quantity);
         $this->assertEquals($fixture['id_color'], $model->id_color);
         $this->assertEquals($fixture['id_size'], $model->id_size);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DELETE_FROM_CART]);
+        $model->attributes = [
+            'id_product'=>$fixture['id_product'], 
+        ];
+        
+        $this->assertEquals($fixture['id_product'], $model->id_product);
     }
     
     /**
@@ -95,6 +103,21 @@ class PurchasesModelTests extends TestCase
             'quantity'=>$fixture['quantity'],
             'id_color'=>$fixture['id_color'],
             'id_size'=>$fixture['id_size'],
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DELETE_FROM_CART]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id_product', $model->errors));
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DELETE_FROM_CART]);
+        $model->attributes = [
+            'id_product'=>$fixture['id_product'], 
         ];
         $model->validate();
         

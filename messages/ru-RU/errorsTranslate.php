@@ -3,7 +3,7 @@
 $translate = [
     'Not Evaluated {placeholder}!'=>'Не определен {placeholder}!',
     'Method error {placeholder}!'=>'Ошибка при вызове метода {placeholder}!',
-    "Method error {method}!\n"=>"Ошибка при вызове метода {method}!\n",
+    'Method error {method}!' . PHP_EOL=>'Ошибка при вызове метода {method}!' . PHP_EOL,
     'Received invalid data type instead {placeholder}!'=>'Получен неверный тип данных вместо {placeholder}!',
     'Wrong format!'=>'Неверный формат!',
     'Registration error!'=>'Ошибка регистрации!',

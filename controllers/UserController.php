@@ -210,6 +210,7 @@ class UserController extends AbstractBaseController
                     $this->writeMessageInLogs(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'mailingListList\']']), __METHOD__);
                 }
             }
+            asort($renderArray['mailingListList'], SORT_STRING);
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/registration'], 'label'=>\Yii::t('base', 'Registration')];
             

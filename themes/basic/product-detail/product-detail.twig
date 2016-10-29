@@ -2,6 +2,7 @@
 
 {{ use('app/widgets/PriceWidget') }}
 {{ use('app/widgets/CartWidget') }}
+{{ use('app/widgets/ImagesWidget') }}
 
 {% include('@theme/base/user-info.twig') %}
 
@@ -21,6 +22,9 @@
     <p>
         {{ productsModel.description }}
     </p>
+    {% if productsModel.images %}
+        <br>{{ images_widget_widget({'path':productsModel.images}) }}
+    {% endif %}
     <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
     <ul>
         {% for color in array.getColumn(productsModel.colors, 'color') %}
