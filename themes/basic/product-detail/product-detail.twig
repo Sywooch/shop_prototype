@@ -1,4 +1,4 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/ProductDetailAsset') }}
 
 {{ use('app/widgets/PriceWidget') }}
 {{ use('app/widgets/CartWidget') }}
@@ -16,9 +16,6 @@
 
 {% if productsModel %}
     <h1>{{ productsModel.name }}</h1>
-    <p>
-        {{ app.formatter.asDate(productsModel.date) }}
-    </p>
     <p>
         {{ productsModel.description }}
     </p>

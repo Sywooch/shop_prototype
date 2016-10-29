@@ -3,8 +3,6 @@ jQuery(function() {
     function SendRequest() {
         var self = this;
         SendRequestAbstract.apply(this, arguments);
-        this._allText = '------------------------';
-        this._url = '/ajax/get-subcategory';
         var parentSuccess = this.success;
         this.success = function(data, status, jqXHR) {
             parentSuccess.apply(this, arguments);

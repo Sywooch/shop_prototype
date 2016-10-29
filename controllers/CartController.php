@@ -5,12 +5,15 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
+use yii\web\Response;
 use app\controllers\AbstractBaseController;
 use app\models\{ProductsModel,
     PurchasesModel};
-use app\helpers\{InstancesHelper,
+use app\helpers\{HashHelper,
+    InstancesHelper,
     SessionHelper,
     UrlHelper};
+use app\widgets\CartWidget;
 
 /**
  * Обрабатывает запросы, связанные с данными корзины
@@ -29,12 +32,10 @@ class CartController extends AbstractBaseController
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
             }
             
-            if (!empty(\Yii::$app->params['cartArray'])) {
-                foreach (\Yii::$app->params['cartArray'] as $purchase) {
-                    $renderArray['purchasesList'][] = \Yii::configure((new PurchasesModel()), array_filter($purchase, function($key) {
-                        return array_key_exists($key, (new PurchasesModel())->attributes);
-                    }, ARRAY_FILTER_USE_KEY));
-                }
+            foreach (\Yii::$app->params['cartArray'] as $hash=>$purchase) {
+                $renderArray['purchasesList'][$hash] = \Yii::configure((new PurchasesModel()), array_filter($purchase, function($key) {
+                    return array_key_exists($key, (new PurchasesModel())->attributes);
+                }, ARRAY_FILTER_USE_KEY));
             }
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/cart/index'], 'label'=>\Yii::t('base', 'Cart')];
@@ -58,13 +59,19 @@ class CartController extends AbstractBaseController
             $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_ADD_TO_CART]);
             $rawProductsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_TO_CART]);
             
-            if (\Yii::$app->request->isPost && $rawPurchasesModel->load(\Yii::$app->request->post()) && $rawProductsModel->load(\Yii::$app->request->post())) {
-                if ($rawPurchasesModel->validate() && $rawProductsModel->validate()) {
-                    if (!$this->write($rawPurchasesModel, $rawProductsModel)) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'CartController::write']));
+            if (\Yii::$app->request->isPost || \Yii::$app->request->isAjax) {
+                if ($rawPurchasesModel->load(\Yii::$app->request->post()) && $rawProductsModel->load(\Yii::$app->request->post())) {
+                    if ($rawPurchasesModel->validate() && $rawProductsModel->validate()) {
+                        if (!$this->write($rawPurchasesModel, $rawProductsModel)) {
+                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'CartController::write']));
+                        }
+                    } else {
+                        $this->writeMessageInLogs(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'Model::validate']), __METHOD__);
                     }
-                } else {
-                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'Model::validate']), __METHOD__);
+                }
+                if (\Yii::$app->request->isAjax) {
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    return CartWidget::widget();
                 }
             }
             
@@ -88,9 +95,7 @@ class CartController extends AbstractBaseController
         try {
             if (\Yii::$app->request->isPost) {
                 SessionHelper::remove([\Yii::$app->params['cartKey']]);
-                if (SessionHelper::has(\Yii::$app->params['cartKey']) === false) {
-                    \Yii::$app->params['cartArray'] = [];
-                }
+                \Yii::$app->params['cartArray'] = [];
             }
             
             return $this->redirect(UrlHelper::previous('shop'));
@@ -116,8 +121,9 @@ class CartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $rawPurchasesModel->load(\Yii::$app->request->post()) && $rawProductsModel->load(\Yii::$app->request->post())) {
                 if ($rawPurchasesModel->validate() && $rawProductsModel->validate()) {
-                    if (array_key_exists($rawPurchasesModel->id_product, (\Yii::$app->params['cartArray']))) {
-                        unset(\Yii::$app->params['cartArray'][$rawPurchasesModel->id_product]);
+                    $hash = \Yii::$app->request->post('hash') ?? '';
+                    if (array_key_exists($hash, (\Yii::$app->params['cartArray']))) {
+                        unset(\Yii::$app->params['cartArray'][$hash]);
                         if (!$this->write($rawPurchasesModel, $rawProductsModel)) {
                             throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'CartController::write']));
                         }
@@ -149,8 +155,9 @@ class CartController extends AbstractBaseController
             
             if (\Yii::$app->request->isPost && $rawPurchasesModel->load(\Yii::$app->request->post())) {
                 if ($rawPurchasesModel->validate()) {
-                    if (array_key_exists($rawPurchasesModel->id_product, (\Yii::$app->params['cartArray']))) {
-                        unset(\Yii::$app->params['cartArray'][$rawPurchasesModel->id_product]);
+                    $hash = \Yii::$app->request->post('hash') ?? '';
+                    if (array_key_exists($hash, (\Yii::$app->params['cartArray']))) {
+                        unset(\Yii::$app->params['cartArray'][$hash]);
                         if (empty(\Yii::$app->params['cartArray'])) {
                             SessionHelper::remove([\Yii::$app->params['cartKey']]);
                             return $this->redirect(Url::to(['/products-list/index']));
@@ -182,7 +189,15 @@ class CartController extends AbstractBaseController
     private function write(PurchasesModel $rawPurchasesModel, ProductsModel $rawProductsModel): bool
     {
         try {
-            \Yii::$app->params['cartArray'][$rawPurchasesModel->id_product] = array_filter(ArrayHelper::merge($rawPurchasesModel->attributes, $rawProductsModel->attributes));
+            $purchaseArray = array_filter(ArrayHelper::merge($rawPurchasesModel->attributes, $rawProductsModel->attributes));
+            $clonePurchaseArray = $purchaseArray;
+            unset($clonePurchaseArray['quantity']);
+            $hash = HashHelper::createHash($clonePurchaseArray);
+            if (array_key_exists($hash, \Yii::$app->params['cartArray'])) {
+                \Yii::$app->params['cartArray'][$hash]['quantity'] += $purchaseArray['quantity'];
+            } else {
+                \Yii::$app->params['cartArray'][$hash] = $purchaseArray;
+            }
             SessionHelper::write(\Yii::$app->params['cartKey'], \Yii::$app->params['cartArray']);
             
             return true;
@@ -196,7 +211,7 @@ class CartController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\CurrencyFilter',
-                'only'=>['index']
+                'only'=>['index', 'set']
             ],
             [
                 'class'=>'app\filters\CartFilter',

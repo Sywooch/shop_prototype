@@ -9,7 +9,7 @@
     {{ form.field(productsModel, 'price', {'enableAjaxValidation':true}).hint(yii.t('base', 'To separate cents use the point or the comma! For example: 2123.87 corresponds to a price of 2123 dollars 87 cents')) | raw }}
     {{ form.field(productsModel, 'images[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
     
-    {{ form.field(productsModel, 'id_category').dropDownList(categoriesList) | raw }}
+    {{ form.field(productsModel, 'id_category').dropDownList(categoriesList, {'data-href':url.to({0:'/ajax/get-subcategory'}), 'data-filler':app.params.formFiller}) | raw }}
     {{ form.field(productsModel, 'id_subcategory').dropDownList(subcategoryList) | raw }}
     
     {{ form.field(colorsModel, 'id').checkboxList(colorsList, {'multiple':true}).label('Colors') | raw }}

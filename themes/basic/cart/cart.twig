@@ -3,8 +3,11 @@
 {{ use('app/widgets/PriceWidget') }}
 {{ use('app/widgets/ThumbnailsWidget') }}
 {{ use('yii/widgets/ActiveForm') }}
+{{ use('app/widgets/CartWidget') }}
 
 {% include('@theme/base/user-info.twig') %}
+
+{{ cart_widget_widget({'toCart':false}) }}
 
 {% include '@theme/base/search.twig' %}
 
@@ -13,10 +16,12 @@
 {% include('@theme/base/breadcrumbs.twig') %}
 
 {% if purchasesList %}
-    {% for purchase in purchasesList %}
+    {% for hash, purchase in purchasesList %}
         <p>
             <a href="{{ url.to({0:'/product-detail/index', 'product':purchase.product.seocode}) }}">{{ purchase.product.name }}</a>
-            <br>{{ purchase.product.short_description }}
+            {% if purchase.product.short_description %}
+                <br>{{ purchase.product.short_description }}
+            {% endif %}
             <br>{{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':purchase.product.price}) }}
             {% if purchase.product.images %}
                 <br>{{ thumbnails_widget_widget({'path':purchase.product.images}) }}
@@ -28,16 +33,22 @@
                 {{ form.field(purchase, 'id_size').dropDownList(array.map(purchase.product.sizes, 'id', 'size')) | raw }}
                 {{ form.field(purchase, 'id_product').hiddenInput({'value':purchase.id_product}).label(false) | raw }}
                 {{ form.field(purchase.product, 'price').hiddenInput({'value':purchase.product.price}).label(false) | raw }}
+                <input type="hidden" name="hash" value="{{ hash }}">
                 <input type="submit" value="{{ yii.t('base', 'Update') }}">
             {{ active_form_end() }}
             
             {% set form=active_form_begin({'id':'cart-delete-form-%d' | format(purchase.id_product), 'action':url.to({0:'/cart/delete'}), 'method':'POST'}) %}
                 {{ form.field(purchase, 'id_product').hiddenInput({'value':purchase.id_product}).label(false) | raw }}
+                <input type="hidden" name="hash" value="{{ hash }}">
                 <input type="submit" value="{{ yii.t('base', 'Delete') }}">
             {{ active_form_end() }}
         </p>
     {% endfor %}
 {% endif %}
+
+{{ cart_widget_widget({'toCart':false}) }}
+
+<p><a href="">{{ yii.t('base', 'Checkout') }}</a></p>
 
 <p>
     {% include('@theme/base/currency-form.twig') %}

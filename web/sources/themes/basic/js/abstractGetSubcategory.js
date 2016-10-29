@@ -1,47 +1,37 @@
 function SendRequestAbstract() {
     var self = this;
+    self._target;
     self._formID;
+    self._formField;
     self._value;
     self._url;
     self._token = $('form').find('input[name="_csrf"]').val();
     self._allText = '';
     
     self.success = function(data, status, jqXHR) {
-        if (typeof data == 'string') {
-            var processingError = $('#processingError > strong');
-            if (processingError.length > 0) {
-                processingError.text(data);
-            } else {
-                $('#add-product-form').before('<p id="processingError"><strong>' + data + '</strong></p>');
-            }
-        } else {
-            var processingError = $('#processingError');
-            if (processingError.length > 0) {
-                processingError.remove();
-            }
-            self.clean();
-            $('#' + self._formID).find('#productsmodel-id_subcategory').empty();
-            $('#' + self._formID).find('#productsmodel-id_subcategory').append('<option>' + self._allText + '</option>');
-            var formField = $('#' + self._formID).find('#productsmodel-id_subcategory');
-            for (var i in data) {
-                var option = $('<option></option>').val(i).html(data[i]);
-                formField.append(option);
-            }
+        self.clean();
+        for (var i in data) {
+            var option = $('<option></option>').val(i).html(data[i]);
+            self._formField.append(option);
         }
     };
     
     self.error = function(jqXHR, status, errorThrown) {
-        alert(jqXHR.responseText);
+        alert(status + ' ' + jqXHR.responseText);
     };
     
     self.clean = function () {
-        $('#' + self._formID).find('#productsmodel-id_subcategory').empty();
-        $('#' + self._formID).find('#productsmodel-id_subcategory').append('<option>' + self._allText + '</option>');
+        self._formField.empty();
+        self._formField.append('<option>' + self._allText + '</option>');
     };
     
     self.send = function(event) {
-        self._value = $(event.target).val();
-        self._formID = $(event.target).closest('form').attr('id');
+        self._target = $(event.target);
+        self._value = self._target.val();
+        self._url = self._target.data('href');
+        self._allText = self._target.data('filler');
+        self._formID = self._target.closest('form').attr('id');
+        self._formField = $('#' + self._formID).find('#productsmodel-id_subcategory');
         if (self._value) {
             $.ajax({
                 'headers': {'X-CSRF-Token': self._token},

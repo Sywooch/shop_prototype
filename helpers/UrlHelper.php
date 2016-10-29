@@ -20,7 +20,7 @@ class UrlHelper extends Url
         try {
             $previous = parent::previous($name);
             
-            if (is_null($previous)) {
+            if (is_null($previous) || (strpos(self::current(), $previous) !== false)) {
                 $previous = self::to(['/products-list/index']);
             }
             

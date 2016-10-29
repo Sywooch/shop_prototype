@@ -21,7 +21,9 @@
         {% if productsModel.active %}
             <li>
                 <a href="{{ url.to({0:'product-detail/index', 'product':productsModel.seocode}) }}">{{ productsModel.name }}</a>
-                <br>{{ app.formatter.asDate(productsModel.date) }}
+                {% if productsModel.short_description %}
+                    <br>{{ productsModel.short_description }}
+                {% endif %}
                 <br>{{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':productsModel.price}) }}
                 {% if productsModel.images %}
                     <br>{{ thumbnails_widget_widget({'path':productsModel.images}) }}

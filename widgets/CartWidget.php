@@ -16,13 +16,17 @@ class CartWidget extends Widget
     use ExceptionsTrait;
     
     /**
+     * @var bool нужно ли добавлять ссылку на корзину
+     */
+    public $toCart = true;
+    /**
      * @var int количество товаров в корзине
      */
     private $_productsCount = 0;
     /**
      * @var float общая стоимость товаров в корзине
      */
-    private $_totalCost = 0.00;
+    private $_totalCost = 0;
     /**
      * @var array массив результирующих строк
      */
@@ -41,19 +45,23 @@ class CartWidget extends Widget
                     $this->_totalCost += ($purchase['price'] * $purchase['quantity']);
                 }
                 
-                if (!empty(\Yii::$app->currency->exchange_rate) && !empty(\Yii::$app->currency->code)) {
-                    $this->_totalCost = \Yii::$app->formatter->asDecimal($this->_totalCost * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
-                }
-                
-                $this->_result[] = Html::tag('p', \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>$this->_productsCount, 'totalCost'=>$this->_totalCost]) . ' ' . Html::a(\Yii::t('base', 'To cart'), Url::to(['/cart/index'])));
-                
-                $form = Html::beginForm(Url::to(['/cart/clean']), 'POST', ['id'=>'clean-cart-form']);
-                $form .= Html::submitButton(\Yii::t('base', 'Clean'));
-                $form .= Html::endForm();
-                $this->_result[] = $form;
+                $toCart = Html::a(\Yii::t('base', 'To cart'), Url::to(['/cart/index']));
             }
             
-            return implode('', $this->_result);
+            if (!empty(\Yii::$app->currency->exchange_rate) && !empty(\Yii::$app->currency->code)) {
+                $this->_totalCost = \Yii::$app->formatter->asDecimal($this->_totalCost * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
+            }
+            
+            $text = \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>$this->_productsCount, 'totalCost'=>$this->_totalCost]);
+            $text .= ($this->toCart && isset($toCart)) ? ' ' . $toCart : '';
+            $this->_result[] = Html::tag('p', $text);
+            
+            $form = Html::beginForm(Url::to(['/cart/clean']), 'POST', ['id'=>'clean-cart-form']);
+            $form .= Html::submitButton(\Yii::t('base', 'Clean'), !isset($toCart) ? ['disabled'=>true] : []);
+            $form .= Html::endForm();
+            $this->_result[] = $form;
+            
+            return !empty($this->_result) ? Html::tag('div', implode('', $this->_result), ['id'=>'cart']) : '';
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

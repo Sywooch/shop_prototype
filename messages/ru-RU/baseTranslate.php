@@ -63,7 +63,8 @@ $translate = [
     'To cart'=>'В корзину',
     'Cart'=>'Корзина',
     'Update'=>'Обновить',
-    'Delete'=>'Удалить'
+    'Delete'=>'Удалить',
+    'Checkout'=>'Оформить заказ'
 ];
 
 return $translate;
