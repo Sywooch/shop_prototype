@@ -22,18 +22,13 @@ class UrlHelperTests extends TestCase
         $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
         
         Url::remember('https://shop.com/cart', 'test');
+        $result = UrlHelper::previous('test');
+        $this->assertEquals('https://shop.com/cart', $result);
+        
         \Yii::$app->controller = new CartController('cart', \Yii::$app);
-        $result = UrlHelper::previous('test');
-        $this->assertEquals('https://shop.com/cart', $result);
-        
         $this->assertEquals('../vendor/phpunit/phpunit/cart', UrlHelper::current());
         $result = UrlHelper::previous('test');
         $this->assertEquals('https://shop.com/cart', $result);
-        
-        $this->assertEquals('../vendor/phpunit/phpunit/cart', UrlHelper::current());
-        Url::remember('../vendor/phpunit/phpunit/cart', 'test');
-        $result = UrlHelper::previous('test');
-        $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
     }
     
     public static function tearDownAfterClass()

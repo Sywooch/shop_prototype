@@ -37,10 +37,11 @@ $routes = [
     
     # Корзина
     'cart'=>'cart/index',
-    'set-cart'=>'cart/set',
-    'clean-cart'=>'cart/clean',
-    'update-cart'=>'cart/update',
-    'delete-cart'=>'cart/delete',
+    'cart-set'=>'cart/set',
+    'cart-customer'=>'cart/customer',
+    'cart-clean'=>'cart/clean',
+    'cart-update'=>'cart/update',
+    'cart-delete'=>'cart/delete',
 ];
 
 return $routes;

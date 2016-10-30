@@ -7,8 +7,14 @@ use yii\helpers\{ArrayHelper,
     Url};
 use yii\web\Response;
 use app\controllers\AbstractBaseController;
-use app\models\{ProductsModel,
-    PurchasesModel};
+use app\models\{AddressModel,
+    DeliveriesModel,
+    EmailsModel,
+    PaymentsModel,
+    PhonesModel,
+    ProductsModel,
+    PurchasesModel,
+    UsersModel};
 use app\helpers\{HashHelper,
     InstancesHelper,
     SessionHelper,
@@ -20,11 +26,15 @@ use app\widgets\CartWidget;
  */
 class CartController extends AbstractBaseController
 {
+    /**
+     * Обрабатывает запрос детальной информации о товарах в корзине
+     * @return string
+     */
     public function actionIndex()
     {
         try {
             if (empty(\Yii::$app->params['cartArray'])) {
-                return $this->redirect(UrlHelper::previous('shop'));
+                return $this->redirect(Url::to(['/products-list/index']));
             }
             
             $renderArray = InstancesHelper::getInstances();
@@ -160,9 +170,9 @@ class CartController extends AbstractBaseController
                         unset(\Yii::$app->params['cartArray'][$hash]);
                         if (empty(\Yii::$app->params['cartArray'])) {
                             SessionHelper::remove([\Yii::$app->params['cartKey']]);
-                            return $this->redirect(Url::to(['/products-list/index']));
+                        } else {
+                            SessionHelper::write(\Yii::$app->params['cartKey'], \Yii::$app->params['cartArray']);
                         }
-                        SessionHelper::write(\Yii::$app->params['cartKey'], \Yii::$app->params['cartArray']);
                     }
                 } else {
                     $this->writeMessageInLogs(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PurchasesModel::validate']), __METHOD__);
@@ -177,6 +187,110 @@ class CartController extends AbstractBaseController
             } else {
                 return $this->redirect(UrlHelper::previous('shop'));
             }
+        }
+    }
+    
+    /**
+     * Обрабатывает запрос на добавление данных о покупателе 
+     * @return string
+     */
+    public function actionCustomer()
+    {
+        try {
+            if (empty(\Yii::$app->params['cartArray'])) {
+                return $this->redirect(Url::to(['/products-list/index']));
+            }
+            
+            $rawUsersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
+            if (!empty(\Yii::$app->params['customerArray'])) {
+                if (!empty(\Yii::$app->params['customerArray'][UsersModel::tableName()])) {
+                    $rawUsersModel = \Yii::configure($rawUsersModel, \Yii::$app->params['customerArray'][UsersModel::tableName()]);
+                }
+            } elseif (\Yii::$app->user->isGuest == false) {
+                $rawUsersModel = \Yii::configure($rawUsersModel, array_filter(\Yii::$app->user->identity->toArray()));
+            }
+            
+            $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ORDER]);
+            if (!empty(\Yii::$app->params['customerArray'])) {
+                if (!empty(\Yii::$app->params['customerArray'][EmailsModel::tableName()])) {
+                    $rawEmailsModel = \Yii::configure($rawEmailsModel, \Yii::$app->params['customerArray'][EmailsModel::tableName()]);
+                }
+            } elseif (\Yii::$app->user->isGuest == false) {
+                $rawEmailsModel = \Yii::configure($rawEmailsModel, array_filter(\Yii::$app->user->identity->email->toArray()));
+            }
+            
+            $rawPhonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_ORDER]);
+            if (!empty(\Yii::$app->params['customerArray'])) {
+                if (!empty(\Yii::$app->params['customerArray'][PhonesModel::tableName()])) {
+                    $rawPhonesModel = \Yii::configure($rawPhonesModel, \Yii::$app->params['customerArray'][PhonesModel::tableName()]);
+                }
+            } elseif (\Yii::$app->user->isGuest == false && !empty(\Yii::$app->user->identity->id_phone)) {
+                $rawPhonesModel = \Yii::configure($rawPhonesModel, array_filter(\Yii::$app->user->identity->phone->toArray()));
+            }
+            
+            $rawAddressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_ORDER]);
+            if (!empty(\Yii::$app->params['customerArray'])) {
+                if (!empty(\Yii::$app->params['customerArray'][AddressModel::tableName()])) {
+                    $rawAddressModel = \Yii::configure($rawAddressModel, \Yii::$app->params['customerArray'][AddressModel::tableName()]);
+                }
+            } elseif (\Yii::$app->user->isGuest == false && !empty(\Yii::$app->user->identity->id_address)) {
+                $rawAddressModel = \Yii::configure($rawAddressModel, array_filter(\Yii::$app->user->identity->address->toArray()));
+            }
+            
+            $rawDeliveriesModel = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_ORDER]);
+            if (!empty(\Yii::$app->params['customerArray'])) {
+                if (!empty(\Yii::$app->params['customerArray'][DeliveriesModel::tableName()])) {
+                    $rawDeliveriesModel = \Yii::configure($rawDeliveriesModel, \Yii::$app->params['customerArray'][DeliveriesModel::tableName()]);
+                }
+            }
+            
+            $rawPaymentsModel = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_ORDER]);
+            if (!empty(\Yii::$app->params['customerArray'])) {
+                if (!empty(\Yii::$app->params['customerArray'][PaymentsModel::tableName()])) {
+                    $rawPaymentsModel = \Yii::configure($rawPaymentsModel, \Yii::$app->params['customerArray'][PaymentsModel::tableName()]);
+                }
+            }
+            
+            $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
+            
+            $renderArray['usersModel'] = $rawUsersModel;
+            $renderArray['emailsModel'] = $rawEmailsModel;
+            $renderArray['phonesModel'] = $rawPhonesModel;
+            $renderArray['addressModel'] = $rawAddressModel;
+            $renderArray['deliveriesModel'] = $rawDeliveriesModel;
+            $renderArray['paymentsModel'] = $rawPaymentsModel;
+            
+            $deliveriesQuery = DeliveriesModel::find();
+            $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
+            $deliveriesQuery->asArray();
+            $deliveriesArray = $deliveriesQuery->all();
+            if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $deliveriesArray']));
+            }
+            ArrayHelper::multisort($deliveriesArray, 'name', SORT_ASC);
+            $renderArray['deliveriesList'] = $deliveriesArray;
+            
+            $paymentsQuery = PaymentsModel::find();
+            $paymentsQuery->extendSelect(['id', 'name', 'description']);
+            $paymentsQuery->asArray();
+            $paymentsArray = $paymentsQuery->all();
+            if (!is_array($paymentsArray) || empty($paymentsArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $paymentsArray']));
+            }
+            ArrayHelper::multisort($paymentsArray, 'name', SORT_ASC);
+            $renderArray['paymentsList'] = $paymentsArray;
+            
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/cart/index'], 'label'=>\Yii::t('base', 'Customer information')];
+            
+            Url::remember(Url::current(), 'shop');
+            
+            return $this->render('customer.twig', $renderArray);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -211,11 +325,11 @@ class CartController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\CurrencyFilter',
-                'only'=>['index', 'set']
+                'only'=>['index', 'set', 'customer']
             ],
             [
                 'class'=>'app\filters\CartFilter',
-                'only'=>['index', 'set', 'update', 'delete']
+                'only'=>['index', 'set', 'update', 'delete', 'customer']
             ],
         ];
     }

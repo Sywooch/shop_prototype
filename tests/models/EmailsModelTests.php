@@ -35,6 +35,7 @@ class EmailsModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ORDER'));
         
         $model = new EmailsModel();
         
@@ -57,6 +58,13 @@ class EmailsModelTests extends TestCase
         $this->assertEquals($fixture['email'], $model->email);
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
+        $model->attributes = [
+            'email'=>$fixture['email'], 
+        ];
+        
+        $this->assertEquals($fixture['email'], $model->email);
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ORDER]);
         $model->attributes = [
             'email'=>$fixture['email'], 
         ];
@@ -96,6 +104,35 @@ class EmailsModelTests extends TestCase
         $model->validate();
         
         $this->assertEquals(0, count($model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ORDER]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ORDER]);
+        $model->email = 'some@some.com';
+        $model->validate();
+        
+        $this->assertEquals(0, count($model->errors));
+    }
+    
+    /**
+     * Тестирует поля, возвращаемые Model::toArray()
+     */
+    public function testToArray()
+    {
+        $fixture = self::$_dbClass->emails['email_1'];
+        
+        $model = new EmailsModel();
+        $model->email = $fixture['email'];
+        
+        $result = $model->toArray();
+        
+        $this->assertEquals(1, count($result));
+        $this->assertTrue(array_key_exists('email', $result));
     }
     
     /**

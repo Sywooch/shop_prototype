@@ -31,6 +31,8 @@ class AddressModelTests extends TestCase
      */
     public function testProperties()
     {
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ORDER'));
+        
         $model = new AddressModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
@@ -38,6 +40,78 @@ class AddressModelTests extends TestCase
         $this->assertTrue(array_key_exists('city', $model->attributes));
         $this->assertTrue(array_key_exists('country', $model->attributes));
         $this->assertTrue(array_key_exists('postcode', $model->attributes));
+    }
+    
+    /**
+     * Тестирует сценарии
+     */
+    public function testScenarios()
+    {
+        $fixture = self::$_dbClass->address['address_1'];
+        
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_ORDER]);
+        $model->attributes = [
+            'address'=>$fixture['address'], 
+            'city'=>$fixture['city'],
+            'country'=>$fixture['country'],
+            'postcode'=>$fixture['postcode'],
+        ];
+        
+        $this->assertEquals($fixture['address'], $model->address);
+        $this->assertEquals($fixture['city'], $model->city);
+        $this->assertEquals($fixture['country'], $model->country);
+        $this->assertEquals($fixture['postcode'], $model->postcode);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $fixture = self::$_dbClass->address['address_2'];
+        
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_ORDER]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(4, count($model->errors));
+        $this->assertTrue(array_key_exists('address', $model->errors));
+        $this->assertTrue(array_key_exists('city', $model->errors));
+        $this->assertTrue(array_key_exists('country', $model->errors));
+        $this->assertTrue(array_key_exists('postcode', $model->errors));
+        
+        $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_ORDER]);
+        $model->attributes = [
+            'address'=>$fixture['address'], 
+            'city'=>$fixture['city'],
+            'country'=>$fixture['country'],
+            'postcode'=>$fixture['postcode'],
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
+    }
+    
+    /**
+     * Тестирует поля, возвращаемые Model::toArray()
+     */
+    public function testToArray()
+    {
+        $fixture = self::$_dbClass->address['address_2'];
+        
+        $model = new AddressModel();
+        $model->address = $fixture['address'];
+        $model->city = $fixture['city'];
+        $model->country = $fixture['country'];
+        $model->postcode = $fixture['postcode'];
+        
+        $result = $model->toArray();
+        
+        $this->assertEquals(4, count($result));
+        $this->assertTrue(array_key_exists('address', $result));
+        $this->assertTrue(array_key_exists('city', $result));
+        $this->assertTrue(array_key_exists('country', $result));
+        $this->assertTrue(array_key_exists('postcode', $result));
     }
     
     /**

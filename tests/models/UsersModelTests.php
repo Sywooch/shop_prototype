@@ -35,6 +35,7 @@ class UsersModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ORDER'));
         
         $model = new UsersModel();
         
@@ -75,6 +76,15 @@ class UsersModelTests extends TestCase
         $this->assertEquals($fixture['surname'], $model->surname);
         $this->assertEquals($fixture['id_phone'], $model->id_phone);
         $this->assertEquals($fixture['id_address'], $model->id_address);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
+        $model->attributes = [
+            'name'=>$fixture['name'],
+            'surname'=>$fixture['surname'],
+        ];
+        
+        $this->assertEquals($fixture['name'], $model->name);
+        $this->assertEquals($fixture['surname'], $model->surname);
     }
     
     /**
@@ -117,6 +127,49 @@ class UsersModelTests extends TestCase
         $this->assertEquals('', $model->surname);
         $this->assertEquals(0, $model->id_phone);
         $this->assertEquals(0, $model->id_address);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(2, count($model->errors));
+        $this->assertTrue(array_key_exists('name', $model->errors));
+        $this->assertTrue(array_key_exists('surname', $model->errors));
+        
+        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
+        $model->attributes = [
+            'name'=>$fixture['name'],
+            'surname'=>$fixture['surname'],
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
+    }
+    
+    /**
+     * Тестирует поля, возвращаемые Model::toArray()
+     */
+    public function testToArray()
+    {
+        $fixture = self::$_dbClass->users['user_2'];
+        
+        $model = new UsersModel();
+        $model->id = $fixture['id'];
+        $model->id_email = $fixture['id_email'];
+        $model->password = $fixture['password'];
+        $model->name = $fixture['name'];
+        $model->surname = $fixture['surname'];
+        $model->id_phone = $fixture['id_phone'];
+        $model->id_address = $fixture['id_address']; 
+        
+        $result = $model->toArray();
+        
+        $this->assertEquals(5, count($result));
+        $this->assertTrue(array_key_exists('id_email', $result));
+        $this->assertTrue(array_key_exists('name', $result));
+        $this->assertTrue(array_key_exists('surname', $result));
+        $this->assertTrue(array_key_exists('id_phone', $result));
+        $this->assertTrue(array_key_exists('id_address', $result));
     }
     
     /**

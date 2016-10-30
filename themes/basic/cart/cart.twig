@@ -48,7 +48,7 @@
 
 {{ cart_widget_widget({'toCart':false}) }}
 
-<p><a href="">{{ yii.t('base', 'Checkout') }}</a></p>
+<p><a href="{{ url.to({0:'/cart/customer'}) }}">{{ yii.t('base', 'Checkout') }}</a></p>
 
 <p>
     {% include('@theme/base/currency-form.twig') %}

@@ -31,11 +31,51 @@ class PaymentsModelTests extends TestCase
      */
     public function testProperties()
     {
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ORDER'));
+        
         $model = new PaymentsModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('name', $model->attributes));
         $this->assertTrue(array_key_exists('description', $model->attributes));
+    }
+    
+    /**
+     * Тестирует сценарии
+     */
+    public function testScenarios()
+    {
+        $fixture = self::$_dbClass->payments['payment_1'];
+        
+        $model = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_ORDER]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+        ];
+        
+        $this->assertEquals($fixture['id'], $model->id);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $fixture = self::$_dbClass->payments['payment_1'];
+        
+        $model = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_ORDER]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_ORDER]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
     }
     
     /**

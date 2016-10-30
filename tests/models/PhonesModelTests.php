@@ -31,10 +31,66 @@ class PhonesModelTests extends TestCase
      */
     public function testProperties()
     {
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ORDER'));
+        
         $model = new PhonesModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('phone', $model->attributes));
+    }
+    
+    /**
+     * Тестирует сценарии
+     */
+    public function testScenarios()
+    {
+        $fixture = self::$_dbClass->phones['phone_1'];
+        
+        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_ORDER]);
+        $model->attributes = [
+            'phone'=>$fixture['phone'], 
+        ];
+        
+        $this->assertEquals($fixture['phone'], $model->phone);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $fixture = self::$_dbClass->phones['phone_1'];
+        
+        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_ORDER]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('phone', $model->errors));
+        
+        $model = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_ORDER]);
+        $model->attributes = [
+            'phone'=>$fixture['phone'], 
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
+    }
+    
+    /**
+     * Тестирует поля, возвращаемые Model::toArray()
+     */
+    public function testToArray()
+    {
+        $fixture = self::$_dbClass->phones['phone_1'];
+        
+        $model = new PhonesModel();
+        $model->phone = $fixture['phone'];
+        
+        $result = $model->toArray();
+        
+        $this->assertEquals(1, count($result));
+        $this->assertTrue(array_key_exists('phone', $result));
     }
     
     /**

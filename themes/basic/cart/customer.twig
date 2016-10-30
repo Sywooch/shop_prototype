@@ -1,0 +1,56 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('app/widgets/ThumbnailsWidget') }}
+{{ use('yii/widgets/ActiveForm') }}
+{{ use('app/widgets/CartWidget') }}
+{{ use('app/widgets/PriceWidget') }}
+
+{% include('@theme/base/user-info.twig') %}
+
+{{ cart_widget_widget() }}
+
+{% include '@theme/base/search.twig' %}
+
+{% include('@theme/base/menu.twig') %}
+
+{% include('@theme/base/breadcrumbs.twig') %}
+
+<p>
+    {% set form=active_form_begin({'id':'customer-form', 'action':url.to({0:'/cart/customer'}), 'method':'POST'}) %}
+        {{ form.field(usersModel, 'name') | raw }}
+        {{ form.field(usersModel, 'surname') | raw }}
+        
+        {% if not app.user.isGuest %}
+            {% set emailConfig={'disabled':true} %}
+        {% else %}
+            {% set emailConfig={} %}
+        {% endif %}
+        {{ form.field(emailsModel, 'email').textInput(emailConfig) | raw }}
+        
+        {{ form.field(phonesModel, 'phone') | raw }}
+        {{ form.field(addressModel, 'address') | raw }}
+        {{ form.field(addressModel, 'city') | raw }}
+        {{ form.field(addressModel, 'country') | raw }}
+        {{ form.field(addressModel, 'postcode') | raw }}
+        
+        {% for delivery in deliveriesList %}
+            <br>{{ delivery.name }} - {{ price_widget_widget({'price':delivery.price}) }}. {{ delivery.description }}
+        {% endfor %}
+        {{ form.field(deliveriesModel, 'id').radioList(array.map(deliveriesList, 'id', 'name')) | raw }}
+        
+        {% for payment in paymentsList %}
+            <br>{{ payment.name }}. {{ payment.description }}
+        {% endfor %}
+        {{ form.field(paymentsModel, 'id').radioList(array.map(paymentsList, 'id', 'name')) | raw }}
+        
+        <input type="submit" value="{{ yii.t('base', 'Checkout') }}">
+    {{ active_form_end() }}
+</p>
+
+{{ cart_widget_widget() }}
+
+<p><a href="">{{ yii.t('base', 'Check the purchase data') }}</a></p>
+
+<p>
+    {% include('@theme/base/currency-form.twig') %}
+</p>
