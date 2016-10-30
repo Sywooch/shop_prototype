@@ -16,5 +16,9 @@ ul.pagination{
 
 ul.breadcrumb li,
 ul.pagination li{
-    display:inline
+    display:inline;
+}
+
+.disable{
+    display:none;
 }

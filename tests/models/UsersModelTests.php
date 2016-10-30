@@ -79,10 +79,14 @@ class UsersModelTests extends TestCase
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
         $model->attributes = [
+            'password'=>$fixture['password'],
+            'id'=>$fixture['id'],
             'name'=>$fixture['name'],
             'surname'=>$fixture['surname'],
         ];
         
+        $this->assertEquals($fixture['id'], $model->id);
+        $this->assertEquals($fixture['password'], $model->password);
         $this->assertEquals($fixture['name'], $model->name);
         $this->assertEquals($fixture['surname'], $model->surname);
     }
@@ -164,7 +168,8 @@ class UsersModelTests extends TestCase
         
         $result = $model->toArray();
         
-        $this->assertEquals(5, count($result));
+        $this->assertEquals(6, count($result));
+        $this->assertTrue(array_key_exists('id', $result));
         $this->assertTrue(array_key_exists('id_email', $result));
         $this->assertTrue(array_key_exists('name', $result));
         $this->assertTrue(array_key_exists('surname', $result));

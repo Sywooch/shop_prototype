@@ -65,7 +65,22 @@ $translate = [
     'Update'=>'Обновить',
     'Delete'=>'Удалить',
     'Checkout'=>'Оформить заказ',
-    'Customer information'=>'Информация о клиенте'
+    'Customer information'=>'Информация о клиенте',
+    'Quantity:'=>'Количество:',
+    'Check information'=>'Проверка данных',
+    'Color:'=>'Цвет:',
+    'Size:'=>'Размер:',
+    'Purchses'=>'Покупки',
+    'Customer Information'=>'Информация о клиенте',
+    'Name:'=>'Имя:',
+    'Surname:'=>'Фамилия:',
+    'Phone:'=>'Телефон:',
+    'Address:'=>'Адрес:',
+    'City:'=>'Город:',
+    'Country:'=>'Страна:',
+    'Postcode:'=>'Почтовый код:',
+    'Delivery Information'=>'Информация о доставке',
+    'Payments Information'=>'Информация об оплате',
 ];
 
 return $translate;

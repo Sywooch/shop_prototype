@@ -46,6 +46,7 @@ class AddressModel extends AbstractBaseModel
     public function fields()
     {
         return [
+            'id'=>'id',
             'address'=>'address',
             'city'=>'city',
             'country'=>'country',

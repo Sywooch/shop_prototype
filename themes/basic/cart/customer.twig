@@ -1,4 +1,4 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/AddCustomerAsset') }}
 
 {{ use('app/widgets/ThumbnailsWidget') }}
 {{ use('yii/widgets/ActiveForm') }}
@@ -21,11 +21,9 @@
         {{ form.field(usersModel, 'surname') | raw }}
         
         {% if not app.user.isGuest %}
-            {% set emailConfig={'disabled':true} %}
-        {% else %}
-            {% set emailConfig={} %}
+            {% set emailConfig={'readonly':true} %}
         {% endif %}
-        {{ form.field(emailsModel, 'email').textInput(emailConfig) | raw }}
+        {{ form.field(emailsModel, 'email').textInput(emailConfig | default({})) | raw }}
         
         {{ form.field(phonesModel, 'phone') | raw }}
         {{ form.field(addressModel, 'address') | raw }}
@@ -33,23 +31,35 @@
         {{ form.field(addressModel, 'country') | raw }}
         {{ form.field(addressModel, 'postcode') | raw }}
         
+        {% if not app.user.isGuest %}
+            <div class="customer-change disable">
+                <br><input type="checkbox" name="dataChange"> Заменить мои контактные данные теми, которые указаны в форме
+            </div>
+        {% else %}
+            <div class="customer-create-account">
+                <br><input type="checkbox" name="createAccount"> Создать аккаунт
+            </div>
+        {% endif %}
+        
+        
+        <div class="customer-password disable">{{ form.field(usersModel, 'password').passwordInput() | raw }}</div>
+        
         {% for delivery in deliveriesList %}
             <br>{{ delivery.name }} - {{ price_widget_widget({'price':delivery.price}) }}. {{ delivery.description }}
         {% endfor %}
-        {{ form.field(deliveriesModel, 'id').radioList(array.map(deliveriesList, 'id', 'name')) | raw }}
+        {{ form.field(deliveriesModel, 'id').radioList(array.map(deliveriesList, 'id', 'name')).label(false) | raw }}
         
         {% for payment in paymentsList %}
             <br>{{ payment.name }}. {{ payment.description }}
         {% endfor %}
-        {{ form.field(paymentsModel, 'id').radioList(array.map(paymentsList, 'id', 'name')) | raw }}
+        {{ form.field(paymentsModel, 'id').radioList(array.map(paymentsList, 'id', 'name')).label(false) | raw }}
         
-        <input type="submit" value="{{ yii.t('base', 'Checkout') }}">
+        {{ form.field(usersModel, 'id').hiddenInput({'value':app.user.id}).label(false) | raw }}
+        <br><input type="submit" value="{{ yii.t('base', 'Checkout') }}">
     {{ active_form_end() }}
 </p>
 
 {{ cart_widget_widget() }}
-
-<p><a href="">{{ yii.t('base', 'Check the purchase data') }}</a></p>
 
 <p>
     {% include('@theme/base/currency-form.twig') %}

@@ -127,11 +127,13 @@ class EmailsModelTests extends TestCase
         $fixture = self::$_dbClass->emails['email_1'];
         
         $model = new EmailsModel();
+        $model->email = $fixture['id'];
         $model->email = $fixture['email'];
         
         $result = $model->toArray();
         
-        $this->assertEquals(1, count($result));
+        $this->assertEquals(2, count($result));
+        $this->assertTrue(array_key_exists('id', $result));
         $this->assertTrue(array_key_exists('email', $result));
     }
     

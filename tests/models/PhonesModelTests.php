@@ -85,11 +85,13 @@ class PhonesModelTests extends TestCase
         $fixture = self::$_dbClass->phones['phone_1'];
         
         $model = new PhonesModel();
+        $model->phone = $fixture['id'];
         $model->phone = $fixture['phone'];
         
         $result = $model->toArray();
         
-        $this->assertEquals(1, count($result));
+        $this->assertEquals(2, count($result));
+        $this->assertTrue(array_key_exists('id', $result));
         $this->assertTrue(array_key_exists('phone', $result));
     }
     

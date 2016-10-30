@@ -4,7 +4,9 @@ namespace app\models;
 
 use app\models\AbstractBaseModel;
 use app\exceptions\ExceptionsTrait;
-use app\models\ProductsModel;
+use app\models\{ColorsModel,
+    ProductsModel,
+    SizesModel};
 
 /**
  * Представляет данные таблицы purchases
@@ -50,13 +52,39 @@ class PurchasesModel extends AbstractBaseModel
     }
     
     /**
-     * Получает объект ProductsModel, с которой связан текущий объект PurchasesModel
+     * Получает объект ProductsModel, с которым связан текущий объект PurchasesModel
      * @return ActiveQueryInterface the relational query object
      */
     public function getProduct()
     {
         try {
             return $this->hasOne(ProductsModel::className(), ['id'=>'id_product']);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект ColorsModel, с которым связан текущий объект PurchasesModel
+     * @return ActiveQueryInterface the relational query object
+     */
+    public function getColor()
+    {
+        try {
+            return $this->hasOne(ColorsModel::className(), ['id'=>'id_color']);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект SizesModel, с которым связан текущий объект PurchasesModel
+     * @return ActiveQueryInterface the relational query object
+     */
+    public function getSize()
+    {
+        try {
+            return $this->hasOne(SizesModel::className(), ['id'=>'id_size']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -11,7 +11,7 @@ use app\helpers\{HashHelper,
 /**
  * Применяет фильтры к выборке ProductsModel
  */
-class CartFilter extends ActionFilter
+class CustomerFilter extends ActionFilter
 {
     use ExceptionsTrait;
     
@@ -23,8 +23,8 @@ class CartFilter extends ActionFilter
     public function beforeAction($action)
     {
         try {
-            $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-            \Yii::$app->params['cartArray'] = SessionHelper::read($key) ?? [];
+            $key = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
+            \Yii::$app->params['customerArray'] = SessionHelper::read($key) ?? [];
             
             return parent::beforeAction($action);
         } catch (\Throwable $t) {

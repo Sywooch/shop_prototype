@@ -4,8 +4,10 @@ namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\models\{ProductsModel,
-    PurchasesModel};
+use app\models\{ColorsModel,
+    ProductsModel,
+    PurchasesModel,
+    SizesModel};
 
 /**
  * Тестирует класс app\models\PurchasesModel
@@ -195,6 +197,30 @@ class PurchasesModelTests extends TestCase
         $model = PurchasesModel::find()->where(['purchases.id'=>$fixture['id']])->one();
         
         $this->assertTrue($model->product instanceof ProductsModel);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getColor
+     */
+    public function testGetColor()
+    {
+        $fixture = self::$_dbClass->purchases['purchase_2'];
+        
+        $model = PurchasesModel::find()->where(['purchases.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->color instanceof ColorsModel);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getSize
+     */
+    public function testGetSize()
+    {
+        $fixture = self::$_dbClass->purchases['purchase_2'];
+        
+        $model = PurchasesModel::find()->where(['purchases.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->size instanceof SizesModel);
     }
     
     public static function tearDownAfterClass()

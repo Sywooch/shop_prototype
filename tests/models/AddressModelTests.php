@@ -100,6 +100,7 @@ class AddressModelTests extends TestCase
         $fixture = self::$_dbClass->address['address_2'];
         
         $model = new AddressModel();
+        $model->address = $fixture['id'];
         $model->address = $fixture['address'];
         $model->city = $fixture['city'];
         $model->country = $fixture['country'];
@@ -107,7 +108,8 @@ class AddressModelTests extends TestCase
         
         $result = $model->toArray();
         
-        $this->assertEquals(4, count($result));
+        $this->assertEquals(5, count($result));
+        $this->assertTrue(array_key_exists('id', $result));
         $this->assertTrue(array_key_exists('address', $result));
         $this->assertTrue(array_key_exists('city', $result));
         $this->assertTrue(array_key_exists('country', $result));

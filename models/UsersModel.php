@@ -43,7 +43,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
         return [
             self::GET_FROM_AUTHENTICATION=>['password'],
             self::GET_FROM_REGISTRATION=>['password', 'name', 'surname', 'id_phone', 'id_address'],
-            self::GET_FROM_ORDER=>['name', 'surname'],
+            self::GET_FROM_ORDER=>['id', 'name', 'surname', 'password'],
         ];
     }
     
@@ -62,6 +62,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function fields()
     {
         return [
+            'id'=>'id',
             'id_email'=>'id_email',
             'name'=>'name',
             'surname'=>'surname',

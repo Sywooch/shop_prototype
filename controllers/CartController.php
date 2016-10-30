@@ -104,8 +104,9 @@ class CartController extends AbstractBaseController
     {
         try {
             if (\Yii::$app->request->isPost) {
-                SessionHelper::remove([\Yii::$app->params['cartKey']]);
+                SessionHelper::remove([\Yii::$app->params['cartKey'], \Yii::$app->params['customerKey']]);
                 \Yii::$app->params['cartArray'] = [];
+                \Yii::$app->params['customerArray'] = [];
             }
             
             return $this->redirect(UrlHelper::previous('shop'));
@@ -169,7 +170,8 @@ class CartController extends AbstractBaseController
                     if (array_key_exists($hash, (\Yii::$app->params['cartArray']))) {
                         unset(\Yii::$app->params['cartArray'][$hash]);
                         if (empty(\Yii::$app->params['cartArray'])) {
-                            SessionHelper::remove([\Yii::$app->params['cartKey']]);
+                            SessionHelper::remove([\Yii::$app->params['cartKey'], \Yii::$app->params['customerKey']]);
+                            \Yii::$app->params['customerArray'] = [];
                         } else {
                             SessionHelper::write(\Yii::$app->params['cartKey'], \Yii::$app->params['cartArray']);
                         }
@@ -202,53 +204,60 @@ class CartController extends AbstractBaseController
             }
             
             $rawUsersModel = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
-            if (!empty(\Yii::$app->params['customerArray'])) {
-                if (!empty(\Yii::$app->params['customerArray'][UsersModel::tableName()])) {
-                    $rawUsersModel = \Yii::configure($rawUsersModel, \Yii::$app->params['customerArray'][UsersModel::tableName()]);
+            $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ORDER]);
+            $rawPhonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_ORDER]);
+            $rawAddressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_ORDER]);
+            $rawDeliveriesModel = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_ORDER]);
+            $rawPaymentsModel = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_ORDER]);
+            
+            if (\Yii::$app->request->isPost && $rawUsersModel->load(\Yii::$app->request->post()) && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawPhonesModel->load(\Yii::$app->request->post()) && $rawAddressModel->load(\Yii::$app->request->post()) && $rawDeliveriesModel->load(\Yii::$app->request->post()) && $rawPaymentsModel->load(\Yii::$app->request->post())) {
+                if ($rawUsersModel->validate() && $rawEmailsModel->validate() && $rawPhonesModel->validate() && $rawAddressModel->validate() && $rawDeliveriesModel->validate() && $rawPaymentsModel->validate()) {
+                    \Yii::$app->params['customerArray'][UsersModel::tableName()] = $rawUsersModel->toArray();
+                    \Yii::$app->params['customerArray'][EmailsModel::tableName()] = $rawEmailsModel->toArray();
+                    \Yii::$app->params['customerArray'][PhonesModel::tableName()] = $rawPhonesModel->toArray();
+                    \Yii::$app->params['customerArray'][AddressModel::tableName()] = $rawAddressModel->toArray();
+                    \Yii::$app->params['customerArray'][DeliveriesModel::tableName()] = $rawDeliveriesModel->toArray();
+                    \Yii::$app->params['customerArray'][PaymentsModel::tableName()] = $rawPaymentsModel->toArray();
+                    
+                    $hash = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
+                    SessionHelper::write($hash, \Yii::$app->params['customerArray']);
+                    
+                    return $this->redirect(Url::to(['/cart/check']));
+                } else {
+                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'Model::validate']), __METHOD__);
                 }
+            }
+            
+            if (!empty(\Yii::$app->params['customerArray'][UsersModel::tableName()])) {
+                $rawUsersModel = \Yii::configure($rawUsersModel, \Yii::$app->params['customerArray'][UsersModel::tableName()]);
             } elseif (\Yii::$app->user->isGuest == false) {
                 $rawUsersModel = \Yii::configure($rawUsersModel, array_filter(\Yii::$app->user->identity->toArray()));
             }
             
-            $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ORDER]);
-            if (!empty(\Yii::$app->params['customerArray'])) {
-                if (!empty(\Yii::$app->params['customerArray'][EmailsModel::tableName()])) {
-                    $rawEmailsModel = \Yii::configure($rawEmailsModel, \Yii::$app->params['customerArray'][EmailsModel::tableName()]);
-                }
-            } elseif (\Yii::$app->user->isGuest == false) {
+            if (\Yii::$app->user->isGuest == false) {
                 $rawEmailsModel = \Yii::configure($rawEmailsModel, array_filter(\Yii::$app->user->identity->email->toArray()));
+            } elseif (!empty(\Yii::$app->params['customerArray'][EmailsModel::tableName()])) {
+                $rawEmailsModel = \Yii::configure($rawEmailsModel, \Yii::$app->params['customerArray'][EmailsModel::tableName()]);
             }
             
-            $rawPhonesModel = new PhonesModel(['scenario'=>PhonesModel::GET_FROM_ORDER]);
-            if (!empty(\Yii::$app->params['customerArray'])) {
-                if (!empty(\Yii::$app->params['customerArray'][PhonesModel::tableName()])) {
-                    $rawPhonesModel = \Yii::configure($rawPhonesModel, \Yii::$app->params['customerArray'][PhonesModel::tableName()]);
-                }
+            if (!empty(\Yii::$app->params['customerArray'][PhonesModel::tableName()])) {
+                $rawPhonesModel = \Yii::configure($rawPhonesModel, \Yii::$app->params['customerArray'][PhonesModel::tableName()]);
             } elseif (\Yii::$app->user->isGuest == false && !empty(\Yii::$app->user->identity->id_phone)) {
                 $rawPhonesModel = \Yii::configure($rawPhonesModel, array_filter(\Yii::$app->user->identity->phone->toArray()));
             }
             
-            $rawAddressModel = new AddressModel(['scenario'=>AddressModel::GET_FROM_ORDER]);
-            if (!empty(\Yii::$app->params['customerArray'])) {
-                if (!empty(\Yii::$app->params['customerArray'][AddressModel::tableName()])) {
-                    $rawAddressModel = \Yii::configure($rawAddressModel, \Yii::$app->params['customerArray'][AddressModel::tableName()]);
-                }
+            if (!empty(\Yii::$app->params['customerArray'][AddressModel::tableName()])) {
+                $rawAddressModel = \Yii::configure($rawAddressModel, \Yii::$app->params['customerArray'][AddressModel::tableName()]);
             } elseif (\Yii::$app->user->isGuest == false && !empty(\Yii::$app->user->identity->id_address)) {
                 $rawAddressModel = \Yii::configure($rawAddressModel, array_filter(\Yii::$app->user->identity->address->toArray()));
             }
             
-            $rawDeliveriesModel = new DeliveriesModel(['scenario'=>DeliveriesModel::GET_FROM_ORDER]);
-            if (!empty(\Yii::$app->params['customerArray'])) {
-                if (!empty(\Yii::$app->params['customerArray'][DeliveriesModel::tableName()])) {
-                    $rawDeliveriesModel = \Yii::configure($rawDeliveriesModel, \Yii::$app->params['customerArray'][DeliveriesModel::tableName()]);
-                }
+            if (!empty(\Yii::$app->params['customerArray'][DeliveriesModel::tableName()])) {
+                $rawDeliveriesModel = \Yii::configure($rawDeliveriesModel, \Yii::$app->params['customerArray'][DeliveriesModel::tableName()]);
             }
             
-            $rawPaymentsModel = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_ORDER]);
-            if (!empty(\Yii::$app->params['customerArray'])) {
-                if (!empty(\Yii::$app->params['customerArray'][PaymentsModel::tableName()])) {
-                    $rawPaymentsModel = \Yii::configure($rawPaymentsModel, \Yii::$app->params['customerArray'][PaymentsModel::tableName()]);
-                }
+            if (!empty(\Yii::$app->params['customerArray'][PaymentsModel::tableName()])) {
+                $rawPaymentsModel = \Yii::configure($rawPaymentsModel, \Yii::$app->params['customerArray'][PaymentsModel::tableName()]);
             }
             
             $renderArray = InstancesHelper::getInstances();
@@ -295,6 +304,60 @@ class CartController extends AbstractBaseController
     }
     
     /**
+     * Обрабатывает запрос к странице проверки данных покупки
+     * @return string
+     */
+    public function actionCheck()
+    {
+        try {
+            if (empty(\Yii::$app->params['cartArray']) || empty(\Yii::$app->params['customerArray'])) {
+                return $this->redirect(Url::to(['/products-list/index']));
+            }
+            
+            $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
+            }
+            
+            foreach (\Yii::$app->params['cartArray'] as $hash=>$purchase) {
+                $renderArray['purchasesList'][$hash] = \Yii::configure((new PurchasesModel()), array_filter($purchase, function($key) {
+                    return array_key_exists($key, (new PurchasesModel())->attributes);
+                }, ARRAY_FILTER_USE_KEY));
+            }
+            
+            $renderArray['usersModel'] = \Yii::configure((new UsersModel()), \Yii::$app->params['customerArray'][UsersModel::tableName()]);
+            $renderArray['emailsModel'] = \Yii::configure((new EmailsModel()), \Yii::$app->params['customerArray'][EmailsModel::tableName()]);
+            $renderArray['phonesModel'] = \Yii::configure((new PhonesModel()), \Yii::$app->params['customerArray'][PhonesModel::tableName()]);
+            $renderArray['addressModel'] = \Yii::configure((new AddressModel()), \Yii::$app->params['customerArray'][AddressModel::tableName()]);
+            
+            $deliveriesQuery = DeliveriesModel::find();
+            $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
+            $deliveriesQuery->where(['[[deliveries.id]]'=>\Yii::$app->params['customerArray'][DeliveriesModel::tableName()]]);
+            $renderArray['deliveriesModel'] = $deliveriesQuery->one();
+            if (!$renderArray['deliveriesModel'] instanceof DeliveriesModel) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'DeliveriesModel']));
+            }
+            
+            $paymentsQuery = PaymentsModel::find();
+            $paymentsQuery->extendSelect(['id', 'name', 'description']);
+            $paymentsQuery->where(['[[payments.id]]'=>\Yii::$app->params['customerArray'][PaymentsModel::tableName()]]);
+            $renderArray['paymentsModel'] = $paymentsQuery->one();
+            if (!$renderArray['paymentsModel'] instanceof PaymentsModel) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'PaymentsModel']));
+            }
+            
+            \Yii::$app->params['breadcrumbs'] = ['url'=>['/cart/index'], 'label'=>\Yii::t('base', 'Check information')];
+            
+            Url::remember(Url::current(), 'shop');
+            
+            return $this->render('check.twig', $renderArray);
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Пишет в сессию массив данных о товарах в корзине
      * @param object $rawPurchasesModel объект PurchasesModel
      * @param object $rawProductsModel объект ProductsModel
@@ -303,7 +366,7 @@ class CartController extends AbstractBaseController
     private function write(PurchasesModel $rawPurchasesModel, ProductsModel $rawProductsModel): bool
     {
         try {
-            $purchaseArray = array_filter(ArrayHelper::merge($rawPurchasesModel->attributes, $rawProductsModel->attributes));
+            $purchaseArray = array_filter(ArrayHelper::merge($rawPurchasesModel->toArray(), $rawProductsModel->toArray()));
             $clonePurchaseArray = $purchaseArray;
             unset($clonePurchaseArray['quantity']);
             $hash = HashHelper::createHash($clonePurchaseArray);
@@ -312,7 +375,8 @@ class CartController extends AbstractBaseController
             } else {
                 \Yii::$app->params['cartArray'][$hash] = $purchaseArray;
             }
-            SessionHelper::write(\Yii::$app->params['cartKey'], \Yii::$app->params['cartArray']);
+            $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
+            SessionHelper::write($key, \Yii::$app->params['cartArray']);
             
             return true;
         } catch (\Throwable $t) {
@@ -325,11 +389,14 @@ class CartController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\CurrencyFilter',
-                'only'=>['index', 'set', 'customer']
+                'only'=>['index', 'set', 'customer', 'check']
+            ],
+            [
+                'class'=>'app\filters\CustomerFilter',
+                'only'=>['customer', 'check']
             ],
             [
                 'class'=>'app\filters\CartFilter',
-                'only'=>['index', 'set', 'update', 'delete', 'customer']
             ],
         ];
     }

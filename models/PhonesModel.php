@@ -46,6 +46,7 @@ class PhonesModel extends AbstractBaseModel
     public function fields()
     {
         return [
+            'id'=>'id',
             'phone'=>'phone',
         ];
     }
