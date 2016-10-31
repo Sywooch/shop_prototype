@@ -13,6 +13,7 @@ use app\models\EmailsModel;
 class EmailExistsCreateValidatorTests extends TestCase
 {
     private static $_dbClass;
+    private static $_email = 'some@some.com';
     
     public static function setUpBeforeClass()
     {
@@ -44,7 +45,7 @@ class EmailExistsCreateValidatorTests extends TestCase
         $this->assertEquals(\Yii::t('base', 'This email is already registered!'), $model->errors['email'][0]);
         
         $model = new EmailsModel();
-        $model->email = 'some@some.com';
+        $model->email = self::$_email;
         
         $validator = new EmailExistsCreateValidator();
         $validator->validateAttribute($model, 'email');
@@ -65,7 +66,7 @@ class EmailExistsCreateValidatorTests extends TestCase
         $this->assertTrue($result);
         
         $validator = new EmailExistsCreateValidator();
-        $result = $validator->validate('some@some.com');
+        $result = $validator->validate(self::$_email);
         
         $this->assertFalse($result);
     }

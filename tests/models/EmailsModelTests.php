@@ -120,24 +120,6 @@ class EmailsModelTests extends TestCase
     }
     
     /**
-     * Тестирует поля, возвращаемые Model::toArray()
-     */
-    public function testToArray()
-    {
-        $fixture = self::$_dbClass->emails['email_1'];
-        
-        $model = new EmailsModel();
-        $model->email = $fixture['id'];
-        $model->email = $fixture['email'];
-        
-        $result = $model->toArray();
-        
-        $this->assertEquals(2, count($result));
-        $this->assertTrue(array_key_exists('id', $result));
-        $this->assertTrue(array_key_exists('email', $result));
-    }
-    
-    /**
      * Тестирует метод EmailsModel::getUser
      */
     public function testGetUser()

@@ -43,6 +43,7 @@ $routes = [
     'cart-clean'=>'cart/clean',
     'cart-update'=>'cart/update',
     'cart-delete'=>'cart/delete',
+    'cart-complete'=>'cart/complete',
 ];
 
 return $routes;

@@ -25,12 +25,12 @@ class FiltersController extends AbstractBaseController
             \Yii::configure(\Yii::$app->filters, ['scenario'=>FiltersModel::GET_FROM_FORM]);
             
             if (\Yii::$app->request->isPost && \Yii::$app->filters->load(\Yii::$app->request->post())) {
-                if (\Yii::$app->filters->validate('shop')) {
+                if (\Yii::$app->filters->validate()) {
                     $key = StringHelper::cutPage(UrlHelper::previous('shop'));
                     if (!is_string($key) || empty($key)) {
                         throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
                     }
-                    SessionHelper::write($key, \Yii::$app->filters->attributes);
+                    SessionHelper::write($key, \Yii::$app->filters->toArray());
                 }
             }
             

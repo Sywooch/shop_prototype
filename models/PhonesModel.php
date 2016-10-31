@@ -42,12 +42,4 @@ class PhonesModel extends AbstractBaseModel
             [['phone'], 'required', 'on'=>self::GET_FROM_ORDER],
         ];
     }
-    
-    public function fields()
-    {
-        return [
-            'id'=>'id',
-            'phone'=>'phone',
-        ];
-    }
 }

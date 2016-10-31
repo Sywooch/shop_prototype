@@ -34,7 +34,7 @@ class CurrencyFilter extends ActionFilter
                 if (!$currencyModel instanceof CurrencyModel) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CurrencyModel']));
                 }
-                $currency = $currencyModel->attributes;
+                $currency = $currencyModel->toArray();
                 if (empty($currency)) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $currency']));
                 }

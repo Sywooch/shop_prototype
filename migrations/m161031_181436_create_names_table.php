@@ -3,18 +3,18 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation for table `address`.
+ * Handles the creation of table `names`.
  */
-class m160913_082819_create_address_table extends Migration
+class m161031_181436_create_names_table extends Migration
 {
     /**
      * @inheritdoc
      */
     public function up()
     {
-        $this->createTable('address', [
+        $this->createTable('names', [
             'id' => $this->primaryKey(5)->unsigned()->notNull(),
-            'address'=>$this->string(500)->notNull()->unique(),
+            'name'=>$this->string(255)->notNull()->unique()
         ], 'ENGINE=InnoDB');
     }
 
@@ -23,6 +23,6 @@ class m160913_082819_create_address_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('address');
+        $this->dropTable('names');
     }
 }

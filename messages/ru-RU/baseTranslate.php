@@ -17,6 +17,7 @@ $translate = [
     'Logout'=>'Выйти',
     'Registration'=>'Регистрация',
     'This email is already registered!'=>'Этот email уже зарегистрирован!',
+    'This phone is already registered!'=>'Этот телефон уже зарегистрирован!',
     'Subscribe to the mailing list!'=>'Подписывайтесь на рассылки!',
     'Authorized user'=>'Авторизованный пользователь',
     'Administrator'=>'Администратор',
@@ -81,6 +82,11 @@ $translate = [
     'Postcode:'=>'Почтовый код:',
     'Delivery Information'=>'Информация о доставке',
     'Payments Information'=>'Информация об оплате',
+    'Delivery price:'=>'Стоимость доставки:',
+    'Check data and send order'=>'Проверить данные и отправить заказ',
+    'Send order'=>'Отправить заказ',
+    'Total price:'=>'Общая стоимость:',
+    'Change data'=>'Изменить данные',
 ];
 
 return $translate;

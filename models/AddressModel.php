@@ -42,15 +42,4 @@ class AddressModel extends AbstractBaseModel
             [['address', 'city', 'country', 'postcode'], 'required', 'on'=>self::GET_FROM_ORDER],
         ];
     }
-    
-    public function fields()
-    {
-        return [
-            'id'=>'id',
-            'address'=>'address',
-            'city'=>'city',
-            'country'=>'country',
-            'postcode'=>'postcode',
-        ];
-    }
 }

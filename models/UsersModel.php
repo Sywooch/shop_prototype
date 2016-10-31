@@ -70,6 +70,12 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
             'id_address'=>'id_address'
         ];
     }
+    public function extraFields()
+    {
+        return [
+            'password'=>'password',
+        ];
+    }
     
     /**
      * Получает объект EmailsModel, с которой связан текущий объект UsersModel

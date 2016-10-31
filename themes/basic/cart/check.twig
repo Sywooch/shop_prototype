@@ -4,6 +4,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 {{ use('app/widgets/CartWidget') }}
 {{ use('app/widgets/PriceWidget') }}
+{{ use('app/widgets/TotalPriceWidget') }}
 
 {% include('@theme/base/user-info.twig') %}
 
@@ -30,8 +31,11 @@
         <br>{{ yii.t('base', 'Quantity:') }} {{ purchase.quantity }}
         <br>{{ yii.t('base', 'Color:') }} {{ purchase.color.color }}
         <br>{{ yii.t('base', 'Size:') }} {{ purchase.size.size }}
+        <br>{{ yii.t('base', 'Total price:') }} {{ total_price_widget_widget({'price':purchase.product.price, 'quantity':purchase.quantity}) }}
     </p>
 {% endfor %}
+
+{{ cart_widget_widget() }}
 
 <p><strong>{{ yii.t('base', 'Customer Information') }}</strong></p>
 
@@ -40,18 +44,18 @@
     <br>{{ yii.t('base', 'Surname:') }} {{ usersModel.surname }}
     <br>{{ yii.t('base', 'Email:') }} {{ emailsModel.email }}
     <br>{{ yii.t('base', 'Phone:') }} {{ phonesModel.phone }}
-    <br>{{ yii.t('base', 'Address:') }} {{ addressModel.address }}
-    <br>{{ yii.t('base', 'City:') }} {{ addressModel.city }}
-    <br>{{ yii.t('base', 'Country:') }} {{ addressModel.country }}
-    <br>{{ yii.t('base', 'Postcode:') }} {{ addressModel.postcode }}
+    
 </p>
 
 <p><strong>{{ yii.t('base', 'Delivery Information') }}</strong></p>
 
 <p>
-    {{ deliveriesModel.name }}
-    <br>{{ deliveriesModel.description }}
-    <br>{{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':deliveriesModel.price}) }}
+    {{ deliveriesModel.name }}. {{ deliveriesModel.description }}
+    <br>{{ yii.t('base', 'Address:') }} {{ addressModel.address }}
+    <br>{{ yii.t('base', 'City:') }} {{ addressModel.city }}
+    <br>{{ yii.t('base', 'Country:') }} {{ addressModel.country }}
+    <br>{{ yii.t('base', 'Postcode:') }} {{ addressModel.postcode }}
+    <br>{{ yii.t('base', 'Delivery price:') }} {{ price_widget_widget({'price':deliveriesModel.price}) }}
 </p>
 
 <p><strong>{{ yii.t('base', 'Payments Information') }}</strong></p>
@@ -61,7 +65,19 @@
     <br>{{ paymentsModel.description }}
 </p>
 
-{{ cart_widget_widget() }}
+<p>
+    <form name="checkout-form" action="{{ url.to({0:'/cart/customer'}) }}" method="get">
+        <input type="submit" value="{{ yii.t('base', 'Change data') }}">
+    </form>
+</p>
+
+<hr>
+
+<p>
+    <form name="checkout-form" action="{{ url.to({0:'/cart/complete'}) }}" method="get">
+        <input type="submit" value="{{ yii.t('base', 'Send order') }}">
+    </form>
+</p>
 
 <p>
     {% include('@theme/base/currency-form.twig') %}

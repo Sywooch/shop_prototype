@@ -78,24 +78,6 @@ class PhonesModelTests extends TestCase
     }
     
     /**
-     * Тестирует поля, возвращаемые Model::toArray()
-     */
-    public function testToArray()
-    {
-        $fixture = self::$_dbClass->phones['phone_1'];
-        
-        $model = new PhonesModel();
-        $model->phone = $fixture['id'];
-        $model->phone = $fixture['phone'];
-        
-        $result = $model->toArray();
-        
-        $this->assertEquals(2, count($result));
-        $this->assertTrue(array_key_exists('id', $result));
-        $this->assertTrue(array_key_exists('phone', $result));
-    }
-    
-    /**
      * Тестирует запрос на получение массива объектов
      */
     public function testGetAll()

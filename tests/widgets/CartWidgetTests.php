@@ -27,7 +27,7 @@ class CartWidgetTests extends TestCase
         $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
         $currencyQuery->where(['[[currency.id]]'=>$fixture['id']]);
         $currencyModel = $currencyQuery->one();
-        $currency = $currencyModel->attributes;
+        $currency = $currencyModel->toArray();
         \Yii::configure(\Yii::$app->currency, $currency);
     }
     

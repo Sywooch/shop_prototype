@@ -62,7 +62,7 @@ class ExtendActiveQuery extends ActiveQuery
     public function addFilters(): ActiveQuery
     {
         try {
-            if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->attributes)))) {
+            if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->toArray())))) {
                 $tableName = $this->modelClass::tableName();
                 foreach (\Yii::$app->params['filterKeys'] as $filter) {
                     if (in_array($filter, $keys)) {

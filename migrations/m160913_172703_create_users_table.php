@@ -16,8 +16,8 @@ class m160913_172703_create_users_table extends Migration
             'id' => $this->primaryKey(5)->unsigned()->notNull(),
             'id_email'=>$this->integer(5)->unsigned()->notNull(),
             'password'=>$this->string(255)->notNull(),
-            'name'=>$this->string(100)->notNull(),
-            'surname'=>$this->string(100)->notNull(),
+            'id_name'=>$this->integer(5)->unsigned()->notNull(),
+            'id_surname'=>$this->integer(5)->unsigned()->notNull(),
             'id_phone'=>$this->integer(5)->unsigned()->notNull(),
             'id_address'=>$this->integer(5)->unsigned()->notNull()
         ], 'ENGINE=InnoDB');

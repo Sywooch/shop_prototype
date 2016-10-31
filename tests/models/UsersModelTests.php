@@ -151,7 +151,7 @@ class UsersModelTests extends TestCase
     }
     
     /**
-     * Тестирует поля, возвращаемые Model::toArray()
+     * Тестирует поля, возвращаемые Model::attributes
      */
     public function testToArray()
     {
@@ -171,6 +171,17 @@ class UsersModelTests extends TestCase
         $this->assertEquals(6, count($result));
         $this->assertTrue(array_key_exists('id', $result));
         $this->assertTrue(array_key_exists('id_email', $result));
+        $this->assertTrue(array_key_exists('name', $result));
+        $this->assertTrue(array_key_exists('surname', $result));
+        $this->assertTrue(array_key_exists('id_phone', $result));
+        $this->assertTrue(array_key_exists('id_address', $result));
+        
+        $result = $model->toArray([], ['password']);
+        
+        $this->assertEquals(7, count($result));
+        $this->assertTrue(array_key_exists('id', $result));
+        $this->assertTrue(array_key_exists('id_email', $result));
+        $this->assertTrue(array_key_exists('password', $result));
         $this->assertTrue(array_key_exists('name', $result));
         $this->assertTrue(array_key_exists('surname', $result));
         $this->assertTrue(array_key_exists('id_phone', $result));

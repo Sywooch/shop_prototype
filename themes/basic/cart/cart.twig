@@ -1,6 +1,7 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/PriceWidget') }}
+{{ use('app/widgets/TotalPriceWidget') }}
 {{ use('app/widgets/ThumbnailsWidget') }}
 {{ use('yii/widgets/ActiveForm') }}
 {{ use('app/widgets/CartWidget') }}
@@ -42,14 +43,19 @@
                 <input type="hidden" name="hash" value="{{ hash }}">
                 <input type="submit" value="{{ yii.t('base', 'Delete') }}">
             {{ active_form_end() }}
+            <p>{{ yii.t('base', 'Total price:') }} {{ total_price_widget_widget({'price':purchase.product.price, 'quantity':purchase.quantity}) }}</p>
+            <hr>
         </p>
     {% endfor %}
 {% endif %}
 
+<p>
+    <form name="checkout-form" action="{{ url.to({0:'/cart/customer'}) }}" method="get">
+        <input type="submit" value="{{ yii.t('base', 'Checkout') }}">
+    </form>
+</p>
+
 {{ cart_widget_widget({'toCart':false}) }}
-
-<p><a href="{{ url.to({0:'/cart/customer'}) }}">{{ yii.t('base', 'Checkout') }}</a></p>
-
 <p>
     {% include('@theme/base/currency-form.twig') %}
 </p>

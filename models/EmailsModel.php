@@ -59,14 +59,6 @@ class EmailsModel extends AbstractBaseModel
         ];
     }
     
-    public function fields()
-    {
-        return [
-            'id'=>'id',
-            'email'=>'email',
-        ];
-    }
-    
     /**
      * Получает объект UsersModel, с которым связан текущий объект EmailsModel
      * @return ActiveQueryInterface the relational query object

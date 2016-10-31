@@ -55,7 +55,8 @@
         {{ form.field(paymentsModel, 'id').radioList(array.map(paymentsList, 'id', 'name')).label(false) | raw }}
         
         {{ form.field(usersModel, 'id').hiddenInput({'value':app.user.id}).label(false) | raw }}
-        <br><input type="submit" value="{{ yii.t('base', 'Checkout') }}">
+        <br><hr>
+        <br><input type="submit" value="{{ yii.t('base', 'Check data and send order') }}">
     {{ active_form_end() }}
 </p>
 

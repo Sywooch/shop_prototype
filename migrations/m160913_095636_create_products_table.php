@@ -23,6 +23,7 @@ class m160913_095636_create_products_table extends Migration
             'images'=>$this->string(500)->notNull(),
             'id_category'=>$this->integer(3)->unsigned()->notNull(),
             'id_subcategory'=>$this->integer(3)->unsigned()->notNull(),
+            'id_brand'=>$this->integer(3)->unsigned()->notNull(),
             'active'=>$this->boolean()->notNull()->defaultValue(true),
             'total_products'=>$this->smallInteger(5)->unsigned()->notNull()->defaultValue(0),
             'seocode'=>$this->string(255)->notNull()
@@ -35,6 +36,8 @@ class m160913_095636_create_products_table extends Migration
         $this->addForeignKey('products_id_category', 'products', 'id_category', 'categories', 'id', 'RESTRICT', 'CASCADE');
         
         $this->addForeignKey('products_id_subcategory', 'products', 'id_subcategory', 'subcategory', 'id', 'RESTRICT', 'CASCADE');
+        
+        $this->addForeignKey('products_id_brand', 'products', 'id_brand', 'brands', 'id', 'RESTRICT', 'CASCADE');
     }
 
     /**
@@ -42,6 +45,8 @@ class m160913_095636_create_products_table extends Migration
      */
     public function safeDown()
     {
+        $this->dropForeignKey('products_id_brand', 'products');
+        
         $this->dropForeignKey('products_id_subcategory', 'products');
         
         $this->dropForeignKey('products_id_category', 'products');
