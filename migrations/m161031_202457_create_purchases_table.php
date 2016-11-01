@@ -36,8 +36,6 @@ class m161031_202457_create_purchases_table extends Migration
             'shipped'=>$this->boolean()->notNull()->defaultValue(false)
         ], 'ENGINE=InnoDB');
         
-        $this->addForeignKey('purchases_id_user', 'purchases', 'id_user', 'users', 'id', 'RESTRICT', 'CASCADE');
-        
         $this->addForeignKey('purchases_id_name', 'purchases', 'id_name', 'names', 'id', 'RESTRICT', 'CASCADE');
         
         $this->addForeignKey('purchases_id_surname', 'purchases', 'id_surname', 'surnames', 'id', 'RESTRICT', 'CASCADE');
@@ -95,8 +93,6 @@ class m161031_202457_create_purchases_table extends Migration
         $this->dropForeignKey('purchases_id_surname', 'purchases');
         
         $this->dropForeignKey('purchases_id_name', 'purchases');
-        
-        $this->dropForeignKey('purchases_id_user', 'purchases');
         
         $this->dropTable('purchases');
     }

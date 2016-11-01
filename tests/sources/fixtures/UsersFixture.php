@@ -18,5 +18,12 @@ class UsersFixture extends AbstractFixture
      */
     public $depends = [
         'app\tests\sources\fixtures\EmailsFixture',
+        'app\tests\sources\fixtures\NamesFixture',
+        'app\tests\sources\fixtures\SurnamesFixture',
+        'app\tests\sources\fixtures\PhonesFixture',
+        'app\tests\sources\fixtures\AddressFixture',
+        'app\tests\sources\fixtures\CitiesFixture',
+        'app\tests\sources\fixtures\CountriesFixture',
+        'app\tests\sources\fixtures\PostcodesFixture',
     ];
 }

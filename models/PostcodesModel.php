@@ -8,7 +8,7 @@ use app\exceptions\ExceptionsTrait;
 /**
  * Представляет данные таблицы phones
  */
-class AddressModel extends AbstractBaseModel
+class PostcodesModel extends AbstractBaseModel
 {
     /**
      * Сценарий сохранения данных из формы заказа
@@ -22,7 +22,7 @@ class AddressModel extends AbstractBaseModel
     public static function tableName()
     {
         try {
-            return 'address';
+            return 'postcodes';
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -31,15 +31,15 @@ class AddressModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_ORDER=>['address'],
+            self::GET_FROM_ORDER=>['postcode'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['address'], 'app\validators\StripTagsValidator'],
-            [['address'], 'required', 'on'=>self::GET_FROM_ORDER],
+            [['postcode'], 'app\validators\StripTagsValidator'],
+            [['postcode'], 'required', 'on'=>self::GET_FROM_ORDER],
         ];
     }
 }

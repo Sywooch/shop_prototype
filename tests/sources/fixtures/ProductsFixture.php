@@ -20,5 +20,6 @@ class ProductsFixture extends AbstractFixture
         'app\tests\sources\fixtures\CategoriesFixture',
         'app\tests\sources\fixtures\SubcategoryFixture',
         'app\tests\sources\fixtures\ColorsFixture',
+        'app\tests\sources\fixtures\BrandsFixture',
     ];
 }

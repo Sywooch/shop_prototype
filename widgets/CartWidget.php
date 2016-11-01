@@ -4,9 +4,11 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
-use yii\helpers\{Html,
+use yii\helpers\{ArrayHelper,
+    Html,
     Url};
 use app\exceptions\ExceptionsTrait;
+use app\models\ProductsModel;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -40,9 +42,18 @@ class CartWidget extends Widget
     {
         try {
             if (!empty(\Yii::$app->params['cartArray'])) {
-                foreach (\Yii::$app->params['cartArray'] as $purchase) {
-                    $this->_productsCount += $purchase['quantity'];
-                    $this->_totalCost += ($purchase['price'] * $purchase['quantity']);
+                $productsQuery = ProductsModel::find();
+                $productsQuery->extendSelect(['id', 'price']);
+                $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
+                $productsQuery->asArray();
+                $productsArray = $productsQuery->all();
+                if (!is_array($productsArray) || empty($productsArray)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $productsArray']));
+                }
+                $cartArrayMap = ArrayHelper::map(\Yii::$app->params['cartArray'], 'id_product', 'quantity');
+                foreach ($productsArray as $product) {
+                    $this->_productsCount += $cartArrayMap[$product['id']];
+                    $this->_totalCost += ($product['price'] * $cartArrayMap[$product['id']]);
                 }
                 
                 $toCart = Html::a(\Yii::t('base', 'To cart'), Url::to(['/cart/index']));

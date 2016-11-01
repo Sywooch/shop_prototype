@@ -35,7 +35,7 @@ class UserInfoWidget extends Widget
                 $registartion = Html::a(\Yii::t('base', 'Registration'), ['/user/registration']);
                 $this->_result[] = Html::tag('p', $login . ' ' . $registartion);
             } else {
-                $user = \Yii::$app->user->identity->name ? \Yii::$app->user->identity->name : \Yii::$app->user->identity->email->email;
+                $user = \Yii::$app->user->identity->id_name ? \Yii::$app->user->identity->name->name : \Yii::$app->user->identity->email->email;
                 
                 $form = Html::beginForm(['/user/logout'], 'POST', ['id'=>'user-logout-form']);
                 $form .= Html::input('hidden', 'userId', \Yii::$app->user->id);

@@ -47,7 +47,7 @@ class UserInfoWidgetTests extends TestCase
         
         $result = UserInfoWidget::widget();
         
-        $expectedString = '<p>Привет, ' . $user->name . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        $expectedString = '<p>Привет, ' . $user->name->name . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
         $this->assertEquals($expectedString, $result);
     }
@@ -61,7 +61,7 @@ class UserInfoWidgetTests extends TestCase
         $fixture = self::$_dbClass->users['user_1'];
         
         $user = UsersModel::findOne($fixture['id']);
-        $user->name = '';
+        $user->id_name = null;
         \Yii::$app->user->login($user);
         
         $result = UserInfoWidget::widget();

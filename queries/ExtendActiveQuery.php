@@ -52,24 +52,25 @@ class ExtendActiveQuery extends ActiveQuery
     }
     
     /**
-     * Добавляет фильтры, указанные в массиве \Yii::$app->params['filterKeys']
-     * Фильтр опирается на соглашение, что имена таблиц, связывающих таблицы по 
-     * принципу М2М состоят из имен отдельных таблиц, обединенных нижним подчеркиванием
-     * Например, именем М2М таблицы для products и brands будет products_brands
-     * Поля, сылающиеся на связанные таблицы носят имена id_product, id_brand
+     * Добавляет фильтры по цвету, размеру, бренду 
      * @return object ExtendActiveQuery
      */
     public function addFilters(): ActiveQuery
     {
         try {
             if (!empty($keys = array_keys(array_filter(\Yii::$app->filters->toArray())))) {
-                $tableName = $this->modelClass::tableName();
-                foreach (\Yii::$app->params['filterKeys'] as $filter) {
-                    if (in_array($filter, $keys)) {
-                        $this->innerJoin('{{' . $tableName . '_' . $filter . '}}', '[[' . $tableName . '.id]]=[[' . $tableName . '_' . $filter . '.id_' . substr($tableName, 0, strlen($tableName)-1) . ']]');
-                        $this->innerJoin('{{' . $filter . '}}', '[[' . $tableName . '_' . $filter . '.id_' . substr($filter, 0, strlen($filter)-1) . ']]=[[' . $filter . '.id]]');
-                        $this->andWhere(['[[' . $filter . '.id]]'=>\Yii::$app->filters->$filter]);
-                    }
+                if (in_array('colors', $keys)) {
+                    $this->innerJoin('{{products_colors}}', '[[products_colors.id_product]]=[[products.id]]');
+                    $this->innerJoin('{{colors}}', '[[colors.id]]=[[products_colors.id_color]]');
+                    $this->andWhere(['[[colors.id]]'=>\Yii::$app->filters->colors]);
+                }
+                if (in_array('sizes', $keys)) {
+                    $this->innerJoin('{{products_sizes}}', '[[products_sizes.id_product]]=[[products.id]]');
+                    $this->innerJoin('{{sizes}}', '[[sizes.id]]=[[products_sizes.id_size]]');
+                    $this->andWhere(['[[sizes.id]]'=>\Yii::$app->filters->sizes]);
+                }
+                if (in_array('brands', $keys)) {
+                    $this->andWhere(['[[products.id_brand]]'=>\Yii::$app->filters->brands]);
                 }
             }
             

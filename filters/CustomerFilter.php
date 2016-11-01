@@ -23,8 +23,8 @@ class CustomerFilter extends ActionFilter
     public function beforeAction($action)
     {
         try {
-            $key = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
-            \Yii::$app->params['customerArray'] = SessionHelper::read($key) ?? [];
+            $customerKey = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
+            \Yii::$app->params['customerArray'] = SessionHelper::read($customerKey) ?? [];
             
             return parent::beforeAction($action);
         } catch (\Throwable $t) {

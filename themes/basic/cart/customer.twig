@@ -17,8 +17,8 @@
 
 <p>
     {% set form=active_form_begin({'id':'customer-form', 'action':url.to({0:'/cart/customer'}), 'method':'POST'}) %}
-        {{ form.field(usersModel, 'name') | raw }}
-        {{ form.field(usersModel, 'surname') | raw }}
+        {{ form.field(namesModel, 'name') | raw }}
+        {{ form.field(surnamesModel, 'surname') | raw }}
         
         {% if not app.user.isGuest %}
             {% set emailConfig={'readonly':true} %}
@@ -27,9 +27,9 @@
         
         {{ form.field(phonesModel, 'phone') | raw }}
         {{ form.field(addressModel, 'address') | raw }}
-        {{ form.field(addressModel, 'city') | raw }}
-        {{ form.field(addressModel, 'country') | raw }}
-        {{ form.field(addressModel, 'postcode') | raw }}
+        {{ form.field(citiesModel, 'city') | raw }}
+        {{ form.field(countriesModel, 'country') | raw }}
+        {{ form.field(postcodesModel, 'postcode') | raw }}
         
         {% if not app.user.isGuest %}
             <div class="customer-change disable">

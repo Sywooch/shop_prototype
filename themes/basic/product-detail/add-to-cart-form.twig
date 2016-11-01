@@ -5,6 +5,5 @@
     {{ form.field(purchasesModel, 'id_color').dropDownList(array.map(productsModel.colors, 'id', 'color')) | raw }}
     {{ form.field(purchasesModel, 'id_size').dropDownList(array.map(productsModel.sizes, 'id', 'size')) | raw }}
     {{ form.field(purchasesModel, 'id_product').hiddenInput({'value':productsModel.id}).label(false) | raw }}
-    {{ form.field(productsModel, 'price').hiddenInput({'value':productsModel.price}).label(false) | raw }}
     <input type="submit" value="{{ yii.t('base', 'Add to cart') }}">
 {{ active_form_end() }}

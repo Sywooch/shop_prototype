@@ -33,13 +33,11 @@
                 {{ form.field(purchase, 'id_color').dropDownList(array.map(purchase.product.colors, 'id', 'color')) | raw }}
                 {{ form.field(purchase, 'id_size').dropDownList(array.map(purchase.product.sizes, 'id', 'size')) | raw }}
                 {{ form.field(purchase, 'id_product').hiddenInput({'value':purchase.id_product}).label(false) | raw }}
-                {{ form.field(purchase.product, 'price').hiddenInput({'value':purchase.product.price}).label(false) | raw }}
                 <input type="hidden" name="hash" value="{{ hash }}">
                 <input type="submit" value="{{ yii.t('base', 'Update') }}">
             {{ active_form_end() }}
             
             {% set form=active_form_begin({'id':'cart-delete-form-%d' | format(purchase.id_product), 'action':url.to({0:'/cart/delete'}), 'method':'POST'}) %}
-                {{ form.field(purchase, 'id_product').hiddenInput({'value':purchase.id_product}).label(false) | raw }}
                 <input type="hidden" name="hash" value="{{ hash }}">
                 <input type="submit" value="{{ yii.t('base', 'Delete') }}">
             {{ active_form_end() }}
@@ -56,6 +54,7 @@
 </p>
 
 {{ cart_widget_widget({'toCart':false}) }}
+
 <p>
     {% include('@theme/base/currency-form.twig') %}
 </p>

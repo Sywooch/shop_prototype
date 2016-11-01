@@ -42,7 +42,7 @@ class ProductsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_ADD_PRODUCT=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'total_products', 'seocode'],
+            self::GET_FROM_ADD_PRODUCT=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode'],
             self::GET_FROM_ADD_TO_CART=>['price'],
         ];
     }
@@ -51,7 +51,7 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             [['date', 'code', 'name', 'description', 'short_description', 'total_products', 'seocode'], 'app\validators\StripTagsValidator'],
-            [['code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'total_products'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT],
+            [['code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'total_products'], 'required', 'on'=>self::GET_FROM_ADD_PRODUCT],
             [['code'], 'app\validators\ProductCodeValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],
             [['seocode'], 'app\validators\ProductSeocodeValidator', 'skipOnEmpty'=>false, 'on'=>self::GET_FROM_ADD_PRODUCT],
             [['price'], 'app\validators\ProductPriceValidator', 'on'=>self::GET_FROM_ADD_PRODUCT],

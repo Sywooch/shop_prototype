@@ -16,6 +16,7 @@ class CartWidgetTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
+                'products'=>'app\tests\sources\fixtures\ProductsFixture',
                 'currency'=>'app\tests\sources\fixtures\CurrencyFixture',
             ],
         ]);
@@ -37,14 +38,15 @@ class CartWidgetTests extends TestCase
     public function testWidget()
     {
         $fixture = self::$_dbClass->currency['currency_1'];
+        $fixtureProduct = self::$_dbClass->products['product_1'];
         
         \Yii::$app->params['cartArray'] = [
-            ['id_product'=>1, 'quantity'=>2, 'id_color'=>2, 'id_size'=>1, 'price'=>(float) 12.34]
+            ['id_product'=>1, 'quantity'=>2],
         ];
         
         $result = CartWidget::widget();
         
-        $text = \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>\Yii::$app->params['cartArray'][0]['quantity'] , 'totalCost'=>number_format((\Yii::$app->params['cartArray'][0]['price'] * \Yii::$app->params['cartArray'][0]['quantity']), 2, ',', '')]);
+        $text = \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>\Yii::$app->params['cartArray'][0]['quantity'] , 'totalCost'=>number_format(($fixtureProduct['price'] * \Yii::$app->params['cartArray'][0]['quantity']), 2, ',', '')]);
         
         $this->assertRegExp('/^<div id="cart">/', $result);
         $this->assertRegExp('/<p>' . $text . ' ' . $fixture['code'] . '/', $result);
@@ -80,14 +82,15 @@ class CartWidgetTests extends TestCase
     public function testWidgetThree()
     {
         $fixture = self::$_dbClass->currency['currency_1'];
+        $fixtureProduct = self::$_dbClass->products['product_1'];
         
         \Yii::$app->params['cartArray'] = [
-            ['id_product'=>1, 'quantity'=>2, 'id_color'=>2, 'id_size'=>1, 'price'=>(float) 12.34]
+            ['id_product'=>1, 'quantity'=>2]
         ];
         
         $result = CartWidget::widget(['toCart'=>false]);
         
-        $text = \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>\Yii::$app->params['cartArray'][0]['quantity'] , 'totalCost'=>number_format((\Yii::$app->params['cartArray'][0]['price'] * \Yii::$app->params['cartArray'][0]['quantity']), 2, ',', '')]);
+        $text = \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>\Yii::$app->params['cartArray'][0]['quantity'] , 'totalCost'=>number_format(($fixtureProduct['price'] * \Yii::$app->params['cartArray'][0]['quantity']), 2, ',', '')]);
         
         $this->assertRegExp('/^<div id="cart">/', $result);
         $this->assertRegExp('/<p>' . $text . ' ' . $fixture['code'] . '/', $result);

@@ -31,8 +31,6 @@ class BrandsModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
-        
         $model = new BrandsModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
@@ -42,7 +40,7 @@ class BrandsModelTests extends TestCase
     /**
      * Тестирует сценарии
      */
-    public function testScenarios()
+    /*public function testScenarios()
     {
         $fixture = self::$_dbClass->brands['brand_1'];
         
@@ -52,12 +50,12 @@ class BrandsModelTests extends TestCase
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
-    }
+    }*/
     
     /**
      * Тестирует правила проверки
      */
-    public function testRules()
+    /*public function testRules()
     {
         $fixture = self::$_dbClass->brands['brand_1'];
         
@@ -75,7 +73,7 @@ class BrandsModelTests extends TestCase
         $model->validate();
         
         $this->assertTrue(empty($model->errors));
-    }
+    }*/
     
     /**
      * Тестирует запрос на получение массива объектов

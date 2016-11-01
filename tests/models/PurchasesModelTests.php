@@ -41,6 +41,14 @@ class PurchasesModelTests extends TestCase
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('id_user', $model->attributes));
+        $this->assertTrue(array_key_exists('id_name', $model->attributes));
+        $this->assertTrue(array_key_exists('id_surname', $model->attributes));
+        $this->assertTrue(array_key_exists('id_email', $model->attributes));
+        $this->assertTrue(array_key_exists('id_phone', $model->attributes));
+        $this->assertTrue(array_key_exists('id_address', $model->attributes));
+        $this->assertTrue(array_key_exists('id_city', $model->attributes));
+        $this->assertTrue(array_key_exists('id_country', $model->attributes));
+        $this->assertTrue(array_key_exists('id_postcode', $model->attributes));
         $this->assertTrue(array_key_exists('id_product', $model->attributes)); 
         $this->assertTrue(array_key_exists('quantity', $model->attributes)); 
         $this->assertTrue(array_key_exists('id_color', $model->attributes)); 
@@ -69,10 +77,7 @@ class PurchasesModelTests extends TestCase
             'id_size'=>$fixture['id_size'],
         ];
         
-        $this->assertEquals($fixture['id_product'], $model->id_product);
-        $this->assertEquals($fixture['quantity'], $model->quantity);
-        $this->assertEquals($fixture['id_color'], $model->id_color);
-        $this->assertEquals($fixture['id_size'], $model->id_size);
+        $fixture = self::$_dbClass->purchases['purchase_1'];
         
         $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DELETE_FROM_CART]);
         $model->attributes = [
@@ -132,11 +137,11 @@ class PurchasesModelTests extends TestCase
     public function testGetAll()
     {
         $purchasesQuery = PurchasesModel::find();
-        $purchasesQuery->extendSelect(['id', 'id_user', 'id_product', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'received', 'received_date', 'processed', 'canceled', 'shipped']);
+        $purchasesQuery->extendSelect(['id', 'id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'received', 'received_date', 'processed', 'canceled', 'shipped']);
         
         $queryRaw = clone $purchasesQuery;
         
-        $expectedQuery = "SELECT `purchases`.`id`, `purchases`.`id_user`, `purchases`.`id_product`, `purchases`.`quantity`, `purchases`.`id_color`, `purchases`.`id_size`, `purchases`.`id_delivery`, `purchases`.`id_payment`, `purchases`.`received`, `purchases`.`received_date`, `purchases`.`processed`, `purchases`.`canceled`, `purchases`.`shipped` FROM `purchases`";
+        $expectedQuery = "SELECT `purchases`.`id`, `purchases`.`id_user`, `purchases`.`id_name`, `purchases`.`id_surname`, `purchases`.`id_email`, `purchases`.`id_phone`, `purchases`.`id_address`, `purchases`.`id_city`, `purchases`.`id_country`, `purchases`.`id_postcode`, `purchases`.`id_product`, `purchases`.`quantity`, `purchases`.`id_color`, `purchases`.`id_size`, `purchases`.`id_delivery`, `purchases`.`id_payment`, `purchases`.`received`, `purchases`.`received_date`, `purchases`.`processed`, `purchases`.`canceled`, `purchases`.`shipped` FROM `purchases`";
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -154,12 +159,12 @@ class PurchasesModelTests extends TestCase
         $fixture = self::$_dbClass->purchases['purchase_1'];
         
         $purchasesQuery = PurchasesModel::find();
-        $purchasesQuery->extendSelect(['id', 'id_user', 'id_product', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'received', 'received_date', 'processed', 'canceled', 'shipped']);
+        $purchasesQuery->extendSelect(['id', 'id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'received', 'received_date', 'processed', 'canceled', 'shipped']);
         $purchasesQuery->where(['[[purchases.id]]'=>(int) $fixture['id']]);
         
         $queryRaw = clone $purchasesQuery;
         
-        $expectedQuery = sprintf("SELECT `purchases`.`id`, `purchases`.`id_user`, `purchases`.`id_product`, `purchases`.`quantity`, `purchases`.`id_color`, `purchases`.`id_size`, `purchases`.`id_delivery`, `purchases`.`id_payment`, `purchases`.`received`, `purchases`.`received_date`, `purchases`.`processed`, `purchases`.`canceled`, `purchases`.`shipped` FROM `purchases` WHERE `purchases`.`id`=%d", $fixture['id']);
+        $expectedQuery = sprintf("SELECT `purchases`.`id`, `purchases`.`id_user`, `purchases`.`id_name`, `purchases`.`id_surname`, `purchases`.`id_email`, `purchases`.`id_phone`, `purchases`.`id_address`, `purchases`.`id_city`, `purchases`.`id_country`, `purchases`.`id_postcode`, `purchases`.`id_product`, `purchases`.`quantity`, `purchases`.`id_color`, `purchases`.`id_size`, `purchases`.`id_delivery`, `purchases`.`id_payment`, `purchases`.`received`, `purchases`.`received_date`, `purchases`.`processed`, `purchases`.`canceled`, `purchases`.`shipped` FROM `purchases` WHERE `purchases`.`id`=%d", $fixture['id']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         

@@ -268,8 +268,7 @@ class ProductsListController extends AbstractBaseController
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
             $brandsQuery->distinct();
-            $brandsQuery->innerJoin('{{products_brands}}', '[[brands.id]]=[[products_brands.id_brand]]');
-            $brandsQuery->innerJoin('{{products}}', '[[products_brands.id_product]]=[[products.id]]');
+            $brandsQuery->innerJoin('{{products}}', '[[products.id_brand]]=[[brands.id]]');
             $brandsQuery->where(['[[products.active]]'=>true]);
             
             if (!empty($sphinxArray)) {

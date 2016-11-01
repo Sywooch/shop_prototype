@@ -14,7 +14,7 @@
     
     {{ form.field(colorsModel, 'id').checkboxList(colorsList, {'multiple':true}).label('Colors') | raw }}
     {{ form.field(sizesModel, 'id').checkboxList(sizesList, {'multiple':true}).label('Sizes') | raw }}
-    {{ form.field(brandsModel, 'id').dropDownList(brandsList).label('Brands') | raw }}
+    {{ form.field(productsModel, 'id_brand').dropDownList(brandsList).label('Brands') | raw }}
     
     {{ form.field(productsModel, 'total_products', {'enableAjaxValidation':true}) | raw }}
     {{ form.field(productsModel, 'active').checkbox() | raw }}

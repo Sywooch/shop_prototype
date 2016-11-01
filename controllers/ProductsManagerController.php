@@ -12,7 +12,6 @@ use yii\widgets\ActiveForm;
 use app\models\{BrandsModel,
     CategoriesModel,
     ColorsModel,
-    ProductsBrandsModel,
     ProductsColorsModel,
     ProductsModel,
     ProductsSizesModel,
@@ -35,7 +34,6 @@ class ProductsManagerController extends AbstractBaseController
             $rawProductsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT]);
             $rawColorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
             $rawSizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT]);
-            $rawBrandsModel = new BrandsModel(['scenario'=>BrandsModel::GET_FROM_ADD_PRODUCT]);
             
             $renderArray = [];
             
@@ -44,8 +42,8 @@ class ProductsManagerController extends AbstractBaseController
                 return ActiveForm::validate($rawProductsModel);
             }
             
-            if (\Yii::$app->request->isPost && $rawProductsModel->load(\Yii::$app->request->post()) && $rawColorsModel->load(\Yii::$app->request->post()) && $rawSizesModel->load(\Yii::$app->request->post()) && $rawBrandsModel->load(\Yii::$app->request->post())) {
-                if ($rawProductsModel->validate() && $rawColorsModel->validate() && $rawSizesModel->validate() && $rawBrandsModel->validate()) {
+            if (\Yii::$app->request->isPost && $rawProductsModel->load(\Yii::$app->request->post()) && $rawColorsModel->load(\Yii::$app->request->post()) && $rawSizesModel->load(\Yii::$app->request->post())) {
+                if ($rawProductsModel->validate() && $rawColorsModel->validate() && $rawSizesModel->validate()) {
                     
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
@@ -82,13 +80,6 @@ class ProductsManagerController extends AbstractBaseController
                         $count = ProductsSizesModel::batchInsert($productsModel, $rawSizesModel);
                         if ($count < 1) {
                             throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsSizesModel::batchInsert']));
-                        }
-                        
-                        $rawProductsBrandsModel = new ProductsBrandsModel(['scenario'=>ProductsBrandsModel::GET_FROM_ADD_PRODUCT]);
-                        $rawProductsBrandsModel->id_product = $productsModel->id;
-                        $rawProductsBrandsModel->id_brand = $rawBrandsModel->id;
-                        if (!$rawProductsBrandsModel->save()) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsBrandsModel::save']));
                         }
                         
                         $transaction->commit();
@@ -157,7 +148,6 @@ class ProductsManagerController extends AbstractBaseController
             $renderArray['productsModel'] = $rawProductsModel;
             $renderArray['colorsModel'] = $rawColorsModel;
             $renderArray['sizesModel'] = $rawSizesModel;
-            $renderArray['brandsModel'] = $rawBrandsModel;
             
             \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
             

@@ -37,9 +37,6 @@ class AddressModelTests extends TestCase
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('address', $model->attributes));
-        $this->assertTrue(array_key_exists('city', $model->attributes));
-        $this->assertTrue(array_key_exists('country', $model->attributes));
-        $this->assertTrue(array_key_exists('postcode', $model->attributes));
     }
     
     /**
@@ -52,15 +49,9 @@ class AddressModelTests extends TestCase
         $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_ORDER]);
         $model->attributes = [
             'address'=>$fixture['address'], 
-            'city'=>$fixture['city'],
-            'country'=>$fixture['country'],
-            'postcode'=>$fixture['postcode'],
         ];
         
         $this->assertEquals($fixture['address'], $model->address);
-        $this->assertEquals($fixture['city'], $model->city);
-        $this->assertEquals($fixture['country'], $model->country);
-        $this->assertEquals($fixture['postcode'], $model->postcode);
     }
     
     /**
@@ -74,18 +65,12 @@ class AddressModelTests extends TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertEquals(4, count($model->errors));
+        $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('address', $model->errors));
-        $this->assertTrue(array_key_exists('city', $model->errors));
-        $this->assertTrue(array_key_exists('country', $model->errors));
-        $this->assertTrue(array_key_exists('postcode', $model->errors));
         
         $model = new AddressModel(['scenario'=>AddressModel::GET_FROM_ORDER]);
         $model->attributes = [
             'address'=>$fixture['address'], 
-            'city'=>$fixture['city'],
-            'country'=>$fixture['country'],
-            'postcode'=>$fixture['postcode'],
         ];
         $model->validate();
         
@@ -98,11 +83,11 @@ class AddressModelTests extends TestCase
     public function testGetAll()
     {
         $addressQuery = AddressModel::find();
-        $addressQuery->extendSelect(['id', 'address', 'city', 'country', 'postcode']);
+        $addressQuery->extendSelect(['id', 'address']);
         
         $queryRaw = clone $addressQuery;
         
-        $expectedQuery = "SELECT `address`.`id`, `address`.`address`, `address`.`city`, `address`.`country`, `address`.`postcode` FROM `address`";
+        $expectedQuery = "SELECT `address`.`id`, `address`.`address` FROM `address`";
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -120,12 +105,12 @@ class AddressModelTests extends TestCase
         $fixture = self::$_dbClass->address['address_1'];
         
         $addressQuery = AddressModel::find();
-        $addressQuery->extendSelect(['id', 'address', 'city', 'country', 'postcode']);
-        $addressQuery->where(['address.id'=>(int) $fixture['id']]);
+        $addressQuery->extendSelect(['id', 'address']);
+        $addressQuery->where(['[[address.id]]'=>(int) $fixture['id']]);
         
         $queryRaw = clone $addressQuery;
         
-        $expectedQuery = sprintf("SELECT `address`.`id`, `address`.`address`, `address`.`city`, `address`.`country`, `address`.`postcode` FROM `address` WHERE `address`.`id`=%d", $fixture['id']);
+        $expectedQuery = sprintf("SELECT `address`.`id`, `address`.`address` FROM `address` WHERE `address`.`id`=%d", $fixture['id']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -143,14 +128,14 @@ class AddressModelTests extends TestCase
         $fixture2 = self::$_dbClass->address['address_2'];
         
         $addressQuery = AddressModel::find();
-        $addressQuery->extendSelect(['id', 'city']);
-        $addressArray = $addressQuery->allMap('id', 'city');
+        $addressQuery->extendSelect(['id', 'address']);
+        $addressArray = $addressQuery->allMap('id', 'address');
         
         $this->assertFalse(empty($addressArray));
         $this->assertTrue(array_key_exists($fixture['id'], $addressArray));
         $this->assertTrue(array_key_exists($fixture2['id'], $addressArray));
-        $this->assertTrue(in_array($fixture['city'], $addressArray));
-        $this->assertTrue(in_array($fixture2['city'], $addressArray));
+        $this->assertTrue(in_array($fixture['address'], $addressArray));
+        $this->assertTrue(in_array($fixture2['address'], $addressArray));
     }
     
     public static function tearDownAfterClass()

@@ -3,9 +3,9 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation for table `users`.
+ * Handles the creation of table `users`.
  */
-class m160913_172703_create_users_table extends Migration
+class m161031_193514_create_users_table extends Migration
 {
     /**
      * @inheritdoc
@@ -19,7 +19,10 @@ class m160913_172703_create_users_table extends Migration
             'id_name'=>$this->integer(5)->unsigned()->notNull(),
             'id_surname'=>$this->integer(5)->unsigned()->notNull(),
             'id_phone'=>$this->integer(5)->unsigned()->notNull(),
-            'id_address'=>$this->integer(5)->unsigned()->notNull()
+            'id_address'=>$this->integer(5)->unsigned()->notNull(),
+            'id_city'=>$this->integer(3)->unsigned()->notNull(),
+            'id_country'=>$this->integer(3)->unsigned()->notNull(),
+            'id_postcode'=>$this->integer(5)->unsigned()->notNull(),
         ], 'ENGINE=InnoDB');
         
         $this->createIndex('id_email', 'users', 'id_email', true);

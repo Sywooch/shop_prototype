@@ -4,7 +4,14 @@ namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\models\{EmailsModel,
+use app\models\{AddressModel,
+    CitiesModel,
+    CountriesModel,
+    EmailsModel,
+    NamesModel,
+    PhonesModel,
+    PostcodesModel,
+    SurnamesModel,
     UsersModel};
 
 /**
@@ -42,10 +49,13 @@ class UsersModelTests extends TestCase
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('id_email', $model->attributes));
         $this->assertTrue(array_key_exists('password', $model->attributes));
-        $this->assertTrue(array_key_exists('name', $model->attributes));
-        $this->assertTrue(array_key_exists('surname', $model->attributes));
+        $this->assertTrue(array_key_exists('id_name', $model->attributes));
+        $this->assertTrue(array_key_exists('id_surname', $model->attributes));
         $this->assertTrue(array_key_exists('id_phone', $model->attributes));
         $this->assertTrue(array_key_exists('id_address', $model->attributes));
+        $this->assertTrue(array_key_exists('id_city', $model->attributes));
+        $this->assertTrue(array_key_exists('id_country', $model->attributes));
+        $this->assertTrue(array_key_exists('id_postcode', $model->attributes));
     }
     
     /**
@@ -65,30 +75,18 @@ class UsersModelTests extends TestCase
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION]);
         $model->attributes = [
             'password'=>$fixture['password'],
-            'name'=>$fixture['name'],
-            'surname'=>$fixture['surname'],
-            'id_phone'=>$fixture['id_phone'],
-            'id_address'=>$fixture['id_address'], 
         ];
         
         $this->assertEquals($fixture['password'], $model->password);
-        $this->assertEquals($fixture['name'], $model->name);
-        $this->assertEquals($fixture['surname'], $model->surname);
-        $this->assertEquals($fixture['id_phone'], $model->id_phone);
-        $this->assertEquals($fixture['id_address'], $model->id_address);
         
         $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
         $model->attributes = [
-            'password'=>$fixture['password'],
             'id'=>$fixture['id'],
-            'name'=>$fixture['name'],
-            'surname'=>$fixture['surname'],
+            'password'=>$fixture['password'],
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
         $this->assertEquals($fixture['password'], $model->password);
-        $this->assertEquals($fixture['name'], $model->name);
-        $this->assertEquals($fixture['surname'], $model->surname);
     }
     
     /**
@@ -126,28 +124,11 @@ class UsersModelTests extends TestCase
         ];
         $model->validate();
         
-        $this->assertEquals(0, count($model->errors));
-        $this->assertEquals('', $model->name);
-        $this->assertEquals('', $model->surname);
+        $this->assertTrue(empty($model->errors));
+        $this->assertEquals(0, $model->id_name);
+        $this->assertEquals(0, $model->id_surname);
         $this->assertEquals(0, $model->id_phone);
         $this->assertEquals(0, $model->id_address);
-        
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
-        $model->attributes = [];
-        $model->validate();
-        
-        $this->assertEquals(2, count($model->errors));
-        $this->assertTrue(array_key_exists('name', $model->errors));
-        $this->assertTrue(array_key_exists('surname', $model->errors));
-        
-        $model = new UsersModel(['scenario'=>UsersModel::GET_FROM_ORDER]);
-        $model->attributes = [
-            'name'=>$fixture['name'],
-            'surname'=>$fixture['surname'],
-        ];
-        $model->validate();
-        
-        $this->assertTrue(empty($model->errors));
     }
     
     /**
@@ -161,31 +142,40 @@ class UsersModelTests extends TestCase
         $model->id = $fixture['id'];
         $model->id_email = $fixture['id_email'];
         $model->password = $fixture['password'];
-        $model->name = $fixture['name'];
-        $model->surname = $fixture['surname'];
+        $model->id_name = $fixture['id_name'];
+        $model->id_surname = $fixture['id_surname'];
         $model->id_phone = $fixture['id_phone'];
         $model->id_address = $fixture['id_address']; 
+        $model->id_address = $fixture['id_city'];
+        $model->id_address = $fixture['id_country']; 
+        $model->id_address = $fixture['id_postcode']; 
         
         $result = $model->toArray();
         
-        $this->assertEquals(6, count($result));
+        $this->assertEquals(9, count($result));
         $this->assertTrue(array_key_exists('id', $result));
         $this->assertTrue(array_key_exists('id_email', $result));
-        $this->assertTrue(array_key_exists('name', $result));
-        $this->assertTrue(array_key_exists('surname', $result));
+        $this->assertTrue(array_key_exists('id_name', $result));
+        $this->assertTrue(array_key_exists('id_surname', $result));
         $this->assertTrue(array_key_exists('id_phone', $result));
         $this->assertTrue(array_key_exists('id_address', $result));
+        $this->assertTrue(array_key_exists('id_city', $result));
+        $this->assertTrue(array_key_exists('id_country', $result));
+        $this->assertTrue(array_key_exists('id_postcode', $result));
         
         $result = $model->toArray([], ['password']);
         
-        $this->assertEquals(7, count($result));
+        $this->assertEquals(10, count($result));
         $this->assertTrue(array_key_exists('id', $result));
         $this->assertTrue(array_key_exists('id_email', $result));
         $this->assertTrue(array_key_exists('password', $result));
-        $this->assertTrue(array_key_exists('name', $result));
-        $this->assertTrue(array_key_exists('surname', $result));
+        $this->assertTrue(array_key_exists('id_name', $result));
+        $this->assertTrue(array_key_exists('id_surname', $result));
         $this->assertTrue(array_key_exists('id_phone', $result));
         $this->assertTrue(array_key_exists('id_address', $result));
+        $this->assertTrue(array_key_exists('id_city', $result));
+        $this->assertTrue(array_key_exists('id_country', $result));
+        $this->assertTrue(array_key_exists('id_postcode', $result));
     }
     
     /**
@@ -201,16 +191,100 @@ class UsersModelTests extends TestCase
     }
     
     /**
+     * Тестирует метод UsersModel::getName
+     */
+    public function testGetName()
+    {
+        $fixture = self::$_dbClass->users['user_1'];
+        
+        $model = UsersModel::find()->where(['users.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->name instanceof NamesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getSurname
+     */
+    public function testGetSurname()
+    {
+        $fixture = self::$_dbClass->users['user_1'];
+        
+        $model = UsersModel::find()->where(['users.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->surname instanceof SurnamesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getPhone
+     */
+    public function testGetPhone()
+    {
+        $fixture = self::$_dbClass->users['user_1'];
+        
+        $model = UsersModel::find()->where(['users.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->phone instanceof PhonesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getAddress
+     */
+    public function testGetAddress()
+    {
+        $fixture = self::$_dbClass->users['user_1'];
+        
+        $model = UsersModel::find()->where(['users.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->address instanceof AddressModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getCity
+     */
+    public function testGetCity()
+    {
+        $fixture = self::$_dbClass->users['user_1'];
+        
+        $model = UsersModel::find()->where(['users.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->city instanceof CitiesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getCountry
+     */
+    public function testGetCountry()
+    {
+        $fixture = self::$_dbClass->users['user_1'];
+        
+        $model = UsersModel::find()->where(['users.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->country instanceof CountriesModel);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getPostcode
+     */
+    public function testGetPostcode()
+    {
+        $fixture = self::$_dbClass->users['user_1'];
+        
+        $model = UsersModel::find()->where(['users.id'=>$fixture['id']])->one();
+        
+        $this->assertTrue($model->postcode instanceof PostcodesModel);
+    }
+    
+    /**
      * Тестирует запрос на получение массива объектов
      */
     public function testGetAll()
     {
         $usersQuery = UsersModel::find();
-        $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
+        $usersQuery->extendSelect(['id', 'id_email', 'password', 'id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode']);
         
         $queryRaw = clone $usersQuery;
         
-        $expectedQuery = "SELECT `users`.`id`, `users`.`id_email`, `users`.`password`, `users`.`name`, `users`.`surname`, `users`.`id_phone`, `users`.`id_address` FROM `users`";
+        $expectedQuery = "SELECT `users`.`id`, `users`.`id_email`, `users`.`password`, `users`.`id_name`, `users`.`id_surname`, `users`.`id_phone`, `users`.`id_address`, `users`.`id_city`, `users`.`id_country`, `users`.`id_postcode` FROM `users`";
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -228,12 +302,12 @@ class UsersModelTests extends TestCase
         $fixture = self::$_dbClass->users['user_1'];
         
         $usersQuery = UsersModel::find();
-        $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
+        $usersQuery->extendSelect(['id', 'id_email', 'password', 'id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode']);
         $usersQuery->where(['users.id_email'=>$fixture['id_email']]);
         
         $queryRaw = clone $usersQuery;
         
-        $expectedQuery = sprintf("SELECT `users`.`id`, `users`.`id_email`, `users`.`password`, `users`.`name`, `users`.`surname`, `users`.`id_phone`, `users`.`id_address` FROM `users` WHERE `users`.`id_email`=%d", $fixture['id_email']);
+        $expectedQuery = sprintf("SELECT `users`.`id`, `users`.`id_email`, `users`.`password`, `users`.`id_name`, `users`.`id_surname`, `users`.`id_phone`, `users`.`id_address`, `users`.`id_city`, `users`.`id_country`, `users`.`id_postcode` FROM `users` WHERE `users`.`id_email`=%d", $fixture['id_email']);
         
         $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
         
@@ -251,14 +325,14 @@ class UsersModelTests extends TestCase
         $fixture2 = self::$_dbClass->users['user_1'];
         
         $usersQuery = UsersModel::find();
-        $usersQuery->extendSelect(['id', 'name']);
-        $usersArray = $usersQuery->allMap('id', 'name');
+        $usersQuery->extendSelect(['id', 'id_name']);
+        $usersArray = $usersQuery->allMap('id', 'id_name');
         
         $this->assertFalse(empty($usersArray));
         $this->assertTrue(array_key_exists($fixture['id'], $usersArray));
         $this->assertTrue(array_key_exists($fixture2['id'], $usersArray));
-        $this->assertTrue(in_array($fixture['name'], $usersArray));
-        $this->assertTrue(in_array($fixture2['name'], $usersArray));
+        $this->assertTrue(in_array($fixture['id_name'], $usersArray));
+        $this->assertTrue(in_array($fixture2['id_name'], $usersArray));
     }
     
     public static function tearDownAfterClass()
