@@ -87,6 +87,13 @@ $translate = [
     'Send order'=>'Отправить заказ',
     'Total price:'=>'Общая стоимость:',
     'Change data'=>'Изменить данные',
+    'This name is already exists in database!'=>'Это имя уже добавлено в базу данных!',
+    'This surname is already exists in database!'=>'Эта фамилия уже добавлена в базу данных!',
+    'This address is already exists in database!'=>'Этот адрес уже добавлен в базу данных!',
+    'This city is already exists in database!'=>'Этот город уже добавлен в базу данных!',
+    'This country is already exists in database!'=>'Эта страна уже добавлена в базу данных!',
+    'This postcode is already exists in database!'=>'Этот код уже добавлен в базу данных!',
+    'Order successfully sent!'=>'Заказ успешно отправлен!',
 ];
 
 return $translate;

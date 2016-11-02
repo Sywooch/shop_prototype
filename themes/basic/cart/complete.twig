@@ -1,0 +1,15 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('app/widgets/CartWidget') }}
+
+{% include('@theme/base/user-info.twig') %}
+
+{{ cart_widget_widget({'toCart':false}) }}
+
+{% include '@theme/base/search.twig' %}
+
+{% include('@theme/base/menu.twig') %}
+
+{% include('@theme/base/breadcrumbs.twig') %}
+
+<p>{{ yii.t('base', 'Order successfully sent!') }}</p>

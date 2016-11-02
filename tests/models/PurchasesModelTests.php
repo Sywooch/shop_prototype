@@ -316,6 +316,22 @@ class PurchasesModelTests extends TestCase
         $this->assertTrue($model->size instanceof SizesModel);
     }
     
+    /**
+     * Тестирует метод PurchasesModel::batchInsert
+     */
+    public function testBatchInsert()
+    {
+        \Yii::$app->db->createCommand('DELETE FROM {{purchases}}')->execute();
+        $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll()));
+        
+        $result = PurchasesModel::batchInsert([['id_product'=>1, 'quantity'=>1, 'id_color'=>1, 'id_size'=>1], ['id_product'=>2, 'quantity'=>1, 'id_color'=>2, 'id_size'=>1]], 1, 2, 1, 1, 2, 1, 1, 2, 1, 2, 2);
+        $this->assertTrue(is_int($result));
+        $this->assertEquals(2, $result);
+        
+        $this->assertFalse(empty($result = \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll()));
+        $this->assertEquals(2, count($result));
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();
