@@ -173,12 +173,12 @@ class UserController extends AbstractBaseController
                                 ],
                             ]
                         ]);
-                        
                         if ($sent < 1) {
                             throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
                         }
                         
                         $transaction->commit();
+                        
                         return $this->redirect(Url::to(['/user/login']));
                     } catch (ExecutionException $t) {
                         $transaction->rollBack();

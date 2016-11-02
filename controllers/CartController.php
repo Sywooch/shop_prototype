@@ -25,6 +25,7 @@ use app\models\{AddressModel,
     UsersModel};
 use app\helpers\{HashHelper,
     InstancesHelper,
+    MailHelper,
     SessionHelper,
     UrlHelper};
 use app\widgets\CartWidget;
@@ -62,6 +63,7 @@ class CartController extends AbstractBaseController
             $productsQuery->extendSelect(['id', 'name', 'short_description', 'price', 'images', 'seocode']);
             $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
             $productsQuery->with(['colors', 'sizes']);
+            $productsQuery->asArray();
             $productsArray = $productsQuery->all();
             if (!is_array($productsArray) || empty($productsArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $productsArray']));
@@ -385,6 +387,7 @@ class CartController extends AbstractBaseController
             $productsQuery = ProductsModel::find();
             $productsQuery->extendSelect(['id', 'name', 'short_description', 'price', 'images', 'seocode']);
             $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
+            $productsQuery->asArray();
             $productsArray = $productsQuery->all();
             if (!is_array($productsArray) || empty($productsArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $productsArray']));
@@ -394,6 +397,7 @@ class CartController extends AbstractBaseController
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
             $colorsQuery->where(['[[colors.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_color')]);
+            $colorsQuery->asArray();
             $colorsArray = $colorsQuery->all();
             if (!is_array($colorsArray) || empty($colorsArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $colorsArray']));
@@ -403,6 +407,7 @@ class CartController extends AbstractBaseController
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
             $sizesQuery->where(['[[sizes.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_size')]);
+            $sizesQuery->asArray();
             $sizesArray = $sizesQuery->all();
             if (!is_array($sizesArray) || empty($sizesArray)) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sizesArray']));
@@ -411,10 +416,10 @@ class CartController extends AbstractBaseController
             
             foreach (\Yii::$app->params['cartArray'] as $purchase) {
                 $renderArray['purchasesList'][] = [
-                    'purchase'=>\Yii::configure((new PurchasesModel()), $purchase), 
+                    'purchase'=>$purchase, 
                     'product'=>$productsArray[$purchase['id_product']],
-                    'colors'=>$colorsArray[$purchase['id_color']],
-                    'sizes'=>$sizesArray[$purchase['id_size']],
+                    'color'=>$colorsArray[$purchase['id_color']],
+                    'size'=>$sizesArray[$purchase['id_size']],
                 ];
             }
             
@@ -455,7 +460,7 @@ class CartController extends AbstractBaseController
      * Обрабатывает подтвержденный заказ
      * @return string
      */
-    public function actionComplete()
+    public function actionSend()
     {
         try {
             if (empty(\Yii::$app->params['cartArray']) || empty(\Yii::$app->params['customerArray'])) {
@@ -619,11 +624,111 @@ class CartController extends AbstractBaseController
                     throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PurchasesModel::batchInsert']));
                 }
                 
+                $productsQuery = ProductsModel::find();
+                $productsQuery->extendSelect(['id', 'name', 'short_description', 'price', 'images', 'seocode']);
+                $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
+                $productsQuery->asArray();
+                $productsArray = $productsQuery->all();
+                if (!is_array($productsArray) || empty($productsArray)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $productsArray']));
+                }
+                $productsArray = ArrayHelper::index($productsArray, 'id');
+                
+                $colorsQuery = ColorsModel::find();
+                $colorsQuery->extendSelect(['id', 'color']);
+                $colorsQuery->where(['[[colors.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_color')]);
+                $colorsQuery->asArray();
+                $colorsArray = $colorsQuery->all();
+                if (!is_array($colorsArray) || empty($colorsArray)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $colorsArray']));
+                }
+                $colorsArray = ArrayHelper::index($colorsArray, 'id');
+                
+                $sizesQuery = SizesModel::find();
+                $sizesQuery->extendSelect(['id', 'size']);
+                $sizesQuery->where(['[[sizes.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_size')]);
+                $sizesQuery->asArray();
+                $sizesArray = $sizesQuery->all();
+                if (!is_array($sizesArray) || empty($sizesArray)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sizesArray']));
+                }
+                $sizesArray = ArrayHelper::index($sizesArray, 'id');
+                
+                $deliveriesQuery = DeliveriesModel::find();
+                $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
+                $deliveriesQuery->where(['[[deliveries.id]]'=>\Yii::$app->params['customerArray'][DeliveriesModel::tableName()]]);
+                $deliveriesQuery->asArray();
+                $deliveriesArray = $deliveriesQuery->one();
+                if (!is_array($deliveriesArray) || empty($deliveriesArray)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'deliveriesArray']));
+                }
+                
+                $paymentsQuery = PaymentsModel::find();
+                $paymentsQuery->extendSelect(['id', 'name', 'description']);
+                $paymentsQuery->where(['[[payments.id]]'=>\Yii::$app->params['customerArray'][PaymentsModel::tableName()]]);
+                $paymentsQuery->asArray();
+                $paymentsArray = $paymentsQuery->one();
+                if (!is_array($paymentsArray) || empty($paymentsArray)) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'paymentsArray']));
+                }
+            
+                foreach (\Yii::$app->params['cartArray'] as $purchase) {
+                    $purchasesArray[] = [
+                        'purchase'=>$purchase, 
+                        'product'=>$productsArray[$purchase['id_product']],
+                        'color'=>$colorsArray[$purchase['id_color']],
+                        'size'=>$sizesArray[$purchase['id_size']],
+                    ];
+                }
+                
+                $sent = MailHelper::send([
+                    [
+                        'template'=>'@theme/mail/complete-mail.twig', 
+                        'setFrom'=>['admin@shop.com'=>'Shop'], 
+                        'setTo'=>['timofey@localhost'=>'Timofey'], 
+                        'setSubject'=>\Yii::t('base', 'Order confirmation on shop.com'), 
+                        'dataForTemplate'=>[
+                            'customerArray'=>\Yii::$app->params['customerArray'],
+                            'purchasesList'=>$purchasesArray,
+                            'deliveryArray'=>$deliveriesArray,
+                            'paymentArray'=>$paymentsArray
+                        ],
+                    ]
+                ]);
+                if ($sent < 1) {
+                    throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
+                }
+                
+                $cartKey = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
+                $customerKey = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
+                SessionHelper::remove([$cartKey, $customerKey]);
+                \Yii::$app->params['cartArray'] = [];
+                \Yii::$app->params['customerArray'] = [];
+                
                 $transaction->commit();
                 
             } catch (\Throwable $t) {
                 $transaction->rollBack();
                 throw $t;
+            }
+            
+            return $this->redirect(Url::to(['/cart/complete']));
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Подтверждает успешную отправку
+     * @return string
+     */
+    public function actionComplete()
+    {
+        try {
+            $renderArray = InstancesHelper::getInstances();
+            if (!is_array($renderArray) || empty($renderArray)) {
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
             }
             
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/cart/index'], 'label'=>\Yii::t('base', 'Cart')];
@@ -664,11 +769,11 @@ class CartController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\CurrencyFilter',
-                'only'=>['index', 'set', 'customer', 'check']
+                'only'=>['index', 'set', 'customer', 'check', 'send', 'complete']
             ],
             [
                 'class'=>'app\filters\CustomerFilter',
-                'only'=>['customer', 'check', 'complete']
+                'only'=>['customer', 'check', 'send']
             ],
             [
                 'class'=>'app\filters\CartFilter',

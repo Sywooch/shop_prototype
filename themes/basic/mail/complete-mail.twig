@@ -1,33 +1,18 @@
-{{ register_asset_bundle('app/assets/AddCustomerAsset') }}
-
-{{ use('app/widgets/ThumbnailsWidget') }}
-{{ use('yii/widgets/ActiveForm') }}
-{{ use('app/widgets/CartWidget') }}
 {{ use('app/widgets/PriceWidget') }}
 {{ use('app/widgets/TotalPriceWidget') }}
+{{ use('app/widgets/ThumbnailsWidget') }}
 
-{% include('@theme/base/user-info.twig') %}
-
-{{ cart_widget_widget() }}
-
-{% include '@theme/base/search.twig' %}
-
-{% include('@theme/base/menu.twig') %}
-
-{% include('@theme/base/breadcrumbs.twig') %}
+<h1>{{ yii.t('base', 'Hello! This is information about your order!') }}</h2>
 
 <p><strong>{{ yii.t('base', 'Purchases') }}</strong></p>
 
 {% for purchase in purchasesList %}
     <p>
-        <a href="{{ url.to({0:'/product-detail/index', 'product':purchase.product.seocode}) }}">{{ purchase.product.name }}</a>
+        <a href="{{ url.to({0:'/product-detail/index', 'product':purchase.product.seocode}, true) }}">{{ purchase.product.name }}</a>
         {% if purchase.product.short_description %}
             <br>{{ purchase.product.short_description }}
         {% endif %}
         <br>{{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':purchase.product.price}) }}
-        {% if purchase.product.images %}
-            <br>{{ thumbnails_widget_widget({'path':purchase.product.images}) }}
-        {% endif %}
         <br>{{ yii.t('base', 'Quantity:') }} {{ purchase.purchase.quantity }}
         <br>{{ yii.t('base', 'Color:') }} {{ purchase.color.color }}
         <br>{{ yii.t('base', 'Size:') }} {{ purchase.size.size }}
@@ -47,35 +32,21 @@
 <p><strong>{{ yii.t('base', 'Delivery Information') }}</strong></p>
 
 <p>
-    {{ deliveriesModel.name }}. {{ deliveriesModel.description }}
+    {{ deliveryArray.name }}. {{ deliveryArray.description }}
     <br>{{ yii.t('base', 'Address:') }} {{ customerArray.address.address }}
     <br>{{ yii.t('base', 'City:') }} {{ customerArray.cities.city }}
     <br>{{ yii.t('base', 'Country:') }} {{ customerArray.countries.country }}
     <br>{{ yii.t('base', 'Postcode:') }} {{ customerArray.postcodes.postcode }}
-    <br>{{ yii.t('base', 'Delivery price:') }} {{ price_widget_widget({'price':deliveriesModel.price}) }}
+    <br>{{ yii.t('base', 'Delivery price:') }} {{ price_widget_widget({'price':deliveryArray.price}) }}
 </p>
 
 <p><strong>{{ yii.t('base', 'Payments Information') }}</strong></p>
 
 <p>
-    {{ paymentsModel.name }}
-    <br>{{ paymentsModel.description }}
-</p>
-
-<p>
-    <form name="checkout-form" action="{{ url.to({0:'/cart/customer'}) }}" method="GET">
-        <input type="submit" value="{{ yii.t('base', 'Change data') }}">
-    </form>
+    {{ paymentArray.name }}
+    <br>{{ paymentArray.description }}
 </p>
 
 <hr>
 
-<p>
-    <form name="checkout-form" action="{{ url.to({0:'/cart/send'}) }}" method="GET">
-        <input type="submit" value="{{ yii.t('base', 'Send order') }}">
-    </form>
-</p>
-
-<p>
-    {% include('@theme/base/currency-form.twig') %}
-</p>
+<a href="http://shop.com">shop.com</a>

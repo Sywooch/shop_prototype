@@ -4,7 +4,7 @@
 
 {% include('@theme/base/user-info.twig') %}
 
-{{ cart_widget_widget({'toCart':false}) }}
+{{ cart_widget_widget() }}
 
 {% include '@theme/base/search.twig' %}
 
@@ -13,3 +13,7 @@
 {% include('@theme/base/breadcrumbs.twig') %}
 
 <p>{{ yii.t('base', 'Order successfully sent!') }}</p>
+
+<p>
+    {% include('@theme/base/currency-form.twig') %}
+</p>

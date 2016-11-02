@@ -71,7 +71,7 @@ $translate = [
     'Check information'=>'Проверка данных',
     'Color:'=>'Цвет:',
     'Size:'=>'Размер:',
-    'Purchses'=>'Покупки',
+    'Purchases'=>'Покупки',
     'Customer Information'=>'Информация о клиенте',
     'Name:'=>'Имя:',
     'Surname:'=>'Фамилия:',
@@ -94,6 +94,8 @@ $translate = [
     'This country is already exists in database!'=>'Эта страна уже добавлена в базу данных!',
     'This postcode is already exists in database!'=>'Этот код уже добавлен в базу данных!',
     'Order successfully sent!'=>'Заказ успешно отправлен!',
+    'Order confirmation on shop.com'=>'Подтверждение заказа на shop.com',
+    'Hello! This is information about your order!'=>'Привет! Это информация о вашем заказе!',
 ];
 
 return $translate;
