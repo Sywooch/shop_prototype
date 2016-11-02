@@ -27,6 +27,23 @@ class ProductsModel extends AbstractBaseModel
     const GET_FROM_ADD_TO_CART = 'getFromAddToCart';
     
     /**
+     * @var string $categoryName название категории для breadcrumbs
+     */
+    public $categoryName;
+    /**
+     * @var string $categorySeocode seocode категории для breadcrumbs
+     */
+    public $categorySeocode;
+    /**
+     * @var string $subcategoryName название подкатегории для breadcrumbs
+     */
+    public $subcategoryName;
+    /**
+     * @var string $subcategorySeocode seocode подкатегории для breadcrumbs
+     */
+    public $subcategorySeocode;
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */

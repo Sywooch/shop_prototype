@@ -29,7 +29,9 @@ class UserInfoWidgetTests extends TestCase
     {
         $result = UserInfoWidget::widget();
         
-        $expectedString = '<p>Привет, ' . \Yii::t('base', 'Guest') . '!</p><p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a> <a href="../vendor/phpunit/phpunit/registration">' . \Yii::t('base', 'Registration') . '</a></p>';
+        //$expectedString = '<p>Привет, ' . \Yii::t('base', 'Guest') . '!</p><p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a> <a href="../vendor/phpunit/phpunit/registration">' . \Yii::t('base', 'Registration') . '</a></p>';
+        
+        $expectedString = '<p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a> <a href="../vendor/phpunit/phpunit/registration">' . \Yii::t('base', 'Registration') . '</a></p>';
         
         $this->assertEquals($expectedString, $result);
     }
@@ -47,7 +49,9 @@ class UserInfoWidgetTests extends TestCase
         
         $result = UserInfoWidget::widget();
         
-        $expectedString = '<p>Привет, ' . $user->name->name . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        //$expectedString = '<p>Привет, ' . $user->name->name . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        
+        $expectedString = '<form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
         $this->assertEquals($expectedString, $result);
     }
@@ -66,7 +70,9 @@ class UserInfoWidgetTests extends TestCase
         
         $result = UserInfoWidget::widget();
         
-        $expectedString = '<p>Привет, ' . $user->email->email . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        //$expectedString = '<p>Привет, ' . $user->email->email . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        
+        $expectedString = '<form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
         $this->assertEquals($expectedString, $result);
     }

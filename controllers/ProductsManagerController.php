@@ -149,7 +149,7 @@ class ProductsManagerController extends AbstractBaseController
             $renderArray['colorsModel'] = $rawColorsModel;
             $renderArray['sizesModel'] = $rawSizesModel;
             
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
             
             return $this->render('add-one.twig', $renderArray);
         } catch (\Throwable $t) {

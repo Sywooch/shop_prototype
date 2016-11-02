@@ -21,6 +21,10 @@ class PurchasesModel extends AbstractBaseModel
      * Сценарий удаления 1 товара из корзины
     */
     const GET_FROM_DELETE_FROM_CART = 'getFromDeleteFromCart';
+    /**
+     * Сценарий сохранения данных ио покупке в БД
+    */
+    const GET_FROM_SAVE_PURCHASE = 'getFromSavePurchase';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -40,6 +44,7 @@ class PurchasesModel extends AbstractBaseModel
         return [
             self::GET_FROM_ADD_TO_CART=>['id_product', 'quantity', 'id_color', 'id_size'],
             self::GET_FROM_DELETE_FROM_CART=>['id_product'],
+            self::GET_FROM_SAVE_PURCHASE=>['id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'received', 'received_date'],
         ];
     }
     
@@ -48,6 +53,7 @@ class PurchasesModel extends AbstractBaseModel
         return [
             [['id_product', 'quantity', 'id_color', 'id_size'], 'required', 'on'=>self::GET_FROM_ADD_TO_CART],
             [['id_product'], 'required', 'on'=>self::GET_FROM_DELETE_FROM_CART],
+            [['id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'received', 'received_date'], 'required', 'on'=>self::GET_FROM_SAVE_PURCHASE],
         ];
     }
     

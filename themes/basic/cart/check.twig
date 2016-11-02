@@ -18,7 +18,7 @@
 
 <p><strong>{{ yii.t('base', 'Purchses') }}</strong></p>
 
-{% for hash, purchase in purchasesList %}
+{% for purchase in purchasesList %}
     <p>
         <a href="{{ url.to({0:'/product-detail/index', 'product':purchase.product.seocode}) }}">{{ purchase.product.name }}</a>
         {% if purchase.product.short_description %}
@@ -28,33 +28,36 @@
         {% if purchase.product.images %}
             <br>{{ thumbnails_widget_widget({'path':purchase.product.images}) }}
         {% endif %}
-        <br>{{ yii.t('base', 'Quantity:') }} {{ purchase.quantity }}
-        <br>{{ yii.t('base', 'Color:') }} {{ purchase.color.color }}
-        <br>{{ yii.t('base', 'Size:') }} {{ purchase.size.size }}
-        <br>{{ yii.t('base', 'Total price:') }} {{ total_price_widget_widget({'price':purchase.product.price, 'quantity':purchase.quantity}) }}
+        <br>{{ yii.t('base', 'Quantity:') }} {{ purchase.purchase.quantity }}
+        <br>{{ yii.t('base', 'Color:') }} {{ purchase.colors.color }}
+        <br>{{ yii.t('base', 'Size:') }} {{ purchase.sizes.size }}
+        <br>{{ yii.t('base', 'Total price:') }} {{ total_price_widget_widget({'price':purchase.product.price, 'quantity':purchase.purchase.quantity}) }}
     </p>
 {% endfor %}
 
-{{ cart_widget_widget() }}
+<p>
+    <form name="checkout-form" action="{{ url.to({0:'/cart/index'}) }}" method="get">
+        <input type="submit" value="{{ yii.t('base', 'Change data') }}">
+    </form>
+</p>
 
 <p><strong>{{ yii.t('base', 'Customer Information') }}</strong></p>
 
 <p>
-    {{ yii.t('base', 'Name:') }} {{ usersModel.name }}
-    <br>{{ yii.t('base', 'Surname:') }} {{ usersModel.surname }}
-    <br>{{ yii.t('base', 'Email:') }} {{ emailsModel.email }}
-    <br>{{ yii.t('base', 'Phone:') }} {{ phonesModel.phone }}
-    
+    {{ yii.t('base', 'Name:') }} {{ customerArray.names.name }}
+    <br>{{ yii.t('base', 'Surname:') }} {{ customerArray.surnames.surname }}
+    <br>{{ yii.t('base', 'Email:') }} {{ customerArray.emails.email}}
+    <br>{{ yii.t('base', 'Phone:') }} {{ customerArray.phones.phone }}
 </p>
 
 <p><strong>{{ yii.t('base', 'Delivery Information') }}</strong></p>
 
 <p>
     {{ deliveriesModel.name }}. {{ deliveriesModel.description }}
-    <br>{{ yii.t('base', 'Address:') }} {{ addressModel.address }}
-    <br>{{ yii.t('base', 'City:') }} {{ addressModel.city }}
-    <br>{{ yii.t('base', 'Country:') }} {{ addressModel.country }}
-    <br>{{ yii.t('base', 'Postcode:') }} {{ addressModel.postcode }}
+    <br>{{ yii.t('base', 'Address:') }} {{ customerArray.address.address }}
+    <br>{{ yii.t('base', 'City:') }} {{ customerArray.cities.city }}
+    <br>{{ yii.t('base', 'Country:') }} {{ customerArray.countries.country }}
+    <br>{{ yii.t('base', 'Postcode:') }} {{ customerArray.postcodes.postcode }}
     <br>{{ yii.t('base', 'Delivery price:') }} {{ price_widget_widget({'price':deliveriesModel.price}) }}
 </p>
 
@@ -66,7 +69,7 @@
 </p>
 
 <p>
-    <form name="checkout-form" action="{{ url.to({0:'/cart/customer'}) }}" method="get">
+    <form name="checkout-form" action="{{ url.to({0:'/cart/customer'}) }}" method="GET">
         <input type="submit" value="{{ yii.t('base', 'Change data') }}">
     </form>
 </p>
@@ -74,7 +77,7 @@
 <hr>
 
 <p>
-    <form name="checkout-form" action="{{ url.to({0:'/cart/complete'}) }}" method="get">
+    <form name="checkout-form" action="{{ url.to({0:'/cart/complete'}) }}" method="GET">
         <input type="submit" value="{{ yii.t('base', 'Send order') }}">
     </form>
 </p>

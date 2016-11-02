@@ -36,7 +36,7 @@ class UserController extends AbstractBaseController
             if (\Yii::$app->request->isPost && $rawEmailsModel->load(\Yii::$app->request->post()) && $rawUsersModel->load(\Yii::$app->request->post())) {
                 if ($rawEmailsModel->validate() && $rawUsersModel->validate()) {
                     $usersQuery = UsersModel::find();
-                    $usersQuery->extendSelect(['id', 'id_email', 'password', 'name', 'surname', 'id_phone', 'id_address']);
+                    $usersQuery->extendSelect(['id', 'id_email', 'password']);
                     $usersQuery->innerJoin('{{emails}}', '[[users.id_email]]=[[emails.id]]');
                     $usersQuery->where(['[[emails.email]]'=>$rawEmailsModel->email]);
                     $usersModel = $usersQuery->one();
@@ -65,7 +65,7 @@ class UserController extends AbstractBaseController
             $renderArray['emailsModel'] = $rawEmailsModel;
             $renderArray['usersModel'] = $rawUsersModel;
             
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/login'], 'label'=>\Yii::t('base', 'Authentication')];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/user/login'], 'label'=>\Yii::t('base', 'Authentication')];
             
             return $this->render('login.twig', $renderArray);
         } catch (\Throwable $t) {
@@ -212,7 +212,7 @@ class UserController extends AbstractBaseController
             }
             asort($renderArray['mailingListList'], SORT_STRING);
             
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/registration'], 'label'=>\Yii::t('base', 'Registration')];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/user/registration'], 'label'=>\Yii::t('base', 'Registration')];
             
             return $this->render('registration.twig', $renderArray);
         } catch (\Throwable $t) {
@@ -277,7 +277,7 @@ class UserController extends AbstractBaseController
             
             $renderArray['emailsModel'] = $rawEmailsModel;
             
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
             
             return $this->render('forgot.twig', $renderArray);
         } catch (\Throwable $t) {
@@ -356,7 +356,7 @@ class UserController extends AbstractBaseController
             
             $renderArray['usersModel'] = [$rawUsersModel, $rawUsersModelConfirm];
             
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
             
             return $this->render('restore.twig', $renderArray);
         } catch (\Throwable $t) {

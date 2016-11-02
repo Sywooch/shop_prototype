@@ -36,6 +36,7 @@ class PurchasesModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_TO_CART'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_DELETE_FROM_CART'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_SAVE_PURCHASE'));
         
         $model = new PurchasesModel();
         
@@ -77,7 +78,10 @@ class PurchasesModelTests extends TestCase
             'id_size'=>$fixture['id_size'],
         ];
         
-        $fixture = self::$_dbClass->purchases['purchase_1'];
+        $this->assertEquals($fixture['id_product'], $model->id_product);
+        $this->assertEquals($fixture['quantity'], $model->quantity);
+        $this->assertEquals($fixture['id_color'], $model->id_color);
+        $this->assertEquals($fixture['id_size'], $model->id_size);
         
         $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DELETE_FROM_CART]);
         $model->attributes = [
@@ -85,6 +89,45 @@ class PurchasesModelTests extends TestCase
         ];
         
         $this->assertEquals($fixture['id_product'], $model->id_product);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_SAVE_PURCHASE]);
+        $model->attributes = [
+            'id_user'=>$fixture['id_user'], 
+            'id_name'=>$fixture['id_name'],
+            'id_surname'=>$fixture['id_surname'],
+            'id_email'=>$fixture['id_email'],
+            'id_phone'=>$fixture['id_phone'],
+            'id_address'=>$fixture['id_address'],
+            'id_city'=>$fixture['id_city'],
+            'id_country'=>$fixture['id_country'],
+            'id_postcode'=>$fixture['id_postcode'],
+            'id_product'=>$fixture['id_product'],
+            'quantity'=>$fixture['quantity'],
+            'id_color'=>$fixture['id_color'],
+            'id_size'=>$fixture['id_size'],
+            'id_delivery'=>$fixture['id_delivery'],
+            'id_payment'=>$fixture['id_payment'],
+            'received'=>$fixture['received'],
+            'received_date'=>$fixture['received_date'],
+        ];
+        
+        $this->assertEquals($fixture['id_user'], $model->id_user);
+        $this->assertEquals($fixture['id_name'], $model->id_name);
+        $this->assertEquals($fixture['id_surname'], $model->id_surname);
+        $this->assertEquals($fixture['id_email'], $model->id_email);
+        $this->assertEquals($fixture['id_phone'], $model->id_phone);
+        $this->assertEquals($fixture['id_address'], $model->id_address);
+        $this->assertEquals($fixture['id_city'], $model->id_city);
+        $this->assertEquals($fixture['id_country'], $model->id_country);
+        $this->assertEquals($fixture['id_postcode'], $model->id_postcode);
+        $this->assertEquals($fixture['id_product'], $model->id_product);
+        $this->assertEquals($fixture['quantity'], $model->quantity);
+        $this->assertEquals($fixture['id_color'], $model->id_color);
+        $this->assertEquals($fixture['id_size'], $model->id_size);
+        $this->assertEquals($fixture['id_delivery'], $model->id_delivery);
+        $this->assertEquals($fixture['id_payment'], $model->id_payment);
+        $this->assertEquals($fixture['received'], $model->received);
+        $this->assertEquals($fixture['received_date'], $model->received_date);
     }
     
     /**
@@ -125,6 +168,51 @@ class PurchasesModelTests extends TestCase
         $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DELETE_FROM_CART]);
         $model->attributes = [
             'id_product'=>$fixture['id_product'], 
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_SAVE_PURCHASE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(16, count($model->errors));
+        $this->assertTrue(array_key_exists('id_name', $model->errors));
+        $this->assertTrue(array_key_exists('id_surname', $model->errors));
+        $this->assertTrue(array_key_exists('id_email', $model->errors));
+        $this->assertTrue(array_key_exists('id_phone', $model->errors));
+        $this->assertTrue(array_key_exists('id_address', $model->errors));
+        $this->assertTrue(array_key_exists('id_city', $model->errors));
+        $this->assertTrue(array_key_exists('id_country', $model->errors));
+        $this->assertTrue(array_key_exists('id_postcode', $model->errors));
+        $this->assertTrue(array_key_exists('id_product', $model->errors));
+        $this->assertTrue(array_key_exists('quantity', $model->errors));
+        $this->assertTrue(array_key_exists('id_color', $model->errors));
+        $this->assertTrue(array_key_exists('id_size', $model->errors));
+        $this->assertTrue(array_key_exists('id_delivery', $model->errors));
+        $this->assertTrue(array_key_exists('id_payment', $model->errors));
+        $this->assertTrue(array_key_exists('received', $model->errors));
+        $this->assertTrue(array_key_exists('received_date', $model->errors));
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_SAVE_PURCHASE]);
+        $model->attributes = [
+            'id_name'=>$fixture['id_name'],
+            'id_surname'=>$fixture['id_surname'],
+            'id_email'=>$fixture['id_email'],
+            'id_phone'=>$fixture['id_phone'],
+            'id_address'=>$fixture['id_address'],
+            'id_city'=>$fixture['id_city'],
+            'id_country'=>$fixture['id_country'],
+            'id_postcode'=>$fixture['id_postcode'],
+            'id_product'=>$fixture['id_product'],
+            'quantity'=>$fixture['quantity'],
+            'id_color'=>$fixture['id_color'],
+            'id_size'=>$fixture['id_size'],
+            'id_delivery'=>$fixture['id_delivery'],
+            'id_payment'=>$fixture['id_payment'],
+            'received'=>$fixture['received'],
+            'received_date'=>$fixture['received_date'],
         ];
         $model->validate();
         

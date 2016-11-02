@@ -28,18 +28,17 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод BreadcrumbsWidget::widget()
-     * для списка продуктов
-     * при налиции в $_GET categories
      */
-    public function testWidgetForProductsList()
+    public function testWidget()
     {
         $fixture = self::$_dbClass->categories['category_1'];
-        $fixtureProduct = self::$_dbClass->products['product_1'];
-        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
         
-        $_GET = ['category'=>$fixture['seocode']];
+        $_GET = [\Yii::$app->params['categoryKey']=>$fixture['seocode']];
         
-        \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+        \Yii::$app->params['breadcrumbs'] = [
+            ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')],
+            ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])], 'label'=>$fixture['name']],
+        ];
         
         $result = BreadcrumbsWidget::widget();
         
@@ -50,61 +49,25 @@ class BreadcrumbsWidgetTests extends \PHPUnit_Framework_TestCase
     
     /**
      * Тестирует метод BreadcrumbsWidget::widget()
-     * для списка продуктов
-     * при налиции в $_GET categories, subcategory
      */
-    public function testWidgetForProductsListTwo()
+    public function testWidgetTwo()
     {
         $fixture = self::$_dbClass->categories['category_1'];
-        $fixtureProduct = self::$_dbClass->products['product_1'];
         $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
-        
-        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode']];
-        
-        \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
-        
-        $result = BreadcrumbsWidget::widget();
-        
-        $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureSubcategory['name'] . '</li></ul>';
-        
-        $this->assertEquals($expectedString, $result);
-    }
-    
-    /**
-     * Тестирует метод BreadcrumbsWidget::widget()
-     * для списка продуктов
-     * при налиции в $_GET categories, subcategory, id
-     */
-    public function testWidgetForProductsListThree()
-    {
-        $fixture = self::$_dbClass->categories['category_1'];
         $fixtureProduct = self::$_dbClass->products['product_1'];
-        $fixtureSubcategory = self::$_dbClass->subcategory['subcategory_1'];
         
-        $_GET = ['category'=>$fixture['seocode'], 'subcategory'=>$fixtureSubcategory['seocode'], 'product'=>$fixtureProduct['seocode']];
+        $_GET = [\Yii::$app->params['categoryKey']=>$fixture['seocode'], \Yii::$app->params['subcategoryKey']=>$fixtureSubcategory['seocode'], \Yii::$app->params['productKey']=>$fixtureProduct['seocode']];
         
-        \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+        \Yii::$app->params['breadcrumbs'] = [
+            ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')],
+            ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])], 'label'=>$fixture['name']],
+            ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>\Yii::$app->request->get(\Yii::$app->params['categoryKey']), \Yii::$app->params['subcategoryKey']=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])], 'label'=>$fixtureSubcategory['name']],
+            ['url'=>['/product-detail/index', \Yii::$app->params['productKey']=>\Yii::$app->request->get(\Yii::$app->params['productKey'])], 'label'=>$fixtureProduct['name']],
+        ];
         
         $result = BreadcrumbsWidget::widget();
         
         $expectedString = '<ul class="breadcrumb"><li><a href="' . Url::home() . '">' . \Yii::t('base', 'Главная') . '</a></li><li class="separator"> -> </li><li><a href="../vendor/phpunit/phpunit/catalog">' . \Yii::t('base', 'All catalog') . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '">' . $fixture['name'] . '</a></li><li class="separator"> -> </li><li><a href="' . Url::home() . $fixture['seocode'] . '/' . $fixtureSubcategory['seocode'] . '">' . $fixtureSubcategory['name'] . '</a></li><li class="separator"> -> </li><li class="active">' . $fixtureProduct['name'] . '</li></ul>';
-        
-        $this->assertEquals($expectedString, $result);
-    }
-    
-    /**
-     * Тестирует метод BreadcrumbsWidget::widget()
-     * для результатов поиска
-     */
-    public function testWidgetForSearch()
-    {
-        $_GET = [];
-        
-        \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
-        
-        $result = BreadcrumbsWidget::widget();
-        
-        $expectedString = '<ul class="breadcrumb"><li><a href="../vendor/phpunit/phpunit/">Главная</a></li><li class="separator"> -> </li><li class="active">' . \Yii::t('base', 'Searching results') . '</li></ul>';
         
         $this->assertEquals($expectedString, $result);
     }

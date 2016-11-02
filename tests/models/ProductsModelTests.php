@@ -48,6 +48,11 @@ class ProductsModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_TO_CART'));
         
+        $this->assertTrue(self::$_reflectionClass->hasProperty('categoryName'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('categorySeocode'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('subcategoryName'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('subcategorySeocode'));
+        
         $model = new ProductsModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));

@@ -33,12 +33,16 @@ class ProductDetailController extends AbstractBaseController
             }
             
             $productsQuery = ProductsModel::find();
-            $productsQuery->extendSelect(['id', 'code', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory']);
+            $productsQuery->extendSelect(['id', 'code', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'seocode']);
+            $productsQuery->addSelect(['[[categorySeocode]]'=>'[[categories.seocode]]', '[[categoryName]]'=>'[[categories.name]]', '[[subcategorySeocode]]'=>'[[subcategory.seocode]]', '[[subcategoryName]]'=>'[[subcategory.name]]']);
+            $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
+            $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
             $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
-            $renderArray['productsModel'] = $productsQuery->one();
-            if (!$renderArray['productsModel'] instanceof ProductsModel) {
+            $productsModel = $productsQuery->one();
+            if (!$productsModel instanceof ProductsModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
             }
+            $renderArray['productsModel'] = $productsModel;
             
             $similarQuery = ProductsModel::find();
             $similarQuery->extendSelect(['name', 'price', 'images', 'seocode']);
@@ -71,7 +75,14 @@ class ProductDetailController extends AbstractBaseController
             
             $renderArray['purchasesModel'] = new PurchasesModel(['quantity'=>1]);
             
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            if (!empty($productsModel->categorySeocode)) {
+                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$productsModel->categorySeocode], 'label'=>$productsModel->categoryName];
+            }
+            if (!empty($productsModel->subcategorySeocode)) {
+                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$productsModel->categorySeocode, \Yii::$app->params['subcategoryKey']=>$productsModel->subcategorySeocode], 'label'=>$productsModel->subcategoryName];
+            }
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/product-detail/index', \Yii::$app->params['productKey']=>$productsModel->seocode], 'label'=>$productsModel->name];
             
             Url::remember(Url::current(), 'shop');
             

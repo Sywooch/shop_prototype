@@ -1,6 +1,5 @@
 {{ register_asset_bundle('app/assets/AddCustomerAsset') }}
 
-{{ use('app/widgets/ThumbnailsWidget') }}
 {{ use('yii/widgets/ActiveForm') }}
 {{ use('app/widgets/CartWidget') }}
 {{ use('app/widgets/PriceWidget') }}
@@ -41,7 +40,6 @@
             </div>
         {% endif %}
         
-        
         <div class="customer-password disable">{{ form.field(usersModel, 'password').passwordInput() | raw }}</div>
         
         {% for delivery in deliveriesList %}
@@ -59,8 +57,6 @@
         <br><input type="submit" value="{{ yii.t('base', 'Check data and send order') }}">
     {{ active_form_end() }}
 </p>
-
-{{ cart_widget_widget() }}
 
 <p>
     {% include('@theme/base/currency-form.twig') %}

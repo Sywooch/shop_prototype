@@ -28,20 +28,20 @@
                 <br>{{ thumbnails_widget_widget({'path':purchase.product.images}) }}
             {% endif %}
             
-            {% set form=active_form_begin({'id':'cart-update-form-%d' | format(purchase.id_product), 'action':url.to({0:'/cart/update'}), 'method':'POST'}) %}
-                {{ form.field(purchase, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
-                {{ form.field(purchase, 'id_color').dropDownList(array.map(purchase.product.colors, 'id', 'color')) | raw }}
-                {{ form.field(purchase, 'id_size').dropDownList(array.map(purchase.product.sizes, 'id', 'size')) | raw }}
-                {{ form.field(purchase, 'id_product').hiddenInput({'value':purchase.id_product}).label(false) | raw }}
+            {% set form=active_form_begin({'id':'cart-update-form-%d' | format(purchase.product.id), 'action':url.to({0:'/cart/update'}), 'method':'POST'}) %}
+                {{ form.field(purchase.purchase, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
+                {{ form.field(purchase.purchase, 'id_color').dropDownList(array.map(purchase.product.colors, 'id', 'color')) | raw }}
+                {{ form.field(purchase.purchase, 'id_size').dropDownList(array.map(purchase.product.sizes, 'id', 'size')) | raw }}
+                {{ form.field(purchase.purchase, 'id_product').hiddenInput({'value':purchase.product.id}).label(false) | raw }}
                 <input type="hidden" name="hash" value="{{ hash }}">
                 <input type="submit" value="{{ yii.t('base', 'Update') }}">
             {{ active_form_end() }}
             
-            {% set form=active_form_begin({'id':'cart-delete-form-%d' | format(purchase.id_product), 'action':url.to({0:'/cart/delete'}), 'method':'POST'}) %}
+            {% set form=active_form_begin({'id':'cart-delete-form-%d' | format(purchase.product.id), 'action':url.to({0:'/cart/delete'}), 'method':'POST'}) %}
                 <input type="hidden" name="hash" value="{{ hash }}">
                 <input type="submit" value="{{ yii.t('base', 'Delete') }}">
             {{ active_form_end() }}
-            <p>{{ yii.t('base', 'Total price:') }} {{ total_price_widget_widget({'price':purchase.product.price, 'quantity':purchase.quantity}) }}</p>
+            <p>{{ yii.t('base', 'Total price:') }} {{ total_price_widget_widget({'price':purchase.product.price, 'quantity':purchase.purchase.quantity}) }}</p>
             <hr>
         </p>
     {% endfor %}
@@ -52,8 +52,6 @@
         <input type="submit" value="{{ yii.t('base', 'Checkout') }}">
     </form>
 </p>
-
-{{ cart_widget_widget({'toCart':false}) }}
 
 <p>
     {% include('@theme/base/currency-form.twig') %}

@@ -36,7 +36,13 @@ class ProductsListController extends AbstractBaseController
             $renderArray = ArrayHelper::merge($renderArray, $this->getBrandsList());
             $renderArray = ArrayHelper::merge($renderArray, $this->getSorting());
             
-            \Yii::$app->params['breadcrumbs'] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
+                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])], 'label'=>$renderArray['productsList'][0]->categoryName];
+            }
+            if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
+                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['subcategoryKey']=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])], 'label'=>$renderArray['productsList'][0]->subcategoryName];
+            }
             
             Url::remember(Url::current(), 'shop');
             
@@ -75,7 +81,7 @@ class ProductsListController extends AbstractBaseController
             $renderArray = ArrayHelper::merge($renderArray, $this->getBrandsList($sphinxArray));
             $renderArray = ArrayHelper::merge($renderArray, $this->getSorting());
             
-            \Yii::$app->params['breadcrumbs'] = ['label'=>\Yii::t('base', 'Searching results')];
+            \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Searching results')];
             
             Url::remember(Url::current(), 'shop');
             
@@ -102,10 +108,12 @@ class ProductsListController extends AbstractBaseController
             $productsQuery->extendSelect(['id', 'date', 'name', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'active', 'seocode']);
             $productsQuery->where(['[[products.active]]'=>true]);
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
+                $productsQuery->addSelect(['[[categoryName]]'=>'[[categories.name]]']);
                 $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
                 $productsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
             }
             if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
+                $productsQuery->addSelect(['[[subcategoryName]]'=>'[[subcategory.name]]']);
                 $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
                 $productsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
             }
