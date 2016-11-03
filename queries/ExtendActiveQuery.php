@@ -160,7 +160,7 @@ class ExtendActiveQuery extends ActiveQuery
      * Получает 1 строку из СУБД в формате массива, оборачивает полученные данные 
      * объектом app\queries\ARWrapper, обеспечивающим доступ к данным как к обычным свойствам ActiveRecord 
      * полезно для быстрого переключения типа получаемых данных без изменений клиентского кода
-     * @return array
+     * @return mixed
      */
     public function oneArray()
     {

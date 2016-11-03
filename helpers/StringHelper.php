@@ -8,7 +8,6 @@ use app\exceptions\ExceptionsTrait;
 /**
  * Коллекция методов для обработки строк
  */
-
 class StringHelper
 {
     /**

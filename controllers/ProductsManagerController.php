@@ -3,22 +3,9 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Url};
-use yii\web\{UploadedFile,
-    Response};
-use yii\db\Transaction;
-use yii\widgets\ActiveForm;
-use app\models\{BrandsModel,
-    CategoriesModel,
-    ColorsModel,
-    ProductsColorsModel,
-    ProductsModel,
-    ProductsSizesModel,
-    SizesModel,
-    SubcategoryModel};
-use app\controllers\AbstractBaseController;
-use app\helpers\PicturesHelper;
+use yii\helpers\Url;
+use app\controllers\{AbstractBaseController,
+    ProductsManagerControllerHelper};
 
 /**
  * Управляет добавлением, удвлением, изменением товаров
@@ -31,125 +18,17 @@ class ProductsManagerController extends AbstractBaseController
     public function actionAddOne()
     {
         try {
-            $rawProductsModel = new ProductsModel(['scenario'=>ProductsModel::GET_FROM_ADD_PRODUCT]);
-            $rawColorsModel = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
-            $rawSizesModel = new SizesModel(['scenario'=>SizesModel::GET_FROM_ADD_PRODUCT]);
-            
-            $renderArray = [];
-            
-            if (\Yii::$app->request->isAjax && $rawProductsModel->load(\Yii::$app->request->post())) {
-                \Yii::$app->response->format = Response::FORMAT_JSON;
-                return ActiveForm::validate($rawProductsModel);
+            if (\Yii::$app->request->isAjax) {
+                return ProductsManagerControllerHelper::oneAjax();
             }
             
-            if (\Yii::$app->request->isPost && $rawProductsModel->load(\Yii::$app->request->post()) && $rawColorsModel->load(\Yii::$app->request->post()) && $rawSizesModel->load(\Yii::$app->request->post())) {
-                if ($rawProductsModel->validate() && $rawColorsModel->validate() && $rawSizesModel->validate()) {
-                    
-                    $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
-                    
-                    try {
-                        if (!empty($rawProductsModel->images)) {
-                            $rawProductsModel->images = UploadedFile::getInstances($rawProductsModel, 'images');
-                            if (empty($rawProductsModel->images) || !$rawProductsModel->images[0] instanceof UploadedFile) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'UploadedFile']));
-                            }
-                            $folderName = $rawProductsModel->upload();
-                            if (!is_string($folderName) || empty($folderName)) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $folderName']));
-                            }
-                            $rawProductsModel->images = $folderName;
-                        }
-                        
-                        if (!$rawProductsModel->save(false)) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsModel::save']));
-                        }
-                        
-                        $productsQuery = ProductsModel::find();
-                        $productsQuery->extendSelect(['id', 'seocode']);
-                        $productsQuery->where(['[[products.seocode]]'=>$rawProductsModel->seocode]);
-                        $productsModel = $productsQuery->one();
-                        if (!$productsModel instanceof ProductsModel || $rawProductsModel->seocode != $productsModel->seocode) {
-                            throw new ExecutionException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
-                        }
-                        
-                        $count = ProductsColorsModel::batchInsert($productsModel, $rawColorsModel);
-                        if ($count < 1) {
-                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsColorsModel::batchInsert']));
-                        }
-                        
-                        $count = ProductsSizesModel::batchInsert($productsModel, $rawSizesModel);
-                        if ($count < 1) {
-                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsSizesModel::batchInsert']));
-                        }
-                        
-                        $transaction->commit();
-                        
-                        return $this->redirect(Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$productsModel->seocode]));
-                    } catch (\Throwable $t) {
-                        $transaction->rollBack();
-                        if (!empty($folderName)) {
-                            PicturesHelper::remove(\Yii::getAlias('@imagesroot/' . $folderName));
-                        }
-                        throw $t;
-                    }
+            if (\Yii::$app->request->isPost) {
+                if ($seocode = ProductsManagerControllerHelper::onePost()) {
+                    return $this->redirect(Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$seocode]));
                 }
             }
             
-            $categoriesQuery = CategoriesModel::find();
-            $categoriesQuery->extendSelect(['id', 'name']);
-            $categoriesArray = $categoriesQuery->allMap('id', 'name');
-            if (!is_array($categoriesArray) || empty($categoriesArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $categoriesArray']));
-            }
-            asort($categoriesArray, SORT_STRING);
-            $renderArray['categoriesList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $categoriesArray);
-            
-            $renderArray['subcategoryList'] = [''=>\Yii::$app->params['formFiller']];
-            
-            if ($rawProductsModel->id_category) {
-                $subcategoryQuery = SubcategoryModel::find();
-                $subcategoryQuery->extendSelect(['id', 'name']);
-                $subcategoryQuery->where(['[[subcategory.id_category]]'=>$rawProductsModel->id_category]);
-                $subcategoryArray = $subcategoryQuery->allMap('id', 'name');
-                if (!is_array($subcategoryArray) || empty($subcategoryArray)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $subcategoryArray']));
-                }
-                asort($subcategoryArray, SORT_STRING);
-                $renderArray['subcategoryList'] = ArrayHelper::merge($renderArray['subcategoryList'], $subcategoryArray);
-            }
-            
-            $colorsQuery = ColorsModel::find();
-            $colorsQuery->extendSelect(['id', 'color']);
-            $colorsArray = $colorsQuery->allMap('id', 'color');
-            if (!is_array($colorsArray) || empty($colorsArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $colorsArray']));
-            }
-            asort($colorsArray, SORT_STRING);
-            $renderArray['colorsList'] = $colorsArray;
-            
-            $sizesQuery = SizesModel::find();
-            $sizesQuery->extendSelect(['id', 'size']);
-            $sizesArray = $sizesQuery->allMap('id', 'size');
-            if (!is_array($sizesArray) || empty($sizesArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $sizesArray']));
-            }
-            asort($sizesArray, SORT_STRING);
-            $renderArray['sizesList'] = $sizesArray;
-            
-            $brandsQuery = BrandsModel::find();
-            $brandsQuery->extendSelect(['id', 'brand']);
-            $brandsArray = $brandsQuery->allMap('id', 'brand');
-            if (!is_array($brandsArray) || empty($brandsArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $brandsArray']));
-            }
-            asort($brandsArray, SORT_STRING);
-            $renderArray['brandsList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $brandsArray);
-            
-            $renderArray['productsModel'] = $rawProductsModel;
-            $renderArray['colorsModel'] = $rawColorsModel;
-            $renderArray['sizesModel'] = $rawSizesModel;
-            
-            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
+            $renderArray = ProductsManagerControllerHelper::oneGet();
             
             return $this->render('add-one.twig', $renderArray);
         } catch (\Throwable $t) {

@@ -33,7 +33,7 @@ $routes = [
     'admin/add-product'=>'products-manager/add-one',
     
     # Ajax
-    'ajax/get-subcategory'=>'ajax/get-subcategory',
+    'ajax/subcategory'=>'ajax/subcategory',
     
     # Корзина
     'cart'=>'cart/index',

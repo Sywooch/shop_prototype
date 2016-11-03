@@ -81,9 +81,8 @@ class ARWrapper implements \Iterator
         try {
             $resultArray = [];
             if (!empty($rawArray)) {
-                $resultArray = [];
                 foreach ($rawArray as $array) {
-                    $resultArray[] = self::run($array);
+                    $resultArray[] = self::pack($array);
                 }
             }
             
@@ -102,7 +101,7 @@ class ARWrapper implements \Iterator
     {
         try {
             if (!empty($rawArray)) {
-                $result = self::run($rawArray);
+                $result = self::pack($rawArray);
             }
             
             return $result ?? null;
@@ -116,17 +115,16 @@ class ARWrapper implements \Iterator
      * @param array $rawArray массив данных
      * @return array
      */
-    private static function run(array $rawArray): self
+    private static function pack(array $rawArray): self
     {
         try {
             $wrapper = new self();
             $resultArray = [];
             foreach ($rawArray as $key=>$val) {
                 if (is_array($val)) {
-                    $resultArray[$key] = self::run($val);
-                } else {
-                    $resultArray[$key] = $val;
+                    $val = self::pack($val);
                 }
+                $resultArray[$key] = $val;
             }
             $wrapper->setData($resultArray);
             
@@ -173,6 +171,37 @@ class ARWrapper implements \Iterator
             return !empty($this->_object[$value]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function toArray()
+    {
+        try {
+            return $this->unpack($this->_object);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Рекурсивно обходит данные, распаковывая ARWrapper в массивы 
+     * @param array $rawArray массив данных
+     * @return array
+     */
+    private function unpack(array $rawArray)
+    {
+        try {
+            $resultArray = [];
+            foreach ($rawArray as $key=>$val) {
+                if (is_array($val)) {
+                    $val = self::unpack($val);
+                }
+                $resultArray[$key] = $val;
+            }
+            
+            return $resultArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
 }
