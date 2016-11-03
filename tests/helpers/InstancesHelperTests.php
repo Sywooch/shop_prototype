@@ -31,6 +31,9 @@ class InstancesHelperTests extends TestCase
      */
     public function testGetInstances()
     {
+        $categoryFixture = self::$_dbClass->categories['category_1'];
+        $currencyFixture = self::$_dbClass->currency['currency_1'];
+        
         $result = InstancesHelper::getInstances();
         
         $this->assertTrue(is_array($result));
@@ -38,11 +41,16 @@ class InstancesHelperTests extends TestCase
         
         $this->assertTrue(array_key_exists('categoriesList', $result));
         $this->assertTrue(is_array($result['categoriesList']));
-        $this->assertTrue($result['categoriesList'][0] instanceof CategoriesModel);
+        $this->assertFalse(empty($result['categoriesList']));
+        foreach ($categoryFixture as $key=>$val) {
+            $this->assertFalse(empty($result['categoriesList'][0]->$key));
+        }
         
         $this->assertTrue(array_key_exists('currencyList', $result));
         $this->assertTrue(is_array($result['currencyList']));
         $this->assertFalse(empty($result['currencyList']));
+        $this->assertTrue(array_key_exists($currencyFixture['id'], $result['currencyList']));
+        $this->assertTrue(in_array($currencyFixture['code'], $result['currencyList']));
     }
     
     public static function tearDownAfterClass()

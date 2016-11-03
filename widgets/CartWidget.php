@@ -45,11 +45,10 @@ class CartWidget extends Widget
                 $productsQuery = ProductsModel::find();
                 $productsQuery->extendSelect(['id', 'price']);
                 $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
-                $productsQuery->asArray();
-                $productsArray = $productsQuery->all();
-                if (!is_array($productsArray) || empty($productsArray)) {
+                $productsArray = $productsQuery->allArray();
+                /*if (!is_array($productsArray) || empty($productsArray)) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $productsArray']));
-                }
+                }*/
                 $cartArrayMap = ArrayHelper::map(\Yii::$app->params['cartArray'], 'id_product', 'quantity');
                 foreach ($productsArray as $product) {
                     $this->_productsCount += $cartArrayMap[$product['id']];

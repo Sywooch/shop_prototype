@@ -131,10 +131,7 @@ class ProductsListController extends AbstractBaseController
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'Pagination']));
             }
             
-            $renderArray['productsList'] = $productsQuery->all();
-            if (!is_array($renderArray['productsList']) || (!empty($renderArray['productsList']) && !$renderArray['productsList'][0] instanceof ProductsModel)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'productsList\']']));
-            }
+            $renderArray['productsList'] = $productsQuery->allArray();
             
             return $renderArray;
         } catch (\Throwable $t) {

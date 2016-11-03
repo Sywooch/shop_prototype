@@ -7,6 +7,7 @@ use yii\db\ActiveQuery;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
+use app\queries\ARWrapper;
 
 /**
  * Расширяет класс ActiveQuery
@@ -115,7 +116,7 @@ class ExtendActiveQuery extends ActiveQuery
             $this->asArray();
             $resultArray = $this->all();
             
-            return empty($resultArray) ? [] : ArrayHelper::map($resultArray, $fieldKey, $fieldValue);
+            return !empty($resultArray) ? ArrayHelper::map($resultArray, $fieldKey, $fieldValue) : [];
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -130,6 +131,46 @@ class ExtendActiveQuery extends ActiveQuery
     {
         try {
             return $this->_paginator;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает группу строк из СУБД в формате массивов, оборачивает полученные данные 
+     * объектом app\queries\ARWrapper, обеспечивающим доступ к данным как к обычным свойствам ActiveRecord 
+     * полезно для быстрого переключения типа получаемых данных без изменений клиентского кода
+     * @return array
+     */
+    public function allArray(): array
+    {
+        try {
+            $this->asArray();
+            $rawResult = $this->all();
+            
+            $result = ARWrapper::set($rawResult);
+            
+            return $result;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает 1 строку из СУБД в формате массива, оборачивает полученные данные 
+     * объектом app\queries\ARWrapper, обеспечивающим доступ к данным как к обычным свойствам ActiveRecord 
+     * полезно для быстрого переключения типа получаемых данных без изменений клиентского кода
+     * @return array
+     */
+    public function oneArray()
+    {
+        try {
+            $this->asArray();
+            $rawResult = $this->one();
+            
+            $result = ARWrapper::setOne($rawResult);
+            
+            return $result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

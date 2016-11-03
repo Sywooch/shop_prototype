@@ -38,10 +38,11 @@ class ProductDetailController extends AbstractBaseController
             $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
             $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
             $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
-            $productsModel = $productsQuery->one();
-            if (!$productsModel instanceof ProductsModel) {
+            $productsQuery->with(['colors', 'sizes']);
+            $productsModel = $productsQuery->oneArray();
+            /*if (!$productsModel instanceof ProductsModel) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'ProductsModel']));
-            }
+            }*/
             $renderArray['productsModel'] = $productsModel;
             
             $similarQuery = ProductsModel::find();
@@ -56,8 +57,7 @@ class ProductDetailController extends AbstractBaseController
             $similarQuery->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($renderArray['productsModel']->sizes, 'id')]);
             $similarQuery->limit(\Yii::$app->params['similarLimit']);
             $similarQuery->orderBy(['[[products.date]]'=>SORT_DESC]);
-            $similarQuery->asArray();
-            $renderArray['similarList'] = $similarQuery->all();
+            $renderArray['similarList'] = $similarQuery->allArray();
             if (!is_array($renderArray['similarList'])) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'similarList\']']));
             }
@@ -66,8 +66,7 @@ class ProductDetailController extends AbstractBaseController
             $relatedQuery->extendSelect(['name', 'price', 'images', 'seocode']);
             $relatedQuery->innerJoin('{{related_products}}', '[[products.id]]=[[related_products.id_related_product]]');
             $relatedQuery->where(['[[related_products.id_product]]'=>$renderArray['productsModel']->id]);
-            $relatedQuery->asArray();
-            $renderArray['relatedList'] = $relatedQuery->all();
+            $renderArray['relatedList'] = $relatedQuery->allArray();
             if (!is_array($renderArray['relatedList'])) {
                 throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray[\'relatedList\']']));
             }

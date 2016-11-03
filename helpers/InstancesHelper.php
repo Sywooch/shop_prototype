@@ -27,19 +27,13 @@ class InstancesHelper
             $categoriesQuery = CategoriesModel::find();
             $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
             $categoriesQuery->with('subcategory');
-            self::$_instancesArray['categoriesList'] = $categoriesQuery->all();
-            if (empty(self::$_instancesArray['categoriesList']) || !self::$_instancesArray['categoriesList'][0] instanceof CategoriesModel) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CategoriesModel']));
-            }
+            self::$_instancesArray['categoriesList'] = $categoriesQuery->allArray();
             ArrayHelper::multisort(self::$_instancesArray['categoriesList'], 'name', SORT_ASC);
             
             # Массив объектов CurrencyModel для формирования формы замены валюты
             $currencyQuery = CurrencyModel::find();
             $currencyQuery->extendSelect(['id', 'code']);
             self::$_instancesArray['currencyList'] = $currencyQuery->allMap('id', 'code');
-            if (!is_array(self::$_instancesArray['currencyList']) || empty(self::$_instancesArray['currencyList'])) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array currencyList']));
-            }
             asort(self::$_instancesArray['currencyList'], SORT_STRING);
             
             return self::$_instancesArray;

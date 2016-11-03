@@ -30,10 +30,10 @@ class CurrencyFilter extends ActionFilter
                 $currencyQuery = CurrencyModel::find();
                 $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
                 $currencyQuery->where(['[[currency.main]]'=>true]);
-                $currencyModel = $currencyQuery->one();
-                if (!$currencyModel instanceof CurrencyModel) {
+                $currencyModel = $currencyQuery->oneArray();
+                /*if (!$currencyModel instanceof CurrencyModel) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'CurrencyModel']));
-                }
+                }*/
                 $currency = $currencyModel->toArray();
                 if (empty($currency)) {
                     throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $currency']));
