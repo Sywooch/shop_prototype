@@ -96,6 +96,8 @@ $translate = [
     'Order successfully sent!'=>'Заказ успешно отправлен!',
     'Order confirmation on shop.com'=>'Подтверждение заказа на shop.com',
     'Hello! This is information about your order!'=>'Привет! Это информация о вашем заказе!',
+    'Your new password: {password}'=>'Ваш новый пароль: {password}',
+    'We recommend to replace the password on your own as soon as possible!'=>'Рекомендуем заменить этот пароль на собственный как можно скорее!'
 ];
 
 return $translate;

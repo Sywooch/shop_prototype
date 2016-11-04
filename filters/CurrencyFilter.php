@@ -24,26 +24,20 @@ class CurrencyFilter extends ActionFilter
     public function beforeAction($action)
     {
         try {
-            $currency = SessionHelper::read(\Yii::$app->params['currencyKey']);
+            $currencyArray = SessionHelper::read(\Yii::$app->params['currencyKey']);
             
-            if (empty($currency)) {
+            if (empty($currencyArray)) {
                 $currencyQuery = CurrencyModel::find();
                 $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
                 $currencyQuery->where(['[[currency.main]]'=>true]);
-                $currencyModel = $currencyQuery->oneArray();
-                if (!empty($currencyModel)) {
-                    $currency = [
-                        'id'=>$currencyModel->id, 
-                        'code'=>$currencyModel->code, 
-                        'exchange_rate'=>$currencyModel->exchange_rate, 
-                        'main'=>$currencyModel->main
-                    ];
-                    SessionHelper::write(\Yii::$app->params['currencyKey'], $currency);
+                $currencyQuery->asArray();
+                $currencyArray = $currencyQuery->one();
+                if (!empty($currencyArray)) {
+                    SessionHelper::write(\Yii::$app->params['currencyKey'], $currencyArray);
                 }
-                
             }
             
-            \Yii::configure(\Yii::$app->currency, $currency);
+            \Yii::configure(\Yii::$app->currency, $currencyArray);
             
             return parent::beforeAction($action);
         } catch (\Throwable $t) {

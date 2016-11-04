@@ -37,17 +37,15 @@ class EmailsMailingListModel extends AbstractBaseModel
         try {
             $emailsMailingListQuery = self::find();
             $emailsMailingListQuery->extendSelect(['id_mailing_list']);
-            $emailsMailingListQuery->where(['[[emails_mailing_list.id_email]]'=>$emailsModel->id]);
+            $emailsMailingListQuery->where(['[[emails_mailing_list.id_email]]'=>$emailsModel['id']]);
+            $emailsMailingListQuery->asArray();
             $emailsMailingListList = $emailsMailingListQuery->all();
-            if (!is_array($emailsMailingListList) || (!empty($emailsMailingListList) && !$emailsMailingListList[0] instanceof self)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'EmailsMailingListModel']));
-            }
             
-            $diff = array_diff($mailingListModel->id, ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
+            $diff = array_diff($mailingListModel['id'], ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
             if (!empty($diff)) {
                 $toRecord = [];
                 foreach ($diff as $mailingListId) {
-                    $toRecord[] = [$emailsModel->id, $mailingListId];
+                    $toRecord[] = [$emailsModel['id'], $mailingListId];
                 }
                 if (!\Yii::$app->db->createCommand()->batchInsert('{{emails_mailing_list}}', ['[[id_email]]', '[[id_mailing_list]]'], $toRecord)->execute()) {
                     throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));

@@ -59,7 +59,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             $renderArray['colorsModel'] = self::$_rawColorsModel;
             $renderArray['sizesModel'] = self::$_rawSizesModel;
             
-            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
+            self::breadcrumbs();
             
             return $renderArray;
         } catch (\Throwable $t) {
@@ -69,7 +69,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     
     /**
      * Обрабатывает данные POST запроса для ProductsManagerController::actionAddOne()
-     * @return string
+     * @return mixed
      */
     public static function onePost(): string
     {
@@ -94,7 +94,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
                         
                         $productsQuery = ProductsModel::find();
                         $productsQuery->extendSelect(['id', 'seocode']);
-                        $productsQuery->where(['[[products.seocode]]'=>self::$_rawProductsModel->seocode]);
+                        $productsQuery->where(['[[products.seocode]]'=>self::$_rawProductsModel['seocode']]);
                         $productsModel = $productsQuery->one();
                         
                         $count = ProductsColorsModel::batchInsert($productsModel, self::$_rawColorsModel);
@@ -144,11 +144,11 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     
     /**
      * Конструирует модели для 
-     * - ProductsManagerController::oneGet
-     * - ProductsManagerController::onePost
-     * - ProductsManagerController::oneAjax
+     * - ProductsManagerControllerHelper::oneGet
+     * - ProductsManagerControllerHelper::onePost
+     * - ProductsManagerControllerHelper::oneAjax
      */
-    public static function models()
+    private static function models()
     {
         try {
             if (empty(self::$_rawProductsModel)) {
@@ -167,9 +167,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными CategoriesModel для 
-     * - ProductsManagerController::oneGet
-     * - ProductsManagerController::onePost
-     * - ProductsManagerController::oneAjax
+     * - ProductsManagerControllerHelper::oneGet
+     * - ProductsManagerControllerHelper::onePost
+     * - ProductsManagerControllerHelper::oneAjax
      * @return array
      */
     private static function getCategoriesList(): array
@@ -179,7 +179,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             
             $categoriesQuery = CategoriesModel::find();
             $categoriesQuery->extendSelect(['id', 'name']);
-            $categoriesArray = $categoriesQuery->allMap('id', 'name');
+            $categoriesQuery->asArray();
+            $categoriesArray = $categoriesQuery->all();
+            $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
             asort($categoriesArray, SORT_STRING);
             $renderArray['categoriesList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $categoriesArray);
             
@@ -191,9 +193,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными SubcategoryModel для 
-     * - ProductsManagerController::oneGet
-     * - ProductsManagerController::onePost
-     * - ProductsManagerController::oneAjax
+     * - ProductsManagerControllerHelper::oneGet
+     * - ProductsManagerControllerHelper::onePost
+     * - ProductsManagerControllerHelper::oneAjax
      * @param object $rawProductsModel объект ProductsModel
      * @return array
      */
@@ -207,8 +209,10 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             if (!empty($rawProductsModel) && !empty($rawProductsModel->id_category)) {
                 $subcategoryQuery = SubcategoryModel::find();
                 $subcategoryQuery->extendSelect(['id', 'name']);
-                $subcategoryQuery->where(['[[subcategory.id_category]]'=>$rawProductsModel->id_category]);
-                $subcategoryArray = $subcategoryQuery->allMap('id', 'name');
+                $subcategoryQuery->where(['[[subcategory.id_category]]'=>$rawProductsModel['id_category']]);
+                $subcategoryQuery->asArray();
+                $subcategoryArray = $subcategoryQuery->all();
+                $subcategoryArray = ArrayHelper::map($resultArray, 'id', 'name');
                 asort($subcategoryArray, SORT_STRING);
                 $renderArray['subcategoryList'] = ArrayHelper::merge($renderArray, $subcategoryArray);
             }
@@ -221,9 +225,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными ColorsModel для 
-     * - ProductsManagerController::oneGet
-     * - ProductsManagerController::onePost
-     * - ProductsManagerController::oneAjax
+     * - ProductsManagerControllerHelper::oneGet
+     * - ProductsManagerControllerHelper::onePost
+     * - ProductsManagerControllerHelper::oneAjax
      * @return array
      */
     private static function getColorsList(): array
@@ -233,7 +237,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
-            $colorsArray = $colorsQuery->allMap('id', 'color');
+            $colorsQuery->asArray();
+            $colorsArray = $colorsQuery->all();
+            $colorsArray = ArrayHelper::map($colorsArray, 'id', 'color');
             asort($colorsArray, SORT_STRING);
             $renderArray['colorsList'] = $colorsArray;
             
@@ -245,9 +251,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными SizesModel для 
-     * - ProductsManagerController::oneGet
-     * - ProductsManagerController::onePost
-     * - ProductsManagerController::oneAjax
+     * - ProductsManagerControllerHelper::oneGet
+     * - ProductsManagerControllerHelper::onePost
+     * - ProductsManagerControllerHelper::oneAjax
      * @return array
      */
     private static function getSizesList(): array
@@ -257,7 +263,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
-            $sizesArray = $sizesQuery->allMap('id', 'size');
+            $sizesQuery->asArray();
+            $sizesArray = $sizesQuery->all();
+            $sizesArray = ArrayHelper::map($sizesArray, 'id', 'size');
             asort($sizesArray, SORT_STRING);
             $renderArray['sizesList'] = $sizesArray;
             
@@ -269,9 +277,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными BrandsModel для 
-     * - ProductsManagerController::oneGet
-     * - ProductsManagerController::onePost
-     * - ProductsManagerController::oneAjax
+     * - ProductsManagerControllerHelper::oneGet
+     * - ProductsManagerControllerHelper::onePost
+     * - ProductsManagerControllerHelper::oneAjax
      * @return array
      */
     private static function getBrandsList(): array
@@ -281,11 +289,25 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
-            $brandsArray = $brandsQuery->allMap('id', 'brand');
+            $brandsQuery->asArray();
+            $brandsArray = $brandsQuery->all();
+            $brandsArray = ArrayHelper::map($brandsArray, 'id', 'brand');
             asort($brandsArray, SORT_STRING);
             $renderArray['brandsList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $brandsArray);
             
             return $renderArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] 
+     */
+    private static function breadcrumbs()
+    {
+        try {
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-manager/add-one'], 'label'=>\Yii::t('base', 'Add product')];
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

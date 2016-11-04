@@ -20,6 +20,11 @@ use app\models\{BrandsModel,
 class ProductsListControllerHelper extends AbstractControllerHelper
 {
     /**
+     * @var array массив товаров, полученный из БД
+     */
+    private static $_productsList;
+    
+    /**
      * Конструирует данные для ProductsListController::actionIndex()
      * @return array
      */
@@ -33,13 +38,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             $renderArray = ArrayHelper::merge($renderArray, self::getBrandsList());
             $renderArray = ArrayHelper::merge($renderArray, self::getSorting());
             
-            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
-            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
-                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])], 'label'=>$renderArray['productsList'][0]->categoryName];
-                if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
-                    \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['subcategoryKey']=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])], 'label'=>$renderArray['productsList'][0]->subcategoryName];
-                }
-            }
+            self::breadcrumbs();
             
             return $renderArray;
         } catch (\Throwable $t) {
@@ -63,7 +62,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             $renderArray = ArrayHelper::merge($renderArray, self::getBrandsList($sphinxArray));
             $renderArray = ArrayHelper::merge($renderArray, self::getSorting());
             
-            \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Searching results')];
+            self::searchBreadcrumbs();
             
             return $renderArray;
         } catch (\Throwable $t) {
@@ -107,7 +106,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             
             $renderArray['paginator'] = $productsQuery->paginator;
             
-            $renderArray['productsList'] = $productsQuery->allArray();
+            $productsQuery->asArray();
+            self::$_productsList = $productsQuery->all();
+            $renderArray['productsList'] = self::$_productsList;
             
             return $renderArray;
         } catch (\Throwable $t) {
@@ -147,7 +148,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
                 }
             }
             
-            $renderArray['colorsList'] = $colorsQuery->allMap('id', 'color');
+            $colorsQuery->asArray();
+            $colorsArray = $colorsQuery->all();
+            $renderArray['colorsList'] = ArrayHelper::map($colorsArray, 'id', 'color');
             asort($renderArray['colorsList'], SORT_STRING);
             
             return $renderArray;
@@ -188,7 +191,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
                 }
             }
             
-            $renderArray['sizesList'] = $sizesQuery->allMap('id', 'size');
+            $sizesQuery->asArray();
+            $sizesArray = $sizesQuery->all();
+            $renderArray['sizesList'] = ArrayHelper::map($sizesArray, 'id', 'size');
             asort($renderArray['sizesList'], SORT_NUMERIC);
             
             return $renderArray;
@@ -228,7 +233,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
                 }
             }
             
-            $renderArray['brandsList'] = $brandsQuery->allMap('id', 'brand');
+            $brandsQuery->asArray();
+            $brandsArray = $brandsQuery->all();
+            $renderArray['brandsList'] = ArrayHelper::map($brandsArray, 'id', 'brand');
             asort($renderArray['brandsList'], SORT_STRING);
             
             return $renderArray;
@@ -272,6 +279,38 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             $sphinxArray = $sphinxQuery->all();
             
             return $sphinxArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] для 
+     * - ProductsListController::actionIndex
+     */
+    private static function breadcrumbs()
+    {
+        try {
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
+            if (!empty(\Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
+                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])], 'label'=>self::$_productsList[0]['categoryName']];
+                if (!empty(\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
+                    \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['subcategoryKey']=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])], 'label'=>self::$_productsList[0]['subcategoryName']];
+                }
+            }
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] для 
+     * - ProductsListController::actionSearch
+     */
+    private static function searchBreadcrumbs()
+    {
+        try {
+            \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Searching results')];
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

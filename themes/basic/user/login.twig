@@ -1,6 +1,10 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
+{{ use('app/widgets/CartWidget') }}
+
 {% include('@theme/base/user-info.twig') %}
+
+{{ cart_widget_widget() }}
 
 {% include '@theme/base/search.twig' %}
 

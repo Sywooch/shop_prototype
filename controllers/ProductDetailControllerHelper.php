@@ -16,6 +16,11 @@ use app\helpers\InstancesHelper;
 class ProductDetailControllerHelper extends AbstractControllerHelper
 {
     /**
+     * @var array массив данных основного товара, полученный из БД
+     */
+    private static $_productsModel;
+    
+    /**
      * Конструирует данные для ProductDetailController::actionIndex()
      * @return array
      */
@@ -31,44 +36,92 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
             $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
             $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
             $productsQuery->with(['colors', 'sizes']);
-            $productsModel = $productsQuery->oneArray();
-            $renderArray['productsModel'] = $productsModel;
+            $productsQuery->asArray();
+            self::$_productsModel = $productsQuery->one();
+            $renderArray['productsModel'] = self::$_productsModel;
+            
+            $renderArray = ArrayHelper::merge($renderArray, self::similar());
+            $renderArray = ArrayHelper::merge($renderArray, self::related());
+            
+            $renderArray['purchasesModel'] = new PurchasesModel(['quantity'=>1]);
+            
+            self::breadcrumbs();
+            
+            return $renderArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Заполняет массив $renderArray данными ProductsModel похожих товаров  
+     * @return array
+     */
+    private static function similar(): array
+    {
+        try {
+            $renderArray = [];
             
             $similarQuery = ProductsModel::find();
             $similarQuery->extendSelect(['name', 'price', 'images', 'seocode']);
             $similarQuery->distinct();
-            $similarQuery->where(['!=', '[[products.id]]', $renderArray['productsModel']->id]);
-            $similarQuery->andWhere(['[[products.id_category]]'=>$renderArray['productsModel']->id_category]);
-            $similarQuery->andWhere(['[[products.id_subcategory]]'=>$renderArray['productsModel']->id_subcategory]);
+            $similarQuery->where(['!=', '[[products.id]]', self::$_productsModel['id']]);
+            $similarQuery->andWhere(['[[products.id_category]]'=>self::$_productsModel['id_category']]);
+            $similarQuery->andWhere(['[[products.id_subcategory]]'=>self::$_productsModel['id_subcategory']]);
             $similarQuery->innerJoin('{{products_colors}}', '[[products.id]]=[[products_colors.id_product]]');
-            $similarQuery->andWhere(['[[products_colors.id_color]]'=>ArrayHelper::getColumn($renderArray['productsModel']->colors, 'id')]);
+            $similarQuery->andWhere(['[[products_colors.id_color]]'=>ArrayHelper::getColumn(self::$_productsModel['colors'], 'id')]);
             $similarQuery->innerJoin('{{products_sizes}}', '[[products.id]]=[[products_sizes.id_product]]');
-            $similarQuery->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($renderArray['productsModel']->sizes, 'id')]);
+            $similarQuery->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn(self::$_productsModel['sizes'], 'id')]);
             $similarQuery->limit(\Yii::$app->params['similarLimit']);
             $similarQuery->orderBy(['[[products.date]]'=>SORT_DESC]);
-            $renderArray['similarList'] = $similarQuery->allArray();
+            $similarQuery->asArray();
+            $renderArray['similarList'] = $similarQuery->all();
+            
+            return $renderArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Заполняет массив $renderArray данными ProductsModel связанных товаров  
+     * @return array
+     */
+    private static function related(): array
+    {
+        try {
+            $renderArray = [];
             
             $relatedQuery = ProductsModel::find();
             $relatedQuery->extendSelect(['name', 'price', 'images', 'seocode']);
             $relatedQuery->innerJoin('{{related_products}}', '[[products.id]]=[[related_products.id_related_product]]');
-            $relatedQuery->where(['[[related_products.id_product]]'=>$renderArray['productsModel']->id]);
-            $renderArray['relatedList'] = $relatedQuery->allArray();
+            $relatedQuery->where(['[[related_products.id_product]]'=>self::$_productsModel['id']]);
+            $relatedQuery->asArray();
+            $renderArray['relatedList'] = $relatedQuery->all();
             ArrayHelper::multisort($renderArray['relatedList'], 'date', SORT_DESC);
             
-            $renderArray['purchasesModel'] = new PurchasesModel(['quantity'=>1]);
-            
+            return $renderArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] 
+     */
+    private static function breadcrumbs()
+    {
+        try {
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
-            if (!empty($productsModel->categorySeocode) && !empty($productsModel->categoryName)) {
-                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$productsModel->categorySeocode], 'label'=>$productsModel->categoryName];
-                if (!empty($productsModel->subcategorySeocode) && !empty($productsModel->subcategoryName)) {
-                    \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$productsModel->categorySeocode, \Yii::$app->params['subcategoryKey']=>$productsModel->subcategorySeocode], 'label'=>$productsModel->subcategoryName];
+            if (!empty(self::$_productsModel['categorySeocode']) && !empty(self::$_productsModel['categoryName'])) {
+                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>self::$_productsModel['categorySeocode']], 'label'=>self::$_productsModel['categoryName']];
+                if (!empty(self::$_productsModel['subcategorySeocode']) && !empty(self::$_productsModel['subcategoryName'])) {
+                    \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>self::$_productsModel['categorySeocode'], \Yii::$app->params['subcategoryKey']=>self::$_productsModel['subcategorySeocode']], 'label'=>self::$_productsModel['subcategoryName']];
                 }
             }
-            if (!empty($productsModel->seocode) && !empty($productsModel->name)) {
-                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/product-detail/index', \Yii::$app->params['productKey']=>$productsModel->seocode], 'label'=>$productsModel->name];
+            if (!empty(self::$_productsModel['seocode']) && !empty(self::$_productsModel['name'])) {
+                \Yii::$app->params['breadcrumbs'][] = ['url'=>['/product-detail/index', \Yii::$app->params['productKey']=>self::$_productsModel['seocode']], 'label'=>self::$_productsModel['name']];
             }
-            
-            return $renderArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

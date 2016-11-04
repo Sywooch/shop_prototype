@@ -43,7 +43,7 @@ class InstancesHelperTests extends TestCase
         $this->assertTrue(is_array($result['categoriesList']));
         $this->assertFalse(empty($result['categoriesList']));
         foreach ($categoryFixture as $key=>$val) {
-            $this->assertFalse(empty($result['categoriesList'][0]->$key));
+            $this->assertTrue(array_key_exists($key, $result['categoriesList'][0]));
         }
         
         $this->assertTrue(array_key_exists('currencyList', $result));

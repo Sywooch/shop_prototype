@@ -25,7 +25,7 @@ class CurrencyControllerHelper extends AbstractControllerHelper
                 if ($rawCurrencyModel ->validate()) {
                     $currencyQuery = CurrencyModel::find();
                     $currencyQuery->extendSelect(['id', 'code', 'exchange_rate']);
-                    $currencyQuery->where(['[[currency.id]]'=>$rawCurrencyModel->id]);
+                    $currencyQuery->where(['[[currency.id]]'=>$rawCurrencyModel['id']]);
                     $currencyQuery->asArray();
                     $currencyArray = $currencyQuery->one();
                     if (is_array($currencyArray) || !empty($currencyArray)) {

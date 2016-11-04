@@ -7,7 +7,8 @@ use yii\helpers\{ArrayHelper,
     Url};
 use yii\web\Response;
 use yii\db\Transaction;
-use app\controllers\AbstractBaseController;
+use app\controllers\{AbstractBaseController,
+    CartControllerHelper};
 use app\models\{AddressModel,
     CitiesModel,
     ColorsModel,
@@ -45,7 +46,6 @@ class CartController extends AbstractBaseController
 {
     /**
      * Обрабатывает запрос детальной информации о товарах в корзине
-     * @return string
      */
     public function actionIndex()
     {
@@ -54,30 +54,7 @@ class CartController extends AbstractBaseController
                 return $this->redirect(Url::to(['/products-list/index']));
             }
             
-            $renderArray = InstancesHelper::getInstances();
-            if (!is_array($renderArray) || empty($renderArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $renderArray']));
-            }
-            
-            $productsQuery = ProductsModel::find();
-            $productsQuery->extendSelect(['id', 'name', 'short_description', 'price', 'images', 'seocode']);
-            $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
-            $productsQuery->with(['colors', 'sizes']);
-            $productsQuery->asArray();
-            $productsArray = $productsQuery->all();
-            if (!is_array($productsArray) || empty($productsArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $productsArray']));
-            }
-            $productsArray = ArrayHelper::index($productsArray, 'id');
-            
-            foreach (\Yii::$app->params['cartArray'] as $hash=>$purchase) {
-                $renderArray['purchasesList'][$hash] = [
-                    'purchase'=>\Yii::configure((new PurchasesModel()), $purchase), 
-                    'product'=>$productsArray[$purchase['id_product']],
-                ];
-            }
-            
-            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/cart/index'], 'label'=>\Yii::t('base', 'Cart')];
+            $renderArray = CartControllerHelper::indexGet();
             
             Url::remember(Url::current(), 'shop');
             
@@ -90,131 +67,67 @@ class CartController extends AbstractBaseController
     
     /**
      * Обрабатывает запрос на добавление товара в корзину
-     * @return string
      */
     public function actionSet()
     {
         try {
-            $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_ADD_TO_CART]);
-            
-            if (\Yii::$app->request->isPost || \Yii::$app->request->isAjax) {
-                if ($rawPurchasesModel->load(\Yii::$app->request->post())) {
-                    if ($rawPurchasesModel->validate()) {
-                        if (!$this->write($rawPurchasesModel->toArray())) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'CartController::write']));
-                        }
-                    } else {
-                        $this->writeMessageInLogs(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'Model::validate']), __METHOD__);
-                    }
-                }
-                if (\Yii::$app->request->isAjax) {
-                    \Yii::$app->response->format = Response::FORMAT_JSON;
-                    return CartWidget::widget();
-                }
+            if (\Yii::$app->request->isAjax) {
+                return CartControllerHelper::setAjax();
             }
-            
-            return $this->redirect(UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            if (YII_ENV_DEV) {
-                $this->throwException($t, __METHOD__);
-            } else {
-                return $this->redirect(UrlHelper::previous('shop'));
-            }
+            $this->throwException($t, __METHOD__);
         }
     }
     
     /**
      * Обрабатывает запрос на удаление всех товаров из корзины
-     * @return string
      */
     public function actionClean()
     {
         try {
             if (\Yii::$app->request->isPost) {
-                $cartKey = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-                $customerKey = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
-                SessionHelper::remove([$cartKey, $customerKey]);
-                \Yii::$app->params['cartArray'] = [];
-                \Yii::$app->params['customerArray'] = [];
+                CartControllerHelper::cleanPost();
             }
             
             return $this->redirect(UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            if (YII_ENV_DEV) {
-                $this->throwException($t, __METHOD__);
-            } else {
-                return $this->redirect(UrlHelper::previous('shop'));
-            }
+            $this->throwException($t, __METHOD__);
         }
     }
     
     /**
      * Обрабатывает запрос на обновление характеристик товара в корзине
-     * @return string
      */
     public function actionUpdate()
     {
         try {
-            $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_ADD_TO_CART]);
-            
-            if (\Yii::$app->request->isPost && $rawPurchasesModel->load(\Yii::$app->request->post()) && !empty(\Yii::$app->request->post('hash'))) {
-                if ($rawPurchasesModel->validate()) {
-                    $hash = \Yii::$app->request->post('hash') ?? '';
-                    if (array_key_exists($hash, (\Yii::$app->params['cartArray']))) {
-                        unset(\Yii::$app->params['cartArray'][$hash]);
-                        if (!$this->write($rawPurchasesModel->toArray())) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'CartController::write']));
-                        }
-                    }
-                } else {
-                    $this->writeMessageInLogs(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PurchasesModel::validate']), __METHOD__);
-                }
+            if (\Yii::$app->request->isPost) {
+                CartControllerHelper::updatePost();
             }
             
             return $this->redirect(UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            if (YII_ENV_DEV) {
-                $this->throwException($t, __METHOD__);
-            } else {
-                return $this->redirect(UrlHelper::previous('shop'));
-            }
+            $this->throwException($t, __METHOD__);
         }
     }
     
      /**
      * Обрабатывает запрос на удаление 1 товара из корзины
-     * @return string
      */
     public function actionDelete()
     {
         try {
-            if (\Yii::$app->request->isPost && !empty(\Yii::$app->request->post('hash'))) {
-                $hash = \Yii::$app->request->post('hash') ?? '';
-                if (array_key_exists($hash, (\Yii::$app->params['cartArray']))) {
-                    unset(\Yii::$app->params['cartArray'][$hash]);
-                    if (empty(\Yii::$app->params['cartArray'])) {
-                        $cartKey = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-                        $customerKey = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
-                        SessionHelper::remove([$cartKey, $customerKey]);
-                        \Yii::$app->params['customerArray'] = [];
-                    } else {
-                        $cartKey = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-                        SessionHelper::write($cartKey, \Yii::$app->params['cartArray']);
-                    }
-                }
+            if (\Yii::$app->request->isPost) {
+                CartControllerHelper::deletePost();
             }
             
             return $this->redirect(UrlHelper::previous('shop'));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            if (YII_ENV_DEV) {
-                $this->throwException($t, __METHOD__);
-            } else {
-                return $this->redirect(UrlHelper::previous('shop'));
-            }
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -742,27 +655,7 @@ class CartController extends AbstractBaseController
         }
     }
     
-    /**
-     * Пишет в сессию массив данных о товарах в корзине
-     * @param array $purchaseArray массив данных для записи в сессию
-     * @return bool
-     */
-    private function write(array $purchaseArray): bool
-    {
-        try {
-            $clonePurchaseArray = $purchaseArray;
-            unset($clonePurchaseArray['quantity']);
-            $hash = HashHelper::createHash($clonePurchaseArray);
-            \Yii::$app->params['cartArray'][$hash] = $purchaseArray;
-            
-            $cartKey = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-            SessionHelper::write($cartKey, \Yii::$app->params['cartArray']);
-            
-            return true;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
+    
     
     public function behaviors()
     {

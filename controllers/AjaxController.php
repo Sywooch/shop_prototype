@@ -4,7 +4,6 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
-use yii\web\Response;
 use app\controllers\{AbstractBaseController,
     AjaxControllerHelper};
 
@@ -22,8 +21,6 @@ class AjaxController extends AbstractBaseController
             if (!\Yii::$app->request->isAjax) {
                 return $this->redirect(Url::to(['/products-list/index']));
             }
-            
-            \Yii::$app->response->format = Response::FORMAT_JSON;
             
             $response = AjaxControllerHelper::subcategoryResponse();
             

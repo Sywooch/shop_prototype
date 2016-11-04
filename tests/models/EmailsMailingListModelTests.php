@@ -3,6 +3,7 @@
 namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
+use yii\helpers\ArrayHelper;
 use app\tests\DbManager;
 use app\models\{EmailsMailingListModel,
     EmailsModel,
@@ -91,7 +92,9 @@ class EmailsMailingListModelTests extends TestCase
         
         $productsQuery = EmailsMailingListModel::find();
         $productsQuery->extendSelect(['id_mailing_list', 'id_email']);
-        $productsArray = $productsQuery->allMap('id_mailing_list', 'id_email');
+        $productsQuery->asArray();
+        $productsArray = $productsQuery->all();
+        $productsArray = ArrayHelper::map($productsArray, 'id_mailing_list', 'id_email');
         
         $this->assertFalse(empty($productsArray));
         $this->assertTrue(array_key_exists($fixture['id_mailing_list'], $productsArray));
