@@ -22,7 +22,7 @@ class AjaxController extends AbstractBaseController
                 return $this->redirect(Url::to(['/products-list/index']));
             }
             
-            $response = AjaxControllerHelper::subcategoryResponse();
+            $response = AjaxControllerHelper::subcategoryAjax();
             
             return $response;
         } catch (\Throwable $t) {

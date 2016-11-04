@@ -43,7 +43,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
      * Конструирует данные для ProductsManagerController::actionAddOne()
      * @return array
      */
-    public static function oneGet(): array
+    public static function addOneGet(): array
     {
         try {
             self::models();
@@ -71,7 +71,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
      * Обрабатывает данные POST запроса для ProductsManagerController::actionAddOne()
      * @return mixed
      */
-    public static function onePost(): string
+    public static function addOnePost(): string
     {
         try {
             self::models();
@@ -128,7 +128,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
      * Обрабатывает данные AJAX запроса для ProductsManagerController::actionAddOne()
      * @return array
      */
-    public static function oneAjax()
+    public static function addOneAjax()
     {
         try {
             self::models();
@@ -143,10 +143,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Конструирует модели для 
-     * - ProductsManagerControllerHelper::oneGet
-     * - ProductsManagerControllerHelper::onePost
-     * - ProductsManagerControllerHelper::oneAjax
+     * Конструирует модели
      */
     private static function models()
     {
@@ -166,10 +163,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными CategoriesModel для 
-     * - ProductsManagerControllerHelper::oneGet
-     * - ProductsManagerControllerHelper::onePost
-     * - ProductsManagerControllerHelper::oneAjax
+     * Заполняет массив $renderArray данными CategoriesModel 
      * @return array
      */
     private static function getCategoriesList(): array
@@ -192,10 +186,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными SubcategoryModel для 
-     * - ProductsManagerControllerHelper::oneGet
-     * - ProductsManagerControllerHelper::onePost
-     * - ProductsManagerControllerHelper::oneAjax
+     * Заполняет массив $renderArray данными SubcategoryModel 
      * @param object $rawProductsModel объект ProductsModel
      * @return array
      */
@@ -224,10 +215,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными ColorsModel для 
-     * - ProductsManagerControllerHelper::oneGet
-     * - ProductsManagerControllerHelper::onePost
-     * - ProductsManagerControllerHelper::oneAjax
+     * Заполняет массив $renderArray данными ColorsModel 
      * @return array
      */
     private static function getColorsList(): array
@@ -250,10 +238,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными SizesModel для 
-     * - ProductsManagerControllerHelper::oneGet
-     * - ProductsManagerControllerHelper::onePost
-     * - ProductsManagerControllerHelper::oneAjax
+     * Заполняет массив $renderArray данными SizesModel 
      * @return array
      */
     private static function getSizesList(): array
@@ -276,10 +261,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными BrandsModel для 
-     * - ProductsManagerControllerHelper::oneGet
-     * - ProductsManagerControllerHelper::onePost
-     * - ProductsManagerControllerHelper::oneAjax
+     * Заполняет массив $renderArray данными BrandsModel 
      * @return array
      */
     private static function getBrandsList(): array

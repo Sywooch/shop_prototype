@@ -16,7 +16,7 @@ class CurrencyControllerHelper extends AbstractControllerHelper
      * Пишет в сессию данные выбранной валюты, 
      * делая ее текущей валютой приложения для CurrencyController::actionSet()
      */
-    public static function sessionSet()
+    public static function setPost()
     {
         try {
             $rawCurrencyModel = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_CHANGE_CURRENCY]);

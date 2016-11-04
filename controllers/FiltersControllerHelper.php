@@ -18,7 +18,7 @@ class FiltersControllerHelper extends AbstractControllerHelper
      * Пишет в сессию значения фильтров для FiltersController::actionSet()
      * @return string
      */
-    public static function sessionSet(): string
+    public static function setPost(): string
     {
         try {
             \Yii::configure(\Yii::$app->filters, ['scenario'=>FiltersModel::GET_FROM_FORM]);
@@ -40,7 +40,7 @@ class FiltersControllerHelper extends AbstractControllerHelper
      * Удаляет из сессии значения фильтров для FiltersController::actionUnset()
      * @return string
      */
-    public static function sessionUnset(): string
+    public static function unsetPost(): string
     {
         try {
             $key = StringHelper::cutPage(UrlHelper::previous('shop'));

@@ -28,7 +28,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
      * Конструирует данные для ProductsListController::actionIndex()
      * @return array
      */
-    public static function indexData(): array
+    public static function indexGet(): array
     {
         try {
             $renderArray = InstancesHelper::getInstances();
@@ -50,7 +50,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
      * Конструирует данные для ProductsListController::actionSearch()
      * @return array
      */
-    public static function searchData(): array
+    public static function searchGet(): array
     {
         try {
             $sphinxArray = self::getSearch();
@@ -71,9 +71,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными о товарах и пагинации для 
-     * - ProductsListController::actionIndex
-     * - ProductsListController::actionSearch
+     * Заполняет массив $renderArray данными о товарах и пагинации
      * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
      * @return array
      */
@@ -118,8 +116,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными ColorsModel для фильтрации результатов 
-     * - ProductsListController::actionIndex
-     * - ProductsListController::actionSearch
+     * выборки из БД
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array
      */
@@ -161,8 +158,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными SizesModel для фильтрации результатов 
-     * - ProductsListController::actionIndex
-     * - ProductsListController::actionSearch
+     * выборки из БД
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array
      */
@@ -204,8 +200,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными BrandsModel для фильтрации результатов 
-     * - ProductsListController::actionIndex
-     * - ProductsListController::actionSearch
+     * выборки из БД
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array
      */
@@ -246,8 +241,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     
     /**
      * Заполняет массив $renderArray данными сортировки для фильтрации результатов 
-     * - ProductsListController::actionIndex
-     * - ProductsListController::actionSearch
+     * выборки из БД
      * @return array
      */
     private static function getSorting(): array
@@ -265,8 +259,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Получает ID записей, соответствующих поисковому запросу для 
-     * - ProductsListController::actionSearch
+     * Получает ID записей, соответствующих поисковому запросу
      * @return array
      */
     private static function getSearch(): array
@@ -285,8 +278,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] для 
-     * - ProductsListController::actionIndex
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs']
      */
     private static function breadcrumbs()
     {
@@ -304,8 +296,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] для 
-     * - ProductsListController::actionSearch
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs']
      */
     private static function searchBreadcrumbs()
     {

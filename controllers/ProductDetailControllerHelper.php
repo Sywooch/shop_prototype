@@ -24,7 +24,7 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
      * Конструирует данные для ProductDetailController::actionIndex()
      * @return array
      */
-    public static function indexData(): array
+    public static function indexGet(): array
     {
         try {
             $renderArray = InstancesHelper::getInstances();

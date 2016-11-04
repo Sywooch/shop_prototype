@@ -19,7 +19,7 @@ class CurrencyController extends AbstractBaseController
     {
         try {
             if (\Yii::$app->request->isPost) {
-                CurrencyControllerHelper::sessionSet();
+                CurrencyControllerHelper::setPost();
             }
             
             return $this->redirect(UrlHelper::previous('shop'));

@@ -22,7 +22,7 @@ class ProductDetailController extends AbstractBaseController
                 return $this->redirect(UrlHelper::previous('shop'));
             }
             
-            $renderArray = ProductDetailControllerHelper::indexData();
+            $renderArray = ProductDetailControllerHelper::indexGet();
             
             Url::remember(Url::current(), 'shop');
             

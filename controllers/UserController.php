@@ -14,7 +14,6 @@ class UserController extends AbstractBaseController
 {
     /**
      * Управляет процессом аутентификации
-     * @return string
      */
     public function actionLogin()
     {
@@ -36,13 +35,12 @@ class UserController extends AbstractBaseController
     
     /**
      * Управляет процессом logout
-     * @return string
      */
     public function actionLogout()
     {
         try {
             if (\Yii::$app->request->isPost) {
-                UserControllerHelper::logout();
+                UserControllerHelper::logoutPost();
             }
             
             return $this->redirect(Url::to(['/products-list/index']));
@@ -54,7 +52,6 @@ class UserController extends AbstractBaseController
     
     /**
      * Управляет процессом создания учетной записи
-     * @return string
      */
     public function actionRegistration()
     {
@@ -76,7 +73,6 @@ class UserController extends AbstractBaseController
     
     /**
      * Управляет процессом смены пароля
-     * @return string
      */
     public function actionForgot()
     {

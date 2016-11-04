@@ -105,7 +105,7 @@ class UserControllerHelper extends AbstractControllerHelper
      * Обрабатывает POST запрос для UserController::actionLogout()
      * @return bool
      */
-    public static function logout()
+    public static function logoutPost()
     {
         try {
             if (!empty(\Yii::$app->request->post('userId'))) {
@@ -308,8 +308,7 @@ class UserControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Конструирует модели для 
-     * - UserControllerHelper::loginGet
+     * Конструирует модели
      */
     private static function models()
     {
@@ -326,8 +325,7 @@ class UserControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Конструирует модели для 
-     * - UserControllerHelper::registrationGet
+     * Конструирует модели для
      */
     private static function modelsReg()
     {
@@ -347,9 +345,7 @@ class UserControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] 
-     * - UserControllerHelper::loginGet
-     * - UserControllerHelper::loginPost
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs']
      */
     private static function breadcrumbs()
     {
@@ -361,9 +357,7 @@ class UserControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] 
-     * - UserControllerHelper::registrationGet
-     * - UserControllerHelper::registrationPost
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs']
      */
     private static function registrationBreadcrumbs()
     {
@@ -375,9 +369,7 @@ class UserControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] для 
-     * - UserControllerHelper::forgotGet
-     * - UserControllerHelper::forgotPost
+     * Заполняет данными массив \Yii::$app->params['breadcrumbs'] 
      */
     private static function forgotBreadcrumbs()
     {
@@ -389,8 +381,7 @@ class UserControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными MailingListModel для 
-     * - UserControllerHelper::registration
+     * Заполняет массив $renderArray данными MailingListModel 
      * @return array
      */
     private static function getMailingListList(): array

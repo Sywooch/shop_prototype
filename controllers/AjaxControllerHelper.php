@@ -17,7 +17,7 @@ class AjaxControllerHelper extends AbstractControllerHelper
      * Конструирует response для AjaxController::actionSubcategory()
      * @return array
      */
-    public static function subcategoryResponse(): array
+    public static function subcategoryAjax(): array
     {
         try {
             \Yii::$app->response->format = Response::FORMAT_JSON;

@@ -19,7 +19,7 @@ class ProductsListController extends AbstractBaseController
     public function actionIndex()
     {
         try {
-            $renderArray = ProductsListControllerHelper::indexData();
+            $renderArray = ProductsListControllerHelper::indexGet();
             
             Url::remember(Url::current(), 'shop');
             
@@ -40,7 +40,7 @@ class ProductsListController extends AbstractBaseController
                 return $this->redirect(UrlHelper::previous('shop'));
             }
             
-            $renderArray = ProductsListControllerHelper::searchData();
+            $renderArray = ProductsListControllerHelper::searchGet();
             
             Url::remember(Url::current(), 'shop');
             

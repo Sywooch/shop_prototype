@@ -19,7 +19,7 @@ class FiltersController extends AbstractBaseController
     {
         try {
             if (\Yii::$app->request->isPost) {
-                $key = FiltersControllerHelper::sessionSet();
+                $key = FiltersControllerHelper::setPost();
             }
             
             return $this->redirect(!empty($key) ? $key : UrlHelper::previous('shop'));
@@ -36,7 +36,7 @@ class FiltersController extends AbstractBaseController
     {
         try {
             if (\Yii::$app->request->isPost) {
-                $key = FiltersControllerHelper::sessionUnset();
+                $key = FiltersControllerHelper::unsetPost();
             }
             
             return $this->redirect(!empty($key) ? $key : UrlHelper::previous('shop'));

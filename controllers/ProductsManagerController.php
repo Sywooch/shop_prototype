@@ -19,16 +19,16 @@ class ProductsManagerController extends AbstractBaseController
     {
         try {
             if (\Yii::$app->request->isAjax) {
-                return ProductsManagerControllerHelper::oneAjax();
+                return ProductsManagerControllerHelper::addOneAjax();
             }
             
             if (\Yii::$app->request->isPost) {
-                if ($seocode = ProductsManagerControllerHelper::onePost()) {
+                if ($seocode = ProductsManagerControllerHelper::addOnePost()) {
                     return $this->redirect(Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$seocode]));
                 }
             }
             
-            $renderArray = ProductsManagerControllerHelper::oneGet();
+            $renderArray = ProductsManagerControllerHelper::addOneGet();
             
             return $this->render('add-one.twig', $renderArray);
         } catch (\Throwable $t) {
