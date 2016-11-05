@@ -11,7 +11,7 @@ use app\exceptions\ExceptionsTrait;
 class StringHelper
 {
     /**
-     * Удаляет из строки URL часть, представляющую номер страницы
+     * Удаляет из URL часть, представляющую номер страницы
      * @param string $url строка URL
      * @return string
      */

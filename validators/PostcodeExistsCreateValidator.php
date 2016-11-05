@@ -21,11 +21,7 @@ class PostcodeExistsCreateValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $postcodesQuery = PostcodesModel::find();
-            $postcodesQuery->where(['[[postcodes.postcode]]'=>$model->$attribute]);
-            $result = $postcodesQuery->exists();
-            
-            if ($result) {
+            if ($this->check($model->$attribute)) {
                 $this->addError($model, $attribute, \Yii::t('base', 'This postcode is already exists in database!'));
             }
         } catch (\Throwable $t) {
@@ -36,22 +32,32 @@ class PostcodeExistsCreateValidator extends Validator
     /**
      * Проверяет, существует ли текущий postcode в БД, 
      * вызывается вне контекста модели
-     * @param mixed $value значение, которое должно быть проверено
+     * @param string $value postcode, который должен быть проверен
      * @param string $error сообщение об ошибке, которое будет возвращено, если проверка провалится
      * @return bool
      */
     public function validate($value, &$error=null): bool
     {
         try {
+            return $this->check($value);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Проверят существование postcode
+     * @param string $value postcode, который должен быть проверен
+     * @return bool
+     */
+    private function check(string $value): bool
+    {
+        try {
             $postcodesQuery = PostcodesModel::find();
             $postcodesQuery->where(['[[postcodes.postcode]]'=>$value]);
             $result = $postcodesQuery->exists();
             
-            if ($result) {
-                return true;
-            }
-            
-            return false;
+            return $result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

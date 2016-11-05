@@ -29,9 +29,8 @@ class FiltersModel extends Model
     
     /**
      * Обнуляет значение всех свойств, очищая фильтры
-     * @return bool
      */
-    public function clean(): bool
+    public function clean()
     {
         try {
             $this->sortingField = '';
@@ -39,8 +38,6 @@ class FiltersModel extends Model
             $this->colors = [];
             $this->sizes = [];
             $this->brands = [];
-            
-            return true;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

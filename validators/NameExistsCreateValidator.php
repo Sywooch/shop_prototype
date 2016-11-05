@@ -21,11 +21,7 @@ class NameExistsCreateValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $namesQuery = NamesModel::find();
-            $namesQuery->where(['[[names.name]]'=>$model->$attribute]);
-            $result = $namesQuery->exists();
-            
-            if ($result) {
+            if ($this->check($model->$attribute)) {
                 $this->addError($model, $attribute, \Yii::t('base', 'This name is already exists in database!'));
             }
         } catch (\Throwable $t) {
@@ -36,22 +32,32 @@ class NameExistsCreateValidator extends Validator
     /**
      * Проверяет, существует ли текущий name в БД, 
      * вызывается вне контекста модели
-     * @param mixed $value значение, которое должно быть проверено
+     * @param string $value имя, которое должно быть проверено
      * @param string $error сообщение об ошибке, которое будет возвращено, если проверка провалится
      * @return bool
      */
     public function validate($value, &$error=null): bool
     {
         try {
+            return $this->check($value);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Проверят существование имени
+     * @param string $value имя, которое должно быть проверено
+     * @return bool
+     */
+    private function check(string $value): bool
+    {
+        try {
             $namesQuery = NamesModel::find();
             $namesQuery->where(['[[names.name]]'=>$value]);
             $result = $namesQuery->exists();
             
-            if ($result) {
-                return true;
-            }
-            
-            return false;
+            return $result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

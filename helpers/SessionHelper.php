@@ -13,18 +13,15 @@ class SessionHelper
     /**
      * Добавляет переменную к данным сессии
      * @param string $name имя переменной
-     * @param mixed $data данные для добавления в сессию
-     * @return bool
+     * @param mixed $data данные, которые должны быть записаны
      */
-    public static function write(string $name, $data): bool
+    public static function write(string $name, $data)
     {
         try {
             $session = \Yii::$app->session;
             $session->open();
             $session->set($name, $data);
             $session->close();
-            
-            return true;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -55,17 +52,14 @@ class SessionHelper
      * Добавляет Flash-сообщение к данным сессии
      * @param string $name имя переменной
      * @param mixed $data данные для добавления в сессию
-     * @return bool
      */
-    public static function writeFlash(string $name, $data): bool
+    public static function writeFlash(string $name, $data)
     {
         try {
             $session = \Yii::$app->session;
             $session->open();
             $session->setFlash($name, $data);
             $session->close();
-            
-            return true;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -95,9 +89,8 @@ class SessionHelper
     /**
      * Удаляет переменные из сессии
      * @param array $keysArray массив имен переменных
-     * @return bool
      */
-    public static function remove(array $keysArray): bool
+    public static function remove(array $keysArray)
     {
         try {
             $session = \Yii::$app->session;
@@ -108,8 +101,6 @@ class SessionHelper
                 }
             }
             $session->close();
-            
-            return true;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

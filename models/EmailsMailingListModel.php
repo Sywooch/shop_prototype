@@ -28,31 +28,35 @@ class EmailsMailingListModel extends AbstractBaseModel
     
     /**
      * Выполняет пакетное сохранение
-     * @param object $mailingListModel экземпляр MailingListModel
      * @param object $emailsModel экземпляр EmailsModel
+     * @param object $mailingListModel экземпляр MailingListModel
      * @return array
      */
-    public static function batchInsert(MailingListModel $mailingListModel, EmailsModel $emailsModel): array
+    public static function batchInsert(EmailsModel $emailsModel, MailingListModel $mailingListModel): array
     {
         try {
-            $emailsMailingListQuery = self::find();
-            $emailsMailingListQuery->extendSelect(['id_mailing_list']);
-            $emailsMailingListQuery->where(['[[emails_mailing_list.id_email]]'=>$emailsModel['id']]);
-            $emailsMailingListQuery->asArray();
-            $emailsMailingListList = $emailsMailingListQuery->all();
+            if (!empty($emailsModel->id) && is_array($mailingListModel->id) && !empty($mailingListModel->id)) {
             
-            $diff = array_diff($mailingListModel['id'], ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
-            if (!empty($diff)) {
-                $toRecord = [];
-                foreach ($diff as $mailingListId) {
-                    $toRecord[] = [$emailsModel['id'], $mailingListId];
+                $emailsMailingListQuery = self::find();
+                $emailsMailingListQuery->extendSelect(['id_mailing_list']);
+                $emailsMailingListQuery->where(['[[emails_mailing_list.id_email]]'=>$emailsModel['id']]);
+                $emailsMailingListQuery->asArray();
+                $emailsMailingListList = $emailsMailingListQuery->all();
+                
+                $diff = array_diff($mailingListModel['id'], ArrayHelper::getColumn($emailsMailingListList, 'id_mailing_list'));
+                if (!empty($diff)) {
+                    $toRecord = [];
+                    foreach ($diff as $mailingListId) {
+                        $toRecord[] = [$emailsModel['id'], $mailingListId];
+                    }
+                    if (!\Yii::$app->db->createCommand()->batchInsert('{{emails_mailing_list}}', ['[[id_email]]', '[[id_mailing_list]]'], $toRecord)->execute()) {
+                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));
+                    }
                 }
-                if (!\Yii::$app->db->createCommand()->batchInsert('{{emails_mailing_list}}', ['[[id_email]]', '[[id_mailing_list]]'], $toRecord)->execute()) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));
-                }
+                
             }
             
-            return $diff;
+            return $diff ?? [];
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

@@ -21,11 +21,7 @@ class CountryExistsCreateValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $countriesQuery = CountriesModel::find();
-            $countriesQuery->where(['[[countries.country]]'=>$model->$attribute]);
-            $result = $countriesQuery->exists();
-            
-            if ($result) {
+            if ($this->check($model->$attribute)) {
                 $this->addError($model, $attribute, \Yii::t('base', 'This country is already exists in database!'));
             }
         } catch (\Throwable $t) {
@@ -36,22 +32,32 @@ class CountryExistsCreateValidator extends Validator
     /**
      * Проверяет, существует ли текущий country в БД, 
      * вызывается вне контекста модели
-     * @param mixed $value значение, которое должно быть проверено
+     * @param string $value страна, которая должна быть проверена
      * @param string $error сообщение об ошибке, которое будет возвращено, если проверка провалится
      * @return bool
      */
     public function validate($value, &$error=null): bool
     {
         try {
+            return $this->check($value);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Проверят существование страны
+     * @param string $value страна, которая должна быть проверена
+     * @return bool
+     */
+    private function check(string $value): bool
+    {
+        try {
             $countriesQuery = CountriesModel::find();
             $countriesQuery->where(['[[countries.country]]'=>$value]);
             $result = $countriesQuery->exists();
             
-            if ($result) {
-                return true;
-            }
-            
-            return false;
+            return $result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

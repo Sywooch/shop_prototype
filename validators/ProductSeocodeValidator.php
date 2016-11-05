@@ -26,14 +26,14 @@ class ProductSeocodeValidator extends Validator
                 if (!empty($model->name)) {
                     $seocode = TransliterationHelper::getTransliterationSeparate($model->name);
                     if (!empty($seocode)) {
-                        if ($this->exists($seocode)) {
+                        if ($this->check($seocode)) {
                             $seocode .= '-' . (!empty($model->code) ? $model->code : random_bytes(3));
                         }
                         $model->$attribute = $seocode;
                     }
                 }
             } else {
-                if ($this->exists($model->$attribute)) {
+                if ($this->check($model->$attribute)) {
                     $this->addError($model, $attribute, \Yii::t('base', 'Product with this seocode already exists!'));
                 }
             }
@@ -43,16 +43,18 @@ class ProductSeocodeValidator extends Validator
     }
     
     /**
-     * Проверяет существование в БД записи с текущим seocode
-     * @param string $seocode товара
+     * Проверяет существование в БД записи с текущим 
+     * @param string $value seocode, который должен быть проверен
      * @return bool
      */
-    private function exists(string $seocode): bool
+    private function check(string $value): bool
     {
         try {
             $productsQuery = ProductsModel::find();
-            $productsQuery->where(['[[products.seocode]]'=>$seocode]);
-            return $productsQuery->exists();
+            $productsQuery->where(['[[products.seocode]]'=>$value]);
+            $result = $productsQuery->exists();
+            
+            return $result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

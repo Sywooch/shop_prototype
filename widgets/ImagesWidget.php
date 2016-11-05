@@ -4,11 +4,11 @@ namespace app\widgets;
 
 use yii\base\{ErrorExceptions,
     Widget};
+use yii\helpers\Html;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Формирует HTML строку с тегами img, 
- * содержащими ссылки на изображения товара
+ * Формирует HTML строку с тегами img
  */
 class ImagesWidget extends Widget
 {
@@ -31,9 +31,8 @@ class ImagesWidget extends Widget
                 
                 if (!empty($imagesArray)) {
                     foreach ($imagesArray as $image) {
-                        $position = strpos(basename($image), 'thumbn_');
-                        if ($position === false || $position > 0) {
-                            $this->_result .= '<br><img src="' . \Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($image) . '">';
+                        if (preg_match('/^(?!thumbn_).+$/', basename($image)) === 1) {
+                            $this->_result .= '<br>' . Html::img(\Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($image));
                         }
                     }
                 }

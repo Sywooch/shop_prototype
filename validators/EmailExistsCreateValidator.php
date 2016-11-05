@@ -21,11 +21,7 @@ class EmailExistsCreateValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $emailsQuery = EmailsModel::find();
-            $emailsQuery->where(['[[emails.email]]'=>$model->$attribute]);
-            $result = $emailsQuery->exists();
-            
-            if ($result) {
+            if ($this->check($model->$attribute)) {
                 $this->addError($model, $attribute, \Yii::t('base', 'This email is already registered!'));
             }
         } catch (\Throwable $t) {
@@ -36,22 +32,32 @@ class EmailExistsCreateValidator extends Validator
     /**
      * Проверяет, существует ли текущий email в БД, 
      * вызывается вне контекста модели
-     * @param mixed $value значение, которое должно быть проверено
+     * @param string $value email, который должен быть проверен
      * @param string $error сообщение об ошибке, которое будет возвращено, если проверка провалится
      * @return bool
      */
     public function validate($value, &$error=null): bool
     {
         try {
+            return $this->check($value);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Проверят существование email
+     * @param string $value email, который должен быть проверен
+     * @return bool
+     */
+    private function check(string $value): bool
+    {
+        try {
             $emailsQuery = EmailsModel::find();
             $emailsQuery->where(['[[emails.email]]'=>$value]);
             $result = $emailsQuery->exists();
             
-            if ($result) {
-                return true;
-            }
-            
-            return false;
+            return $result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

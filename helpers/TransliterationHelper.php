@@ -72,17 +72,20 @@ class TransliterationHelper
     {
         try {
             $inputArray = preg_split('//u', preg_replace('/ /', '', $string), -1, PREG_SPLIT_NO_EMPTY);
-            $outputArray = [];
-            foreach ($inputArray as $letter) {
-                $letter = mb_strtolower($letter, 'UTF-8');
-                if (in_array($letter, array_keys(self::$_matrix))) {
-                    $outputArray[] = self::$_matrix[$letter];
-                    continue;
+            
+            if (!empty($inputArray)) {
+                $outputArray = [];
+                foreach ($inputArray as $letter) {
+                    $letter = mb_strtolower($letter, 'UTF-8');
+                    if (in_array($letter, array_keys(self::$_matrix))) {
+                        $outputArray[] = self::$_matrix[$letter];
+                        continue;
+                    }
+                    $outputArray[] = $letter;
                 }
-                $outputArray[] = $letter;
             }
             
-            return implode('', $outputArray);
+            return !empty($outputArray) ? implode('', $outputArray) : '';
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -98,12 +101,15 @@ class TransliterationHelper
     {
         try {
             $inputArray = explode(' ', $string);
-            $outputArray = [];
-            foreach ($inputArray as $word) {
-                $outputArray[] = self::getTransliteration($word);
+            
+            if (!empty($inputArray)) {
+                $outputArray = [];
+                foreach ($inputArray as $word) {
+                    $outputArray[] = self::getTransliteration($word);
+                }
             }
             
-            return implode(self::$separator, $outputArray);
+            return !empty($outputArray) ? implode(self::$separator, $outputArray) : '';
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

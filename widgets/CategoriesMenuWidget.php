@@ -39,16 +39,7 @@ class CategoriesMenuWidget extends Menu
         try {
             parent::init();
             
-            if (empty($this->categoriesList)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'array $categoriesList']));
-            }
-            if (empty($this->rootRoute)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'string $rootRoute']));
-            }
-            
-            if (!$this->setItems()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'CategoriesMenuWidget::setItems']));
-            }
+            $this->setItems();
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -56,34 +47,33 @@ class CategoriesMenuWidget extends Menu
     
     /**
      * Формирует массив ссылок для создания меню
-     * @return bool
      */
     private function setItems()
     {
         try {
-            foreach ($this->categoriesList as $category) {
-                if (empty($category['active'])) {
-                    continue;
-                }
-                $pack = [
-                    'label'=>$category['name'],
-                    'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category['seocode']]
-                ];
-                if (!empty($category['subcategory'])) {
-                    foreach ($category['subcategory'] as $subcategory) {
-                        if (empty($subcategory['active'])) {
-                            continue;
-                        }
-                        $pack['items'][] = [
-                            'label'=>$subcategory['name'],
-                            'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category['seocode'], \Yii::$app->params['subcategoryKey']=>$subcategory['seocode']]
-                        ];
+            if (!empty($this->categoriesList)) {
+                foreach ($this->categoriesList as $category) {
+                    if (empty($category['active'])) {
+                        continue;
                     }
+                    $pack = [
+                        'label'=>$category['name'],
+                        'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category['seocode']]
+                    ];
+                    if (!empty($category['subcategory'])) {
+                        foreach ($category['subcategory'] as $subcategory) {
+                            if (empty($subcategory['active'])) {
+                                continue;
+                            }
+                            $pack['items'][] = [
+                                'label'=>$subcategory['name'],
+                                'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category['seocode'], \Yii::$app->params['subcategoryKey']=>$subcategory['seocode']]
+                            ];
+                        }
+                    }
+                    $this->items[] = $pack;
                 }
-                $this->items[] = $pack;
             }
-            
-            return true;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -3,7 +3,6 @@
 namespace app\models;
 
 use yii\db\ActiveRecord;
-use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\queries\ExtendActiveQuery;
 

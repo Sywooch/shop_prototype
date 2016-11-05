@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use yii\helpers\ArrayHelper;
 use app\models\{AbstractBaseModel,
     ProductsModel,
     SubcategoryModel};

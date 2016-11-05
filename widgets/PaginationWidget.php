@@ -22,7 +22,7 @@ class PaginationWidget extends Widget
     /**
      * @var string CSS class для активного пункта меню
      */
-    public $activePageCssClass = 'active';
+    public $activePage = 'active';
     /**
      * @var array массив HTML аттрибутов, которые будут применены к тегу-контейнеру
      */
@@ -44,7 +44,7 @@ class PaginationWidget extends Widget
     /**
      * @var int общее количество ссылок на страницы, например, 
      * значение 5 создает: указатель на текущую страницу, а также 
-     * 2 ссылки на предыдущие и 2 ссылки на следующие страницы за текущей
+     * 2 ссылки на предыдущие и 2 ссылки на следующие за текущей страницы
      */
     public $pageRange = 5;
     /**
@@ -63,6 +63,10 @@ class PaginationWidget extends Widget
      * @var array массив ссылок на страницы, обернутых в тег $this->childTag
      */
     private $_tags = [];
+    /**
+     * @var int номер текущей страницы
+     */
+    private $_pagePointer;
     
     public function init()
     {
@@ -70,14 +74,22 @@ class PaginationWidget extends Widget
             parent::init();
             
             if (empty($this->paginator)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$paginator']));
+                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'yii\data\Pagination']));
             }
             
             $this->pageRange = ceil($this->pageRange);
+            
+            $this->pageRange = $this->pageRange < 3 ? 3 : $this->pageRange;
+            
             if ($this->pageRange % 2 === 0) {
                 ++$this->pageRange;
             }
-            $this->pageRange = $this->pageRange < 3 ? 3 : $this->pageRange;
+            
+            $this->_pagePointer = \Yii::$app->request->get(\Yii::$app->params['pagePointer']) ?? 1;
+            
+            if ($this->_pagePointer > $this->paginator->pageCount) {
+                $this->_pagePointer = $this->paginator->pageCount;
+            }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -87,36 +99,28 @@ class PaginationWidget extends Widget
      * Конструирует HTML строку пагинации
      * @return string
      */
-    public function run()
+    public function run(): string
     {
         try {
-            if ($this->paginator->pageCount < 2) {
-                return '';
-            }
-            
-            $range = $this->getRange();
-            if (!is_array($range) || empty($range)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $range']));
-            }
-            
-            foreach ($range as $number) {
-                if ($number == 1) {
-                    $number = null;
+            if ($this->paginator->pageCount >= 2) {
+                
+                $range = $this->getRange();
+                
+                foreach ($range as $number) {
+                    if ($this->_pagePointer == $number) {
+                        $this->_tags[] = Html::tag($this->childTag, $number, ['class'=>$this->activePage]);
+                        continue;
+                    }
+                    $this->_tags[] = Html::tag($this->childTag, Html::a($number, Url::current([\Yii::$app->params['pagePointer']=>($number == 1) ? null : $number])));
                 }
-                $url = Url::current([\Yii::$app->params['pagePointer']=>$number]);
-                if (Url::current() == $url || (\Yii::$app->request->get(\Yii::$app->params['pagePointer']) > $this->paginator->pageCount && $number == $this->paginator->pageCount)) {
-                    $this->_tags[] = Html::tag($this->childTag, $number ?? 1, ['class'=>$this->activePageCssClass]);
-                    continue;
+                
+                if ($this->edges) {
+                    array_unshift($this->_tags, Html::tag($this->childTag, Html::a(\Yii::t('base', 'First'), Url::current([\Yii::$app->params['pagePointer']=>null]))));
+                    array_push($this->_tags, Html::tag($this->childTag, Html::a(\Yii::t('base', 'Last'), Url::current([\Yii::$app->params['pagePointer']=>$this->paginator->pageCount]))));
                 }
-                $this->_tags[] = Html::tag($this->childTag, Html::a($number ?? 1, $url));
             }
             
-            if ($this->edges) {
-                array_unshift($this->_tags, Html::tag($this->childTag, Html::a(\Yii::t('base', 'First'), Url::current([\Yii::$app->params['pagePointer']=>null]))));
-                array_push($this->_tags, Html::tag($this->childTag, Html::a(\Yii::t('base', 'Last'), Url::current([\Yii::$app->params['pagePointer']=>$this->paginator->pageCount]))));
-            }
-            
-            return Html::tag($this->tag, implode(Html::tag($this->childTag, $this->separator), $this->_tags), $this->options);
+            return !empty($this->_tags) ? Html::tag($this->tag, implode(Html::tag($this->childTag, $this->separator), $this->_tags), $this->options) : '';
         } catch(\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -133,30 +137,18 @@ class PaginationWidget extends Widget
             $aroundPages = floor(($this->pageRange - 1) / 2);
             
             $this->_prevMin = $currentPage - $aroundPages;
-            if (!$this->checkMinPage()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'checkMinPage()']));
-            }
+            $this->checkMinPage();
             
             $this->_nextMax = $currentPage + $aroundPages;
-            if (!$this->checkMaxPage()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'checkMaxPage()']));
-            }
+            $this->checkMaxPage();
             
-            if (count(range($this->_prevMin, $this->_nextMax)) < $this->pageRange) {
+            if ($this->pageRange > count(range($this->_prevMin, $this->_nextMax))) {
                 if ($this->_prevMin == 1) {
-                    if (!$this->scale('up')) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'scale()']));
-                    }
-                    if (!$this->checkMaxPage()) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'checkMaxPage()']));
-                    }
+                    $this->scale(true);
+                    $this->checkMaxPage();
                 } elseif ($this->_nextMax == $this->paginator->pageCount) {
-                    if (!$this->scale('down')) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'scale()']));
-                    }
-                    if (!$this->checkMinPage()) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'checkMinPage()']));
-                    }
+                    $this->scale(false);
+                    $this->checkMinPage();
                 }
             }
             
@@ -169,32 +161,23 @@ class PaginationWidget extends Widget
     /**
      * Увеличивает максимальный номер следующих страниц, 
      * или уменьшает минимальный номер предыдущих страниц, 
-     * если диапазон страниц меньше ожидаемого
-     * @param string $direction задает направление изменений: 
-     * - up инкремент максимального номера
-     * - down декремент минимального номера
+     * @param bool $direction задает направление изменений: 
+     * - true инкремент максимального номера
+     * - false декремент минимального номера
      */
-    private function scale($direction)
+    private function scale(bool $direction)
     {
         try {
-            if (empty($direction) || !in_array($direction, ['up', 'down'], true)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $direction']));
+            while ($this->pageRange > count(range($this->_prevMin, $this->_nextMax))) {
+                $direction ? ++$this->_nextMax : --$this->_prevMin;
             }
-            
-            for ($i = 0; $i <= $this->pageRange - count(range($this->_prevMin, $this->_nextMax)); ++$i) {
-                $direction == 'up' ? ++$this->_nextMax : --$this->_prevMin;
-            }
-            
-            return true;
         } catch(\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Устанавливает минимальный номер для предыдущих страниц, 
-     * устанавливает его равным 1, если полученное в результате вычислений значение меньше 1
-     * @return bool
+     * Устанавливает минимальный номер для предыдущих страниц
      */
     private function checkMinPage()
     {
@@ -202,18 +185,13 @@ class PaginationWidget extends Widget
             if ($this->_prevMin < 1) {
                 $this->_prevMin = 1;
             }
-            
-            return true;
         } catch(\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Устанавливает максимальный номер для следующих страниц, 
-     * устанавливает его равным $this->paginator->pageCount, 
-     * если полученное в результате вычислений значение больше $this->paginator->pageCount
-     * @return bool
+     * Устанавливает максимальный номер для следующих страниц
      */
     private function checkMaxPage()
     {
@@ -221,8 +199,6 @@ class PaginationWidget extends Widget
             if ($this->_nextMax > $this->paginator->pageCount) {
                 $this->_nextMax = $this->paginator->pageCount;
             }
-            
-            return true;
         } catch(\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

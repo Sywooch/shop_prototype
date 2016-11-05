@@ -21,11 +21,7 @@ class SurnameExistsCreateValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $surnamesQuery = SurnamesModel::find();
-            $surnamesQuery->where(['[[surnames.surname]]'=>$model->$attribute]);
-            $result = $surnamesQuery->exists();
-            
-            if ($result) {
+            if ($this->check($model->$attribute)) {
                 $this->addError($model, $attribute, \Yii::t('base', 'This surname is already exists in database!'));
             }
         } catch (\Throwable $t) {
@@ -36,22 +32,32 @@ class SurnameExistsCreateValidator extends Validator
     /**
      * Проверяет, существует ли текущий surname в БД, 
      * вызывается вне контекста модели
-     * @param mixed $value значение, которое должно быть проверено
+     * @param string $value фамилия, которая должна быть проверена
      * @param string $error сообщение об ошибке, которое будет возвращено, если проверка провалится
      * @return bool
      */
     public function validate($value, &$error=null): bool
     {
         try {
+            return $this->check($value);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Проверят существование фамилии
+     * @param string $value фамилия, которая должна быть проверена
+     * @return bool
+     */
+    private function check(string $value): bool
+    {
+        try {
             $surnamesQuery = SurnamesModel::find();
             $surnamesQuery->where(['[[surnames.surname]]'=>$value]);
             $result = $surnamesQuery->exists();
             
-            if ($result) {
-                return true;
-            }
-            
-            return false;
+            return $result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -100,40 +100,38 @@ class PurchasesModel extends AbstractBaseModel
         try {
             $counter = 0;
             
-            if (empty($purchasesArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'purchasesArray']));
-            }
-            
-            $date = time();
-            
-            $toRecord = [];
-            foreach ($purchasesArray as $purchase) {
-                $toRecord[] = [
-                    $user,
-                    $name,
-                    $surname,
-                    $email, 
-                    $phone, 
-                    $address,
-                    $city, 
-                    $country, 
-                    $postcode,
-                    $purchase['id_product'],
-                    $purchase['quantity'],
-                    $purchase['id_color'],
-                    $purchase['id_size'],
-                    $delivery,
-                    $payment,
-                    true,
-                    $date,
-                ];
-                ++$counter;
-            }
-            
-            $fields = ['[[id_user]]', '[[id_name]]', '[[id_surname]]', '[[id_email]]', '[[id_phone]]', '[[id_address]]', '[[id_city]]', '[[id_country]]', '[[id_postcode]]', '[[id_product]]', '[[quantity]]', '[[id_color]]', '[[id_size]]', '[[id_delivery]]', '[[id_payment]]', '[[received]]', '[[received_date]]'];
-            
-            if (!\Yii::$app->db->createCommand()->batchInsert('{{purchases}}', $fields, $toRecord)->execute()) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PurchsesModel::batchInsert']));
+            if (!empty($purchasesArray)) {
+                $date = time();
+                
+                $toRecord = [];
+                foreach ($purchasesArray as $purchase) {
+                    $toRecord[] = [
+                        $user,
+                        $name,
+                        $surname,
+                        $email, 
+                        $phone, 
+                        $address,
+                        $city, 
+                        $country, 
+                        $postcode,
+                        $purchase['id_product'],
+                        $purchase['quantity'],
+                        $purchase['id_color'],
+                        $purchase['id_size'],
+                        $delivery,
+                        $payment,
+                        true,
+                        $date,
+                    ];
+                    ++$counter;
+                }
+                
+                $fields = ['[[id_user]]', '[[id_name]]', '[[id_surname]]', '[[id_email]]', '[[id_phone]]', '[[id_address]]', '[[id_city]]', '[[id_country]]', '[[id_postcode]]', '[[id_product]]', '[[quantity]]', '[[id_color]]', '[[id_size]]', '[[id_delivery]]', '[[id_payment]]', '[[received]]', '[[received_date]]'];
+                
+                if (!\Yii::$app->db->createCommand()->batchInsert('{{purchases}}', $fields, $toRecord)->execute()) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PurchsesModel::batchInsert']));
+                }
             }
             
             return $counter;

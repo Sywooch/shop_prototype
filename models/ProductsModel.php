@@ -3,13 +3,11 @@
 namespace app\models;
 
 use yii\base\ErrorException;
-use yii\behaviors\AttributeTypecastBehavior;
 use app\models\{AbstractBaseModel,
     CategoriesModel,
     SizesModel,
     SubcategoryModel};
-use app\helpers\{PicturesHelper,
-    TransliterationHelper};
+use app\helpers\PicturesHelper;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -99,7 +97,7 @@ class ProductsModel extends AbstractBaseModel
     public function getSubcategory()
     {
         try {
-            return $this->hasOne(SubcategoryModel::className(), ['id'=>'id_subcategory']);
+            return $this->hasOne(SubcategoryModel::className(), ['id'=>'id_subcategory'])->inverseOf('products');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -140,29 +138,32 @@ class ProductsModel extends AbstractBaseModel
     public function upload($thumbn=true): string
     {
         try {
-            $folderName = time();
-            $directoryPath = \Yii::getAlias('@imagesroot/' . $folderName);
-            if (!file_exists($directoryPath)) {
-                mkdir($directoryPath, 0775);
+            if (!empty($this->images)) {
+                
+                $folderName = time();
+                
+                $directoryPath = \Yii::getAlias('@imagesroot/' . $folderName);
+                
+                if (!file_exists($directoryPath)) {
+                    mkdir($directoryPath, 0775);
+                }
+                
+                foreach ($this->images as $image) {
+                    PicturesHelper::resize($image);
+                    $image->saveAs($directoryPath . '/' . $image->baseName . '.' . $image->extension);
+                }
+                
+                if ($thumbn) {
+                    PicturesHelper::createThumbnails($directoryPath);
+                }
+                
             }
             
-            foreach ($this->images as $image) {
-                if (!PicturesHelper::resize($image)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PicturesHelper::createPictures']));
-                }
-                if (!$image->saveAs($directoryPath . '/' . $image->baseName . '.' . $image->extension)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'$image->saveAs']));
-                }
-            }
-            
-            if ($thumbn) {
-                if (!PicturesHelper::createThumbnails($directoryPath)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PicturesHelper::createThumbnails']));
-                }
-            }
-            
-            return $folderName;
+            return $folderName ?? '';
         } catch (\Throwable $t) {
+            if (!empty($folderName)) {
+                PicturesHelper::remove(\Yii::getAlias('@imagesroot/' . $folderName));
+            }
             $this->throwException($t, __METHOD__);
         }
     }

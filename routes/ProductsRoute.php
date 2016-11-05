@@ -15,12 +15,6 @@ class ProductsRoute extends Object implements UrlRuleInterface
     use ExceptionsTrait;
     
     /**
-     * @var array массив данных, 
-     * используется при парсинге и построении URL
-     */
-    private $_params = [];
-    
-    /**
      * Парсит запрос и возвращает подходящий маршрут и параметры
      * @return array/bool
      */
@@ -30,17 +24,15 @@ class ProductsRoute extends Object implements UrlRuleInterface
             $pathInfo = $request->getPathInfo();
             
             if (ProductsModel::find()->where(['[[products.seocode]]'=>$pathInfo])->exists()) {
-                $this->_params[\Yii::$app->params['productKey']] = $pathInfo;
+                $paramsArray[\Yii::$app->params['productKey']] = $pathInfo;
             } else {
                 return false;
             }
             
-            return ['product-detail/index', $this->_params];
+            return ['product-detail/index', $paramsArray];
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
-        } finally {
-            $this->_params = [];
         }
     }
     
@@ -59,8 +51,6 @@ class ProductsRoute extends Object implements UrlRuleInterface
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
-        } finally {
-            $this->_params = [];
         }
     }
 }

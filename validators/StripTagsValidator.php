@@ -31,13 +31,11 @@ class StripTagsValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $allowable_tags = '';
-            
             if (in_array($model::className() . '::' . $attribute, $this->exceptProperties)) {
                 $allowable_tags = $this->allowable_tags;
             }
             
-            $model->$attribute = $this->strip($model->$attribute, $allowable_tags);
+            $model->$attribute = $this->strip($model->$attribute, $allowable_tags ?? '');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -48,7 +46,7 @@ class StripTagsValidator extends Validator
      * @param string $value проверяемая строка
      * @return string
      */
-    public function validate($value, &$error=null)
+    public function validate($value, &$error=null): string
     {
         try {
             return $this->strip($value);
@@ -63,7 +61,7 @@ class StripTagsValidator extends Validator
      * @param string $allowable_tags теги, которые не нужно удалять
      * @return string
      */
-    private function strip(string $value='', string $allowable_tags=''): string
+    private function strip(string $value, string $allowable_tags=''): string
     {
         try {
             $value = HtmlPurifier::process($value);

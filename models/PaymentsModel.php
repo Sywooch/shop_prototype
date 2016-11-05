@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\AbstractBaseModel;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы payments
