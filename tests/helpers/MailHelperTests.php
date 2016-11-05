@@ -11,10 +11,10 @@ class MailHelperTests extends \PHPUnit_Framework_TestCase
 {
     private static $_saveDir;
     private static $_template;
-    private static $_setFrom = ['john@somedomain.com'=>'John Dow'];
-    private static $_setTo = ['starling@somedomain.info'=>'Clarice Starling'];
-    private static $_setSubject = 'Hello, how are you?';
-    private static $_dataForTemplate = ['data'=>'Some data about tomorrow meeting! Please, confirm receipt!', 'header'=>'Hello, friends!'];
+    private static $_from = ['john@somedomain.com'=>'John Dow'];
+    private static $_to = ['starling@somedomain.info'=>'Clarice Starling'];
+    private static $_subject = 'Hello, how are you?';
+    private static $_templateData = ['data'=>'Some data about tomorrow meeting! Please, confirm receipt!', 'header'=>'Hello, friends!'];
     private static $_contentType = 'text/html; charset=utf-8';
     
     public static function setUpBeforeClass()
@@ -30,10 +30,10 @@ class MailHelperTests extends \PHPUnit_Framework_TestCase
     {
         $messageArray = [
             'template'=>self::$_template,
-            'setFrom'=>self::$_setFrom,
-            'setTo'=>self::$_setTo,
-            'setSubject'=>self::$_setSubject,
-            'dataForTemplate'=>self::$_dataForTemplate,
+            'from'=>self::$_from,
+            'to'=>self::$_to,
+            'subject'=>self::$_subject,
+            'templateData'=>self::$_templateData,
         ];
         
         $result = MailHelper::send([$messageArray]);
@@ -46,12 +46,12 @@ class MailHelperTests extends \PHPUnit_Framework_TestCase
         
         $file = file_get_contents($emlFiles[0]);
         
-        $this->assertEquals(1, preg_match('#Subject:\s' . self::$_setSubject . '#', $file));
-        $this->assertEquals(1, preg_match('#From:\s' . array_values(self::$_setFrom)[0] . '\s<' . array_keys(self::$_setFrom)[0] . '>#', $file));
-        $this->assertEquals(1, preg_match('#To:\s' . array_values(self::$_setTo)[0] . '\s<' . array_keys(self::$_setTo)[0] . '>#', $file));
+        $this->assertEquals(1, preg_match('#Subject:\s' . self::$_subject . '#', $file));
+        $this->assertEquals(1, preg_match('#From:\s' . array_values(self::$_from)[0] . '\s<' . array_keys(self::$_from)[0] . '>#', $file));
+        $this->assertEquals(1, preg_match('#To:\s' . array_values(self::$_to)[0] . '\s<' . array_keys(self::$_to)[0] . '>#', $file));
         $this->assertEquals(1, preg_match('#Content-Type:\s' . self::$_contentType . '#', $file));
-        $this->assertEquals(1, preg_match('#<h1>' . substr(self::$_dataForTemplate['header'], 0, 10) . '#', $file));
-        $this->assertEquals(1, preg_match('#<p>' . substr(self::$_dataForTemplate['data'], 0, 10) . '#', $file));
+        $this->assertEquals(1, preg_match('#<h1>' . substr(self::$_templateData['header'], 0, 10) . '#', $file));
+        $this->assertEquals(1, preg_match('#<p>' . substr(self::$_templateData['data'], 0, 10) . '#', $file));
     }
     
     public static function tearDownAfterClass()

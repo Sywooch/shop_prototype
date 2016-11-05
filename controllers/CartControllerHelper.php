@@ -5,6 +5,7 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
 use yii\web\Response;
+use yii\db\Transaction;
 use app\controllers\AbstractControllerHelper;
 use app\exceptions\ExceptionsTrait;
 use app\models\{AddressModel,
@@ -24,6 +25,7 @@ use app\models\{AddressModel,
     UsersModel};
 use app\helpers\{HashHelper,
     InstancesHelper,
+    MailHelper,
     SessionHelper};
 use app\widgets\CartWidget;
 use app\validators\{AddressExistsCreateValidator,
@@ -300,8 +302,8 @@ class CartControllerHelper extends AbstractControllerHelper
             $renderArray['deliveriesModel'] = self::$_rawDeliveriesModel;
             $renderArray['paymentsModel'] = self::$_rawPaymentsModel;
             
-            $renderArray = ArrayHelper::merge($renderArray, self::getDeliveriesList());
-            $renderArray = ArrayHelper::merge($renderArray, self::getPaymentsList());
+            $renderArray['deliveriesList'] = self::getDeliveriesList();
+            $renderArray['paymentsList'] = self::getPaymentsList();
             
             self::breadcrumbsCustomer();
             
@@ -371,8 +373,8 @@ class CartControllerHelper extends AbstractControllerHelper
             
             $renderArray['customerArray'] = \Yii::$app->params['customerArray'];
             
-            $renderArray = ArrayHelper::merge($renderArray, self::getDelivery());
-            $renderArray = ArrayHelper::merge($renderArray, self::getPayment());
+            $renderArray['deliveriesModel'] = self::getDelivery();
+            $renderArray['paymentsModel'] = self::getPayment();
             
             self::breadcrumbsCheck();
             
@@ -384,9 +386,8 @@ class CartControllerHelper extends AbstractControllerHelper
     
     /**
      * Конструирует данные для CartController::actionSend()
-     * @return array
      */
-    public static function sendGet(): array
+    public static function sendPost()
     {
         try {
             $renderArray = InstancesHelper::getInstances();
@@ -538,11 +539,69 @@ class CartControllerHelper extends AbstractControllerHelper
                     $user = \Yii::$app->user->id;
                 }
                 
+                $count = PurchasesModel::batchInsert(\Yii::$app->params['cartArray'], $name, $surname, $email, $phone, $address, $city, $country, $postcode, $delivery, $payment, $user ?? 0);
+                if ($count < 1) {
+                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PurchasesModel::batchInsert']));
+                }
+                
+                $productsArray = self::getProducts();
+                $colorsArray = self::getColors();
+                $sizesArray = self::getSizes();
+                $deliveriesArray = self::getDelivery();
+                $paymentsArray = self::getPayment();
+                
+                foreach (\Yii::$app->params['cartArray'] as $purchase) {
+                    $purchasesArray[] = [
+                        'purchase'=>$purchase, 
+                        'product'=>$productsArray[$purchase['id_product']],
+                        'color'=>$colorsArray[$purchase['id_color']],
+                        'size'=>$sizesArray[$purchase['id_size']],
+                    ];
+                }
+                
+                $sent = MailHelper::send([
+                    [
+                        'template'=>'@theme/mail/complete-mail.twig', 
+                        'from'=>['admin@shop.com'=>'Shop'], 
+                        'to'=>['timofey@localhost'=>'Timofey'], 
+                        'subject'=>\Yii::t('base', 'Order confirmation on shop.com'), 
+                        'templateData'=>[
+                            'customerArray'=>\Yii::$app->params['customerArray'],
+                            'purchasesList'=>$purchasesArray,
+                            'deliveryArray'=>$deliveriesArray,
+                            'paymentArray'=>$paymentsArray
+                        ],
+                    ]
+                ]);
+                if ($sent < 1) {
+                    throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
+                }
+                
+                self::cleanPost();
+                
+                $transaction->commit();
+                
             } catch (\Throwable $t) {
                 $transaction->rollBack();
                 throw $t;
             }
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Конструирует данные для CartController::actionComplete()
+     * @return array
+     */
+    public static function completeGet(): array
+    {
+        try {
+            $renderArray = InstancesHelper::getInstances();
             
+            self::breadcrumbs();
+            
+            return $renderArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -615,16 +674,13 @@ class CartControllerHelper extends AbstractControllerHelper
     private static function getDelivery(): array
     {
         try {
-            $renderArray = [];
-            
             $deliveriesQuery = DeliveriesModel::find();
             $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
             $deliveriesQuery->where(['[[deliveries.id]]'=>\Yii::$app->params['customerArray'][DeliveriesModel::tableName()]]);
             $deliveriesQuery->asArray();
             $deliveriesArray = $deliveriesQuery->one();
-            $renderArray['deliveriesModel'] = $deliveriesArray;
             
-            return $renderArray;
+            return $deliveriesArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -637,16 +693,13 @@ class CartControllerHelper extends AbstractControllerHelper
     private static function getPayment(): array
     {
         try {
-            $renderArray = [];
-            
             $paymentsQuery = PaymentsModel::find();
             $paymentsQuery->extendSelect(['id', 'name', 'description']);
             $paymentsQuery->where(['[[payments.id]]'=>\Yii::$app->params['customerArray'][PaymentsModel::tableName()]]);
             $paymentsQuery->asArray();
             $paymentsArray = $paymentsQuery->one();
-            $renderArray['paymentsModel'] = $paymentsArray;
             
-            return $renderArray;
+            return $paymentsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -663,7 +716,12 @@ class CartControllerHelper extends AbstractControllerHelper
             $clonePurchaseArray = $purchaseArray;
             unset($clonePurchaseArray['quantity']);
             $hash = HashHelper::createHash($clonePurchaseArray);
-            \Yii::$app->params['cartArray'][$hash] = $purchaseArray;
+            
+            if (array_key_exists($hash, \Yii::$app->params['cartArray'])) {
+                \Yii::$app->params['cartArray'][$hash]['quantity'] += $purchaseArray['quantity'];
+            } else {
+                \Yii::$app->params['cartArray'][$hash] = $purchaseArray;
+            }
             
             $cartKey = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
             SessionHelper::write($cartKey, \Yii::$app->params['cartArray']);
@@ -725,16 +783,13 @@ class CartControllerHelper extends AbstractControllerHelper
     private static function getDeliveriesList(): array
     {
         try {
-            $renderArray = [];
-            
             $deliveriesQuery = DeliveriesModel::find();
             $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
             $deliveriesQuery->asArray();
             $deliveriesArray = $deliveriesQuery->all();
             ArrayHelper::multisort($deliveriesArray, 'name', SORT_ASC);
-            $renderArray['deliveriesList'] = $deliveriesArray;
             
-            return $renderArray;
+            return $deliveriesArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -747,16 +802,13 @@ class CartControllerHelper extends AbstractControllerHelper
     private static function getPaymentsList(): array
     {
         try {
-            $renderArray = [];
-            
             $paymentsQuery = PaymentsModel::find();
             $paymentsQuery->extendSelect(['id', 'name', 'description']);
             $paymentsQuery->asArray();
             $paymentsArray = $paymentsQuery->all();
             ArrayHelper::multisort($paymentsArray, 'name', SORT_ASC);
-            $renderArray['paymentsList'] = $paymentsArray;
             
-            return $renderArray;
+            return $paymentsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

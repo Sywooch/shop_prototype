@@ -42,24 +42,6 @@ class HashHelperTests extends TestCase
         $this->assertEquals($expectedHash, $hash);
     }
     
-    /**
-     * Тестирует метод HashHelper::createHashRestore
-     */
-    public function testCreateHashRestore()
-    {
-        $fixture = self::$_dbClass->emails['email_1'];
-        
-        $emailsModel = new EmailsModel($fixture);
-        
-        $hash = HashHelper::createHashRestore($emailsModel);
-        
-        $this->assertEquals(40, strlen($hash));
-        
-        $expectedHash = HashHelper::createHash([$emailsModel->email, $emailsModel->id, $emailsModel->user->id, \Yii::$app->session->getFlash('restore.' . $fixture['email'])]);
-        
-        $this->assertEquals($expectedHash, $hash);
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

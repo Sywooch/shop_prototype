@@ -28,16 +28,18 @@ class InstancesHelper
             $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
             $categoriesQuery->with('subcategory');
             $categoriesQuery->asArray();
-            self::$_instancesArray['categoriesList'] = $categoriesQuery->all();
-            ArrayHelper::multisort(self::$_instancesArray['categoriesList'], 'name', SORT_ASC);
+            $categoriesArray = $categoriesQuery->all();
+            ArrayHelper::multisort($categoriesArray, 'name', SORT_ASC);
+            self::$_instancesArray['categoriesList'] = $categoriesArray;
             
             # Массив объектов CurrencyModel для формирования формы замены валюты
             $currencyQuery = CurrencyModel::find();
             $currencyQuery->extendSelect(['id', 'code']);
             $currencyQuery->asArray();
             $currencyArray = $currencyQuery->all();
-            self::$_instancesArray['currencyList'] = ArrayHelper::map($currencyArray, 'id', 'code');
-            asort(self::$_instancesArray['currencyList'], SORT_STRING);
+            $currencyArray = ArrayHelper::map($currencyArray, 'id', 'code');
+            asort($currencyArray, SORT_STRING);
+            self::$_instancesArray['currencyList'] = $currencyArray;
             
             return self::$_instancesArray;
         } catch (\Throwable $t) {

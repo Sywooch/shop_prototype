@@ -48,7 +48,7 @@
 {% endif %}
 
 <p>
-    <form name="checkout-form" action="{{ url.to({0:'/cart/customer'}) }}" method="get">
+    <form name="checkout-form" action="{{ url.to({0:'/cart/customer'}) }}" method="GET">
         <input type="submit" value="{{ yii.t('base', 'Checkout') }}">
     </form>
 </p>

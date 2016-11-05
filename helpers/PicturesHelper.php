@@ -14,17 +14,13 @@ class PicturesHelper
     /**
      * Обрабатывает переданный объект yii\web\UploadedFile
      * @param array $image объект yii\web\UploadedFile
-     * @return bool
      */
-    public static function resize(UploadedFile $image): bool
+    public static function resize(UploadedFile $image)
     {
         try {
            $imageImagick = new \Imagick($image->tempName);
-            if (!self::process($imageImagick, \Yii::$app->params['maxWidth'], \Yii::$app->params['maxHeight'], $image->tempName)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PicturesHelper::process']));
-            }
-            
-            return true;
+           
+            self::process($imageImagick, \Yii::$app->params['maxWidth'], \Yii::$app->params['maxHeight'], $image->tempName);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -33,29 +29,23 @@ class PicturesHelper
     /**
      * Создает эскизы изображений
      * @param string $path путь к папке, в которой необходимо создать эскизы
-     * @return bool
      */
-    public static function createThumbnails(string $path): bool
+    public static function createThumbnails(string $path)
     {
         try {
-            if (!file_exists($path) && !is_dir($path)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'$path']));
-            }
-            $imagesArray = glob($path . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-            if (empty($imagesArray)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'array $imagesArray']));
-            }
-            foreach ($imagesArray as $image) {
-                $imageImagick = new \Imagick($image);
-                $dirname = dirname($image);
-                $filename = basename($image);
-                $thumbnailPath = $dirname . '/' . \Yii::$app->params['thumbnailPrefix'] . $filename;
-                if (!self::process($imageImagick, \Yii::$app->params['maxThumbnailWidth'], \Yii::$app->params['maxThumbnailHeight'], $thumbnailPath)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PicturesHelper::process']));
+            if (file_exists($path) && is_dir($path)) {
+                $imagesArray = glob($path . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+                
+                if (!empty($imagesArray)) {
+                    foreach ($imagesArray as $image) {
+                        $imageImagick = new \Imagick($image);
+                        $dirname = dirname($image);
+                        $filename = basename($image);
+                        $thumbnailPath = $dirname . '/' . \Yii::$app->params['thumbnailPrefix'] . $filename;
+                        self::process($imageImagick, \Yii::$app->params['maxThumbnailWidth'], \Yii::$app->params['maxThumbnailHeight'], $thumbnailPath);
+                    }
                 }
             }
-            
-            return true;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -67,9 +57,8 @@ class PicturesHelper
      * @param int $maxWidth максимально допустимая ширина
      * @param int $maxHeight максимально допустимая высота
      * @param string $path путь сохранения обработанного изображения
-     * @return bool
      */
-    private static function process(\Imagick $imageImagick, int $maxWidth, int $maxHeight, string $path): bool
+    private static function process(\Imagick $imageImagick, int $maxWidth, int $maxHeight, string $path)
     {
         try {
             $currentWidth = $imageImagick->getImageWidth();
@@ -78,8 +67,6 @@ class PicturesHelper
                 $imageImagick->thumbnailImage($maxWidth, $maxHeight, true);
                 $imageImagick->writeImage($path);
             }
-            
-            return true;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -89,24 +76,20 @@ class PicturesHelper
      * Удаляет директорию с изображениями
      * @param string $path путь к удаляемой директории
      */
-    public static function remove(string $path): bool
+    public static function remove(string $path)
     {
         try {
             if (file_exists($path) && is_dir($path)) {
                 $imagesArray = glob($path . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+                
                 if (!empty($imagesArray)) {
                     foreach ($imagesArray as $image) {
-                        if (!unlink($image)) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'unlink']));
-                        }
+                        unlink($image);
                     }
                 }
-                if (!rmdir($path)) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'rmdir']));
-                }
+                
+                rmdir($path);
             }
-            
-            return true;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

@@ -40,8 +40,8 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
             self::$_productsModel = $productsQuery->one();
             $renderArray['productsModel'] = self::$_productsModel;
             
-            $renderArray = ArrayHelper::merge($renderArray, self::similar());
-            $renderArray = ArrayHelper::merge($renderArray, self::related());
+            $renderArray['similarList'] = self::similar();
+            $renderArray['relatedList'] = self::related();
             
             $renderArray['purchasesModel'] = new PurchasesModel(['quantity'=>1]);
             
@@ -60,8 +60,6 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
     private static function similar(): array
     {
         try {
-            $renderArray = [];
-            
             $similarQuery = ProductsModel::find();
             $similarQuery->extendSelect(['name', 'price', 'images', 'seocode']);
             $similarQuery->distinct();
@@ -75,9 +73,9 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
             $similarQuery->limit(\Yii::$app->params['similarLimit']);
             $similarQuery->orderBy(['[[products.date]]'=>SORT_DESC]);
             $similarQuery->asArray();
-            $renderArray['similarList'] = $similarQuery->all();
+            $similarArray = $similarQuery->all();
             
-            return $renderArray;
+            return $similarArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -90,17 +88,15 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
     private static function related(): array
     {
         try {
-            $renderArray = [];
-            
             $relatedQuery = ProductsModel::find();
             $relatedQuery->extendSelect(['name', 'price', 'images', 'seocode']);
             $relatedQuery->innerJoin('{{related_products}}', '[[products.id]]=[[related_products.id_related_product]]');
             $relatedQuery->where(['[[related_products.id_product]]'=>self::$_productsModel['id']]);
             $relatedQuery->asArray();
-            $renderArray['relatedList'] = $relatedQuery->all();
-            ArrayHelper::multisort($renderArray['relatedList'], 'date', SORT_DESC);
+            $relatedArray = $relatedQuery->all();
+            ArrayHelper::multisort($relatedArray, 'date', SORT_DESC);
             
-            return $renderArray;
+            return $relatedArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

@@ -49,11 +49,11 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             self::models();
             
             $renderArray = [];
-            $renderArray = ArrayHelper::merge($renderArray, self::getCategoriesList());
-            $renderArray = ArrayHelper::merge($renderArray, self::getSubcategoryList());
-            $renderArray = ArrayHelper::merge($renderArray, self::getColorsList());
-            $renderArray = ArrayHelper::merge($renderArray, self::getSizesList());
-            $renderArray = ArrayHelper::merge($renderArray, self::getBrandsList());
+            $renderArray['categoriesList'] = self::getCategoriesList();
+            $renderArray['subcategoryList'] = self::getSubcategoryList();
+            $renderArray['colorsList'] = self::getColorsList();
+            $renderArray['sizesList'] = self::getSizesList();
+            $renderArray['brandsList'] = self::getBrandsList();
             
             $renderArray['productsModel'] = self::$_rawProductsModel;
             $renderArray['colorsModel'] = self::$_rawColorsModel;
@@ -169,17 +169,15 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     private static function getCategoriesList(): array
     {
         try {
-            $renderArray = [];
-            
             $categoriesQuery = CategoriesModel::find();
             $categoriesQuery->extendSelect(['id', 'name']);
             $categoriesQuery->asArray();
             $categoriesArray = $categoriesQuery->all();
             $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
             asort($categoriesArray, SORT_STRING);
-            $renderArray['categoriesList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $categoriesArray);
+            $categoriesArray = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $categoriesArray);
             
-            return $renderArray;
+            return $categoriesArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -193,9 +191,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     private static function getSubcategoryList($rawProductsModel=null): array
     {
         try {
-            $renderArray = [];
-            
-            $renderArray['subcategoryList'] = [''=>\Yii::$app->params['formFiller']];
+            $renderArray = [''=>\Yii::$app->params['formFiller']];
             
             if (!empty($rawProductsModel) && !empty($rawProductsModel->id_category)) {
                 $subcategoryQuery = SubcategoryModel::find();
@@ -205,7 +201,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
                 $subcategoryArray = $subcategoryQuery->all();
                 $subcategoryArray = ArrayHelper::map($resultArray, 'id', 'name');
                 asort($subcategoryArray, SORT_STRING);
-                $renderArray['subcategoryList'] = ArrayHelper::merge($renderArray, $subcategoryArray);
+                $renderArray = ArrayHelper::merge($renderArray, $subcategoryArray);
             }
             
             return $renderArray;
@@ -221,17 +217,14 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     private static function getColorsList(): array
     {
         try {
-            $renderArray = [];
-            
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
             $colorsQuery->asArray();
             $colorsArray = $colorsQuery->all();
             $colorsArray = ArrayHelper::map($colorsArray, 'id', 'color');
             asort($colorsArray, SORT_STRING);
-            $renderArray['colorsList'] = $colorsArray;
             
-            return $renderArray;
+            return $colorsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -244,17 +237,14 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     private static function getSizesList(): array
     {
         try {
-            $renderArray = [];
-            
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
             $sizesQuery->asArray();
             $sizesArray = $sizesQuery->all();
             $sizesArray = ArrayHelper::map($sizesArray, 'id', 'size');
             asort($sizesArray, SORT_STRING);
-            $renderArray['sizesList'] = $sizesArray;
             
-            return $renderArray;
+            return $sizesArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -267,17 +257,15 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     private static function getBrandsList(): array
     {
         try {
-            $renderArray = [];
-            
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
             $brandsQuery->asArray();
             $brandsArray = $brandsQuery->all();
             $brandsArray = ArrayHelper::map($brandsArray, 'id', 'brand');
             asort($brandsArray, SORT_STRING);
-            $renderArray['brandsList'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $brandsArray);
+            $brandsArray = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $brandsArray);
             
-            return $renderArray;
+            return $brandsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

@@ -133,7 +133,7 @@ class UserControllerHelper extends AbstractControllerHelper
             $renderArray['usersModel'] = self::$_rawUsersModelReg;
             $renderArray['mailingListModel'] = self::$_rawMailingListModelReg;
             
-            $renderArray = ArrayHelper::merge($renderArray, self::getMailingListList());
+            $renderArray['mailingListList'] = self::getMailingListList();
             
             self::registrationBreadcrumbs();
             
@@ -200,10 +200,10 @@ class UserControllerHelper extends AbstractControllerHelper
                         $sent = MailHelper::send([
                             [
                                 'template'=>'@theme/mail/registration-mail.twig', 
-                                'setFrom'=>['admin@shop.com'=>'Shop'], 
-                                'setTo'=>['timofey@localhost'=>'Timofey'], 
-                                'setSubject'=>\Yii::t('base', 'Registration on shop.com'), 
-                                'dataForTemplate'=>[
+                                'from'=>['admin@shop.com'=>'Shop'], 
+                                'to'=>['timofey@localhost'=>'Timofey'], 
+                                'subject'=>\Yii::t('base', 'Registration on shop.com'), 
+                                'templateData'=>[
                                     'email'=>self::$_rawEmailsModelReg['email'],
                                     'subscribes'=>$subscribes ?? false,
                                 ],
@@ -284,10 +284,10 @@ class UserControllerHelper extends AbstractControllerHelper
                             $sent = MailHelper::send([
                                 [
                                     'template'=>'@theme/mail/forgot-mail.twig', 
-                                    'setFrom'=>['admin@shop.com'=>'Shop'], 
-                                    'setTo'=>['timofey@localhost'=>'Timofey'], 
-                                    'setSubject'=>\Yii::t('base', 'Password restore'), 
-                                    'dataForTemplate'=>[
+                                    'from'=>['admin@shop.com'=>'Shop'], 
+                                    'to'=>['timofey@localhost'=>'Timofey'], 
+                                    'subject'=>\Yii::t('base', 'Password restore'), 
+                                    'templateData'=>[
                                         'password'=>$newPassword,
                                     ],
                                 ]
@@ -387,17 +387,14 @@ class UserControllerHelper extends AbstractControllerHelper
     private static function getMailingListList(): array
     {
         try {
-            $renderArray = [];
-            
             $mailingListQuery = MailingListModel::find();
             $mailingListQuery->extendSelect(['id', 'name']);
             $mailingListQuery->asArray();
             $mailingListArray = $mailingListQuery->all();
             $mailingListArray = ArrayHelper::map($mailingListArray, 'id', 'name');
             asort($mailingListArray, SORT_STRING);
-            $renderArray['mailingListList'] = $mailingListArray;
             
-            return $renderArray;
+            return $mailingListArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

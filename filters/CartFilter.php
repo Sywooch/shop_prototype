@@ -28,12 +28,8 @@ class CartFilter extends ActionFilter
             
             return parent::beforeAction($action);
         } catch (\Throwable $t) {
-            if (YII_ENV_DEV) {
-                $this->throwException($t, __METHOD__);
-            } else {
-                $this->writeErrorInLogs($t, __METHOD__);
-                return parent::beforeAction($action);
-            }
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         }
     }
 }

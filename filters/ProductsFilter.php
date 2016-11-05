@@ -17,7 +17,7 @@ class ProductsFilter extends ActionFilter
     use ExceptionsTrait;
     
     /**
-     * Восстанавливает ранее сохраненное состояние свойств FiltersModel 
+     * Восстанавливает ранее сохраненное состояние товарных фильтров 
      * для текущего URL
      * @param object $action объект текущего действия
      * @return bool
@@ -26,22 +26,19 @@ class ProductsFilter extends ActionFilter
     {
         try {
             $key = StringHelper::cutPage(Url::current());
-            if (!is_string($key) || empty($key)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'string $key']));
+            
+            if (!empty($key)) {
+                $data = SessionHelper::read($key);
             }
-            $data = SessionHelper::read($key);
+            
             if (!empty($data)) {
                 \Yii::configure(\Yii::$app->filters, $data);
             }
             
             return parent::beforeAction($action);
         } catch (\Throwable $t) {
-            if (YII_ENV_DEV) {
-                $this->throwException($t, __METHOD__);
-            } else {
-                $this->writeErrorInLogs($t, __METHOD__);
-                return parent::beforeAction($action);
-            }
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         }
     }
 }

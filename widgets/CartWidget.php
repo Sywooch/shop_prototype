@@ -47,12 +47,11 @@ class CartWidget extends Widget
                 $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
                 $productsQuery->asArray();
                 $productsArray = $productsQuery->all();
+                $productsArray = ArrayHelper::map($productsArray, 'id', 'price');
                 
-                $cartArrayMap = ArrayHelper::map(\Yii::$app->params['cartArray'], 'id_product', 'quantity');
-                
-                foreach ($productsArray as $product) {
-                    $this->_productsCount += $cartArrayMap[$product['id']];
-                    $this->_totalCost += ($product['price'] * $cartArrayMap[$product['id']]);
+                foreach (\Yii::$app->params['cartArray'] as $purchase) {
+                    $this->_productsCount += $purchase['quantity'];
+                    $this->_totalCost += ($productsArray[$purchase['id_product']] * $purchase['quantity']);
                 }
                 
                 $toCart = Html::a(\Yii::t('base', 'To cart'), Url::to(['/cart/index']));

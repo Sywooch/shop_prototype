@@ -33,9 +33,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
         try {
             $renderArray = InstancesHelper::getInstances();
             $renderArray = ArrayHelper::merge($renderArray, self::getProductsPaginator());
-            $renderArray = ArrayHelper::merge($renderArray, self::getColorsList());
-            $renderArray = ArrayHelper::merge($renderArray, self::getSizesList());
-            $renderArray = ArrayHelper::merge($renderArray, self::getBrandsList());
+            $renderArray['colorsList'] = self::getColorsList();
+            $renderArray['sizesList'] = self::getSizesList();
+            $renderArray['brandsList'] = self::getBrandsList();
             $renderArray = ArrayHelper::merge($renderArray, self::getSorting());
             
             self::breadcrumbs();
@@ -57,9 +57,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             
             $renderArray = InstancesHelper::getInstances();
             $renderArray = ArrayHelper::merge($renderArray, self::getProductsPaginator(!empty($sphinxArray) ? ['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')] : []));
-            $renderArray = ArrayHelper::merge($renderArray, self::getColorsList($sphinxArray));
-            $renderArray = ArrayHelper::merge($renderArray, self::getSizesList($sphinxArray));
-            $renderArray = ArrayHelper::merge($renderArray, self::getBrandsList($sphinxArray));
+            $renderArray['colorsList'] = self::getColorsList($sphinxArray);
+            $renderArray['sizesList'] = self::getSizesList($sphinxArray);
+            $renderArray['brandsList'] = self::getBrandsList($sphinxArray);
             $renderArray = ArrayHelper::merge($renderArray, self::getSorting());
             
             self::searchBreadcrumbs();
@@ -123,8 +123,6 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     private static function getColorsList(array $sphinxArray=[]): array
     {
         try {
-            $renderArray = [];
-            
             $colorsQuery = ColorsModel::find();
             $colorsQuery->extendSelect(['id', 'color']);
             $colorsQuery->distinct();
@@ -147,10 +145,10 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             
             $colorsQuery->asArray();
             $colorsArray = $colorsQuery->all();
-            $renderArray['colorsList'] = ArrayHelper::map($colorsArray, 'id', 'color');
-            asort($renderArray['colorsList'], SORT_STRING);
+            $colorsArray = ArrayHelper::map($colorsArray, 'id', 'color');
+            asort($colorsArray, SORT_STRING);
             
-            return $renderArray;
+            return $colorsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -165,8 +163,6 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     private static function getSizesList(array $sphinxArray=[]): array
     {
         try {
-            $renderArray = [];
-            
             $sizesQuery = SizesModel::find();
             $sizesQuery->extendSelect(['id', 'size']);
             $sizesQuery->distinct();
@@ -189,10 +185,10 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             
             $sizesQuery->asArray();
             $sizesArray = $sizesQuery->all();
-            $renderArray['sizesList'] = ArrayHelper::map($sizesArray, 'id', 'size');
-            asort($renderArray['sizesList'], SORT_NUMERIC);
+            $sizesArray = ArrayHelper::map($sizesArray, 'id', 'size');
+            asort($sizesArray, SORT_NUMERIC);
             
-            return $renderArray;
+            return $sizesArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -207,8 +203,6 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     private static function getBrandsList(array $sphinxArray=[]): array
     {
         try {
-            $renderArray = [];
-            
             $brandsQuery = BrandsModel::find();
             $brandsQuery->extendSelect(['id', 'brand']);
             $brandsQuery->distinct();
@@ -230,10 +224,10 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             
             $brandsQuery->asArray();
             $brandsArray = $brandsQuery->all();
-            $renderArray['brandsList'] = ArrayHelper::map($brandsArray, 'id', 'brand');
-            asort($renderArray['brandsList'], SORT_STRING);
+            $brandsArray = ArrayHelper::map($brandsArray, 'id', 'brand');
+            asort($brandsArray, SORT_STRING);
             
-            return $renderArray;
+            return $brandsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

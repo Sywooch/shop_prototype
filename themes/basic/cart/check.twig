@@ -71,9 +71,9 @@
 <hr>
 
 <p>
-    <form name="checkout-form" action="{{ url.to({0:'/cart/send'}) }}" method="GET">
+    {% set form=active_form_begin({'id':'send-order-form', 'action':url.to({0:'/cart/send'}), 'method':'POST'}) %}
         <input type="submit" value="{{ yii.t('base', 'Send order') }}">
-    </form>
+    {{ active_form_end() }}
 </p>
 
 <p>
