@@ -36,6 +36,7 @@ class EmailsModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_AUTHENTICATION'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ORDER'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_SUBSCRIBER'));
         
         $model = new EmailsModel();
         
@@ -70,6 +71,13 @@ class EmailsModelTests extends TestCase
         ];
         
         $this->assertEquals($fixture['email'], $model->email);
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ADD_SUBSCRIBER]);
+        $model->attributes = [
+            'email'=>$fixture['email'], 
+        ];
+        
+        $this->assertEquals($fixture['email'], $model->email);
     }
     
     /**
@@ -90,7 +98,7 @@ class EmailsModelTests extends TestCase
         $model->email = $fixture['email'];
         $model->validate();
         
-        $this->assertEquals(0, count($model->errors));
+        $this->assertTrue(empty($model->errors));
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_REGISTRATION]);
         $model->attributes = [];
@@ -103,7 +111,7 @@ class EmailsModelTests extends TestCase
         $model->email = 'some@some.com';
         $model->validate();
         
-        $this->assertEquals(0, count($model->errors));
+        $this->assertTrue(empty($model->errors));
         
         $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ORDER]);
         $model->attributes = [];
@@ -116,7 +124,20 @@ class EmailsModelTests extends TestCase
         $model->email = 'some@some.com';
         $model->validate();
         
-        $this->assertEquals(0, count($model->errors));
+        $this->assertTrue(empty($model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ADD_SUBSCRIBER]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('email', $model->errors));
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::GET_FROM_ADD_SUBSCRIBER]);
+        $model->email = 'some@some.com';
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
     }
     
     /**

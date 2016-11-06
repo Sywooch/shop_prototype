@@ -45,6 +45,9 @@ $routes = [
     'cart-delete'=>'cart/delete',
     'cart-send'=>'cart/send',
     'cart-complete'=>'cart/complete',
+    
+    # Подписки
+    'mailing'=>'mailing/index',
 ];
 
 return $routes;

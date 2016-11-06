@@ -23,6 +23,10 @@ class EmailsModel extends AbstractBaseModel
      * Сценарий сохранения данных из формы заказа
     */
     const GET_FROM_ORDER = 'getFromOrder';
+    /**
+     * Сценарий сохранения данных из формы регистрации подписчика
+    */
+    const GET_FROM_ADD_SUBSCRIBER = 'getFromAddSubscriber';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -43,6 +47,7 @@ class EmailsModel extends AbstractBaseModel
             self::GET_FROM_AUTHENTICATION=>['email'],
             self::GET_FROM_REGISTRATION=>['email'],
             self::GET_FROM_ORDER=>['email'],
+            self::GET_FROM_ADD_SUBSCRIBER=>['email'],
         ];
     }
     
@@ -56,6 +61,7 @@ class EmailsModel extends AbstractBaseModel
             [['email'], 'required', 'on'=>self::GET_FROM_REGISTRATION],
             [['email'], 'app\validators\EmailExistsRegistValidator', 'on'=>self::GET_FROM_REGISTRATION],
             [['email'], 'required', 'on'=>self::GET_FROM_ORDER],
+            [['email'], 'required', 'on'=>self::GET_FROM_ADD_SUBSCRIBER],
         ];
     }
     

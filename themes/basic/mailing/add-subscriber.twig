@@ -1,0 +1,22 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('yii/widgets/ActiveForm') }}
+{{ use('app/widgets/CartWidget') }}
+
+{% include('@theme/base/user-info.twig') %}
+
+{{ cart_widget_widget() }}
+
+{% include '@theme/base/search.twig' %}
+
+{% include('@theme/base/menu.twig') %}
+
+{% include('@theme/base/breadcrumbs.twig') %}
+
+<p><strong>{{ yii.t('base', 'Subscribe') }}</strong></p>
+
+{% set form=active_form_begin({'id':'add-subscriber-form', 'action':url.to({0:'/mailing/index'}), 'method':'POST'}) %}
+    {{ form.field(emailsModel, 'email') | raw }}
+    {{ form.field(mailingListModel, 'id').checkboxList(mailingList) | raw }}
+    <input type="submit" value="{{ yii.t('base', 'Subscribe') }}">
+{{ active_form_end() }}

@@ -32,6 +32,7 @@ class MailingListModelTests extends TestCase
     public function testProperties()
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
+        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_SUBSCRIBER'));
         
         $model = new MailingListModel();
         
@@ -53,6 +54,34 @@ class MailingListModelTests extends TestCase
         ];
         
         $this->assertEquals($fixture['id'], $model->id);
+        
+        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_ADD_SUBSCRIBER]);
+        $model->attributes = [
+            'id'=>$fixture['id'], 
+        ];
+        
+        $this->assertEquals($fixture['id'], $model->id);
+    }
+    
+     /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_ADD_SUBSCRIBER]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('id', $model->errors));
+        
+        $model = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_ADD_SUBSCRIBER]);
+        $model->attributes = [
+            'id'=>1, 
+        ];
+        $model->validate();
+        
+        $this->assertTrue(empty($model->errors));
     }
     
     /**

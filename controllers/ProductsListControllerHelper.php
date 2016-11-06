@@ -71,7 +71,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными о товарах и пагинации
+     * Возвращает массив данных о товарах и пагинации
      * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
      * @return array
      */
@@ -115,7 +115,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными ColorsModel для фильтрации результатов 
+     * Возвращает массив данных ColorsModel для фильтрации результатов 
      * выборки из БД
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array
@@ -155,7 +155,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными SizesModel для фильтрации результатов 
+     * Возвращает массив данных SizesModel для фильтрации результатов 
      * выборки из БД
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array
@@ -195,7 +195,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными BrandsModel для фильтрации результатов 
+     * Возвращает массив данных BrandsModel для фильтрации результатов 
      * выборки из БД
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array

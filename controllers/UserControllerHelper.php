@@ -164,12 +164,7 @@ class UserControllerHelper extends AbstractControllerHelper
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
                     try {
-                        if (!(new EmailExistsCreateValidator())->validate(self::$_rawEmailsModelReg['email'])) {
-                            if (!self::$_rawEmailsModelReg->save(false)) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsModel::save']));
-                            }
-                        }
-                        
+                        self::saveEmail(self::$_rawEmailsModelReg);
                         $emailsQuery = EmailsModel::find();
                         $emailsQuery->extendSelect(['id', 'email']);
                         $emailsQuery->where(['[[emails.email]]'=>self::$_rawEmailsModelReg->email]);

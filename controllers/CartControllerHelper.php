@@ -434,11 +434,7 @@ class CartControllerHelper extends AbstractControllerHelper
                 $surname = $surnameArray['id'];
                 
                 $rawEmailsModel = \Yii::configure((new EmailsModel()), \Yii::$app->params['customerArray'][EmailsModel::tableName()]);
-                if (!(new EmailExistsCreateValidator())->validate($rawEmailsModel['email'])) {
-                    if (!$rawEmailsModel->save(false)) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsModel::save']));
-                    }
-                }
+                self::saveEmail($rawEmailsModel);
                 $emailsQuery = EmailsModel::find();
                 $emailsQuery->extendSelect(['id', 'email']);
                 $emailsQuery->where(['[[emails.email]]'=>$rawEmailsModel['email']]);

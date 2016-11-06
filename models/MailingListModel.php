@@ -14,6 +14,10 @@ class MailingListModel extends AbstractBaseModel
      * Сценарий сохранения данных из формы регистрации
     */
     const GET_FROM_REGISTRATION = 'getFromRegistration';
+    /**
+     * Сценарий сохранения данных из формы регистрации подписчика
+    */
+    const GET_FROM_ADD_SUBSCRIBER = 'getFromAddSubscriber';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -32,6 +36,7 @@ class MailingListModel extends AbstractBaseModel
     {
         return [
             self::GET_FROM_REGISTRATION=>['id'],
+            self::GET_FROM_ADD_SUBSCRIBER=>['id'],
         ];
     }
     
@@ -39,6 +44,7 @@ class MailingListModel extends AbstractBaseModel
     {
         return [
             [['name', 'description'], 'app\validators\StripTagsValidator'],
+            [['id'], 'required', 'on'=>self::GET_FROM_ADD_SUBSCRIBER],
         ];
     }
 }
