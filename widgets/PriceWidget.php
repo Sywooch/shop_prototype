@@ -18,22 +18,18 @@ class PriceWidget extends Widget
      */
     public $price;
     
-    public function init()
+    /**
+     * Форматирует стоимость с учетом текущей валюты
+     * @return string
+     */
+    public function run(): string
     {
         try {
-            if (empty($this->price)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$price']));
+            if (!empty($this->price) && !empty(\Yii::$app->currency->exchange_rate) && !empty(\Yii::$app->currency->code)) {
+                $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
             }
-        } catch(\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function run()
-    {
-        try {
-            $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * \Yii::$app->currency->exchange_rate, 2);
-            return $correctedPrice . ' ' . \Yii::$app->currency->code;
+            
+            return $correctedPrice ?? '';
         } catch(\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

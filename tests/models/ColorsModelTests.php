@@ -119,25 +119,6 @@ class ColorsModelTests extends TestCase
         $this->assertTrue($result instanceof ColorsModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->colors['color_1'];
-        $fixture2 = self::$_dbClass->colors['color_2'];
-        
-        $colorsQuery = ColorsModel::find();
-        $colorsQuery->extendSelect(['id', 'color']);
-        $colorsArray = $colorsQuery->allMap('id', 'color');
-        
-        $this->assertFalse(empty($colorsArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $colorsArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $colorsArray));
-        $this->assertTrue(in_array($fixture['color'], $colorsArray));
-        $this->assertTrue(in_array($fixture2['color'], $colorsArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

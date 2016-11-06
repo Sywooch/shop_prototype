@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use app\widgets\UserInfoWidget;
 use app\tests\DbManager;
 use app\models\UsersModel;
+use app\helpers\SessionHelper;
 
 class UserInfoWidgetTests extends TestCase
 {
@@ -16,6 +17,8 @@ class UserInfoWidgetTests extends TestCase
         self::$_dbClass = new DbManager([
             'fixtures'=>[
                 'users'=>'app\tests\sources\fixtures\UsersFixture',
+                'names'=>'app\tests\sources\fixtures\NamesFixture',
+                'emails'=>'app\tests\sources\fixtures\EmailsFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -29,9 +32,9 @@ class UserInfoWidgetTests extends TestCase
     {
         $result = UserInfoWidget::widget();
         
-        //$expectedString = '<p>Привет, ' . \Yii::t('base', 'Guest') . '!</p><p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a> <a href="../vendor/phpunit/phpunit/registration">' . \Yii::t('base', 'Registration') . '</a></p>';
+        $expectedString = '<p>Привет, ' . \Yii::t('base', 'Guest') . '!</p><p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a> <a href="../vendor/phpunit/phpunit/registration">' . \Yii::t('base', 'Registration') . '</a></p>';
         
-        $expectedString = '<p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a> <a href="../vendor/phpunit/phpunit/registration">' . \Yii::t('base', 'Registration') . '</a></p>';
+        //$expectedString = '<p><a href="../vendor/phpunit/phpunit/login">' . \Yii::t('base', 'Login') . '</a> <a href="../vendor/phpunit/phpunit/registration">' . \Yii::t('base', 'Registration') . '</a></p>';
         
         $this->assertEquals($expectedString, $result);
     }
@@ -43,15 +46,17 @@ class UserInfoWidgetTests extends TestCase
     public function testWidgetUserName()
     {
         $fixture = self::$_dbClass->users['user_1'];
+        $fixtureNames = self::$_dbClass->names['name_1'];
         
         $user = UsersModel::findOne($fixture['id']);
         \Yii::$app->user->login($user);
+        SessionHelper::write(\Yii::$app->params['userKey'], $fixtureNames['name']);
         
         $result = UserInfoWidget::widget();
         
-        //$expectedString = '<p>Привет, ' . $user->name->name . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        $expectedString = '<p>Привет, ' . $user->name->name . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
-        $expectedString = '<form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        //$expectedString = '<form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
         $this->assertEquals($expectedString, $result);
     }
@@ -63,16 +68,18 @@ class UserInfoWidgetTests extends TestCase
     public function testWidgetUserEmail()
     {
         $fixture = self::$_dbClass->users['user_1'];
+        $fixtureEmails = self::$_dbClass->emails['email_1'];
         
         $user = UsersModel::findOne($fixture['id']);
         $user->id_name = null;
         \Yii::$app->user->login($user);
+        SessionHelper::write(\Yii::$app->params['userKey'], $fixtureEmails['email']);
         
         $result = UserInfoWidget::widget();
         
-        //$expectedString = '<p>Привет, ' . $user->email->email . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        $expectedString = '<p>Привет, ' . $user->email->email . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
-        $expectedString = '<form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
+        //$expectedString = '<form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
         
         $this->assertEquals($expectedString, $result);
     }

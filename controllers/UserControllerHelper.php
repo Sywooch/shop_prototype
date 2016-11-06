@@ -13,7 +13,8 @@ use app\models\{EmailsMailingListModel,
     MailingListModel,
     UsersModel};
 use app\helpers\{InstancesHelper,
-    MailHelper};
+    MailHelper,
+    SessionHelper};
 use app\validators\EmailExistsCreateValidator;
 
 /**
@@ -80,13 +81,18 @@ class UserControllerHelper extends AbstractControllerHelper
             if (self::$_rawEmailsModel->load(\Yii::$app->request->post()) && self::$_rawUsersModel->load(\Yii::$app->request->post())) {
                 if (self::$_rawEmailsModel->validate() && self::$_rawUsersModel->validate()) {
                     $usersQuery = UsersModel::find();
-                    $usersQuery->extendSelect(['id', 'id_email', 'password']);
-                    $usersQuery->innerJoin('{{emails}}', '[[users.id_email]]=[[emails.id]]');
+                    $usersQuery->extendSelect(['id', 'id_name', 'id_email', 'password']);
+                    $usersQuery->innerJoin('{{emails}}', '[[emails.id]]=[[users.id_email]]');
                     $usersQuery->where(['[[emails.email]]'=>self::$_rawEmailsModel['email']]);
+                    $usersQuery->with(['name', 'email']);
                     $usersModel = $usersQuery->one();
+                    
                     if (!empty($usersModel)) {
                         if (password_verify(self::$_rawUsersModel['password'], $usersModel['password'])) {
-                            return \Yii::$app->user->login($usersModel);
+                            if ($isLogin = \Yii::$app->user->login($usersModel)) {
+                                SessionHelper::write(\Yii::$app->params['userKey'], !empty($usersModel['name']) ? $usersModel['name']['name'] : $usersModel['email']['email']);
+                            }
+                            return $isLogin;
                         }
                         self::$_rawUsersModel->addError('password', \Yii::t('base', 'Password incorrect!'));
                     } else {

@@ -82,25 +82,6 @@ class ProductsSizesModelTests extends TestCase
     }
     
     /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->products_sizes['product_size_1'];
-        $fixture2 = self::$_dbClass->products_sizes['product_size_2'];
-        
-        $productsSizesQuery = ProductsSizesModel::find();
-        $productsSizesQuery->extendSelect(['id_product', 'id_size']);
-        $productsSizesArray = $productsSizesQuery->allMap('id_product', 'id_size');
-        
-        $this->assertFalse(empty($productsSizesArray));
-        $this->assertTrue(array_key_exists($fixture['id_product'], $productsSizesArray));
-        $this->assertTrue(array_key_exists($fixture2['id_product'], $productsSizesArray));
-        $this->assertTrue(in_array($fixture['id_size'], $productsSizesArray));
-        $this->assertTrue(in_array($fixture2['id_size'], $productsSizesArray));
-    }
-    
-    /**
      * Тестирует метод ProductsSizesModel::batchInsert
      */
     public function testBatchInsert()

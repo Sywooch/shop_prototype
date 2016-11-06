@@ -7,7 +7,6 @@ use yii\db\ActiveQuery;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\queries\ARWrapper;
 
 /**
  * Расширяет класс ActiveQuery

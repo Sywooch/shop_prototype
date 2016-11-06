@@ -119,25 +119,6 @@ class PostcodesModelTests extends TestCase
         $this->assertTrue($result instanceof PostcodesModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->postcodes['postcode_1'];
-        $fixture2 = self::$_dbClass->postcodes['postcode_2'];
-        
-        $postcodesQuery = PostcodesModel::find();
-        $postcodesQuery->extendSelect(['id', 'postcode']);
-        $postcodesArray = $postcodesQuery->allMap('id', 'postcode');
-        
-        $this->assertFalse(empty($postcodesArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $postcodesArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $postcodesArray));
-        $this->assertTrue(in_array($fixture['postcode'], $postcodesArray));
-        $this->assertTrue(in_array($fixture2['postcode'], $postcodesArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

@@ -4,6 +4,7 @@ namespace app\widgets;
 
 use yii\base\{ErrorExceptions,
     Widget};
+use yii\helpers\Html;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -30,7 +31,7 @@ class ThumbnailsWidget extends Widget
                 $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
                 
                 if (!empty($imagesArray)) {
-                    $this->_result = '<img src="' . \Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]) . '">';
+                    $this->_result = Html::img(\Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]));
                 }
             }
             

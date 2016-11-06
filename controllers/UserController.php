@@ -95,11 +95,11 @@ class UserController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\CurrencyFilter',
-                'only'=>['login'],
+                'only'=>['login', 'registration'],
             ],
             [
                 'class'=>'app\filters\CartFilter',
-                'only'=>['login'],
+                'only'=>['login', 'registration'],
             ],
         ];
     }

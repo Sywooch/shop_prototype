@@ -33,6 +33,47 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     const GET_FROM_ORDER = 'getFromOrder';
     
     /**
+     * @var string имя пользователя, 
+     * полученное из БД в процессе оформления покупки
+     */
+    public $userName;
+    /**
+     * @var string фамилия пользователя, 
+     * полученное из БД в процессе оформления покупки
+     */
+    public $userSurname;
+    /**
+     * @var string email пользователя, 
+     * полученное из БД в процессе оформления покупки
+     */
+    public $userEmail;
+    /**
+     * @var string телефон пользователя, 
+     * полученное из БД в процессе оформления покупки
+     */
+    public $userPhone;
+    /**
+     * @var string адрес пользователя, 
+     * полученное из БД в процессе оформления покупки
+     */
+    public $userAddress;
+    /**
+     * @var string город пользователя, 
+     * полученное из БД в процессе оформления покупки
+     */
+    public $userCity;
+    /**
+     * @var string страна пользователя, 
+     * полученное из БД в процессе оформления покупки
+     */
+    public $userCountry;
+    /**
+     * @var string почтовый код пользователя, 
+     * полученное из БД в процессе оформления покупки
+     */
+    public $userPostcode;
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */

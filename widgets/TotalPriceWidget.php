@@ -22,26 +22,18 @@ class TotalPriceWidget extends Widget
      */
     public $quantity;
     
-    public function init()
+    /**
+     * Форматирует стоимость с учетом текущей валюты
+     * @return string
+     */
+    public function run(): string
     {
         try {
-            if (empty($this->price)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$price']));
-            }
-            if (empty($this->quantity)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Not Evaluated {placeholder}!', ['placeholder'=>'$quantity']));
+            if (!empty($this->price) && !empty($this->quantity) && !empty(\Yii::$app->currency->exchange_rate) && !empty(\Yii::$app->currency->code)) {
+                $correctedTotalPrice = \Yii::$app->formatter->asDecimal(($this->price * $this->quantity) * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
             }
             
-        } catch(\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function run()
-    {
-        try {
-            $correctedTotalPrice = \Yii::$app->formatter->asDecimal(($this->price * $this->quantity) * \Yii::$app->currency->exchange_rate, 2);
-            return $correctedTotalPrice . ' ' . \Yii::$app->currency->code;
+            return $correctedTotalPrice ?? '';
         } catch(\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

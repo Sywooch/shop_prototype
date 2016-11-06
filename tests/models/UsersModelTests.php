@@ -44,6 +44,15 @@ class UsersModelTests extends TestCase
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_REGISTRATION'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ORDER'));
         
+        $this->assertTrue(self::$_reflectionClass->hasProperty('userName'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('userSurname'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('userEmail'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('userPhone'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('userAddress'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('userCity'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('userCountry'));
+        $this->assertTrue(self::$_reflectionClass->hasProperty('userPostcode'));
+        
         $model = new UsersModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
@@ -314,25 +323,6 @@ class UsersModelTests extends TestCase
         $result = $usersQuery->one();
         
         $this->assertTrue($result instanceof UsersModel);
-    }
-    
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->users['user_1'];
-        $fixture2 = self::$_dbClass->users['user_1'];
-        
-        $usersQuery = UsersModel::find();
-        $usersQuery->extendSelect(['id', 'id_name']);
-        $usersArray = $usersQuery->allMap('id', 'id_name');
-        
-        $this->assertFalse(empty($usersArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $usersArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $usersArray));
-        $this->assertTrue(in_array($fixture['id_name'], $usersArray));
-        $this->assertTrue(in_array($fixture2['id_name'], $usersArray));
     }
     
     public static function tearDownAfterClass()

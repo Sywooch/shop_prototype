@@ -119,25 +119,6 @@ class CountriesModelTests extends TestCase
         $this->assertTrue($result instanceof CountriesModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->countries['country_1'];
-        $fixture2 = self::$_dbClass->countries['country_2'];
-        
-        $countriesQuery = CountriesModel::find();
-        $countriesQuery->extendSelect(['id', 'country']);
-        $countriesArray = $countriesQuery->allMap('id', 'country');
-        
-        $this->assertFalse(empty($countriesArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $countriesArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $countriesArray));
-        $this->assertTrue(in_array($fixture['country'], $countriesArray));
-        $this->assertTrue(in_array($fixture2['country'], $countriesArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

@@ -6,6 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\controllers\{AbstractBaseController,
     CartControllerHelper};
+use app\helpers\UrlHelper;
 
 /**
  * Обрабатывает запросы, связанные с данными корзины

@@ -32,15 +32,14 @@
         
         {% if not app.user.isGuest %}
             <div class="customer-change disable">
-                <br><input type="checkbox" name="dataChange"> Заменить мои контактные данные теми, которые указаны в форме
+                <br><input type="checkbox" name="dataChange" {% if dataChange %}checked{% endif %}> Заменить мои контактные данные теми, которые указаны в форме
             </div>
         {% else %}
             <div class="customer-create-account">
-                <br><input type="checkbox" name="createAccount"> Создать аккаунт
+                <br><input type="checkbox" name="createAccount" {% if createAccount %}checked{% endif %}> Создать аккаунт
             </div>
+            <div class="customer-password disable">{{ form.field(usersModel, 'password').passwordInput() | raw }}</div>
         {% endif %}
-        
-        <div class="customer-password disable">{{ form.field(usersModel, 'password').passwordInput() | raw }}</div>
         
         {% for delivery in deliveriesList %}
             <br>{{ delivery.name }} - {{ price_widget_widget({'price':delivery.price}) }}. {{ delivery.description }}

@@ -68,33 +68,6 @@ class PaginationWidget extends Widget
      */
     private $_pagePointer;
     
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->paginator)) {
-                throw new ErrorException(\Yii::t('base/errors', 'Received invalid data type instead {placeholder}!', ['placeholder'=>'yii\data\Pagination']));
-            }
-            
-            $this->pageRange = ceil($this->pageRange);
-            
-            $this->pageRange = $this->pageRange < 3 ? 3 : $this->pageRange;
-            
-            if ($this->pageRange % 2 === 0) {
-                ++$this->pageRange;
-            }
-            
-            $this->_pagePointer = \Yii::$app->request->get(\Yii::$app->params['pagePointer']) ?? 1;
-            
-            if ($this->_pagePointer > $this->paginator->pageCount) {
-                $this->_pagePointer = $this->paginator->pageCount;
-            }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     /**
      * Конструирует HTML строку пагинации
      * @return string
@@ -102,7 +75,9 @@ class PaginationWidget extends Widget
     public function run(): string
     {
         try {
-            if ($this->paginator->pageCount >= 2) {
+            if (!empty($this->paginator) && $this->paginator->pageCount >= 2) {
+                
+                $this->settings();
                 
                 $range = $this->getRange();
                 
@@ -127,19 +102,44 @@ class PaginationWidget extends Widget
     }
     
     /**
+     * Нормализует значения свойств класса
+     */
+    private function settings()
+    {
+        try {
+            if (empty($this->pageRange) || $this->pageRange < 3) {
+                $this->pageRange = 3;
+            }
+            
+            $this->pageRange = ceil($this->pageRange);
+            
+            if ($this->pageRange % 2 === 0) {
+                ++$this->pageRange;
+            }
+            
+            $this->_pagePointer = \Yii::$app->request->get(\Yii::$app->params['pagePointer']) ?? 1;
+            
+            if ($this->_pagePointer > $this->paginator->pageCount) {
+                $this->_pagePointer = $this->paginator->pageCount;
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Конструирует диапазон ссылок на страницы в зависимости от номера текущей страницы
      * @return array
      */
     private function getRange(): array
     {
         try {
-            $currentPage = $this->paginator->page + 1;
             $aroundPages = floor(($this->pageRange - 1) / 2);
             
-            $this->_prevMin = $currentPage - $aroundPages;
+            $this->_prevMin = $this->_pagePointer - $aroundPages;
             $this->checkMinPage();
             
-            $this->_nextMax = $currentPage + $aroundPages;
+            $this->_nextMax = $this->_pagePointer + $aroundPages;
             $this->checkMaxPage();
             
             if ($this->pageRange > count(range($this->_prevMin, $this->_nextMax))) {

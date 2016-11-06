@@ -119,25 +119,6 @@ class PhonesModelTests extends TestCase
         $this->assertTrue($result instanceof PhonesModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->phones['phone_1'];
-        $fixture2 = self::$_dbClass->phones['phone_2'];
-        
-        $phonesQuery = PhonesModel::find();
-        $phonesQuery->extendSelect(['id', 'phone']);
-        $phonesArray = $phonesQuery->allMap('id', 'phone');
-        
-        $this->assertFalse(empty($phonesArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $phonesArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $phonesArray));
-        $this->assertTrue(in_array($fixture['phone'], $phonesArray));
-        $this->assertTrue(in_array($fixture2['phone'], $phonesArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

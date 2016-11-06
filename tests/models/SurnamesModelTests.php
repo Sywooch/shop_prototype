@@ -119,25 +119,6 @@ class SurnamesModelTests extends TestCase
         $this->assertTrue($result instanceof SurnamesModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->surnames['surname_1'];
-        $fixture2 = self::$_dbClass->surnames['surname_2'];
-        
-        $surnamesQuery = SurnamesModel::find();
-        $surnamesQuery->extendSelect(['id', 'surname']);
-        $surnamesArray = $surnamesQuery->allMap('id', 'surname');
-        
-        $this->assertFalse(empty($surnamesArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $surnamesArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $surnamesArray));
-        $this->assertTrue(in_array($fixture['surname'], $surnamesArray));
-        $this->assertTrue(in_array($fixture2['surname'], $surnamesArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

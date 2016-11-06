@@ -83,27 +83,6 @@ class EmailsMailingListModelTests extends TestCase
     }
     
     /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->emails_mailing_list['emails_mailing_list_1'];
-        $fixture2 = self::$_dbClass->emails_mailing_list['emails_mailing_list_2'];
-        
-        $productsQuery = EmailsMailingListModel::find();
-        $productsQuery->extendSelect(['id_mailing_list', 'id_email']);
-        $productsQuery->asArray();
-        $productsArray = $productsQuery->all();
-        $productsArray = ArrayHelper::map($productsArray, 'id_mailing_list', 'id_email');
-        
-        $this->assertFalse(empty($productsArray));
-        $this->assertTrue(array_key_exists($fixture['id_mailing_list'], $productsArray));
-        $this->assertTrue(array_key_exists($fixture2['id_mailing_list'], $productsArray));
-        $this->assertTrue(in_array($fixture['id_email'], $productsArray));
-        $this->assertTrue(in_array($fixture2['id_email'], $productsArray));
-    }
-    
-    /**
      * Тестирует метод EmailsMailingListModel::batchInsert
      */
     public function testBatchInsert()
@@ -117,7 +96,7 @@ class EmailsMailingListModelTests extends TestCase
         \Yii::$app->db->createCommand('DELETE FROM {{emails_mailing_list}}')->execute();
         $this->assertTrue(empty(\Yii::$app->db->createCommand('SELECT * FROM {{emails_mailing_list}}')->queryAll()));
         
-        $result = EmailsMailingListModel::batchInsert($mailingListModel, $emailsModel);
+        $result = EmailsMailingListModel::batchInsert($emailsModel, $mailingListModel);
         $this->assertTrue(is_array($result));
         $this->assertFalse(empty($result));
         

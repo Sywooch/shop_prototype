@@ -119,25 +119,6 @@ class CitiesModelTests extends TestCase
         $this->assertTrue($result instanceof CitiesModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->cities['city_1'];
-        $fixture2 = self::$_dbClass->cities['city_2'];
-        
-        $citiesQuery = CitiesModel::find();
-        $citiesQuery->extendSelect(['id', 'city']);
-        $citiesArray = $citiesQuery->allMap('id', 'city');
-        
-        $this->assertFalse(empty($citiesArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $citiesArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $citiesArray));
-        $this->assertTrue(in_array($fixture['city'], $citiesArray));
-        $this->assertTrue(in_array($fixture2['city'], $citiesArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

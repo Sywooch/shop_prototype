@@ -120,25 +120,6 @@ class PaymentsModelTests extends TestCase
         $this->assertTrue($result instanceof PaymentsModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->payments['payment_1'];
-        $fixture2 = self::$_dbClass->payments['payment_2'];
-        
-        $paymentsQuery = PaymentsModel::find();
-        $paymentsQuery->extendSelect(['id', 'name']);
-        $paymentsArray = $paymentsQuery->allMap('id', 'name');
-        
-        $this->assertFalse(empty($paymentsArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $paymentsArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $paymentsArray));
-        $this->assertTrue(in_array($fixture['name'], $paymentsArray));
-        $this->assertTrue(in_array($fixture2['name'], $paymentsArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

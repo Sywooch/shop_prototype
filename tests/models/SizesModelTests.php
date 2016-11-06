@@ -119,25 +119,6 @@ class SizesModelTests extends TestCase
         $this->assertTrue($result instanceof SizesModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->sizes['size_1'];
-        $fixture2 = self::$_dbClass->sizes['size_2'];
-        
-        $sizesQuery = SizesModel::find();
-        $sizesQuery->extendSelect(['id', 'size']);
-        $sizesArray = $sizesQuery->allMap('id', 'size');
-        
-        $this->assertFalse(empty($sizesArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $sizesArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $sizesArray));
-        $this->assertTrue(in_array($fixture['size'], $sizesArray));
-        $this->assertTrue(in_array($fixture2['size'], $sizesArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

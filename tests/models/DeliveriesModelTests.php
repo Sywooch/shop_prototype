@@ -121,25 +121,6 @@ class DeliveriesModelTests extends TestCase
         $this->assertTrue($result instanceof DeliveriesModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->deliveries['delivery_1'];
-        $fixture2 = self::$_dbClass->deliveries['delivery_2'];
-        
-        $deliveriesQuery = DeliveriesModel::find();
-        $deliveriesQuery->extendSelect(['id', 'name']);
-        $deliveriesArray = $deliveriesQuery->allMap('id', 'name');
-        
-        $this->assertFalse(empty($deliveriesArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $deliveriesArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $deliveriesArray));
-        $this->assertTrue(in_array($fixture['name'], $deliveriesArray));
-        $this->assertTrue(in_array($fixture2['name'], $deliveriesArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

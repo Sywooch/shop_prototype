@@ -177,25 +177,6 @@ class PurchasesModelTests extends TestCase
     }
     
     /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->purchases['purchase_1'];
-        $fixture2 = self::$_dbClass->purchases['purchase_2'];
-        
-        $purchasesQuery = PurchasesModel::find();
-        $purchasesQuery->extendSelect(['id', 'id_user']);
-        $purchasesArray = $purchasesQuery->allMap('id', 'id_user');
-        
-        $this->assertFalse(empty($purchasesArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $purchasesArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $purchasesArray));
-        $this->assertTrue(in_array($fixture['id_user'], $purchasesArray));
-        $this->assertTrue(in_array($fixture2['id_user'], $purchasesArray));
-    }
-    
-    /**
      * Тестирует метод PurchasesModel::getProduct
      */
     public function testGetProduct()

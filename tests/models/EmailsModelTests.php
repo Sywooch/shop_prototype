@@ -174,25 +174,6 @@ class EmailsModelTests extends TestCase
         $this->assertTrue($result instanceof EmailsModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->emails['email_1'];
-        $fixture2 = self::$_dbClass->emails['email_2'];
-        
-        $emailsQuery = EmailsModel::find();
-        $emailsQuery->extendSelect(['id', 'email']);
-        $emailsArray = $emailsQuery->allMap('id', 'email');
-        
-        $this->assertFalse(empty($emailsArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $emailsArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $emailsArray));
-        $this->assertTrue(in_array($fixture['email'], $emailsArray));
-        $this->assertTrue(in_array($fixture2['email'], $emailsArray));
-    }
-    
     public static function tearDownAfterClass()
     {
         self::$_dbClass->unloadFixtures();

@@ -479,25 +479,6 @@ class ProductsModelTests extends TestCase
         $this->assertTrue($model->sizes[0] instanceof SizesModel);
     }
     
-    /**
-     * Тестирует метод ExtendActiveQuery::allMap
-     */
-    public function testAllMap()
-    {
-        $fixture = self::$_dbClass->products['product_1'];
-        $fixture2 = self::$_dbClass->products['product_2'];
-        
-        $productsQuery = ProductsModel::find();
-        $productsQuery->extendSelect(['id', 'name']);
-        $productsArray = $productsQuery->allMap('id', 'name');
-        
-        $this->assertFalse(empty($productsArray));
-        $this->assertTrue(array_key_exists($fixture['id'], $productsArray));
-        $this->assertTrue(array_key_exists($fixture2['id'], $productsArray));
-        $this->assertTrue(in_array($fixture['name'], $productsArray));
-        $this->assertTrue(in_array($fixture2['name'], $productsArray));
-    }
-    
     private function productsListQuery(array $extraWhere=[])
     {
         $productsQuery = ProductsModel::find();
