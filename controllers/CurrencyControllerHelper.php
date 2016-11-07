@@ -23,16 +23,31 @@ class CurrencyControllerHelper extends AbstractControllerHelper
             
             if ($rawCurrencyModel->load(\Yii::$app->request->post())) {
                 if ($rawCurrencyModel ->validate()) {
-                    $currencyQuery = CurrencyModel::find();
-                    $currencyQuery->extendSelect(['id', 'code', 'exchange_rate']);
-                    $currencyQuery->where(['[[currency.id]]'=>$rawCurrencyModel['id']]);
-                    $currencyQuery->asArray();
-                    $currencyArray = $currencyQuery->one();
-                    if (is_array($currencyArray) || !empty($currencyArray)) {
+                    if (!empty($currencyArray = self::getCurrency($rawCurrencyModel))) {
                         SessionHelper::write(\Yii::$app->params['currencyKey'], $currencyArray);
                     }
                 }
             }
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает из БД CurrencyModel
+     * @param object $rawCurrencyModel CurrencyModel
+     * @return array
+     */
+    private static function getCurrency(CurrencyModel $currencyModel): array
+    {
+        try {
+            $currencyQuery = CurrencyModel::find();
+            $currencyQuery->extendSelect(['id', 'code', 'exchange_rate']);
+            $currencyQuery->where(['[[currency.id]]'=>$currencyModel['id']]);
+            $currencyQuery->asArray();
+            $currencyArray = $currencyQuery->one();
+            
+            return $currencyArray ?? [];
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

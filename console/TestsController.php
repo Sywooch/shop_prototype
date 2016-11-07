@@ -67,7 +67,7 @@ class TestsController extends Controller
             $cmd = sprintf("mysql --login-path=%s -e 'CREATE DATABASE IF NOT EXISTS %s'", $this->loginPath, $this->testDbName);
             exec($cmd, $this->_outputArray, $this->_returnCode);
             if ($this->_returnCode != 0) {
-                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>'CREATE DATABASE $this->testDbName']));
+                throw new ErrorException(ExceptionsTrait::methodError('CREATE DATABASE $this->testDbName'));
             }
             
             $this->stdout(\Yii::t('base/console', 'Apply migrations...' . PHP_EOL, ['database'=>$this->testDbName]));
@@ -75,7 +75,7 @@ class TestsController extends Controller
             $cmd = sprintf("/var/www/html/shop/yii migrate --db=%s --interactive=0", $this->db);
             exec($cmd, $this->_outputArray, $this->_returnCode);
             if ($this->_returnCode != 0) {
-                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>'Apply migrations']));
+                throw new ErrorException(ExceptionsTrait::methodError('Apply migrations'));
             }
             
             $this->stdout(\Yii::t('base/console', 'Database {database} created successfully, migrations applied!' . PHP_EOL, ['database'=>$this->testDbName]));
@@ -98,7 +98,7 @@ class TestsController extends Controller
             $cmd = sprintf("/var/www/html/shop/yii migrate/down --db=%s --interactive=0", $this->db);
             exec($cmd, $this->_outputArray, $this->_returnCode);
             if ($this->_returnCode != 0) {
-                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>'Erase migrations']));
+                throw new ErrorException(ExceptionsTrait::methodError('Erase migrations'));
             }
             
             $this->stdout(\Yii::t('base/console', 'Delete database {database}...' . PHP_EOL, ['database'=>$this->testDbName]));
@@ -106,7 +106,7 @@ class TestsController extends Controller
             $cmd = sprintf("mysql --login-path=%s -e 'DROP DATABASE %s'", $this->loginPath, $this->testDbName);
             exec($cmd, $this->_outputArray, $this->_returnCode);
             if ($this->_returnCode != 0) {
-                throw new ErrorException(\Yii::t('base/console', 'Method error {placeholder}!', ['placeholder'=>'DROP DATABASE $this->testDbName']));
+                throw new ErrorException(ExceptionsTrait::methodError('DROP DATABASE $this->testDbName'));
             }
             
             $this->stdout(\Yii::t('base/console', 'Migrations erased, database {database} deleted successfully!' . PHP_EOL, ['database'=>$this->testDbName]));

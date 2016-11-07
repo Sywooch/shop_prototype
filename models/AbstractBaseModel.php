@@ -17,9 +17,22 @@ abstract class AbstractBaseModel extends ActiveRecord
     public static function find()
     {
         try {
-            return \Yii::createObject(ExtendActiveQuery::className(), [get_called_class()]);
+            return \Yii::createObject(ExtendActiveQuery::class, [get_called_class()]);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает имя таблицы для экземпляра AR
+     * @return string
+     */
+    public function tableNameObj()
+    {
+        try {
+            return static::tableName();
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
         }
     }
 }

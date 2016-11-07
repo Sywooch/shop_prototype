@@ -80,12 +80,8 @@ class UserControllerHelper extends AbstractControllerHelper
             
             if (self::$_rawEmailsModel->load(\Yii::$app->request->post()) && self::$_rawUsersModel->load(\Yii::$app->request->post())) {
                 if (self::$_rawEmailsModel->validate() && self::$_rawUsersModel->validate()) {
-                    $usersQuery = UsersModel::find();
-                    $usersQuery->extendSelect(['id', 'id_name', 'id_email', 'password']);
-                    $usersQuery->innerJoin('{{emails}}', '[[emails.id]]=[[users.id_email]]');
-                    $usersQuery->where(['[[emails.email]]'=>self::$_rawEmailsModel['email']]);
-                    $usersQuery->with(['name', 'email']);
-                    $usersModel = $usersQuery->one();
+                    
+                    $usersModel = self::getUserJoin(self::$_rawEmailsModel['email']);
                     
                     if (!empty($usersModel)) {
                         if (password_verify(self::$_rawUsersModel['password'], $usersModel['password'])) {
@@ -139,7 +135,7 @@ class UserControllerHelper extends AbstractControllerHelper
             $renderArray['usersModel'] = self::$_rawUsersModelReg;
             $renderArray['mailingListModel'] = self::$_rawMailingListModelReg;
             
-            $renderArray['mailingListList'] = self::getMailingListList();
+            $renderArray['mailingListList'] = self::getMailingListMap(true);
             
             self::registrationBreadcrumbs();
             
@@ -164,37 +160,25 @@ class UserControllerHelper extends AbstractControllerHelper
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
                     try {
-                        self::saveEmail(self::$_rawEmailsModelReg);
-                        $emailsQuery = EmailsModel::find();
-                        $emailsQuery->extendSelect(['id', 'email']);
-                        $emailsQuery->where(['[[emails.email]]'=>self::$_rawEmailsModelReg->email]);
-                        $emailsModel = $emailsQuery->one();
+                        self::saveCheckEmail(self::$_rawEmailsModelReg);
+                        $emailsModel = self::getEmail(self::$_rawEmailsModelReg->email);
                         
                         self::$_rawUsersModelReg->id_email = $emailsModel['id'];
                         self::$_rawUsersModelReg->password = password_hash(self::$_rawUsersModelReg['password'], PASSWORD_DEFAULT);
                         
                         if (!self::$_rawUsersModelReg->save(false)) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'UsersModel::save']));
+                            throw new ErrorException(ExceptionsTrait::methodError('UsersModel::save'));
                         }
-                        
-                        $usersQuery = UsersModel::find();
-                        $usersQuery->extendSelect(['id', 'id_email']);
-                        $usersQuery->where(['[[users.id_email]]'=>self::$_rawUsersModelReg->id_email]);
-                        $usersQuery->asArray();
-                        $usersModel = $usersQuery->one();
+                        $usersModel = self::getUser(self::$_rawUsersModelReg->id_email, true);
                         
                         if (!\Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $usersModel['id'])) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'\Yii::$app->authManager']));
+                            throw new ErrorException(ExceptionsTrait::methodError('\Yii::$app->authManager'));
                         }
                         
                         if (!empty(self::$_rawMailingListModelReg['id'])) {
-                            $diff = EmailsMailingListModel::batchInsert(self::$_rawMailingListModelReg, $emailsModel);
+                            $diff = EmailsMailingListModel::batchInsert($emailsModel, self::$_rawMailingListModelReg);
                             if (!empty($diff)) {
-                                $mailingListQuery = MailingListModel::find();
-                                $mailingListQuery->extendSelect(['name']);
-                                $mailingListQuery->where(['[[mailing_list.id]]'=>$diff]);
-                                $mailingListQuery->asArray();
-                                $subscribes = $mailingListQuery->all();
+                                $subscribes = self::getMailing($diff, true);
                             }
                         }
                         
@@ -211,7 +195,7 @@ class UserControllerHelper extends AbstractControllerHelper
                             ]
                         ]);
                         if ($sent < 1) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
+                            throw new ErrorException(ExceptionsTrait::methodError('MailHelper::send'));
                         }
                         
                         $transaction->commit();
@@ -262,24 +246,17 @@ class UserControllerHelper extends AbstractControllerHelper
             
             if (self::$_rawEmailsModel->load(\Yii::$app->request->post())) {
                 if (self::$_rawEmailsModel->validate()) {
-                    $emailsQuery = EmailsModel::find();
-                    $emailsQuery->extendSelect(['id', 'email']);
-                    $emailsQuery->where(['[[emails.email]]'=>self::$_rawEmailsModel['email']]);
-                    $emailsQuery->asArray();
-                    $emailsModel = $emailsQuery->one();
+                    $emailsModel = self::getEmail(self::$_rawEmailsModel['email'], true);
                     
                     if (!empty($emailsModel)) {
-                        $usersQuery = UsersModel::find();
-                        $usersQuery->extendSelect(['id', 'id_email', 'password']);
-                        $usersQuery->where(['[[users.id_email]]'=>$emailsModel['id']]);
-                        $usersModel = $usersQuery->one();
+                        $usersModel = self::getUser($emailsModel['id']);
                         
                         if (!empty($usersModel)) {
                             $newPassword = substr(sha1(time()), 0, 10);
                             
                             $usersModel->password = password_hash($newPassword, PASSWORD_DEFAULT);
                             if (!$usersModel->save(false)) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'UsersModel::save']));
+                                throw new ErrorException(ExceptionsTrait::methodError('UsersModel::save'));
                             }
                             
                             $sent = MailHelper::send([
@@ -295,7 +272,7 @@ class UserControllerHelper extends AbstractControllerHelper
                             ]);
                             
                             if ($sent < 1) {
-                                throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'MailHelper::send']));
+                                throw new ErrorException(ExceptionsTrait::methodError('MailHelper::send'));
                             }
                             
                             self::$_sentPassword = true;
@@ -376,26 +353,6 @@ class UserControllerHelper extends AbstractControllerHelper
     {
         try {
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/user/restore'], 'label'=>\Yii::t('base', 'Password restore')];
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Заполняет массив $renderArray данными MailingListModel 
-     * @return array
-     */
-    private static function getMailingListList(): array
-    {
-        try {
-            $mailingListQuery = MailingListModel::find();
-            $mailingListQuery->extendSelect(['id', 'name']);
-            $mailingListQuery->asArray();
-            $mailingListArray = $mailingListQuery->all();
-            $mailingListArray = ArrayHelper::map($mailingListArray, 'id', 'name');
-            asort($mailingListArray, SORT_STRING);
-            
-            return $mailingListArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

@@ -32,7 +32,7 @@ class CategoriesModel extends AbstractBaseModel
     public function getSubcategory()
     {
         try {
-            return $this->hasMany(SubcategoryModel::className(), ['id_category'=>'id'])->inverseOf('category');
+            return $this->hasMany(SubcategoryModel::class, ['id_category'=>'id'])->inverseOf('category');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -45,7 +45,7 @@ class CategoriesModel extends AbstractBaseModel
     public function getProducts()
     {
         try {
-            return $this->hasMany(ProductsModel::className(), ['id_category'=>'id'])->inverseOf('category');
+            return $this->hasMany(ProductsModel::class, ['id_category'=>'id'])->inverseOf('category');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

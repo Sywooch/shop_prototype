@@ -49,11 +49,11 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             self::models();
             
             $renderArray = [];
-            $renderArray['categoriesList'] = self::getCategoriesList();
-            $renderArray['subcategoryList'] = self::getSubcategoryList();
-            $renderArray['colorsList'] = self::getColorsList();
-            $renderArray['sizesList'] = self::getSizesList();
-            $renderArray['brandsList'] = self::getBrandsList();
+            $renderArray['categoriesList'] = self::getCategories();
+            $renderArray['subcategoryList'] = [''=>\Yii::$app->params['formFiller']];
+            $renderArray['colorsList'] = self::getColors();
+            $renderArray['sizesList'] = self::getSizes();
+            $renderArray['brandsList'] = self::getBrands();
             
             $renderArray['productsModel'] = self::$_rawProductsModel;
             $renderArray['colorsModel'] = self::$_rawColorsModel;
@@ -89,22 +89,19 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
                         }
                         
                         if (!self::$_rawProductsModel->save(false)) {
-                            throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsModel::save']));
+                            throw new ErrorException(ExceptionsTrait::methodError('ProductsModel::save'));
                         }
                         
-                        $productsQuery = ProductsModel::find();
-                        $productsQuery->extendSelect(['id', 'seocode']);
-                        $productsQuery->where(['[[products.seocode]]'=>self::$_rawProductsModel['seocode']]);
-                        $productsModel = $productsQuery->one();
+                        $productsModel = self::getProduct(self::$_rawProductsModel['seocode']);
                         
                         $count = ProductsColorsModel::batchInsert($productsModel, self::$_rawColorsModel);
                         if ($count < 1) {
-                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsColorsModel::batchInsert']));
+                            throw new ErrorException(ExceptionsTrait::methodError('ProductsColorsModel::batchInsert'));
                         }
                         
                         $count = ProductsSizesModel::batchInsert($productsModel, self::$_rawSizesModel);
                         if ($count < 1) {
-                            throw new ExecutionException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsSizesModel::batchInsert']));
+                            throw new ErrorException(ExceptionsTrait::methodError('ProductsSizesModel::batchInsert'));
                         }
                         
                         $transaction->commit();
@@ -163,10 +160,10 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными CategoriesModel 
+     * Возвращает массив данных CategoriesModel 
      * @return array
      */
-    private static function getCategoriesList(): array
+    private static function getCategories(): array
     {
         try {
             $categoriesQuery = CategoriesModel::find();
@@ -184,37 +181,10 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными SubcategoryModel 
-     * @param object $rawProductsModel объект ProductsModel
+     * Возвращает массив данных ColorsModel 
      * @return array
      */
-    private static function getSubcategoryList($rawProductsModel=null): array
-    {
-        try {
-            $renderArray = [''=>\Yii::$app->params['formFiller']];
-            
-            if (!empty($rawProductsModel) && !empty($rawProductsModel->id_category)) {
-                $subcategoryQuery = SubcategoryModel::find();
-                $subcategoryQuery->extendSelect(['id', 'name']);
-                $subcategoryQuery->where(['[[subcategory.id_category]]'=>$rawProductsModel['id_category']]);
-                $subcategoryQuery->asArray();
-                $subcategoryArray = $subcategoryQuery->all();
-                $subcategoryArray = ArrayHelper::map($resultArray, 'id', 'name');
-                asort($subcategoryArray, SORT_STRING);
-                $renderArray = ArrayHelper::merge($renderArray, $subcategoryArray);
-            }
-            
-            return $renderArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Заполняет массив $renderArray данными ColorsModel 
-     * @return array
-     */
-    private static function getColorsList(): array
+    private static function getColors(): array
     {
         try {
             $colorsQuery = ColorsModel::find();
@@ -231,10 +201,10 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными SizesModel 
+     * Возвращает массив данных SizesModel 
      * @return array
      */
-    private static function getSizesList(): array
+    private static function getSizes(): array
     {
         try {
             $sizesQuery = SizesModel::find();
@@ -251,10 +221,10 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными BrandsModel 
+     * Возвращает массив данных BrandsModel 
      * @return array
      */
-    private static function getBrandsList(): array
+    private static function getBrands(): array
     {
         try {
             $brandsQuery = BrandsModel::find();
@@ -266,6 +236,25 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             $brandsArray = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $brandsArray);
             
             return $brandsArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект ProductsModel
+     * @param string seocode
+     * @return object ProductsModel
+     */
+    private static function getProduct(string $seocode): ProductsModel
+    {
+        try {
+            $productsQuery = ProductsModel::find();
+            $productsQuery->extendSelect(['id', 'seocode']);
+            $productsQuery->where(['[[products.seocode]]'=>$seocode]);
+            $productsModel = $productsQuery->one();
+            
+            return $productsModel;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

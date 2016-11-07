@@ -43,7 +43,7 @@ class ProductsColorsModel extends AbstractBaseModel
                     ++$counter;
                 }
                 if (!\Yii::$app->db->createCommand()->batchInsert('{{products_colors}}', ['[[id_product]]', '[[id_color]]'], $toRecord)->execute()) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'ProductsColorsModel::batchInsert']));
+                    throw new ErrorException(ExceptionsTrait::methodError('ProductsColorsModel::batchInsert'));
                 }
             }
             

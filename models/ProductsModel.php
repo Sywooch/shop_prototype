@@ -84,7 +84,7 @@ class ProductsModel extends AbstractBaseModel
     public function getCategory()
     {
         try {
-            return $this->hasOne(CategoriesModel::className(), ['id'=>'id_category'])->inverseOf('products');
+            return $this->hasOne(CategoriesModel::class, ['id'=>'id_category'])->inverseOf('products');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -97,7 +97,7 @@ class ProductsModel extends AbstractBaseModel
     public function getSubcategory()
     {
         try {
-            return $this->hasOne(SubcategoryModel::className(), ['id'=>'id_subcategory'])->inverseOf('products');
+            return $this->hasOne(SubcategoryModel::class, ['id'=>'id_subcategory'])->inverseOf('products');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -110,7 +110,7 @@ class ProductsModel extends AbstractBaseModel
     public function getColors()
     {
         try {
-            return $this->hasMany(ColorsModel::className(), ['id'=>'id_color'])->viaTable('products_colors', ['id_product'=>'id']);
+            return $this->hasMany(ColorsModel::class, ['id'=>'id_color'])->viaTable('products_colors', ['id_product'=>'id']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -123,7 +123,7 @@ class ProductsModel extends AbstractBaseModel
     public function getSizes()
     {
         try {
-            return $this->hasMany(SizesModel::className(), ['id'=>'id_size'])->viaTable('products_sizes', ['id_product'=>'id']);
+            return $this->hasMany(SizesModel::class, ['id'=>'id_size'])->viaTable('products_sizes', ['id_product'=>'id']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

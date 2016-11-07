@@ -33,9 +33,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
         try {
             $renderArray = InstancesHelper::getInstances();
             $renderArray = ArrayHelper::merge($renderArray, self::getProductsPaginator());
-            $renderArray['colorsList'] = self::getColorsList();
-            $renderArray['sizesList'] = self::getSizesList();
-            $renderArray['brandsList'] = self::getBrandsList();
+            $renderArray['colorsList'] = self::getColors();
+            $renderArray['sizesList'] = self::getSizes();
+            $renderArray['brandsList'] = self::getBrands();
             $renderArray = ArrayHelper::merge($renderArray, self::getSorting());
             
             self::breadcrumbs();
@@ -57,9 +57,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             
             $renderArray = InstancesHelper::getInstances();
             $renderArray = ArrayHelper::merge($renderArray, self::getProductsPaginator(!empty($sphinxArray) ? ['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')] : []));
-            $renderArray['colorsList'] = self::getColorsList($sphinxArray);
-            $renderArray['sizesList'] = self::getSizesList($sphinxArray);
-            $renderArray['brandsList'] = self::getBrandsList($sphinxArray);
+            $renderArray['colorsList'] = self::getColors($sphinxArray);
+            $renderArray['sizesList'] = self::getSizes($sphinxArray);
+            $renderArray['brandsList'] = self::getBrands($sphinxArray);
             $renderArray = ArrayHelper::merge($renderArray, self::getSorting());
             
             self::searchBreadcrumbs();
@@ -120,7 +120,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array
      */
-    private static function getColorsList(array $sphinxArray=[]): array
+    private static function getColors(array $sphinxArray=[]): array
     {
         try {
             $colorsQuery = ColorsModel::find();
@@ -160,7 +160,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array
      */
-    private static function getSizesList(array $sphinxArray=[]): array
+    private static function getSizes(array $sphinxArray=[]): array
     {
         try {
             $sizesQuery = SizesModel::find();
@@ -200,7 +200,7 @@ class ProductsListControllerHelper extends AbstractControllerHelper
      * @params array $sphinxArray id товаров, найденные sphinx
      * @return array
      */
-    private static function getBrandsList(array $sphinxArray=[]): array
+    private static function getBrands(array $sphinxArray=[]): array
     {
         try {
             $brandsQuery = BrandsModel::find();

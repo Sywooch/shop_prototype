@@ -133,7 +133,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getEmail()
     {
         try {
-            return $this->hasOne(EmailsModel::className(), ['id'=>'id_email'])->inverseOf('user');
+            return $this->hasOne(EmailsModel::class, ['id'=>'id_email'])->inverseOf('user');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -146,7 +146,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getName()
     {
         try {
-            return $this->hasOne(NamesModel::className(), ['id'=>'id_name']);
+            return $this->hasOne(NamesModel::class, ['id'=>'id_name']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -159,7 +159,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getSurname()
     {
         try {
-            return $this->hasOne(SurnamesModel::className(), ['id'=>'id_surname']);
+            return $this->hasOne(SurnamesModel::class, ['id'=>'id_surname']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -172,7 +172,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getPhone()
     {
         try {
-            return $this->hasOne(PhonesModel::className(), ['id'=>'id_phone']);
+            return $this->hasOne(PhonesModel::class, ['id'=>'id_phone']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -185,7 +185,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getAddress()
     {
         try {
-            return $this->hasOne(AddressModel::className(), ['id'=>'id_address']);
+            return $this->hasOne(AddressModel::class, ['id'=>'id_address']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -198,7 +198,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getCity()
     {
         try {
-            return $this->hasOne(CitiesModel::className(), ['id'=>'id_city']);
+            return $this->hasOne(CitiesModel::class, ['id'=>'id_city']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -211,7 +211,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getCountry()
     {
         try {
-            return $this->hasOne(CountriesModel::className(), ['id'=>'id_country']);
+            return $this->hasOne(CountriesModel::class, ['id'=>'id_country']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -224,7 +224,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getPostcode()
     {
         try {
-            return $this->hasOne(PostcodesModel::className(), ['id'=>'id_postcode']);
+            return $this->hasOne(PostcodesModel::class, ['id'=>'id_postcode']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

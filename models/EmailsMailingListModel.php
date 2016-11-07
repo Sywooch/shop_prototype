@@ -50,7 +50,7 @@ class EmailsMailingListModel extends AbstractBaseModel
                         $toRecord[] = [$emailsModel['id'], $mailingListId];
                     }
                     if (!\Yii::$app->db->createCommand()->batchInsert('{{emails_mailing_list}}', ['[[id_email]]', '[[id_mailing_list]]'], $toRecord)->execute()) {
-                        throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'EmailsMailingListModel::batchInsert']));
+                        throw new ErrorException(ExceptionsTrait::methodError('EmailsMailingListModel::batchInsert'));
                     }
                 }
                 

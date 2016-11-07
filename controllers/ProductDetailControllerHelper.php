@@ -29,20 +29,9 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
         try {
             $renderArray = InstancesHelper::getInstances();
             
-            $productsQuery = ProductsModel::find();
-            $productsQuery->extendSelect(['id', 'code', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'seocode']);
-            $productsQuery->addSelect(['[[categorySeocode]]'=>'[[categories.seocode]]', '[[categoryName]]'=>'[[categories.name]]', '[[subcategorySeocode]]'=>'[[subcategory.seocode]]', '[[subcategoryName]]'=>'[[subcategory.name]]']);
-            $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
-            $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
-            $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
-            $productsQuery->with(['colors', 'sizes']);
-            $productsQuery->asArray();
-            self::$_productsModel = $productsQuery->one();
-            $renderArray['productsModel'] = self::$_productsModel;
-            
+            $renderArray['productsModel'] = self::main();
             $renderArray['similarList'] = self::similar();
             $renderArray['relatedList'] = self::related();
-            
             $renderArray['purchasesModel'] = new PurchasesModel(['quantity'=>1]);
             
             self::breadcrumbs();
@@ -54,7 +43,30 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными ProductsModel похожих товаров  
+     * Получает из БД объект ProductsModel представляющий запрошенный товар
+     * @return array
+     */
+    private static function main(): array
+    {
+        try {
+            $productsQuery = ProductsModel::find();
+            $productsQuery->extendSelect(['id', 'code', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'seocode']);
+            $productsQuery->addSelect(['[[categorySeocode]]'=>'[[categories.seocode]]', '[[categoryName]]'=>'[[categories.name]]', '[[subcategorySeocode]]'=>'[[subcategory.seocode]]', '[[subcategoryName]]'=>'[[subcategory.name]]']);
+            $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
+            $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
+            $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
+            $productsQuery->with(['colors', 'sizes']);
+            $productsQuery->asArray();
+            self::$_productsModel = $productsQuery->one();
+            
+            return self::$_productsModel;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает из БД массив ProductsModel похожих товаров
      * @return array
      */
     private static function similar(): array
@@ -82,7 +94,7 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Заполняет массив $renderArray данными ProductsModel связанных товаров  
+     * Получает из БД массив ProductsModel связанных товаров
      * @return array
      */
     private static function related(): array

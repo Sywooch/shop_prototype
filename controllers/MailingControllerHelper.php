@@ -58,11 +58,15 @@ class MailingControllerHelper extends AbstractControllerHelper
             
             if (self::$_rawEmailsModel->load(\Yii::$app->request->post()) && self::$_rawMailingListModel->load(\Yii::$app->request->post())) {
                 if (self::$_rawEmailsModel->validate() && self::$_rawMailingListModel->validate()) {
-                    self::saveEmail(self::$_rawEmailsModel);
-                    $emailsQuery = EmailsModel::find();
-                    $emailsQuery->extendSelect(['id', 'email']);
-                    $emailsQuery->where(['[[emails.email]]'=>self::$_rawEmailsModelReg->email]);
-                    $emailsModel = $emailsQuery->one();
+                    
+                    self::saveCheckEmail(self::$_rawEmailsModel);
+                    $emailsModel = getEmail(self::$_rawEmailsModelReg->email);
+                    
+                    $diff = EmailsMailingListModel::batchInsert($emailsModel, self::$_rawMailingListModel);
+                    if (!empty($diff)) {
+                        $subscribes = self::getMailing($diff, true);
+                    }
+                    
                 }
             }
         } catch (\Throwable $t) {
@@ -88,7 +92,7 @@ class MailingControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных MailingListModel
+     * Возвращает массив MailingListModel
      * @return array
      */
     private static function getMailingList(): array
@@ -102,6 +106,25 @@ class MailingControllerHelper extends AbstractControllerHelper
             asort($mailingListArray, SORT_STRING);
             
             return $mailingListArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект EmailsModel
+     * @param string $email
+     * @return object EmailsModel
+     */
+    private static function getEmail(string $email): EmailsModel
+    {
+        try {
+            $emailsQuery = EmailsModel::find();
+            $emailsQuery->extendSelect(['id', 'email']);
+            $emailsQuery->where(['[[emails.email]]'=>$email]);
+            $emailsModel = $emailsQuery->one();
+            
+            return $emailsModel;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

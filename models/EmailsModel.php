@@ -72,7 +72,7 @@ class EmailsModel extends AbstractBaseModel
     public function getUser()
     {
         try {
-            return $this->hasOne(UsersModel::className(), ['id_email'=>'id'])->inverseOf('email');
+            return $this->hasOne(UsersModel::class, ['id_email'=>'id'])->inverseOf('email');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

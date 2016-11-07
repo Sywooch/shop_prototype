@@ -58,7 +58,7 @@ class PurchasesModel extends AbstractBaseModel
     public function getProduct()
     {
         try {
-            return $this->hasOne(ProductsModel::className(), ['id'=>'id_product']);
+            return $this->hasOne(ProductsModel::class, ['id'=>'id_product']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -71,7 +71,7 @@ class PurchasesModel extends AbstractBaseModel
     public function getColor()
     {
         try {
-            return $this->hasOne(ColorsModel::className(), ['id'=>'id_color']);
+            return $this->hasOne(ColorsModel::class, ['id'=>'id_color']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -84,7 +84,7 @@ class PurchasesModel extends AbstractBaseModel
     public function getSize()
     {
         try {
-            return $this->hasOne(SizesModel::className(), ['id'=>'id_size']);
+            return $this->hasOne(SizesModel::class, ['id'=>'id_size']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -130,7 +130,7 @@ class PurchasesModel extends AbstractBaseModel
                 $fields = ['[[id_user]]', '[[id_name]]', '[[id_surname]]', '[[id_email]]', '[[id_phone]]', '[[id_address]]', '[[id_city]]', '[[id_country]]', '[[id_postcode]]', '[[id_product]]', '[[quantity]]', '[[id_color]]', '[[id_size]]', '[[id_delivery]]', '[[id_payment]]', '[[received]]', '[[received_date]]'];
                 
                 if (!\Yii::$app->db->createCommand()->batchInsert('{{purchases}}', $fields, $toRecord)->execute()) {
-                    throw new ErrorException(\Yii::t('base/errors', 'Method error {placeholder}!', ['placeholder'=>'PurchsesModel::batchInsert']));
+                    throw new ErrorException(ExceptionsTrait::methodError('PurchsesModel::batchInsert'));
                 }
             }
             
