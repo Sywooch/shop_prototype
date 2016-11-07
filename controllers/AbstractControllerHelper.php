@@ -13,8 +13,7 @@ use app\validators\{AddressExistsCreateValidator,
     PhoneExistsCreateValidator,
     PostcodeExistsCreateValidator,
     SurnameExistsCreateValidator};
-use app\models\{AbstractBaseModel,
-    AddressModel,
+use app\models\{AddressModel,
     CitiesModel,
     CountriesModel,
     EmailsModel,
@@ -169,36 +168,6 @@ class AbstractControllerHelper
     }
     
     /**
-     * Создает и конфигурирует модель данными \Yii::$app->params['customerArray'] 
-     * @param string $model имя модели
-     */
-    protected static function customerConfig(string $model): AbstractBaseModel
-    {
-        try {
-            return \Yii::configure((new $model()), \Yii::$app->params['customerArray'][$model::tableName()]);
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Конфигурирует модель данными \Yii::$app->params['customerArray'] 
-     * @param object $model объект модели
-     */
-    protected static function customerConfigObj(AbstractBaseModel $model): AbstractBaseModel
-    {
-        try {
-            if (!empty(\Yii::$app->params['customerArray'][$model->tableNameObj()])) {
-                return \Yii::configure($model, \Yii::$app->params['customerArray'][$model->tableNameObj()]);
-            }
-            
-            return false;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Возвращает массив MailingListModel
      * @param array $diff массив MailingListModel::id
      * @param bool $asArray нужно ли возвратить данные как массив
@@ -251,7 +220,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getUser(string $id_email, $asArray=false)
+    protected static function getUser(int $id_email, $asArray=false)
     {
         try {
             $usersQuery = UsersModel::find();

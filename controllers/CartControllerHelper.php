@@ -8,7 +8,8 @@ use yii\web\Response;
 use yii\db\Transaction;
 use app\controllers\AbstractControllerHelper;
 use app\exceptions\ExceptionsTrait;
-use app\models\{AddressModel,
+use app\models\{AbstractBaseModel,
+    AddressModel,
     CitiesModel,
     ColorsModel,
     CountriesModel,
@@ -275,8 +276,8 @@ class CartControllerHelper extends AbstractControllerHelper
                     \Yii::$app->params['customerArray']['dataChange'] = \Yii::$app->request->post('dataChange');
                     \Yii::$app->params['customerArray']['createAccount'] = \Yii::$app->request->post('createAccount');
                     
-                    $hash = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
-                    SessionHelper::write($hash, \Yii::$app->params['customerArray']);
+                    $customerKey = HashHelper::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
+                    SessionHelper::write($customerKey, \Yii::$app->params['customerArray']);
                     
                     return true;
                 }
@@ -412,18 +413,8 @@ class CartControllerHelper extends AbstractControllerHelper
     public static function customerTuning(array $usersModel)
     {
         try {
-            if (!self::$_rawNamesModel = self::customerConfigObj(self::$_rawNamesModel)) {
-                if (\Yii::$app->user->isGuest == false && !empty($usersModel['userName'])) {
-                    self::$_rawNamesModel = \Yii::configure(self::$_rawNamesModel, ['name'=>$usersModel['userName']]);
-                }
-            }
-            
-            if (!self::$_rawSurnamesModel = self::customerConfigObj(self::$_rawSurnamesModel)) {
-                if (\Yii::$app->user->isGuest == false && !empty($usersModel['userSurname'])) {
-                    self::$_rawSurnamesModel = \Yii::configure(self::$_rawSurnamesModel, ['surname'=>$usersModel['userSurname']]);
-                }
-            }
-            
+            self::$_rawNamesModel = self::customerConfigObj(self::$_rawNamesModel, $usersModel, 'name', 'userName');
+            self::$_rawSurnamesModel = self::customerConfigObj(self::$_rawSurnamesModel, $usersModel, 'surname', 'userSurname');
             
             if (\Yii::$app->user->isGuest == false && !empty($usersModel['userEmail'])) {
                 self::$_rawEmailsModel = \Yii::configure(self::$_rawEmailsModel, ['email'=>$usersModel['userEmail']]);
@@ -431,47 +422,14 @@ class CartControllerHelper extends AbstractControllerHelper
                 self::$_rawEmailsModel = self::customerConfigObj(self::$_rawEmailsModel);
             }
             
-            if (!empty(\Yii::$app->params['customerArray'][PhonesModel::tableName()])) {
-                self::$_rawPhonesModel = self::customerConfigObj(self::$_rawPhonesModel);
-            } elseif (\Yii::$app->user->isGuest == false && !empty($usersModel['userPhone'])) {
-                self::$_rawPhonesModel = \Yii::configure(self::$_rawPhonesModel, ['phone'=>$usersModel['userPhone']]);
-            }
-            
-            if (!empty(\Yii::$app->params['customerArray'][AddressModel::tableName()])) {
-                self::$_rawAddressModel = self::customerConfigObj(self::$_rawAddressModel);
-            } elseif (\Yii::$app->user->isGuest == false && !empty($usersModel['userAddress'])) {
-                self::$_rawAddressModel = \Yii::configure(self::$_rawAddressModel, ['address'=>$usersModel['userAddress']]);
-            }
-            
-            if (!empty(\Yii::$app->params['customerArray'][CitiesModel::tableName()])) {
-                self::$_rawCitiesModel = self::customerConfigObj(self::$_rawCitiesModel);
-            } elseif (\Yii::$app->user->isGuest == false && !empty($usersModel['userCity'])) {
-                self::$_rawCitiesModel = \Yii::configure(self::$_rawCitiesModel, ['city'=>$usersModel['userCity']]);
-            }
-            
-            if (!empty(\Yii::$app->params['customerArray'][CountriesModel::tableName()])) {
-                self::$_rawCountriesModel = self::customerConfigObj(self::$_rawCountriesModel);
-            } elseif (\Yii::$app->user->isGuest == false && !empty($usersModel['userCountry'])) {
-                self::$_rawCountriesModel = \Yii::configure(self::$_rawCountriesModel, ['country'=>$usersModel['userCountry']]);
-            }
-            
-            if (!empty(\Yii::$app->params['customerArray'][PostcodesModel::tableName()])) {
-                self::$_rawPostcodesModel = self::customerConfigObj(self::$_rawPostcodesModel);
-            } elseif (\Yii::$app->user->isGuest == false && !empty($usersModel['userPostcode'])) {
-                self::$_rawPostcodesModel = \Yii::configure(self::$_rawPostcodesModel, ['postcode'=>$usersModel['userPostcode']]);
-            }
-            
-            if (!empty(\Yii::$app->params['customerArray'][DeliveriesModel::tableName()])) {
-                self::$_rawDeliveriesModel = self::customerConfigObj(self::$_rawDeliveriesModel);
-            }
-            
-            if (!empty(\Yii::$app->params['customerArray'][PaymentsModel::tableName()])) {
-                self::$_rawPaymentsModel = self::customerConfigObj(self::$_rawPaymentsModel);
-            }
-            
-            if (!empty(\Yii::$app->params['customerArray'][UsersModel::tableName()])) {
-                self::$_rawUsersModel = self::customerConfigObj(self::$_rawUsersModel);
-            }
+            self::$_rawPhonesModel = self::customerConfigObj(self::$_rawPhonesModel, $usersModel, 'phone', 'userPhone');
+            self::$_rawAddressModel = self::customerConfigObj(self::$_rawAddressModel, $usersModel, 'address', 'userAddress');
+            self::$_rawCitiesModel = self::customerConfigObj(self::$_rawCitiesModel, $usersModel, 'city', 'userCity');
+            self::$_rawCountriesModel = self::customerConfigObj(self::$_rawCountriesModel, $usersModel, 'country', 'userCountry');
+            self::$_rawPostcodesModel = self::customerConfigObj(self::$_rawPostcodesModel, $usersModel, 'postcode', 'userPostcode');
+            self::$_rawDeliveriesModel = self::customerConfigObj(self::$_rawDeliveriesModel);
+            self::$_rawPaymentsModel = self::customerConfigObj(self::$_rawPaymentsModel);
+            self::$_rawUsersModel = self::customerConfigObj(self::$_rawUsersModel);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -527,22 +485,22 @@ class CartControllerHelper extends AbstractControllerHelper
             $postcodesModel = self::getPostcode($rawPostcodesModel['postcode'], true);
             $resultArray['postcode'] = $postcodesModel['id'];
             
-            if (\Yii::$app->params['customerArray'][UsersModel::tableName()]) {
+            if (\Yii::$app->params['customerArray']['createAccount']) {
                 $rawUsersModel = self::customerConfig(UsersModel::class);
                 if (!empty($rawUsersModel->password)) {
-                    $rawUsersModel->id_email = $email;
+                    $rawUsersModel->id_email = $emailsModel['id'];
                     $rawUsersModel->password = password_hash($rawUsersModel->password, PASSWORD_DEFAULT);
-                    $rawUsersModel->id_name = $name;
-                    $rawUsersModel->id_surname = $surname;
-                    $rawUsersModel->id_phone = $phone;
-                    $rawUsersModel->id_address = $address;
-                    $rawUsersModel->id_city = $city;
-                    $rawUsersModel->id_country = $country;
-                    $rawUsersModel->id_postcode = $postcode;
+                    $rawUsersModel->id_name = $namesModel['id'];
+                    $rawUsersModel->id_surname = $surnamesModel['id'];
+                    $rawUsersModel->id_phone = $phonesModel['id'];
+                    $rawUsersModel->id_address = $addressModel['id'];
+                    $rawUsersModel->id_city = $citiesModel['id'];
+                    $rawUsersModel->id_country = $countriesModel['id'];
+                    $rawUsersModel->id_postcode = $postcodesModel['id'];
                     if (!$rawUsersModel->save(false)) {
                         throw new ErrorException(ExceptionsTrait::methodError('UsersModel::save'));
                     }
-                    $usersModel = self::getUser($email, true);
+                    $usersModel = self::getUser($emailsModel['id'], true);
                     $resultArray['user'] = $usersModel['id'];
                 }
             }
@@ -550,13 +508,13 @@ class CartControllerHelper extends AbstractControllerHelper
             if (\Yii::$app->user->isGuest == false && !empty(\Yii::$app->user->id)) {
                 $resultArray['user'] = \Yii::$app->user->id;
                 if (\Yii::$app->params['customerArray']['dataChange']) {
-                    \Yii::$app->user->identity->id_name = $name;
-                    \Yii::$app->user->identity->id_surname = $surname;
-                    \Yii::$app->user->identity->id_phone = $phone;
-                    \Yii::$app->user->identity->id_address = $address;
-                    \Yii::$app->user->identity->id_city = $city;
-                    \Yii::$app->user->identity->id_country = $country;
-                    \Yii::$app->user->identity->id_postcode = $postcode;
+                    \Yii::$app->user->identity->id_name = $namesModel['id'];
+                    \Yii::$app->user->identity->id_surname = $surnamesModel['id'];
+                    \Yii::$app->user->identity->id_phone = $phonesModel['id'];
+                    \Yii::$app->user->identity->id_address = $addressModel['id'];
+                    \Yii::$app->user->identity->id_city = $citiesModel['id'];
+                    \Yii::$app->user->identity->id_country = $countriesModel['id'];
+                    \Yii::$app->user->identity->id_postcode = $postcodesModel['id'];
                     if (!\Yii::$app->user->identity->save(false)) {
                         throw new ErrorException(ExceptionsTrait::methodError('UsersModel::save'));
                     }
@@ -808,6 +766,42 @@ class CartControllerHelper extends AbstractControllerHelper
             ArrayHelper::multisort($paymentsArray, 'name', SORT_ASC);
             
             return $paymentsArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Создает и конфигурирует модель данными \Yii::$app->params['customerArray'] 
+     * @param string $model имя модели
+     */
+    private static function customerConfig(string $model): AbstractBaseModel
+    {
+        try {
+            return \Yii::configure((new $model()), \Yii::$app->params['customerArray'][$model::tableName()]);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Конфигурирует модель данными \Yii::$app->params['customerArray'] 
+     * @param object $model объект модели
+     * @param array $usersModel массив данных UsersModel
+     * @param string $toKey имя свойства, которое будет заполнено
+     * @param string $fromKey ключ массива $usersModel
+     * @return object
+     */
+    private static function customerConfigObj(AbstractBaseModel $model, array $usersModel=[], string $toKey='', string $fromKey=''): AbstractBaseModel
+    {
+        try {
+            if (!empty(\Yii::$app->params['customerArray'][$model->tableNameObj()])) {
+                $model = \Yii::configure($model, \Yii::$app->params['customerArray'][$model->tableNameObj()]);
+            } elseif (\Yii::$app->user->isGuest == false && !empty($usersModel[$fromKey])) {
+                $model = \Yii::configure($model, [$toKey=>$usersModel[$fromKey]]);
+            }
+            
+            return $model;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
