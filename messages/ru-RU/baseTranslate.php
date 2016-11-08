@@ -98,7 +98,12 @@ $translate = [
     'Hello! This is information about your order!'=>'Привет! Это информация о вашем заказе!',
     'Your new password: {password}'=>'Ваш новый пароль: {password}',
     'We recommend to replace the password on your own as soon as possible!'=>'Рекомендуем заменить этот пароль на собственный как можно скорее!',
-    'Subscribe'=>'Подписаться'
+    'Subscribe'=>'Подписаться',
+    'Hello! This is information about your subscriptions!'=>'Привет! Это информация о ваших подписках!',
+    'You subscribed to the mailings:'=>'Вы подписались на рассылки:',
+    'Your subscription to shop.com'=>'Ваши подписки на shop.com',
+    'You successfully subscribed to mailings:'=>'Вы успешно подписались на рассылки:',
+    'You are already subscribed to the mailing list:'=>'Вы уже подписаны на  эти рассылки:',
 ];
 
 return $translate;

@@ -3,19 +3,16 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Url};
 use yii\db\Transaction;
 use app\controllers\AbstractControllerHelper;
 use app\exceptions\ExceptionsTrait;
-use app\models\{EmailsMailingListModel,
+use app\models\{EmailsMailingsModel,
     EmailsModel,
-    MailingListModel,
+    MailingsModel,
     UsersModel};
 use app\helpers\{InstancesHelper,
     MailHelper,
     SessionHelper};
-use app\validators\EmailExistsCreateValidator;
 
 /**
  * Коллекция сервис-методов UserController
@@ -39,9 +36,9 @@ class UserControllerHelper extends AbstractControllerHelper
      */
     private static $_rawUsersModelReg;
     /**
-     * @var object MailingListModel в контексте регистрации
+     * @var object MailingsModel в контексте регистрации
      */
-    private static $_rawMailingListModelReg;
+    private static $_rawMailingsModelReg;
     /**
      * @var bool флаг, отмечающий было ли отправлено письмо с новым паролем
      */
@@ -133,9 +130,9 @@ class UserControllerHelper extends AbstractControllerHelper
             
             $renderArray['emailsModel'] = self::$_rawEmailsModelReg;
             $renderArray['usersModel'] = self::$_rawUsersModelReg;
-            $renderArray['mailingListModel'] = self::$_rawMailingListModelReg;
+            $renderArray['mailingListModel'] = self::$_rawMailingsModelReg;
             
-            $renderArray['mailingListList'] = self::getMailingListMap(true);
+            $renderArray['mailingListList'] = self::mailingMap(true);
             
             self::registrationBreadcrumbs();
             
@@ -154,8 +151,8 @@ class UserControllerHelper extends AbstractControllerHelper
         try {
             self::modelsReg();
             
-            if (self::$_rawEmailsModelReg->load(\Yii::$app->request->post()) && self::$_rawUsersModelReg->load(\Yii::$app->request->post()) && self::$_rawMailingListModelReg->load(\Yii::$app->request->post())) {
-                if (self::$_rawEmailsModelReg->validate() && self::$_rawUsersModelReg->validate() && self::$_rawMailingListModelReg->validate()) {
+            if (self::$_rawEmailsModelReg->load(\Yii::$app->request->post()) && self::$_rawUsersModelReg->load(\Yii::$app->request->post()) && self::$_rawMailingsModelReg->load(\Yii::$app->request->post())) {
+                if (self::$_rawEmailsModelReg->validate() && self::$_rawUsersModelReg->validate() && self::$_rawMailingsModelReg->validate()) {
                     
                     $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
                     
@@ -175,10 +172,10 @@ class UserControllerHelper extends AbstractControllerHelper
                             throw new ErrorException(ExceptionsTrait::methodError('\Yii::$app->authManager'));
                         }
                         
-                        if (!empty(self::$_rawMailingListModelReg['id'])) {
-                            $diff = EmailsMailingListModel::batchInsert($emailsModel, self::$_rawMailingListModelReg);
+                        if (!empty(self::$_rawMailingsModelReg['id'])) {
+                            $diff = EmailsMailingsModel::batchInsert($emailsModel, self::$_rawMailingsModelReg);
                             if (!empty($diff)) {
-                                $subscribes = self::getMailing($diff, true);
+                                $subscribes = self::getMailings($diff, true);
                             }
                         }
                         
@@ -314,9 +311,27 @@ class UserControllerHelper extends AbstractControllerHelper
             if (empty(self::$_rawUsersModelReg)) {
                 self::$_rawUsersModelReg = new UsersModel(['scenario'=>UsersModel::GET_FROM_REGISTRATION]);
             }
-            if (empty(self::$_rawMailingListModelReg)) {
-                self::$_rawMailingListModelReg = new MailingListModel(['scenario'=>MailingListModel::GET_FROM_REGISTRATION]);
+            if (empty(self::$_rawMailingsModelReg)) {
+                self::$_rawMailingsModelReg = new MailingsModel(['scenario'=>MailingsModel::GET_FROM_REGISTRATION]);
             }
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив MailingsModel
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    private static function mailingMap(bool $asArray=false): array
+    {
+        try {
+            $mailingsArray = self::getMailings([], $asArray);
+            $mailingsArray = ArrayHelper::map($mailingsArray, 'id', 'name');
+            asort($mailingsArray, SORT_STRING);
+            
+            return $mailingsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

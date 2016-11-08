@@ -6,9 +6,9 @@ use app\models\AbstractBaseModel;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Представляет данные таблицы mailing_list
+ * Представляет данные таблицы mailings
  */
-class MailingListModel extends AbstractBaseModel
+class MailingsModel extends AbstractBaseModel
 {
     /**
      * Сценарий сохранения данных из формы регистрации
@@ -26,7 +26,7 @@ class MailingListModel extends AbstractBaseModel
     public static function tableName()
     {
         try {
-            return 'mailing_list';
+            return 'mailings';
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

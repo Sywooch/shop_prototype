@@ -11,14 +11,11 @@ use yii\db\Transaction;
 use yii\widgets\ActiveForm;
 use app\controllers\AbstractControllerHelper;
 use app\exceptions\ExceptionsTrait;
-use app\models\{BrandsModel,
-    CategoriesModel,
-    ColorsModel,
+use app\models\{ColorsModel,
     ProductsColorsModel,
     ProductsModel,
     ProductsSizesModel,
-    SizesModel,
-    SubcategoryModel};
+    SizesModel};
 use app\helpers\PicturesHelper;
 
 /**
@@ -51,9 +48,9 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             $renderArray = [];
             $renderArray['categoriesList'] = self::categoriesMap(true);
             $renderArray['subcategoryList'] = [''=>\Yii::$app->params['formFiller']];
-            $renderArray['colorsList'] = self::getColors();
-            $renderArray['sizesList'] = self::getSizes();
-            $renderArray['brandsList'] = self::getBrands();
+            $renderArray['colorsList'] = self::colorsMap(true);
+            $renderArray['sizesList'] = self::sizesMap(true);
+            $renderArray['brandsList'] = self::brandsMap(true);
             
             $renderArray['productsModel'] = self::$_rawProductsModel;
             $renderArray['colorsModel'] = self::$_rawColorsModel;
@@ -92,7 +89,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
                             throw new ErrorException(ExceptionsTrait::methodError('ProductsModel::save'));
                         }
                         
-                        $productsModel = self::getProduct(self::$_rawProductsModel['seocode']);
+                        $productsModel = self::getProduct(self::$_rawProductsModel['seocode'], false, false, false);
                         
                         $count = ProductsColorsModel::batchInsert($productsModel, self::$_rawColorsModel);
                         if ($count < 1) {
@@ -160,7 +157,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных CategoriesModel
+     * Возвращает массив CategoriesModel
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
@@ -179,16 +176,14 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных ColorsModel 
+     * Возвращает массив ColorsModel
+     * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getColors(): array
+    private static function colorsMap(bool $asArray=false): array
     {
         try {
-            $colorsQuery = ColorsModel::find();
-            $colorsQuery->extendSelect(['id', 'color']);
-            $colorsQuery->asArray();
-            $colorsArray = $colorsQuery->all();
+            $colorsArray = self::getColors([], $asArray);
             $colorsArray = ArrayHelper::map($colorsArray, 'id', 'color');
             asort($colorsArray, SORT_STRING);
             
@@ -199,16 +194,14 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных SizesModel 
+     * Возвращает массив данных SizesModel
+     * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getSizes(): array
+    private static function sizesMap(bool $asArray=false): array
     {
         try {
-            $sizesQuery = SizesModel::find();
-            $sizesQuery->extendSelect(['id', 'size']);
-            $sizesQuery->asArray();
-            $sizesArray = $sizesQuery->all();
+            $sizesArray = self::getSizes([], $asArray);
             $sizesArray = ArrayHelper::map($sizesArray, 'id', 'size');
             asort($sizesArray, SORT_STRING);
             
@@ -220,39 +213,18 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     
     /**
      * Возвращает массив данных BrandsModel 
+     * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getBrands(): array
+    private static function brandsMap(bool $asArray=false): array
     {
         try {
-            $brandsQuery = BrandsModel::find();
-            $brandsQuery->extendSelect(['id', 'brand']);
-            $brandsQuery->asArray();
-            $brandsArray = $brandsQuery->all();
+            $brandsArray = self::getBrands($asArray);
             $brandsArray = ArrayHelper::map($brandsArray, 'id', 'brand');
             asort($brandsArray, SORT_STRING);
             $brandsArray = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $brandsArray);
             
             return $brandsArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает объект ProductsModel
-     * @param string seocode
-     * @return object ProductsModel
-     */
-    private static function getProduct(string $seocode): ProductsModel
-    {
-        try {
-            $productsQuery = ProductsModel::find();
-            $productsQuery->extendSelect(['id', 'seocode']);
-            $productsQuery->where(['[[products.seocode]]'=>$seocode]);
-            $productsModel = $productsQuery->one();
-            
-            return $productsModel;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

@@ -20,7 +20,7 @@ use app\models\{AddressModel,
     ColorsModel,
     CountriesModel,
     EmailsModel,
-    MailingListModel,
+    MailingsModel,
     NamesModel,
     PhonesModel,
     PostcodesModel,
@@ -173,53 +173,6 @@ class AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив MailingListModel
-     * @param array $diff массив MailingListModel::id
-     * @param bool $asArray нужно ли возвратить данные как массив
-     * @return array
-     */
-    protected static function getMailing(array $diff, bool $asArray=false): array
-    {
-        try {
-            $mailingListQuery = MailingListModel::find();
-            $mailingListQuery->extendSelect(['name']);
-            $mailingListQuery->where(['[[mailing_list.id]]'=>$diff]);
-            if (!empty($asArray)) {
-                $mailingListQuery->asArray();
-            }
-            $mailingListArray = $mailingListQuery->all();
-            
-            return $mailingListArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает форматированный массив MailingListModel, где 
-     * id записи является ключом, а name значением массива
-     * @param bool $asArray нужно ли возвратить данные как массив
-     * @return array
-     */
-    protected static function getMailingListMap(bool $asArray=false): array
-    {
-        try {
-            $mailingListQuery = MailingListModel::find();
-            $mailingListQuery->extendSelect(['id', 'name']);
-            if (!empty($asArray)) {
-                $mailingListQuery->asArray();
-            }
-            $mailingListArray = $mailingListQuery->all();
-            $mailingListArray = ArrayHelper::map($mailingListArray, 'id', 'name');
-            asort($mailingListArray, SORT_STRING);
-            
-            return $mailingListArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Возвращает массив UsersModel со всеми связанными данными
      * @param int $id UsersModel::id
      * @param int $id_email EmailsModel::id
@@ -227,7 +180,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    private static function getUserPlus(int $id, int $id_email, bool $plus=false, bool $asArray=false)
+    protected static function getUserPlus(int $id, int $id_email, bool $plus=false, bool $asArray=false)
     {
         try {
             $usersQuery = UsersModel::find();
@@ -896,7 +849,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getCategories(bool $asArray=false): array
+    protected static function getCategories(bool $asArray=false): array
     {
         try {
             $categoriesQuery = CategoriesModel::find();
@@ -907,6 +860,52 @@ class AbstractControllerHelper
             $categoriesArray = $categoriesQuery->all();
             
             return $categoriesArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив BrandsModel
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getBrands(bool $asArray=false): array
+    {
+        try {
+            $brandsQuery = BrandsModel::find();
+            $brandsQuery->extendSelect(['id', 'brand']);
+            if (!empty($asArray)) {
+                $brandsQuery->asArray();
+            }
+            $brandsArray = $brandsQuery->all();
+            
+            return $brandsArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив MailingsModel
+     * @param array $diff массив MailingsModel::id
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getMailings(array $diff=[], bool $asArray=false): array
+    {
+        try {
+            $mailingsQuery = MailingsModel::find();
+            $mailingsQuery->extendSelect(['id', 'name', 'description']);
+            if (!empty($diff)) {
+                $mailingsQuery->where(['[[mailings.id]]'=>$diff]);
+            }
+            if (!empty($asArray)) {
+                $mailingsQuery->asArray();
+            }
+            $mailingsArray = $mailingsQuery->all();
+            
+            return $mailingsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

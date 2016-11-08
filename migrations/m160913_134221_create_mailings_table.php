@@ -3,16 +3,16 @@
 use yii\db\Migration;
 
 /**
- * Handles the creation for table `mailing_list`.
+ * Handles the creation for table `mailings`.
  */
-class m160913_134221_create_mailing_list_table extends Migration
+class m160913_134221_create_mailings_table extends Migration
 {
     /**
      * @inheritdoc
      */
     public function up()
     {
-        $this->createTable('mailing_list', [
+        $this->createTable('mailings', [
             'id' => $this->primaryKey(3)->unsigned()->notNull(),
             'name'=>$this->string(255)->notNull()->unique(),
             'description'=>$this->string(500)->notNull()
@@ -24,6 +24,6 @@ class m160913_134221_create_mailing_list_table extends Migration
      */
     public function down()
     {
-        $this->dropTable('mailing_list');
+        $this->dropTable('mailings');
     }
 }
