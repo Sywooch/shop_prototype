@@ -32,10 +32,11 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     {
         try {
             $renderArray = InstancesHelper::getInstances();
-            $renderArray = ArrayHelper::merge($renderArray, self::getProductsPaginator());
-            $renderArray['colorsList'] = self::getColors();
-            $renderArray['sizesList'] = self::getSizes();
-            $renderArray['brandsList'] = self::getBrands();
+            
+            $renderArray = ArrayHelper::merge($renderArray, self::getProductsPaginator([], true));
+            $renderArray['colorsList'] = self::colorsMap([], true);
+            $renderArray['sizesList'] = self::sizesMap([], true);
+            $renderArray['brandsList'] = self::brandsMap([], true);
             $renderArray = ArrayHelper::merge($renderArray, self::getSorting());
             
             self::breadcrumbs();
@@ -56,10 +57,11 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             $sphinxArray = self::getSearch();
             
             $renderArray = InstancesHelper::getInstances();
-            $renderArray = ArrayHelper::merge($renderArray, self::getProductsPaginator(!empty($sphinxArray) ? ['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')] : []));
-            $renderArray['colorsList'] = self::getColors($sphinxArray);
-            $renderArray['sizesList'] = self::getSizes($sphinxArray);
-            $renderArray['brandsList'] = self::getBrands($sphinxArray);
+            
+            $renderArray = ArrayHelper::merge($renderArray, self::getProductsPaginator(!empty($sphinxArray) ? ['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')] : [], true));
+            $renderArray['colorsList'] = self::colorsMap($sphinxArray, true);
+            $renderArray['sizesList'] = self::sizesMap($sphinxArray, true);
+            $renderArray['brandsList'] = self::brandsMap($sphinxArray, true);
             $renderArray = ArrayHelper::merge($renderArray, self::getSorting());
             
             self::searchBreadcrumbs();
@@ -73,9 +75,10 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     /**
      * Возвращает массив данных о товарах и пагинации
      * @param array $extraWhere массив дополнительный условий, будет добавлен к WHERE
+     * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getProductsPaginator(array $extraWhere=[]): array
+    private static function getProductsPaginator(array $extraWhere=[], bool $asArray=false): array
     {
         try {
             $renderArray = [];
@@ -104,7 +107,9 @@ class ProductsListControllerHelper extends AbstractControllerHelper
             
             $renderArray['paginator'] = $productsQuery->paginator;
             
-            $productsQuery->asArray();
+            if (!empty($asArray)) {
+                $productsQuery->asArray();
+            }
             self::$_productsList = $productsQuery->all();
             $renderArray['productsList'] = self::$_productsList;
             
@@ -115,36 +120,15 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных ColorsModel для фильтрации результатов 
-     * выборки из БД
+     * Возвращает массив ColorsModel 
      * @params array $sphinxArray id товаров, найденные sphinx
+     * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getColors(array $sphinxArray=[]): array
+    private static function colorsMap(array $sphinxArray=[], bool $asArray=false): array
     {
         try {
-            $colorsQuery = ColorsModel::find();
-            $colorsQuery->extendSelect(['id', 'color']);
-            $colorsQuery->distinct();
-            $colorsQuery->innerJoin('{{products_colors}}', '[[colors.id]]=[[products_colors.id_color]]');
-            $colorsQuery->innerJoin('{{products}}', '[[products_colors.id_product]]=[[products.id]]');
-            $colorsQuery->where(['[[products.active]]'=>true]);
-            
-            if (!empty($sphinxArray)) {
-                $colorsQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
-            } else {
-                if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
-                    $colorsQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
-                    $colorsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
-                    if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
-                        $colorsQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
-                        $colorsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
-                    }
-                }
-            }
-            
-            $colorsQuery->asArray();
-            $colorsArray = $colorsQuery->all();
+            $colorsArray = self::getColorsJoinProducts($sphinxArray, $asArray);
             $colorsArray = ArrayHelper::map($colorsArray, 'id', 'color');
             asort($colorsArray, SORT_STRING);
             
@@ -155,38 +139,17 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных SizesModel для фильтрации результатов 
-     * выборки из БД
+     * Возвращает массив SizesModel 
      * @params array $sphinxArray id товаров, найденные sphinx
+     * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getSizes(array $sphinxArray=[]): array
+    private static function sizesMap(array $sphinxArray=[], bool $asArray=false): array
     {
         try {
-            $sizesQuery = SizesModel::find();
-            $sizesQuery->extendSelect(['id', 'size']);
-            $sizesQuery->distinct();
-            $sizesQuery->innerJoin('{{products_sizes}}', '[[sizes.id]]=[[products_sizes.id_size]]');
-            $sizesQuery->innerJoin('{{products}}', '[[products_sizes.id_product]]=[[products.id]]');
-            $sizesQuery->where(['[[products.active]]'=>true]);
-            
-            if (!empty($sphinxArray)) {
-                $sizesQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
-            } else {
-                if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
-                    $sizesQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
-                    $sizesQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
-                    if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
-                        $sizesQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
-                        $sizesQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
-                    }
-                }
-            }
-            
-            $sizesQuery->asArray();
-            $sizesArray = $sizesQuery->all();
+            $sizesArray = self::getSizesJoinProducts($sphinxArray, $asArray);
             $sizesArray = ArrayHelper::map($sizesArray, 'id', 'size');
-            asort($sizesArray, SORT_NUMERIC);
+            asort($sizesArray, SORT_STRING);
             
             return $sizesArray;
         } catch (\Throwable $t) {
@@ -195,35 +158,15 @@ class ProductsListControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных BrandsModel для фильтрации результатов 
-     * выборки из БД
+     * Возвращает массив BrandsModel 
      * @params array $sphinxArray id товаров, найденные sphinx
+     * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getBrands(array $sphinxArray=[]): array
+    private static function brandsMap(array $sphinxArray=[], bool $asArray=false): array
     {
         try {
-            $brandsQuery = BrandsModel::find();
-            $brandsQuery->extendSelect(['id', 'brand']);
-            $brandsQuery->distinct();
-            $brandsQuery->innerJoin('{{products}}', '[[products.id_brand]]=[[brands.id]]');
-            $brandsQuery->where(['[[products.active]]'=>true]);
-            
-            if (!empty($sphinxArray)) {
-                $brandsQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
-            } else {
-                if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
-                    $brandsQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
-                    $brandsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
-                    if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
-                        $brandsQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
-                        $brandsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
-                    }
-                }
-            }
-            
-            $brandsQuery->asArray();
-            $brandsArray = $brandsQuery->all();
+            $brandsArray = self::getBrandsJoinProducts($sphinxArray, $asArray);
             $brandsArray = ArrayHelper::map($brandsArray, 'id', 'brand');
             asort($brandsArray, SORT_STRING);
             

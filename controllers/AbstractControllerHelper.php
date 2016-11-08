@@ -14,13 +14,18 @@ use app\validators\{AddressExistsCreateValidator,
     PostcodeExistsCreateValidator,
     SurnameExistsCreateValidator};
 use app\models\{AddressModel,
+    BrandsModel,
+    CategoriesModel,
     CitiesModel,
+    ColorsModel,
     CountriesModel,
     EmailsModel,
     MailingListModel,
     NamesModel,
     PhonesModel,
     PostcodesModel,
+    ProductsModel,
+    SizesModel,
     SubcategoryModel,
     SurnamesModel,
     UsersModel};
@@ -173,7 +178,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    protected static function getMailing(array $diff, $asArray=false): array
+    protected static function getMailing(array $diff, bool $asArray=false): array
     {
         try {
             $mailingListQuery = MailingListModel::find();
@@ -196,7 +201,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    protected static function getMailingListMap($asArray=false): array
+    protected static function getMailingListMap(bool $asArray=false): array
     {
         try {
             $mailingListQuery = MailingListModel::find();
@@ -215,17 +220,35 @@ class AbstractControllerHelper
     }
     
     /**
-     * Возвращает объект/массив UsersModel
-     * @param int $id_email
+     * Возвращает массив UsersModel со всеми связанными данными
+     * @param int $id UsersModel::id
+     * @param int $id_email EmailsModel::id
+     * @param bool $plus нужно ли возвращать дополнительные данные
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getUser(int $id_email, $asArray=false)
+    private static function getUserPlus(int $id, int $id_email, bool $plus=false, bool $asArray=false)
     {
         try {
             $usersQuery = UsersModel::find();
-            $usersQuery->extendSelect(['id', 'id_email']);
-            $usersQuery->where(['[[users.id_email]]'=>$id_email]);
+            $usersQuery->extendSelect(['id', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode']);
+            if (!empty($plus)) {
+                $usersQuery->addSelect(['[[userName]]'=>'[[names.name]]', '[[userSurname]]'=>'[[surnames.surname]]', '[[userEmail]]'=>'[[emails.email]]', '[[userPhone]]'=>'[[phones.phone]]', '[[userAddress]]'=>'[[address.address]]', '[[userCity]]'=>'[[cities.city]]', '[[userCountry]]'=>'[[countries.country]]', '[[userPostcode]]'=>'[[postcodes.postcode]]']);
+                $usersQuery->innerJoin('{{emails}}', '[[emails.id]]=[[users.id_email]]');
+                $usersQuery->leftJoin('{{names}}', '[[names.id]]=[[users.id_name]]');
+                $usersQuery->leftJoin('{{surnames}}', '[[surnames.id]]=[[users.id_surname]]');
+                $usersQuery->leftJoin('{{phones}}', '[[phones.id]]=[[users.id_phone]]');
+                $usersQuery->leftJoin('{{address}}', '[[address.id]]=[[users.id_address]]');
+                $usersQuery->leftJoin('{{cities}}', '[[cities.id]]=[[users.id_city]]');
+                $usersQuery->leftJoin('{{countries}}', '[[countries.id]]=[[users.id_country]]');
+                $usersQuery->leftJoin('{{postcodes}}', '[[postcodes.id]]=[[users.id_postcode]]');
+            }
+            if (!empty($id)) {
+                $usersQuery->where(['[[users.id]]'=>$id]);
+            }
+            if (!empty($id_email)) {
+                $usersQuery->where(['[[users.id_email]]'=>$id_email]);
+            }
             if (!empty($asArray)) {
                 $usersQuery->asArray();
             }
@@ -243,7 +266,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return object UsersModel
      */
-    protected static function getUserJoin(string $email, $asArray=false): UsersModel
+    protected static function getUserByEmail(string $email, bool $asArray=false): UsersModel
     {
         try {
             $usersQuery = UsersModel::find();
@@ -262,12 +285,12 @@ class AbstractControllerHelper
     }
     
     /**
-     * Возвращает объект/массив EmailsModel
+     * Возвращает объект EmailsModel
      * @param string $email
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getEmail(string $email, $asArray=false)
+    protected static function getEmail(string $email, bool $asArray=false)
     {
         try {
             $emailsQuery = EmailsModel::find();
@@ -285,12 +308,12 @@ class AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных SubcategoryModel
+     * Возвращает массив SubcategoryModel
      * @param int $id_category Categories::id
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    protected static function getSubcategory(int $id_category, $asArray=false): array
+    protected static function getSubcategory(int $id_category, bool $asArray=false): array
     {
         try {
             $subcategoryQuery = SubcategoryModel::find();
@@ -315,7 +338,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getName(string $name, $asArray=false)
+    protected static function getName(string $name, bool $asArray=false)
     {
         try {
             $namesQuery = NamesModel::find();
@@ -338,7 +361,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getSurname(string $surname, $asArray=false)
+    protected static function getSurname(string $surname, bool $asArray=false)
     {
         try {
             $surnamesQuery = SurnamesModel::find();
@@ -361,7 +384,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getPhone(string $phone, $asArray=false)
+    protected static function getPhone(string $phone, bool $asArray=false)
     {
         try {
             $phonesQuery = PhonesModel::find();
@@ -384,7 +407,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getAddress(string $address, $asArray=false)
+    protected static function getAddress(string $address, bool $asArray=false)
     {
         try {
             $addressQuery = AddressModel::find();
@@ -407,7 +430,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getCity(string $city, $asArray=false)
+    protected static function getCity(string $city, bool $asArray=false)
     {
         try {
             $citiesQuery = CitiesModel::find();
@@ -430,7 +453,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getCountry(string $country, $asArray=false)
+    protected static function getCountry(string $country, bool $asArray=false)
     {
         try {
             $countriesQuery = CountriesModel::find();
@@ -453,7 +476,7 @@ class AbstractControllerHelper
      * @param bool $asArray нужно ли возвратить данные как массив
      * @return mixed
      */
-    protected static function getPostcode(string $postcode, $asArray=false)
+    protected static function getPostcode(string $postcode, bool $asArray=false)
     {
         try {
             $postcodesQuery = PostcodesModel::find();
@@ -463,6 +486,427 @@ class AbstractControllerHelper
             $postcodesModel = $postcodesQuery->one();
             
             return $postcodesModel;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив ProductsModel
+     * @param array $id_products массив ProductsModel::id
+     * @param bool $with флаг, определяющий необходимость загрузки связанные данные
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getProducts(array $id_products=[], bool $with=false, bool $asArray=false): array
+    {
+        try {
+            $productsQuery = ProductsModel::find();
+            $productsQuery->extendSelect(['id', 'name', 'short_description', 'price', 'images', 'seocode']);
+            if (!empty($id_products)) {
+                $productsQuery->where(['[[products.id]]'=>$id_products]);
+            }
+            if (!empty($with)) {
+                $productsQuery->with(['colors', 'sizes']);
+            }
+            if (!empty($asArray)) {
+                $productsQuery->asArray();
+            }
+            $productsArray = $productsQuery->all();
+            
+            return $productsArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект ProductsModel
+     * @param string $seocode ProductsModel::seocode
+     * @param bool $with флаг, определяющий необходимость загрузки связанные данные
+     * @param bool $plus нужно ли возвращать дополнительные данные
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return mixed
+     */
+    protected static function getProduct(string $seocode, bool $with=false, bool $plus=false, bool $asArray=false)
+    {
+        try {
+            $productsQuery = ProductsModel::find();
+            $productsQuery->extendSelect(['id', 'code', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'seocode']);
+            if (!empty($plus)) {
+                $productsQuery->addSelect(['[[categorySeocode]]'=>'[[categories.seocode]]', '[[categoryName]]'=>'[[categories.name]]', '[[subcategorySeocode]]'=>'[[subcategory.seocode]]', '[[subcategoryName]]'=>'[[subcategory.name]]']);
+                $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
+                $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
+            }
+            $productsQuery->where(['[[products.seocode]]'=>$seocode]);
+            if (!empty($with)) {
+                $productsQuery->with(['colors', 'sizes']);
+            }
+            if (!empty($asArray)) {
+                $productsQuery->asArray();
+            }
+            $productsModel = $productsQuery->one();
+            
+            return $productsModel;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив ProductsModel, имеющих схожие характеристики с переданным в параметрах
+     * @param array/object ProductsModel
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getSimilarProducts($productsModel, bool $asArray=false): array
+    {
+        try {
+            $similarQuery = ProductsModel::find();
+            $similarQuery->extendSelect(['name', 'price', 'images', 'seocode']);
+            $similarQuery->distinct();
+            $similarQuery->where(['!=', '[[products.id]]', $productsModel['id']]);
+            $similarQuery->andWhere(['[[products.id_category]]'=>$productsModel['id_category']]);
+            $similarQuery->andWhere(['[[products.id_subcategory]]'=>$productsModel['id_subcategory']]);
+            $similarQuery->innerJoin('{{products_colors}}', '[[products.id]]=[[products_colors.id_product]]');
+            $similarQuery->andWhere(['[[products_colors.id_color]]'=>ArrayHelper::getColumn($productsModel['colors'], 'id')]);
+            $similarQuery->innerJoin('{{products_sizes}}', '[[products.id]]=[[products_sizes.id_product]]');
+            $similarQuery->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($productsModel['sizes'], 'id')]);
+            $similarQuery->limit(\Yii::$app->params['similarLimit']);
+            $similarQuery->orderBy(['[[products.date]]'=>SORT_DESC]);
+            if (!empty($asArray)) {
+                $similarQuery->asArray();
+            }
+            $similarArray = $similarQuery->all();
+            
+            return $similarArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив ProductsModel, связанных с переданным в параметрах
+     * @param int $id ProductsModel::id
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getRelatedProducts(int $id, bool $asArray=false): array
+    {
+        try {
+            $relatedQuery = ProductsModel::find();
+            $relatedQuery->extendSelect(['name', 'price', 'images', 'seocode']);
+            $relatedQuery->innerJoin('{{related_products}}', '[[products.id]]=[[related_products.id_related_product]]');
+            $relatedQuery->where(['[[related_products.id_product]]'=>$id]);
+            if (!empty($asArray)) {
+                $relatedQuery->asArray();
+            }
+            $relatedArray = $relatedQuery->all();
+            ArrayHelper::multisort($relatedArray, 'date', SORT_DESC);
+            
+            return $relatedArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив ColorsModel
+     * @param array $id_colors массив ColorsModel::id
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getColors(array $id_colors=[], bool $asArray=false): array
+    {
+        try {
+            $colorsQuery = ColorsModel::find();
+            $colorsQuery->extendSelect(['id', 'color']);
+            if (!empty($id_colors)) {
+                $colorsQuery->where(['[[colors.id]]'=>$id_colors]);
+            }
+            if (!empty($asArray)) {
+                $colorsQuery->asArray();
+            }
+            $colorsArray = $colorsQuery->all();
+            
+            return $colorsArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив ColorsModel
+     * @params array $sphinxArray id товаров, найденные sphinx
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getColorsJoinProducts(array $sphinxArray=[], bool $asArray=false): array
+    {
+        try {
+            $colorsQuery = ColorsModel::find();
+            $colorsQuery->extendSelect(['id', 'color']);
+            $colorsQuery->distinct();
+            $colorsQuery->innerJoin('{{products_colors}}', '[[colors.id]]=[[products_colors.id_color]]');
+            $colorsQuery->innerJoin('{{products}}', '[[products_colors.id_product]]=[[products.id]]');
+            $colorsQuery->where(['[[products.active]]'=>true]);
+            
+            if (!empty($sphinxArray)) {
+                $colorsQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            } else {
+                if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
+                    $colorsQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
+                    $colorsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                    if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
+                        $colorsQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
+                        $colorsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    }
+                }
+            }
+            
+            if (!empty($asArray)) {
+                $colorsQuery->asArray();
+            }
+            $colorsArray = $colorsQuery->all();
+            
+            return $colorsArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив SizesModel
+     * @param array $id_sizes массив SizesModel::id
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getSizes(array $id_sizes=[], bool $asArray=false): array
+    {
+        try {
+            $sizesQuery = SizesModel::find();
+            $sizesQuery->extendSelect(['id', 'size']);
+            if (!empty($id_sizes)) {
+                $sizesQuery->where(['[[sizes.id]]'=>$id_sizes]);
+            }
+            if (!empty($asArray)) {
+                $sizesQuery->asArray();
+            }
+            $sizesArray = $sizesQuery->all();
+            
+            return $sizesArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив SizesModel
+     * @params array $sphinxArray id товаров, найденные sphinx
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getSizesJoinProducts(array $sphinxArray=[], bool $asArray=false): array
+    {
+        try {
+            $sizesQuery = SizesModel::find();
+            $sizesQuery->extendSelect(['id', 'size']);
+            $sizesQuery->distinct();
+            $sizesQuery->innerJoin('{{products_sizes}}', '[[sizes.id]]=[[products_sizes.id_size]]');
+            $sizesQuery->innerJoin('{{products}}', '[[products_sizes.id_product]]=[[products.id]]');
+            $sizesQuery->where(['[[products.active]]'=>true]);
+            
+            if (!empty($sphinxArray)) {
+                $sizesQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            } else {
+                if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
+                    $sizesQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
+                    $sizesQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                    if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
+                        $sizesQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
+                        $sizesQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    }
+                }
+            }
+            
+            if (!empty($asArray)) {
+                $sizesQuery->asArray();
+            }
+            $sizesArray = $sizesQuery->all();
+            
+            return $sizesArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект DeliveriesModel
+     * @param int $id DeliveriesModel::id
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return mixed
+     */
+    protected static function getDelivery(int $id, bool $asArray=false)
+    {
+        try {
+            $deliveriesQuery = DeliveriesModel::find();
+            $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
+            $deliveriesQuery->where(['[[deliveries.id]]'=>$id]);
+            if (!empty($asArray)) {
+                $deliveriesQuery->asArray();
+            }
+            $deliveriesModel = $deliveriesQuery->one();
+            
+            return $deliveriesModel;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект PaymentsModel
+     * @param int $id PaymentsModel::id
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return mixed
+     */
+    protected static function getPayment(int $id, bool $asArray=false)
+    {
+        try {
+            $paymentsQuery = PaymentsModel::find();
+            $paymentsQuery->extendSelect(['id', 'name', 'description']);
+            $paymentsQuery->where(['[[payments.id]]'=>$id]);
+            if (!empty($asArray)) {
+                $paymentsQuery->asArray();
+            }
+            $paymentsModel = $paymentsQuery->one();
+            
+            return $paymentsModel;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив DeliveriesModel
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getDeliveries(bool $asArray=false): array
+    {
+        try {
+            $deliveriesQuery = DeliveriesModel::find();
+            $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
+            if (!empty($asArray)) {
+                $deliveriesQuery->asArray();
+            }
+            $deliveriesArray = $deliveriesQuery->all();
+            ArrayHelper::multisort($deliveriesArray, 'name', SORT_ASC);
+            
+            return $deliveriesArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив PaymentsModel 
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getPayments(bool $asArray=false): array
+    {
+        try {
+            $paymentsQuery = PaymentsModel::find();
+            $paymentsQuery->extendSelect(['id', 'name', 'description']);
+            if (!empty($asArray)) {
+                $paymentsQuery->asArray();
+            }
+            $paymentsArray = $paymentsQuery->all();
+            ArrayHelper::multisort($paymentsArray, 'name', SORT_ASC);
+            
+            return $paymentsArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект CurrencyModel
+     * @param int $id CurrencyModel::id
+     * @return mixed
+     */
+    protected static function getCurrency(int $id, bool $asArray=false)
+    {
+        try {
+            $currencyQuery = CurrencyModel::find();
+            $currencyQuery->extendSelect(['id', 'code', 'exchange_rate']);
+            $currencyQuery->where(['[[currency.id]]'=>$id]);
+            if (!empty($asArray)) {
+                $currencyQuery->asArray();
+            }
+            $currencyModel = $currencyQuery->one();
+            
+            return $currencyModel;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив BrandsModel
+     * @params array $sphinxArray id товаров, найденные sphinx
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    protected static function getBrandsJoinProducts(array $sphinxArray=[], bool $asArray=false): array
+    {
+        try {
+            $brandsQuery = BrandsModel::find();
+            $brandsQuery->extendSelect(['id', 'brand']);
+            $brandsQuery->distinct();
+            $brandsQuery->innerJoin('{{products}}', '[[products.id_brand]]=[[brands.id]]');
+            $brandsQuery->where(['[[products.active]]'=>true]);
+            
+            if (!empty($sphinxArray)) {
+                $brandsQuery->andWhere(['[[products.id]]'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
+            } else {
+                if (\Yii::$app->request->get(\Yii::$app->params['categoryKey'])) {
+                    $brandsQuery->innerJoin('{{categories}}', '[[products.id_category]]=[[categories.id]]');
+                    $brandsQuery->andWhere(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                    if (\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])) {
+                        $brandsQuery->innerJoin('{{subcategory}}', '[[products.id_subcategory]]=[[subcategory.id]]');
+                        $brandsQuery->andWhere(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    }
+                }
+            }
+            
+            if (!empty($asArray)) {
+                $brandsQuery->asArray();
+            }
+            $brandsArray = $brandsQuery->all();
+            
+            return $brandsArray;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив CategoriesModel
+     * @param bool $asArray нужно ли возвратить данные как массив
+     * @return array
+     */
+    private static function getCategories(bool $asArray=false): array
+    {
+        try {
+            $categoriesQuery = CategoriesModel::find();
+            $categoriesQuery->extendSelect(['id', 'name']);
+            if (!empty($asArray)) {
+                $categoriesQuery->asArray();
+            }
+            $categoriesArray = $categoriesQuery->all();
+            
+            return $categoriesArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

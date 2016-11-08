@@ -81,7 +81,7 @@ class UserControllerHelper extends AbstractControllerHelper
             if (self::$_rawEmailsModel->load(\Yii::$app->request->post()) && self::$_rawUsersModel->load(\Yii::$app->request->post())) {
                 if (self::$_rawEmailsModel->validate() && self::$_rawUsersModel->validate()) {
                     
-                    $usersModel = self::getUserJoin(self::$_rawEmailsModel['email']);
+                    $usersModel = self::getUserByEmail(self::$_rawEmailsModel['email']);
                     
                     if (!empty($usersModel)) {
                         if (password_verify(self::$_rawUsersModel['password'], $usersModel['password'])) {
@@ -169,7 +169,7 @@ class UserControllerHelper extends AbstractControllerHelper
                         if (!self::$_rawUsersModelReg->save(false)) {
                             throw new ErrorException(ExceptionsTrait::methodError('UsersModel::save'));
                         }
-                        $usersModel = self::getUser(self::$_rawUsersModelReg->id_email, true);
+                        $usersModel = self::getUserPlus(0, self::$_rawUsersModelReg->id_email, false, true);
                         
                         if (!\Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $usersModel['id'])) {
                             throw new ErrorException(ExceptionsTrait::methodError('\Yii::$app->authManager'));
@@ -249,7 +249,7 @@ class UserControllerHelper extends AbstractControllerHelper
                     $emailsModel = self::getEmail(self::$_rawEmailsModel['email'], true);
                     
                     if (!empty($emailsModel)) {
-                        $usersModel = self::getUser($emailsModel['id']);
+                        $usersModel = self::getUserPlus(0, $emailsModel['id'], false, true);
                         
                         if (!empty($usersModel)) {
                             $newPassword = substr(sha1(time()), 0, 10);

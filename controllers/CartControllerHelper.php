@@ -89,7 +89,8 @@ class CartControllerHelper extends AbstractControllerHelper
         try {
             $renderArray = InstancesHelper::getInstances();
             
-            $productsArray = self::getProducts(true);
+            $productsArray = self::getProducts(ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product'), true, true);
+            $productsArray = ArrayHelper::index($productsArray, 'id');
             
             foreach (\Yii::$app->params['cartArray'] as $hash=>$purchase) {
                 $renderArray['purchasesList'][$hash] = [
@@ -222,7 +223,7 @@ class CartControllerHelper extends AbstractControllerHelper
             self::models();
             
             if (\Yii::$app->user->isGuest == false) {
-                $usersModel = self::getUserPlus();
+                $usersModel = self::getUserPlus(\Yii::$app->user->id, 0, true, true);
             }
             
             self::customerTuning($usersModel ?? []);
@@ -240,8 +241,8 @@ class CartControllerHelper extends AbstractControllerHelper
             $renderArray['paymentsModel'] = self::$_rawPaymentsModel;
             $renderArray['dataChange'] = !empty(\Yii::$app->params['customerArray']['dataChange']) ? true : false;
             $renderArray['createAccount'] = !empty(\Yii::$app->params['customerArray']['createAccount']) ? true : false;
-            $renderArray['deliveriesList'] = self::getDeliveries();
-            $renderArray['paymentsList'] = self::getPayments();
+            $renderArray['deliveriesList'] = self::getDeliveries(true);
+            $renderArray['paymentsList'] = self::getPayments(true);
             
             self::breadcrumbsCustomer();
             
@@ -260,8 +261,9 @@ class CartControllerHelper extends AbstractControllerHelper
         try {
             self::models();
             
-            if (self::$_rawNamesModel->load(\Yii::$app->request->post()) && self::$_rawSurnamesModel->load(\Yii::$app->request->post()) && self::$_rawEmailsModel->load(\Yii::$app->request->post()) && self::$_rawPhonesModel->load(\Yii::$app->request->post()) && self::$_rawAddressModel->load(\Yii::$app->request->post()) && self::$_rawCitiesModel->load(\Yii::$app->request->post()) && self::$_rawCountriesModel->load(\Yii::$app->request->post()) && self::$_rawPostcodesModel->load(\Yii::$app->request->post()) && self::$_rawUsersModel->load(\Yii::$app->request->post()) && self::$_rawDeliveriesModel->load(\Yii::$app->request->post()) && self::$_rawPaymentsModel->load(\Yii::$app->request->post())) {
-                if (self::$_rawNamesModel->validate() && self::$_rawSurnamesModel->validate() && self::$_rawEmailsModel->validate() && self::$_rawPhonesModel->validate() && self::$_rawAddressModel->validate() && self::$_rawCitiesModel->validate() && self::$_rawCountriesModel->validate() && self::$_rawPostcodesModel->validate() && self::$_rawUsersModel->validate() && self::$_rawDeliveriesModel->validate() && self::$_rawPaymentsModel->validate()) {
+            if (self::$_rawNamesModel->load(\Yii::$app->request->post()) && self::$_rawSurnamesModel->load(\Yii::$app->request->post()) && self::$_rawEmailsModel->load(\Yii::$app->request->post()) && self::$_rawPhonesModel->load(\Yii::$app->request->post()) && self::$_rawAddressModel->load(\Yii::$app->request->post()) && self::$_rawCitiesModel->load(\Yii::$app->request->post()) && self::$_rawCountriesModel->load(\Yii::$app->request->post()) && self::$_rawPostcodesModel->load(\Yii::$app->request->post()) && self::$_rawDeliveriesModel->load(\Yii::$app->request->post()) && self::$_rawPaymentsModel->load(\Yii::$app->request->post())) {
+                if (self::$_rawNamesModel->validate() && self::$_rawSurnamesModel->validate() && self::$_rawEmailsModel->validate() && self::$_rawPhonesModel->validate() && self::$_rawAddressModel->validate() && self::$_rawCitiesModel->validate() && self::$_rawCountriesModel->validate() && self::$_rawPostcodesModel->validate() && self::$_rawDeliveriesModel->validate() && self::$_rawPaymentsModel->validate()) {
+                    
                     \Yii::$app->params['customerArray'][NamesModel::tableName()] = self::$_rawNamesModel->toArray();
                     \Yii::$app->params['customerArray'][SurnamesModel::tableName()] = self::$_rawSurnamesModel->toArray();
                     \Yii::$app->params['customerArray'][EmailsModel::tableName()] = self::$_rawEmailsModel->toArray();
@@ -270,7 +272,9 @@ class CartControllerHelper extends AbstractControllerHelper
                     \Yii::$app->params['customerArray'][CitiesModel::tableName()] = self::$_rawCitiesModel->toArray();
                     \Yii::$app->params['customerArray'][CountriesModel::tableName()] = self::$_rawCountriesModel->toArray();
                     \Yii::$app->params['customerArray'][PostcodesModel::tableName()] = self::$_rawPostcodesModel->toArray();
-                    \Yii::$app->params['customerArray'][UsersModel::tableName()] = self::$_rawUsersModel->toArray([], ['password']);
+                    if (self::$_rawUsersModel->load(\Yii::$app->request->post())) {
+                        \Yii::$app->params['customerArray'][UsersModel::tableName()] = self::$_rawUsersModel->toArray([], ['password']);
+                    }
                     \Yii::$app->params['customerArray'][DeliveriesModel::tableName()] = self::$_rawDeliveriesModel->toArray();
                     \Yii::$app->params['customerArray'][PaymentsModel::tableName()] = self::$_rawPaymentsModel->toArray();
                     \Yii::$app->params['customerArray']['dataChange'] = \Yii::$app->request->post('dataChange');
@@ -298,9 +302,14 @@ class CartControllerHelper extends AbstractControllerHelper
         try {
             $renderArray = InstancesHelper::getInstances();
             
-            $productsArray = self::getProducts();
-            $colorsArray = self::getColors();
-            $sizesArray = self::getSizes();
+            $productsArray = self::getProducts(ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product'), false, true);
+            $productsArray = ArrayHelper::index($productsArray, 'id');
+            
+            $colorsArray = self::getColors(ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_color'), true);
+            $colorsArray = ArrayHelper::index($colorsArray, 'id');
+            
+            $sizesArray = self::getSizes(ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_size'), true);
+            $sizesArray = ArrayHelper::index($sizesArray, 'id');
             
             foreach (\Yii::$app->params['cartArray'] as $purchase) {
                 $renderArray['purchasesList'][] = [
@@ -312,8 +321,8 @@ class CartControllerHelper extends AbstractControllerHelper
             }
             
             $renderArray['customerArray'] = \Yii::$app->params['customerArray'];
-            $renderArray['deliveriesModel'] = self::getDelivery();
-            $renderArray['paymentsModel'] = self::getPayment();
+            $renderArray['deliveriesModel'] = self::getDelivery(\Yii::$app->params['customerArray'][DeliveriesModel::tableName()], true);
+            $renderArray['paymentsModel'] = self::getPayment(\Yii::$app->params['customerArray'][PaymentsModel::tableName()], true);
             
             self::breadcrumbsCheck();
             
@@ -324,13 +333,11 @@ class CartControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Конструирует данные для CartController::actionSend()
+     * Обрабатывает POST запрос для CartController::actionSend()
      */
     public static function sendPost()
     {
         try {
-            $renderArray = InstancesHelper::getInstances();
-            
             $transaction = \Yii::$app->db->beginTransaction(Transaction::REPEATABLE_READ);
             
              try {
@@ -341,11 +348,17 @@ class CartControllerHelper extends AbstractControllerHelper
                     throw new ErrorException(ExceptionsTrait::methodError('PurchasesModel::batchInsert'));
                 }
                 
-                $productsArray = self::getProducts();
-                $colorsArray = self::getColors();
-                $sizesArray = self::getSizes();
-                $deliveriesArray = self::getDelivery();
-                $paymentsArray = self::getPayment();
+                $productsArray = self::getProducts(ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product'), false, true);
+                $productsArray = ArrayHelper::index($productsArray, 'id');
+                
+                $colorsArray = self::getColors(ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_color'), true);
+                $colorsArray = ArrayHelper::index($colorsArray, 'id');
+            
+                $sizesArray = self::getSizes(ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_size'), true);
+                $sizesArray = ArrayHelper::index($sizesArray, 'id');
+                
+                $deliveriesArray = self::getDelivery(\Yii::$app->params['customerArray'][DeliveriesModel::tableName()], true);
+                $paymentsArray = self::getPayment(\Yii::$app->params['customerArray'][PaymentsModel::tableName()], true);
                 
                 foreach (\Yii::$app->params['cartArray'] as $purchase) {
                     $purchasesArray[] = [
@@ -500,7 +513,7 @@ class CartControllerHelper extends AbstractControllerHelper
                     if (!$rawUsersModel->save(false)) {
                         throw new ErrorException(ExceptionsTrait::methodError('UsersModel::save'));
                     }
-                    $usersModel = self::getUser($emailsModel['id'], true);
+                    $usersModel = self::getUserPlus(0, $emailsModel['id'], false, true);
                     $resultArray['user'] = $usersModel['id'];
                 }
             }
@@ -525,138 +538,6 @@ class CartControllerHelper extends AbstractControllerHelper
             $resultArray['payment'] = \Yii::$app->params['customerArray'][PaymentsModel::tableName()]['id'];
             
             return $resultArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД товары, находящиеся в корзине 
-     * @param bool $with флаг, определяющий необходимость 
-     * загрузки связанных данных
-     * @return array
-     */
-    private static function getProducts($with=false): array
-    {
-        try {
-            $productsQuery = ProductsModel::find();
-            $productsQuery->extendSelect(['id', 'name', 'short_description', 'price', 'images', 'seocode']);
-            $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
-            if ($with) {
-                $productsQuery->with(['colors', 'sizes']);
-            }
-            $productsQuery->asArray();
-            $productsArray = $productsQuery->all();
-            $productsArray = ArrayHelper::index($productsArray, 'id');
-            
-            return $productsArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД цвета товаров, находящихся в корзине 
-     * @return array
-     */
-    private static function getColors(): array
-    {
-        try {
-            $colorsQuery = ColorsModel::find();
-            $colorsQuery->extendSelect(['id', 'color']);
-            $colorsQuery->where(['[[colors.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_color')]);
-            $colorsQuery->asArray();
-            $colorsArray = $colorsQuery->all();
-            $colorsArray = ArrayHelper::index($colorsArray, 'id');
-            
-            return $colorsArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД размеры товаров, находящихся в корзине 
-     * @return array
-     */
-    private static function getSizes(): array
-    {
-        try {
-            $sizesQuery = SizesModel::find();
-            $sizesQuery->extendSelect(['id', 'size']);
-            $sizesQuery->where(['[[sizes.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_size')]);
-            $sizesQuery->asArray();
-            $sizesArray = $sizesQuery->all();
-            $sizesArray = ArrayHelper::index($sizesArray, 'id');
-            
-            return $sizesArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД информацию о выбранной доставке 
-     * @return array
-     */
-    private static function getDelivery(): array
-    {
-        try {
-            $deliveriesQuery = DeliveriesModel::find();
-            $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
-            $deliveriesQuery->where(['[[deliveries.id]]'=>\Yii::$app->params['customerArray'][DeliveriesModel::tableName()]]);
-            $deliveriesQuery->asArray();
-            $deliveriesArray = $deliveriesQuery->one();
-            
-            return $deliveriesArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД информацию о выбранной форме оплаты 
-     * @return array
-     */
-    private static function getPayment(): array
-    {
-        try {
-            $paymentsQuery = PaymentsModel::find();
-            $paymentsQuery->extendSelect(['id', 'name', 'description']);
-            $paymentsQuery->where(['[[payments.id]]'=>\Yii::$app->params['customerArray'][PaymentsModel::tableName()]]);
-            $paymentsQuery->asArray();
-            $paymentsArray = $paymentsQuery->one();
-            
-            return $paymentsArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД информацию о пользователе вместе 
-     * со всеми связанными данными
-     * @return array
-     */
-    private static function getUserPlus(): array
-    {
-        try {
-            $usersQuery = UsersModel::find();
-            $usersQuery->extendSelect(['id', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode']);
-            $usersQuery->addSelect(['[[userName]]'=>'[[names.name]]', '[[userSurname]]'=>'[[surnames.surname]]', '[[userEmail]]'=>'[[emails.email]]', '[[userPhone]]'=>'[[phones.phone]]', '[[userAddress]]'=>'[[address.address]]', '[[userCity]]'=>'[[cities.city]]', '[[userCountry]]'=>'[[countries.country]]', '[[userPostcode]]'=>'[[postcodes.postcode]]']);
-            $usersQuery->innerJoin('{{emails}}', '[[emails.id]]=[[users.id_email]]');
-            $usersQuery->leftJoin('{{names}}', '[[names.id]]=[[users.id_name]]');
-            $usersQuery->leftJoin('{{surnames}}', '[[surnames.id]]=[[users.id_surname]]');
-            $usersQuery->leftJoin('{{phones}}', '[[phones.id]]=[[users.id_phone]]');
-            $usersQuery->leftJoin('{{address}}', '[[address.id]]=[[users.id_address]]');
-            $usersQuery->leftJoin('{{cities}}', '[[cities.id]]=[[users.id_city]]');
-            $usersQuery->leftJoin('{{countries}}', '[[countries.id]]=[[users.id_country]]');
-            $usersQuery->leftJoin('{{postcodes}}', '[[postcodes.id]]=[[users.id_postcode]]');
-            $usersQuery->where(['[[users.id]]'=>\Yii::$app->user->id]);
-            $usersQuery->asArray();
-            $usersModel = $usersQuery->one();
-            
-            return $usersModel;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -728,44 +609,6 @@ class CartControllerHelper extends AbstractControllerHelper
             if (empty(self::$_rawPaymentsModel)) {
                 self::$_rawPaymentsModel = new PaymentsModel(['scenario'=>PaymentsModel::GET_FROM_ORDER]);
             }
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Заполняет массив $renderArray данными DeliveriesModel 
-     * @return array
-     */
-    private static function getDeliveries(): array
-    {
-        try {
-            $deliveriesQuery = DeliveriesModel::find();
-            $deliveriesQuery->extendSelect(['id', 'name', 'description', 'price']);
-            $deliveriesQuery->asArray();
-            $deliveriesArray = $deliveriesQuery->all();
-            ArrayHelper::multisort($deliveriesArray, 'name', SORT_ASC);
-            
-            return $deliveriesArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Заполняет массив $renderArray данными PaymentsModel 
-     * @return array
-     */
-    private static function getPayments(): array
-    {
-        try {
-            $paymentsQuery = PaymentsModel::find();
-            $paymentsQuery->extendSelect(['id', 'name', 'description']);
-            $paymentsQuery->asArray();
-            $paymentsArray = $paymentsQuery->all();
-            ArrayHelper::multisort($paymentsArray, 'name', SORT_ASC);
-            
-            return $paymentsArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

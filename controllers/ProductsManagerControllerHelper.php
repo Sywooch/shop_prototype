@@ -49,7 +49,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
             self::models();
             
             $renderArray = [];
-            $renderArray['categoriesList'] = self::getCategories();
+            $renderArray['categoriesList'] = self::categoriesMap(true);
             $renderArray['subcategoryList'] = [''=>\Yii::$app->params['formFiller']];
             $renderArray['colorsList'] = self::getColors();
             $renderArray['sizesList'] = self::getSizes();
@@ -115,7 +115,7 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
                 }
             }
             
-            return !empty($productsModel->seocode) ? $productsModel->seocode : false;
+            return !empty($productsModel->seocode) ? $productsModel->seocode : '';
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
@@ -160,16 +160,14 @@ class ProductsManagerControllerHelper extends AbstractControllerHelper
     }
     
     /**
-     * Возвращает массив данных CategoriesModel 
+     * Возвращает массив данных CategoriesModel
+     * @param bool $asArray нужно ли возвратить данные как массив
      * @return array
      */
-    private static function getCategories(): array
+    private static function categoriesMap(bool $asArray=false): array
     {
         try {
-            $categoriesQuery = CategoriesModel::find();
-            $categoriesQuery->extendSelect(['id', 'name']);
-            $categoriesQuery->asArray();
-            $categoriesArray = $categoriesQuery->all();
+            $categoriesArray = self::getCategories($asArray);
             $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
             asort($categoriesArray, SORT_STRING);
             $categoriesArray = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $categoriesArray);

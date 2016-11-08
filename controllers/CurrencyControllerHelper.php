@@ -23,31 +23,11 @@ class CurrencyControllerHelper extends AbstractControllerHelper
             
             if ($rawCurrencyModel->load(\Yii::$app->request->post())) {
                 if ($rawCurrencyModel ->validate()) {
-                    if (!empty($currencyArray = self::getCurrency($rawCurrencyModel))) {
-                        SessionHelper::write(\Yii::$app->params['currencyKey'], $currencyArray);
+                    if (!empty($currencyModel = self::getCurrency($rawCurrencyModel['id'], true))) {
+                        SessionHelper::write(\Yii::$app->params['currencyKey'], $currencyModel);
                     }
                 }
             }
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД CurrencyModel
-     * @param object $rawCurrencyModel CurrencyModel
-     * @return array
-     */
-    private static function getCurrency(CurrencyModel $currencyModel): array
-    {
-        try {
-            $currencyQuery = CurrencyModel::find();
-            $currencyQuery->extendSelect(['id', 'code', 'exchange_rate']);
-            $currencyQuery->where(['[[currency.id]]'=>$currencyModel['id']]);
-            $currencyQuery->asArray();
-            $currencyArray = $currencyQuery->one();
-            
-            return $currencyArray ?? [];
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

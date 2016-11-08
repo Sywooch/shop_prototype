@@ -3,11 +3,9 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\ArrayHelper;
 use app\controllers\AbstractControllerHelper;
 use app\exceptions\ExceptionsTrait;
-use app\models\{ProductsModel,
-    PurchasesModel};
+use app\models\PurchasesModel;
 use app\helpers\InstancesHelper;
 
 /**
@@ -30,8 +28,8 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
             $renderArray = InstancesHelper::getInstances();
             
             $renderArray['productsModel'] = self::main();
-            $renderArray['similarList'] = self::similar();
-            $renderArray['relatedList'] = self::related();
+            $renderArray['similarList'] = self::getSimilarProducts(self::$_productsModel, true);
+            $renderArray['relatedList'] = self::getRelatedProducts(self::$_productsModel['id'], true);
             $renderArray['purchasesModel'] = new PurchasesModel(['quantity'=>1]);
             
             self::breadcrumbs();
@@ -49,66 +47,9 @@ class ProductDetailControllerHelper extends AbstractControllerHelper
     private static function main(): array
     {
         try {
-            $productsQuery = ProductsModel::find();
-            $productsQuery->extendSelect(['id', 'code', 'date', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'seocode']);
-            $productsQuery->addSelect(['[[categorySeocode]]'=>'[[categories.seocode]]', '[[categoryName]]'=>'[[categories.name]]', '[[subcategorySeocode]]'=>'[[subcategory.seocode]]', '[[subcategoryName]]'=>'[[subcategory.name]]']);
-            $productsQuery->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
-            $productsQuery->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
-            $productsQuery->where(['[[products.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['productKey'])]);
-            $productsQuery->with(['colors', 'sizes']);
-            $productsQuery->asArray();
-            self::$_productsModel = $productsQuery->one();
+            self::$_productsModel = self::getProduct(\Yii::$app->request->get(\Yii::$app->params['productKey']), true, true, true);
             
             return self::$_productsModel;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД массив ProductsModel похожих товаров
-     * @return array
-     */
-    private static function similar(): array
-    {
-        try {
-            $similarQuery = ProductsModel::find();
-            $similarQuery->extendSelect(['name', 'price', 'images', 'seocode']);
-            $similarQuery->distinct();
-            $similarQuery->where(['!=', '[[products.id]]', self::$_productsModel['id']]);
-            $similarQuery->andWhere(['[[products.id_category]]'=>self::$_productsModel['id_category']]);
-            $similarQuery->andWhere(['[[products.id_subcategory]]'=>self::$_productsModel['id_subcategory']]);
-            $similarQuery->innerJoin('{{products_colors}}', '[[products.id]]=[[products_colors.id_product]]');
-            $similarQuery->andWhere(['[[products_colors.id_color]]'=>ArrayHelper::getColumn(self::$_productsModel['colors'], 'id')]);
-            $similarQuery->innerJoin('{{products_sizes}}', '[[products.id]]=[[products_sizes.id_product]]');
-            $similarQuery->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn(self::$_productsModel['sizes'], 'id')]);
-            $similarQuery->limit(\Yii::$app->params['similarLimit']);
-            $similarQuery->orderBy(['[[products.date]]'=>SORT_DESC]);
-            $similarQuery->asArray();
-            $similarArray = $similarQuery->all();
-            
-            return $similarArray;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Получает из БД массив ProductsModel связанных товаров
-     * @return array
-     */
-    private static function related(): array
-    {
-        try {
-            $relatedQuery = ProductsModel::find();
-            $relatedQuery->extendSelect(['name', 'price', 'images', 'seocode']);
-            $relatedQuery->innerJoin('{{related_products}}', '[[products.id]]=[[related_products.id_related_product]]');
-            $relatedQuery->where(['[[related_products.id_product]]'=>self::$_productsModel['id']]);
-            $relatedQuery->asArray();
-            $relatedArray = $relatedQuery->all();
-            ArrayHelper::multisort($relatedArray, 'date', SORT_DESC);
-            
-            return $relatedArray;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
