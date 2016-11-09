@@ -22,7 +22,6 @@ class ProductDetailController extends AbstractBaseController
                 'modelClass'=>ProductsModel::class,
                 'column'=>'seocode',
                 'view'=>'product-detail.twig',
-                'rememberUrl'=>\Yii::$app->id,
                 'resultName'=>'product',
                 'additions'=>[
                     'purchase'=>[
@@ -46,7 +45,11 @@ class ProductDetailController extends AbstractBaseController
             [
                 'class'=>'app\filters\GetEmptyFilter',
                 'parameter'=>\Yii::$app->params['productKey'],
-                'redirect'=>UrlHelper::previous('shop')
+                'redirect'=>UrlHelper::previous(\Yii::$app->id)
+            ],
+            [
+                'class'=>'app\filters\UrlRememberFilter',
+                'name'=>\Yii::$app->id
             ],
         ];
     }

@@ -4,22 +4,24 @@
 {{ use('app/widgets/CartWidget') }}
 {{ use('app/widgets/ImagesWidget') }}
 {{ use('app/widgets/CategoriesMenuWidget') }}
+{{ use('app/widgets/ProductBreadcrumbsWidget') }}
+{{ use('app/widgets/SeeAlsoWidget') }}
+{{ use('app/widgets/UserInfoWidget') }}
+{{ use('app/widgets/SearchWidget') }}
 
-{% include('@theme/base/user-info.twig') %}
+{{ user_info_widget_widget() }}
 
 {{ cart_widget_widget() }}
 
-{% include '@theme/base/search.twig' %}
+{{ search_widget_widget() }}
 
 {{ categories_menu_widget_widget() }}
 
-{% include('@theme/base/breadcrumbs.twig') %}
+{{ product_breadcrumbs_widget_widget({'model':product}) }}
 
 {% if product %}
     <h1>{{ product.name }}</h1>
-    <p>
-        {{ product.description }}
-    </p>
+    <p>{{ product.description }}</p>
     {% if product.images %}
         <br>{{ images_widget_widget({'path':product.images}) }}
     {% endif %}
@@ -36,37 +38,13 @@
         {% endfor %}
     </ul>
     <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':product.price}) }}</p>
-    <p>
-        <strong>{{ yii.t('base', 'Code:') }}</strong> {{ product.code }}
-    </p>
+    <p><strong>{{ yii.t('base', 'Code:') }}</strong> {{ product.code }}</p>
     
     {% include('add-to-cart-form.twig') %}
-{% endif %}
-
-{% set similar=product.similar %}
-{% if similar %}
-    <p><strong>{{ yii.t('base', 'Similar products:') }}</strong></p>
-    <ul>
-        {% for similar in similar %}
-            <li>
-                <a href="{{ url.to({0:'/product-detail/index', 'id':similar.seocode}) }}">{{ similar.name }}</a><br/>
-                {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':similar.price}) }}
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% set related=product.related %}
-{% if related %}
-    <p><strong>{{ yii.t('base', 'Related products:') }}</strong></p>
-    <ul>
-        {% for related in related %}
-            <li>
-                <a href="{{ url.to({0:'/product-detail/index', 'id':related.seocode}) }}">{{ related.name }}</a><br/>
-                {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':related.price}) }}
-            </li>
-        {% endfor %}
-    </ul>
+    
+    {{ see_also_widget_widget({'data':product.similar, 'text':yii.t('base', 'Similar products:')}) }}
+    
+    {{ see_also_widget_widget({'data':product.related, 'text':yii.t('base', 'Related products:')}) }}
 {% endif %}
 
 

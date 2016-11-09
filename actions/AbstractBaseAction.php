@@ -12,6 +12,9 @@ abstract class AbstractBaseAction extends Action
 {
     use ExceptionsTrait;
     
+    /**
+     * @var array массив данных для передачи в представление
+     */
     protected $_renderArray = [];
     
     public function init()
@@ -33,6 +36,9 @@ abstract class AbstractBaseAction extends Action
         }
     }
     
+    /**
+     * Загружает дополнительные данные, необходимые для рендеринга страницы
+     */
     protected function loadAdditions()
     {
         try {

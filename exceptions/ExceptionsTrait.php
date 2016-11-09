@@ -51,7 +51,7 @@ trait ExceptionsTrait
     }
     
     /**
-     * Конструирует строку сообщения об ошибке
+     * Конструирует строку сообщения об ошибке "Ошибка при вызове метода"
      * @return string
      */
     public static function methodError(string $placeholder): string
@@ -60,11 +60,20 @@ trait ExceptionsTrait
     }
     
     /**
-     * Конструирует строку сообщения об ошибке
+     * Конструирует строку сообщения об ошибке "Отсутствуют необходимые данные"
      * @return string
      */
     public static function emptyError(string $placeholder): string
     {
         return \Yii::t('base/errors', 'Missing required data {placeholder}', ['placeholder'=>$placeholder]);
+    }
+    
+    /**
+     * Конструирует строку сообщения об ошибке "Получен неверный тип данных"
+     * @return string
+     */
+    public static function invalidError(string $placeholder): string
+    {
+        return \Yii::t('base/errors', 'Received invalid data type instead {placeholder}', ['placeholder'=>$placeholder]);
     }
 }

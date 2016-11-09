@@ -27,7 +27,7 @@ $components = [
     ],
     
     'request'=>[
-        'cookieValidationKey'=>md5('Tyre7jh'),
+        'cookieValidationKey'=>sha1(random_bytes(10)),
     ],
     
     'log'=>[

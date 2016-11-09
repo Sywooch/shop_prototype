@@ -5,6 +5,7 @@ namespace app\actions;
 use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
+use yii\db\ActiveRecord;
 use app\actions\AbstractBaseAction;
 
 /**
@@ -13,11 +14,10 @@ use app\actions\AbstractBaseAction;
 class DetailAction extends AbstractBaseAction
 {
     public $modelClass;
-    public $view;
-    public $rememberUrl;
-    public $additions;
     public $column;
+    public $view;
     public $resultName;
+    public $additions = [];
     
     public function run($id)
     {
@@ -25,11 +25,7 @@ class DetailAction extends AbstractBaseAction
             $model = $this->modelClass::findOne([$this->column=>$id]);
             
             if (empty($model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError($modelClass));
-            }
-            
-            if (!empty($this->rememberUrl)) {
-                Url::remember(Url::current(), $this->rememberUrl);
+                throw new ErrorException(ExceptionsTrait::emptyError($this->modelClass));
             }
             
             return $this->controller->render($this->view, ArrayHelper::merge($this->_renderArray, [$this->resultName=>$model]));

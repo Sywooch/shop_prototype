@@ -125,9 +125,9 @@ class ProductsModel extends AbstractBaseModel
             $similarQuery->where(['!=', '[[id]]', $this->id]);
             $similarQuery->andWhere(['[[id_category]]'=>$this->category->id]);
             $similarQuery->andWhere(['[[id_subcategory]]'=>$this->subcategory->id]);
-            $similarQuery->innerJoin('{{products_colors}}', '[[products.id]]=[[products_colors.id_product]]');
+            $similarQuery->innerJoin('{{products_colors}}', '[[products_colors.id_product]]=[[products.id]]');
             $similarQuery->andWhere(['[[products_colors.id_color]]'=>ArrayHelper::getColumn($this->colors, 'id')]);
-            $similarQuery->innerJoin('{{products_sizes}}', '[[products.id]]=[[products_sizes.id_product]]');
+            $similarQuery->innerJoin('{{products_sizes}}', '[[products_sizes.id_product]]=[[products.id]]');
             $similarQuery->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($this->sizes, 'id')]);
             $similarQuery->limit(\Yii::$app->params['similarLimit']);
             $similarArray = $similarQuery->all();
