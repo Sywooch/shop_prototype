@@ -3,6 +3,7 @@
 {{ use('app/widgets/PriceWidget') }}
 {{ use('app/widgets/CartWidget') }}
 {{ use('app/widgets/ImagesWidget') }}
+{{ use('app/widgets/CategoriesMenuWidget') }}
 
 {% include('@theme/base/user-info.twig') %}
 
@@ -10,61 +11,59 @@
 
 {% include '@theme/base/search.twig' %}
 
-{% include('@theme/base/menu.twig') %}
+{{ categories_menu_widget_widget() }}
 
 {% include('@theme/base/breadcrumbs.twig') %}
 
-{% if productsModel %}
-    <h1>{{ productsModel.name }}</h1>
+{% if product %}
+    <h1>{{ product.name }}</h1>
     <p>
-        {{ productsModel.description }}
+        {{ product.description }}
     </p>
-    {% if productsModel.images %}
-        <br>{{ images_widget_widget({'path':productsModel.images}) }}
+    {% if product.images %}
+        <br>{{ images_widget_widget({'path':product.images}) }}
     {% endif %}
     <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
     <ul>
-        {% for color in array.getColumn(productsModel.colors, 'color') %}
+        {% for color in array.getColumn(product.colors, 'color') %}
             <li>{{ color }}</li>
         {% endfor %}
     </ul>
     <p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
     <ul>
-        {% for size in array.getColumn(productsModel.sizes, 'size') %}
+        {% for size in array.getColumn(product.sizes, 'size') %}
             <li>{{ size }}</li>
         {% endfor %}
     </ul>
-    <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':productsModel.price}) }}</p>
+    <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':product.price}) }}</p>
     <p>
-        <strong>{{ yii.t('base', 'Code:') }}</strong> {{ productsModel.code }}
+        <strong>{{ yii.t('base', 'Code:') }}</strong> {{ product.code }}
     </p>
     
     {% include('add-to-cart-form.twig') %}
 {% endif %}
 
-<p>
-    {% include('@theme/base/currency-form.twig') %}
-</p>
-
-{% if similarList %}
+{% set similar=product.similar %}
+{% if similar %}
     <p><strong>{{ yii.t('base', 'Similar products:') }}</strong></p>
     <ul>
-        {% for similarModel in similarList %}
+        {% for similar in similar %}
             <li>
-                <a href="{{ url.to({0:'/product-detail/index', 'product':similarModel.seocode}) }}">{{ similarModel.name }}</a><br/>
-                {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':similarModel.price}) }}
+                <a href="{{ url.to({0:'/product-detail/index', 'id':similar.seocode}) }}">{{ similar.name }}</a><br/>
+                {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':similar.price}) }}
             </li>
         {% endfor %}
     </ul>
 {% endif %}
 
-{% if relatedList %}
+{% set related=product.related %}
+{% if related %}
     <p><strong>{{ yii.t('base', 'Related products:') }}</strong></p>
     <ul>
-        {% for relatedModel in relatedList %}
+        {% for related in related %}
             <li>
-                <a href="{{ url.to({0:'/product-detail/index', 'product':relatedModel.seocode}) }}">{{ relatedModel.name }}</a><br/>
-                {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':relatedModel.price}) }}
+                <a href="{{ url.to({0:'/product-detail/index', 'id':related.seocode}) }}">{{ related.name }}</a><br/>
+                {{ yii.t('base', 'Price:') }} {{ price_widget_widget({'price':related.price}) }}
             </li>
         {% endfor %}
     </ul>

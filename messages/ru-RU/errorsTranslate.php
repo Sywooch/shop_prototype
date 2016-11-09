@@ -10,7 +10,8 @@ $translate = [
     'Data processing error!'=>'Ошибка обработки данных!',
     'Page temporarily unavailable!'=>'Страница временно недоступна!',
     'Creating product error!'=>'Ошибка при создании товара!',
-    'Error in password recovery!'=>'Ошибка при восстановлении пароля!'
+    'Error in password recovery!'=>'Ошибка при восстановлении пароля!',
+    'Missing required data {placeholder}', 'Отсутствуют необходимые данные {placeholder}'
 ];
 
 return $translate;

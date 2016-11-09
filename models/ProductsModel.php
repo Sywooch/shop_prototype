@@ -3,6 +3,7 @@
 namespace app\models;
 
 use yii\base\ErrorException;
+use yii\helpers\ArrayHelper;
 use app\models\{AbstractBaseModel,
     CategoriesModel,
     SizesModel,
@@ -23,23 +24,6 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий сохранения данных из формы добавления товара в корзину
     */
     const GET_FROM_ADD_TO_CART = 'getFromAddToCart';
-    
-    /**
-     * @var string $categoryName название категории для breadcrumbs
-     */
-    public $categoryName;
-    /**
-     * @var string $categorySeocode seocode категории для breadcrumbs
-     */
-    public $categorySeocode;
-    /**
-     * @var string $subcategoryName название подкатегории для breadcrumbs
-     */
-    public $subcategoryName;
-    /**
-     * @var string $subcategorySeocode seocode подкатегории для breadcrumbs
-     */
-    public $subcategorySeocode;
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -124,6 +108,49 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             return $this->hasMany(SizesModel::class, ['id'=>'id_size'])->viaTable('products_sizes', ['id_product'=>'id']);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив ProductsModel похожих продуктов 
+     * @return array
+     */
+    public function getSimilar(): array
+    {
+        try {
+            $similarQuery = self::find();
+            $similarQuery->distinct();
+            $similarQuery->where(['!=', '[[id]]', $this->id]);
+            $similarQuery->andWhere(['[[id_category]]'=>$this->category->id]);
+            $similarQuery->andWhere(['[[id_subcategory]]'=>$this->subcategory->id]);
+            $similarQuery->innerJoin('{{products_colors}}', '[[products.id]]=[[products_colors.id_product]]');
+            $similarQuery->andWhere(['[[products_colors.id_color]]'=>ArrayHelper::getColumn($this->colors, 'id')]);
+            $similarQuery->innerJoin('{{products_sizes}}', '[[products.id]]=[[products_sizes.id_product]]');
+            $similarQuery->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($this->sizes, 'id')]);
+            $similarQuery->limit(\Yii::$app->params['similarLimit']);
+            $similarArray = $similarQuery->all();
+            
+            return $similarArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив ProductsModel связанных продуктов 
+     * @return array
+     */
+    public function getRelated(): array
+    {
+        try {
+            $relatedQuery = self::find();
+            $relatedQuery->innerJoin('{{related_products}}', '[[related_products.id_related_product]]=[[products.id]]');
+            $relatedQuery->where(['[[related_products.id_product]]'=>$this->id]);
+            $relatedArray = $relatedQuery->all();
+            
+            return $relatedArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -4,7 +4,9 @@ namespace app\widgets;
 
 use yii\base\ErrorException;
 use yii\widgets\Menu;
+use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
+use app\models\CategoriesModel;
 
 /**
  * Формирует меню
@@ -38,6 +40,15 @@ class CategoriesMenuWidget extends Menu
     {
         try {
             parent::init();
+            
+            # Массив объектов CategoriesModel для формирования меню категорий
+            $categoriesQuery = CategoriesModel::find();
+            $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
+            $categoriesQuery->with('subcategory');
+            $categoriesQuery->asArray();
+            $categoriesArray = $categoriesQuery->all();
+            ArrayHelper::multisort($categoriesArray, 'name', SORT_ASC);
+            $this->categoriesList = $categoriesArray;
             
             $this->setItems();
         } catch (\Throwable $t) {

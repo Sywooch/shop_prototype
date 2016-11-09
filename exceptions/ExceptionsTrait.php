@@ -58,4 +58,13 @@ trait ExceptionsTrait
     {
         return \Yii::t('base/errors', 'Method error {placeholder}', ['placeholder'=>$placeholder]);
     }
+    
+    /**
+     * Конструирует строку сообщения об ошибке
+     * @return string
+     */
+    public static function emptyError(string $placeholder): string
+    {
+        return \Yii::t('base/errors', 'Missing required data {placeholder}', ['placeholder'=>$placeholder]);
+    }
 }

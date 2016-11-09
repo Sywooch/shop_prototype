@@ -20,7 +20,7 @@
     {% for productsModel in productsList %}
         {% if productsModel.active %}
             <li>
-                <a href="{{ url.to({0:'product-detail/index', 'product':productsModel.seocode}) }}">{{ productsModel.name }}</a>
+                <a href="{{ url.to({0:'product-detail/index', 'id':productsModel.seocode}) }}">{{ productsModel.name }}</a>
                 {% if productsModel.short_description %}
                     <br>{{ productsModel.short_description }}
                 {% endif %}

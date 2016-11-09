@@ -32,7 +32,8 @@ class ProductsModelTests extends TestCase
                 'brands'=>'app\tests\sources\fixtures\BrandsFixture',
                 'products_colors'=>'app\tests\sources\fixtures\ProductsColorsFixture',
                 'sizes'=>'app\tests\sources\fixtures\SizesFixture',
-                'products_sizes'=>'app\tests\sources\fixtures\ProductsSizesFixture'
+                'products_sizes'=>'app\tests\sources\fixtures\ProductsSizesFixture',
+                'related_products'=>'app\tests\sources\fixtures\RelatedProductsFixture',
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -47,11 +48,6 @@ class ProductsModelTests extends TestCase
     {
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
         $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_TO_CART'));
-        
-        $this->assertTrue(self::$_reflectionClass->hasProperty('categoryName'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('categorySeocode'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('subcategoryName'));
-        $this->assertTrue(self::$_reflectionClass->hasProperty('subcategorySeocode'));
         
         $model = new ProductsModel();
         
@@ -477,6 +473,34 @@ class ProductsModelTests extends TestCase
         
         $this->assertTrue(is_array($model->sizes));
         $this->assertTrue($model->sizes[0] instanceof SizesModel);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getSimilar
+     */
+    public function testGetSimilar()
+    {
+        $fixture = self::$_dbClass->products['product_1'];
+        
+        $model = ProductsModel::findOne($fixture['id']);
+        
+        $this->assertTrue(is_array($model->similar));
+        $this->assertFalse(empty($model->similar));
+        $this->assertTrue($model->similar[0] instanceof ProductsModel);
+    }
+    
+     /**
+     * Тестирует метод ProductsModel::getRelated
+     */
+    public function testGetRelated()
+    {
+        $fixture = self::$_dbClass->products['product_1'];
+        
+        $model = ProductsModel::findOne($fixture['id']);
+        
+        $this->assertTrue(is_array($model->related));
+        $this->assertFalse(empty($model->related));
+        $this->assertTrue($model->related[0] instanceof ProductsModel);
     }
     
     private function productsListQuery(array $extraWhere=[])

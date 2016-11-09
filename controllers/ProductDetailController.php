@@ -3,34 +3,35 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
 use app\controllers\AbstractBaseController;
 use app\helpers\UrlHelper;
+use app\actions\DetailAction;
+use app\models\{ProductsModel,
+    PurchasesModel};
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
  */
 class ProductDetailController extends AbstractBaseController
 {
-    /**
-     * Обрабатывает запрос к 1 продукту
-     */
-    public function actionIndex()
+    public function actions()
     {
-        try {
-            if (empty(\Yii::$app->request->get(\Yii::$app->params['productKey']))) {
-                return $this->redirect(UrlHelper::previous('shop'));
-            }
-            
-            $renderArray = ProductDetailControllerHelper::indexGet();
-            
-            Url::remember(Url::current(), 'shop');
-            
-            return $this->render('product-detail.twig', $renderArray);
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
-        }
+        return [
+            'index'=>[
+                'class'=>DetailAction::class,
+                'modelClass'=>ProductsModel::class,
+                'column'=>'seocode',
+                'view'=>'product-detail.twig',
+                'rememberUrl'=>\Yii::$app->id,
+                'resultName'=>'product',
+                'additions'=>[
+                    'purchase'=>[
+                        'class'=>PurchasesModel::class,
+                        'quantity'=>1,
+                    ],
+                ],
+            ],
+        ];
     }
     
     public function behaviors()
@@ -41,6 +42,11 @@ class ProductDetailController extends AbstractBaseController
             ],
             [
                 'class'=>'app\filters\CartFilter',
+            ],
+            [
+                'class'=>'app\filters\GetEmptyFilter',
+                'parameter'=>\Yii::$app->params['productKey'],
+                'redirect'=>UrlHelper::previous('shop')
             ],
         ];
     }

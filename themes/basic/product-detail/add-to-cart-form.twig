@@ -1,9 +1,9 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 {% set form=active_form_begin({'id':'add-to-cart-form', 'action':url.to({0:'/cart/set'}), 'method':'POST'}) %}
-    {{ form.field(purchasesModel, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
-    {{ form.field(purchasesModel, 'id_color').dropDownList(array.map(productsModel.colors, 'id', 'color')) | raw }}
-    {{ form.field(purchasesModel, 'id_size').dropDownList(array.map(productsModel.sizes, 'id', 'size')) | raw }}
-    {{ form.field(purchasesModel, 'id_product').hiddenInput({'value':productsModel.id}).label(false) | raw }}
+    {{ form.field(purchase, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
+    {{ form.field(purchase, 'id_color').dropDownList(array.map(product.colors, 'id', 'color')) | raw }}
+    {{ form.field(purchase, 'id_size').dropDownList(array.map(product.sizes, 'id', 'size')) | raw }}
+    {{ form.field(purchase, 'id_product').hiddenInput({'value':product.id}).label(false) | raw }}
     <input type="submit" value="{{ yii.t('base', 'Add to cart') }}">
 {{ active_form_end() }}
