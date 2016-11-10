@@ -18,9 +18,17 @@ class CartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var bool нужно ли добавлять ссылку на корзину
+     * @var string имя класса для построения запроса
      */
-    public $toCart = true;
+    public $modelClass = ProductsModel::class;
+    /**
+     * @var array имена полей для форматирования результата в виде $key=>$value
+     */
+    public $map = ['key'=>'id', 'value'=>'price'];
+    /**
+     * @var string имя HTML шаблона
+     */
+    public $view = 'short-cart.twig';
     /**
      * @var int количество товаров в корзине
      */
@@ -29,10 +37,6 @@ class CartWidget extends Widget
      * @var float общая стоимость товаров в корзине
      */
     private $_totalCost = 0;
-    /**
-     * @var array массив результирующих строк
-     */
-    private $_result = [];
     
     /**
      * Конструирует HTML строку с информацией о текущем статусе корзины заказов
@@ -42,35 +46,19 @@ class CartWidget extends Widget
     {
         try {
             if (!empty(\Yii::$app->params['cartArray'])) {
-                $productsQuery = ProductsModel::find();
-                $productsQuery->extendSelect(['id', 'price']);
-                $productsQuery->where(['[[products.id]]'=>ArrayHelper::getColumn(\Yii::$app->params['cartArray'], 'id_product')]);
-                $productsQuery->asArray();
-                $productsArray = $productsQuery->all();
-                $productsArray = ArrayHelper::map($productsArray, 'id', 'price');
+                $productsArray = $this->modelClass::find()->addCriteria()->map($this->map['key'], $this->map['value'])->all();
                 
                 foreach (\Yii::$app->params['cartArray'] as $purchase) {
                     $this->_productsCount += $purchase['quantity'];
                     $this->_totalCost += ($productsArray[$purchase['id_product']] * $purchase['quantity']);
                 }
-                
-                $toCart = Html::a(\Yii::t('base', 'To cart'), Url::to(['/cart/index']));
             }
             
             if (!empty(\Yii::$app->currency->exchange_rate) && !empty(\Yii::$app->currency->code)) {
                 $this->_totalCost = \Yii::$app->formatter->asDecimal($this->_totalCost * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
             }
             
-            $text = \Yii::t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', ['productsCount'=>$this->_productsCount, 'totalCost'=>$this->_totalCost]);
-            $text .= ($this->toCart && isset($toCart)) ? ' ' . $toCart : '';
-            $this->_result[] = Html::tag('p', $text);
-            
-            $form = Html::beginForm(Url::to(['/cart/clean']), 'POST', ['id'=>'clean-cart-form']);
-            $form .= Html::submitButton(\Yii::t('base', 'Clean'), !isset($toCart) ? ['disabled'=>true] : []);
-            $form .= Html::endForm();
-            $this->_result[] = $form;
-            
-            return !empty($this->_result) ? Html::tag('div', implode('', $this->_result), ['id'=>'cart']) : '';
+            return $this->render($this->view, ['productsCount'=>$this->_productsCount, 'totalCost'=>$this->_totalCost]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

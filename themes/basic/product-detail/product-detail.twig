@@ -8,10 +8,9 @@
 {{ use('app/widgets/SeeAlsoWidget') }}
 {{ use('app/widgets/UserInfoWidget') }}
 {{ use('app/widgets/SearchWidget') }}
+{{ use('app/widgets/CurrencyWidget') }}
 
 {{ user_info_widget_widget() }}
-
-{{ cart_widget_widget() }}
 
 {{ search_widget_widget() }}
 
@@ -40,7 +39,9 @@
     <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':product.price}) }}</p>
     <p><strong>{{ yii.t('base', 'Code:') }}</strong> {{ product.code }}</p>
     
-    {% include('add-to-cart-form.twig') %}
+    {% include('@theme/product-detail/add-to-cart-form.twig') %}
+    
+    {{ currency_widget_widget(currency) }}
     
     {{ see_also_widget_widget({'data':product.similar, 'text':yii.t('base', 'Similar products:')}) }}
     

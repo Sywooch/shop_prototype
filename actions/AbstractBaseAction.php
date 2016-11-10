@@ -43,7 +43,7 @@ abstract class AbstractBaseAction extends Action
     {
         try {
             foreach ($this->additions as $name=>$addition) {
-                if (is_array($addition)) {
+                if (is_array($addition) && array_key_exists('class', $addition)) {
                     $addition = \Yii::createObject($addition);
                 }
                 $this->_renderArray[$name] = $addition;

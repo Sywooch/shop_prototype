@@ -1,0 +1,11 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<div id="cart">
+    <p>{{ yii.t('base', 'Products in cart: {productsCount}, Total cost: {totalCost}', {'productsCount':productsCount, 'totalCost':totalCost}) }} {% if productsCount > 0 %}<a href="{{ url.to({0:'/cart/index'}) }}">{{ yii.t('base', 'To cart') }}</a>{% endif %}</p>
+    
+    {% if productsCount > 0 %}
+        {% set form=active_form_begin({'id':'clean-cart-form', 'action':url.to({0:'/cart/clean'}), 'method':'POST'}) %}
+            <input type="submit" value="{{ yii.t('base', 'Clean') }}">
+        {{ active_form_end() }}
+    {% endif %}
+</div>

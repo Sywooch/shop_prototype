@@ -6,7 +6,8 @@ use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\helpers\UrlHelper;
 use app\actions\DetailAction;
-use app\models\{ProductsModel,
+use app\models\{CurrencyModel,
+    ProductsModel,
     PurchasesModel};
 
 /**
@@ -27,6 +28,13 @@ class ProductDetailController extends AbstractBaseController
                     'purchase'=>[
                         'class'=>PurchasesModel::class,
                         'quantity'=>1,
+                    ],
+                    'currency'=>[
+                        'modelClass'=>CurrencyModel::class,
+                        'scenario'=>'getFromChangeCurrency',
+                        'format'=>['map', 'key'=>'id', 'value'=>'code'],
+                        'sorting'=>['asort'],
+                        'view'=>'currency-form.twig',
                     ],
                 ],
             ],

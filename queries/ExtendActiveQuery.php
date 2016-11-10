@@ -7,6 +7,7 @@ use yii\db\ActiveQuery;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
+use app\helpers\Formatter;
 
 /**
  * Расширяет класс ActiveQuery
@@ -19,6 +20,21 @@ class ExtendActiveQuery extends ActiveQuery
      * @var object yii\data\Pagination
      */
     private $_paginator = null;
+    
+    /* -------------------------------------------------------------------------------------- */
+    
+    /**
+     * Данные, полученные из БД
+     */
+    private $_result = null;
+    /**
+     * Массив настроек для применения форматирования к рузультатам запроса
+     */
+    private $_formatConfig = [];
+    /**
+     * Массив настроек для применения метода ArrayHelper::map к рузультату запроса
+     */
+    private $_afterSortConfig = [];
     
     /**
      * Добавляет ограничения по условиям OFFSET LIMIT
@@ -110,6 +126,78 @@ class ExtendActiveQuery extends ActiveQuery
     {
         try {
             return $this->_paginator;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /* -------------------------------------------------------------------------------------- */
+    
+    /**
+     * Сохраняет настройки форматирования, которое будет применено к данным из БД
+     */
+    public function format(array $config)
+    {
+        try {
+            $this->_formatConfig = $config;
+            
+            return $this;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Устанавливает тип сортировки результатов выборки
+     * @return ActiveQuery
+     */
+    public function afterSort(): ActiveQuery
+    {
+        try {
+            if (!empty($this->_mapConfig)) {
+                $this->_afterSortConfig = ['type'=>'asort'];
+            }
+            
+            return $this;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Сортирует результаты выборки
+     */
+    private function runAfterSort()
+    {
+        try {
+            switch ($this->_afterSortConfig['type']) {
+                case 'asort':
+                    asort($this->_result, SORT_STRING);
+                    break;
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Расширяет метод ActiveQuery::all
+     * @return array
+     */
+    public function all($db=null): array
+    {
+        try {
+            $this->_result = parent::all($db);
+            
+            if (!empty($this->_formatConfig)) {
+                $this->_result = Formatter::setFormat($this->_result, $this->_formatConfig);
+            }
+            
+            if (!empty($this->_afterSortConfig)) {
+                $this->runAfterSort();
+            }
+            
+            return $this->_result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
