@@ -121,6 +121,10 @@ $components = [
     'currency'=>[
         'class'=>'app\models\CurrencyModel',
     ],
+    
+    'cart'=>[
+        'class'=>'app\models\CartModel',
+    ],
 ];
 
 return $components;

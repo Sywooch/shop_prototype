@@ -116,9 +116,7 @@ class CartControllerHelper extends AbstractControllerHelper
             $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_ADD_TO_CART]);
             
             if ($rawPurchasesModel->load(\Yii::$app->request->post())) {
-                if ($rawPurchasesModel->validate()) {
-                    self::write($rawPurchasesModel->toArray());
-                }
+                \Yii::$app->cart->add($rawPurchasesModel);
             }
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);

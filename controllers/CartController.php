@@ -40,9 +40,14 @@ class CartController extends AbstractBaseController
     public function actionSet()
     {
         try {
-            if (\Yii::$app->request->isAjax) {
+            /*if (\Yii::$app->request->isAjax) {
                 return CartControllerHelper::setAjax();
+            }*/
+            if (\Yii::$app->request->isPost) {
+                CartControllerHelper::setPost();
             }
+            
+            return $this->redirect(\yii\helpers\Url::previous(\Yii::$app->id));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

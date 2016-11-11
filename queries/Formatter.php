@@ -1,6 +1,6 @@
 <?php
 
-namespace app\helpers;
+namespace app\queries;
 
 use yii\base\Object;
 use yii\helpers\ArrayHelper;
@@ -16,9 +16,11 @@ class Formatter extends Object
     private static $_data;
     
     /**
-     * Парсит массив конфигурации форматирования и вызыват соответствующие настройкам методы
+     * Парсит массив конфигурации форматирования и вызыват соответствующие методы
+     * @param $data данные, которые будут форматированы
+     * @param array $config массив установок для форматтеров
      */
-    public static function setFormat($data, array $config)
+    public static function setFormat($data, array $config=[])
     {
         try {
             self::$_data = $data;
@@ -31,13 +33,13 @@ class Formatter extends Object
             
             return self::$_data;
         } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
     
     /**
      * Форматирует данные с помощью метода ArrayHelper::map
-     * @param array $task массив данных для форматирования
+     * @param array $config массив установок для форматирования
      * - $key имя поля, которое станет ключом
      * - $value имя поля, которое станет значением
      */
@@ -48,7 +50,7 @@ class Formatter extends Object
                 self::$_data = ArrayHelper::map(self::$_data, $config['key'], $config['value']);
             }
         } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
 }

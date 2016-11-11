@@ -24,7 +24,11 @@ class CartFilter extends ActionFilter
     {
         try {
             $cartKey = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-            \Yii::$app->params['cartArray'] = SessionHelper::read($cartKey) ?? [];
+            $cartArray = SessionHelper::read($cartKey);
+            
+            if (!empty($cartArray)) {
+                \Yii::$app->cart->setPurchases($cartArray);
+            }
             
             return parent::beforeAction($action);
         } catch (\Throwable $t) {

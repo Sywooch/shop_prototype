@@ -3,12 +3,15 @@
 namespace app\models;
 
 use yii\base\Model;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные, полученные из формы фильтров
  */
 class FiltersModel extends Model
 {
+    use ExceptionsTrait;
+    
     /**
      * Сценарий загрузки из формы
     */

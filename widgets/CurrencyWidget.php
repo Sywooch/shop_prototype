@@ -4,6 +4,7 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
+use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -14,38 +15,32 @@ class CurrencyWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var string имя класса для построения запроса и создания экземпляра модели
+     * @var string имя класса для построения запроса
      */
     public $modelClass;
+    /**
+     * @var object ActiveRecord, получает и хранит выбранную валюту
+     */
+    public $model;
     /**
      * @var string имя сценария модели
      */
     public $scenario;
     /**
-     * @var array настройки форматирования результата запроса
+     * @var array настройки пост форматирования результата запроса
      */
-    public $format = [];
-    /**
-     * @var array настройки сортировки результата запроса
-     */
-    public $sorting = [];
+    public $postFormatting = [];
     /**
      * @var string имя HTML шаблона
      */
     public $view;
-    /**
-     * @var array массив валют, полученный из БД
-     */
-    private $_currencyArray = [];
-    /**
-     * @var object CurrencyWidget::modelClass
-     */
-    private $model;
     
-    public function init()
+    public function run()
     {
         try {
-            $this->_currencyArray = $this->modelClass::find()->format($this->format)->all();
+            $currencyArray = $this->modelClass::find()->all();
+            $currencyArray = ArrayHelper::map($currencyArray, $this->postFormatting['key'], $this->postFormatting['value']);
+            asort($currencyArray, SORT_STRING);
             
             $this->model = new $this->modelClass();
             $this->model->setScenario($this->scenario);
@@ -53,16 +48,9 @@ class CurrencyWidget extends Widget
             if (!empty(\Yii::$app->currency)) {
                 $this->model = \Yii::configure($this->model, \Yii::$app->currency->toArray());
             }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function run()
-    {
-        try {
-            if (!empty($this->_currencyArray) && !empty($this->model)) {
-                return $this->render($this->view, ['currency'=>$this->model, 'currencyList'=>$this->_currencyArray]);
+            
+            if (!empty($currencyArray) && !empty($this->model)) {
+                return $this->render($this->view, ['currency'=>$this->model, 'currencyList'=>$currencyArray]);
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

@@ -7,7 +7,8 @@ use yii\db\ActiveQuery;
 use yii\data\Pagination;
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\helpers\Formatter;
+use app\queries\{Formatter,
+    Sorter};
 
 /**
  * Расширяет класс ActiveQuery
@@ -32,9 +33,9 @@ class ExtendActiveQuery extends ActiveQuery
      */
     private $_formatConfig = [];
     /**
-     * Массив настроек для применения метода ArrayHelper::map к рузультату запроса
+     * Массив настроек для применения сортировки к рузультатам запроса
      */
-    private $_afterSortConfig = [];
+    private $_sortConfig = [];
     
     /**
      * Добавляет ограничения по условиям OFFSET LIMIT
@@ -134,9 +135,11 @@ class ExtendActiveQuery extends ActiveQuery
     /* -------------------------------------------------------------------------------------- */
     
     /**
-     * Сохраняет настройки форматирования, которое будет применено к данным из БД
+     * Сохраняет настройки форматирования
+     * @param array $config массив настроек форматирования
+     * @return ActiveQuery
      */
-    public function format(array $config)
+    public function format(array $config): ActiveQuery
     {
         try {
             $this->_formatConfig = $config;
@@ -148,33 +151,16 @@ class ExtendActiveQuery extends ActiveQuery
     }
     
     /**
-     * Устанавливает тип сортировки результатов выборки
+     * Сохраняет настройки сортировки
+     * @param array $config массив настроек сортировки
      * @return ActiveQuery
      */
-    public function afterSort(): ActiveQuery
+    public function sort(array $config): ActiveQuery
     {
         try {
-            if (!empty($this->_mapConfig)) {
-                $this->_afterSortConfig = ['type'=>'asort'];
-            }
+            $this->_sortConfig = $config;
             
             return $this;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Сортирует результаты выборки
-     */
-    private function runAfterSort()
-    {
-        try {
-            switch ($this->_afterSortConfig['type']) {
-                case 'asort':
-                    asort($this->_result, SORT_STRING);
-                    break;
-            }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -193,8 +179,8 @@ class ExtendActiveQuery extends ActiveQuery
                 $this->_result = Formatter::setFormat($this->_result, $this->_formatConfig);
             }
             
-            if (!empty($this->_afterSortConfig)) {
-                $this->runAfterSort();
+            if (!empty($this->_sortConfig)) {
+                $this->_result = Sorter::setSorting($this->_result, $this->_sortConfig);
             }
             
             return $this->_result;

@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
+use yii\helpers\ArrayHelper;
 use app\controllers\AbstractBaseController;
 use app\helpers\UrlHelper;
 use app\actions\DetailAction;
@@ -32,9 +33,11 @@ class ProductDetailController extends AbstractBaseController
                     'currency'=>[
                         'modelClass'=>CurrencyModel::class,
                         'scenario'=>'getFromChangeCurrency',
-                        'format'=>['map', 'key'=>'id', 'value'=>'code'],
-                        'sorting'=>['asort'],
+                        'postFormatting'=>['key'=>'id', 'value'=>'code'],
                         'view'=>'currency-form.twig',
+                    ],
+                    'cart'=>[
+                        'view'=>'short-cart.twig',
                     ],
                 ],
             ],

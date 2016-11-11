@@ -14,7 +14,7 @@ class ProductDetailAsset extends AbstractAsset
      * содержащиеся в данном комплекте
      */
     public $js = [
-        'js/setCart.js',
+        //'js/setCart.js',
     ];
     /**
      * @var array зависимости пакета

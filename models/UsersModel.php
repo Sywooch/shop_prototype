@@ -119,6 +119,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
             'id_postcode'=>'id_postcode',
         ];
     }
+    
     public function extraFields()
     {
         return [
