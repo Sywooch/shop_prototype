@@ -5,30 +5,54 @@ namespace app\actions;
 use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
-use yii\db\ActiveRecord;
 use app\actions\AbstractBaseAction;
+use app\interfaces\FinderSearchInterface;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Обрабатывает запрос на вывод 1 записи
  */
 class DetailAction extends AbstractBaseAction
 {
-    public $modelClass;
-    public $column;
+    /**
+     * @var object FinderSearchInterface для поиска данных по запросу
+     */
+    private $finderClass;
+    /**
+     * @var string сценарий поиска
+     */
+    public $finderScenario;
+    /**
+     * @var string имя HTML шаблона
+     */
     public $view;
-    public $resultName;
+    /**
+     * @var array массив дополнительных данных, которые будут доступны в шаблоне
+     */
     public $additions = [];
     
-    public function run($id)
+    public function run()
     {
         try {
-            $model = $this->modelClass::findOne([$this->column=>$id]);
+            $model = $this->finderClass->search($this->finderScenario, \Yii::$app->request->get());
             
             if (empty($model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError($this->modelClass));
+                throw new ErrorException(ExceptionsTrait::emptyError('$model'));
             }
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->_renderArray, [$this->resultName=>$model]));
+            Url::remember(Url::current(), \Yii::$app->id);
+            
+            return $this->controller->render($this->view, ArrayHelper::merge($this->_renderArray, ['model'=>$model]));
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function setFinderClass(FinderSearchInterface $finderClass)
+    {
+        try {
+            $this->finderClass = $finderClass;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

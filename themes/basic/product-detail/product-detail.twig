@@ -18,36 +18,36 @@
 
 {{ categories_menu_widget_widget() }}
 
-{{ product_breadcrumbs_widget_widget({'model':product}) }}
+{{ product_breadcrumbs_widget_widget({'model':model}) }}
 
-{% if product %}
-    <h1>{{ product.name }}</h1>
-    <p>{{ product.description }}</p>
-    {% if product.images %}
-        <br>{{ images_widget_widget({'path':product.images}) }}
+{% if model %}
+    <h1>{{ model.name }}</h1>
+    <p>{{ model.description }}</p>
+    {% if model.images %}
+        <br>{{ images_widget_widget({'path':model.images}) }}
     {% endif %}
     <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
     <ul>
-        {% for color in array.getColumn(product.colors, 'color') %}
+        {% for color in array.getColumn(model.colors, 'color') %}
             <li>{{ color }}</li>
         {% endfor %}
     </ul>
     <p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
     <ul>
-        {% for size in array.getColumn(product.sizes, 'size') %}
+        {% for size in array.getColumn(model.sizes, 'size') %}
             <li>{{ size }}</li>
         {% endfor %}
     </ul>
-    <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':product.price}) }}</p>
-    <p><strong>{{ yii.t('base', 'Code:') }}</strong> {{ product.code }}</p>
+    <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':model.price}) }}</p>
+    <p><strong>{{ yii.t('base', 'Code:') }}</strong> {{ model.code }}</p>
     
     {% include('@theme/product-detail/add-to-cart-form.twig') %}
     
     {{ currency_widget_widget(currency) }}
     
-    {{ see_also_widget_widget({'data':product.similar, 'text':yii.t('base', 'Similar products:')}) }}
+    {{ see_also_widget_widget({'data':model.similar, 'text':yii.t('base', 'Similar products:')}) }}
     
-    {{ see_also_widget_widget({'data':product.related, 'text':yii.t('base', 'Related products:')}) }}
+    {{ see_also_widget_widget({'data':model.related, 'text':yii.t('base', 'Related products:')}) }}
 {% endif %}
 
 

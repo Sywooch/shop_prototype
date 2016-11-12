@@ -4,8 +4,8 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
-use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
+use app\interfaces\FinderSearchInterface;
 
 /**
  * Формирует HTML строку с формой выбора валюты
@@ -15,21 +15,13 @@ class CurrencyWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var string имя класса для построения запроса
+     * @var object FinderSearchInterface для поиска данных по запросу
      */
-    public $modelClass;
+    private $finderClass;
     /**
-     * @var object ActiveRecord, получает и хранит выбранную валюту
+     * @var string сценарий поиска
      */
-    public $model;
-    /**
-     * @var string имя сценария модели
-     */
-    public $scenario;
-    /**
-     * @var array настройки пост форматирования результата запроса
-     */
-    public $postFormatting = [];
+    public $finderScenario;
     /**
      * @var string имя HTML шаблона
      */
@@ -38,21 +30,24 @@ class CurrencyWidget extends Widget
     public function run()
     {
         try {
-            $currencyArray = $this->modelClass::find()->all();
-            $currencyArray = ArrayHelper::map($currencyArray, $this->postFormatting['key'], $this->postFormatting['value']);
-            asort($currencyArray, SORT_STRING);
+            $currencyArray = $this->finderClass->search($this->finderScenario);
             
-            $this->model = new $this->modelClass();
-            $this->model->setScenario($this->scenario);
-            
-            if (!empty(\Yii::$app->currency)) {
-                $this->model = \Yii::configure($this->model, \Yii::$app->currency->toArray());
+            if (empty($currencyArray)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$currencyArray'));
             }
             
-            if (!empty($currencyArray) && !empty($this->model)) {
-                return $this->render($this->view, ['currency'=>$this->model, 'currencyList'=>$currencyArray]);
-            }
+            return $this->render($this->view, ['currencyArray'=>$currencyArray]);
         } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function setFinderClass(FinderSearchInterface $finderClass)
+    {
+        try {
+            $this->finderClass = $finderClass;
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
     }

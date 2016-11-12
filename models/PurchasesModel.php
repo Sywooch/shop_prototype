@@ -51,52 +51,6 @@ class PurchasesModel extends AbstractBaseModel
         ];
     }
     
-    public function fields()
-    {
-        return [
-            'id',
-            'id_user',
-            'id_name',
-            'id_surname',
-            'id_email',
-            'id_phone',
-            'id_address',
-            'id_city',
-            'id_country',
-            'id_postcode',
-            'id_product', 
-            'id_color', 
-            'id_size', 
-            'id_delivery', 
-            'id_payment', 
-            'received', 
-            'received_date',
-            'processed', 
-            'canceled', 
-            'shipped', 
-        ];
-    }
-    
-    public function extraFields()
-    {
-        return [
-            'quantity',
-        ];
-    }
-    
-    /**
-     * Возвращает массив данных для построения хэша
-     * @return array
-     */
-    public function toHash(): array
-    {
-        try {
-            return $this->toArray();
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     /**
      * Получает объект ProductsModel, с которым связан текущий объект PurchasesModel
      * @return ActiveQueryInterface the relational query object

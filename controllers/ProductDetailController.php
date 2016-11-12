@@ -7,8 +7,8 @@ use yii\helpers\ArrayHelper;
 use app\controllers\AbstractBaseController;
 use app\helpers\UrlHelper;
 use app\actions\DetailAction;
-use app\models\{CurrencyModel,
-    ProductsModel,
+use app\models\{CurrencyFinder,
+    ProductsFinder,
     PurchasesModel};
 
 /**
@@ -21,19 +21,17 @@ class ProductDetailController extends AbstractBaseController
         return [
             'index'=>[
                 'class'=>DetailAction::class,
-                'modelClass'=>ProductsModel::class,
-                'column'=>'seocode',
+                'finderClass'=>new ProductsFinder(),
+                'finderScenario'=>'detail',
                 'view'=>'product-detail.twig',
-                'resultName'=>'product',
                 'additions'=>[
                     'purchase'=>[
                         'class'=>PurchasesModel::class,
                         'quantity'=>1,
                     ],
                     'currency'=>[
-                        'modelClass'=>CurrencyModel::class,
-                        'scenario'=>'getFromChangeCurrency',
-                        'postFormatting'=>['key'=>'id', 'value'=>'code'],
+                        'finderClass'=>new CurrencyFinder(),
+                        'finderScenario'=>'widget',
                         'view'=>'currency-form.twig',
                     ],
                     'cart'=>[
@@ -52,15 +50,6 @@ class ProductDetailController extends AbstractBaseController
             ],
             [
                 'class'=>'app\filters\CartFilter',
-            ],
-            [
-                'class'=>'app\filters\GetEmptyFilter',
-                'parameter'=>\Yii::$app->params['productKey'],
-                'redirect'=>UrlHelper::previous(\Yii::$app->id)
-            ],
-            [
-                'class'=>'app\filters\UrlRememberFilter',
-                'name'=>\Yii::$app->id
             ],
         ];
     }

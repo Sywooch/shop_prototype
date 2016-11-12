@@ -22,10 +22,6 @@ abstract class AbstractBaseAction extends Action
         try {
             parent::init();
             
-            if (empty($this->resultName)) {
-                $this->resultName = $this->modelClass::tableName();
-            }
-            
             if (!empty($this->additions)) {
                 $this->loadAdditions();
             }

@@ -6,6 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
 use app\models\{AbstractBaseModel,
     CategoriesModel,
+    ProductsFinder,
     SizesModel,
     SubcategoryModel};
 use app\helpers\PicturesHelper;
@@ -120,19 +121,7 @@ class ProductsModel extends AbstractBaseModel
     public function getSimilar(): array
     {
         try {
-            $similarQuery = self::find();
-            $similarQuery->distinct();
-            $similarQuery->where(['!=', '[[id]]', $this->id]);
-            $similarQuery->andWhere(['[[id_category]]'=>$this->category->id]);
-            $similarQuery->andWhere(['[[id_subcategory]]'=>$this->subcategory->id]);
-            $similarQuery->innerJoin('{{products_colors}}', '[[products_colors.id_product]]=[[products.id]]');
-            $similarQuery->andWhere(['[[products_colors.id_color]]'=>ArrayHelper::getColumn($this->colors, 'id')]);
-            $similarQuery->innerJoin('{{products_sizes}}', '[[products_sizes.id_product]]=[[products.id]]');
-            $similarQuery->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($this->sizes, 'id')]);
-            $similarQuery->limit(\Yii::$app->params['similarLimit']);
-            $similarArray = $similarQuery->all();
-            
-            return $similarArray;
+            return (new ProductsFinder())->search('similar', $this);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -145,12 +134,7 @@ class ProductsModel extends AbstractBaseModel
     public function getRelated(): array
     {
         try {
-            $relatedQuery = self::find();
-            $relatedQuery->innerJoin('{{related_products}}', '[[related_products.id_related_product]]=[[products.id]]');
-            $relatedQuery->where(['[[related_products.id_product]]'=>$this->id]);
-            $relatedArray = $relatedQuery->all();
-            
-            return $relatedArray;
+            return (new ProductsFinder())->search('related', $this);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

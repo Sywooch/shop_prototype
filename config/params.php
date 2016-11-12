@@ -12,7 +12,7 @@ $params = [
     # Путь к товару
     'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступна текущая категория
     'subcategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступна текущая подкатегория
-    'productKey'=>'id', # Ключ, по которому в $_REQUEST доступен seocode продукта
+    'productKey'=>'seocode', # Ключ, по которому в $_REQUEST доступен seocode продукта
     
     # Поиск по товарам
     'searchKey'=>'search', # Ключ, по которому в $_REQUEST доступно значение для поиска
