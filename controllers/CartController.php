@@ -7,15 +7,15 @@ use yii\helpers\Url;
 use app\controllers\{AbstractBaseController,
     CartControllerHelper};
 use app\helpers\UrlHelper;
-use app\models\PurchasesFinder;
+use app\models\PurchasesFilter;
 
 /**
  * Обрабатывает запросы, связанные с данными корзины
  */
 class CartController extends AbstractBaseController
 {
-    public $filtersModel = PurchasesFinder::class;
-    public $filterScenario = 'searchForCartWidget';
+    public $filtersModel = PurchasesFilter::class;
+    public $filterScenario = 'sessionSave';
     
     /**
      * Обрабатывает запрос детальной информации о товарах в корзине
@@ -48,9 +48,8 @@ class CartController extends AbstractBaseController
                 return CartControllerHelper::setAjax();
             }*/
             if (\Yii::$app->request->isPost) {
-                $filter = new $this->filtersModel();
-                $result = $filter->search($this->filterScenario, \Yii::$app->request->post());
-                \Yii::$app->cart->add($result);
+                $filter = new PurchasesFilter();
+                $result = $filter->save('sessionSave', \Yii::$app->request->post());
             }
             
             return $this->redirect(\yii\helpers\Url::previous(\Yii::$app->id));
@@ -211,9 +210,9 @@ class CartController extends AbstractBaseController
                 'class'=>'app\filters\CustomerFilter',
                 'only'=>['customer', 'check', 'send']
             ],
-            [
+            /*[
                 'class'=>'app\filters\CartFilter',
-            ],
+            ],*/
         ];
     }
 }

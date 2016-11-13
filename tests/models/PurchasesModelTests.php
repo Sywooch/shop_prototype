@@ -52,7 +52,8 @@ class PurchasesModelTests extends TestCase
         $this->assertTrue(array_key_exists('id_product', $model->attributes)); 
         $this->assertTrue(array_key_exists('quantity', $model->attributes)); 
         $this->assertTrue(array_key_exists('id_color', $model->attributes)); 
-        $this->assertTrue(array_key_exists('id_size', $model->attributes)); 
+        $this->assertTrue(array_key_exists('id_size', $model->attributes));
+        $this->assertTrue(array_key_exists('price', $model->attributes)); 
         $this->assertTrue(array_key_exists('id_delivery', $model->attributes)); 
         $this->assertTrue(array_key_exists('id_payment', $model->attributes)); 
         $this->assertTrue(array_key_exists('received', $model->attributes)); 
@@ -75,12 +76,14 @@ class PurchasesModelTests extends TestCase
             'quantity'=>$fixture['quantity'],
             'id_color'=>$fixture['id_color'],
             'id_size'=>$fixture['id_size'],
+            'price'=>$fixture['price'],
         ];
         
         $this->assertEquals($fixture['id_product'], $model->id_product);
         $this->assertEquals($fixture['quantity'], $model->quantity);
         $this->assertEquals($fixture['id_color'], $model->id_color);
         $this->assertEquals($fixture['id_size'], $model->id_size);
+        $this->assertEquals($fixture['price'], $model->price);
         
         $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_DELETE_FROM_CART]);
         $model->attributes = [
@@ -101,11 +104,12 @@ class PurchasesModelTests extends TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertEquals(4, count($model->errors));
+        $this->assertEquals(5, count($model->errors));
         $this->assertTrue(array_key_exists('id_product', $model->errors));
         $this->assertTrue(array_key_exists('quantity', $model->errors));
         $this->assertTrue(array_key_exists('id_color', $model->errors));
         $this->assertTrue(array_key_exists('id_size', $model->errors));
+        $this->assertTrue(array_key_exists('price', $model->errors));
         
         $model = new PurchasesModel(['scenario'=>PurchasesModel::GET_FROM_ADD_TO_CART]);
         $model->attributes = [
@@ -113,6 +117,7 @@ class PurchasesModelTests extends TestCase
             'quantity'=>$fixture['quantity'],
             'id_color'=>$fixture['id_color'],
             'id_size'=>$fixture['id_size'],
+            'price'=>$fixture['price'],
         ];
         $model->validate();
         
@@ -132,128 +137,6 @@ class PurchasesModelTests extends TestCase
         $model->validate();
         
         $this->assertTrue(empty($model->errors));
-    }
-    
-    /**
-     * Тестирует метод PurchasesModel::toArray()
-     */
-    public function testToArray()
-    {
-        $fixture = self::$_dbClass->purchases['purchase_1'];
-        
-        $model = \Yii::configure(new PurchasesModel(), $fixture);
-        
-        $result = $model->toArray();
-        
-        $this->assertTrue(array_key_exists('id', $result));
-        $this->assertTrue(array_key_exists('id_user', $result));
-        $this->assertTrue(array_key_exists('id_name', $result));
-        $this->assertTrue(array_key_exists('id_surname', $result));
-        $this->assertTrue(array_key_exists('id_email', $result));
-        $this->assertTrue(array_key_exists('id_phone', $result));
-        $this->assertTrue(array_key_exists('id_address', $result));
-        $this->assertTrue(array_key_exists('id_city', $result));
-        $this->assertTrue(array_key_exists('id_country', $result));
-        $this->assertTrue(array_key_exists('id_postcode', $result));
-        $this->assertTrue(array_key_exists('id_product', $result)); 
-        $this->assertTrue(array_key_exists('id_color', $result)); 
-        $this->assertTrue(array_key_exists('id_size', $result)); 
-        $this->assertTrue(array_key_exists('id_delivery', $result)); 
-        $this->assertTrue(array_key_exists('id_payment', $result)); 
-        $this->assertTrue(array_key_exists('received', $result)); 
-        $this->assertTrue(array_key_exists('received_date', $result));
-        $this->assertTrue(array_key_exists('processed', $result)); 
-        $this->assertTrue(array_key_exists('canceled', $result)); 
-        $this->assertTrue(array_key_exists('shipped', $result));
-        $this->assertFalse(array_key_exists('quantity', $result));
-        
-        $result = $model->toArray([], ['quantity']);
-        
-        $this->assertTrue(array_key_exists('id', $result));
-        $this->assertTrue(array_key_exists('id_user', $result));
-        $this->assertTrue(array_key_exists('id_name', $result));
-        $this->assertTrue(array_key_exists('id_surname', $result));
-        $this->assertTrue(array_key_exists('id_email', $result));
-        $this->assertTrue(array_key_exists('id_phone', $result));
-        $this->assertTrue(array_key_exists('id_address', $result));
-        $this->assertTrue(array_key_exists('id_city', $result));
-        $this->assertTrue(array_key_exists('id_country', $result));
-        $this->assertTrue(array_key_exists('id_postcode', $result));
-        $this->assertTrue(array_key_exists('id_product', $result)); 
-        $this->assertTrue(array_key_exists('id_color', $result)); 
-        $this->assertTrue(array_key_exists('id_size', $result)); 
-        $this->assertTrue(array_key_exists('id_delivery', $result)); 
-        $this->assertTrue(array_key_exists('id_payment', $result)); 
-        $this->assertTrue(array_key_exists('received', $result)); 
-        $this->assertTrue(array_key_exists('received_date', $result));
-        $this->assertTrue(array_key_exists('processed', $result)); 
-        $this->assertTrue(array_key_exists('canceled', $result)); 
-        $this->assertTrue(array_key_exists('shipped', $result));
-        $this->assertTrue(array_key_exists('quantity', $result));
-    }
-    
-    /**
-     * Тестирует метод PurchasesModel::toHash()
-     */
-    public function testToHash()
-    {
-        $fixture = self::$_dbClass->purchases['purchase_1'];
-        
-        $model = \Yii::configure(new PurchasesModel(), $fixture);
-        
-        $result = $model->toHash();
-        
-        $this->assertTrue(array_key_exists('id', $result));
-        $this->assertTrue(array_key_exists('id_user', $result));
-        $this->assertTrue(array_key_exists('id_name', $result));
-        $this->assertTrue(array_key_exists('id_surname', $result));
-        $this->assertTrue(array_key_exists('id_email', $result));
-        $this->assertTrue(array_key_exists('id_phone', $result));
-        $this->assertTrue(array_key_exists('id_address', $result));
-        $this->assertTrue(array_key_exists('id_city', $result));
-        $this->assertTrue(array_key_exists('id_country', $result));
-        $this->assertTrue(array_key_exists('id_postcode', $result));
-        $this->assertTrue(array_key_exists('id_product', $result)); 
-        $this->assertTrue(array_key_exists('id_color', $result)); 
-        $this->assertTrue(array_key_exists('id_size', $result)); 
-        $this->assertTrue(array_key_exists('id_delivery', $result)); 
-        $this->assertTrue(array_key_exists('id_payment', $result)); 
-        $this->assertTrue(array_key_exists('received', $result)); 
-        $this->assertTrue(array_key_exists('received_date', $result));
-        $this->assertTrue(array_key_exists('processed', $result)); 
-        $this->assertTrue(array_key_exists('canceled', $result)); 
-        $this->assertTrue(array_key_exists('shipped', $result));
-        $this->assertFalse(array_key_exists('quantity', $result));
-    }
-    
-    /**
-     * Тестирует метод PurchasesModel::getQuantity()
-     */
-    public function testGetQuantity()
-    {
-        $fixture = self::$_dbClass->purchases['purchase_1'];
-        
-        $model = new PurchasesModel(['quantity'=>$fixture['quantity']]);
-        
-        $this->assertEquals($fixture['quantity'], $model->getQuantity());
-    }
-    
-    /**
-     * Тестирует метод PurchasesModel::setQuantity()
-     */
-    public function testSetQuantity()
-    {
-        $model = new PurchasesModel();
-        
-        $this->assertEquals(0, $model->getQuantity());
-        
-        $model->setQuantity(2);
-        
-        $this->assertEquals(2, $model->getQuantity());
-        
-        $model->setQuantity(3);
-        
-        $this->assertEquals(5, $model->getQuantity());
     }
     
     /**

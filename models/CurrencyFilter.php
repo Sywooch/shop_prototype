@@ -6,16 +6,16 @@ use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\models\CurrencyModel;
-use app\interfaces\FinderSearchInterface;
+use app\interfaces\SearchFilterInterface;
 
-class CurrencyFinder extends Model implements FinderSearchInterface
+class CurrencyFilter extends Model implements SearchFilterInterface
 {
     use ExceptionsTrait;
     
     /**
      * Сценарий поиска данных для виджета замены текущей валюты
      */
-    const WIDGET = 'widget';
+    const WIDGET_SEARCH = 'widgetSearch';
     
     /**
      * Принимает запрос на поиск данных, делегирует обработку в зависимости от сценария
@@ -26,8 +26,8 @@ class CurrencyFinder extends Model implements FinderSearchInterface
     {
         try {
             switch ($scenario) {
-                case self::WIDGET:
-                    return $this->widget();
+                case self::WIDGET_SEARCH:
+                    return $this->widgetSearch();
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -39,7 +39,7 @@ class CurrencyFinder extends Model implements FinderSearchInterface
      * @param array $data данные $_GET запроса 
      * @return array CurrencyModel
      */
-    private function widget(): array
+    private function widgetSearch(): array
     {
         try {
             $currencyArray = CurrencyModel::find()->asArray()->all();

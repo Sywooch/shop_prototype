@@ -27,6 +27,7 @@ class m161031_202457_create_purchases_table extends Migration
             'quantity'=>$this->smallInteger(3)->unsigned()->notNull(),
             'id_color'=>$this->integer(3)->unsigned()->notNull(),
             'id_size'=>$this->integer(3)->unsigned()->notNull(),
+            'price'=>$this->decimal(8, 2)->notNull()->defaultValue(0.00),
             'id_delivery'=>$this->integer(3)->unsigned()->notNull(),
             'id_payment'=>$this->integer(3)->unsigned()->notNull(),
             'received'=>$this->boolean()->notNull()->defaultValue(false),

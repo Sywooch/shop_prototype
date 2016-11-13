@@ -1,0 +1,13 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<div class="user-info">
+    <p>{{ yii.t('base', 'Hello, {placeholder}!', {'placeholder':user}) }}</p>
+    {% if not authenticated %}
+        <p><a href="{{ url.to({0:'/user/login'}) }}">{{ yii.t('base', 'Login') }}</a> <a href="{{ url.to({0:'/user/registration'}) }}">{{ yii.t('base', 'Registration') }}</a></p>
+    {% else %}
+        {% set form=active_form_begin({'id':'user-logout-form', 'action':url.to({0:'/user/logout'}), 'method':'POST'}) %}
+            <input type="hidden" name="userId" value="{{ app.user.id }}">
+            <input type="submit" value="{{ yii.t('base', 'Logout') }}">
+        {{ active_form_end() }}
+    {% endif %}
+</div>

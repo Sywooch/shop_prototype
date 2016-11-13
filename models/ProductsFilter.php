@@ -6,24 +6,24 @@ use yii\base\Model;
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\models\ProductsModel;
-use app\interfaces\FinderSearchInterface;
+use app\interfaces\SearchFilterInterface;
 
-class ProductsFinder extends Model implements FinderSearchInterface
+class ProductsFilter extends Model implements SearchFilterInterface
 {
     use ExceptionsTrait;
     
     /**
      * Сценарий поиска 1 товара
      */
-    const DETAIL = 'detail';
+    const DETAIL_SEARCH = 'detailSearch';
     /**
      * Сценарий поиска похожих товаров
      */
-    const SIMILAR = 'similar';
+    const SIMILAR_SEARCH = 'similarSearch';
     /**
      * Сценарий поиска связанных товаров
      */
-    const RELATED = 'related';
+    const RELATED_SEARCH = 'relatedSearch';
     
     /**
      * Принимает запрос на поиск данных, делегирует обработку в зависимости от сценария
@@ -34,12 +34,12 @@ class ProductsFinder extends Model implements FinderSearchInterface
     {
         try {
             switch ($scenario) {
-                case self::DETAIL:
-                    return $this->detail($data);
-                case self::SIMILAR:
-                    return $this->similar($data);
-                case self::RELATED:
-                    return $this->related($data);
+                case self::DETAIL_SEARCH:
+                    return $this->detailSearch($data);
+                case self::SIMILAR_SEARCH:
+                    return $this->similarSearch($data);
+                case self::RELATED_SEARCH:
+                    return $this->relatedSearch($data);
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -51,7 +51,7 @@ class ProductsFinder extends Model implements FinderSearchInterface
      * @param array $data данные $_GET запроса 
      * @return ProductsModel
      */
-    private function detail(array $data): ProductsModel
+    private function detailSearch(array $data): ProductsModel
     {
         try {
             if (empty($data['seocode'])) {
@@ -71,7 +71,7 @@ class ProductsFinder extends Model implements FinderSearchInterface
      * @param object $productsModel ProductsModel
      * @return array
      */
-    private function similar(ProductsModel $productsModel): array
+    private function similarSearch(ProductsModel $productsModel): array
     {
         try {
             $similarQuery = ProductsModel::find();
@@ -97,7 +97,7 @@ class ProductsFinder extends Model implements FinderSearchInterface
      * @param object $productsModel ProductsModel
      * @return array
      */
-    private function related(ProductsModel $productsModel): array
+    private function relatedSearch(ProductsModel $productsModel): array
     {
         try {
             $relatedQuery = ProductsModel::find();

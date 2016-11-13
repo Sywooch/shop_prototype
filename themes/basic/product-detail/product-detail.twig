@@ -1,16 +1,16 @@
 {{ register_asset_bundle('app/assets/ProductDetailAsset') }}
 
-{{ use('app/widgets/PriceWidget') }}
+{{ use('app/widgets/UserInfoWidget') }}
 {{ use('app/widgets/CartWidget') }}
-{{ use('app/widgets/ImagesWidget') }}
+{{ use('app/widgets/SearchWidget') }}
 {{ use('app/widgets/CategoriesMenuWidget') }}
 {{ use('app/widgets/ProductBreadcrumbsWidget') }}
-{{ use('app/widgets/SeeAlsoWidget') }}
-{{ use('app/widgets/UserInfoWidget') }}
-{{ use('app/widgets/SearchWidget') }}
+{{ use('app/widgets/ImagesWidget') }}
+{{ use('app/widgets/PriceWidget') }}
 {{ use('app/widgets/CurrencyWidget') }}
+{{ use('app/widgets/SeeAlsoWidget') }}
 
-{{ user_info_widget_widget() }}
+{{ user_info_widget_widget(user) }}
 
 {{ cart_widget_widget(cart) }}
 

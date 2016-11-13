@@ -7,9 +7,11 @@ use yii\helpers\ArrayHelper;
 use app\controllers\AbstractBaseController;
 use app\helpers\UrlHelper;
 use app\actions\DetailAction;
-use app\models\{CurrencyFinder,
-    ProductsFinder,
-    PurchasesModel};
+use app\models\{CurrencyFilter,
+    ProductsFilter,
+    PurchasesFilter,
+    PurchasesModel,
+    UsersFilter};
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
@@ -21,8 +23,8 @@ class ProductDetailController extends AbstractBaseController
         return [
             'index'=>[
                 'class'=>DetailAction::class,
-                'finderClass'=>new ProductsFinder(),
-                'finderScenario'=>'detail',
+                'filterClass'=>new ProductsFilter(),
+                'filterScenario'=>'detailSearch',
                 'view'=>'product-detail.twig',
                 'additions'=>[
                     'purchase'=>[
@@ -30,12 +32,19 @@ class ProductDetailController extends AbstractBaseController
                         'quantity'=>1,
                     ],
                     'currency'=>[
-                        'finderClass'=>new CurrencyFinder(),
-                        'finderScenario'=>'widget',
+                        'filterClass'=>new CurrencyFilter(),
+                        'filterScenario'=>'widgetSearch',
                         'view'=>'currency-form.twig',
                     ],
                     'cart'=>[
+                        'filterClass'=>new PurchasesFilter(),
+                        'filterScenario'=>'sessionSearch',
                         'view'=>'short-cart.twig',
+                    ],
+                    'user'=>[
+                        'filterClass'=>new UsersFilter(),
+                        'filterScenario'=>'sessionSearch',
+                        'view'=>'user-info.twig',
                     ],
                 ],
             ],
@@ -47,9 +56,6 @@ class ProductDetailController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\CurrencyFilter',
-            ],
-            [
-                'class'=>'app\filters\CartFilter',
             ],
         ];
     }

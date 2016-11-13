@@ -16,23 +16,15 @@ class SearchWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var array массив результирующих строк
-     */
-    private $_result = [];
-    
-    /**
      * Конструирует HTML строку с формой поиска
      * @return string
      */
     public function run()
     {
         try {
-            $this->_result[] = Html::beginForm('/search', 'GET', ['name'=>'search-form', 'id'=>'search-form']);
-            $this->_result[] = Html::textInput(\Yii::$app->params['searchKey'], \Yii::$app->request->get(\Yii::$app->params['searchKey']), ['size'=>40]);
-            $this->_result[] = Html::submitButton(\Yii::t('base', 'Search'));
-            $this->_result[] = Html::endForm();
+            $text = \Yii::$app->request->get(\Yii::$app->params['searchKey']);
             
-            return !empty($this->_result) ? Html::tag('p', implode('', $this->_result), ['id'=>'search-form']) : '';
+            return $this->render('search.twig', ['text'=>!empty($text) ? $text : '']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

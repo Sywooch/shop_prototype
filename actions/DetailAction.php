@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\actions\AbstractBaseAction;
-use app\interfaces\FinderSearchInterface;
+use app\interfaces\SearchFilterInterface;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -17,11 +17,11 @@ class DetailAction extends AbstractBaseAction
     /**
      * @var object FinderSearchInterface для поиска данных по запросу
      */
-    private $finderClass;
+    private $filterClass;
     /**
      * @var string сценарий поиска
      */
-    public $finderScenario;
+    public $filterScenario;
     /**
      * @var string имя HTML шаблона
      */
@@ -34,7 +34,7 @@ class DetailAction extends AbstractBaseAction
     public function run()
     {
         try {
-            $model = $this->finderClass->search($this->finderScenario, \Yii::$app->request->get());
+            $model = $this->filterClass->search($this->filterScenario, \Yii::$app->request->get());
             
             if (empty($model)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('$model'));
@@ -49,10 +49,10 @@ class DetailAction extends AbstractBaseAction
         }
     }
     
-    public function setFinderClass(FinderSearchInterface $finderClass)
+    public function setFilterClass(SearchFilterInterface $filterClass)
     {
         try {
-            $this->finderClass = $finderClass;
+            $this->filterClass = $filterClass;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

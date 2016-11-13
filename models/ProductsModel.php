@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
 use app\models\{AbstractBaseModel,
     CategoriesModel,
-    ProductsFinder,
+    ProductsFilter,
     SizesModel,
     SubcategoryModel};
 use app\helpers\PicturesHelper;
@@ -121,7 +121,7 @@ class ProductsModel extends AbstractBaseModel
     public function getSimilar(): array
     {
         try {
-            return (new ProductsFinder())->search('similar', $this);
+            return (new ProductsFilter())->search('similarSearch', $this);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -134,7 +134,7 @@ class ProductsModel extends AbstractBaseModel
     public function getRelated(): array
     {
         try {
-            return (new ProductsFinder())->search('related', $this);
+            return (new ProductsFilter())->search('relatedSearch', $this);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

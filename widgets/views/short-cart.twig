@@ -1,7 +1,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 <div id="cart">
-    <p>{{ yii.t('base', 'Products in cart: {goods}, Total cost: {totalCost}', {'goods':goods, 'totalCost':totalCost}) }} {% if goods > 0 %}<a href="{{ url.to({0:'/cart/index'}) }}">{{ yii.t('base', 'To cart') }}</a>{% endif %}</p>
+    <p>{{ yii.t('base', 'Products in cart: {goods}, Total cost: {cost}', {'goods':goods, 'cost':cost}) }} {% if goods > 0 %}<a href="{{ url.to({0:'/cart/index'}) }}">{{ yii.t('base', 'To cart') }}</a>{% endif %}</p>
     
     {% if goods > 0 %}
         {% set form=active_form_begin({'id':'clean-cart-form', 'action':url.to({0:'/cart/clean'}), 'method':'POST'}) %}

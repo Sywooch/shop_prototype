@@ -8,6 +8,7 @@ use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
+use app\interfaces\SearchFilterInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе аутентификации
@@ -17,9 +18,17 @@ class UserInfoWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var array массив результирующих строк
+     * @var object BaseFIltersInterface для поиска данных по запросу
      */
-    private $_result = [];
+    private $filterClass;
+    /**
+     * @var string сценарий поиска
+     */
+    public $filterScenario;
+    /**
+     * @var string имя шаблона
+     */
+    public $view;
     
     /**
      * Конструирует HTML строку с информацией о текущем пользователе
@@ -28,27 +37,22 @@ class UserInfoWidget extends Widget
     public function run()
     {
         try {
-            if (\Yii::$app->user->isGuest) {
-                $user = \Yii::t('base', 'Guest');
-                
-                $login = Html::a(\Yii::t('base', 'Login'), ['/user/login']);
-                $registartion = Html::a(\Yii::t('base', 'Registration'), ['/user/registration']);
-                $this->_result[] = Html::tag('p', $login . ' ' . $registartion);
-            } else {
-                $user = SessionHelper::read(\Yii::$app->params['userKey']) ?? '';
-                
-                $form = Html::beginForm(['/user/logout'], 'POST', ['id'=>'user-logout-form']);
-                $form .= Html::input('hidden', 'userId', \Yii::$app->user->id);
-                $form .= Html::submitButton(\Yii::t('base', 'Logout'));
-                $form .= Html::endForm();
-                $this->_result[] = $form;
+            if (\Yii::$app->user->isGuest == false) {
+                if ($user = $this->filterClass->search($this->filterScenario)) {
+                    $authenticated = true;
+                }
             }
             
-            if (!empty($user)) {
-                array_unshift($this->_result, Html::tag('p', \Yii::t('base', "Hello, {placeholder}!", ['placeholder'=>Html::encode($user)])));
-            }
-            
-            return implode('', $this->_result);
+            return $this->render($this->view, ['user'=>$user ?? \Yii::t('base', 'Guest'), 'authenticated'=>$authenticated ?? false]);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function setFilterClass(SearchFilterInterface $filterClass)
+    {
+        try {
+            $this->filterClass = $filterClass;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -5,7 +5,7 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\interfaces\FinderSearchInterface;
+use app\interfaces\SearchFilterInterface;
 
 /**
  * Формирует HTML строку с формой выбора валюты
@@ -15,13 +15,13 @@ class CurrencyWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object FinderSearchInterface для поиска данных по запросу
+     * @var object SearchFilterInterface для поиска данных по запросу
      */
-    private $finderClass;
+    private $filterClass;
     /**
      * @var string сценарий поиска
      */
-    public $finderScenario;
+    public $filterScenario;
     /**
      * @var string имя HTML шаблона
      */
@@ -30,7 +30,7 @@ class CurrencyWidget extends Widget
     public function run()
     {
         try {
-            $currencyArray = $this->finderClass->search($this->finderScenario);
+            $currencyArray = $this->filterClass->search($this->filterScenario);
             
             if (empty($currencyArray)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('$currencyArray'));
@@ -42,10 +42,10 @@ class CurrencyWidget extends Widget
         }
     }
     
-    public function setFinderClass(FinderSearchInterface $finderClass)
+    public function setFilterClass(SearchFilterInterface $filterClass)
     {
         try {
-            $this->finderClass = $finderClass;
+            $this->filterClass = $filterClass;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
