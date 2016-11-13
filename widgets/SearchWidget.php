@@ -16,6 +16,11 @@ class SearchWidget extends Widget
     use ExceptionsTrait;
     
     /**
+     * @var string имя шаблона
+     */
+    public $view;
+    
+    /**
      * Конструирует HTML строку с формой поиска
      * @return string
      */
@@ -24,7 +29,7 @@ class SearchWidget extends Widget
         try {
             $text = \Yii::$app->request->get(\Yii::$app->params['searchKey']);
             
-            return $this->render('search.twig', ['text'=>!empty($text) ? $text : '']);
+            return $this->render($this->view, ['text'=>!empty($text) ? $text : '']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

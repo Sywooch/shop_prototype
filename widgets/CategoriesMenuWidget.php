@@ -4,9 +4,9 @@ namespace app\widgets;
 
 use yii\base\ErrorException;
 use yii\widgets\Menu;
-use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\models\CategoriesModel;
+use app\interfaces\SearchFilterInterface;
 
 /**
  * Формирует меню
@@ -16,9 +16,13 @@ class CategoriesMenuWidget extends Menu
     use ExceptionsTrait;
     
     /**
-     * @var array массив объектов CategoriesModel
+     * @var object BaseFIltersInterface для поиска данных по запросу
      */
-    public $categoriesList;
+    private $filterClass;
+    /**
+     * @var string сценарий поиска
+     */
+    public $filterScenario;
     /**
      * @var string основной route
      */
@@ -34,21 +38,18 @@ class CategoriesMenuWidget extends Menu
     /**
      * @var array HTML атрибуты, которые будут применены к тегу-контейнеру меню (ul по-умолчанию)
      */
-    public $options = ['class'=>'categoriesMenu'];
+    public $options = ['class'=>'categories-menu'];
+    /**
+     * @var array массив объектов CategoriesModel
+     */
+    private $categoriesList;
     
     public function init()
     {
         try {
             parent::init();
             
-            # Массив объектов CategoriesModel для формирования меню категорий
-            $categoriesQuery = CategoriesModel::find();
-            $categoriesQuery->extendSelect(['id', 'name', 'seocode', 'active']);
-            $categoriesQuery->with('subcategory');
-            $categoriesQuery->asArray();
-            $categoriesArray = $categoriesQuery->all();
-            ArrayHelper::multisort($categoriesArray, 'name', SORT_ASC);
-            $this->categoriesList = $categoriesArray;
+            $this->categoriesList = $this->filterClass->search($this->filterScenario);
             
             $this->setItems();
         } catch (\Throwable $t) {
@@ -85,6 +86,15 @@ class CategoriesMenuWidget extends Menu
                     $this->items[] = $pack;
                 }
             }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function setFilterClass(SearchFilterInterface $filterClass)
+    {
+        try {
+            $this->filterClass = $filterClass;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -7,7 +7,8 @@ use yii\helpers\ArrayHelper;
 use app\controllers\AbstractBaseController;
 use app\helpers\UrlHelper;
 use app\actions\DetailAction;
-use app\models\{CurrencyFilter,
+use app\models\{CategoriesFilter,
+    CurrencyFilter,
     ProductsFilter,
     PurchasesFilter,
     PurchasesModel,
@@ -28,8 +29,7 @@ class ProductDetailController extends AbstractBaseController
                 'view'=>'product-detail.twig',
                 'additions'=>[
                     'purchase'=>[
-                        'class'=>PurchasesModel::class,
-                        'quantity'=>1,
+                        'view'=>'add-to-cart-form.twig',
                     ],
                     'currency'=>[
                         'filterClass'=>new CurrencyFilter(),
@@ -45,6 +45,16 @@ class ProductDetailController extends AbstractBaseController
                         'filterClass'=>new UsersFilter(),
                         'filterScenario'=>'sessionSearch',
                         'view'=>'user-info.twig',
+                    ],
+                    'categories'=>[
+                        'filterClass'=>new CategoriesFilter(),
+                        'filterScenario'=>'menuSearch',
+                    ],
+                    'search'=>[
+                        'view'=>'search.twig',
+                    ],
+                    'images'=>[
+                        'view'=>'images.twig',
                     ],
                 ],
             ],

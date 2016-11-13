@@ -7,6 +7,7 @@
 {{ use('app/widgets/ProductBreadcrumbsWidget') }}
 {{ use('app/widgets/ImagesWidget') }}
 {{ use('app/widgets/PriceWidget') }}
+{{ use('app/widgets/ToCartWidget') }}
 {{ use('app/widgets/CurrencyWidget') }}
 {{ use('app/widgets/SeeAlsoWidget') }}
 
@@ -14,9 +15,9 @@
 
 {{ cart_widget_widget(cart) }}
 
-{{ search_widget_widget() }}
+{{ search_widget_widget(search) }}
 
-{{ categories_menu_widget_widget() }}
+{{ categories_menu_widget_widget(categories) }}
 
 {{ product_breadcrumbs_widget_widget({'model':model}) }}
 
@@ -24,7 +25,8 @@
     <h1>{{ model.name }}</h1>
     <p>{{ model.description }}</p>
     {% if model.images %}
-        <br>{{ images_widget_widget({'path':model.images}) }}
+        {% set images=images | merge({'path':model.images}) %}
+        {{ images_widget_widget(images) }}
     {% endif %}
     <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
     <ul>
@@ -41,7 +43,8 @@
     <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':model.price}) }}</p>
     <p><strong>{{ yii.t('base', 'Code:') }}</strong> {{ model.code }}</p>
     
-    {% include('@theme/product-detail/add-to-cart-form.twig') %}
+    {% set purchase=purchase | merge({'product':model}) %}
+    {{ to_cart_widget_widget(purchase) }}
     
     {{ currency_widget_widget(currency) }}
     

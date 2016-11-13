@@ -19,9 +19,13 @@ class ImagesWidget extends Widget
      */
     public $path = '';
     /**
-     * @var string результирующая HTML строка
+     * @var string имя шаблона
      */
-    private $_result = '';
+    public $view;
+    /**
+     * @var array массив тегов img
+     */
+    private $_result = [];
     
     public function run()
     {
@@ -32,13 +36,13 @@ class ImagesWidget extends Widget
                 if (!empty($imagesArray)) {
                     foreach ($imagesArray as $image) {
                         if (preg_match('/^(?!thumbn_).+$/', basename($image)) === 1) {
-                            $this->_result .= '<br>' . Html::img(\Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($image));
+                            $this->_result[] = Html::img(\Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($image));
                         }
                     }
                 }
             }
             
-            return $this->_result;
+            return $this->render($this->view, ['images'=>!empty($this->_result) ? implode('<br/>', $this->_result) : '']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

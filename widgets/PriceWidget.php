@@ -22,7 +22,7 @@ class PriceWidget extends Widget
      * Форматирует стоимость с учетом текущей валюты
      * @return string
      */
-    public function run(): string
+    public function run()
     {
         try {
             if (!empty($this->price) && !empty(\Yii::$app->currency->exchange_rate) && !empty(\Yii::$app->currency->code)) {
