@@ -2,9 +2,10 @@
 
 namespace app\services;
 
-use yii\base\Object;
+use yii\base\{ErrorException,
+    Object};
 use app\exceptions\ExceptionsTrait;
-use app\repository\ProductsRepository;
+use app\repository\GetOneProductRepositoryFactory;
 use app\models\ProductsModel;
 use app\services\SearchServiceInterface;
 
@@ -19,8 +20,8 @@ class OneProductSearchService extends Object implements SearchServiceInterface
                 throw new ErrorException(ExceptionsTrait::emptyError(\Yii::$app->params['productKey']));
             }
             
-            $repository = new ProductsRepository();
-            $model = $repository->getOneBySeocode($seocode);
+            $repository = (new GetOneProductRepositoryFactory())->getRepository();
+            $model = $repository->getOne($seocode);
             
             if (empty($model)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('$model'));

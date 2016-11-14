@@ -30,15 +30,15 @@ class DetailAction extends AbstractBaseAction
     public function run()
     {
         try {
-            $product = $this->finderClass->search(\Yii::$app->request->get());
+            $model = $this->finderClass->search(\Yii::$app->request->get());
             
-            if (empty($product)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('$product'));
+            if (empty($model)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$model'));
             }
             
-            Url::remember(Url::current(), 'shop');
+            Url::remember(Url::current(), \Yii::$app->id);
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->_renderArray, ['model'=>$product]));
+            return $this->controller->render($this->view, ArrayHelper::merge($this->_renderArray, ['model'=>$model]));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
