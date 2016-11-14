@@ -13,6 +13,7 @@ use app\models\{CategoriesFilter,
     PurchasesFilter,
     PurchasesModel,
     UsersFilter};
+use app\services\OneProductSearchService;
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
@@ -24,8 +25,7 @@ class ProductDetailController extends AbstractBaseController
         return [
             'index'=>[
                 'class'=>DetailAction::class,
-                'filterClass'=>new ProductsFilter(),
-                'filterScenario'=>'detailSearch',
+                'finderClass'=>new OneProductSearchService(),
                 'view'=>'product-detail.twig',
                 'additions'=>[
                     'purchase'=>[

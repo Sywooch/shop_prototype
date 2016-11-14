@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\actions\AbstractBaseAction;
-use app\interfaces\SearchFilterInterface;
+use app\services\SearchServiceInterface;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -15,13 +15,9 @@ use app\exceptions\ExceptionsTrait;
 class DetailAction extends AbstractBaseAction
 {
     /**
-     * @var object FinderSearchInterface для поиска данных по запросу
+     * @var object для поиска данных по запросу
      */
-    private $filterClass;
-    /**
-     * @var string сценарий поиска
-     */
-    public $filterScenario;
+    private $finderClass;
     /**
      * @var string имя HTML шаблона
      */
@@ -34,25 +30,25 @@ class DetailAction extends AbstractBaseAction
     public function run()
     {
         try {
-            $model = $this->filterClass->search($this->filterScenario, \Yii::$app->request->get());
+            $product = $this->finderClass->search(\Yii::$app->request->get());
             
-            if (empty($model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('$model'));
+            if (empty($product)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$product'));
             }
             
-            Url::remember(Url::current(), \Yii::$app->id);
+            Url::remember(Url::current(), 'shop');
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->_renderArray, ['model'=>$model]));
+            return $this->controller->render($this->view, ArrayHelper::merge($this->_renderArray, ['model'=>$product]));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
     }
     
-    public function setFilterClass(SearchFilterInterface $filterClass)
+    public function setFinderClass(SearchServiceInterface $finderClass)
     {
         try {
-            $this->filterClass = $filterClass;
+            $this->finderClass = $finderClass;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

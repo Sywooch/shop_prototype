@@ -49,7 +49,9 @@ class CategoriesMenuWidget extends Menu
         try {
             parent::init();
             
-            $this->categoriesList = $this->filterClass->search($this->filterScenario);
+            //echo \app\models\CategoriesService::MENU_SEARCH;
+            
+            $this->categoriesList = $this->filterClass->search(\app\models\CategoriesFilter::MENU_SEARCH);
             
             $this->setItems();
         } catch (\Throwable $t) {
