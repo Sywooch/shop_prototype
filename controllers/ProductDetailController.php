@@ -3,16 +3,8 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\ArrayHelper;
 use app\controllers\AbstractBaseController;
-use app\helpers\UrlHelper;
 use app\actions\DetailAction;
-use app\models\{CategoriesFilter,
-    CurrencyFilter,
-    ProductsFilter,
-    PurchasesFilter,
-    PurchasesModel,
-    UsersFilter};
 use app\services\OneProductSearchService;
 
 /**
@@ -27,36 +19,6 @@ class ProductDetailController extends AbstractBaseController
                 'class'=>DetailAction::class,
                 'finderClass'=>new OneProductSearchService(),
                 'view'=>'product-detail.twig',
-                'additions'=>[
-                    'purchase'=>[
-                        'view'=>'add-to-cart-form.twig',
-                    ],
-                    'currency'=>[
-                        'filterClass'=>new CurrencyFilter(),
-                        'filterScenario'=>'widgetSearch',
-                        'view'=>'currency-form.twig',
-                    ],
-                    'cart'=>[
-                        'filterClass'=>new PurchasesFilter(),
-                        'filterScenario'=>'sessionSearch',
-                        'view'=>'short-cart.twig',
-                    ],
-                    'user'=>[
-                        'filterClass'=>new UsersFilter(),
-                        'filterScenario'=>'sessionSearch',
-                        'view'=>'user-info.twig',
-                    ],
-                    'categories'=>[
-                        'filterClass'=>new CategoriesFilter(),
-                        'filterScenario'=>'menuSearch',
-                    ],
-                    'search'=>[
-                        'view'=>'search.twig',
-                    ],
-                    'images'=>[
-                        'view'=>'images.twig',
-                    ],
-                ],
             ],
         ];
     }

@@ -3,6 +3,7 @@
 namespace app\repository;
 
 use yii\base\ErrorException;
+use yii\helpers\ArrayHelper;
 use app\repository\GetGroupRepositoryInterface;
 use app\exceptions\ExceptionsTrait;
 use app\models\ProductsModel;
@@ -13,7 +14,7 @@ class GetSimilarProductsRepository implements GetGroupRepositoryInterface
     
     private $items = [];
     
-    public function getGroup(ProductsModel $model): array
+    public function getGroup($model): array
     {
         try {
             if (empty($this->items)) {

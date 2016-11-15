@@ -1,0 +1,23 @@
+{% include('base.twig') %}
+
+<h1>{{ name }}</h1>
+<p>{{ description }}</p>
+{{ images }}
+<p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
+<ul>
+    {% for color in colors %}
+        <li>{{ color }}</li>
+    {% endfor %}
+</ul>
+<p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
+<ul>
+    {% for size in sizes %}
+        <li>{{ size }}</li>
+    {% endfor %}
+</ul>
+<p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price }}</p>
+<p><strong>{{ yii.t('base', 'Code:') }}</strong> {{ code }}</p>
+
+{{ toCart | raw }}
+{{ similar | raw }}
+{{ related | raw }}

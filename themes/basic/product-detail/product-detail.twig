@@ -1,57 +1,5 @@
 {{ register_asset_bundle('app/assets/ProductDetailAsset') }}
 
-{{ use('app/widgets/UserInfoWidget') }}
-{{ use('app/widgets/CartWidget') }}
-{{ use('app/widgets/SearchWidget') }}
-{{ use('app/widgets/CategoriesMenuWidget') }}
-{{ use('app/widgets/ProductBreadcrumbsWidget') }}
-{{ use('app/widgets/ImagesWidget') }}
-{{ use('app/widgets/PriceWidget') }}
-{{ use('app/widgets/ToCartWidget') }}
-{{ use('app/widgets/CurrencyWidget') }}
-{{ use('app/widgets/SeeAlsoWidget') }}
+{{ use('app/widgets/ProductDetailWidget') }}
 
-{{ user_info_widget_widget(user) }}
-
-{{ cart_widget_widget(cart) }}
-
-{{ search_widget_widget(search) }}
-
-{{ categories_menu_widget_widget(categories) }}
-
-{{ product_breadcrumbs_widget_widget({'model':model}) }}
-
-{% if model %}
-    <h1>{{ model.name }}</h1>
-    <p>{{ model.description }}</p>
-    {% if model.images %}
-        {% set images=images | merge({'path':model.images}) %}
-        {{ images_widget_widget(images) }}
-    {% endif %}
-    <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
-    <ul>
-        {% for color in array.getColumn(model.colors, 'color') %}
-            <li>{{ color }}</li>
-        {% endfor %}
-    </ul>
-    <p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
-    <ul>
-        {% for size in array.getColumn(model.sizes, 'size') %}
-            <li>{{ size }}</li>
-        {% endfor %}
-    </ul>
-    <p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price_widget_widget({'price':model.price}) }}</p>
-    <p><strong>{{ yii.t('base', 'Code:') }}</strong> {{ model.code }}</p>
-    
-    {% set purchase=purchase | merge({'product':model}) %}
-    {{ to_cart_widget_widget(purchase) }}
-    
-    {{ currency_widget_widget(currency) }}
-    
-    {{ see_also_widget_widget({'data':model.similar, 'text':yii.t('base', 'Similar products:')}) }}
-    
-    {{ see_also_widget_widget({'data':model.related, 'text':yii.t('base', 'Related products:')}) }}
-{% endif %}
-
-
-
+{{ product_detail_widget_widget({'model':model}) }}

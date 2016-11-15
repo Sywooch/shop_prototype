@@ -11,6 +11,9 @@ use app\models\{AbstractBaseModel,
     SubcategoryModel};
 use app\helpers\PicturesHelper;
 use app\exceptions\ExceptionsTrait;
+use app\services\{RelatedProductsSearchServiceFactory,
+    SearchServiceInterface,
+    SimilarProductsSearchServiceFactory};
 
 /**
  * Представляет данные таблицы products
@@ -118,10 +121,13 @@ class ProductsModel extends AbstractBaseModel
      * Получает массив ProductsModel похожих продуктов 
      * @return array
      */
-    public function getSimilar(): array
+    public function getSimilar(SearchServiceInterface $service): array
     {
         try {
-            return (new ProductsFilter())->search('similarSearch', $this);
+            //$service = (new SimilarProductsSearchServiceFactory())->getService();
+            $similar = $service->search($this);
+            
+            return $similar;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -134,7 +140,10 @@ class ProductsModel extends AbstractBaseModel
     public function getRelated(): array
     {
         try {
-            return (new ProductsFilter())->search('relatedSearch', $this);
+            $service = (new RelatedProductsSearchServiceFactory())->getService();
+            $related = $service->search($this);
+            
+            return $related;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

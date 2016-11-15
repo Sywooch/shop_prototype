@@ -1,8 +1,8 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 <div class="search-form">
-    {% set form=active_form_begin({'id':'search-form', 'action':url.to({0:'/search'}), 'method':'GET', 'options':{'name':'search-form'}}) %}
+    <p>{% set form=active_form_begin({'id':'search-form', 'action':url.to({0:'/search'}), 'method':'GET', 'options':{'name':'search-form'}}) %}
         <input type="text" name="{{ app.params.searchKey }}" value="{{ text }}" size="40">
         <input type="submit" value="{{ yii.t('base', 'Search') }}">
-    {{ active_form_end() }}
+    {{ active_form_end() }}</p>
 </div>
