@@ -8,7 +8,7 @@ use app\repository\GetGroupRepositoryInterface;
 use app\exceptions\ExceptionsTrait;
 use app\models\ProductsModel;
 
-class GetSimilarProductsRepository implements GetGroupRepositoryInterface
+class SimilarProductsRepository implements GetGroupRepositoryInterface
 {
     use ExceptionsTrait;
     
@@ -17,6 +17,10 @@ class GetSimilarProductsRepository implements GetGroupRepositoryInterface
     public function getGroup($model): array
     {
         try {
+            if (!$model instanceof ProductsModel) {
+                throw new ErrorException(ExceptionsTrait::emptyError('ProductsModel'));
+            }
+            
             if (empty($this->items)) {
                 $query = ProductsModel::find();
                 $query->distinct();

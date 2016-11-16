@@ -7,7 +7,7 @@ use app\repository\GetOneRepositoryInterface;
 use app\exceptions\ExceptionsTrait;
 use app\models\ProductsModel;
 
-class GetOneProductRepository implements GetOneRepositoryInterface
+class ProductsRepository implements GetOneRepositoryInterface
 {
     use ExceptionsTrait;
     

@@ -4,11 +4,8 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
-use yii\helpers\{Html,
-    Url};
 use app\exceptions\ExceptionsTrait;
-use app\helpers\SessionHelper;
-use app\interfaces\SearchFilterInterface;
+use app\repository\GetOneRepositoryInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе аутентификации
@@ -18,13 +15,9 @@ class UserInfoWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object BaseFIltersInterface для поиска данных по запросу
+     * @var object GetOneRepositoryInterface для поиска данных по запросу
      */
-    private $filterClass;
-    /**
-     * @var string сценарий поиска
-     */
-    public $filterScenario;
+    private $repository;
     /**
      * @var string имя шаблона
      */
@@ -38,7 +31,7 @@ class UserInfoWidget extends Widget
     {
         try {
             if (\Yii::$app->user->isGuest == false) {
-                if ($user = $this->filterClass->search($this->filterScenario)) {
+                if ($user = $this->repository->getOne(\Yii::$app->params['userKey'])) {
                     $authenticated = true;
                 }
             }
@@ -49,10 +42,10 @@ class UserInfoWidget extends Widget
         }
     }
     
-    public function setFilterClass(SearchFilterInterface $filterClass)
+    public function setRepository(GetOneRepositoryInterface $repository)
     {
         try {
-            $this->filterClass = $filterClass;
+            $this->repository = $repository;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

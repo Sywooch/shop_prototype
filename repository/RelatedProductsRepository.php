@@ -8,7 +8,7 @@ use app\repository\GetGroupRepositoryInterface;
 use app\exceptions\ExceptionsTrait;
 use app\models\ProductsModel;
 
-class GetRelatedProductsRepository implements GetGroupRepositoryInterface
+class RelatedProductsRepository implements GetGroupRepositoryInterface
 {
     use ExceptionsTrait;
     
@@ -17,6 +17,10 @@ class GetRelatedProductsRepository implements GetGroupRepositoryInterface
     public function getGroup($model): array
     {
         try {
+            if (!$model instanceof ProductsModel) {
+                throw new ErrorException(ExceptionsTrait::emptyError('ProductsModel'));
+            }
+            
             if (empty($this->items)) {
                 $query = ProductsModel::find();
                 $query->innerJoin('{{related_products}}', '[[related_products.id_related_product]]=[[products.id]]');

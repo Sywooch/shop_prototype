@@ -5,7 +5,7 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\interfaces\SearchFilterInterface;
+use app\services\SearchServiceInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -15,13 +15,9 @@ class CartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object BaseFIltersInterface для поиска данных по запросу
+     * @var object SearchServiceInterface для поиска данных по запросу
      */
-    private $filterClass;
-    /**
-     * @var string сценарий поиска
-     */
-    public $filterScenario;
+    private $service;
     /**
      * @var string имя шаблона
      */
@@ -42,7 +38,7 @@ class CartWidget extends Widget
     public function run()
     {
         try {
-            $purchasesArray = $this->filterClass->search($this->filterScenario);
+            $purchasesArray = $this->service->search();
             
             if (!empty($purchasesArray)) {
                 foreach ($purchasesArray as $purchase) {
@@ -61,10 +57,10 @@ class CartWidget extends Widget
         }
     }
     
-    public function setFilterClass(SearchFilterInterface $filterClass)
+    public function setService(SearchServiceInterface $service)
     {
         try {
-            $this->filterClass = $filterClass;
+            $this->service = $service;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
