@@ -23,7 +23,7 @@ class CartWidget extends Widget
     /**
      * @var object GetOneRepositoryInterface для поиска данных по запросу
      */
-    private $currency;
+    private $currencyRepository;
     /**
      * @var string имя шаблона
      */
@@ -44,6 +44,16 @@ class CartWidget extends Widget
     public function run()
     {
         try {
+            if (empty($this->repository)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$this->repository'));
+            }
+            if (empty($this->currencyRepository)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$this->currencyRepository'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$this->view'));
+            }
+            
             $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
             $purchasesArray = $this->repository->getGroup($key);
             
@@ -54,7 +64,7 @@ class CartWidget extends Widget
                 }
             }
             
-            $currency = $this->currency->getOne(\Yii::$app->params['currencyKey']);
+            $currency = $this->currencyRepository->getOne(\Yii::$app->params['currencyKey']);
             if (!empty($currency->exchange_rate) && !empty($currency->code)) {
                 $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
             }
@@ -65,6 +75,10 @@ class CartWidget extends Widget
         }
     }
     
+    /**
+     * Присваивает GetGroupRepositoryInterface свойству CartWidget::repository
+     * @param object $repository GetGroupRepositoryInterface
+     */
     public function setRepository(GetGroupRepositoryInterface $repository)
     {
         try {
@@ -74,10 +88,14 @@ class CartWidget extends Widget
         }
     }
     
-    public function setCurrency(GetOneRepositoryInterface $currency)
+    /**
+     * Присваивает GetOneRepositoryInterface свойству CartWidget::currencyRepository
+     * @param object $currencyRepository GetOneRepositoryInterface
+     */
+    public function setCurrencyRepository (GetOneRepositoryInterface $currencyRepository)
     {
         try {
-            $this->currency = $currency;
+            $this->currencyRepository = $currencyRepository;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

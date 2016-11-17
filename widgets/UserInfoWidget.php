@@ -5,7 +5,6 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\repository\GetOneRepositoryInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе аутентификации
@@ -26,6 +25,10 @@ class UserInfoWidget extends Widget
     public function run()
     {
         try {
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$this->view'));
+            }
+            
             if (\Yii::$app->user->isGuest === false) {
                 $user = \Yii::$app->user->identity;
             }

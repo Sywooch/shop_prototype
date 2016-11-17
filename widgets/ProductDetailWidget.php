@@ -31,7 +31,7 @@ class ProductDetailWidget extends Widget
     /**
      * @var string имя шаблона
      */
-    public $view = 'product-detail.twig';
+    public $view;
     /**
      * @var object ProductsModel
      */
@@ -40,9 +40,16 @@ class ProductDetailWidget extends Widget
     public function run()
     {
         try {
+            if (empty($this->model)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$this->model'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('$this->view'));
+            }
+            
             $renderArray = [];
             $renderArray['user'] = UserInfoWidget::widget(['view'=>'user-info.twig']);
-            $renderArray['cart'] = CartWidget::widget(['repository'=>new PurchasesSessionRepository(), 'currency'=>new CurrencySessionRepository(), 'view'=>'short-cart.twig']);
+            $renderArray['cart'] = CartWidget::widget(['repository'=>new PurchasesSessionRepository(), 'currencyRepository'=>new CurrencySessionRepository(), 'view'=>'short-cart.twig']);
             $renderArray['search'] = SearchWidget::widget(['view'=>'search.twig']);
             $renderArray['menu'] = CategoriesMenuWidget::widget(['repository'=>new CategoriesRepository()]);
             $renderArray['breadcrumbs'] = ProductBreadcrumbsWidget::widget(['model'=>$this->model]);
@@ -67,6 +74,10 @@ class ProductDetailWidget extends Widget
         }
     }
     
+    /**
+     * Присваивает ProductsModel свойству ProductDetailWidget::model
+     * @param object $model ProductsModel
+     */
     public function setModel(ProductsModel $model)
     {
         try {
