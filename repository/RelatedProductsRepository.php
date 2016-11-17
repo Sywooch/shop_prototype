@@ -25,9 +25,9 @@ class RelatedProductsRepository implements GetGroupRepositoryInterface
                 $query = ProductsModel::find();
                 $query->innerJoin('{{related_products}}', '[[related_products.id_related_product]]=[[products.id]]');
                 $query->where(['[[related_products.id_product]]'=>$model->id]);
-                $array = $query->all();
-                if (!empty($array)) {
-                    $this->items = $array;
+                $data = $query->all();
+                if (!empty($data)) {
+                    $this->items = $data;
                 }
             }
             

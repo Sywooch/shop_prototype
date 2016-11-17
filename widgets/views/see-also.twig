@@ -1,0 +1,10 @@
+<p><strong>{{ text }}</strong></p>
+
+<ul>
+    {% for product in products %}
+        <li>
+            {{ product.link | raw }}</br>
+            {{ yii.t('base', 'Price:') }} {{ product.price }}
+        </li>
+    {% endfor %}
+</ul>

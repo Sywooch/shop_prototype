@@ -16,14 +16,13 @@ use app\widgets\{CartWidget,
     SeeAlsoWidget,
     ToCartWidget,
     UserInfoWidget};
-use app\models\{CategoriesFilter,
-    CurrencyFilter,
-    ProductsModel};
-use app\repository\{PurchasesSessionRepository,
+use app\models\ProductsModel;
+use app\repository\{CategoriesRepository,
+    CurrencySessionRepository,
+    CurrencyRepository,
+    PurchasesSessionRepository,
     RelatedProductsRepository,
-    SimilarProductsRepository,
-    UsersSessionRepository};
-use app\services\PurchasesSessionSearchService;
+    SimilarProductsRepository};
 
 class ProductDetailWidget extends Widget
 {
@@ -42,15 +41,15 @@ class ProductDetailWidget extends Widget
     {
         try {
             $renderArray = [];
-            $renderArray['user'] = UserInfoWidget::widget(['repository'=>new UsersSessionRepository(), 'view'=>'user-info.twig']);
-            $renderArray['cart'] = CartWidget::widget(['service'=>new PurchasesSessionSearchService(new PurchasesSessionRepository()), 'view'=>'short-cart.twig']);
+            $renderArray['user'] = UserInfoWidget::widget(['view'=>'user-info.twig']);
+            $renderArray['cart'] = CartWidget::widget(['repository'=>new PurchasesSessionRepository(), 'currency'=>new CurrencySessionRepository(), 'view'=>'short-cart.twig']);
             $renderArray['search'] = SearchWidget::widget(['view'=>'search.twig']);
-            $renderArray['menu'] = CategoriesMenuWidget::widget(['filterClass'=>new CategoriesFilter(), 'filterScenario'=>'menuSearch']);
+            $renderArray['menu'] = CategoriesMenuWidget::widget(['repository'=>new CategoriesRepository()]);
             $renderArray['breadcrumbs'] = ProductBreadcrumbsWidget::widget(['model'=>$this->model]);
-            $renderArray['toCart'] = ToCartWidget::widget(['view'=>'add-to-cart-form.twig', 'product'=>$this->model]);
-            $renderArray['currency'] = CurrencyWidget::widget(['filterClass'=>new CurrencyFilter(), 'filterScenario'=>'widgetSearch', 'view'=>'currency-form.twig']);
-            $renderArray['similar'] = SeeAlsoWidget::widget(['data'=>(new SimilarProductsRepository())->getGroup($this->model), 'text'=>\Yii::t('base', 'Similar products:')]);
-            $renderArray['related'] = SeeAlsoWidget::widget(['data'=>(new RelatedProductsRepository())->getGroup($this->model), 'text'=>\Yii::t('base', 'Related products:')]);
+            $renderArray['toCart'] = ToCartWidget::widget(['view'=>'add-to-cart-form.twig', 'model'=>$this->model]);
+            $renderArray['currency'] = CurrencyWidget::widget(['repository'=>new CurrencyRepository(), 'view'=>'currency-form.twig']);
+            $renderArray['similar'] = SeeAlsoWidget::widget(['repository'=>new SimilarProductsRepository(), 'model'=>$this->model, 'text'=>\Yii::t('base', 'Similar products:'), 'view'=>'see-also.twig']);
+            $renderArray['related'] = SeeAlsoWidget::widget(['repository'=>new RelatedProductsRepository(), 'model'=>$this->model, 'text'=>\Yii::t('base', 'Related products:'), 'view'=>'see-also.twig']);
             
             $renderArray['name'] = $this->model->name;
             $renderArray['description'] = $this->model->description;

@@ -17,9 +17,9 @@ class ProductsRepository implements GetOneRepositoryInterface
     {
         try {
             if (array_key_exists($seocode, $this->items) !== true) {
-                $model = ProductsModel::find()->where('seocode=:seocode', [':seocode'=>$seocode])->one();
-                if ($model !== null) {
-                    $this->items[$seocode] = $model;
+                $data = ProductsModel::find()->where('seocode=:seocode', [':seocode'=>$seocode])->one();
+                if ($data !== null) {
+                    $this->items[$seocode] = $data;
                 }
             }
             

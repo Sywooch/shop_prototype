@@ -32,9 +32,9 @@ class SimilarProductsRepository implements GetGroupRepositoryInterface
                 $query->innerJoin('{{products_sizes}}', '[[products_sizes.id_product]]=[[products.id]]');
                 $query->andWhere(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($model->sizes, 'id')]);
                 $query->limit(\Yii::$app->params['similarLimit']);
-                $array = $query->all();
-                if (!empty($array)) {
-                    $this->items = $array;
+                $data = $query->all();
+                if (!empty($data)) {
+                    $this->items = $data;
                 }
             }
             

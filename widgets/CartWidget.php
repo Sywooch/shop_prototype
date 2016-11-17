@@ -5,7 +5,9 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\services\SearchServiceInterface;
+use app\repository\{GetGroupRepositoryInterface,
+    GetOneRepositoryInterface};
+use app\helpers\HashHelper;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -15,9 +17,13 @@ class CartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object SearchServiceInterface для поиска данных по запросу
+     * @var object GetGroupRepositoryInterface для поиска данных по запросу
      */
-    private $service;
+    private $repository;
+    /**
+     * @var object GetOneRepositoryInterface для поиска данных по запросу
+     */
+    private $currency;
     /**
      * @var string имя шаблона
      */
@@ -38,17 +44,19 @@ class CartWidget extends Widget
     public function run()
     {
         try {
-            $purchasesArray = $this->service->search();
+            $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
+            $purchasesArray = $this->repository->getGroup($key);
             
             if (!empty($purchasesArray)) {
                 foreach ($purchasesArray as $purchase) {
-                    $this->goods += $purchase['quantity'];
-                    $this->cost += ($purchase['price'] * $purchase['quantity']);
+                    $this->goods += $purchase->quantity;
+                    $this->cost += ($purchase->price * $purchase->quantity);
                 }
             }
             
-            if (!empty(\Yii::$app->currency->exchange_rate) && !empty(\Yii::$app->currency->code)) {
-                $this->cost = \Yii::$app->formatter->asDecimal($this->cost * \Yii::$app->currency->exchange_rate, 2) . ' ' . \Yii::$app->currency->code;
+            $currency = $this->currency->getOne(\Yii::$app->params['currencyKey']);
+            if (!empty($currency->exchange_rate) && !empty($currency->code)) {
+                $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
             }
             
             return $this->render($this->view, ['goods'=>$this->goods, 'cost'=>$this->cost]);
@@ -57,10 +65,19 @@ class CartWidget extends Widget
         }
     }
     
-    public function setService(SearchServiceInterface $service)
+    public function setRepository(GetGroupRepositoryInterface $repository)
     {
         try {
-            $this->service = $service;
+            $this->repository = $repository;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function setCurrency(GetOneRepositoryInterface $currency)
+    {
+        try {
+            $this->currency = $currency;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

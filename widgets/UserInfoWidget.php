@@ -15,10 +15,6 @@ class UserInfoWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object GetOneRepositoryInterface для поиска данных по запросу
-     */
-    private $repository;
-    /**
      * @var string имя шаблона
      */
     public $view;
@@ -30,22 +26,11 @@ class UserInfoWidget extends Widget
     public function run()
     {
         try {
-            if (\Yii::$app->user->isGuest == false) {
-                if ($user = $this->repository->getOne(\Yii::$app->params['userKey'])) {
-                    $authenticated = true;
-                }
+            if (\Yii::$app->user->isGuest === false) {
+                $user = \Yii::$app->user->identity;
             }
             
-            return $this->render($this->view, ['user'=>$user ?? \Yii::t('base', 'Guest'), 'authenticated'=>$authenticated ?? false]);
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function setRepository(GetOneRepositoryInterface $repository)
-    {
-        try {
-            $this->repository = $repository;
+            return $this->render($this->view, ['user'=>isset($user) ? $user->email->email : \Yii::t('base', 'Guest'), 'authenticated'=>isset($user) ? true : false]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\widgets\Menu;
 use app\exceptions\ExceptionsTrait;
 use app\models\CategoriesModel;
-use app\interfaces\SearchFilterInterface;
+use app\repository\GetGroupRepositoryInterface;
 
 /**
  * Формирует меню
@@ -16,13 +16,9 @@ class CategoriesMenuWidget extends Menu
     use ExceptionsTrait;
     
     /**
-     * @var object BaseFIltersInterface для поиска данных по запросу
+     * @var object GetGroupRepositoryInterface для поиска данных по запросу
      */
-    private $filterClass;
-    /**
-     * @var string сценарий поиска
-     */
-    public $filterScenario;
+    private $repository;
     /**
      * @var string основной route
      */
@@ -49,9 +45,7 @@ class CategoriesMenuWidget extends Menu
         try {
             parent::init();
             
-            //echo \app\models\CategoriesService::MENU_SEARCH;
-            
-            $this->categoriesList = $this->filterClass->search(\app\models\CategoriesFilter::MENU_SEARCH);
+            $this->categoriesList = $this->repository->getGroup();
             
             $this->setItems();
         } catch (\Throwable $t) {
@@ -67,21 +61,21 @@ class CategoriesMenuWidget extends Menu
         try {
             if (!empty($this->categoriesList)) {
                 foreach ($this->categoriesList as $category) {
-                    if (empty($category['active'])) {
+                    if (empty($category->active)) {
                         continue;
                     }
                     $pack = [
-                        'label'=>$category['name'],
-                        'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category['seocode']]
+                        'label'=>$category->name,
+                        'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode]
                     ];
-                    if (!empty($category['subcategory'])) {
-                        foreach ($category['subcategory'] as $subcategory) {
-                            if (empty($subcategory['active'])) {
+                    if (!empty($category->subcategory)) {
+                        foreach ($category->subcategory as $subcategory) {
+                            if (empty($subcategory->active)) {
                                 continue;
                             }
                             $pack['items'][] = [
-                                'label'=>$subcategory['name'],
-                                'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category['seocode'], \Yii::$app->params['subcategoryKey']=>$subcategory['seocode']]
+                                'label'=>$subcategory->name,
+                                'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode, \Yii::$app->params['subcategoryKey']=>$subcategory->seocode]
                             ];
                         }
                     }
@@ -93,10 +87,10 @@ class CategoriesMenuWidget extends Menu
         }
     }
     
-    public function setFilterClass(SearchFilterInterface $filterClass)
+    public function setRepository(GetGroupRepositoryInterface $repository)
     {
         try {
-            $this->filterClass = $filterClass;
+            $this->repository = $repository;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

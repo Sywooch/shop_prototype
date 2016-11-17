@@ -8,6 +8,8 @@ use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
 use app\widgets\PriceWidget;
+use app\repository\GetGroupRepositoryInterface;
+use app\models\ProductsModel;
 
 /**
  * Формирует HTML строку с информацией о похожих товарах
@@ -17,17 +19,21 @@ class SeeAlsoWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var array ProductsModel
+     * @var object GetGroupRepositoryInterface для поиска данных по запросу
      */
-    public $data;
+    private $repository;
+     /**
+     * @var object ProductsModel
+     */
+    private $model;
     /**
      * @var string текст заголовка
      */
     public $text;
     /**
-     * @var array массив результирующих строк
+     * @var string имя HTML шаблона
      */
-    private $_result = [];
+    public $view;
     
     /**
      * Конструирует HTML строку с информацией о похожих товарах
@@ -36,21 +42,36 @@ class SeeAlsoWidget extends Widget
     public function run()
     {
         try {
-            if (!empty($this->data)) {
-                if (!empty($this->text)) {
-                    $this->_result[] = Html::tag('p', Html::tag('strong', $this->text));
-                }
-                
+            $modelsArray = $this->repository->getGroup($this->model);
+            
+            if (!empty($modelsArray)) {
                 $itemsArray = [];
-                foreach($this->data as $model) {
-                    $a = Html::a($model->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$model->seocode]));
-                    $price = implode(' ', [\Yii::t('base', 'Price:'), PriceWidget::widget(['price'=>$model->price])]);
-                    $itemsArray[] = Html::tag('li', implode('<br/>', [$a, $price]));
+                foreach($modelsArray as $model) {
+                    $link = Html::a($model->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$model->seocode]));
+                    $price = PriceWidget::widget(['price'=>$model->price]);
+                    $itemsArray['products'][] = ['link'=>$link, 'price'=>$price];
                 }
-                $this->_result[] = Html::tag('ul', implode('', $itemsArray));
             }
             
-            return !empty($this->_result) ? implode('', $this->_result) : '';
+            return !empty($itemsArray) ? $this->render($this->view, array_merge(['text'=>$this->text], $itemsArray)) : '';
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function setRepository(GetGroupRepositoryInterface $repository)
+    {
+        try {
+            $this->repository = $repository;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function setModel(ProductsModel $model)
+    {
+        try {
+            $this->model = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -4,6 +4,7 @@ namespace app\widgets;
 
 use yii\base\ErrorException;
 use app\widgets\BreadcrumbsWidget;
+use app\models\ProductsModel;
 
 /**
  * Формирует breadcrumbs для страницы товара
@@ -13,7 +14,7 @@ class ProductBreadcrumbsWidget extends BreadcrumbsWidget
     /**
      * @var object ProductsModel
      */
-    public $model;
+    private $model;
     
     public function init()
     {
@@ -24,6 +25,15 @@ class ProductBreadcrumbsWidget extends BreadcrumbsWidget
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/product-detail/index', \Yii::$app->params['productKey']=>$this->model->seocode], 'label'=>$this->model->name];
             
             parent::init();
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function setModel(ProductsModel $model)
+    {
+        try {
+            $this->model = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
