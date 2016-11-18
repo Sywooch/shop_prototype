@@ -3,27 +3,36 @@
 namespace app\repository;
 
 use yii\base\ErrorException;
-use app\repository\GetOneRepositoryInterface;
+use app\repository\{AbstractBaseRepository,
+    GetOneRepositoryInterface};
 use app\exceptions\ExceptionsTrait;
 use app\models\ProductsModel;
 
-class ProductsRepository implements GetOneRepositoryInterface
+class ProductsRepository extends AbstractBaseRepository implements GetOneRepositoryInterface
 {
-    use ExceptionsTrait;
+    /**
+     * @var object ProductsModel
+     */
+    private $item;
     
-    private $items = [];
-    
+    /**
+     * Возвращает ProductsModel
+     * @param string $seocode ключ для поиска данных в хранилище
+     * @return ProductsModel или null
+     */
     public function getOne($seocode)
     {
         try {
-            if (array_key_exists($seocode, $this->items) !== true) {
-                $data = ProductsModel::find()->where('seocode=:seocode', [':seocode'=>$seocode])->one();
+            if (empty($this->item)) {
+                $query = ProductsModel::find();
+                $query = $this->addCriteria($query);
+                $data = $query->one();
                 if ($data !== null) {
-                    $this->items[$seocode] = $data;
+                    $this->item = $data;
                 }
             }
             
-            return !empty($this->items[$seocode]) ? $this->items[$seocode] : null;
+            return !empty($this->item) ? $this->item : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

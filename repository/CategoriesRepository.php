@@ -2,17 +2,15 @@
 
 namespace app\repository;
 
-use yii\base\{ErrorException,
-    Object};
-use app\repository\GetGroupRepositoryInterface;
+use yii\base\ErrorException;
+use app\repository\{AbstractBaseRepository,
+    GetGroupRepositoryInterface};
 use app\exceptions\ExceptionsTrait;
 use app\models\{CategoriesCompositInterface,
     CategoriesModel};
 
-class CategoriesRepository extends Object implements GetGroupRepositoryInterface
+class CategoriesRepository extends AbstractBaseRepository implements GetGroupRepositoryInterface
 {
-    use ExceptionsTrait;
-    
     /**
      * @var object CategoriesCompositInterface
      */
@@ -30,7 +28,9 @@ class CategoriesRepository extends Object implements GetGroupRepositoryInterface
             }
             
             if ($this->items->isEmpty()) {
-                $data = CategoriesModel::find()->with('subcategory')->all();
+                $query = CategoriesModel::find();
+                $query = $this->addCriteria($query);
+                $data = $query->all();
                 if (!empty($data)) {
                     foreach ($data as $object) {
                         $this->items->add($object);

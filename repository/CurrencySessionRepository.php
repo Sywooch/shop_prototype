@@ -3,15 +3,14 @@
 namespace app\repository;
 
 use yii\base\ErrorException;
-use app\repository\GetOneRepositoryInterface;
+use app\repository\{AbstractBaseRepository,
+    GetOneRepositoryInterface};
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
 use app\models\CurrencyModel;
 
-class CurrencySessionRepository implements GetOneRepositoryInterface
+class CurrencySessionRepository extends AbstractBaseRepository implements GetOneRepositoryInterface
 {
-    use ExceptionsTrait;
-    
     /**
      * @var object CurrencyModel
      */
@@ -22,7 +21,7 @@ class CurrencySessionRepository implements GetOneRepositoryInterface
      * @param string $key ключ для поиска данных в сессионном хранилище
      * @return CurrencyModel или null
      */
-    public function getOne($key): CurrencyModel
+    public function getOne($key)
     {
         try {
             if (empty($this->item)) {

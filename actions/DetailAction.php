@@ -17,7 +17,7 @@ class DetailAction extends AbstractBaseAction
     /**
      * @var object для поиска данных по запросу
      */
-    private $finderClass;
+    private $service;
     /**
      * @var string имя HTML шаблона
      */
@@ -30,10 +30,10 @@ class DetailAction extends AbstractBaseAction
     public function run()
     {
         try {
-            $model = $this->finderClass->search(\Yii::$app->request->get());
+            $model = $this->service->search(\Yii::$app->request->get());
             
             if (empty($model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('$model'));
+                throw new ErrorException(ExceptionsTrait::emptyError('model'));
             }
             
             Url::remember(Url::current(), \Yii::$app->id);
@@ -45,10 +45,10 @@ class DetailAction extends AbstractBaseAction
         }
     }
     
-    public function setFinderClass(SearchServiceInterface $finderClass)
+    public function setService(SearchServiceInterface $service)
     {
         try {
-            $this->finderClass = $finderClass;
+            $this->service = $service;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

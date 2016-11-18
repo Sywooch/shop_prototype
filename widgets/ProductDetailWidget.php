@@ -17,6 +17,7 @@ use app\widgets\{CartWidget,
     ToCartWidget,
     UserInfoWidget};
 use app\models\{CategoriesComposit,
+    CurrencyComposit,
     ProductsModel,
     PurchasesComposit};
 use app\repository\{CategoriesRepository,
@@ -81,7 +82,7 @@ class ProductDetailWidget extends Widget
                 'model'=>$this->model
             ]);
             $renderArray['currency'] = CurrencyWidget::widget([
-                'repository'=>new CurrencyRepository(), 
+                'repository'=>new CurrencyRepository(['items'=>new CurrencyComposit()]), 
                 'view'=>'currency-form.twig'
             ]);
             $renderArray['similar'] = SeeAlsoWidget::widget([
