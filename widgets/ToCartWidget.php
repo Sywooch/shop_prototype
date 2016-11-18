@@ -18,13 +18,29 @@ class ToCartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var string имя шаблона
-     */
-    public $view;
-    /**
      * @var object ProductsModel для которого строится форма
      */
     private $model;
+    /**
+     * @var string имя шаблона
+     */
+    public $view;
+    
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->model)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('model'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
     
     public function run()
     {
@@ -42,6 +58,10 @@ class ToCartWidget extends Widget
         }
     }
     
+    /**
+     * Присваивает ProductsModel свойству ToCartWidget::model
+     * @param object $model ProductsModel
+     */
     public function setModel(ProductsModel $model)
     {
         try {

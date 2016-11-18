@@ -8,6 +8,8 @@ use app\exceptions\ExceptionsTrait;
 use app\repository\{GetGroupRepositoryInterface,
     GetOneRepositoryInterface};
 use app\helpers\HashHelper;
+use app\models\{CurrencyModel,
+    PurchasesCompositInterface};
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -23,7 +25,7 @@ class CartWidget extends Widget
     /**
      * @var object GetOneRepositoryInterface для поиска данных по запросу
      */
-    private $currencyRepository;
+    private $currency;
     /**
      * @var string имя шаблона
      */
@@ -37,6 +39,25 @@ class CartWidget extends Widget
      */
     private $cost = 0;
     
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->repository)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
+            }
+            if (empty($this->currency)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('currency'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     /**
      * Конструирует HTML строку с информацией о текущем статусе корзины заказов
      * @return string
@@ -44,28 +65,16 @@ class CartWidget extends Widget
     public function run()
     {
         try {
-            if (empty($this->repository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('$this->repository'));
-            }
-            if (empty($this->currencyRepository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('$this->currencyRepository'));
-            }
-            if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('$this->view'));
-            }
-            
             $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-            $purchasesArray = $this->repository->getGroup($key);
+            $purchases = $this->repository->getGroup($key);
             
-            if (!empty($purchasesArray)) {
-                foreach ($purchasesArray as $purchase) {
-                    $this->goods += $purchase->quantity;
-                    $this->cost += ($purchase->price * $purchase->quantity);
-                }
+            if (!empty($purchases) && $purchases instanceof PurchasesCompositInterface) {
+                $this->goods = $purchases->quantity;
+                $this->cost = $purchases->price;
             }
             
-            $currency = $this->currencyRepository->getOne(\Yii::$app->params['currencyKey']);
-            if (!empty($currency->exchange_rate) && !empty($currency->code)) {
+            $currency = $this->currency->getOne(\Yii::$app->params['currencyKey']);
+            if ($currency instanceof CurrencyModel && !empty($currency->exchange_rate) && !empty($currency->code)) {
                 $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
             }
             
@@ -89,13 +98,13 @@ class CartWidget extends Widget
     }
     
     /**
-     * Присваивает GetOneRepositoryInterface свойству CartWidget::currencyRepository
-     * @param object $currencyRepository GetOneRepositoryInterface
+     * Присваивает GetOneRepositoryInterface свойству CartWidget::currency
+     * @param object $currency GetOneRepositoryInterface
      */
-    public function setCurrencyRepository (GetOneRepositoryInterface $currencyRepository)
+    public function setCurrency (GetOneRepositoryInterface $currency)
     {
         try {
-            $this->currencyRepository = $currencyRepository;
+            $this->currency = $currency;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

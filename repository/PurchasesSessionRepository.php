@@ -2,31 +2,59 @@
 
 namespace app\repository;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Object};
 use app\repository\GetGroupRepositoryInterface;
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
-use app\models\PurchasesModel;
+use app\models\{PurchasesCompositInterface,
+    PurchasesModel};
 
-class PurchasesSessionRepository implements GetGroupRepositoryInterface
+class PurchasesSessionRepository extends Object implements GetGroupRepositoryInterface
 {
     use ExceptionsTrait;
     
-    private $items = [];
+    /**
+     * @var object PurchasesCompositInterface
+     */
+    private $items;
     
+    /**
+     * Возвращает PurchasesCompositInterface, содержащий коллекцию PurchasesModel, 
+     * представляющих товары в корзине
+     * @param string $key ключ для поиска данных в сессионном хранилище
+     * @return PurchasesCompositInterface или null
+     */
     public function getGroup($key)
     {
         try {
-            if (array_key_exists($key, $this->items) !== true) {
+            if (empty($this->items)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('items'));
+            }
+            
+            if ($this->items->isEmpty()) {
                 $data = SessionHelper::read($key);
                 if (!empty($data)) {
                     foreach ($data as $purchase) {
-                        $this->items[$key][] = \Yii::createObject(array_merge(['class'=>PurchasesModel::class], $purchase));
+                        $this->items->add(\Yii::createObject(array_merge(['class'=>PurchasesModel::class], $purchase)));
                     }
                 }
             }
             
-            return !empty($this->items[$key]) ? $this->items[$key] : null;
+            return !empty($this->items) ? $this->items : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает PurchasesCompositInterface свойству PurchasesSessionRepository::items
+     * @param object $composit PurchasesCompositInterface
+     */
+    public function setItems(PurchasesCompositInterface $composit)
+    {
+        try {
+            $this->items = $composit;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

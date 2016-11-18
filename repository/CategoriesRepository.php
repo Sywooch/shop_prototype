@@ -2,29 +2,56 @@
 
 namespace app\repository;
 
-use yii\base\ErrorException;
-use yii\helpers\ArrayHelper;
+use yii\base\{ErrorException,
+    Object};
 use app\repository\GetGroupRepositoryInterface;
 use app\exceptions\ExceptionsTrait;
-use app\models\CategoriesModel;
+use app\models\{CategoriesCompositInterface,
+    CategoriesModel};
 
-class CategoriesRepository implements GetGroupRepositoryInterface
+class CategoriesRepository extends Object implements GetGroupRepositoryInterface
 {
     use ExceptionsTrait;
     
-    private $items = [];
+    /**
+     * @var object CategoriesCompositInterface
+     */
+    private $items;
     
-    public function getGroup($data=null): array
+    /**
+     * Возвращает CategoriesCompositInterface, содержащий коллекцию CategoriesModel
+     * @return CategoriesCompositInterface или null
+     */
+    public function getGroup($data=null)
     {
         try {
             if (empty($this->items)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('items'));
+            }
+            
+            if ($this->items->isEmpty()) {
                 $data = CategoriesModel::find()->with('subcategory')->all();
                 if (!empty($data)) {
-                    $this->items = $data;
+                    foreach ($data as $object) {
+                        $this->items->add($object);
+                    }
                 }
             }
             
-            return $this->items;
+            return !empty($this->items) ? $this->items : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CategoriesCompositInterface свойству CategoriesRepository::items
+     * @param object $composit CategoriesCompositInterface
+     */
+    public function setItems(CategoriesCompositInterface $composit)
+    {
+        try {
+            $this->items = $composit;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

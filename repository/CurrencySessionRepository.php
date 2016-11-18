@@ -12,19 +12,27 @@ class CurrencySessionRepository implements GetOneRepositoryInterface
 {
     use ExceptionsTrait;
     
-    private $items = [];
+    /**
+     * @var object CurrencyModel
+     */
+    private $item;
     
+    /**
+     * Возвращает CurrencyModel, представляющий текущую валюту 
+     * @param string $key ключ для поиска данных в сессионном хранилище
+     * @return CurrencyModel или null
+     */
     public function getOne($key): CurrencyModel
     {
         try {
-            if (array_key_exists($key, $this->items) !== true) {
+            if (empty($this->item)) {
                 $data = SessionHelper::read($key);
                 if (!empty($data)) {
-                    $this->items[$key] = \Yii::createObject(array_merge(['class'=>CurrencyModel::class], $data));
+                    $this->item = \Yii::createObject(array_merge(['class'=>CurrencyModel::class], $data));
                 }
             }
             
-            return !empty($this->items[$key]) ? $this->items[$key] : null;
+            return !empty($this->item) ? $this->item : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

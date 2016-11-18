@@ -8,7 +8,9 @@ use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
 use app\widgets\PriceWidget;
-use app\repository\GetGroupRepositoryInterface;
+use app\repository\{CurrencySessionRepository,
+    GetGroupRepositoryInterface,
+    GetOneRepositoryInterface};
 use app\models\ProductsModel;
 
 /**
@@ -35,6 +37,28 @@ class SeeAlsoWidget extends Widget
      */
     public $view;
     
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->repository)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
+            }
+            if (empty($this->model)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('model'));
+            }
+            if (empty($this->text)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('text'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     /**
      * Конструирует HTML строку с информацией о похожих товарах
      * @return string
@@ -48,7 +72,7 @@ class SeeAlsoWidget extends Widget
                 $itemsArray = [];
                 foreach($modelsArray as $model) {
                     $link = Html::a($model->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$model->seocode]));
-                    $price = PriceWidget::widget(['price'=>$model->price]);
+                    $price = PriceWidget::widget(['repository'=>new CurrencySessionRepository(), 'price'=>$model->price]);
                     $itemsArray['products'][] = ['link'=>$link, 'price'=>$price];
                 }
             }
@@ -59,6 +83,10 @@ class SeeAlsoWidget extends Widget
         }
     }
     
+    /**
+     * Присваивает GetGroupRepositoryInterface свойству SeeAlsoWidget::repository
+     * @param object $repository GetGroupRepositoryInterface
+     */
     public function setRepository(GetGroupRepositoryInterface $repository)
     {
         try {
@@ -68,6 +96,10 @@ class SeeAlsoWidget extends Widget
         }
     }
     
+    /**
+     * Присваивает ProductsModel свойству SeeAlsoWidget::model
+     * @param object $model ProductsModel
+     */
     public function setModel(ProductsModel $model)
     {
         try {

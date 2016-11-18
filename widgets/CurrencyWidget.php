@@ -25,6 +25,22 @@ class CurrencyWidget extends Widget
      */
     public $view;
     
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->repository)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     public function run()
     {
         try {
@@ -34,7 +50,7 @@ class CurrencyWidget extends Widget
             $currencyArray = $this->repository->getGroup();
             
             if (empty($currencyArray)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('$currencyArray'));
+                throw new ErrorException(ExceptionsTrait::emptyError('currencyArray'));
             }
             
             $currencyArray = ArrayHelper::map($currencyArray, 'id', 'code');
@@ -46,6 +62,10 @@ class CurrencyWidget extends Widget
         }
     }
     
+    /**
+     * Присваивает GetGroupRepositoryInterface свойству CurrencyWidget::repository
+     * @param object $repository GetGroupRepositoryInterface
+     */
     public function setRepository(GetGroupRepositoryInterface $repository)
     {
         try {

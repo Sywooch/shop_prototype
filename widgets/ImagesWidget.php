@@ -27,6 +27,22 @@ class ImagesWidget extends Widget
      */
     private $_result = [];
     
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->path)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('path'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     public function run()
     {
         try {

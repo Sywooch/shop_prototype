@@ -18,6 +18,19 @@ class UserInfoWidget extends Widget
      */
     public $view;
     
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     /**
      * Конструирует HTML строку с информацией о текущем пользователе
      * @return string
@@ -25,10 +38,6 @@ class UserInfoWidget extends Widget
     public function run()
     {
         try {
-            if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('$this->view'));
-            }
-            
             if (\Yii::$app->user->isGuest === false) {
                 $user = \Yii::$app->user->identity;
             }

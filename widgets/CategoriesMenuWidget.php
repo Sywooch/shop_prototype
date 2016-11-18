@@ -5,7 +5,8 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\widgets\Menu;
 use app\exceptions\ExceptionsTrait;
-use app\models\CategoriesModel;
+use app\models\{CategoriesCompositInterface,
+    CategoriesModel};
 use app\repository\GetGroupRepositoryInterface;
 
 /**
@@ -45,9 +46,15 @@ class CategoriesMenuWidget extends Menu
         try {
             parent::init();
             
+            if (empty($this->repository)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
+            }
+            
             $this->categoriesList = $this->repository->getGroup();
             
-            $this->setItems();
+            if (!empty($this->categoriesList) && $this->categoriesList instanceof CategoriesCompositInterface) {
+                $this->setItems();
+            }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -87,6 +94,10 @@ class CategoriesMenuWidget extends Menu
         }
     }
     
+    /**
+     * Присваивает GetGroupRepositoryInterface свойству CategoriesMenuWidget::repository
+     * @param object $repository GetGroupRepositoryInterface
+     */
     public function setRepository(GetGroupRepositoryInterface $repository)
     {
         try {
