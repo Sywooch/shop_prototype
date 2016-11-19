@@ -3,6 +3,7 @@
 namespace app\widgets;
 
 use yii\base\{ErrorExceptions,
+    Model,
     Widget};
 use yii\helpers\{ArrayHelper,
     Html};
@@ -18,7 +19,7 @@ class ToCartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object ProductsModel для которого строится форма
+     * @var object ActiveRecord/Model
      */
     private $model;
     /**
@@ -59,10 +60,10 @@ class ToCartWidget extends Widget
     }
     
     /**
-     * Присваивает ProductsModel свойству ToCartWidget::model
-     * @param object $model ProductsModel
+     * Присваивает Model свойству ToCartWidget::model
+     * @param object $model Model
      */
-    public function setModel(ProductsModel $model)
+    public function setModel(Model $model)
     {
         try {
             $this->model = $model;

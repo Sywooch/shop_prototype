@@ -3,6 +3,7 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
+    Model,
     Widget};
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
@@ -14,32 +15,23 @@ use app\widgets\{CartWidget,
     ProductBreadcrumbsWidget,
     SearchWidget,
     SeeAlsoRelatedWidget,
-    SeeAlsoWidget,
+    SeeAlsoSimilarWidget,
     ToCartWidget,
     UserInfoWidget};
-use app\models\{CategoriesComposit,
-    CategoriesModel,
+use app\models\{CategoriesModel,
     Collection,
-    CurrencyComposit,
     CurrencyModel,
-    ProductsComposit,
     ProductsModel,
-    PurchasesComposit};
-use app\repository\{CategoriesRepository,
-    CurrencySessionRepository,
-    CurrencyRepository,
-    DbRepository,
-    ProductsRepository,
-    PurchasesSessionRepository,
-    RelatedProductsRepository,
-    SimilarProductsRepository};
+    PurchasesModel};
+use app\repository\{DbRepository,
+    SessionRepository};
 
 class ProductDetailWidget extends Widget
 {
     use ExceptionsTrait;
     
     /**
-     * @var object ProductsModel
+     * @var object ActiveRecord/Model
      */
     private $model;
     /**
@@ -71,8 +63,13 @@ class ProductDetailWidget extends Widget
                 'view'=>'user-info.twig'
             ]);
             $renderArray['cart'] = CartWidget::widget([
-                'repository'=>new PurchasesSessionRepository(['items'=>new PurchasesComposit()]), 
-                'currency'=>new CurrencySessionRepository(), 
+                'repository'=>new SessionRepository([
+                    'items'=>new Collection(),
+                    'class'=>PurchasesModel::class
+                ]), 
+                'currency'=>new SessionRepository([
+                    'class'=>CurrencyModel::class
+                ]), 
                 'view'=>'short-cart.twig'
             ]);
             $renderArray['search'] = SearchWidget::widget([
@@ -128,7 +125,9 @@ class ProductDetailWidget extends Widget
             $renderArray['colors'] = ArrayHelper::getColumn($this->model->colors, 'color');
             $renderArray['sizes'] = ArrayHelper::getColumn($this->model->sizes, 'size');
             $renderArray['price'] = PriceWidget::widget([
-                'repository'=>new CurrencySessionRepository(), 
+                'repository'=>new SessionRepository([
+                    'class'=>CurrencyModel::class
+                ]), 
                 'price'=>$this->model->price
             ]);
             $renderArray['code'] = $this->model->code;
@@ -140,10 +139,10 @@ class ProductDetailWidget extends Widget
     }
     
     /**
-     * Присваивает ProductsModel свойству ProductDetailWidget::model
-     * @param object $model ProductsModel
+     * Присваивает Model свойству ProductDetailWidget::model
+     * @param object $model Model
      */
-    public function setModel(ProductsModel $model)
+    public function setModel(Model $model)
     {
         try {
             $this->model = $model;

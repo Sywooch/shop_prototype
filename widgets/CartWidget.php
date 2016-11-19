@@ -5,11 +5,10 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\repository\{GetGroupRepositoryInterface,
-    GetOneRepositoryInterface};
+use app\repository\RepositoryInterface;
 use app\helpers\HashHelper;
 use app\models\{CurrencyModel,
-    PurchasesCompositInterface};
+    CollectionInterface};
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -19,11 +18,11 @@ class CartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object GetGroupRepositoryInterface для поиска данных по запросу
+     * @var object RepositoryInterface для поиска данных по запросу
      */
     private $repository;
     /**
-     * @var object GetOneRepositoryInterface для поиска данных по запросу
+     * @var object RepositoryInterface для поиска данных по запросу
      */
     private $currency;
     /**
@@ -68,13 +67,14 @@ class CartWidget extends Widget
             $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
             $purchases = $this->repository->getGroup($key);
             
-            if (!empty($purchases) && $purchases instanceof PurchasesCompositInterface) {
+            if (!empty($purchases)) {
                 $this->goods = $purchases->quantity;
                 $this->cost = $purchases->price;
             }
             
             $currency = $this->currency->getOne(\Yii::$app->params['currencyKey']);
-            if ($currency instanceof CurrencyModel && !empty($currency->exchange_rate) && !empty($currency->code)) {
+            
+            if (!empty($currency->exchange_rate) && !empty($currency->code)) {
                 $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
             }
             
@@ -85,10 +85,10 @@ class CartWidget extends Widget
     }
     
     /**
-     * Присваивает GetGroupRepositoryInterface свойству CartWidget::repository
-     * @param object $repository GetGroupRepositoryInterface
+     * Присваивает RepositoryInterface свойству CartWidget::repository
+     * @param object $repository RepositoryInterface
      */
-    public function setRepository(GetGroupRepositoryInterface $repository)
+    public function setRepository(RepositoryInterface $repository)
     {
         try {
             $this->repository = $repository;
@@ -98,10 +98,10 @@ class CartWidget extends Widget
     }
     
     /**
-     * Присваивает GetOneRepositoryInterface свойству CartWidget::currency
-     * @param object $currency GetOneRepositoryInterface
+     * Присваивает RepositoryInterface свойству CartWidget::currency
+     * @param object $currency RepositoryInterface
      */
-    public function setCurrency (GetOneRepositoryInterface $currency)
+    public function setCurrency(RepositoryInterface $currency)
     {
         try {
             $this->currency = $currency;

@@ -5,7 +5,7 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\repository\GetOneRepositoryInterface;
+use app\repository\RepositoryInterface;
 
 /**
  * Формирует HTML строку с данными о цене товара
@@ -15,7 +15,7 @@ class PriceWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object GetOneRepositoryInterface для поиска данных по запросу
+     * @var object RepositoryInterface для поиска данных по запросу
      */
     private $repository;
     /**
@@ -59,10 +59,10 @@ class PriceWidget extends Widget
     }
     
     /**
-     * Присваивает GetOneRepositoryInterface свойству PriceWidget::repository
-     * @param object $repository GetOneRepositoryInterface
+     * Присваивает RepositoryInterface свойству PriceWidget::repository
+     * @param object $repository RepositoryInterface
      */
-    public function setRepository(GetOneRepositoryInterface $repository)
+    public function setRepository(RepositoryInterface $repository)
     {
         try {
             $this->repository = $repository;

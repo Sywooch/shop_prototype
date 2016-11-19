@@ -8,7 +8,7 @@ use app\exceptions\ExceptionsTrait;
 use app\models\{CollectionInterface,
     CategoriesModel,
     QueryCriteria};
-use app\repository\DbRepositoryInterface;
+use app\repository\RepositoryInterface;
 
 /**
  * Формирует меню
@@ -56,7 +56,7 @@ class CategoriesMenuWidget extends Menu
             $this->repository->setCriteria($criteria);
             $this->categoriesList = $this->repository->getGroup();
             
-            if (!empty($this->categoriesList) && $this->categoriesList instanceof CollectionInterface) {
+            if (!empty($this->categoriesList)) {
                 $this->setItems();
             }
         } catch (\Throwable $t) {
@@ -102,7 +102,7 @@ class CategoriesMenuWidget extends Menu
      * Присваивает GetGroupRepositoryInterface свойству CategoriesMenuWidget::repository
      * @param object $repository GetGroupRepositoryInterface
      */
-    public function setRepository(DbRepositoryInterface $repository)
+    public function setRepository(RepositoryInterface $repository)
     {
         try {
             $this->repository = $repository;

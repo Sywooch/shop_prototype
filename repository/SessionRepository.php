@@ -7,11 +7,12 @@ use app\repository\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
 use app\models\CollectionInterface;
+use app\helpers\SessionHelper;
 
-class DbRepository extends AbstractBaseRepository implements RepositoryInterface
+class SessionRepository extends AbstractBaseRepository implements RepositoryInterface
 {
     /**
-     * @var string имя класса ActiveRecord
+     * @var string имя класса ActiveRecord/Model
      */
     public $class;
     /**
@@ -27,15 +28,13 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      * Возвращает объект yii\base\Model
      * @return object/null
      */
-    public function getOne($data=null)
+    public function getOne($key)
     {
         try {
             if (empty($this->item)) {
-                $query = $this->class::find();
-                $query = $this->addCriteria($query);
-                $data = $query->one();
-                if ($data !== null) {
-                    $this->item = $data;
+                $data = SessionHelper::read($key);
+                if (!empty($data)) {
+                    $this->item = \Yii::createObject(array_merge(['class'=>$this->class], $data));
                 }
             }
             
@@ -49,7 +48,7 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      * Возвращает объект CollectionInterface
      * @return CollectionInterface/null
      */
-    public function getGroup($data=null)
+    public function getGroup($key)
     {
         try {
             if (empty($this->items)) {
@@ -57,12 +56,10 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
             }
             
             if ($this->items->isEmpty()) {
-                $query = $this->class::find();
-                $query = $this->addCriteria($query);
-                $data = $query->all();
+                $data = SessionHelper::read($key);
                 if (!empty($data)) {
-                    foreach ($data as $object) {
-                        $this->items->add($object);
+                    foreach ($data as $item) {
+                        $this->items->add(\Yii::createObject(array_merge(['class'=>$this->class], $item)));
                     }
                 }
             }

@@ -6,7 +6,7 @@ use yii\base\{ErrorException,
     Widget};
 use yii\Helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\repository\DbRepositoryInterface;
+use app\repository\RepositoryInterface;
 use app\models\QueryCriteria;
 
 /**
@@ -17,7 +17,7 @@ class CurrencyWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object DbRepositoryInterface для поиска данных по запросу
+     * @var object RepositoryInterface
      */
     private $repository;
     /**
@@ -47,26 +47,22 @@ class CurrencyWidget extends Widget
             $criteria = new QueryCriteria();
             $criteria->select(['id', 'code']);
             $this->repository->setCriteria($criteria);
-            $currencyArray = $this->repository->getGroup();
+            $currency = $this->repository->getGroup();
             
-            if (empty($currencyArray)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('currencyArray'));
-            }
+            $currency = ArrayHelper::map($currency, 'id', 'code');
+            asort($currency, SORT_STRING);
             
-            $currencyArray = ArrayHelper::map($currencyArray, 'id', 'code');
-            asort($currencyArray, SORT_STRING);
-            
-            return $this->render($this->view, ['currencyArray'=>$currencyArray]);
+            return $this->render($this->view, ['currency'=>$currency]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает DbRepositoryInterface свойству CurrencyWidget::repository
-     * @param object $repository DbRepositoryInterface
+     * Присваивает RepositoryInterface свойству CurrencyWidget::repository
+     * @param object $repository RepositoryInterface
      */
-    public function setRepository(DbRepositoryInterface $repository)
+    public function setRepository(RepositoryInterface $repository)
     {
         try {
             $this->repository = $repository;

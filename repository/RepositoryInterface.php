@@ -2,12 +2,15 @@
 
 namespace app\repository;
 
-use yii\db\Query;
 use app\models\QueryCriteriaInterface;
 
-interface GetOneRepositoryInterface
+/**
+ * Интерфейс классов-репозиториев
+ */
+interface RepositoryInterface
 {
+    public function getGroup($data);
     public function getOne($data);
     public function setCriteria(QueryCriteriaInterface $criteria);
-    public function addCriteria(Query $query);
+    public function addCriteria($query);
 }

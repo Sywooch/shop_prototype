@@ -3,9 +3,8 @@
 namespace app\repository;
 
 use yii\base\Object;
-use yii\db\Query;
-use app\models\QueryCriteriaInterface;
 use app\exceptions\ExceptionsTrait;
+use app\models\QueryCriteriaInterface;
 
 /**
  * Содержит общую функциональтность для классов репозиториев
@@ -36,7 +35,7 @@ abstract class AbstractBaseRepository extends Object
      * Применяет критерии к запросу
      * @param object $query Query
      */
-    public function addCriteria(Query $query)
+    public function addCriteria($query)
     {
         try {
             if (!empty($this->criteria)) {

@@ -102,7 +102,7 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
             if (!empty($this->items)) {
                 $result = 0;
                 foreach ($this->items as $item) {
-                    if (property_exists($item, $property) && is_numeric($item->$property)) {
+                    if (!empty($item->$property) && is_numeric($item->$property)) {
                         $result += $item->$property;
                     }
                 }

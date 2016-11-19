@@ -5,7 +5,7 @@ namespace app\services;
 use yii\base\{ErrorException,
     Object};
 use app\exceptions\ExceptionsTrait;
-use app\repository\GetOneRepositoryInterface;
+use app\repository\RepositoryInterface;
 use app\models\{ProductsModel,
     QueryCriteria};
 use app\services\SearchServiceInterface;
@@ -15,7 +15,7 @@ class OneProductSearchService extends Object implements SearchServiceInterface
     use ExceptionsTrait;
     
      /**
-     * @var object GetOneRepositoryInterface для поиска данных по запросу
+     * @var object RepositoryInterface для поиска данных по запросу
      */
     private $repository;
     
@@ -51,10 +51,10 @@ class OneProductSearchService extends Object implements SearchServiceInterface
     }
     
     /**
-     * Присваивает GetOneRepositoryInterface свойству ProductSearchService::repository
-     * @param object $repository GetOneRepositoryInterface
+     * Присваивает RepositoryInterface свойству ProductSearchService::repository
+     * @param object $repository RepositoryInterface
      */
-    public function setRepository(GetOneRepositoryInterface $repository)
+    public function setRepository(RepositoryInterface $repository)
     {
         try {
             $this->repository = $repository;

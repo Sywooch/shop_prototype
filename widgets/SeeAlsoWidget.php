@@ -8,10 +8,10 @@ use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
 use app\widgets\PriceWidget;
-use app\repository\{CurrencySessionRepository,
-    DbRepositoryInterface,
-    GetOneRepositoryInterface};
+use app\repository\{RepositoryInterface,
+    SessionRepository};
 use app\models\{CollectionInterface,
+    CurrencyModel,
     ProductsModel,
     QueryCriteria};
 
@@ -23,7 +23,7 @@ class SeeAlsoWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object DbRepositoryInterface для поиска данных по запросу
+     * @var object RepositoryInterface для поиска данных по запросу
      */
     protected $repository;
      /**
@@ -74,7 +74,7 @@ class SeeAlsoWidget extends Widget
                 $itemsArray = [];
                 foreach($productsArray as $model) {
                     $link = Html::a($model->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$model->seocode]));
-                    $price = PriceWidget::widget(['repository'=>new CurrencySessionRepository(), 'price'=>$model->price]);
+                    $price = PriceWidget::widget(['repository'=>new SessionRepository(['class'=>CurrencyModel::class]), 'price'=>$model->price]);
                     $itemsArray['products'][] = ['link'=>$link, 'price'=>$price];
                 }
             }
@@ -86,10 +86,10 @@ class SeeAlsoWidget extends Widget
     }
     
     /**
-     * Присваивает DbRepositoryInterface свойству SeeAlsoWidget::repository
-     * @param object $repository DbRepositoryInterface
+     * Присваивает RepositoryInterface свойству SeeAlsoWidget::repository
+     * @param object $repository RepositoryInterface
      */
-    public function setRepository(DbRepositoryInterface $repository)
+    public function setRepository(RepositoryInterface $repository)
     {
         try {
             $this->repository = $repository;
