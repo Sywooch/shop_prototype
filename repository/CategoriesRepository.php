@@ -9,6 +9,9 @@ use app\exceptions\ExceptionsTrait;
 use app\models\{CategoriesCompositInterface,
     CategoriesModel};
 
+/**
+ * Обрабатывает запросы на получение и сохранение объектов CategoriesModel
+ */
 class CategoriesRepository extends AbstractBaseRepository implements GetGroupRepositoryInterface
 {
     /**
@@ -38,7 +41,7 @@ class CategoriesRepository extends AbstractBaseRepository implements GetGroupRep
                 }
             }
             
-            return !empty($this->items) ? $this->items : null;
+            return !empty($data) ? $this->items : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

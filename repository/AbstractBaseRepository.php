@@ -36,7 +36,7 @@ abstract class AbstractBaseRepository extends Object
      * Применяет критерии к запросу
      * @param object $query Query
      */
-    protected function addCriteria(Query $query)
+    public function addCriteria(Query $query)
     {
         try {
             if (!empty($this->criteria)) {

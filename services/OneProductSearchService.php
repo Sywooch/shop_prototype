@@ -28,7 +28,7 @@ class OneProductSearchService extends Object implements SearchServiceInterface
     {
         try {
             if (empty($seocode = $request[\Yii::$app->params['productKey']])) {
-                throw new ErrorException(ExceptionsTrait::emptyError(\Yii::$app->params['seocode']));
+                throw new ErrorException(ExceptionsTrait::emptyError('seocode'));
             }
             if (empty($this->repository)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('repository'));
@@ -38,7 +38,7 @@ class OneProductSearchService extends Object implements SearchServiceInterface
             $criteria = new QueryCriteria();
             $criteria->where(['seocode'=>$seocode]);
             $this->repository->setCriteria($criteria);
-            $model = $this->repository->getOne($seocode);
+            $model = $this->repository->getOne();
             
             if (empty($model)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('model'));

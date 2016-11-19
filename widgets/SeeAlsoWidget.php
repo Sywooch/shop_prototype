@@ -11,7 +11,9 @@ use app\widgets\PriceWidget;
 use app\repository\{CurrencySessionRepository,
     GetGroupRepositoryInterface,
     GetOneRepositoryInterface};
-use app\models\ProductsModel;
+use app\models\{ProductsCompositInterface,
+    ProductsModel,
+    QueryCriteria};
 
 /**
  * Формирует HTML строку с информацией о похожих товарах
@@ -23,11 +25,11 @@ class SeeAlsoWidget extends Widget
     /**
      * @var object GetGroupRepositoryInterface для поиска данных по запросу
      */
-    private $repository;
+    protected $repository;
      /**
      * @var object ProductsModel
      */
-    private $model;
+    protected $model;
     /**
      * @var string текст заголовка
      */
@@ -66,11 +68,11 @@ class SeeAlsoWidget extends Widget
     public function run()
     {
         try {
-            $modelsArray = $this->repository->getGroup($this->model);
+            $productsArray = $this->repository->getGroup($this->model);
             
-            if (!empty($modelsArray)) {
+            if (!empty($productsArray) && $productsArray instanceof ProductsCompositInterface) {
                 $itemsArray = [];
-                foreach($modelsArray as $model) {
+                foreach($productsArray as $model) {
                     $link = Html::a($model->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$model->seocode]));
                     $price = PriceWidget::widget(['repository'=>new CurrencySessionRepository(), 'price'=>$model->price]);
                     $itemsArray['products'][] = ['link'=>$link, 'price'=>$price];

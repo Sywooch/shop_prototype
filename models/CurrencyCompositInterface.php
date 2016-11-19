@@ -5,7 +5,7 @@ namespace app\models;
 use app\models\CurrencyModel;
 
 /**
- * Интерфейс доступа к данным currency
+ * Интерфейс доступа к коллекции валют
  */
 interface CurrencyCompositInterface
 {

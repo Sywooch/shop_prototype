@@ -2,14 +2,14 @@
 
 namespace app\models;
 
-use yii\base\{ErrorException,
-    Object};
-use app\models\PurchasesCompositInterface;
+use yii\base\ErrorException;
+use app\models\{AbstractBaseComposit,
+    PurchasesCompositInterface};
 
 /**
  * Реализует интерфейс доступа к данным о покупках в корзине
  */
-class PurchasesComposit extends Object implements PurchasesCompositInterface
+class PurchasesComposit extends AbstractBaseComposit implements PurchasesCompositInterface
 {
     /**
      * Коллекция сущностей
@@ -72,7 +72,7 @@ class PurchasesComposit extends Object implements PurchasesCompositInterface
     }
     
     /**
-     * Возвращает true, false в зависимости от того, пуст или нет CategoriesComposit::items
+     * Возвращает true, false в зависимости от того, пуст или нет PurchasesComposit::items
      */
     public function isEmpty()
     {

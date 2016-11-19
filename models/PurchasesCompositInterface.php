@@ -5,7 +5,7 @@ namespace app\models;
 use app\models\PurchasesModel;
 
 /**
- * Интерфейс доступа к данным о покупках в корзине
+ * Интерфейс доступа к коллекции товаров в корзине
  */
 interface PurchasesCompositInterface
 {

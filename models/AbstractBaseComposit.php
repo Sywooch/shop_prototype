@@ -2,13 +2,14 @@
 
 namespace app\models;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Object};
 use app\exceptions\ExceptionsTrait;
 
 /**
  * Реализует интерфейс Iterator для доступа к коллекции товаров в корзине
  */
-abstract class AbstractBaseComposit implements \Iterator
+abstract class AbstractBaseComposit extends Object implements \Iterator
 {
     use ExceptionsTrait;
     

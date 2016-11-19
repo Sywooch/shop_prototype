@@ -15,7 +15,7 @@ use app\exceptions\ExceptionsTrait;
 class DetailAction extends AbstractBaseAction
 {
     /**
-     * @var object для поиска данных по запросу
+     * @var object SearchServiceInterface для поиска данных по запросу
      */
     private $service;
     /**

@@ -13,16 +13,19 @@ use app\widgets\{CartWidget,
     PriceWidget,
     ProductBreadcrumbsWidget,
     SearchWidget,
+    SeeAlsoRelatedWidget,
     SeeAlsoWidget,
     ToCartWidget,
     UserInfoWidget};
 use app\models\{CategoriesComposit,
     CurrencyComposit,
+    ProductsComposit,
     ProductsModel,
     PurchasesComposit};
 use app\repository\{CategoriesRepository,
     CurrencySessionRepository,
     CurrencyRepository,
+    ProductsRepository,
     PurchasesSessionRepository,
     RelatedProductsRepository,
     SimilarProductsRepository};
@@ -85,14 +88,14 @@ class ProductDetailWidget extends Widget
                 'repository'=>new CurrencyRepository(['items'=>new CurrencyComposit()]), 
                 'view'=>'currency-form.twig'
             ]);
-            $renderArray['similar'] = SeeAlsoWidget::widget([
-                'repository'=>new SimilarProductsRepository(), 
+            $renderArray['similar'] = SeeAlsoSimilarWidget::widget([
+                'repository'=>new ProductsRepository(['items'=>new ProductsComposit()]), 
                 'model'=>$this->model, 
                 'text'=>\Yii::t('base', 'Similar products:'), 
                 'view'=>'see-also.twig'
             ]);
-            $renderArray['related'] = SeeAlsoWidget::widget([
-                'repository'=>new RelatedProductsRepository(), 
+            $renderArray['related'] = SeeAlsoRelatedWidget::widget([
+                'repository'=>new ProductsRepository(['items'=>new ProductsComposit()]), 
                 'model'=>$this->model, 
                 'text'=>\Yii::t('base', 'Related products:'), 
                 'view'=>'see-also.twig'

@@ -92,14 +92,63 @@ class QueryCriteria extends Object implements QueryCriteriaInterface
     
     /**
      * Устанавливает условие WHERE
-     * @param $condition условия
+     * @param array $condition условия
      * @return Query
      */
-    public function where($condition)
+    public function where(array $condition)
     {
         try {
            $this->criteriaArray[] = function() use ($condition) {
                 return $this->query->andWhere($condition);
+            };
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Устанавливает условие JOIN
+     * @param string $type тип объединения, например, 'INNER JOIN', 'LEFT JOIN'
+     * @param string $table имя таблицы
+     * @param string $condition условие объединения, то есть фрагмент ON
+     * @return Query
+     */
+    public function join($type, $table, $condition)
+    {
+        try {
+           $this->criteriaArray[] = function() use ($type, $table, $condition) {
+                return $this->query->join($type, $table, $condition);
+            };
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Устанавливает условие DISTINCT
+     * @return Query
+     */
+    public function distinct()
+    {
+        try {
+           $this->criteriaArray[] = function() {
+                return $this->query->distinct();
+            };
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Устанавливает условие LIMIT
+     * @param int $condition количество возвращаемых записей
+     * @return Query
+     */
+    public function limit(int $condition)
+    {
+        try {
+           $this->criteriaArray[] = function() use ($condition) {
+                return $this->query->limit($condition);
             };
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

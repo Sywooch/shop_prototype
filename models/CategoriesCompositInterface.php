@@ -5,7 +5,7 @@ namespace app\models;
 use app\models\CategoriesModel;
 
 /**
- * Интерфейс доступа к данным категорий товаров
+ * Интерфейс доступа к коллекции категорий
  */
 interface CategoriesCompositInterface
 {

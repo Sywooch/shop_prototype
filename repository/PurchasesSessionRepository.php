@@ -2,15 +2,15 @@
 
 namespace app\repository;
 
-use yii\base\{ErrorException,
-    Object};
-use app\repository\GetGroupRepositoryInterface;
+use yii\base\ErrorException;
+use app\repository\{AbstractBaseRepository,
+    GetGroupRepositoryInterface};
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
 use app\models\{PurchasesCompositInterface,
     PurchasesModel};
 
-class PurchasesSessionRepository extends Object implements GetGroupRepositoryInterface
+class PurchasesSessionRepository extends AbstractBaseRepository implements GetGroupRepositoryInterface
 {
     use ExceptionsTrait;
     
