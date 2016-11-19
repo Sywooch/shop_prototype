@@ -3,14 +3,14 @@
 namespace app\models;
 
 use yii\base\ErrorException;
-use app\models\{AbstractBaseComposit,
-    CompositInterface,
+use app\models\{AbstractBaseCollection,
+    CollectionInterface,
     CategoriesModel};
 
 /**
  * Реализует интерфейс доступа к данным о покупках в корзине
  */
-class CategoriesComposit extends AbstractBaseComposit implements CompositInterface
+class Collection extends AbstractBaseCollection implements CollectionInterface
 {
     /**
      * Коллекция сущностей

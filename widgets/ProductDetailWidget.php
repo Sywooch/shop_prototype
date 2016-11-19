@@ -18,13 +18,17 @@ use app\widgets\{CartWidget,
     ToCartWidget,
     UserInfoWidget};
 use app\models\{CategoriesComposit,
+    CategoriesModel,
+    Collection,
     CurrencyComposit,
+    CurrencyModel,
     ProductsComposit,
     ProductsModel,
     PurchasesComposit};
 use app\repository\{CategoriesRepository,
     CurrencySessionRepository,
     CurrencyRepository,
+    DbRepository,
     ProductsRepository,
     PurchasesSessionRepository,
     RelatedProductsRepository,
@@ -75,7 +79,10 @@ class ProductDetailWidget extends Widget
                 'view'=>'search.twig'
             ]);
             $renderArray['menu'] = CategoriesMenuWidget::widget([
-                'repository'=>new CategoriesRepository(['items'=>new CategoriesComposit()])
+                'repository'=>new DbRepository([
+                    'items'=>new Collection(),
+                    'class'=>CategoriesModel::class
+                ])
             ]);
             $renderArray['breadcrumbs'] = ProductBreadcrumbsWidget::widget([
                 'model'=>$this->model
@@ -85,17 +92,26 @@ class ProductDetailWidget extends Widget
                 'model'=>$this->model
             ]);
             $renderArray['currency'] = CurrencyWidget::widget([
-                'repository'=>new CurrencyRepository(['items'=>new CurrencyComposit()]), 
+                'repository'=>new DbRepository([
+                    'items'=>new Collection(),
+                    'class'=>CurrencyModel::class
+                ]), 
                 'view'=>'currency-form.twig'
             ]);
             $renderArray['similar'] = SeeAlsoSimilarWidget::widget([
-                'repository'=>new ProductsRepository(['items'=>new ProductsComposit()]), 
+                'repository'=>new DbRepository([
+                    'items'=>new Collection(),
+                    'class'=>ProductsModel::class
+                ]), 
                 'model'=>$this->model, 
                 'text'=>\Yii::t('base', 'Similar products:'), 
                 'view'=>'see-also.twig'
             ]);
             $renderArray['related'] = SeeAlsoRelatedWidget::widget([
-                'repository'=>new ProductsRepository(['items'=>new ProductsComposit()]), 
+                'repository'=>new DbRepository([
+                    'items'=>new Collection(),
+                    'class'=>ProductsModel::class
+                ]),
                 'model'=>$this->model, 
                 'text'=>\Yii::t('base', 'Related products:'), 
                 'view'=>'see-also.twig'

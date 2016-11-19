@@ -6,7 +6,7 @@ use yii\base\{ErrorException,
     Widget};
 use yii\Helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\repository\GetGroupRepositoryInterface;
+use app\repository\DbRepositoryInterface;
 use app\models\QueryCriteria;
 
 /**
@@ -17,7 +17,7 @@ class CurrencyWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object GetGroupRepositoryInterface для поиска данных по запросу
+     * @var object DbRepositoryInterface для поиска данных по запросу
      */
     private $repository;
     /**
@@ -63,10 +63,10 @@ class CurrencyWidget extends Widget
     }
     
     /**
-     * Присваивает GetGroupRepositoryInterface свойству CurrencyWidget::repository
-     * @param object $repository GetGroupRepositoryInterface
+     * Присваивает DbRepositoryInterface свойству CurrencyWidget::repository
+     * @param object $repository DbRepositoryInterface
      */
-    public function setRepository(GetGroupRepositoryInterface $repository)
+    public function setRepository(DbRepositoryInterface $repository)
     {
         try {
             $this->repository = $repository;

@@ -25,6 +25,10 @@ class CurrencyRepository extends AbstractBaseRepository implements GetGroupRepos
     public function getGroup($data=null)
     {
         try {
+            if (empty($this->items)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('items'));
+            }
+            
             if ($this->items->isEmpty()) {
                 $query = CurrencyModel::find();
                 $query = $this->addCriteria($query);
@@ -36,7 +40,7 @@ class CurrencyRepository extends AbstractBaseRepository implements GetGroupRepos
                 }
             }
             
-            return !empty($this->items) ? $this->items : null;
+            return !empty($data) ? $this->items : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
