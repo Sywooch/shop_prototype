@@ -7,7 +7,7 @@ use yii\widgets\Menu;
 use app\exceptions\ExceptionsTrait;
 use app\models\{CollectionInterface,
     CategoriesModel};
-use app\repository\RepositoryInterface;
+use app\repositories\RepositoryInterface;
 
 /**
  * Формирует меню

@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\actions\DetailAction;
 use app\services\OneProductSearchService;
-use app\repository\DbRepository;
+use app\repositories\DbRepository;
 use app\models\ProductsModel;
 
 /**

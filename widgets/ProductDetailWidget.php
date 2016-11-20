@@ -23,7 +23,7 @@ use app\models\{CategoriesModel,
     CurrencyModel,
     ProductsModel,
     PurchasesModel};
-use app\repository\{DbRepository,
+use app\repositories\{DbRepository,
     SessionRepository};
 
 class ProductDetailWidget extends Widget

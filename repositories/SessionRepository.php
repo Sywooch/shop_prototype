@@ -1,19 +1,18 @@
 <?php
 
-namespace app\repository;
+namespace app\repositories;
 
 use yii\base\ErrorException;
-use app\repository\{AbstractBaseRepository,
+use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
-use app\models\{CollectionInterface,
-    QueryCriteria,
-    CriteriaInterface};
+use app\helpers\SessionHelper;
+use app\models\CollectionInterface;
 
-class DbRepository extends AbstractBaseRepository implements RepositoryInterface
+class SessionRepository extends AbstractBaseRepository implements RepositoryInterface
 {
     /**
-     * @var string имя класса ActiveRecord для построения запроса
+     * @var string имя класса ActiveRecord/Model
      */
     public $class;
     /**
@@ -31,18 +30,15 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     
     /**
      * Возвращает объект yii\base\Model
-     * @param mixed $request параметры для построения запроса
-     * @return Model/null
+     * @return object/null
      */
-    public function getOne($request=null)
+    public function getOne($key=null)
     {
         try {
             if (empty($this->item)) {
-                $query = $this->class::find();
-                $query = $this->addCriteria($query);
-                $data = $query->one();
-                if ($data !== null) {
-                    $this->item = $data;
+                $data = SessionHelper::read($key);
+                if (!empty($data)) {
+                    $this->item = \Yii::createObject(array_merge(['class'=>$this->class], $data));
                 }
             }
             
@@ -54,10 +50,9 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     
     /**
      * Возвращает объект CollectionInterface
-     * @param mixed $request параметры для построения запроса
      * @return CollectionInterface/null
      */
-    public function getGroup($request=null)
+    public function getGroup($key=null)
     {
         try {
             if (empty($this->items)) {
@@ -65,12 +60,10 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
             }
             
             if ($this->items->isEmpty()) {
-                $query = $this->class::find();
-                $query = $this->addCriteria($query);
-                $data = $query->all();
+                $data = SessionHelper::read($key);
                 if (!empty($data)) {
-                    foreach ($data as $object) {
-                        $this->items->add($object);
+                    foreach ($data as $item) {
+                        $this->items->add(\Yii::createObject(array_merge(['class'=>$this->class], $item)));
                     }
                 }
             }
@@ -85,16 +78,9 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      * Возвращает объект CriteriaInterface для установки критериев фильтрации
      * @return object $criteria CriteriaInterface
      */
-    public function getCriteria(): CriteriaInterface
+    public function getCriteria()
     {
-        try {
-            if (empty($this->criteria)) {
-                $this->criteria = new QueryCriteria();
-            }
-            return $this->criteria;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
+       
     }
     
     /**

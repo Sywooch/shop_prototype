@@ -1,18 +1,19 @@
 <?php
 
-namespace app\repository;
+namespace app\repositories;
 
 use yii\base\ErrorException;
-use app\repository\{AbstractBaseRepository,
+use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
-use app\helpers\SessionHelper;
-use app\models\CollectionInterface;
+use app\models\{CollectionInterface,
+    QueryCriteria,
+    CriteriaInterface};
 
-class SessionRepository extends AbstractBaseRepository implements RepositoryInterface
+class DbRepository extends AbstractBaseRepository implements RepositoryInterface
 {
     /**
-     * @var string имя класса ActiveRecord/Model
+     * @var string имя класса ActiveRecord для построения запроса
      */
     public $class;
     /**
@@ -30,15 +31,18 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     
     /**
      * Возвращает объект yii\base\Model
-     * @return object/null
+     * @param mixed $request параметры для построения запроса
+     * @return Model/null
      */
-    public function getOne($key)
+    public function getOne($request=null)
     {
         try {
             if (empty($this->item)) {
-                $data = SessionHelper::read($key);
-                if (!empty($data)) {
-                    $this->item = \Yii::createObject(array_merge(['class'=>$this->class], $data));
+                $query = $this->class::find();
+                $query = $this->addCriteria($query);
+                $data = $query->one();
+                if ($data !== null) {
+                    $this->item = $data;
                 }
             }
             
@@ -50,9 +54,10 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     
     /**
      * Возвращает объект CollectionInterface
+     * @param mixed $request параметры для построения запроса
      * @return CollectionInterface/null
      */
-    public function getGroup($key)
+    public function getGroup($request=null)
     {
         try {
             if (empty($this->items)) {
@@ -60,15 +65,17 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
             }
             
             if ($this->items->isEmpty()) {
-                $data = SessionHelper::read($key);
+                $query = $this->class::find();
+                $query = $this->addCriteria($query);
+                $data = $query->all();
                 if (!empty($data)) {
-                    foreach ($data as $item) {
-                        $this->items->add(\Yii::createObject(array_merge(['class'=>$this->class], $item)));
+                    foreach ($data as $object) {
+                        $this->items->add($object);
                     }
                 }
             }
             
-            return !empty($data) ? $this->items : null;
+            return ($this->items->isEmpty() === false) ? $this->items : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -78,9 +85,16 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
      * Возвращает объект CriteriaInterface для установки критериев фильтрации
      * @return object $criteria CriteriaInterface
      */
-    public function getCriteria()
+    public function getCriteria(): CriteriaInterface
     {
-       
+        try {
+            if (empty($this->criteria)) {
+                $this->criteria = new QueryCriteria();
+            }
+            return $this->criteria;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
     
     /**

@@ -1,6 +1,6 @@
 <?php
 
-namespace app\repository;
+namespace app\repositories;
 
 use yii\base\Object;
 use app\exceptions\ExceptionsTrait;

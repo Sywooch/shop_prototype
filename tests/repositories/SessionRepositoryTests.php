@@ -3,44 +3,52 @@
 namespace app\tests\repositories;
 
 use PHPUnit\Framework\TestCase;
-use app\tests\DbManager;
-use app\tests\sources\fixtures\{AddressFixture,
-    BrandsFixture,
-    CategoriesFixture,
-    CurrencyFixture};
-use app\repository\SessionRepository;
+use yii\base\Model;
+use app\repositories\SessionRepository;
 use app\models\{AbstractBaseCollection,
-    AddressModel,
-    BrandsModel,
-    CollectionInterface,
-    CategoriesModel,
-    CurrencyModel};
+    CollectionInterface};
 
 class SessionRepositoryTests extends TestCase
 {
-    private static $dbClass;
+    private $mockModel;
+    private $mockCollection;
     private static $session;
     private static $key = 'sessionKey';
+    private static $oneKey = 'sessionOneKey';
     private static $wrongKey = 'wrongKey';
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager([
-            'fixtures'=>[
-                'categories'=>CategoriesFixture::class,
-                'currency'=>CurrencyFixture::class,
-                'brands'=>BrandsFixture::class,
-                'address'=>AddressFixture::class
-            ],
-        ]);
-        self::$dbClass->loadFixtures();
-        
         self::$session = \Yii::$app->session;
+        self::$session->open();
+        self::$session->set(self::$key, [['id'=>1, 'one'=>'one', 'two'=>'two'], ['id'=>2, 'one'=>'one', 'two'=>'two'], ['id'=>3, 'one'=>'one', 'two'=>'two']]);
+        self::$session->set(self::$oneKey, ['id'=>1, 'one'=>'one', 'two'=>'two']);
+        self::$session->close();
+    }
+    
+    public function setUp()
+    {
+        $this->mockModel = new class() extends Model {
+            public $id;
+            public $one;
+            public $two;
+        };
+        
+        $this->mockCollection = new class () extends AbstractBaseCollection implements CollectionInterface {
+            public $items = [];
+            public function add($model) {
+                $this->items[] = $model;
+            }
+            public function isEmpty() 
+            {
+                return empty($this->items) ? true : false;
+            }
+        };
     }
     
     /**
      * Тестирует метод SessionRepository::setItems
-     * передаю не поддерживающий интерфейс CollectionInterface объект
+     * передаю не поддерживающий CollectionInterface объект
      * @expectedException TypeError
      */
     public function testSetItemsError()
@@ -65,30 +73,20 @@ class SessionRepositoryTests extends TestCase
      */
     public function testGetGroup()
     {
-        $fixture = self::$dbClass->categories['category_1'];
-        $fixture2 = self::$dbClass->categories['category_2'];
-        self::$session->open();
-        self::$session->set(self::$key, [$fixture, $fixture2]);
-        self::$session->close();
-        
         $repository = new SessionRepository();
-        $repository->class = CategoriesModel::class;
-        $repository->items = new class () extends AbstractBaseCollection implements CollectionInterface {
-            public $items = [];
-            public function add($model) {
-                $this->items[] = $model;
-            }
-            public function isEmpty() 
-            {
-                return empty($this->items) ? true : false;
-            }
-        };
+        $repository->class = $this->mockModel ::className();
+        $repository->items = $this->mockCollection;
+        
         $result = $repository->getGroup(self::$key);
         
         $this->assertTrue($result instanceof CollectionInterface);
+        
+        $count = 0;
         foreach ($result as $object) {
-            $this->assertTrue($object instanceof CategoriesModel);
+            $this->assertTrue($object instanceof $this->mockModel);
+            ++$count;
         }
+        $this->assertEquals(3, $count);
     }
     
     /**
@@ -98,17 +96,9 @@ class SessionRepositoryTests extends TestCase
     public function testGetGroupNull()
     {
         $repository = new SessionRepository();
-        $repository->class = CurrencyModel::class;
-        $repository->items = new class () extends AbstractBaseCollection implements CollectionInterface {
-            public $items = [];
-            public function add($model) {
-                $this->items[] = $model;
-            }
-            public function isEmpty() 
-            {
-                return empty($this->items) ? true : false;
-            }
-        };
+        $repository->class = $this->mockModel ::className();
+        $repository->items = $this->mockCollection;
+        
         $result = $repository->getGroup(self::$wrongKey);
         
         $this->assertNull($result);
@@ -119,26 +109,21 @@ class SessionRepositoryTests extends TestCase
      */
     public function testGetOne()
     {
-        $fixture = self::$dbClass->brands['brand_1'];
-        self::$session->open();
-        self::$session->set(self::$key, $fixture);
-        self::$session->close();
-        
         $repository = new SessionRepository();
-        $repository->class = BrandsModel::class;
-        $result = $repository->getOne(self::$key);
+        $repository->class = $this->mockModel::className();
+        $result = $repository->getOne(self::$oneKey);
         
-        $this->assertTrue($result instanceof BrandsModel);
+        $this->assertTrue($result instanceof $this->mockModel);
     }
     
     /**
      * Тестирует метод SessionRepository::getOne
      * при отсутствии данных, удовлетворяющих условиям запроса
      */
-    public function testgetOneNull()
+    public function testGetOneNull()
     {
         $repository = new SessionRepository();
-        $repository->class = AddressModel::class;
+        $repository->class = $this->mockModel::className();
         $result = $repository->getOne(self::$wrongKey);
         
         $this->assertNull($result);
@@ -148,8 +133,7 @@ class SessionRepositoryTests extends TestCase
     {
         self::$session->open();
         self::$session->remove(self::$key);
+        self::$session->remove(self::$oneKey);
         self::$session->close();
-        
-        self::$dbClass->unloadFixtures();
     }
 }

@@ -8,7 +8,7 @@ use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
 use app\widgets\PriceWidget;
-use app\repository\{RepositoryInterface,
+use app\repositories\{RepositoryInterface,
     SessionRepository};
 use app\models\{CollectionInterface,
     CurrencyModel,

@@ -4,6 +4,7 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
+use yii\web\User;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -17,6 +18,10 @@ class UserInfoWidget extends Widget
      * @var string имя шаблона
      */
     public $view;
+    /**
+     * @var object yii\web\User
+     */
+    private $user;
     
     public function init()
     {
@@ -25,6 +30,9 @@ class UserInfoWidget extends Widget
             
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+            if (empty($this->user)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('user'));
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -38,11 +46,24 @@ class UserInfoWidget extends Widget
     public function run()
     {
         try {
-            if (\Yii::$app->user->isGuest === false) {
-                $user = \Yii::$app->user->identity;
+            if ($this->user->isGuest === false) {
+                $user = $this->user->identity;
             }
             
             return $this->render($this->view, ['user'=>isset($user) ? $user->email->email : \Yii::t('base', 'Guest'), 'authenticated'=>isset($user) ? true : false]);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает User свойству UserInfoWidget::user
+     * @param object $user User
+     */
+    public function setUser(User $user)
+    {
+        try {
+            $this->user = $user;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

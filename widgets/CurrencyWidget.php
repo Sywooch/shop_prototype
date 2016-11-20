@@ -6,7 +6,7 @@ use yii\base\{ErrorException,
     Widget};
 use yii\Helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\repository\RepositoryInterface;
+use app\repositories\RepositoryInterface;
 
 /**
  * Формирует HTML строку с формой выбора валюты

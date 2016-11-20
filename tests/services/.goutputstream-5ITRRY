@@ -3,83 +3,68 @@
 namespace app\tests\repositories;
 
 use PHPUnit\Framework\TestCase;
-use yii\db\ActiveRecord;
-use app\repositories\DbRepository;
+use app\services\OneProductSearchService;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\ProductsFixture;
+use app\repositories\{DbRepository,
+    RepositoryInterface};
 use app\models\{AbstractBaseCollection,
     CollectionInterface,
     CriteriaInterface};
 
-class DbRepositoryTests extends TestCase
+class OneProductSearchServiceTests extends TestCase
 {
-    private $mockModel;
-    private $mockCollection;
+    private static $dbClass;
     
     public static function setUpBeforeClass()
     {
-        \Yii::$app->db->createCommand('CREATE TABLE IF NOT EXISTS {{testTable}} ([[id]] INT AUTO_INCREMENT PRIMARY KEY, [[name]] VARCHAR(255), [[short_description]] VARCHAR(500))')->execute();
-        \Yii::$app->db->createCommand('INSERT INTO {{testTable}} (id,name,short_description) VALUES (1,\'one\',\'one\'), (2,\'two\',\'two\'), (3,\'three\',\'three\')')->execute();
-    }
-    
-    public function setUp()
-    {
-        $this->mockModel = new class() extends ActiveRecord {
-            public static function tableName()
-            {
-                return 'testTable';
-            }
-        };
-        
-        $this->mockCollection = new class () extends AbstractBaseCollection implements CollectionInterface {
-            public $items = [];
-            public function add($model) {
-                $this->items[] = $model;
-            }
-            public function isEmpty() 
-            {
-                return empty($this->items) ? true : false;
-            }
-        };
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'products'=>ProductsFixture::class,
+            ],
+        ]);
+        self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует метод DbRepository::setItems
-     * передаю не поддерживающий CollectionInterface объект
+     * Тестирует метод OneProductSearchService::setRepository
+     * передаю не поддерживающий RepositoryInterface объект
      * @expectedException TypeError
      */
-    public function testSetItemsError()
+    public function testSetRepositoryError()
     {
-        $repository = new DbRepository();
-        $repository->items = new class () {};
+        $service = new OneProductSearchService();
+        $service->repository = new class () {};
     }
     
     /**
-     * Тестирует метод DbRepository::getCriteria
+     * Тестирует метод OneProductSearchService::search
      */
-    public function testGetCriteria()
+    public function testSearch()
     {
-        $repository = new DbRepository();
+        $repository = new OneProductSearchService();
         $result = $repository->getCriteria();
         
         $this->assertTrue($result instanceof CriteriaInterface);
     }
     
     /**
-     * Тестирует метод DbRepository::getGroup
-     * вызываю с пустым DbRepository::items
+     * Тестирует метод OneProductSearchService::getGroup
+     * вызываю с пустым OneProductSearchService::items
      * @expectedException yii\base\ErrorException
      */
-    public function testGetGroupError()
+    /*public function testGetGroupError()
     {
-        $repository = new DbRepository();
+        $repository = new OneProductSearchService();
         $repository->getGroup();
-    }
+    }*/
     
     /**
-     * Тестирует метод DbRepository::getGroup
+     * Тестирует метод OneProductSearchService::getGroup
      */
-    public function testGetGroup()
+    /*public function testGetGroup()
     {
-        $repository = new DbRepository();
+        $repository = new OneProductSearchService();
         $repository->class = $this->mockModel ::className();
         $repository->items = $this->mockCollection;
         
@@ -93,15 +78,15 @@ class DbRepositoryTests extends TestCase
             ++$count;
         }
         $this->assertEquals(3, $count);
-    }
+    }*/
     
     /**
-     * Тестирует метод DbRepository::getGroup
+     * Тестирует метод OneProductSearchService::getGroup
      * с применением критериев выборки
      */
-    public function testGetGroupCriteria()
+    /*public function testGetGroupCriteria()
     {
-        $repository = new DbRepository();
+        $repository = new OneProductSearchService();
         $repository->class = $this->mockModel::className();
         $repository->items = $this->mockCollection;
         $criteria = $repository->getCriteria();
@@ -116,15 +101,15 @@ class DbRepositoryTests extends TestCase
             ++$count;
         }
         $this->assertEquals(2, $count);
-    }
+    }*/
     
     /**
-     * Тестирует метод DbRepository::getGroup
+     * Тестирует метод OneProductSearchService::getGroup
      * при отсутствии данных, удовлетворяющих условиям SQL запроса
      */
-    public function testGetGroupCriteriaNull()
+    /*public function testGetGroupCriteriaNull()
     {
-        $repository = new DbRepository();
+        $repository = new OneProductSearchService();
         $repository->class = $this->mockModel::className();
         $repository->items = $this->mockCollection;
         $criteria = $repository->getCriteria();
@@ -132,52 +117,52 @@ class DbRepositoryTests extends TestCase
         $result = $repository->getGroup();
         
         $this->assertNull($result);
-    }
+    }*/
     
     /**
-     * Тестирует метод DbRepository::getOne
+     * Тестирует метод OneProductSearchService::getOne
      */
-    public function testGetOne()
+    /*public function testGetOne()
     {
-        $repository = new DbRepository();
+        $repository = new OneProductSearchService();
         $repository->class = $this->mockModel::className();
         $result = $repository->getOne();
         
         $this->assertTrue($result instanceof $this->mockModel);
-    }
+    }*/
     
     /**
-     * Тестирует метод DbRepository::getOne
+     * Тестирует метод OneProductSearchService::getOne
      * с применением критериев выборки
      */
-    public function testGetOneCriteria()
+    /*public function testGetOneCriteria()
     {
-        $repository = new DbRepository();
+        $repository = new OneProductSearchService();
         $repository->class = $this->mockModel::className();
         $criteria = $repository->getCriteria();
         $criteria->where(['[[name]]'=>'three']);
         $result = $repository->getOne();
         
         $this->assertTrue($result instanceof $this->mockModel);
-    }
+    }*/
     
     /**
-     * Тестирует метод DbRepository::getOne
+     * Тестирует метод OneProductSearchService::getOne
      * при отсутствии данных, удовлетворяющих условиям SQL запроса
      */
-    public function testgetOneCriteriaNull()
+    /*public function testgetOneCriteriaNull()
     {
-        $repository = new DbRepository();
+        $repository = new OneProductSearchService();
         $repository->class = $this->mockModel::className();
         $criteria = $repository->getCriteria();
         $criteria->where(['[[name]]'=>'hundred']);
         $result = $repository->getOne();
         
         $this->assertNull($result);
-    }
+    }*/
     
     public static function tearDownAfterClass()
     {
-        \Yii::$app->db->createCommand('DROP TABLE {{testTable}}')->execute();
+        self::$dbClass->unloadFixtures();
     }
 }

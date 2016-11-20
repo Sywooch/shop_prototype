@@ -5,7 +5,7 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\repository\RepositoryInterface;
+use app\repositories\RepositoryInterface;
 use app\helpers\HashHelper;
 use app\models\{CurrencyModel,
     CollectionInterface};

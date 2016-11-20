@@ -5,7 +5,7 @@ namespace app\services;
 use yii\base\{ErrorException,
     Object};
 use app\exceptions\ExceptionsTrait;
-use app\repository\RepositoryInterface;
+use app\repositories\RepositoryInterface;
 use app\models\ProductsModel;
 use app\services\SearchServiceInterface;
 

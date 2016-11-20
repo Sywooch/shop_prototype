@@ -5,7 +5,7 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\repository\RepositoryInterface;
+use app\repositories\RepositoryInterface;
 
 /**
  * Формирует HTML строку с данными о цене товара

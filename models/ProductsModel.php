@@ -11,7 +11,7 @@ use app\models\{AbstractBaseModel,
     SubcategoryModel};
 use app\helpers\PicturesHelper;
 use app\exceptions\ExceptionsTrait;
-use app\repository\{GetGroupRepositoryInterface,
+use app\repositories\{GetGroupRepositoryInterface,
     SimilarProductsRepository};
 
 /**
