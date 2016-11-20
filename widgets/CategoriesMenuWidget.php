@@ -6,8 +6,7 @@ use yii\base\ErrorException;
 use yii\widgets\Menu;
 use app\exceptions\ExceptionsTrait;
 use app\models\{CollectionInterface,
-    CategoriesModel,
-    QueryCriteria};
+    CategoriesModel};
 use app\repository\RepositoryInterface;
 
 /**
@@ -51,9 +50,8 @@ class CategoriesMenuWidget extends Menu
                 throw new ErrorException(ExceptionsTrait::emptyError('repository'));
             }
             
-            $criteria = new QueryCriteria();
+            $criteria = $this->repository->getCriteria();
             $criteria->with('subcategory');
-            $this->repository->setCriteria($criteria);
             $this->categoriesList = $this->repository->getGroup();
             
             if (!empty($this->categoriesList)) {

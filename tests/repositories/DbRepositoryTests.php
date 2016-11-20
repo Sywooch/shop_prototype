@@ -3,49 +3,64 @@
 namespace app\tests\repositories;
 
 use PHPUnit\Framework\TestCase;
-use app\tests\DbManager;
-use app\tests\sources\fixtures\{AddressFixture,
-    BrandsFixture,
-    CategoriesFixture,
-    ColorsFixture,
-    CurrencyFixture};
+use yii\db\ActiveRecord;
 use app\repository\DbRepository;
 use app\models\{AbstractBaseCollection,
-    AddressModel,
-    BrandsModel,
     CollectionInterface,
-    CategoriesModel,
-    CurrencyModel,
-    ColorsModel,
-    QueryCriteria};
+    CriteriaInterface};
 
 class DbRepositoryTests extends TestCase
 {
-    private static $dbClass;
+    private $mockModel;
+    private $mockCollection;
     
     public static function setUpBeforeClass()
     {
-        self::$dbClass = new DbManager([
-            'fixtures'=>[
-                'categories'=>CategoriesFixture::class,
-                'colors'=>ColorsFixture::class,
-                'currency'=>CurrencyFixture::class,
-                'brands'=>BrandsFixture::class,
-                'address'=>AddressFixture::class
-            ],
-        ]);
-        self::$dbClass->loadFixtures();
+        \Yii::$app->db->createCommand('CREATE TABLE IF NOT EXISTS {{testTable}} ([[id]] INT AUTO_INCREMENT PRIMARY KEY, [[name]] VARCHAR(255), [[short_description]] VARCHAR(500))')->execute();
+        \Yii::$app->db->createCommand('INSERT INTO {{testTable}} (id,name,short_description) VALUES (1,\'one\',\'one\'), (2,\'two\',\'two\'), (3,\'three\',\'three\')')->execute();
+    }
+    
+    public function setUp()
+    {
+        $this->mockModel = new class() extends ActiveRecord {
+            public static function tableName()
+            {
+                return 'testTable';
+            }
+        };
+        
+        $this->mockCollection = new class () extends AbstractBaseCollection implements CollectionInterface {
+            public $items = [];
+            public function add($model) {
+                $this->items[] = $model;
+            }
+            public function isEmpty() 
+            {
+                return empty($this->items) ? true : false;
+            }
+        };
     }
     
     /**
      * Тестирует метод DbRepository::setItems
-     * передаю не поддерживающий интерфейс CollectionInterface объект
+     * передаю не поддерживающий CollectionInterface объект
      * @expectedException TypeError
      */
     public function testSetItemsError()
     {
         $repository = new DbRepository();
         $repository->items = new class () {};
+    }
+    
+    /**
+     * Тестирует метод DbRepository::getCriteria
+     */
+    public function testGetCriteria()
+    {
+        $repository = new DbRepository();
+        $result = $repository->getCriteria();
+        
+        $this->assertTrue($result instanceof CriteriaInterface);
     }
     
     /**
@@ -65,23 +80,19 @@ class DbRepositoryTests extends TestCase
     public function testGetGroup()
     {
         $repository = new DbRepository();
-        $repository->class = CategoriesModel::class;
-        $repository->items = new class () extends AbstractBaseCollection implements CollectionInterface {
-            public $items = [];
-            public function add($model) {
-                $this->items[] = $model;
-            }
-            public function isEmpty() 
-            {
-                return empty($this->items) ? true : false;
-            }
-        };
+        $repository->class = $this->mockModel ::className();
+        $repository->items = $this->mockCollection;
+        
         $result = $repository->getGroup();
         
         $this->assertTrue($result instanceof CollectionInterface);
+        
+        $count = 0;
         foreach ($result as $object) {
-            $this->assertTrue($object instanceof CategoriesModel);
+            $this->assertTrue($object instanceof $this->mockModel);
+            ++$count;
         }
+        $this->assertEquals(3, $count);
     }
     
     /**
@@ -91,26 +102,20 @@ class DbRepositoryTests extends TestCase
     public function testGetGroupCriteria()
     {
         $repository = new DbRepository();
-        $repository->class = ColorsModel::class;
-        $repository->items = new class () extends AbstractBaseCollection implements CollectionInterface {
-            public $items = [];
-            public function add($model) {
-                $this->items[] = $model;
-            }
-            public function isEmpty() 
-            {
-                return empty($this->items) ? true : false;
-            }
-        };
-        $criteria = new QueryCriteria();
-        $criteria->where(['!=', '[[color]]', 'black']);
-        $repository->setCriteria($criteria);
+        $repository->class = $this->mockModel::className();
+        $repository->items = $this->mockCollection;
+        $criteria = $repository->getCriteria();
+        $criteria->where(['!=', '[[name]]', 'three']);
         $result = $repository->getGroup();
         
         $this->assertTrue($result instanceof CollectionInterface);
+        
+        $count = 0;
         foreach ($result as $object) {
-            $this->assertTrue($object instanceof ColorsModel);
+            $this->assertTrue($object instanceof $this->mockModel);
+            ++$count;
         }
+        $this->assertEquals(2, $count);
     }
     
     /**
@@ -120,20 +125,10 @@ class DbRepositoryTests extends TestCase
     public function testGetGroupCriteriaNull()
     {
         $repository = new DbRepository();
-        $repository->class = CurrencyModel::class;
-        $repository->items = new class () extends AbstractBaseCollection implements CollectionInterface {
-            public $items = [];
-            public function add($model) {
-                $this->items[] = $model;
-            }
-            public function isEmpty() 
-            {
-                return empty($this->items) ? true : false;
-            }
-        };
-        $criteria = new QueryCriteria();
-        $criteria->where(['[[id]]'=>[100,230]]);
-        $repository->setCriteria($criteria);
+        $repository->class = $this->mockModel::className();
+        $repository->items = $this->mockCollection;
+        $criteria = $repository->getCriteria();
+        $criteria->where(['in', '[[id]]', [234, 500]]);
         $result = $repository->getGroup();
         
         $this->assertNull($result);
@@ -145,10 +140,10 @@ class DbRepositoryTests extends TestCase
     public function testGetOne()
     {
         $repository = new DbRepository();
-        $repository->class = BrandsModel::class;
+        $repository->class = $this->mockModel::className();
         $result = $repository->getOne();
         
-        $this->assertTrue($result instanceof BrandsModel);
+        $this->assertTrue($result instanceof $this->mockModel);
     }
     
     /**
@@ -158,13 +153,12 @@ class DbRepositoryTests extends TestCase
     public function testGetOneCriteria()
     {
         $repository = new DbRepository();
-        $repository->class = ColorsModel::class;
-        $criteria = new QueryCriteria();
-        $criteria->where(['[[color]]'=>'red']);
-        $repository->setCriteria($criteria);
+        $repository->class = $this->mockModel::className();
+        $criteria = $repository->getCriteria();
+        $criteria->where(['[[name]]'=>'three']);
         $result = $repository->getOne();
         
-        $this->assertTrue($result instanceof ColorsModel);
+        $this->assertTrue($result instanceof $this->mockModel);
     }
     
     /**
@@ -174,10 +168,9 @@ class DbRepositoryTests extends TestCase
     public function testgetOneCriteriaNull()
     {
         $repository = new DbRepository();
-        $repository->class = AddressModel::class;
-        $criteria = new QueryCriteria();
-        $criteria->where(['[[id]]'=>[899, 453]]);
-        $repository->setCriteria($criteria);
+        $repository->class = $this->mockModel::className();
+        $criteria = $repository->getCriteria();
+        $criteria->where(['[[name]]'=>'hundred']);
         $result = $repository->getOne();
         
         $this->assertNull($result);
@@ -185,6 +178,6 @@ class DbRepositoryTests extends TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$dbClass->unloadFixtures();
+        \Yii::$app->db->createCommand('DROP TABLE {{testTable}}')->execute();
     }
 }

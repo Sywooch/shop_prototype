@@ -12,8 +12,7 @@ use app\repository\{RepositoryInterface,
     SessionRepository};
 use app\models\{CollectionInterface,
     CurrencyModel,
-    ProductsModel,
-    QueryCriteria};
+    ProductsModel};
 
 /**
  * Формирует HTML строку с информацией о похожих товарах

@@ -6,8 +6,8 @@ use yii\base\ErrorException;
 use app\repository\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
-use app\models\CollectionInterface;
 use app\helpers\SessionHelper;
+use app\models\CollectionInterface;
 
 class SessionRepository extends AbstractBaseRepository implements RepositoryInterface
 {
@@ -23,6 +23,10 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
      * @var object Model
      */
     private $item;
+    /**
+     * @var object CriteriaInterface
+     */
+    private $criteria;
     
     /**
      * Возвращает объект yii\base\Model
@@ -68,6 +72,15 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
+    }
+    
+    /**
+     * Возвращает объект CriteriaInterface для установки критериев фильтрации
+     * @return object $criteria CriteriaInterface
+     */
+    public function getCriteria()
+    {
+       
     }
     
     /**

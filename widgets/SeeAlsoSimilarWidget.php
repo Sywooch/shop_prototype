@@ -18,7 +18,7 @@ class SeeAlsoSimilarWidget extends SeeAlsoWidget
     public function run()
     {
         try {
-            $criteria = new QueryCriteria();
+            $criteria = $this->repository->getCriteria();
             $criteria->distinct();
             $criteria->where(['!=', '[[id]]', $this->model->id]);
             $criteria->where(['[[id_category]]'=>$this->model->category->id]);
@@ -28,7 +28,6 @@ class SeeAlsoSimilarWidget extends SeeAlsoWidget
             $criteria->join('INNER JOIN', '{{products_sizes}}', '[[products_sizes.id_product]]=[[products.id]]');
             $criteria->where(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($this->model->sizes, 'id')]);
             $criteria->limit(\Yii::$app->params['similarLimit']);
-            $this->repository->setCriteria($criteria);
             
             return parent::run();
         } catch (\Throwable $t) {

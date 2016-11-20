@@ -17,10 +17,9 @@ class SeeAlsoRelatedWidget extends SeeAlsoWidget
     public function run()
     {
         try {
-            $criteria = new QueryCriteria();
+            $criteria = $this->repository->getCriteria();
             $criteria->join('INNER JOIN', '{{related_products}}', '[[related_products.id_related_product]]=[[products.id]]');
             $criteria->where(['[[related_products.id_product]]'=>$this->model->id]);
-            $this->repository->setCriteria($criteria);
             
             return parent::run();
         } catch (\Throwable $t) {

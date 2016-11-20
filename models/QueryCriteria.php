@@ -6,12 +6,12 @@ use yii\base\{ErrorException,
     Object};
 use yii\db\Query;
 use app\exceptions\ExceptionsTrait;
-use app\models\QueryCriteriaInterface;
+use app\models\CriteriaInterface;
 
 /**
  * Устанавливает и применяет критерии к SQL запросам
  */
-class QueryCriteria extends Object implements QueryCriteriaInterface
+class QueryCriteria extends Object implements CriteriaInterface
 {
     use ExceptionsTrait;
     
@@ -20,23 +20,26 @@ class QueryCriteria extends Object implements QueryCriteriaInterface
      */
     private $criteriaArray = [];
     /**
-     * @var object объект запроса
+     * @var mixed запрос
      */
     private $query;
     
     /**
-     * Применяет критерии к запросу, возвращает объект Query с примененными 
-     * ограничениями или расширениями
-     * @param $query Query
-     * @return Query
+     * Применяет критерии к запросу
+     * @param mixed $query запрос, к которому будет применена фильтрация
+     * @return mixed
      */
-    public function filter(Query $query)
+    public function filter($query)
     {
         try {
             $this->query = $query;
-            foreach ($this->criteriaArray as $criteria) {
-                $criteria();
+            
+            if (!empty($this->criteriaArray)) {
+                foreach ($this->criteriaArray as $criteria) {
+                    $criteria();
+                }
             }
+            
             return $this->query;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

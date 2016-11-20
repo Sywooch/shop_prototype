@@ -6,12 +6,14 @@ use yii\base\ErrorException;
 use app\repository\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
-use app\models\CollectionInterface;
+use app\models\{CollectionInterface,
+    QueryCriteria,
+    CriteriaInterface};
 
 class DbRepository extends AbstractBaseRepository implements RepositoryInterface
 {
     /**
-     * @var string имя класса ActiveRecord
+     * @var string имя класса ActiveRecord для построения запроса
      */
     public $class;
     /**
@@ -22,12 +24,17 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      * @var object Model
      */
     private $item;
+    /**
+     * @var object CriteriaInterface
+     */
+    private $criteria;
     
     /**
      * Возвращает объект yii\base\Model
-     * @return object/null
+     * @param mixed $request параметры для построения запроса
+     * @return Model/null
      */
-    public function getOne($data=null)
+    public function getOne($request=null)
     {
         try {
             if (empty($this->item)) {
@@ -47,9 +54,10 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     
     /**
      * Возвращает объект CollectionInterface
+     * @param mixed $request параметры для построения запроса
      * @return CollectionInterface/null
      */
-    public function getGroup($data=null)
+    public function getGroup($request=null)
     {
         try {
             if (empty($this->items)) {
@@ -67,7 +75,23 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
                 }
             }
             
-            return !empty($data) ? $this->items : null;
+            return ($this->items->isEmpty() === false) ? $this->items : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект CriteriaInterface для установки критериев фильтрации
+     * @return object $criteria CriteriaInterface
+     */
+    public function getCriteria(): CriteriaInterface
+    {
+        try {
+            if (empty($this->criteria)) {
+                $this->criteria = new QueryCriteria();
+            }
+            return $this->criteria;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

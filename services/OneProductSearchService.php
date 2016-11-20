@@ -6,8 +6,7 @@ use yii\base\{ErrorException,
     Object};
 use app\exceptions\ExceptionsTrait;
 use app\repository\RepositoryInterface;
-use app\models\{ProductsModel,
-    QueryCriteria};
+use app\models\ProductsModel;
 use app\services\SearchServiceInterface;
 
 class OneProductSearchService extends Object implements SearchServiceInterface
@@ -34,10 +33,8 @@ class OneProductSearchService extends Object implements SearchServiceInterface
                 throw new ErrorException(ExceptionsTrait::emptyError('repository'));
             }
             
-            
-            $criteria = new QueryCriteria();
+            $criteria = $this->repository->getCriteria();
             $criteria->where(['seocode'=>$seocode]);
-            $this->repository->setCriteria($criteria);
             $model = $this->repository->getOne();
             
             if (empty($model)) {
