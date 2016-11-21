@@ -22,7 +22,8 @@ use app\models\{CategoriesModel,
     Collection,
     CurrencyModel,
     ProductsModel,
-    PurchasesModel};
+    PurchasesModel,
+    User};
 use app\repositories\{DbRepository,
     SessionRepository};
 
@@ -60,7 +61,8 @@ class ProductDetailWidget extends Widget
         try {
             $renderArray = [];
             $renderArray['user'] = UserInfoWidget::widget([
-                'view'=>'user-info.twig'
+                'view'=>'user-info.twig',
+                'user'=>new User()
             ]);
             $renderArray['cart'] = CartWidget::widget([
                 'repository'=>new SessionRepository([

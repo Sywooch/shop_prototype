@@ -3,49 +3,11 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use yii\web\User;
 use app\widgets\UserInfoWidget;
-use app\tests\DbManager;
-use app\models\UsersModel;
-use app\helpers\SessionHelper;
+use app\models\UserInterface;
 
 class UserInfoWidgetTests extends TestCase
 {
-    private static $dbClass;
-    private static $guestUser;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager([
-            'fixtures'=>[
-                'users'=>'app\tests\sources\fixtures\UsersFixture',
-                'emails'=>'app\tests\sources\fixtures\EmailsFixture',
-            ],
-        ]);
-        self::$dbClass->loadFixtures();
-        
-        /*self::$guestUser = new class () extends User {
-            public $identityClass;
-            public $isGuest = true;
-            public function __construct()
-            {
-                $this->identityClass = new class() {};
-            }
-        };*/
-    }
-    
-    /**
-     * Тестирует метод UserInfoWidget::setUser
-     * передаю не поддерживающий User объект
-     * @expectedException TypeError
-     */
-    public function testSetItemsError()
-    {
-        $result = UserInfoWidget::widget([
-            'user'=>new class () {}
-        ]);
-    }
-    
     /**
      * Тестирует метод UserInfoWidget::widget()
      * вызываю с пустым UserInfoWidget::view
@@ -72,10 +34,20 @@ class UserInfoWidgetTests extends TestCase
      * Тестирует метод UserInfoWidget::widget()
      * при условии, что \Yii::$app->user->isGuest === true
      */
-    public function testWidget()
+    public function testWidgetIsGuest()
     {
         $result = UserInfoWidget::widget([
-            'view'=>'user-info.twig'
+            'view'=>'user-info.twig',
+            'user'=>new class () implements UserInterface {
+                public function isGuest()
+                {
+                    return true;
+                }
+                public function getIdentity()
+                {
+                    
+                }
+            },
         ]);
         
         $this->assertEquals(1, preg_match('/<div class="user-info">/', $result));
@@ -88,27 +60,32 @@ class UserInfoWidgetTests extends TestCase
      * Тестирует метод UserInfoWidget::widget()
      * при условии, что \Yii::$app->user->isGuest === false
      */
-    public function testWidgetEmail()
+    public function testWidget()
     {
-        $userFixture = self::$dbClass->users['user_1'];
-        $emailFixture = self::$dbClass->emails['email_1'];
-        
-        $user = UsersModel::findOne($userFixture['id']);
-        //\Yii::$app->user->login($user);
-        
         $result = UserInfoWidget::widget([
-            'view'=>'user-info.twig'
+            'view'=>'user-info.twig',
+            'user'=>new class () implements UserInterface {
+                public function isGuest()
+                {
+                    return false;
+                }
+                public function getIdentity()
+                {
+                    return new class () {
+                        public $email;
+                        public function __construct()
+                        {
+                            $this->email = new class() {
+                                public $email = 'test@test.com';
+                            };
+                        }
+                    };
+                }
+            },
         ]);
         
-        //$expectedString = '<p>Привет, ' . $user->email->email . '!</p><form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
-        
-        //$expectedString = '<form id="user-logout-form" action="../vendor/phpunit/phpunit/logout" method="POST">' . PHP_EOL . '<input type="hidden" name="_csrf" value="' . \Yii::$app->request->csrfToken . '"><input type="hidden" name="userId" value="' . $user->id . '"><button type="submit">' . \Yii::t('base', 'Logout') . '</button></form>';
-        
-        //$this->assertEquals($expectedString, $result);
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->unloadFixtures();
+        $this->assertEquals(1, preg_match('/<div class="user-info">/', $result));
+        $this->assertEquals(1, preg_match('/<p>' . \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>'test@test.com']) . '<\/p>/', $result));
+        $this->assertEquals(1, preg_match('/<input type="submit" value="' . \Yii::t('base', 'Logout') . '">/', $result));
     }
 }

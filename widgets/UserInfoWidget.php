@@ -4,8 +4,8 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
-use yii\web\User;
 use app\exceptions\ExceptionsTrait;
+use app\models\UserInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе аутентификации
@@ -19,7 +19,7 @@ class UserInfoWidget extends Widget
      */
     public $view;
     /**
-     * @var object yii\web\User
+     * @var object
      */
     private $user;
     
@@ -46,8 +46,8 @@ class UserInfoWidget extends Widget
     public function run()
     {
         try {
-            if ($this->user->isGuest === false) {
-                $user = $this->user->identity;
+            if ($this->user->isGuest() === false) {
+                $user = $this->user->getIdentity();
             }
             
             return $this->render($this->view, ['user'=>isset($user) ? $user->email->email : \Yii::t('base', 'Guest'), 'authenticated'=>isset($user) ? true : false]);
@@ -58,9 +58,9 @@ class UserInfoWidget extends Widget
     
     /**
      * Присваивает User свойству UserInfoWidget::user
-     * @param object $user User
+     * @param object $user
      */
-    public function setUser(User $user)
+    public function setUser(UserInterface $user)
     {
         try {
             $this->user = $user;
