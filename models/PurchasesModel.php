@@ -14,10 +14,6 @@ use app\models\{ColorsModel,
 class PurchasesModel extends AbstractBaseModel
 {
     /**
-     * Сценарий сохранения данных из формы добавления товара в корзину
-    */
-    const GET_FROM_ADD_TO_CART = 'getFromAddToCart';
-    /**
      * Сценарий удаления 1 товара из корзины
     */
     const GET_FROM_DELETE_FROM_CART = 'getFromDeleteFromCart';
@@ -38,7 +34,6 @@ class PurchasesModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::GET_FROM_ADD_TO_CART=>['id_product', 'quantity', 'id_color', 'id_size', 'price'],
             self::GET_FROM_DELETE_FROM_CART=>['id_product'],
         ];
     }
@@ -46,7 +41,6 @@ class PurchasesModel extends AbstractBaseModel
     public function rules()
     {
         return [
-            [['id_product', 'quantity', 'id_color', 'id_size', 'price'], 'required', 'on'=>self::GET_FROM_ADD_TO_CART],
             [['id_product'], 'required', 'on'=>self::GET_FROM_DELETE_FROM_CART],
         ];
     }

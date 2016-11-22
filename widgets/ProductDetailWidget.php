@@ -19,10 +19,12 @@ use app\widgets\{CartWidget,
     ToCartWidget,
     UserInfoWidget};
 use app\models\{CategoriesModel,
+    ChangeCurrencyModel,
     Collection,
     CurrencyModel,
     ProductsModel,
     PurchasesModel,
+    ToCartModel,
     User};
 use app\repositories\{DbRepository,
     SessionRepository};
@@ -74,6 +76,14 @@ class ProductDetailWidget extends Widget
                 ]), 
                 'view'=>'short-cart.twig'
             ]);
+            $renderArray['currency'] = CurrencyWidget::widget([
+                'repository'=>new DbRepository([
+                    'items'=>new Collection(),
+                    'class'=>CurrencyModel::class
+                ]),
+                'currency'=>new ChangeCurrencyModel(),
+                'view'=>'currency-form.twig'
+            ]);
             $renderArray['search'] = SearchWidget::widget([
                 'view'=>'search.twig'
             ]);
@@ -88,16 +98,8 @@ class ProductDetailWidget extends Widget
             ]);
             $renderArray['toCart'] = ToCartWidget::widget([
                 'model'=>$this->model,
-                'purchase'=>new PurchasesModel(['quantity'=>1]),
+                'purchase'=>new ToCartModel(['quantity'=>1]),
                 'view'=>'add-to-cart-form.twig',
-            ]);
-            $renderArray['currency'] = CurrencyWidget::widget([
-                'repository'=>new DbRepository([
-                    'items'=>new Collection(),
-                    'class'=>CurrencyModel::class
-                ]),
-                'currency'=>new CurrencyModel(),
-                'view'=>'currency-form.twig'
             ]);
             $renderArray['similar'] = SeeAlsoSimilarWidget::widget([
                 'repository'=>new DbRepository([

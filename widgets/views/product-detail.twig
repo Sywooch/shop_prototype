@@ -2,7 +2,7 @@
 
 <h1>{{ name }}</h1>
 <p>{{ description }}</p>
-{{ images }}
+{{ images | raw }}
 <p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
 <ul>
     {% for color in colors %}

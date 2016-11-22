@@ -8,7 +8,13 @@ use app\tests\DbManager;
 use app\widgets\ProductDetailWidget;
 use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
-use app\tests\sources\fixtures\CategoriesFixture;
+use app\tests\sources\fixtures\{CategoriesFixture,
+    CurrencyFixture,
+    ProductsColorsFixture,
+    ProductsSizesFixture,
+    ProductsFixture,
+    RelatedProductsFixture};
+use app\models\ProductsModel;
 
 class ProductDetailWidgetTests extends TestCase
 {
@@ -19,6 +25,11 @@ class ProductDetailWidgetTests extends TestCase
         self::$dbClass = new DbManager([
             'fixtures'=>[
                 'categories'=>CategoriesFixture::class,
+                'currency'=>CurrencyFixture::class,
+                'products'=>ProductsFixture::class,
+                'products_colors'=>ProductsColorsFixture::class,
+                'products_sizes'=>ProductsSizesFixture::class,
+                'related_products'=>RelatedProductsFixture::class
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -60,29 +71,37 @@ class ProductDetailWidgetTests extends TestCase
     
     /**
      * Тестирует метод ProductDetailWidget::widget
-     * вызываю с пустым $price
-     * @expectedException yii\base\ErrorException
      */
-    /*public function testWidgetPriceEmpty()
+    public function testWidget()
     {
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set(\Yii::$app->params['currencyKey'], self::$dbClass->currency['currency_1']);
+        $session->close();
+        
         $result = ProductDetailWidget::widget([
-            'repository'=>$this->repository,
-        ]);
-    }*/
-    
-    /**
-     * Тестирует метод ProductDetailWidget::widget
-     */
-    /*public function testWidget()
-    {
-        $result = ProductDetailWidget::widget([
-            'repository'=>$this->repository,
-            'price'=>178.25
+            'model'=>ProductsModel::find()->where(['[[id]]'=>1])->one(),
+            'view'=>'product-detail.twig'
         ]);
         
-        $expected = \Yii::$app->formatter->asDecimal(178.25 * 12.34, 2) . ' UAH';
-        $this->assertEquals($expected, $result);
-    }*/
+        $this->assertEquals(1, preg_match('/<div class="user-info">/', $result));
+        $this->assertEquals(1, preg_match('/<div id="cart">/', $result));
+        $this->assertEquals(1, preg_match('/<p><strong>' . \Yii::t('base', 'Currency:') . '<\/strong><\/p>/', $result));
+        $this->assertEquals(1, preg_match('/<form id="set-currency-form"/', $result));
+        $this->assertEquals(1, preg_match('/<div class="search-form">/', $result));
+        $this->assertEquals(1, preg_match('/<ul class="categories-menu">/', $result));
+        $this->assertEquals(1, preg_match('/<ul class="breadcrumb">/', $result));
+        $this->assertEquals(1, preg_match('/<h1>.+<\/h1>/', $result));
+        $this->assertEquals(1, preg_match('/<div class="images">/', $result));
+        $this->assertEquals(1, preg_match('/<img src=".+" alt="">/', $result));
+        $this->assertEquals(1, preg_match('/<p><strong>' . \Yii::t('base', 'Colors:') . '<\/strong><\/p>/', $result));
+        $this->assertEquals(1, preg_match('/<p><strong>' . \Yii::t('base', 'Sizes:') . '<\/strong><\/p>/', $result));
+        $this->assertEquals(1, preg_match('/<p><strong>' . \Yii::t('base', 'Price:') . '<\/strong>/', $result));
+        $this->assertEquals(1, preg_match('/<p><strong>' . \Yii::t('base', 'Code:') . '<\/strong>/', $result));
+        $this->assertEquals(1, preg_match('/<form id="add-to-cart-form"/', $result));
+        $this->assertEquals(1, preg_match('/<p><strong>' . \Yii::t('base', 'Similar products:') . '<\/strong><\/p>/', $result));
+        $this->assertEquals(1, preg_match('/<p><strong>' . \Yii::t('base', 'Related products:') . '<\/strong><\/p>/', $result));
+    }
     
     public static function tearDownAfterClass()
     {

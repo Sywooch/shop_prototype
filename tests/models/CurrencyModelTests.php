@@ -7,7 +7,7 @@ use app\tests\DbManager;
 use app\models\CurrencyModel;
 
 /**
- * Тестирует класс app\models\CurrencyMode
+ * Тестирует класс app\models\CurrencyModel
  */
 class CurrencyModelTests extends TestCase
 {
@@ -31,96 +31,12 @@ class CurrencyModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_CHANGE_CURRENCY'));
-        
         $model = new CurrencyModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('code', $model->attributes));
         $this->assertTrue(array_key_exists('exchange_rate', $model->attributes));
         $this->assertTrue(array_key_exists('main', $model->attributes));
-    }
-    
-    /**
-     * Тестирует сценарии
-     */
-    public function testScenarios()
-    {
-        $fixture = self::$_dbClass->currency['currency_1'];
-        
-        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_CHANGE_CURRENCY]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-            'code'=>$fixture['code'],
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-        $this->assertEquals($fixture['code'], $model->code);
-    }
-    
-    /**
-     * Тестирует правила проверки
-     */
-    public function testRules()
-    {
-        $fixture = self::$_dbClass->currency['currency_1'];
-        
-        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_CHANGE_CURRENCY]);
-        $model->attributes = [];
-        $model->validate();
-        
-        $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('id', $model->errors));
-        
-        $model = new CurrencyModel(['scenario'=>CurrencyModel::GET_FROM_CHANGE_CURRENCY]);
-        $model->attributes = [
-            'id'=>$fixture['id'],
-        ];
-        $model->validate();
-        
-        $this->assertEquals(0, count($model->errors));
-    }
-    
-    /**
-     * Тестирует запрос на получение массива объектов
-     */
-    public function testGetAll()
-    {
-        $currencyQuery = CurrencyModel::find();
-        $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
-        
-        $queryRaw = clone $currencyQuery;
-        
-        $expectedQuery = "SELECT `currency`.`id`, `currency`.`code`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency`";
-        
-        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
-        
-        $result = $currencyQuery->all();
-        
-        $this->assertTrue(is_array($result));
-        $this->assertTrue($result[0] instanceof CurrencyModel);
-    }
-    
-    /**
-     * Тестирует запрос на получение 1 объекта
-     */
-    public function testGetOne()
-    {
-        $fixture = self::$_dbClass->currency['currency_1'];
-        
-        $currencyQuery = CurrencyModel::find();
-        $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
-        $currencyQuery->where(['[[currency.code]]'=>$fixture['code']]);
-        
-        $queryRaw = clone $currencyQuery;
-        
-        $expectedQuery = sprintf("SELECT `currency`.`id`, `currency`.`code`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency` WHERE `currency`.`code`='%s'", $fixture['code']);
-        
-        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
-        
-        $result = $currencyQuery->one();
-        
-        $this->assertTrue($result instanceof CurrencyModel);
     }
     
     public static function tearDownAfterClass()
