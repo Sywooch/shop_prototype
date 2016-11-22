@@ -3,6 +3,7 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
+    Model,
     Widget};
 use yii\helpers\{Html,
     Url};
@@ -26,7 +27,7 @@ class SeeAlsoWidget extends Widget
      */
     protected $repository;
      /**
-     * @var object ProductsModel
+     * @var object Model/ActiveRecord
      */
     protected $model;
     /**
@@ -67,18 +68,23 @@ class SeeAlsoWidget extends Widget
     public function run()
     {
         try {
-            $productsArray = $this->repository->getGroup($this->model);
+            $products = $this->repository->getGroup();
             
-            if (!empty($productsArray) && $productsArray instanceof CollectionInterface) {
-                $itemsArray = [];
-                foreach($productsArray as $model) {
-                    $link = Html::a($model->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$model->seocode]));
-                    $price = PriceWidget::widget(['repository'=>new SessionRepository(['class'=>CurrencyModel::class]), 'price'=>$model->price]);
-                    $itemsArray['products'][] = ['link'=>$link, 'price'=>$price];
+            if (!empty($products)) {
+                $items = [];
+                foreach($products as $product) {
+                    $link = Html::a($product->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$product->seocode]));
+                    $price = PriceWidget::widget([
+                        'repository'=>new SessionRepository([
+                            'class'=>CurrencyModel::class
+                        ]), 
+                        'price'=>$product->price
+                    ]);
+                    $items['products'][] = ['link'=>$link, 'price'=>$price];
                 }
             }
             
-            return !empty($itemsArray) ? $this->render($this->view, array_merge(['text'=>$this->text], $itemsArray)) : '';
+            return !empty($items) ? $this->render($this->view, array_merge(['text'=>$this->text], $items)) : '';
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -98,10 +104,10 @@ class SeeAlsoWidget extends Widget
     }
     
     /**
-     * Присваивает ProductsModel свойству SeeAlsoWidget::model
-     * @param object $model ProductsModel
+     * Присваивает Model свойству SeeAlsoWidget::model
+     * @param object $model Model
      */
-    public function setModel(ProductsModel $model)
+    public function setModel(Model $model)
     {
         try {
             $this->model = $model;

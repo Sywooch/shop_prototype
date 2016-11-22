@@ -15,7 +15,7 @@ class UserInfoWidgetTests extends TestCase
      */
     public function testWidgetErrorView()
     {
-        $result = UserInfoWidget::widget();
+        $result = UserInfoWidget::widget([]);
     }
     
     /**
@@ -27,6 +27,19 @@ class UserInfoWidgetTests extends TestCase
     {
         $result = UserInfoWidget::widget([
             'view'=>'user-info.twig'
+        ]);
+    }
+    
+    /**
+     * Тестирует метод UserInfoWidget::setUser
+     * передаю не поддерживающий UserInterface объект
+     * @expectedException TypeError
+     */
+    public function testSetUserError()
+    {
+        $result = new UserInfoWidget([
+            'view'=>'user-info.twig',
+            'user'=>new class () {}
         ]);
     }
     

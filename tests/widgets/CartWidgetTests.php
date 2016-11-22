@@ -9,6 +9,7 @@ use app\repositories\RepositoryInterface;
 class CartWidgetTests extends TestCase
 {
     private static $repository;
+    private static $repositoryEmpty;
     private static $currency;
     
     public static function setUpBeforeClass()
@@ -19,6 +20,28 @@ class CartWidgetTests extends TestCase
                 return new class () {
                     public $quantity = 2;
                     public $price = 1678.12;
+                };
+            }
+            public function getOne($request)
+            {
+                
+            }
+            public function getCriteria()
+            {
+                
+            }
+            public function addCriteria($query)
+            {
+                
+            }
+        };
+        
+        self::$repositoryEmpty = new class () implements RepositoryInterface {
+            public function getGroup($request)
+            {
+                return new class () {
+                    public $quantity = 0;
+                    public $price = 0;
                 };
             }
             public function getOne($request)
@@ -104,9 +127,26 @@ class CartWidgetTests extends TestCase
             'view'=>'short-cart.twig'
         ]);
         
-        print_r($result);
+        $this->assertEquals(1, preg_match('/<div id="cart">/', $result));
+        $this->assertEquals(1, preg_match('/<p>' . \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>2, 'cost'=>\Yii::$app->formatter->asDecimal(1678.12 * 27.26, 2)]) . ' USD/', $result));
+        $this->assertEquals(1, preg_match('/<a href=".*">' . \Yii::t('base', 'To cart') . '<\/a>/', $result));
+        $this->assertEquals(1, preg_match('/<form id="clean-cart-form"/', $result));
+        $this->assertEquals(1, preg_match('/<input type="submit" value="' . \Yii::t('base', 'Clean') . '">/', $result));
+    }
+    
+    /**
+     * Тестирует метод CartWidget::widget()
+     * корзина пуста
+     */
+    public function testWidgetEmpty()
+    {
+        $result = CartWidget::widget([
+            'repository'=>self::$repositoryEmpty,
+            'currency'=>self::$currency,
+            'view'=>'short-cart.twig'
+        ]);
         
         $this->assertEquals(1, preg_match('/<div id="cart">/', $result));
-        $this->assertEquals(1, preg_match('/<p>/', $result));
+        $this->assertEquals(1, preg_match('/<p>' . \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>0, 'cost'=>\Yii::$app->formatter->asDecimal(0, 2)]) . ' USD/', $result));
     }
 }

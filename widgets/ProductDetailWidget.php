@@ -87,14 +87,16 @@ class ProductDetailWidget extends Widget
                 'model'=>$this->model
             ]);
             $renderArray['toCart'] = ToCartWidget::widget([
-                'view'=>'add-to-cart-form.twig', 
-                'model'=>$this->model
+                'model'=>$this->model,
+                'purchase'=>new PurchasesModel(['quantity'=>1]),
+                'view'=>'add-to-cart-form.twig',
             ]);
             $renderArray['currency'] = CurrencyWidget::widget([
                 'repository'=>new DbRepository([
                     'items'=>new Collection(),
                     'class'=>CurrencyModel::class
-                ]), 
+                ]),
+                'currency'=>new CurrencyModel(),
                 'view'=>'currency-form.twig'
             ]);
             $renderArray['similar'] = SeeAlsoSimilarWidget::widget([

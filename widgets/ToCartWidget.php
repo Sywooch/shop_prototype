@@ -2,7 +2,7 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorExceptions,
+use yii\base\{ErrorException,
     Model,
     Widget};
 use yii\helpers\{ArrayHelper,
@@ -23,6 +23,10 @@ class ToCartWidget extends Widget
      */
     private $model;
     /**
+     * @var object ActiveRecord/Model, получает данные из формы
+     */
+    private $purchase;
+    /**
      * @var string имя шаблона
      */
     public $view;
@@ -34,6 +38,9 @@ class ToCartWidget extends Widget
             
             if (empty($this->model)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('model'));
+            }
+            if (empty($this->purchase)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('purchase'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
@@ -48,7 +55,7 @@ class ToCartWidget extends Widget
         try {
             $renderArray = [];
             
-            $renderArray['purchase'] = new PurchasesModel(['quantity'=>1]);
+            $renderArray['purchase'] = $this->purchase;
             $renderArray['product'] = $this->model;
             $renderArray['colors'] = ArrayHelper::map($this->model->colors, 'id', 'color');
             $renderArray['sizes'] = ArrayHelper::map($this->model->sizes, 'id', 'size');
@@ -67,6 +74,19 @@ class ToCartWidget extends Widget
     {
         try {
             $this->model = $model;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает Model свойству ToCartWidget::purchase
+     * @param object $model Model
+     */
+    public function setPurchase(Model $model)
+    {
+        try {
+            $this->purchase = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

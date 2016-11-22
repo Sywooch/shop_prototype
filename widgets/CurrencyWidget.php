@@ -3,8 +3,9 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
+    Model,
     Widget};
-use yii\Helpers\ArrayHelper;
+use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
 
@@ -20,6 +21,10 @@ class CurrencyWidget extends Widget
      */
     private $repository;
     /**
+     * @var object ActiveRecord/Model, получает данные из формы
+     */
+    private $currency;
+    /**
      * @var string имя HTML шаблона
      */
     public $view;
@@ -31,6 +36,9 @@ class CurrencyWidget extends Widget
             
             if (empty($this->repository)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('repository'));
+            }
+            if (empty($this->currency)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('currency'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
@@ -45,12 +53,12 @@ class CurrencyWidget extends Widget
         try {
             $criteria = $this->repository->getCriteria();
             $criteria->select(['id', 'code']);
-            $currency = $this->repository->getGroup();
+            $currencyList = $this->repository->getGroup();
             
-            $currency = ArrayHelper::map($currency, 'id', 'code');
-            asort($currency, SORT_STRING);
+            $currencyList = ArrayHelper::map($currencyList, 'id', 'code');
+            asort($currencyList, SORT_STRING);
             
-            return $this->render($this->view, ['currency'=>$currency]);
+            return $this->render($this->view, ['currency'=>$this->currency, 'currencyList'=>$currencyList]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -66,6 +74,19 @@ class CurrencyWidget extends Widget
             $this->repository = $repository;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает Model свойству CurrencyWidget::currency
+     * @param object $model Model
+     */
+    public function setCurrency(Model $model)
+    {
+        try {
+            $this->currency = $model;
+        } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }

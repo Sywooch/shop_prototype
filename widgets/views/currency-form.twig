@@ -3,6 +3,6 @@
 <p><strong>{{ yii.t('base', 'Currency:') }}</strong></p>
 
 {% set form=active_form_begin({'id':'set-currency-form', 'action':url.to({0:'/currency/set'}), 'method':'POST'}) %}
-    {{ form.field(app.currency, 'id').dropDownList(currency) | raw }}
+    {{ form.field(currency, 'id').dropDownList(currencyList) | raw }}
     <input type="submit" value="{{ yii.t('base', 'Change') }}">
 {{ active_form_end() }}
