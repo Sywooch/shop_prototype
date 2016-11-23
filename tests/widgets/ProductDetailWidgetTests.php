@@ -16,6 +16,9 @@ use app\tests\sources\fixtures\{CategoriesFixture,
     RelatedProductsFixture};
 use app\models\ProductsModel;
 
+/**
+ * Тестирует класс app\widgets\ProductDetailWidget
+ */
 class ProductDetailWidgetTests extends TestCase
 {
     private static $dbClass;
@@ -36,11 +39,11 @@ class ProductDetailWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductDetailWidget::setModel
+     * Тестирует метод ProductDetailWidget::widget
      * вызываю с пустым $model
      * @expectedException yii\base\ErrorException
      */
-    public function testSetModelEmpty()
+    public function testWidgetModelEmpty()
     {
         $result = ProductDetailWidget::widget([]);
     }

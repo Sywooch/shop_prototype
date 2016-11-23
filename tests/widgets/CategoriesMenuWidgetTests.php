@@ -11,6 +11,9 @@ use app\repositories\{AbstractBaseRepository,
 use app\models\{CategoriesModel,
     QueryCriteria};
 
+/**
+ * Тестирует класс app\widgets\CategoriesMenuWidget
+ */
 class CategoriesMenuWidgetTests extends TestCase
 {
     private static $dbClass;
@@ -51,11 +54,11 @@ class CategoriesMenuWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CategoriesMenuWidget::setRepository
+     * Тестирует метод CategoriesMenuWidget::widget
      * вызываю с пустым $repository
      * @expectedException yii\base\ErrorException
      */
-    public function testSetRepositoryEmpty()
+    public function testWidgetRepositoryEmpty()
     {
         $result = CategoriesMenuWidget::widget([]);
     }
@@ -80,8 +83,6 @@ class CategoriesMenuWidgetTests extends TestCase
         $result = CategoriesMenuWidget::widget([
             'repository'=>$this->repository
         ]);
-        
-        print_r($result);
         
         $this->assertEquals(1, preg_match('/<ul class="categories-menu">/', $result));
         $this->assertEquals(1, preg_match('/<li><a href=".+">.+<\/a><\/li>/', $result));

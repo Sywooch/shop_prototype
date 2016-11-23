@@ -7,7 +7,7 @@ use yii\base\{ErrorException,
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Реализует интерфейс Iterator для доступа к коллекции товаров в корзине
+ * Реализует интерфейс Iterator для доступа к коллекции сущностей
  */
 abstract class AbstractBaseCollection extends Object implements \Iterator
 {
@@ -85,30 +85,6 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
     {
         try {
             return isset($this->items[$this->position]);
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Перехватвает обращение к несуществующему свойству,
-     * обходит все объекты $this->items и возвращает сумму результатов
-     * @param string $property имя свойства
-     * @return numeric/null
-     */
-    public function __get($property)
-    {
-        try {
-            if (!empty($this->items)) {
-                $result = 0;
-                foreach ($this->items as $item) {
-                    if (!empty($item->$property) && is_numeric($item->$property)) {
-                        $result += $item->$property;
-                    }
-                }
-            }
-            
-            return $result ?? null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

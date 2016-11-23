@@ -5,6 +5,9 @@ namespace app\tests\widgets;
 use PHPUnit\Framework\TestCase;
 use app\widgets\ImagesWidget;
 
+/**
+ * Тестирует класс app\widgets\ImagesWidget
+ */
 class ImagesWidgetTests extends TestCase
 {
     private static $path = 'test';

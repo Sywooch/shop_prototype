@@ -4,12 +4,12 @@ namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\models\ToCartModel;
+use app\models\ToCartFormModel;
 
 /**
- * Тестирует класс app\models\ToCartModel
+ * Тестирует класс app\models\ToCartFormModel
  */
-class ToCartModelTests extends TestCase
+class ToCartFormModelTests extends TestCase
 {
     private static $_dbClass;
     private static $_reflectionClass;
@@ -23,11 +23,11 @@ class ToCartModelTests extends TestCase
         ]);
         self::$_dbClass->loadFixtures();
         
-        self::$_reflectionClass = new \ReflectionClass('\app\models\ToCartModel');
+        self::$_reflectionClass = new \ReflectionClass('\app\models\ToCartFormModel');
     }
     
     /**
-     * Тестирует наличие свойств у объекта app\models\ToCartModel
+     * Тестирует наличие свойств у объекта app\models\ToCartFormModel
      */
     public function testProperties()
     {
@@ -47,7 +47,7 @@ class ToCartModelTests extends TestCase
     {
         $fixture = self::$_dbClass->purchases['purchase_1'];
         
-        $model = new ToCartModel(['scenario'=>ToCartModel::TO_CART]);
+        $model = new ToCartFormModel(['scenario'=>ToCartFormModel::TO_CART]);
         $model->attributes = [
             'id_product'=>$fixture['id_product'], 
             'quantity'=>$fixture['quantity'],
@@ -70,7 +70,7 @@ class ToCartModelTests extends TestCase
     {
         $fixture = self::$_dbClass->purchases['purchase_1'];
         
-        $model = new ToCartModel(['scenario'=>ToCartModel::TO_CART]);
+        $model = new ToCartFormModel(['scenario'=>ToCartFormModel::TO_CART]);
         $model->attributes = [];
         $model->validate();
         
@@ -81,7 +81,7 @@ class ToCartModelTests extends TestCase
         $this->assertTrue(array_key_exists('id_size', $model->errors));
         $this->assertTrue(array_key_exists('price', $model->errors));
         
-        $model = new ToCartModel(['scenario'=>ToCartModel::TO_CART]);
+        $model = new ToCartFormModel(['scenario'=>ToCartFormModel::TO_CART]);
         $model->attributes = [
             'id_product'=>$fixture['id_product'], 
             'quantity'=>$fixture['quantity'],

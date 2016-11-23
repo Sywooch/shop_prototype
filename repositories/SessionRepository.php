@@ -29,10 +29,11 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     private $criteria;
     
     /**
-     * Возвращает объект yii\base\Model
+     * Возвращает данные из сессионного хранилища
+     * @param string $key ключ доступа к данным
      * @return object/null
      */
-    public function getOne($key=null)
+    public function getOne($key)
     {
         try {
             if (empty($this->item)) {
@@ -49,10 +50,11 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     }
     
     /**
-     * Возвращает объект CollectionInterface
+     * Возвращает коллекцию объекты из хранилища, обернутые в CollectionInterface
+     * @param string $key ключ доступа к данным
      * @return CollectionInterface/null
      */
-    public function getGroup($key=null)
+    public function getGroup($key)
     {
         try {
             if (empty($this->items)) {
@@ -68,7 +70,7 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
                 }
             }
             
-            return ($this->items->isEmpty() === false) ? $this->items : null;
+            return $this->items;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -80,17 +82,33 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
      */
     public function getCriteria()
     {
-       
     }
     
     /**
-     * Присваивает CollectionInterface свойству DbRepository::items
+     * Присваивает CollectionInterface свойству SessionRepository::items
      * @param object $composit CollectionInterface
      */
     public function setItems(CollectionInterface $composit)
     {
         try {
             $this->items = $composit;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Сохраняет данные в сессионном хранилище
+     * @param string $key ключ доступа к данным
+     * @param mixed $data данные для сохранения
+     * @return bool
+     */
+    public function saveOne($key, $data)
+    {
+        try {
+            SessionHelper::write($key, $data);
+            
+            return true;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

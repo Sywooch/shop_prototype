@@ -55,7 +55,7 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     /**
      * Возвращает объект CollectionInterface
      * @param mixed $request параметры для построения запроса
-     * @return CollectionInterface/null
+     * @return CollectionInterface
      */
     public function getGroup($request=null)
     {
@@ -75,7 +75,7 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
                 }
             }
             
-            return ($this->items->isEmpty() === false) ? $this->items : null;
+            return $this->items;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -108,5 +108,9 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
+    }
+    
+    public function saveOne($key, $data)
+    {
     }
 }

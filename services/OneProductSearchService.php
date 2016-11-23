@@ -18,6 +18,19 @@ class OneProductSearchService extends Object implements SearchServiceInterface
      */
     private $repository;
     
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->repository)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     /**
      * Обрабатывает запрос на поиск 1 товара
      * @param object Request
@@ -28,9 +41,6 @@ class OneProductSearchService extends Object implements SearchServiceInterface
         try {
             if (empty($seocode = $request[\Yii::$app->params['productKey']])) {
                 throw new ErrorException(ExceptionsTrait::emptyError('seocode'));
-            }
-            if (empty($this->repository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
             }
             
             $criteria = $this->repository->getCriteria();

@@ -5,14 +5,17 @@ namespace app\tests\widgets;
 use PHPUnit\Framework\TestCase;
 use app\widgets\SearchWidget;
 
+/**
+ * Тестирует класс app\widgets\SearchWidget
+ */
 class SearchWidgetTests extends TestCase
 {
     /**
-     * Тестирует метод SearchWidget::widget()
-     * вызываю с пустым SearchWidget::view
+     * Тестирует метод SearchWidget::widget
+     * вызываю с пустым $view
      * @expectedException yii\base\ErrorException
      */
-    public function testWidgetErrorView()
+    public function testWidgetViewEmpty()
     {
         $result = SearchWidget::widget([]);
     }

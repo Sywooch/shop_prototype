@@ -65,18 +65,17 @@ class CartWidget extends Widget
     {
         try {
             $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-            $purchases = $this->repository->getGroup($key);
+            $collection = $this->repository->getGroup($key);
             
-            if (!empty($purchases)) {
-                $this->goods = $purchases->quantity;
-                $this->cost = $purchases->price;
+            if (!empty($collection)) {
+                foreach ($collection as $purchase) {
+                    $this->goods += $purchase->quantity;
+                    $this->cost += ($purchase->quantity * $purchase->price);
+                }
             }
             
             $currency = $this->currency->getOne(\Yii::$app->params['currencyKey']);
-            
-            if (!empty($currency->exchange_rate) && !empty($currency->code)) {
-                $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
-            }
+            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
             
             return $this->render($this->view, ['goods'=>$this->goods, 'cost'=>$this->cost]);
         } catch (\Throwable $t) {

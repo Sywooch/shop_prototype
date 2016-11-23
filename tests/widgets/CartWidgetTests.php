@@ -6,6 +6,9 @@ use PHPUnit\Framework\TestCase;
 use app\widgets\CartWidget;
 use app\repositories\RepositoryInterface;
 
+/**
+ * Тестирует класс app\widgets\CartWidget
+ */
 class CartWidgetTests extends TestCase
 {
     private static $repository;
@@ -86,9 +89,21 @@ class CartWidgetTests extends TestCase
      * вызываю с пустым CartWidget::repository
      * @expectedException yii\base\ErrorException
      */
-    public function testWidgetErrorRepository()
+    public function testWidgetEmptyRepository()
     {
-        $result = CartWidget::widget();
+        $result = CartWidget::widget([]);
+    }
+    
+    /**
+     * Тестирует метод CartWidget::setRepository()
+     * передаю не поддерживающий RepositoryInterface объект
+     * @expectedException TypeError
+     */
+    public function testSetRepositoryError()
+    {
+        $result = new CartWidget([
+            'repository'=>new class() {},
+        ]);
     }
     
     /**
@@ -96,10 +111,23 @@ class CartWidgetTests extends TestCase
      * вызываю с пустым CartWidget::currency
      * @expectedException yii\base\ErrorException
      */
-    public function testWidgetErrorCurrency()
+    public function testWidgetEmptyCurrency()
     {
         $result = CartWidget::widget([
             'repository'=>self::$repository,
+        ]);
+    }
+    
+    /**
+     * Тестирует метод CartWidget::setCurrency()
+     * передаю не поддерживающий RepositoryInterface объект
+     * @expectedException TypeError
+     */
+    public function testSetCurrencyError()
+    {
+        $result = new CartWidget([
+            'repository'=>self::$repository,
+            'currency'=>new class() {},
         ]);
     }
     
@@ -108,7 +136,7 @@ class CartWidgetTests extends TestCase
      * вызываю с пустым CartWidget::view
      * @expectedException yii\base\ErrorException
      */
-    public function testWidgetErrorView()
+    public function testWidgetEmptyView()
     {
         $result = CartWidget::widget([
             'repository'=>self::$repository,

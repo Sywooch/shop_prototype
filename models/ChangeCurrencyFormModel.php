@@ -8,7 +8,7 @@ use app\models\AbstractFormModel;
 /**
  * Представляет данные формы изменения текущей валюты
  */
-class ChangeCurrencyModel extends AbstractFormModel
+class ChangeCurrencyFormModel extends AbstractFormModel
 {
     /**
      * Сценарий изменения текущей валюты
@@ -27,6 +27,7 @@ class ChangeCurrencyModel extends AbstractFormModel
     public function rules()
     {
         return [
+            [['id'], 'app\validators\StripTagsValidator'],
             [['id'], 'required', 'on'=>self::CHANGE_CURRENCY],
         ];
     }

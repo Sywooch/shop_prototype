@@ -7,6 +7,9 @@ use app\widgets\PriceWidget;
 use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 
+/**
+ * Тестирует класс app\widgets\PriceWidget
+ */
 class PriceWidgetTests extends TestCase
 {
     private $repository;
@@ -33,11 +36,11 @@ class PriceWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод PriceWidget::setRepository
+     * Тестирует метод PriceWidget::widget
      * вызываю с пустым $repository
      * @expectedException yii\base\ErrorException
      */
-    public function testSetRepositoryEmpty()
+    public function testWidgetRepositoryEmpty()
     {
         $result = PriceWidget::widget([]);
     }

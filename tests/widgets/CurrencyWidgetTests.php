@@ -12,6 +12,9 @@ use app\tests\sources\fixtures\CurrencyFixture;
 use app\models\{CurrencyModel,
     QueryCriteria};
 
+/**
+ * Тестирует класс app\widgets\CategoriesMenuWidget
+ */
 class CurrencyWidgetTests extends TestCase
 {
     private static $dbClass;
@@ -52,11 +55,11 @@ class CurrencyWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrencyWidget::setRepository
+     * Тестирует метод CurrencyWidget::widget
      * вызываю с пустым $repository
      * @expectedException yii\base\ErrorException
      */
-    public function testSetRepositoryEmpty()
+    public function testWidgetRepositoryEmpty()
     {
         $result = CurrencyWidget::widget([]);
     }
@@ -66,7 +69,7 @@ class CurrencyWidgetTests extends TestCase
      * передаю не поддерживающий RepositoryInterface объект
      * @expectedException TypeError
      */
-    public function testSetModelError()
+    public function testSetRepositoryError()
     {
         $result = new CurrencyWidget([
             'repository'=>new class() {},
@@ -74,11 +77,11 @@ class CurrencyWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrencyWidget::setCurrency
+     * Тестирует метод CurrencyWidget::widget
      * вызываю с пустым $currency
      * @expectedException yii\base\ErrorException
      */
-    public function testSetCurrencyEmpty()
+    public function testWidgetCurrencyEmpty()
     {
         $result = CurrencyWidget::widget([
             'repository'=>$this->repository,
@@ -103,7 +106,7 @@ class CurrencyWidgetTests extends TestCase
      * вызываю с пустым $view
      * @expectedException yii\base\ErrorException
      */
-    public function testSetViewEmpty()
+    public function testWidgetViewEmpty()
     {
         $result = CurrencyWidget::widget([
             'repository'=>$this->repository,

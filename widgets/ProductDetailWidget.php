@@ -19,12 +19,12 @@ use app\widgets\{CartWidget,
     ToCartWidget,
     UserInfoWidget};
 use app\models\{CategoriesModel,
-    ChangeCurrencyModel,
+    ChangeCurrencyFormModel,
     Collection,
     CurrencyModel,
     ProductsModel,
     PurchasesModel,
-    ToCartModel,
+    ToCartFormModel,
     User};
 use app\repositories\{DbRepository,
     SessionRepository};
@@ -81,7 +81,7 @@ class ProductDetailWidget extends Widget
                     'items'=>new Collection(),
                     'class'=>CurrencyModel::class
                 ]),
-                'currency'=>new ChangeCurrencyModel(),
+                'currency'=>new ChangeCurrencyFormModel(),
                 'view'=>'currency-form.twig'
             ]);
             $renderArray['search'] = SearchWidget::widget([
@@ -98,7 +98,7 @@ class ProductDetailWidget extends Widget
             ]);
             $renderArray['toCart'] = ToCartWidget::widget([
                 'model'=>$this->model,
-                'purchase'=>new ToCartModel(['quantity'=>1]),
+                'purchase'=>new ToCartFormModel(['quantity'=>1]),
                 'view'=>'add-to-cart-form.twig',
             ]);
             $renderArray['similar'] = SeeAlsoSimilarWidget::widget([

@@ -22,11 +22,4 @@ class BrandsModel extends AbstractBaseModel
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
-    
-    public function rules()
-    {
-        return [
-            [['brand'], 'app\validators\StripTagsValidator'],
-        ];
-    }
 }

@@ -27,6 +27,23 @@ class DetailAction extends AbstractBaseAction
      */
     public $additions = [];
     
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->service)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('service'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('service'));
+            }
+        } catch (\Throwable $t) {
+            $this->writeErrorInLogs($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     public function run()
     {
         try {
@@ -45,6 +62,10 @@ class DetailAction extends AbstractBaseAction
         }
     }
     
+    /**
+     * Присваивает SearchServiceInterface свойству DetailAction::service
+     * @param object $service SearchServiceInterface
+     */
     public function setService(SearchServiceInterface $service)
     {
         try {

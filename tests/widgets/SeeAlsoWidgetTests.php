@@ -18,6 +18,9 @@ use app\tests\sources\fixtures\{CurrencyFixture,
 use app\models\{ProductsModel,
     QueryCriteria};
 
+/**
+ * Тестирует класс app\widgets\SeeAlsoWidget
+ */
 class SeeAlsoWidgetTests extends TestCase
 {
     private static $dbClass;
@@ -64,11 +67,11 @@ class SeeAlsoWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод SeeAlsoWidget::setRepository
+     * Тестирует метод SeeAlsoWidget::widget
      * вызываю с пустым $repository
      * @expectedException yii\base\ErrorException
      */
-    public function testSetRepositoryEmpty()
+    public function testWidgetRepositoryEmpty()
     {
         $result = SeeAlsoWidget::widget([]);
     }
@@ -86,11 +89,11 @@ class SeeAlsoWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод SeeAlsoWidget::setModel
+     * Тестирует метод SeeAlsoWidget::widget
      * вызываю с пустым $model
      * @expectedException yii\base\ErrorException
      */
-    public function testSetModelEmpty()
+    public function testWidgetModelEmpty()
     {
         $result = SeeAlsoWidget::widget([
             'repository'=>$this->repository,

@@ -7,7 +7,13 @@ use yii\helpers\Url;
 use app\controllers\{AbstractBaseController,
     CartControllerHelper};
 use app\helpers\UrlHelper;
-use app\models\PurchasesFilter;
+use app\models\{Collection,
+    PurchasesFilter,
+    PurchasesModel,
+    ToCartFormModel};
+use app\actions\SaveRedirectAction;
+use app\services\PurchaseSaveService;
+use app\repositories\SessionRepository;
 
 /**
  * Обрабатывает запросы, связанные с данными корзины
@@ -41,12 +47,12 @@ class CartController extends AbstractBaseController
     /**
      * Обрабатывает запрос на добавление товара в корзину
      */
-    public function actionSet()
+    /*public function actionSet()
     {
         try {
-            /*if (\Yii::$app->request->isAjax) {
+            if (\Yii::$app->request->isAjax) {
                 return CartControllerHelper::setAjax();
-            }*/
+            }
             if (\Yii::$app->request->isPost) {
                 $filter = new PurchasesFilter();
                 $result = $filter->save('sessionSave', \Yii::$app->request->post());
@@ -57,7 +63,7 @@ class CartController extends AbstractBaseController
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Обрабатывает запрос на удаление всех товаров из корзины
@@ -197,7 +203,22 @@ class CartController extends AbstractBaseController
         }
     }
     
-    
+    public function actions()
+    {
+        return [
+            'set'=>[
+                'class'=>SaveRedirectAction::class,
+                'service'=>new PurchaseSaveService([
+                    'repository'=>new SessionRepository([
+                        'items'=>new Collection(),
+                        'class'=>PurchasesModel::class
+                    ]), 
+                    'model'=>new ToCartFormModel(['scenario'=>ToCartFormModel::TO_CART]),
+                ]),
+                'url'=>Url::previous(\Yii::$app->id)
+            ],
+        ];
+    }
     
     public function behaviors()
     {
@@ -210,9 +231,6 @@ class CartController extends AbstractBaseController
                 'class'=>'app\filters\CustomerFilter',
                 'only'=>['customer', 'check', 'send']
             ],
-            /*[
-                'class'=>'app\filters\CartFilter',
-            ],*/
         ];
     }
 }

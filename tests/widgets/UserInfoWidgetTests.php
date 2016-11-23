@@ -6,24 +6,27 @@ use PHPUnit\Framework\TestCase;
 use app\widgets\UserInfoWidget;
 use app\models\UserInterface;
 
+/**
+ * Тестирует класс app\widgets\UserInfoWidget
+ */
 class UserInfoWidgetTests extends TestCase
 {
     /**
-     * Тестирует метод UserInfoWidget::widget()
-     * вызываю с пустым UserInfoWidget::view
+     * Тестирует метод UserInfoWidget::widget
+     * вызываю с пустым $view
      * @expectedException yii\base\ErrorException
      */
-    public function testWidgetErrorView()
+    public function testWidgetViewEmpty()
     {
         $result = UserInfoWidget::widget([]);
     }
     
     /**
-     * Тестирует метод UserInfoWidget::widget()
-     * вызываю с пустым UserInfoWidget::user
+     * Тестирует метод UserInfoWidget::widget
+     * вызываю с пустым $user
      * @expectedException yii\base\ErrorException
      */
-    public function testWidgetErrorUser()
+    public function testWidgetUserEmpty()
     {
         $result = UserInfoWidget::widget([
             'view'=>'user-info.twig'

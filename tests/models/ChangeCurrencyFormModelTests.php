@@ -4,12 +4,12 @@ namespace app\tests;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\models\ChangeCurrencyModel;
+use app\models\ChangeCurrencyFormModel;
 
 /**
- * Тестирует класс app\models\ChangeCurrencyModel
+ * Тестирует класс app\models\ChangeCurrencyFormModel
  */
-class ChangeCurrencyModelTests extends TestCase
+class ChangeCurrencyFormModelTests extends TestCase
 {
     private static $_dbClass;
     public static $_reflectionClass;
@@ -23,11 +23,11 @@ class ChangeCurrencyModelTests extends TestCase
         ]);
         self::$_dbClass->loadFixtures();
         
-        self::$_reflectionClass = new \ReflectionClass('\app\models\ChangeCurrencyModel');
+        self::$_reflectionClass = new \ReflectionClass('\app\models\ChangeCurrencyFormModel');
     }
     
     /**
-     * Тестирует наличие свойств у объекта app\models\ChangeCurrencyModel
+     * Тестирует наличие свойств у объекта app\models\ChangeCurrencyFormModel
      */
     public function testProperties()
     {
@@ -43,7 +43,7 @@ class ChangeCurrencyModelTests extends TestCase
     {
         $fixture = self::$_dbClass->currency['currency_1'];
         
-        $model = new ChangeCurrencyModel(['scenario'=>ChangeCurrencyModel::CHANGE_CURRENCY]);
+        $model = new ChangeCurrencyFormModel(['scenario'=>ChangeCurrencyFormModel::CHANGE_CURRENCY]);
         $model->attributes = [
             'id'=>$fixture['id'], 
         ];
@@ -58,14 +58,14 @@ class ChangeCurrencyModelTests extends TestCase
     {
         $fixture = self::$_dbClass->currency['currency_1'];
         
-        $model = new ChangeCurrencyModel(['scenario'=>ChangeCurrencyModel::CHANGE_CURRENCY]);
+        $model = new ChangeCurrencyFormModel(['scenario'=>ChangeCurrencyFormModel::CHANGE_CURRENCY]);
         $model->attributes = [];
         $model->validate();
         
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('id', $model->errors));
         
-        $model = new ChangeCurrencyModel(['scenario'=>ChangeCurrencyModel::CHANGE_CURRENCY]);
+        $model = new ChangeCurrencyFormModel(['scenario'=>ChangeCurrencyFormModel::CHANGE_CURRENCY]);
         $model->attributes = [
             'id'=>$fixture['id'], 
         ];

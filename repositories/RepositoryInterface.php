@@ -11,4 +11,5 @@ interface RepositoryInterface
     public function getOne($request);
     public function getCriteria();
     public function addCriteria($query);
+    public function saveOne($key, $data);
 }

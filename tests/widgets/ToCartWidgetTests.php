@@ -10,6 +10,9 @@ use app\tests\sources\fixtures\ProductsFixture;
 use app\models\{ProductsModel,
     PurchasesModel};
 
+/**
+ * Тестирует класс app\widgets\ToCartWidget
+ */
 class ToCartWidgetTests extends TestCase
 {
     private static $dbClass;
@@ -26,17 +29,17 @@ class ToCartWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ToCartWidget::setModel
+     * Тестирует метод ToCartWidget::widget
      * вызываю с пустым $model
      * @expectedException yii\base\ErrorException
      */
-    public function testSetModelEmpty()
+    public function testWidgetModelEmpty()
     {
         $result = ToCartWidget::widget([]);
     }
     
     /**
-     * Тестирует метод ToCartWidget::setRepository
+     * Тестирует метод ToCartWidget::setModel
      * передаю не наследующий Model объект
      * @expectedException TypeError
      */
@@ -48,11 +51,11 @@ class ToCartWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ToCartWidget::setPurchase
+     * Тестирует метод ToCartWidget::widget
      * вызываю с пустым $purchase
      * @expectedException yii\base\ErrorException
      */
-    public function testSetPurchaseEmpty()
+    public function testWidgetPurchaseEmpty()
     {
         $result = ToCartWidget::widget([
             'model'=>new class() extends Model {},

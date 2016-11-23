@@ -31,92 +31,10 @@ class ColorsModelTests extends TestCase
      */
     public function testProperties()
     {
-        $this->assertTrue(self::$_reflectionClass->hasConstant('GET_FROM_ADD_PRODUCT'));
-        
         $model = new ColorsModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
         $this->assertTrue(array_key_exists('color', $model->attributes));
-    }
-    
-    /**
-     * Тестирует сценарии
-     */
-    public function testScenarios()
-    {
-        $fixture = self::$_dbClass->colors['color_1'];
-        
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-        ];
-        
-        $this->assertEquals($fixture['id'], $model->id);
-    }
-    
-     /**
-     * Тестирует правила проверки
-     */
-    public function testRules()
-    {
-        $fixture = self::$_dbClass->colors['color_1'];
-        
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
-        $model->attributes = [];
-        $model->validate();
-        
-        $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('id', $model->errors));
-        
-        $model = new ColorsModel(['scenario'=>ColorsModel::GET_FROM_ADD_PRODUCT]);
-        $model->attributes = [
-            'id'=>$fixture['id'], 
-        ];
-        $model->validate();
-        
-        $this->assertTrue(empty($model->errors));
-    }
-    
-    /**
-     * Тестирует запрос на получение массива объектов
-     */
-    public function testGetAll()
-    {
-        $colorsQuery = ColorsModel::find();
-        $colorsQuery->extendSelect(['id', 'color']);
-        
-        $queryRaw = clone $colorsQuery;
-        
-        $expectedQuery = "SELECT `colors`.`id`, `colors`.`color` FROM `colors`";
-        
-        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
-        
-        $result = $colorsQuery->all();
-        
-        $this->assertTrue(is_array($result));
-        $this->assertTrue($result[0] instanceof ColorsModel);
-    }
-    
-    /**
-     * Тестирует запрос на получение 1 объекта
-     */
-    public function testGetOne()
-    {
-        $fixture = self::$_dbClass->colors['color_1'];
-        
-        $colorsQuery = ColorsModel::find();
-        $colorsQuery->extendSelect(['id', 'color']);
-        $colorsQuery->where(['colors.color'=>$fixture['color']]);
-        
-        $queryRaw = clone $colorsQuery;
-        
-        $expectedQuery = sprintf("SELECT `colors`.`id`, `colors`.`color` FROM `colors` WHERE `colors`.`color`='%s'", $fixture['color']);
-        
-        $this->assertEquals($expectedQuery, $queryRaw->createCommand()->getRawSql());
-        
-        $result = $colorsQuery->one();
-        
-        $this->assertTrue($result instanceof ColorsModel);
     }
     
     public static function tearDownAfterClass()

@@ -8,6 +8,9 @@ use app\tests\DbManager;
 use app\tests\sources\fixtures\ProductsFixture;
 use app\models\ProductsModel;
 
+/**
+ * Тестирует класс app\widgets\ProductBreadcrumbsWidget
+ */
 class ProductBreadcrumbsWidgetTests extends TestCase
 {
     private static $dbClass;
@@ -24,21 +27,21 @@ class ProductBreadcrumbsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductBreadcrumbsWidget::setModel
+     * Тестирует метод ProductBreadcrumbsWidget::widget
      * вызываю с пустым $model
      * @expectedException yii\base\ErrorException
      */
-    public function testSetModelEmpty()
+    public function testWidgetModelEmpty()
     {
         $result = ProductBreadcrumbsWidget::widget([]);
     }
     
     /**
-     * Тестирует метод ProductBreadcrumbsWidget::setRepository
+     * Тестирует метод ProductBreadcrumbsWidget::setModel
      * передаю не наследующий Model объект
      * @expectedException TypeError
      */
-    public function testSetRepositoryError()
+    public function testSetModelError()
     {
         $result = new ProductBreadcrumbsWidget([
             'model'=>new class() {},
@@ -53,8 +56,6 @@ class ProductBreadcrumbsWidgetTests extends TestCase
         $result = ProductBreadcrumbsWidget::widget([
             'model'=>ProductsModel::find()->where(['[[id]]'=>1])->one()
         ]);
-        
-        print_r($result);
         
         $this->assertEquals(1, preg_match('/<ul class="breadcrumb">/', $result));
         $this->assertEquals(1, preg_match('/<li><a href=".+">.+<\/a><\/li>/', $result));

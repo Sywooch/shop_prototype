@@ -38,6 +38,15 @@ class DbRepositoryTests extends TestCase
             {
                 return empty($this->items) ? true : false;
             }
+            public function getByKey(string $key, $value)
+            {
+            }
+            public function update(string $key, $model)
+            {
+            }
+            public function getArray()
+            {
+            }
         };
     }
     
@@ -131,7 +140,7 @@ class DbRepositoryTests extends TestCase
         $criteria->where(['in', '[[id]]', [234, 500]]);
         $result = $repository->getGroup();
         
-        $this->assertNull($result);
+        $this->assertTrue($result->isEmpty());
     }
     
     /**
