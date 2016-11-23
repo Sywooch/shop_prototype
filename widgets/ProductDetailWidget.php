@@ -68,7 +68,7 @@ class ProductDetailWidget extends Widget
             ]);
             $renderArray['cart'] = CartWidget::widget([
                 'repository'=>new SessionRepository([
-                    'items'=>new Collection(),
+                    'collection'=>new Collection(),
                     'class'=>PurchasesModel::class
                 ]), 
                 'currency'=>new SessionRepository([
@@ -78,7 +78,7 @@ class ProductDetailWidget extends Widget
             ]);
             $renderArray['currency'] = CurrencyWidget::widget([
                 'repository'=>new DbRepository([
-                    'items'=>new Collection(),
+                    'collection'=>new Collection(),
                     'class'=>CurrencyModel::class
                 ]),
                 'currency'=>new ChangeCurrencyFormModel(),
@@ -89,7 +89,7 @@ class ProductDetailWidget extends Widget
             ]);
             $renderArray['menu'] = CategoriesMenuWidget::widget([
                 'repository'=>new DbRepository([
-                    'items'=>new Collection(),
+                    'collection'=>new Collection(),
                     'class'=>CategoriesModel::class
                 ])
             ]);
@@ -103,7 +103,7 @@ class ProductDetailWidget extends Widget
             ]);
             $renderArray['similar'] = SeeAlsoSimilarWidget::widget([
                 'repository'=>new DbRepository([
-                    'items'=>new Collection(),
+                    'collection'=>new Collection(),
                     'class'=>ProductsModel::class
                 ]), 
                 'model'=>$this->model, 
@@ -112,7 +112,7 @@ class ProductDetailWidget extends Widget
             ]);
             $renderArray['related'] = SeeAlsoRelatedWidget::widget([
                 'repository'=>new DbRepository([
-                    'items'=>new Collection(),
+                    'collection'=>new Collection(),
                     'class'=>ProductsModel::class
                 ]),
                 'model'=>$this->model, 

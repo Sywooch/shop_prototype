@@ -18,7 +18,7 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     /**
      * @var object CollectionInterface
      */
-    private $items;
+    private $collection;
     /**
      * @var object Model
      */
@@ -50,27 +50,27 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     }
     
     /**
-     * Возвращает коллекцию объекты из хранилища, обернутые в CollectionInterface
+     * Возвращает коллекцию объектов, обернутую в CollectionInterface
      * @param string $key ключ доступа к данным
      * @return CollectionInterface/null
      */
     public function getGroup($key)
     {
         try {
-            if (empty($this->items)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('items'));
+            if (empty($this->collection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
             }
             
-            if ($this->items->isEmpty()) {
+            if ($this->collection->isEmpty()) {
                 $data = SessionHelper::read($key);
                 if (!empty($data)) {
                     foreach ($data as $item) {
-                        $this->items->add(\Yii::createObject(array_merge(['class'=>$this->class], $item)));
+                        $this->collection->add(\Yii::createObject(array_merge(['class'=>$this->class], $item)));
                     }
                 }
             }
             
-            return $this->items;
+            return $this->collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -88,25 +88,28 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
      * Присваивает CollectionInterface свойству SessionRepository::items
      * @param object $composit CollectionInterface
      */
-    public function setItems(CollectionInterface $composit)
+    public function setCollection(CollectionInterface $collection)
     {
         try {
-            $this->items = $composit;
+            $this->collection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Сохраняет данные в сессионном хранилище
+     * Сохраняет группу данных в сессионном хранилище
      * @param string $key ключ доступа к данным
-     * @param mixed $data данные для сохранения
      * @return bool
      */
-    public function saveOne($key, $data)
+    public function saveGroup($key)
     {
         try {
-            SessionHelper::write($key, $data);
+            if (empty($this->collection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+            }
+            
+            SessionHelper::write($key, $this->collection->getArray());
             
             return true;
         } catch (\Throwable $t) {

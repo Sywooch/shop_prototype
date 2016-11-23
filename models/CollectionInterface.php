@@ -2,13 +2,16 @@
 
 namespace app\models;
 
+use yii\base\Model;
+
 /**
  * Интерфейс коллекции объектов
  */
 interface CollectionInterface
 {
-    public function add($object);
+    public function add(Model $object);
     public function isEmpty();
-    public function getByKey(string $key, $value);
     public function getArray();
+    public function hasEntity(Model $object);
+    public function update(Model $object);
 }

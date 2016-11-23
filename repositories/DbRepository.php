@@ -19,7 +19,7 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     /**
      * @var object CollectionInterface
      */
-    private $items;
+    private $collection;
     /**
      * @var object Model
      */
@@ -60,22 +60,22 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     public function getGroup($request=null)
     {
         try {
-            if (empty($this->items)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('items'));
+            if (empty($this->collection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
             }
             
-            if ($this->items->isEmpty()) {
+            if ($this->collection->isEmpty()) {
                 $query = $this->class::find();
                 $query = $this->addCriteria($query);
                 $data = $query->all();
                 if (!empty($data)) {
                     foreach ($data as $object) {
-                        $this->items->add($object);
+                        $this->collection->add($object);
                     }
                 }
             }
             
-            return $this->items;
+            return $this->collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -98,19 +98,19 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     }
     
     /**
-     * Присваивает CollectionInterface свойству DbRepository::items
+     * Присваивает CollectionInterface свойству DbRepository::collection
      * @param object $composit CollectionInterface
      */
-    public function setItems(CollectionInterface $composit)
+    public function setCollection(CollectionInterface $collection)
     {
         try {
-            $this->items = $composit;
+            $this->collection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
-    public function saveOne($key, $data)
+    public function saveGroup($key)
     {
     }
 }

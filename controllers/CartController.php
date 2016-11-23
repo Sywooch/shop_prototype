@@ -8,6 +8,7 @@ use app\controllers\{AbstractBaseController,
     CartControllerHelper};
 use app\helpers\UrlHelper;
 use app\models\{Collection,
+    PurchasesCollection,
     PurchasesFilter,
     PurchasesModel,
     ToCartFormModel};
@@ -43,27 +44,6 @@ class CartController extends AbstractBaseController
             $this->throwException($t, __METHOD__);
         }
     }
-    
-    /**
-     * Обрабатывает запрос на добавление товара в корзину
-     */
-    /*public function actionSet()
-    {
-        try {
-            if (\Yii::$app->request->isAjax) {
-                return CartControllerHelper::setAjax();
-            }
-            if (\Yii::$app->request->isPost) {
-                $filter = new PurchasesFilter();
-                $result = $filter->save('sessionSave', \Yii::$app->request->post());
-            }
-            
-            return $this->redirect(\yii\helpers\Url::previous(\Yii::$app->id));
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
-        }
-    }*/
     
     /**
      * Обрабатывает запрос на удаление всех товаров из корзины
@@ -210,10 +190,10 @@ class CartController extends AbstractBaseController
                 'class'=>SaveRedirectAction::class,
                 'service'=>new PurchaseSaveService([
                     'repository'=>new SessionRepository([
-                        'items'=>new Collection(),
+                        'collection'=>new PurchasesCollection(),
                         'class'=>PurchasesModel::class
                     ]), 
-                    'model'=>new ToCartFormModel(['scenario'=>ToCartFormModel::TO_CART]),
+                    'form'=>new ToCartFormModel(['scenario'=>ToCartFormModel::TO_CART]),
                 ]),
                 'url'=>Url::previous(\Yii::$app->id)
             ],

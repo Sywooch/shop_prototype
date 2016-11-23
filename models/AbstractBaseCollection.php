@@ -3,6 +3,7 @@
 namespace app\models;
 
 use yii\base\{ErrorException,
+    Model,
     Object};
 use app\exceptions\ExceptionsTrait;
 
@@ -13,6 +14,10 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
 {
     use ExceptionsTrait;
     
+    /**
+     * Коллекция сущностей
+     */
+    protected $items = [];
     /**
      * Текущая позиция итерации
      */
@@ -85,6 +90,49 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
     {
         try {
             return isset($this->items[$this->position]);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Добавляет сущность в коллекцию
+     * @param object $model Model
+     */
+    public function add(Model $model)
+    {
+        try {
+            $this->items[] = $model;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает bool в зависимости от того, пуст или нет Collection::items
+     */
+    public function isEmpty()
+    {
+        try {
+            return empty($this->items) ? true : false;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает сущности в виде массива
+     * @return array
+     */
+    public function getArray(): array
+    {
+        try {
+            $result = [];
+            foreach ($this->items as $item) {
+                $result[] = $item->toArray();
+            }
+            
+            return $result;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

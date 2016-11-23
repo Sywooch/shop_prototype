@@ -3,12 +3,12 @@
 namespace app\services;
 
 use yii\base\{ErrorException,
-    Model,
     Object};
 use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
 use app\services\SaveServiceInterface;
 use app\helpers\HashHelper;
+use app\models\FormInterface;
 
 class PurchaseSaveService extends Object implements SaveServiceInterface
 {
@@ -19,9 +19,9 @@ class PurchaseSaveService extends Object implements SaveServiceInterface
      */
     private $repository;
     /**
-     * @var object Model модель, которая примет данные добавляемого в корзину товара
+     * @var object FormInterface модель формы с данными добавляемого в корзину товара
      */
-    private $model;
+    private $form;
     
     public function init()
     {
@@ -31,8 +31,8 @@ class PurchaseSaveService extends Object implements SaveServiceInterface
             if (empty($this->repository)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('repository'));
             }
-            if (empty($this->model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('model'));
+            if (empty($this->form)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('form'));
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -46,34 +46,25 @@ class PurchaseSaveService extends Object implements SaveServiceInterface
     public function save($request)
     {
         try {
-            if (empty($this->model->load($request))) {
+            if (empty($this->form->load($request))) {
                 throw new ErrorException(ExceptionsTrait::emptyError('request'));
             }
-            if ($this->model->validate() === false) {
+            if ($this->form->validate() === false) {
                 throw new ErrorException(ExceptionsTrait::emptyError('validate'));
             }
+            
+            $model = $this->form->getModel();
             
             $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
             $collection = $this->repository->getGroup($key);
             
-            if ($collection->isEmpty()) {
-                $collection->add($this->model);
+            if ($collection->hasEntity($model) === true) {
+                $collection->update($model);
             } else {
-                if (!empty($currentEntity = $collection->getByKey('id_product', $this->model->id_product))) {
-                    $currentHash = HashHelper::createHash([$currentEntity->id_product, $currentEntity->id_color, $currentEntity->id_size]);
-                    $newHash = HashHelper::createHash([$this->model->id_product, $this->model->id_color, $this->model->id_size]);
-                    
-                    if ($currentHash !== $newHash) {
-                        $collection->add($this->model);
-                    } else {
-                        $currentEntity->quantity += $this->model->quantity;
-                    }
-                } else {
-                    $collection->add($this->model);
-                }
+                $collection->add($model);
             }
             
-            $this->repository->saveOne($key, $collection->getArray());
+            $this->repository->saveGroup($key);
             
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -94,13 +85,13 @@ class PurchaseSaveService extends Object implements SaveServiceInterface
     }
     
     /**
-     * Присваивает Model свойству PurchaseSaveService::model
-     * @param object $model Model
+     * Присваивает FormInterface свойству PurchaseSaveService::form
+     * @param object $form FormInterface
      */
-    public function setModel(Model $model)
+    public function setForm(FormInterface $form)
     {
         try {
-            $this->model = $model;
+            $this->form = $form;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
