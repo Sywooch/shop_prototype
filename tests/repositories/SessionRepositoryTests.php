@@ -36,33 +36,47 @@ class SessionRepositoryTests extends TestCase
         
         $this->mockCollection = new class () extends AbstractBaseCollection implements CollectionInterface {
             public $items = [];
-            public function add($model) {
+            public function add(Model $model) {
                 $this->items[] = $model;
             }
             public function isEmpty() 
             {
                 return empty($this->items) ? true : false;
             }
+            public function getArray(): array
+            {
+                $result = [];
+                foreach ($this->items as $item) {
+                    $result[] = $item->toArray();
+                }
+                return $result;
+            }
+            public function hasEntity(Model $object)
+            {
+            }
+            public function update(Model $object)
+            {
+            }
         };
     }
     
     /**
-     * Тестирует метод SessionRepository::setItems
+     * Тестирует метод SessionRepository::setCollection
      * передаю не поддерживающий CollectionInterface объект
      * @expectedException TypeError
      */
-    public function testSetItemsError()
+    public function testSetCollectionError()
     {
         $repository = new SessionRepository();
-        $repository->items = new class () {};
+        $repository->collection = new class () {};
     }
     
     /**
      * Тестирует метод SessionRepository::getGroup
-     * вызываю с пустым SessionRepository::items
+     * вызываю с пустым $collection
      * @expectedException yii\base\ErrorException
      */
-    public function testGetGroupError()
+    public function testGetGroupCollectionError()
     {
         $repository = new SessionRepository();
         $repository->getGroup();
@@ -75,7 +89,7 @@ class SessionRepositoryTests extends TestCase
     {
         $repository = new SessionRepository();
         $repository->class = $this->mockModel ::className();
-        $repository->items = $this->mockCollection;
+        $repository->collection = $this->mockCollection;
         
         $result = $repository->getGroup(self::$key);
         
@@ -93,15 +107,15 @@ class SessionRepositoryTests extends TestCase
      * Тестирует метод SessionRepository::getGroup
      * при отсутствии данных, удовлетворяющих условиям запроса
      */
-    public function testGetGroupNull()
+    public function testGetGroupEmpty()
     {
         $repository = new SessionRepository();
         $repository->class = $this->mockModel ::className();
-        $repository->items = $this->mockCollection;
+        $repository->collection = $this->mockCollection;
         
         $result = $repository->getGroup(self::$wrongKey);
         
-        $this->assertNull($result);
+        $this->assertTrue($result->isEmpty());
     }
     
     /**
@@ -127,6 +141,44 @@ class SessionRepositoryTests extends TestCase
         $result = $repository->getOne(self::$wrongKey);
         
         $this->assertNull($result);
+    }
+    
+    /**
+     * Тестирует метод SessionRepository::saveGroup
+     * вызываю с пустым $collection
+     * @expectedException yii\base\ErrorException
+     */
+    public function testSaveGroupCollectionEmpty()
+    {
+        $repository = new SessionRepository();
+        $repository->saveGroup('');
+    }
+    
+    /**
+     * Тестирует метод SessionRepository::saveGroup
+     */
+    public function testSaveGroup()
+    {
+        $model = new class() extends Model {
+            public $data = 3;
+        };
+        
+        $this->mockCollection->add($model);
+        $this->mockCollection->add($model);
+        
+        $repository = new SessionRepository();
+        $repository->collection = $this->mockCollection;
+        
+        self::$session->open();
+        self::$session->remove(self::$key);
+        
+        $this->assertFalse(self::$session->has(self::$key));
+        
+        $repository->saveGroup(self::$key);
+        
+        $this->assertTrue(self::$session->has(self::$key));
+        
+        self::$session->close();
     }
     
     public static function tearDownAfterClass()

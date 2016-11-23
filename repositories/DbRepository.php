@@ -21,10 +21,6 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      */
     private $collection;
     /**
-     * @var object Model
-     */
-    private $item;
-    /**
      * @var object CriteriaInterface
      */
     private $criteria;
@@ -37,16 +33,20 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     public function getOne($request=null)
     {
         try {
+            if (empty($this->collection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+            }
+            
             if (empty($this->item)) {
                 $query = $this->class::find();
                 $query = $this->addCriteria($query);
                 $data = $query->one();
                 if ($data !== null) {
-                    $this->item = $data;
+                    $this->collection->addOne($data);
                 }
             }
             
-            return !empty($this->item) ? $this->item : null;
+            return $this->collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

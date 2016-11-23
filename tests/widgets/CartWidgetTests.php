@@ -27,15 +27,15 @@ class CartWidgetTests extends TestCase
             }
             public function getOne($request)
             {
-                
             }
             public function getCriteria()
             {
-                
             }
             public function addCriteria($query)
             {
-                
+            }
+            public function saveGroup($key)
+            {
             }
         };
         
@@ -49,22 +49,21 @@ class CartWidgetTests extends TestCase
             }
             public function getOne($request)
             {
-                
             }
             public function getCriteria()
             {
-                
             }
             public function addCriteria($query)
             {
-                
+            }
+            public function saveGroup($key)
+            {
             }
         };
         
         self::$currency = new class () implements RepositoryInterface {
             public function getGroup($request)
             {
-                
             }
             public function getOne($request)
             {
@@ -75,11 +74,12 @@ class CartWidgetTests extends TestCase
             }
             public function getCriteria()
             {
-                
             }
             public function addCriteria($query)
             {
-                
+            }
+            public function saveGroup($key)
+            {
             }
         };
     }

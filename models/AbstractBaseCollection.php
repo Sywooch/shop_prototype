@@ -15,11 +15,15 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
     use ExceptionsTrait;
     
     /**
-     * Коллекция сущностей
+     * @var array Коллекция сущностей
      */
     protected $items = [];
     /**
-     * Текущая позиция итерации
+     * @var object Model
+     */
+    protected $item;
+    /**
+     * @var int Текущая позиция итерации
      */
     private $position = 0;
     
@@ -103,6 +107,19 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
     {
         try {
             $this->items[] = $model;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Добавляет сущность в коллекцию
+     * @param object $model Model
+     */
+    public function addOne(Model $model)
+    {
+        try {
+            $this->item = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

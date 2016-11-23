@@ -21,8 +21,10 @@ use app\widgets\{CartWidget,
 use app\models\{CategoriesModel,
     ChangeCurrencyFormModel,
     Collection,
+    CurrencyCollection,
     CurrencyModel,
     ProductsModel,
+    PurchasesCollection,
     PurchasesModel,
     ToCartFormModel,
     User};
@@ -68,10 +70,11 @@ class ProductDetailWidget extends Widget
             ]);
             $renderArray['cart'] = CartWidget::widget([
                 'repository'=>new SessionRepository([
-                    'collection'=>new Collection(),
+                    'collection'=>new PurchasesCollection(),
                     'class'=>PurchasesModel::class
                 ]), 
-                'currency'=>new SessionRepository([
+                'repositoryCurrency'=>new SessionRepository([
+                    'collection'=>new CurrencyCollection(),
                     'class'=>CurrencyModel::class
                 ]), 
                 'view'=>'short-cart.twig'
@@ -132,6 +135,7 @@ class ProductDetailWidget extends Widget
             $renderArray['sizes'] = ArrayHelper::getColumn($this->model->sizes, 'size');
             $renderArray['price'] = PriceWidget::widget([
                 'repository'=>new SessionRepository([
+                    'collection'=>new CurrencyCollection(),
                     'class'=>CurrencyModel::class
                 ]), 
                 'price'=>$this->model->price

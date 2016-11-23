@@ -24,19 +24,6 @@ class ToCartFormModel extends AbstractFormModel implements FormInterface
     public $id_size;
     public $price;
     
-    /**
-     * Возвращает объект модели, представляющий таблицу СУБД
-     * @return Model
-     */
-    public function getModel(): Model
-    {
-        try {
-            return \Yii::createObject(array_merge(['class'=>PurchasesModel::class], $this->toArray()));
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     public function scenarios()
     {
         return [
@@ -50,5 +37,18 @@ class ToCartFormModel extends AbstractFormModel implements FormInterface
             [['id_product', 'quantity', 'id_color', 'id_size', 'price'], 'app\validators\StripTagsValidator'],
             [['id_product', 'quantity', 'id_color', 'id_size', 'price'], 'required', 'on'=>self::TO_CART],
         ];
+    }
+    
+    /**
+     * Возвращает объект модели, представляющий таблицу СУБД
+     * @return Model
+     */
+    public function getModel(): Model
+    {
+        try {
+            return \Yii::createObject(array_merge(['class'=>PurchasesModel::class], $this->toArray()));
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
 }

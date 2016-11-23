@@ -24,7 +24,7 @@ class CartWidget extends Widget
     /**
      * @var object RepositoryInterface для поиска данных по запросу
      */
-    private $currency;
+    private $repositoryCurrency;
     /**
      * @var string имя шаблона
      */
@@ -46,7 +46,7 @@ class CartWidget extends Widget
             if (empty($this->repository)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('repository'));
             }
-            if (empty($this->currency)) {
+            if (empty($this->repositoryCurrency)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('currency'));
             }
             if (empty($this->view)) {
@@ -68,14 +68,12 @@ class CartWidget extends Widget
             $collection = $this->repository->getGroup($key);
             
             if (!empty($collection)) {
-                foreach ($collection as $purchase) {
-                    $this->goods += $purchase->quantity;
-                    $this->cost += ($purchase->quantity * $purchase->price);
-                }
+                $this->goods = $collection->totalQuantity();
+                $this->cost = $collection->totalPrice();
             }
             
-            $currency = $this->currency->getOne(\Yii::$app->params['currencyKey']);
-            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
+            $collectionCurrency = $this->repositoryCurrency->getOne(\Yii::$app->params['currencyKey']);
+            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $collectionCurrency->exchangeRate(), 2) . ' ' . $collectionCurrency->code();
             
             return $this->render($this->view, ['goods'=>$this->goods, 'cost'=>$this->cost]);
         } catch (\Throwable $t) {
@@ -100,10 +98,10 @@ class CartWidget extends Widget
      * Присваивает RepositoryInterface свойству CartWidget::currency
      * @param object $currency RepositoryInterface
      */
-    public function setCurrency(RepositoryInterface $currency)
+    public function setRepositoryCurrency(RepositoryInterface $repository)
     {
         try {
-            $this->currency = $currency;
+            $this->repositoryCurrency = $repository;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

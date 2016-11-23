@@ -58,4 +58,44 @@ class PurchasesCollection extends AbstractBaseCollection implements CollectionIn
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает общее количество товаров в корзине
+     * @return int
+     */
+    public function totalQuantity(): int
+    {
+        try {
+            $result = 0;
+            if (!empty($this->items)) {
+                foreach ($this->items as $item) {
+                    $result += $item->quantity;
+                }
+            }
+            
+            return $result;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает общую стоимость товаров в корзине
+     * @return float
+     */
+    public function totalPrice(): float
+    {
+        try {
+            $result = 0;
+            if (!empty($this->items)) {
+                foreach ($this->items as $item) {
+                    $result += $item->quantity * $item->price;
+                }
+            }
+            
+            return $result;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

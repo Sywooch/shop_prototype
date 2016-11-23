@@ -4,7 +4,8 @@ namespace app\tests\models;
 
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
-use app\models\ToCartFormModel;
+use app\models\{PurchasesModel,
+    ToCartFormModel};
 
 /**
  * Тестирует класс app\models\ToCartFormModel
@@ -92,6 +93,31 @@ class ToCartFormModelTests extends TestCase
         $model->validate();
         
         $this->assertTrue(empty($model->errors));
+    }
+    
+    /**
+     * Тестирует метод ToCartFormModel::getModel
+     */
+    public function testGetModel()
+    {
+        $fixture = self::$_dbClass->purchases['purchase_1'];
+        
+        $model = new ToCartFormModel();
+        $model->id_product = $fixture['id_product'];
+        $model->quantity = $fixture['quantity'];
+        $model->id_color = $fixture['id_color'];
+        $model->id_size = $fixture['id_size'];
+        $model->price = $fixture['price'];
+        
+        $result = $model->getModel();
+        
+        $this->assertTrue($result instanceof PurchasesModel);
+        
+        $this->assertEquals($fixture['id_product'], $result->id_product);
+        $this->assertEquals($fixture['quantity'], $result->quantity);
+        $this->assertEquals($fixture['id_color'], $result->id_color);
+        $this->assertEquals($fixture['id_size'], $result->id_size);
+        $this->assertEquals($fixture['price'], $result->price);
     }
     
     public static function tearDownAfterClass()
