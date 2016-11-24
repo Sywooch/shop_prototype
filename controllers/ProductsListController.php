@@ -13,7 +13,7 @@ use app\models\{ProductsCollection,
     ProductsModel};
 use app\repositories\DbRepository;
 use app\services\GoodsListSearchService;
-use app\queries\GoodsPagination;
+use app\queries\LightPagination;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -67,7 +67,7 @@ class ProductsListController extends AbstractBaseController
                     'repository'=>new DbRepository([
                         'class'=>ProductsModel::class,
                         'collection'=>new ProductsCollection([
-                            'pagination'=>new GoodsPagination()
+                            'pagination'=>new LightPagination()
                         ]),
                     ]),
                 ]),

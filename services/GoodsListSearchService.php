@@ -39,7 +39,7 @@ class GoodsListSearchService extends Object implements SearchServiceInterface
     public function search($request): ProductsCollection
     {
         try {
-            $criteria = $this->repository->getCriteria();
+            $criteria = $this->repository->criteria;
             
             $criteria->where(['[[products.active]]'=>true]);
             if (!empty($request[\Yii::$app->params['categoryKey']])) {
@@ -50,11 +50,13 @@ class GoodsListSearchService extends Object implements SearchServiceInterface
                     $criteria->where(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
                 }
             }
+            
             $pagination = $this->repository->collection->pagination;
-            $pagination->setRequest($request);
-            $criteria->setPagination($pagination);
-            $criteria->offset();
-            $criteria->limit();
+            $pagination->pageSize = \Yii::$app->params['limit'];
+            $pagination->page = !empty($request[\Yii::$app->params['pagePointer']]) ? $request[\Yii::$app->params['pagePointer']] - 1 : 0;
+            
+            $criteria->offset($pagination->offset);
+            $criteria->limit($pagination->limit);
             
             $collection = $this->repository->getGroup();
             

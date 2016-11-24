@@ -5,6 +5,7 @@ namespace app\actions;
 use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
+use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
 use app\services\SearchServiceInterface;
 use app\exceptions\ExceptionsTrait;
@@ -47,15 +48,18 @@ class SearchAction extends AbstractBaseAction
     public function run()
     {
         try {
-            $data = $this->service->search(\Yii::$app->request->get());
+            $collection = $this->service->search(\Yii::$app->request->get());
             
-            if (empty($data)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('data'));
+            if ($collection->isEmpty()) {
+                throw new NotFoundHttpException(ExceptionsTrait::emptyError('collection'));
             }
             
             Url::remember(Url::current(), \Yii::$app->id);
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['data'=>$data]));
+            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['data'=>$collection]));
+        } catch (NotFoundHttpException $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            throw $e;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

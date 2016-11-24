@@ -7,7 +7,7 @@ use yii\base\{ErrorException,
 use app\queries\PaginationInterface;
 use app\exceptions\ExceptionsTrait;
 
-class GoodsPagination extends Object implements PaginationInterface
+class LightPagination extends Object implements PaginationInterface
 {
     use ExceptionsTrait;
     

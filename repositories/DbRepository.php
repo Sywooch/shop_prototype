@@ -74,6 +74,9 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
             if ($this->collection->isEmpty()) {
                 $query = $this->class::find();
                 $query = $this->addCriteria($query);
+                if (!empty($this->collection->pagination)) {
+                    $this->collection->pagination->configure($query);
+                }
                 $data = $query->all();
                 if (!empty($data)) {
                     foreach ($data as $object) {

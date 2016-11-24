@@ -25,10 +25,6 @@ class QueryCriteria extends Object implements CriteriaInterface
      * @var mixed запрос
      */
     private $query;
-    /**
-     * @var object Pagination
-     */
-    private $pagination;
     
     /**
      * Применяет критерии к запросу
@@ -165,33 +161,14 @@ class QueryCriteria extends Object implements CriteriaInterface
     }
     
     /**
-     * Конфигурирует объект PaginationInterface
-     * @param object $pagination PaginationInterface
-     */
-    public function setPagination(PaginationInterface $pagination)
-    {
-        try {
-           $this->criteriaArray[] = function() use ($pagination) {
-                $this->pagination = $pagination;
-                $this->pagination->configure($this->query);
-            };
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Устанавливает условие LIMIT
      * @param int $condition количество возвращаемых записей
      * @return Query
      */
-    public function limit($condition=null)
+    public function limit($condition)
     {
         try {
            $this->criteriaArray[] = function() use ($condition) {
-               if (is_null($condition) && !empty($this->pagination)) {
-                   $condition = $this->pagination->limit;
-               }
                 return $this->query->limit($condition);
             };
         } catch (\Throwable $t) {
@@ -204,13 +181,10 @@ class QueryCriteria extends Object implements CriteriaInterface
      * @param int $condition смещение возвращаемых записей
      * @return Query
      */
-    public function offset($condition=null)
+    public function offset($condition)
     {
         try {
            $this->criteriaArray[] = function() use ($condition) {
-               if (is_null($condition) && !empty($this->pagination)) {
-                   $condition = $this->pagination->offset;
-               }
                 return $this->query->offset($condition);
             };
         } catch (\Throwable $t) {
