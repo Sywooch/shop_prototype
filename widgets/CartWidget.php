@@ -72,8 +72,8 @@ class CartWidget extends Widget
                 $this->cost = $collection->totalPrice();
             }
             
-            $collectionCurrency = $this->repositoryCurrency->getOne(\Yii::$app->params['currencyKey']);
-            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $collectionCurrency->exchangeRate(), 2) . ' ' . $collectionCurrency->code();
+            $currency = $this->repositoryCurrency->getOne(\Yii::$app->params['currencyKey']);
+            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
             
             return $this->render($this->view, ['goods'=>$this->goods, 'cost'=>$this->cost]);
         } catch (\Throwable $t) {

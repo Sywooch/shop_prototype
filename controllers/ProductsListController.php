@@ -4,9 +4,16 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
+use yii\data\Pagination;
 use app\helpers\UrlHelper;
 use app\controllers\{AbstractBaseController,
     ProductsListControllerHelper};
+use app\actions\SearchAction;
+use app\models\{ProductsCollection,
+    ProductsModel};
+use app\repositories\DbRepository;
+use app\services\GoodsListSearchService;
+use app\queries\GoodsPagination;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -16,7 +23,7 @@ class ProductsListController extends AbstractBaseController
     /**
      * Обрабатывает запрос к списку продуктов
      */
-    public function actionIndex()
+    /*public function actionIndex()
     {
         try {
             $renderArray = ProductsListControllerHelper::indexGet();
@@ -28,7 +35,7 @@ class ProductsListController extends AbstractBaseController
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Обрабатывает поисковый запрос к списку продуктов
@@ -49,6 +56,24 @@ class ProductsListController extends AbstractBaseController
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
+    }
+    
+    public function actions()
+    {
+        return [
+            'index'=>[
+                'class'=>SearchAction::class,
+                'service'=>new GoodsListSearchService([
+                    'repository'=>new DbRepository([
+                        'class'=>ProductsModel::class,
+                        'collection'=>new ProductsCollection([
+                            'pagination'=>new GoodsPagination()
+                        ]),
+                    ]),
+                ]),
+                'view'=>'products-list.twig'
+            ],
+        ];
     }
     
     public function behaviors()

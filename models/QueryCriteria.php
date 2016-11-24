@@ -5,8 +5,10 @@ namespace app\models;
 use yii\base\{ErrorException,
     Object};
 use yii\db\Query;
+use yii\data\Pagination;
 use app\exceptions\ExceptionsTrait;
 use app\models\CriteriaInterface;
+use app\queries\PaginationInterface;
 
 /**
  * Устанавливает и применяет критерии к SQL запросам
@@ -23,6 +25,10 @@ class QueryCriteria extends Object implements CriteriaInterface
      * @var mixed запрос
      */
     private $query;
+    /**
+     * @var object Pagination
+     */
+    private $pagination;
     
     /**
      * Применяет критерии к запросу
@@ -56,6 +62,22 @@ class QueryCriteria extends Object implements CriteriaInterface
         try {
            $this->criteriaArray[] = function() use ($condition) {
                 return $this->query->select($condition);
+            };
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Добавляет поля к выборке запроса
+     * @param array список полей
+     * @return Query
+     */
+    public function addSelect(array $condition)
+    {
+        try {
+           $this->criteriaArray[] = function() use ($condition) {
+                return $this->query->addSelect($condition);
             };
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -143,15 +165,53 @@ class QueryCriteria extends Object implements CriteriaInterface
     }
     
     /**
+     * Конфигурирует объект PaginationInterface
+     * @param object $pagination PaginationInterface
+     */
+    public function setPagination(PaginationInterface $pagination)
+    {
+        try {
+           $this->criteriaArray[] = function() use ($pagination) {
+                $this->pagination = $pagination;
+                $this->pagination->configure($this->query);
+            };
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Устанавливает условие LIMIT
      * @param int $condition количество возвращаемых записей
      * @return Query
      */
-    public function limit(int $condition)
+    public function limit($condition=null)
     {
         try {
            $this->criteriaArray[] = function() use ($condition) {
+               if (is_null($condition) && !empty($this->pagination)) {
+                   $condition = $this->pagination->limit;
+               }
                 return $this->query->limit($condition);
+            };
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Устанавливает условие OFFSET
+     * @param int $condition смещение возвращаемых записей
+     * @return Query
+     */
+    public function offset($condition=null)
+    {
+        try {
+           $this->criteriaArray[] = function() use ($condition) {
+               if (is_null($condition) && !empty($this->pagination)) {
+                   $condition = $this->pagination->offset;
+               }
+                return $this->query->offset($condition);
             };
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

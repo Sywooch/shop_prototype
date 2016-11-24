@@ -20,6 +20,10 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
      */
     private $collection;
     /**
+     * @var object Model
+     */
+    private $entity;
+    /**
      * @var object CriteriaInterface
      */
     private $criteria;
@@ -32,18 +36,14 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     public function getOne($key)
     {
         try {
-            if (empty($this->collection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
-            }
-            
-            if (empty($this->item)) {
+            if (empty($this->entity)) {
                 $data = SessionHelper::read($key);
                 if (!empty($data)) {
-                    $this->collection->addOne(\Yii::createObject(array_merge(['class'=>$this->class], $data)));
+                    $this->entity = \Yii::createObject(array_merge(['class'=>$this->class], $data));
                 }
             }
             
-            return $this->collection;
+            return !empty($this->entity) ? $this->entity : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -15,7 +15,7 @@ abstract class AbstractBaseAction extends Action
     /**
      * @var array массив данных для передачи в представление
      */
-    protected $_renderArray = [];
+    protected $renderArray = [];
     
     public function init()
     {
@@ -42,7 +42,7 @@ abstract class AbstractBaseAction extends Action
                 if (is_array($addition) && array_key_exists('class', $addition)) {
                     $addition = \Yii::createObject($addition);
                 }
-                $this->_renderArray[$name] = $addition;
+                $this->renderArray[$name] = $addition;
             }
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);

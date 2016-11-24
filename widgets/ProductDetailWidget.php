@@ -74,7 +74,6 @@ class ProductDetailWidget extends Widget
                     'class'=>PurchasesModel::class
                 ]), 
                 'repositoryCurrency'=>new SessionRepository([
-                    'collection'=>new CurrencyCollection(),
                     'class'=>CurrencyModel::class
                 ]), 
                 'view'=>'short-cart.twig'
@@ -135,7 +134,6 @@ class ProductDetailWidget extends Widget
             $renderArray['sizes'] = ArrayHelper::getColumn($this->model->sizes, 'size');
             $renderArray['price'] = PriceWidget::widget([
                 'repository'=>new SessionRepository([
-                    'collection'=>new CurrencyCollection(),
                     'class'=>CurrencyModel::class
                 ]), 
                 'price'=>$this->model->price

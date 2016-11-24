@@ -46,9 +46,9 @@ class PriceWidget extends Widget
     public function run()
     {
         try {
-            $collection = $this->repository->getOne(\Yii::$app->params['currencyKey']);
+            $currency = $this->repository->getOne(\Yii::$app->params['currencyKey']);
             
-            $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * $collection->exchangeRate(), 2) . ' ' . $collection->code();
+            $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * $currency->exchange_rate, 2) . ' ' . $currency->code;
             
             return $correctedPrice ?? '';
         } catch(\Throwable $t) {

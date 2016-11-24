@@ -10,7 +10,7 @@ use app\models\{AbstractBaseCollection,
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
-class CurrencyCollection extends AbstractBaseCollection implements CollectionInterface
+class ProductsCollection extends AbstractBaseCollection implements CollectionInterface
 {
     /**
      * Проверяет существование в коллекции сущности с переданным данными
@@ -35,40 +35,6 @@ class CurrencyCollection extends AbstractBaseCollection implements CollectionInt
     {
         try {
             
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает курс валюты
-     * @return float
-     */
-    public function exchangeRate(): float
-    {
-        try {
-            if (!empty($this->item)) {
-                $exchange_rate = $this->item->exchange_rate;
-            }
-            
-            return $exchange_rate ?? 1;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает код валюты
-     * @return string
-     */
-    public function code(): string
-    {
-        try {
-            if (!empty($this->item)) {
-                $code = $this->item->code;
-            }
-            
-            return $code ?? '';
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

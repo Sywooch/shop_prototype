@@ -21,6 +21,10 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      */
     private $collection;
     /**
+     * @var object Model
+     */
+    private $entity;
+    /**
      * @var object CriteriaInterface
      */
     private $criteria;
@@ -33,20 +37,20 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     public function getOne($request=null)
     {
         try {
-            if (empty($this->collection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+            if (empty($this->class)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('class'));
             }
             
-            if (empty($this->item)) {
+            if (empty($this->entity)) {
                 $query = $this->class::find();
                 $query = $this->addCriteria($query);
                 $data = $query->one();
                 if ($data !== null) {
-                    $this->collection->addOne($data);
+                    $this->entity = $data;
                 }
             }
             
-            return $this->collection;
+            return !empty($this->entity) ? $this->entity : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -60,6 +64,9 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     public function getGroup($request=null)
     {
         try {
+            if (empty($this->class)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('class'));
+            }
             if (empty($this->collection)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('collection'));
             }
@@ -105,6 +112,19 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     {
         try {
             $this->collection = $collection;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект CollectionInterface
+     * @return CollectionInterface/null
+     */
+    public function getCollection()
+    {
+        try {
+            return !empty($this->collection) ? $this->collection : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

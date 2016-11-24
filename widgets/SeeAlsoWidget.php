@@ -12,7 +12,6 @@ use app\widgets\PriceWidget;
 use app\repositories\{RepositoryInterface,
     SessionRepository};
 use app\models\{CollectionInterface,
-    CurrencyCollection,
     CurrencyModel,
     ProductsModel};
 
@@ -77,7 +76,6 @@ class SeeAlsoWidget extends Widget
                     $link = Html::a($product->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$product->seocode]));
                     $price = PriceWidget::widget([
                         'repository'=>new SessionRepository([
-                            'collection'=>new CurrencyCollection(),
                             'class'=>CurrencyModel::class
                         ]), 
                         'price'=>$product->price

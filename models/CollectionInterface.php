@@ -10,7 +10,6 @@ use yii\base\Model;
 interface CollectionInterface
 {
     public function add(Model $object);
-    public function addOne(Model $object);
     public function isEmpty();
     public function getArray();
     public function hasEntity(Model $object);

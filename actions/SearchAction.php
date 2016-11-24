@@ -10,9 +10,9 @@ use app\services\SearchServiceInterface;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Обрабатывает запрос на вывод 1 записи
+ * Обрабатывает запрос на вывод товаров из СУБД
  */
-class DetailAction extends AbstractBaseAction
+class SearchAction extends AbstractBaseAction
 {
     /**
      * @var object SearchServiceInterface для поиска данных по запросу
@@ -47,15 +47,15 @@ class DetailAction extends AbstractBaseAction
     public function run()
     {
         try {
-            $model = $this->service->search(\Yii::$app->request->get());
+            $data = $this->service->search(\Yii::$app->request->get());
             
-            if (empty($model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('model'));
+            if (empty($data)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('data'));
             }
             
             Url::remember(Url::current(), \Yii::$app->id);
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['model'=>$model]));
+            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['data'=>$data]));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
@@ -63,7 +63,7 @@ class DetailAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает SearchServiceInterface свойству DetailAction::service
+     * Присваивает SearchServiceInterface свойству SearchAction::service
      * @param object $service SearchServiceInterface
      */
     public function setService(SearchServiceInterface $service)

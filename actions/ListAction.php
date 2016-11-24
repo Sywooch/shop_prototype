@@ -10,9 +10,9 @@ use app\services\SearchServiceInterface;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Обрабатывает запрос на вывод 1 записи
+ * Обрабатывает запрос на вывод списка записей
  */
-class DetailAction extends AbstractBaseAction
+class ListAction extends AbstractBaseAction
 {
     /**
      * @var object SearchServiceInterface для поиска данных по запросу
@@ -55,7 +55,7 @@ class DetailAction extends AbstractBaseAction
             
             Url::remember(Url::current(), \Yii::$app->id);
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['model'=>$model]));
+            return $this->controller->render($this->view, ArrayHelper::merge($this->_renderArray, ['model'=>$model]));
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);

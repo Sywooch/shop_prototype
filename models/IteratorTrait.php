@@ -3,16 +3,15 @@
 namespace app\models;
 
 use yii\base\{ErrorException,
-    Model,
-    Object};
+    Model};
 use yii\data\Pagination;
 use app\exceptions\ExceptionsTrait;
-use app\queries\PaginationInterface;
+use app\queries\GoodsPagination;
 
 /**
  * Реализует интерфейс Iterator для доступа к коллекции сущностей
  */
-abstract class AbstractBaseCollection extends Object implements \Iterator
+trait IteratorTrait implements \Iterator
 {
     use ExceptionsTrait;
     
@@ -24,19 +23,14 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
      * @var int Текущая позиция итерации
      */
     private $position = 0;
-    /**
-     * @var string имя класса Pagination
-     */
-    private $pagination;
     
     /**
      * Задает начальную позицию итерации
      */
-    public function __construct(array $config=[])
+    public function __construct()
     {
         try {
             $this->position = 0;
-            parent::__construct($config);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -140,32 +134,6 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
             }
             
             return $result;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Сохраняет объект пагинации
-     * @return Pagination/null
-     */
-    public function setPagination(PaginationInterface $pagination)
-    {
-        try {
-            $this->pagination = $pagination;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает объект пагинации
-     * @return Pagination/null
-     */
-    public function getPagination()
-    {
-        try {
-            return !empty($this->pagination) ? $this->pagination : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
