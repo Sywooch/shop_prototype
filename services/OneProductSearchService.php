@@ -8,6 +8,7 @@ use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
 use app\models\ProductsModel;
 use app\services\SearchServiceInterface;
+use app\filters\WhereFilter;
 
 class OneProductSearchService extends Object implements SearchServiceInterface
 {
@@ -43,8 +44,8 @@ class OneProductSearchService extends Object implements SearchServiceInterface
                 throw new ErrorException(ExceptionsTrait::emptyError('seocode'));
             }
             
-            $criteria = $this->repository->getCriteria();
-            $criteria->where(['seocode'=>$seocode]);
+            $criteria = $this->repository->criteria;
+            $criteria->setFilter(new WhereFilter(['condition'=>['seocode'=>$seocode]]));
             $model = $this->repository->getOne();
             
             if (empty($model)) {

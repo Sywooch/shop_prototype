@@ -3,12 +3,13 @@
 namespace app\models;
 
 use yii\base\ErrorException;
-use app\models\AbstractFormModel;
+use app\models\{AbstractFormModel,
+    FormInterface};
 
 /**
  * Представляет данные формы изменения текущей валюты
  */
-class ChangeCurrencyFormModel extends AbstractFormModel
+class ChangeCurrencyFormModel extends AbstractFormModel implements FormInterface
 {
     /**
      * Сценарий изменения текущей валюты
@@ -30,5 +31,18 @@ class ChangeCurrencyFormModel extends AbstractFormModel
             [['id'], 'app\validators\StripTagsValidator'],
             [['id'], 'required', 'on'=>self::CHANGE_CURRENCY],
         ];
+    }
+    
+    /**
+     * Возвращает объект модели, представляющий таблицу СУБД
+     * @return Model
+     */
+    public function getModel()
+    {
+        try {
+            
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
 }

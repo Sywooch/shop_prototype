@@ -24,7 +24,7 @@ use app\widgets\{CategoriesMenuWidget,
 use app\repositories\{DbRepository,
     SessionRepository};
 
-class GoodsListWidget extends Widget
+class ProductsListWidget extends Widget
 {
     use ExceptionsTrait;
     

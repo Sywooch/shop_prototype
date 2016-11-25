@@ -8,6 +8,7 @@ use yii\base\{ErrorException,
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
+use app\filters\SelectFilter;
 
 /**
  * Формирует HTML строку с формой выбора валюты
@@ -51,8 +52,8 @@ class CurrencyWidget extends Widget
     public function run()
     {
         try {
-            $criteria = $this->repository->getCriteria();
-            $criteria->select(['id', 'code']);
+            $criteria = $this->repository->criteria;
+            $criteria->setFilter(new SelectFilter(['condition'=>['id', 'code']]));
             $currencyList = $this->repository->getGroup();
             
             $currencyList = ArrayHelper::map($currencyList, 'id', 'code');

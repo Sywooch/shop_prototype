@@ -7,6 +7,7 @@ use yii\base\{ErrorException,
 use app\widgets\BreadcrumbsWidget;
 use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
+use app\filters\WhereFilter;
 
 /**
  * Формирует breadcrumbs для страницы товара
@@ -38,8 +39,8 @@ class CategoriesBreadcrumbsWidget extends BreadcrumbsWidget
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
             if (!empty($this->category)) {
-                $criteria = $this->repository->getCriteria();
-                $criteria->where(['[[seocode]]'=>$this->category]);
+                $criteria = $this->repository->criteria;
+                $criteria->setFilter(new WhereFilter(['condition'=>['[[seocode]]'=>$this->category]]));
                 $category = $this->repository->getOne();
                 if ($category === null) {
                     throw new ErrorException(ExceptionsTrait::emptyError('category'));

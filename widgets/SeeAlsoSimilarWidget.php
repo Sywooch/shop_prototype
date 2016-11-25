@@ -4,7 +4,11 @@ namespace app\widgets;
 
 use yii\helpers\ArrayHelper;
 use app\widgets\SeeAlsoWidget;
-use app\models\QueryCriteria;
+use app\queries\QueryCriteria;
+use app\filters\{DistinctFilter,
+    JoinFilter,
+    LimitFilter,
+    WhereFilter};
 
 /**
  * Формирует HTML строку с информацией о похожих товарах
@@ -18,16 +22,16 @@ class SeeAlsoSimilarWidget extends SeeAlsoWidget
     public function run()
     {
         try {
-            $criteria = $this->repository->getCriteria();
-            $criteria->distinct();
-            $criteria->where(['!=', '[[id]]', $this->model->id]);
-            $criteria->where(['[[id_category]]'=>$this->model->category->id]);
-            $criteria->where(['[[id_subcategory]]'=>$this->model->subcategory->id]);
-            $criteria->join('INNER JOIN', '{{products_colors}}', '[[products_colors.id_product]]=[[products.id]]');
-            $criteria->where(['[[products_colors.id_color]]'=>ArrayHelper::getColumn($this->model->colors, 'id')]);
-            $criteria->join('INNER JOIN', '{{products_sizes}}', '[[products_sizes.id_product]]=[[products.id]]');
-            $criteria->where(['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($this->model->sizes, 'id')]);
-            $criteria->limit(\Yii::$app->params['similarLimit']);
+            $criteria = $this->repository->criteria;
+            $criteria->setFilter(new DistinctFilter());
+            $criteria->setFilter(new WhereFilter(['condition'=>['!=', '[[id]]', $this->model->id]]));
+            $criteria->setFilter(new WhereFilter(['condition'=>['[[id_category]]'=>$this->model->category->id]]));
+            $criteria->setFilter(new WhereFilter(['condition'=>['[[id_subcategory]]'=>$this->model->subcategory->id]]));
+            $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{products_colors}}', 'condition'=>'[[products_colors.id_product]]=[[products.id]]']]));
+            $criteria->setFilter(new WhereFilter(['condition'=>['[[products_colors.id_color]]'=>ArrayHelper::getColumn($this->model->colors, 'id')]]));
+            $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{products_sizes}}', 'condition'=>'[[products_sizes.id_product]]=[[products.id]]']]));
+            $criteria->setFilter(new WhereFilter(['condition'=>['[[products_sizes.id_size]]'=>ArrayHelper::getColumn($this->model->sizes, 'id')]]));
+            $criteria->setFilter(new LimitFilter(['condition'=>\Yii::$app->params['similarLimit']]));
             
             return parent::run();
         } catch (\Throwable $t) {

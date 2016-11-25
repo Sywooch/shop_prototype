@@ -8,6 +8,7 @@ use app\exceptions\ExceptionsTrait;
 use app\models\{CollectionInterface,
     CategoriesModel};
 use app\repositories\RepositoryInterface;
+use app\filters\WithFilter;
 
 /**
  * Формирует меню
@@ -51,7 +52,7 @@ class CategoriesMenuWidget extends Menu
             }
             
             $criteria = $this->repository->getCriteria();
-            $criteria->with('subcategory');
+            $criteria->setFilter(new WithFilter(['condition'=>'subcategory']));
             $this->categoriesList = $this->repository->getGroup();
             
             if (!empty($this->categoriesList)) {

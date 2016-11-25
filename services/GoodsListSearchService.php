@@ -8,6 +8,11 @@ use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
 use app\models\CollectionInterface;
 use app\services\SearchServiceInterface;
+use app\filters\{JoinFilter,
+    LimitFilter,
+    OffsetFilter,
+    SortingFilter,
+    WhereFilter};
 
 class GoodsListSearchService extends Object implements SearchServiceInterface
 {
@@ -41,13 +46,14 @@ class GoodsListSearchService extends Object implements SearchServiceInterface
         try {
             $criteria = $this->repository->criteria;
             
-            $criteria->where(['[[products.active]]'=>true]);
+            $criteria->setFilter(new WhereFilter(['condition'=>['[[products.active]]'=>true]]));
+            
             if (!empty($request[\Yii::$app->params['categoryKey']])) {
-                $criteria->join('INNER JOIN', '{{categories}}', '[[categories.id]]=[[products.id_category]]');
-                $criteria->where(['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]);
+                $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{categories}}', 'condition'=>'[[categories.id]]=[[products.id_category]]']]));
+                $criteria->setFilter(new WhereFilter(['condition'=>['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]]));
                 if (!empty($request[\Yii::$app->params['subcategoryKey']])) {
-                    $criteria->join('INNER JOIN', '{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
-                    $criteria->where(['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
+                    $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{subcategory}}', 'condition'=>'[[subcategory.id]]=[[products.id_subcategory]]']]));
+                    $criteria->setFilter(new WhereFilter(['condition'=>['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]]));
                 }
             }
             
@@ -55,8 +61,10 @@ class GoodsListSearchService extends Object implements SearchServiceInterface
             $pagination->pageSize = \Yii::$app->params['limit'];
             $pagination->page = !empty($request[\Yii::$app->params['pagePointer']]) ? $request[\Yii::$app->params['pagePointer']] - 1 : 0;
             
-            $criteria->offset($pagination->offset);
-            $criteria->limit($pagination->limit);
+            $criteria->setFilter(new OffsetFilter(['condition'=>$pagination->offset]));
+            $criteria->setFilter(new LimitFilter(['condition'=>$pagination->limit]));
+            
+            $criteria->setFilter(new SortingFilter());
             
             $collection = $this->repository->getGroup();
             

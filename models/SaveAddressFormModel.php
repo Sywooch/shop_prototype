@@ -2,12 +2,14 @@
 
 namespace app\models;
 
-use app\models\AbstractFormModel;
+use yii\base\ErrorException;
+use app\models\{AbstractFormModel,
+    FormInterface};
 
 /**
  * Представляет данные формы сохранения адреса
  */
-class SaveAddressFormModel extends AbstractFormModel
+class SaveAddressFormModel extends AbstractFormModel implements FormInterface
 {
     /**
      * Сценарий сохранения данных из формы
@@ -29,5 +31,18 @@ class SaveAddressFormModel extends AbstractFormModel
             [['address'], 'app\validators\StripTagsValidator'],
             [['address'], 'required', 'on'=>self::SAVE],
         ];
+    }
+    
+    /**
+     * Возвращает объект модели, представляющий таблицу СУБД
+     * @return Model
+     */
+    public function getModel()
+    {
+        try {
+            
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
 }

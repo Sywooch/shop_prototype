@@ -6,8 +6,8 @@ use yii\base\ErrorException;
 use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
-use app\models\{CollectionInterface,
-    QueryCriteria,
+use app\models\CollectionInterface;
+use app\queries\{QueryCriteria,
     CriteriaInterface};
 
 class DbRepository extends AbstractBaseRepository implements RepositoryInterface
