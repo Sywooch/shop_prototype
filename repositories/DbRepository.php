@@ -61,7 +61,7 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      * @param mixed $request параметры для построения запроса
      * @return CollectionInterface
      */
-    public function getGroup($request=null)
+    public function getGroup($request=null): CollectionInterface
     {
         try {
             if (empty($this->class)) {
@@ -74,9 +74,7 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
             if ($this->collection->isEmpty()) {
                 $query = $this->class::find();
                 $query = $this->addCriteria($query);
-                if (!empty($this->collection->pagination)) {
-                    $this->collection->pagination->configure($query);
-                }
+                $this->collectionConfigure($query);
                 $data = $query->all();
                 if (!empty($data)) {
                     foreach ($data as $object) {

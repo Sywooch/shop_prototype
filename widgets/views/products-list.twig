@@ -1,0 +1,18 @@
+{% include('base.twig') %}
+
+{% if collection %}
+    <ol>
+    {% for good in collection %}
+        <li>
+            {{ good.link | raw }}
+            <br>{{ good.short_description }}
+            <br>{{ yii.t('base', 'Price:') }} {{ good.price }}
+            {{ good.images | raw }}
+        </li>
+    {% endfor %}
+    </ol>
+{% endif %}
+
+{% if pagination %}
+    {{ pagination | raw }}
+{% endif %}

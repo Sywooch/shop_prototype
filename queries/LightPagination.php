@@ -12,7 +12,7 @@ class LightPagination extends Object implements PaginationInterface
     use ExceptionsTrait;
     
     /**
-     * @var int количество строк, доступных в СУБД до применения ограничений LIMIT и OFFSET
+     * @var int количество строк, возвращаемых запросом, до применения ограничений LIMIT и OFFSET
      */
     private $totalCount = 0;
     /**
@@ -26,7 +26,7 @@ class LightPagination extends Object implements PaginationInterface
     
     /**
      * Конфигурирует объект Pagination, устанавливая количество строк, 
-     * доступных в СУБД до применения ограничений LIMIT и OFFSET
+     * возвращаемых запросом, до применения LIMIT и OFFSET
      * @param object $query Query
      */
     public function configure($query)
@@ -99,6 +99,19 @@ class LightPagination extends Object implements PaginationInterface
     {
         try {
             $this->page = $number;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает номер страницы
+     * @return int
+     */
+    public function getPage(): int
+    {
+        try {
+            return $this->page;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

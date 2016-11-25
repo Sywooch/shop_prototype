@@ -12,4 +12,5 @@ interface RepositoryInterface
     public function getCriteria();
     public function addCriteria($query);
     public function saveGroup($key);
+    public function collectionConfigure($query);
 }

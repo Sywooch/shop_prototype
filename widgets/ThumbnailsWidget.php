@@ -20,22 +20,40 @@ class ThumbnailsWidget extends Widget
      */
     public $path = '';
     /**
-     * @var string результирующая HTML строка
+     * @var string имя шаблона
      */
-    private $_result = '';
+    public $view;
+    /**
+     * @var array массив тегов img
+     */
+    private $result = [];
+    
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->path)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('path'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
     
     public function run()
     {
         try {
-            if (!empty($this->path)) {
-                $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-                
-                if (!empty($imagesArray)) {
-                    $this->_result = Html::img(\Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]));
-                }
+            $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+            
+            if (!empty($imagesArray)) {
+                $this->result[] = Html::img(\Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]));
             }
             
-            return $this->_result;
+            return $this->render($this->view, ['images'=>!empty($this->result) ? implode('<br/>', $this->result) : '']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -27,4 +27,19 @@ abstract class AbstractBaseRepository extends Object
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Настраивает объект коллекции
+     * @param mixed $query
+     */
+    public function collectionConfigure($query)
+    {
+        try {
+            if (!empty($this->collection->pagination)) {
+                $this->collection->pagination->configure($query);
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

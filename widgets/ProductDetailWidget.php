@@ -64,10 +64,12 @@ class ProductDetailWidget extends Widget
     {
         try {
             $renderArray = [];
+            
             $renderArray['user'] = UserInfoWidget::widget([
                 'view'=>'user-info.twig',
-                'user'=>new User()
+                'user'=>\Yii::$app->user
             ]);
+            
             $renderArray['cart'] = CartWidget::widget([
                 'repository'=>new SessionRepository([
                     'collection'=>new PurchasesCollection(),
@@ -78,31 +80,37 @@ class ProductDetailWidget extends Widget
                 ]), 
                 'view'=>'short-cart.twig'
             ]);
+            
             $renderArray['currency'] = CurrencyWidget::widget([
                 'repository'=>new DbRepository([
                     'collection'=>new Collection(),
                     'class'=>CurrencyModel::class
                 ]),
-                'currency'=>new ChangeCurrencyFormModel(),
+                'form'=>new ChangeCurrencyFormModel(),
                 'view'=>'currency-form.twig'
             ]);
+            
             $renderArray['search'] = SearchWidget::widget([
                 'view'=>'search.twig'
             ]);
+            
             $renderArray['menu'] = CategoriesMenuWidget::widget([
                 'repository'=>new DbRepository([
                     'collection'=>new Collection(),
                     'class'=>CategoriesModel::class
                 ])
             ]);
+            
             $renderArray['breadcrumbs'] = ProductBreadcrumbsWidget::widget([
                 'model'=>$this->model
             ]);
+            
             $renderArray['toCart'] = ToCartWidget::widget([
                 'model'=>$this->model,
                 'purchase'=>new ToCartFormModel(['quantity'=>1]),
                 'view'=>'add-to-cart-form.twig',
             ]);
+            
             $renderArray['similar'] = SeeAlsoSimilarWidget::widget([
                 'repository'=>new DbRepository([
                     'collection'=>new Collection(),
@@ -112,6 +120,7 @@ class ProductDetailWidget extends Widget
                 'text'=>\Yii::t('base', 'Similar products:'), 
                 'view'=>'see-also.twig'
             ]);
+            
             $renderArray['related'] = SeeAlsoRelatedWidget::widget([
                 'repository'=>new DbRepository([
                     'collection'=>new Collection(),
@@ -124,7 +133,7 @@ class ProductDetailWidget extends Widget
             
             $renderArray['name'] = $this->model->name;
             $renderArray['description'] = $this->model->description;
-            if ($this->model->images) {
+            if (!empty($this->model->images)) {
                 $renderArray['images'] = ImagesWidget::widget([
                     'path'=>$this->model->images, 
                     'view'=>'images.twig'

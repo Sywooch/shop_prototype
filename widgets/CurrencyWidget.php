@@ -23,7 +23,7 @@ class CurrencyWidget extends Widget
     /**
      * @var object ActiveRecord/Model, получает данные из формы
      */
-    private $currency;
+    private $form;
     /**
      * @var string имя HTML шаблона
      */
@@ -37,8 +37,8 @@ class CurrencyWidget extends Widget
             if (empty($this->repository)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('repository'));
             }
-            if (empty($this->currency)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('currency'));
+            if (empty($this->form)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('form'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
@@ -58,7 +58,7 @@ class CurrencyWidget extends Widget
             $currencyList = ArrayHelper::map($currencyList, 'id', 'code');
             asort($currencyList, SORT_STRING);
             
-            return $this->render($this->view, ['currency'=>$this->currency, 'currencyList'=>$currencyList]);
+            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$currencyList]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -79,13 +79,13 @@ class CurrencyWidget extends Widget
     }
     
     /**
-     * Присваивает Model свойству CurrencyWidget::currency
+     * Присваивает Model свойству CurrencyWidget::form
      * @param object $model Model
      */
-    public function setCurrency(Model $model)
+    public function setForm(Model $form)
     {
         try {
-            $this->currency = $model;
+            $this->form = $form;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

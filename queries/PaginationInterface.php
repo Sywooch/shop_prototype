@@ -10,4 +10,5 @@ interface PaginationInterface
     public function getPageCount();
     public function getOffset();
     public function getLimit();
+    public function getPage();
 }

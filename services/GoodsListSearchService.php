@@ -6,7 +6,7 @@ use yii\base\{ErrorException,
     Object};
 use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
-use app\models\ProductsCollection;
+use app\models\CollectionInterface;
 use app\services\SearchServiceInterface;
 
 class GoodsListSearchService extends Object implements SearchServiceInterface
@@ -34,9 +34,9 @@ class GoodsListSearchService extends Object implements SearchServiceInterface
     /**
      * Обрабатывает запрос на поиск списка товаров
      * @param object Request
-     * @return ProductsCollection
+     * @return CollectionInterface
      */
-    public function search($request): ProductsCollection
+    public function search($request): CollectionInterface
     {
         try {
             $criteria = $this->repository->criteria;

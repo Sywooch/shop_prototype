@@ -56,7 +56,7 @@ class SearchAction extends AbstractBaseAction
             
             Url::remember(Url::current(), \Yii::$app->id);
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['data'=>$collection]));
+            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['collection'=>$collection]));
         } catch (NotFoundHttpException $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             throw $e;

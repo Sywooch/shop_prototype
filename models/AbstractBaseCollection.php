@@ -17,15 +17,15 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
     use ExceptionsTrait;
     
     /**
-     * @var array Коллекция сущностей
+     * @var array коллекция сущностей
      */
     protected $items = [];
     /**
-     * @var int Текущая позиция итерации
+     * @var int текущая позиция итерации
      */
     private $position = 0;
     /**
-     * @var string имя класса Pagination
+     * @var object PaginationInterface
      */
     private $pagination;
     

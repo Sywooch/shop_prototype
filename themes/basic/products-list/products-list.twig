@@ -1,25 +1,5 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
-{{ use('app/widgets/PaginationWidget') }}
+{{ use('app/widgets/GoodsListWidget') }}
 
-{% if data %}
-    <ol>
-    {% for productsModel in data %}
-        {% if productsModel.active %}
-            <li>
-                <a href="{{ url.to({0:'product-detail/index', 'id':productsModel.seocode}) }}">{{ productsModel.name }}</a>
-                {% if productsModel.short_description %}
-                    <br>{{ productsModel.short_description }}
-                {% endif %}
-                <br>{{ yii.t('base', 'Price:') }} {{ productsModel.price }}
-            </li>
-        {% endif %}
-    {% endfor %}
-    </ol>
-{% endif %}
-
-{% if data.pagination %}
-    <p>
-        {{ pagination_widget_widget({'paginator':data.pagination}) }}
-    </p>
-{% endif %}
+{{ goods_list_widget_widget({'collection':collection, 'view':'products-list.twig'}) }}
