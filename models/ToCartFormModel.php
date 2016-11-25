@@ -41,12 +41,13 @@ class ToCartFormModel extends AbstractFormModel implements FormInterface
     
     /**
      * Возвращает объект модели, представляющий таблицу СУБД
+     * @param string $name имя класса модели
      * @return Model
      */
-    public function getModel(): Model
+    public function getModel($name): Model
     {
         try {
-            return \Yii::createObject(array_merge(['class'=>PurchasesModel::class], $this->toArray()));
+            return \Yii::createObject(array_merge(['class'=>$name], $this->toArray()));
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -6,16 +6,21 @@ use yii\base\{ErrorException,
     Widget};
 use yii\helpers\Html;
 use app\exceptions\ExceptionsTrait;
-use app\models\{CategoriesModel,
+use app\models\{BrandsModel,
+    CategoriesModel,
     ChangeCurrencyFormModel,
     CollectionInterface,
     CurrencyModel,
     Collection,
+    ColorsModel,
+    ProductsFiltersFormModel,
     PurchasesCollection,
-    PurchasesModel};
+    PurchasesModel,
+    SizesModel};
 use app\widgets\{CategoriesMenuWidget,
     CartWidget,
     CurrencyWidget,
+    FiltersWidget,
     PaginationWidget,
     ThumbnailsWidget,
     SearchWidget,
@@ -105,6 +110,23 @@ class ProductsListWidget extends Widget
             $renderArray['pagination'] = PaginationWidget::widget([
                 'pagination'=>$this->collection->pagination,
                 'view'=>'pagination.twig'
+            ]);
+            
+            $renderArray['filters'] = FiltersWidget::widget([
+                'colorsRepository'=>new DbRepository([
+                    'class'=>ColorsModel::class,
+                    'collection'=>new Collection(),
+                ]),
+                'sizesRepository'=>new DbRepository([
+                    'class'=>SizesModel::class,
+                    'collection'=>new Collection(),
+                ]),
+                'brandsRepository'=>new DbRepository([
+                    'class'=>BrandsModel::class,
+                    'collection'=>new Collection(),
+                ]),
+                'form'=>new ProductsFiltersFormModel(),
+                'view'=>'products-filters.twig'
             ]);
             
             $collection = [];

@@ -21,23 +21,6 @@ use app\queries\LightPagination;
 class ProductsListController extends AbstractBaseController
 {
     /**
-     * Обрабатывает запрос к списку продуктов
-     */
-    /*public function actionIndex()
-    {
-        try {
-            $renderArray = ProductsListControllerHelper::indexGet();
-            
-            Url::remember(Url::current(), 'shop');
-            
-            return $this->render('products-list.twig', $renderArray);
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
-        }
-    }*/
-    
-    /**
      * Обрабатывает поисковый запрос к списку продуктов
      */
     public function actionSearch()

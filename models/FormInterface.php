@@ -4,5 +4,5 @@ namespace app\models;
 
 interface FormInterface
 {
-    public function getModel();
+    public function getModel($name);
 }

@@ -41,6 +41,7 @@ $translate = [
     'Instructions for restoring the password sent to {email}'=>'Инструкции о восстановлении пароля отправлены на {email}',
     'Your password was successfully changed!'=>'Ваш пароль был успешно изменен!',
     'Passwords do not match!'=>'Пароли не совпадают!',
+    'Filters'=>'Фильтры',
     'Sorting by date'=>'Сортировать по дате',
     'Sorting by price'=>'Сортировать по цене',
     'Sort descending'=>'Сортировать по убыванию',

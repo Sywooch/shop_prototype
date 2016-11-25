@@ -1,0 +1,16 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+{% set form=active_form_begin({'id':'products-filters-form', 'action':url.to({0:'/filters/set'}), 'method':'POST'}) %}
+    {{ form.field(formModel, 'sortingField').dropDownList(sortingFieldsList) | raw }}
+    {{ form.field(formModel, 'sortingType').dropDownList(sortingTypeList) | raw }}
+    {{ form.field(formModel, 'colors').checkboxList(colorsCollection) | raw }}
+    {{ form.field(formModel, 'sizes').checkboxList(sizesCollection) | raw }}
+    {{ form.field(formModel, 'brands').checkboxList(brandsCollection) | raw }}
+    <input type="submit" value="{{ yii.t('base', 'Apply') }}">
+{{ active_form_end() }}
+
+{% set form = active_form_begin({'id':'products-filters-clean', 'action':url.to({0:'/filters/clean'}), 'method':'POST'}) %}
+    <input type="submit" value="{{ yii.t('base', 'Clean') }}">
+{{ active_form_end() }}

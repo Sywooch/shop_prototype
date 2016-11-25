@@ -8,7 +8,8 @@ use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
 use app\services\SaveServiceInterface;
 use app\helpers\HashHelper;
-use app\models\FormInterface;
+use app\models\{FormInterface,
+    PurchasesModel};
 
 class PurchaseSaveService extends Object implements SaveServiceInterface
 {
@@ -53,7 +54,7 @@ class PurchaseSaveService extends Object implements SaveServiceInterface
                 throw new ErrorException(ExceptionsTrait::emptyError('validate'));
             }
             
-            $model = $this->form->getModel();
+            $model = $this->form->getModel(PurchasesModel::class);
             
             $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
             $collection = $this->repository->getGroup($key);

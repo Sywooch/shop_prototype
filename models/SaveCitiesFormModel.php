@@ -37,7 +37,7 @@ class SaveCitiesFormModel extends AbstractFormModel implements FormInterface
      * Возвращает объект модели, представляющий таблицу СУБД
      * @return Model
      */
-    public function getModel()
+    public function getModel($name)
     {
         try {
             
