@@ -13,9 +13,9 @@ use app\queries\{QueryCriteria,
 class DbRepository extends AbstractBaseRepository implements RepositoryInterface
 {
     /**
-     * @var string имя класса ActiveRecord для построения запроса
+     * @var object Query для построения запроса
      */
-    public $class;
+    public $query;
     /**
      * @var object CollectionInterface
      */
@@ -37,12 +37,15 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     public function getOne($request=null)
     {
         try {
-            if (empty($this->class)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('class'));
+            if (empty($this->query)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('query'));
+            }
+            if (empty($this->criteria)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('criteria'));
             }
             
             if (empty($this->entity)) {
-                $query = $this->class::find();
+                $query = $this->query;
                 $query = $this->addCriteria($query);
                 $data = $query->one();
                 if ($data !== null) {
@@ -64,15 +67,18 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     public function getGroup($request=null): CollectionInterface
     {
         try {
-            if (empty($this->class)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('class'));
+            if (empty($this->query)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('query'));
             }
             if (empty($this->collection)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('collection'));
             }
+            if (empty($this->criteria)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('criteria'));
+            }
             
             if ($this->collection->isEmpty()) {
-                $query = $this->class::find();
+                $query = $this->query;
                 $query = $this->addCriteria($query);
                 $this->collectionConfigure($query);
                 $data = $query->all();
@@ -91,15 +97,25 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     
     /**
      * Возвращает объект CriteriaInterface для установки критериев фильтрации
-     * @return object $criteria CriteriaInterface
+     * @return CriteriaInterface/null
      */
-    public function getCriteria(): CriteriaInterface
+    public function getCriteria()
     {
         try {
-            if (empty($this->criteria)) {
-                $this->criteria = new QueryCriteria();
-            }
-            return $this->criteria;
+            return !empty($this->criteria) ? $this->criteria : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CriteriaInterface свойству DbRepository::criteria
+     * @param object $criteria CriteriaInterface
+     */
+    public function setCriteria(CriteriaInterface $criteria)
+    {
+        try {
+            $this->criteria = $criteria;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -133,5 +149,31 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     
     public function saveGroup($key)
     {
+    }
+    
+    /**
+     * Присваивает Query свойству DbRepository::query
+     * @param object $criteria CriteriaInterface
+     */
+    public function setQuery(Query $query)
+    {
+        try {
+            $this->query = $query;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект Query
+     * @return Query/null
+     */
+    public function getQuery()
+    {
+        try {
+            return !empty($this->query) ? $this->query : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
 }

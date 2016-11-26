@@ -9,38 +9,21 @@ use app\helpers\UrlHelper;
 use app\controllers\{AbstractBaseController,
     ProductsListControllerHelper};
 use app\actions\SearchAction;
-use app\models\{ProductsCollection,
-    ProductsModel};
+use app\models\{Collection,
+    ProductsCollection,
+    ProductsModel,
+    SphinxModel};
 use app\repositories\DbRepository;
-use app\services\GoodsListSearchService;
-use app\queries\LightPagination;
+use app\services\{GoodsListSearchService,
+    SphinxSearchService};
+use app\queries\{LightPagination,
+    QueryCriteria};
 
 /**
  * Обрабатывает запросы на получение списка продуктов
  */
 class ProductsListController extends AbstractBaseController
 {
-    /**
-     * Обрабатывает поисковый запрос к списку продуктов
-     */
-    public function actionSearch()
-    {
-        try {
-            if (empty(\Yii::$app->request->get(\Yii::$app->params['searchKey']))) {
-                return $this->redirect(UrlHelper::previous('shop'));
-            }
-            
-            $renderArray = ProductsListControllerHelper::searchGet();
-            
-            Url::remember(Url::current(), 'shop');
-            
-            return $this->render('products-list.twig', $renderArray);
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     public function actions()
     {
         return [
@@ -48,13 +31,32 @@ class ProductsListController extends AbstractBaseController
                 'class'=>SearchAction::class,
                 'service'=>new GoodsListSearchService([
                     'repository'=>new DbRepository([
-                        'class'=>ProductsModel::class,
+                        'query'=>ProductsModel::find(),
                         'collection'=>new ProductsCollection([
                             'pagination'=>new LightPagination()
                         ]),
+                        'criteria'=>new QueryCriteria()
                     ]),
                 ]),
                 'view'=>'products-list.twig'
+            ],
+            'search'=>[
+                'class'=>SearchAction::class,
+                'service'=>new SphinxSearchService([
+                    'sphinxRepository'=>new DbRepository([
+                        'query'=>SphinxModel::find(),
+                        'collection'=>new Collection(),
+                        'criteria'=>new QueryCriteria()
+                    ]),
+                    'productsRepository'=>new DbRepository([
+                        'query'=>ProductsModel::find(),
+                        'collection'=>new ProductsCollection([
+                            'pagination'=>new LightPagination()
+                        ]),
+                        'criteria'=>new QueryCriteria()
+                    ]),
+                ]),
+                'view'=>'products-search.twig'
             ],
         ];
     }

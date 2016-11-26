@@ -8,6 +8,7 @@ use app\actions\DetailAction;
 use app\services\OneProductSearchService;
 use app\repositories\DbRepository;
 use app\models\ProductsModel;
+use app\queries\QueryCriteria;
 
 /**
  * Обрабатывает запросы на получение информации о конкретном продукте
@@ -21,7 +22,8 @@ class ProductDetailController extends AbstractBaseController
                 'class'=>DetailAction::class,
                 'service'=>new OneProductSearchService([
                     'repository'=>new DbRepository([
-                        'class'=>ProductsModel::class
+                        'query'=>ProductsModel::find(),
+                        'criteria'=>new QueryCriteria()
                     ])
                 ]),
                 'view'=>'product-detail.twig',

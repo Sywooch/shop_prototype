@@ -8,6 +8,7 @@ use app\repositories\{AbstractBaseRepository,
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
 use app\models\CollectionInterface;
+use app\queries\CriteriaInterface;
 
 class SessionRepository extends AbstractBaseRepository implements RepositoryInterface
 {
@@ -15,6 +16,10 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
      * @var string имя класса ActiveRecord/Model
      */
     public $class;
+    /**
+     * @var object Query для построения запроса
+     */
+    public $query;
     /**
      * @var object CollectionInterface
      */
@@ -78,10 +83,28 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     
     /**
      * Возвращает объект CriteriaInterface для установки критериев фильтрации
-     * @return object $criteria CriteriaInterface
+     * @return CriteriaInterface/null
      */
     public function getCriteria()
     {
+        try {
+            
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CriteriaInterface свойству SessionRepository::criteria
+     * @param object $criteria CriteriaInterface
+     */
+    public function setCriteria(CriteriaInterface $criteria)
+    {
+        try {
+            
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
     
     /**
@@ -112,6 +135,32 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
             SessionHelper::write($key, $this->collection->getArray());
             
             return true;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает Query свойству SessionRepository::query
+     * @param object $criteria CriteriaInterface
+     */
+    public function setQuery(Query $query)
+    {
+        try {
+            $this->query = $query;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект Query
+     * @return Query/null
+     */
+    public function getQuery()
+    {
+        try {
+            return !empty($this->query) ? $this->query : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

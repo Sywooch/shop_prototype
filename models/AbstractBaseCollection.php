@@ -104,12 +104,12 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
     
     /**
      * Добавляет сущность в коллекцию
-     * @param object $model Model
+     * @param mixed $entity
      */
-    public function add(Model $model)
+    public function add(Model $entity)
     {
         try {
-            $this->items[] = $model;
+            $this->items[] = $entity;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

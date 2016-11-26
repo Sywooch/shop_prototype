@@ -16,12 +16,14 @@ use app\models\{BrandsModel,
     ProductsFiltersFormModel,
     PurchasesCollection,
     PurchasesModel,
-    SizesModel};
+    SizesModel,
+    SphinxModel};
 use app\widgets\{CategoriesMenuWidget,
     CartWidget,
     CurrencyWidget,
     FiltersWidget,
     PaginationWidget,
+    SearchBreadcrumbsWidget,
     ThumbnailsWidget,
     SearchWidget,
     PriceWidget,
@@ -30,7 +32,7 @@ use app\repositories\{DbRepository,
     SessionRepository};
 use app\queries\QueryCriteria;
 
-class ProductsListWidget extends Widget
+class ProductsSearchListWidget extends Widget
 {
     use ExceptionsTrait;
     
@@ -102,14 +104,7 @@ class ProductsListWidget extends Widget
                 ])
             ]);
             
-            $renderArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget([
-                'repository'=>new DbRepository([
-                    'query'=>CategoriesModel::find(),
-                    'criteria'=>new QueryCriteria()
-                ]),
-                'category'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey']),
-                'subcategory'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']),
-            ]);
+            $renderArray['breadcrumbs'] = SearchBreadcrumbsWidget::widget();
             
             $renderArray['pagination'] = PaginationWidget::widget([
                 'pagination'=>$this->collection->pagination,
@@ -129,6 +124,11 @@ class ProductsListWidget extends Widget
                 ]),
                 'brandsRepository'=>new DbRepository([
                     'query'=>BrandsModel::find(),
+                    'collection'=>new Collection(),
+                    'criteria'=>new QueryCriteria()
+                ]),
+                'sphinxRepository'=>new DbRepository([
+                    'query'=>SphinxModel::find(),
                     'collection'=>new Collection(),
                     'criteria'=>new QueryCriteria()
                 ]),
