@@ -7,11 +7,10 @@ use yii\base\Model;
 use yii\db\Query;
 use app\tests\DbManager;
 use app\repositories\DbRepository;
-use app\queries\{CriteriaInterface,
-    QueryCriteria};
-use app\filters\{FilterInterface,
-    WhereFilter};
+use app\queries\QueryCriteria;
+use app\filters\WhereFilter;
 use app\models\{CollectionInterface,
+    ProductsCollection,
     ProductsModel};
 use app\tests\sources\fixtures\ProductsFixture;
 
@@ -30,37 +29,6 @@ class DbRepositoryTests extends TestCase
     }
     
     /**
-     * Тестирует метод DbRepository::setCriteria
-     * передаю не поддерживающий CriteriaInterface объект
-     * @expectedException TypeError
-     */
-    public function testSetCriteriaError()
-    {
-        $repository = new DbRepository();
-        $repository->criteria = new class() {};
-    }
-    
-    /**
-     * Тестирует методы DbRepository::setCriteria, DbRepository::getCriteria
-     */
-    public function testSetGetCriteria()
-    {
-        $repository = new DbRepository();
-        
-        $this->assertNull($repository->criteria);
-        
-        $criteria = new class() implements CriteriaInterface {
-            public function apply($query) {}
-            public function setFilter(FilterInterface $filter) {}
-        };
-        
-        $repository = new DbRepository();
-        $repository->criteria = $criteria;
-        
-        $this->assertTrue($repository->criteria instanceof CriteriaInterface);
-    }
-    
-    /**
      * Тестирует метод DbRepository::setCollection
      * передаю не поддерживающий CollectionInterface объект
      * @expectedException TypeError
@@ -72,24 +40,37 @@ class DbRepositoryTests extends TestCase
     }
     
     /**
-     * Тестирует методы DbRepository::setCollection, DbRepository::getCollection
+     * Тестирует метод DbRepository::setCollection
      */
-    public function testSetGetCollection()
+    public function testSetCollection()
     {
         $repository = new DbRepository();
-        
-        $this->assertNull($repository->collection);
-        
-        $collection = new class() implements CollectionInterface {
+        $repository->collection = new class() implements CollectionInterface {
             public function add(Model $entity) {}
             public function isEmpty() {}
             public function getArray() {}
             public function hasEntity(Model $object) {}
             public function update(Model $object) {}
         };
+    }
+    
+    /**
+     * Тестирует методы DbRepository::getCollection
+     */
+    public function testGetCollection()
+    {
+        $repository = new DbRepository();
+        
+        $this->assertNull($repository->collection);
         
         $repository = new DbRepository();
-        $repository->collection = $collection;
+        $repository->collection = new class() implements CollectionInterface {
+            public function add(Model $entity) {}
+            public function isEmpty() {}
+            public function getArray() {}
+            public function hasEntity(Model $object) {}
+            public function update(Model $object) {}
+        };
         
         $this->assertTrue($repository->collection instanceof CollectionInterface);
     }
@@ -106,20 +87,23 @@ class DbRepositoryTests extends TestCase
     }
     
     /**
-     * Тестирует методы DbRepository::setQuery, DbRepository::getQuery
+     * Тестирует методы DbRepository::setQuery
      */
-    public function testSetGetQuery()
+    public function testSetQuery()
     {
         $repository = new DbRepository();
-        
-        $this->assertNull($repository->query);
-        
-        $query = new class() extends Query {};
-        
+        $repository->query = new class() extends Query {};
+    }
+    
+    /**
+     * Тестирует метод DbRepository::getOne
+     * вызываю с пустым $query
+     * @expectedException yii\base\ErrorException
+     */
+    public function testGetOneEmptyQuery()
+    {
         $repository = new DbRepository();
-        $repository->query = $query;
-        
-        $this->assertTrue($repository->query instanceof Query);
+        $repository->getOne();
     }
     
     /**
@@ -129,12 +113,14 @@ class DbRepositoryTests extends TestCase
     {
         $fixture = self::$dbClass->products['product_1'];
         
-        $repository = new DbRepository();
-        $repository->query = ProductsModel::find();
-        $repository->criteria = new QueryCriteria();
+        $query = ProductsModel::find();
         
-        $criteria = $repository->criteria;
+        $criteria = new QueryCriteria();
         $criteria->setFilter(new WhereFilter(['condition'=>['[[seocode]]'=>$fixture['seocode']]]));
+        $criteria->apply($query);
+        
+        $repository = new DbRepository();
+        $repository->query = $query;
         $result = $repository->getOne();
         
         $this->assertTrue($result instanceof ProductsModel);
@@ -149,15 +135,66 @@ class DbRepositoryTests extends TestCase
      */
     public function testGetOneNull()
     {
-        $repository = new DbRepository();
-        $repository->query = ProductsModel::find();
-        $repository->criteria = new QueryCriteria();
+        $query = ProductsModel::find();
         
-        $criteria = $repository->criteria;
+        $criteria = new QueryCriteria();
         $criteria->setFilter(new WhereFilter(['condition'=>['[[seocode]]'=>'not data']]));
+        $criteria->apply($query);
+        
+        $repository = new DbRepository();
+        $repository->query = $query;
         $result = $repository->getOne();
         
         $this->assertNull($result);
+    }
+    
+    /**
+     * Тестирует метод DbRepository::getGroup
+     * вызываю с пустым $query
+     * @expectedException yii\base\ErrorException
+     */
+    public function testGetGroupEmptyQuery()
+    {
+        $repository = new DbRepository();
+        $repository->getGroup();
+    }
+    
+    /**
+     * Тестирует метод DbRepository::getGroup
+     * вызываю с пустым $collection
+     * @expectedException yii\base\ErrorException
+     */
+    public function testGetGroupEmptyCollection()
+    {
+        $repository = new DbRepository();
+        $repository->query = new class() extends Query {};
+        $repository->getGroup();
+    }
+    
+    /**
+     * Тестирует метод DbRepository::getGroup
+     */
+    public function testGetGroup()
+    {
+        $fixture = self::$dbClass->products['product_1'];
+        
+        $query = ProductsModel::find();
+        
+        $criteria = new QueryCriteria();
+        $criteria->setFilter(new WhereFilter(['condition'=>['>', '[[price]]', 200]]));
+        $criteria->apply($query);
+        
+        $collection = new ProductsCollection();
+        
+        $repository = new DbRepository();
+        $repository->query = $query;
+        $repository->collection = $collection;
+        $result = $repository->getGroup();
+        
+        $this->assertTrue($result instanceof CollectionInterface);
+        foreach ($result as $item) {
+            $this->assertTrue($item instanceof ProductsModel);
+        }
     }
     
     public static function tearDownAfterClass()

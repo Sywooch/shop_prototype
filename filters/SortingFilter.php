@@ -11,12 +11,25 @@ class SortingFilter extends Object implements FilterInterface
 {
     use ExceptionsTrait;
     
+    public $condition;
+    
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->condition)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('condition'));
+            }
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
     public function apply($query)
     {
         try {
-            $field = 'date';
-            $type = SORT_DESC;
-            $query->orderBy(['[[' . $field . ']]'=>$type]);
+            $query->orderBy(['[[' . $this->condition['field'] . ']]'=>$this->condition['type']]);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

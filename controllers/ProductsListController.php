@@ -26,13 +26,11 @@ class ProductsListController extends AbstractBaseController
             'index'=>[
                 'class'=>SearchCollectionAction::class,
                 'service'=>new ProductsCollectionSearchService([
-                    'repository'=>new DbRepository([
-                        'query'=>ProductsModel::find(),
-                        'collection'=>new ProductsCollection([
-                            'pagination'=>new LightPagination()
-                        ]),
-                        'criteria'=>new QueryCriteria()
-                    ]),
+                    'repository'=>new DbRepository(),
+                    'query'=>ProductsModel::find(),
+                    'criteria'=>new QueryCriteria(),
+                    'collection'=>new ProductsCollection(),
+                    'pagination'=>new LightPagination()
                 ]),
                 'view'=>'products-list.twig'
             ],

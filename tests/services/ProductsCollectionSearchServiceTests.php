@@ -5,7 +5,8 @@ namespace app\tests\repositories;
 use PHPUnit\Framework\TestCase;
 use app\tests\DbManager;
 use app\services\ProductsCollectionSearchService;
-use app\repositories\DbRepository;
+use app\repositories\{DbRepository,
+    RepositoryInterface};
 use app\queries\{LightPagination,
     PaginationInterface,
     QueryCriteria};
@@ -29,7 +30,7 @@ class ProductsCollectionSearchServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
-    public function setUp()
+    /*public function setUp()
     {
         $this->repository = new DbRepository([
             'query'=>ProductsModel::find(),
@@ -38,16 +39,35 @@ class ProductsCollectionSearchServiceTests extends TestCase
             ]),
             'criteria'=>new QueryCriteria()
         ]);
-    }
+    }*/
     
     /**
      * Тестирует метод ProductsCollectionSearchService::init
      * вызываю с пустым $repository
      * @expectedException yii\base\ErrorException
      */
-    public function testSetRepositoryEmpty()
+    public function testGetGroupRepositoryQuery()
     {
         $service = new ProductsCollectionSearchService();
+    }
+    
+    /**
+     * Тестирует метод ProductsCollectionSearchService::init
+     * вызываю с пустым $query
+     * @expectedException yii\base\ErrorException
+     */
+    public function testGetGroupQueryQuery()
+    {
+        $service = new ProductsCollectionSearchService([
+            'repository'=>new class() implements RepositoryInterface {
+                public function getGroup($request);
+                public function getOne($request);
+                public function saveGroup($key);
+                public function setQuery(Query $query);
+                public function setCollection(CollectionInterface $collection);
+                public function getCollection();
+            },
+        ]);
     }
     
     /**
@@ -55,17 +75,16 @@ class ProductsCollectionSearchServiceTests extends TestCase
      * передаю не поддерживающий RepositoryInterface объект
      * @expectedException TypeError
      */
-    public function testSetRepositoryError()
+    /*public function testSetRepositoryError()
     {
-        $service = new ProductsCollectionSearchService([
-            'repository'=>new class () {}
-        ]);
-    }
+        $service = new ProductsCollectionSearchService();
+        $service->repository = new class () {};
+    }*/
     
     /**
      * Тестирует метод ProductsCollectionSearchService::search
      */
-    public function testSearch()
+    /*public function testSearch()
     {
         $request = [\Yii::$app->params['productKey']=>self::$dbClass->products['product_1']['seocode']];
         
@@ -80,7 +99,7 @@ class ProductsCollectionSearchServiceTests extends TestCase
             $this->assertTrue($object instanceof ProductsModel);
         }
         $this->assertTrue($result->pagination instanceof PaginationInterface);
-    }
+    }*/
     
     public static function tearDownAfterClass()
     {

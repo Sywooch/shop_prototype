@@ -17,10 +17,6 @@ class QueryCriteria extends Object implements CriteriaInterface
     use ExceptionsTrait;
     
     /**
-     * @var mixed запрос
-     */
-    private $query;
-    /**
      * @var array фильтры FilterInterface, которые будут применены к запросу
      */
     private $filters = [];
@@ -28,20 +24,15 @@ class QueryCriteria extends Object implements CriteriaInterface
     /**
      * Применяет критерии к запросу
      * @param mixed $query запрос, к которому будет применена фильтрация
-     * @return mixed
      */
     public function apply($query)
     {
         try {
-            $this->query = $query;
-            
             if (!empty($this->filters)) {
                 foreach ($this->filters as $filter) {
-                    $filter->apply($this->query);
+                    $filter->apply($query);
                 }
             }
-            
-            return $this->query;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

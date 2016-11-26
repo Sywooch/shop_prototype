@@ -20,9 +20,8 @@ abstract class AbstractBaseRepository extends Object
     {
         try {
             if (!empty($this->criteria)) {
-                $query = $this->criteria->apply($query);
+                $this->criteria->apply($query);
             }
-            return $query;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

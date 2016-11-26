@@ -8,8 +8,6 @@ use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
 use app\models\CollectionInterface;
-use app\queries\{QueryCriteria,
-    CriteriaInterface};
 
 class DbRepository extends AbstractBaseRepository implements RepositoryInterface
 {
@@ -25,10 +23,6 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      * @var object Model
      */
     private $entity;
-    /**
-     * @var object CriteriaInterface
-     */
-    private $criteria;
     
     /**
      * Возвращает объект yii\base\Model
@@ -41,14 +35,9 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
             if (empty($this->query)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('query'));
             }
-            if (empty($this->criteria)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('criteria'));
-            }
             
             if (empty($this->entity)) {
-                $query = $this->query;
-                $query = $this->addCriteria($query);
-                $data = $query->one();
+                $data = $this->query->one();
                 if ($data !== null) {
                     $this->entity = $data;
                 }
@@ -74,15 +63,9 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
             if (empty($this->collection)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('collection'));
             }
-            if (empty($this->criteria)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('criteria'));
-            }
             
             if ($this->collection->isEmpty()) {
-                $query = $this->query;
-                $query = $this->addCriteria($query);
-                $this->collectionConfigure($query);
-                $data = $query->all();
+                $data = $this->query->all();
                 if (!empty($data)) {
                     foreach ($data as $object) {
                         $this->collection->add($object);
@@ -96,30 +79,8 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
         }
     }
     
-    /**
-     * Присваивает CriteriaInterface свойству DbRepository::criteria
-     * @param object $criteria CriteriaInterface
-     */
-    public function setCriteria(CriteriaInterface $criteria)
+    public function saveGroup($key)
     {
-        try {
-            $this->criteria = $criteria;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает объект CriteriaInterface для установки критериев фильтрации
-     * @return CriteriaInterface/null
-     */
-    public function getCriteria()
-    {
-        try {
-            return !empty($this->criteria) ? $this->criteria : null;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
     }
     
     /**
@@ -148,31 +109,14 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
         }
     }
     
-    public function saveGroup($key)
-    {
-    }
-    
     /**
      * Присваивает Query свойству DbRepository::query
-     * @param object $criteria CriteriaInterface
+     * @param object $query Query
      */
     public function setQuery(Query $query)
     {
         try {
             $this->query = $query;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает объект Query
-     * @return Query/null
-     */
-    public function getQuery()
-    {
-        try {
-            return !empty($this->query) ? $this->query : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
