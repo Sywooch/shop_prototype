@@ -3,6 +3,7 @@
 namespace app\repositories;
 
 use yii\base\ErrorException;
+use yii\db\Query;
 use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
@@ -115,6 +116,19 @@ class SessionRepository extends AbstractBaseRepository implements RepositoryInte
     {
         try {
             $this->collection = $collection;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект CollectionInterface
+     * @return CollectionInterface/null
+     */
+    public function getCollection()
+    {
+        try {
+            return !empty($this->collection) ? $this->collection : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

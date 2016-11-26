@@ -76,4 +76,13 @@ trait ExceptionsTrait
     {
         return \Yii::t('base/errors', 'Received invalid data type instead: {placeholder}', ['placeholder'=>$placeholder]);
     }
+    
+    /**
+     * Конструирует строку сообщения об ошибке "Такой страницы не существует"
+     * @return string
+     */
+    public static function Error404(): string
+    {
+        return \Yii::t('base/errors', 'This page does not exist');
+    }
 }

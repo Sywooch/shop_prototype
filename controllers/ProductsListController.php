@@ -3,18 +3,14 @@
 namespace app\controllers;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
-use yii\data\Pagination;
-use app\helpers\UrlHelper;
-use app\controllers\{AbstractBaseController,
-    ProductsListControllerHelper};
-use app\actions\SearchAction;
+use app\controllers\AbstractBaseController;
+use app\actions\SearchCollectionAction;
 use app\models\{Collection,
     ProductsCollection,
     ProductsModel,
     SphinxModel};
 use app\repositories\DbRepository;
-use app\services\{GoodsListSearchService,
+use app\services\{ProductsCollectionSearchService,
     SphinxSearchService};
 use app\queries\{LightPagination,
     QueryCriteria};
@@ -28,8 +24,8 @@ class ProductsListController extends AbstractBaseController
     {
         return [
             'index'=>[
-                'class'=>SearchAction::class,
-                'service'=>new GoodsListSearchService([
+                'class'=>SearchCollectionAction::class,
+                'service'=>new ProductsCollectionSearchService([
                     'repository'=>new DbRepository([
                         'query'=>ProductsModel::find(),
                         'collection'=>new ProductsCollection([
@@ -41,7 +37,7 @@ class ProductsListController extends AbstractBaseController
                 'view'=>'products-list.twig'
             ],
             'search'=>[
-                'class'=>SearchAction::class,
+                'class'=>SearchCollectionAction::class,
                 'service'=>new SphinxSearchService([
                     'sphinxRepository'=>new DbRepository([
                         'query'=>SphinxModel::find(),

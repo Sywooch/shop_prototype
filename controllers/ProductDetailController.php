@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\actions\DetailAction;
+use app\actions\SearchDetailAction;
 use app\services\OneProductSearchService;
 use app\repositories\DbRepository;
 use app\models\ProductsModel;
@@ -19,7 +19,7 @@ class ProductDetailController extends AbstractBaseController
     {
         return [
             'index'=>[
-                'class'=>DetailAction::class,
+                'class'=>SearchDetailAction::class,
                 'service'=>new OneProductSearchService([
                     'repository'=>new DbRepository([
                         'query'=>ProductsModel::find(),

@@ -16,6 +16,10 @@ abstract class AbstractBaseAction extends Action
      * @var array массив данных для передачи в представление
      */
     protected $renderArray = [];
+    /**
+     * @var array массив дополнительных данных, которые будут доступны в шаблоне
+     */
+    public $additions = [];
     
     public function init()
     {

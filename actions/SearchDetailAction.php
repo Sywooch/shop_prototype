@@ -3,8 +3,8 @@
 namespace app\actions;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Url};
+use yii\helpers\Url;
+use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
 use app\services\SearchServiceInterface;
 use app\exceptions\ExceptionsTrait;
@@ -12,7 +12,7 @@ use app\exceptions\ExceptionsTrait;
 /**
  * Обрабатывает запрос на вывод 1 записи
  */
-class DetailAction extends AbstractBaseAction
+class SearchDetailAction extends AbstractBaseAction
 {
     /**
      * @var object SearchServiceInterface для поиска данных по запросу
@@ -22,10 +22,6 @@ class DetailAction extends AbstractBaseAction
      * @var string имя HTML шаблона
      */
     public $view;
-    /**
-     * @var array массив дополнительных данных, которые будут доступны в шаблоне
-     */
-    public $additions = [];
     
     public function init()
     {
@@ -50,12 +46,17 @@ class DetailAction extends AbstractBaseAction
             $model = $this->service->search(\Yii::$app->request->get());
             
             if (empty($model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('model'));
+                throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }
+            
+            $this->renderArray['model'] = $model;
             
             Url::remember(Url::current(), \Yii::$app->id);
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['model'=>$model]));
+            return $this->controller->render($this->view, $this->renderArray);
+        } catch (NotFoundHttpException $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            throw $e;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
@@ -63,7 +64,7 @@ class DetailAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает SearchServiceInterface свойству DetailAction::service
+     * Присваивает SearchServiceInterface свойству SearchDetailAction::service
      * @param object $service SearchServiceInterface
      */
     public function setService(SearchServiceInterface $service)

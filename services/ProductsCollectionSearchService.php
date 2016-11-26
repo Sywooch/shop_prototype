@@ -14,7 +14,7 @@ use app\filters\{JoinFilter,
     SortingFilter,
     WhereFilter};
 
-class GoodsListSearchService extends Object implements SearchServiceInterface
+class ProductsCollectionSearchService extends Object implements SearchServiceInterface
 {
     use ExceptionsTrait;
     
@@ -37,8 +37,8 @@ class GoodsListSearchService extends Object implements SearchServiceInterface
     }
     
     /**
-     * Обрабатывает запрос на поиск списка товаров
-     * @param object Request
+     * Обрабатывает запрос на поиск коллекции товаров
+     * @param array $request
      * @return CollectionInterface
      */
     public function search($request): CollectionInterface
@@ -50,10 +50,10 @@ class GoodsListSearchService extends Object implements SearchServiceInterface
             
             if (!empty($request[\Yii::$app->params['categoryKey']])) {
                 $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{categories}}', 'condition'=>'[[categories.id]]=[[products.id_category]]']]));
-                $criteria->setFilter(new WhereFilter(['condition'=>['[[categories.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey'])]]));
+                $criteria->setFilter(new WhereFilter(['condition'=>['[[categories.seocode]]'=>$request[\Yii::$app->params['categoryKey']]]]));
                 if (!empty($request[\Yii::$app->params['subcategoryKey']])) {
                     $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{subcategory}}', 'condition'=>'[[subcategory.id]]=[[products.id_subcategory]]']]));
-                    $criteria->setFilter(new WhereFilter(['condition'=>['[[subcategory.seocode]]'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]]));
+                    $criteria->setFilter(new WhereFilter(['condition'=>['[[subcategory.seocode]]'=>$request[\Yii::$app->params['subcategoryKey']]]]));
                 }
             }
             
@@ -75,7 +75,7 @@ class GoodsListSearchService extends Object implements SearchServiceInterface
     }
     
     /**
-     * Присваивает RepositoryInterface свойству ProductSearchService::repository
+     * Присваивает RepositoryInterface свойству ProductsCollectionSearchService::repository
      * @param object $repository RepositoryInterface
      */
     public function setRepository(RepositoryInterface $repository)

@@ -3,144 +3,123 @@
 namespace app\tests\repositories;
 
 use PHPUnit\Framework\TestCase;
-use yii\db\ActiveRecord;
+use yii\base\Model;
+use yii\db\Query;
+use app\tests\DbManager;
 use app\repositories\DbRepository;
-use app\models\{AbstractBaseCollection,
-    CollectionInterface,
-    CriteriaInterface};
+use app\queries\{CriteriaInterface,
+    QueryCriteria};
+use app\filters\{FilterInterface,
+    WhereFilter};
+use app\models\{CollectionInterface,
+    ProductsModel};
+use app\tests\sources\fixtures\ProductsFixture;
 
 class DbRepositoryTests extends TestCase
 {
-    private $mockModel;
-    private $mockCollection;
+    private static $dbClass;
     
     public static function setUpBeforeClass()
     {
-        \Yii::$app->db->createCommand('CREATE TABLE IF NOT EXISTS {{testTable}} ([[id]] INT AUTO_INCREMENT PRIMARY KEY, [[name]] VARCHAR(255), [[short_description]] VARCHAR(500))')->execute();
-        \Yii::$app->db->createCommand('INSERT INTO {{testTable}} (id,name,short_description) VALUES (1,\'one\',\'one\'), (2,\'two\',\'two\'), (3,\'three\',\'three\')')->execute();
-    }
-    
-    public function setUp()
-    {
-        $this->mockModel = new class() extends ActiveRecord {
-            public static function tableName()
-            {
-                return 'testTable';
-            }
-        };
-        
-        $this->mockCollection = new class () extends AbstractBaseCollection implements CollectionInterface {
-            public $items = [];
-            public function add($model) {
-                $this->items[] = $model;
-            }
-            public function isEmpty() 
-            {
-                return empty($this->items) ? true : false;
-            }
-            public function getByKey(string $key, $value)
-            {
-            }
-            public function update(string $key, $model)
-            {
-            }
-            public function getArray()
-            {
-            }
-        };
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'products'=>ProductsFixture::class,
+            ],
+        ]);
+        self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует метод DbRepository::setItems
+     * Тестирует метод DbRepository::setCriteria
+     * передаю не поддерживающий CriteriaInterface объект
+     * @expectedException TypeError
+     */
+    public function testSetCriteriaError()
+    {
+        $repository = new DbRepository();
+        $repository->criteria = new class() {};
+    }
+    
+    /**
+     * Тестирует методы DbRepository::setCriteria, DbRepository::getCriteria
+     */
+    public function testSetGetCriteria()
+    {
+        $repository = new DbRepository();
+        
+        $this->assertNull($repository->criteria);
+        
+        $criteria = new class() implements CriteriaInterface {
+            public function apply($query) {}
+            public function setFilter(FilterInterface $filter) {}
+        };
+        
+        $repository = new DbRepository();
+        $repository->criteria = $criteria;
+        
+        $this->assertTrue($repository->criteria instanceof CriteriaInterface);
+    }
+    
+    /**
+     * Тестирует метод DbRepository::setCollection
      * передаю не поддерживающий CollectionInterface объект
      * @expectedException TypeError
      */
-    public function testSetItemsError()
+    public function testSetCollectionError()
     {
         $repository = new DbRepository();
-        $repository->items = new class () {};
+        $repository->collection = new class() {};
     }
     
     /**
-     * Тестирует метод DbRepository::getCriteria
+     * Тестирует методы DbRepository::setCollection, DbRepository::getCollection
      */
-    public function testGetCriteria()
+    public function testSetGetCollection()
     {
         $repository = new DbRepository();
-        $result = $repository->getCriteria();
         
-        $this->assertTrue($result instanceof CriteriaInterface);
+        $this->assertNull($repository->collection);
+        
+        $collection = new class() implements CollectionInterface {
+            public function add(Model $entity) {}
+            public function isEmpty() {}
+            public function getArray() {}
+            public function hasEntity(Model $object) {}
+            public function update(Model $object) {}
+        };
+        
+        $repository = new DbRepository();
+        $repository->collection = $collection;
+        
+        $this->assertTrue($repository->collection instanceof CollectionInterface);
     }
     
     /**
-     * Тестирует метод DbRepository::getGroup
-     * вызываю с пустым DbRepository::items
-     * @expectedException yii\base\ErrorException
+     * Тестирует метод DbRepository::setQuery
+     * передаю не наследующий Query объект
+     * @expectedException TypeError
      */
-    public function testGetGroupError()
+    public function testSetQueryError()
     {
         $repository = new DbRepository();
-        $repository->getGroup();
+        $repository->query = new class() {};
     }
     
     /**
-     * Тестирует метод DbRepository::getGroup
+     * Тестирует методы DbRepository::setQuery, DbRepository::getQuery
      */
-    public function testGetGroup()
+    public function testSetGetQuery()
     {
         $repository = new DbRepository();
-        $repository->class = $this->mockModel ::className();
-        $repository->items = $this->mockCollection;
         
-        $result = $repository->getGroup();
+        $this->assertNull($repository->query);
         
-        $this->assertTrue($result instanceof CollectionInterface);
+        $query = new class() extends Query {};
         
-        $count = 0;
-        foreach ($result as $object) {
-            $this->assertTrue($object instanceof $this->mockModel);
-            ++$count;
-        }
-        $this->assertEquals(3, $count);
-    }
-    
-    /**
-     * Тестирует метод DbRepository::getGroup
-     * с применением критериев выборки
-     */
-    public function testGetGroupCriteria()
-    {
         $repository = new DbRepository();
-        $repository->class = $this->mockModel::className();
-        $repository->items = $this->mockCollection;
-        $criteria = $repository->getCriteria();
-        $criteria->where(['!=', '[[name]]', 'three']);
-        $result = $repository->getGroup();
+        $repository->query = $query;
         
-        $this->assertTrue($result instanceof CollectionInterface);
-        
-        $count = 0;
-        foreach ($result as $object) {
-            $this->assertTrue($object instanceof $this->mockModel);
-            ++$count;
-        }
-        $this->assertEquals(2, $count);
-    }
-    
-    /**
-     * Тестирует метод DbRepository::getGroup
-     * при отсутствии данных, удовлетворяющих условиям SQL запроса
-     */
-    public function testGetGroupCriteriaNull()
-    {
-        $repository = new DbRepository();
-        $repository->class = $this->mockModel::className();
-        $repository->items = $this->mockCollection;
-        $criteria = $repository->getCriteria();
-        $criteria->where(['in', '[[id]]', [234, 500]]);
-        $result = $repository->getGroup();
-        
-        $this->assertTrue($result->isEmpty());
+        $this->assertTrue($repository->query instanceof Query);
     }
     
     /**
@@ -148,38 +127,34 @@ class DbRepositoryTests extends TestCase
      */
     public function testGetOne()
     {
+        $fixture = self::$dbClass->products['product_1'];
+        
         $repository = new DbRepository();
-        $repository->class = $this->mockModel::className();
+        $repository->query = ProductsModel::find();
+        $repository->criteria = new QueryCriteria();
+        
+        $criteria = $repository->criteria;
+        $criteria->setFilter(new WhereFilter(['condition'=>['[[seocode]]'=>$fixture['seocode']]]));
         $result = $repository->getOne();
         
-        $this->assertTrue($result instanceof $this->mockModel);
+        $this->assertTrue($result instanceof ProductsModel);
+        $this->assertEquals($fixture['id'], $result->id);
+        $this->assertEquals($fixture['seocode'], $result->seocode);
+        $this->assertEquals($fixture['name'], $result->name);
     }
     
     /**
      * Тестирует метод DbRepository::getOne
-     * с применением критериев выборки
+     * при отсутствии данных
      */
-    public function testGetOneCriteria()
+    public function testGetOneNull()
     {
         $repository = new DbRepository();
-        $repository->class = $this->mockModel::className();
-        $criteria = $repository->getCriteria();
-        $criteria->where(['[[name]]'=>'three']);
-        $result = $repository->getOne();
+        $repository->query = ProductsModel::find();
+        $repository->criteria = new QueryCriteria();
         
-        $this->assertTrue($result instanceof $this->mockModel);
-    }
-    
-    /**
-     * Тестирует метод DbRepository::getOne
-     * при отсутствии данных, удовлетворяющих условиям SQL запроса
-     */
-    public function testgetOneCriteriaNull()
-    {
-        $repository = new DbRepository();
-        $repository->class = $this->mockModel::className();
-        $criteria = $repository->getCriteria();
-        $criteria->where(['[[name]]'=>'hundred']);
+        $criteria = $repository->criteria;
+        $criteria->setFilter(new WhereFilter(['condition'=>['[[seocode]]'=>'not data']]));
         $result = $repository->getOne();
         
         $this->assertNull($result);
@@ -187,6 +162,6 @@ class DbRepositoryTests extends TestCase
     
     public static function tearDownAfterClass()
     {
-        \Yii::$app->db->createCommand('DROP TABLE {{testTable}}')->execute();
+        self::$dbClass->unloadFixtures();
     }
 }

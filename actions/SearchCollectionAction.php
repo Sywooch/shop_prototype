@@ -3,17 +3,16 @@
 namespace app\actions;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Url};
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
 use app\services\SearchServiceInterface;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Обрабатывает запрос на вывод товаров из СУБД
+ * Обрабатывает запрос на вывод коллекции товаров из СУБД
  */
-class SearchAction extends AbstractBaseAction
+class SearchCollectionAction extends AbstractBaseAction
 {
     /**
      * @var object SearchServiceInterface для поиска данных по запросу
@@ -23,10 +22,6 @@ class SearchAction extends AbstractBaseAction
      * @var string имя HTML шаблона
      */
     public $view;
-    /**
-     * @var array массив дополнительных данных, которые будут доступны в шаблоне
-     */
-    public $additions = [];
     
     public function init()
     {
@@ -37,7 +32,7 @@ class SearchAction extends AbstractBaseAction
                 throw new ErrorException(ExceptionsTrait::emptyError('service'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('service'));
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
             }
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
@@ -51,12 +46,14 @@ class SearchAction extends AbstractBaseAction
             $collection = $this->service->search(\Yii::$app->request->get());
             
             if ($collection->isEmpty()) {
-                throw new NotFoundHttpException(ExceptionsTrait::emptyError('collection'));
+                throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }
+            
+            $this->renderArray['collection'] = $collection;
             
             Url::remember(Url::current(), \Yii::$app->id);
             
-            return $this->controller->render($this->view, ArrayHelper::merge($this->renderArray, ['collection'=>$collection]));
+            return $this->controller->render($this->view, $this->renderArray);
         } catch (NotFoundHttpException $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             throw $e;
@@ -67,7 +64,7 @@ class SearchAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает SearchServiceInterface свойству SearchAction::service
+     * Присваивает SearchServiceInterface свойству SearchCollectionAction::service
      * @param object $service SearchServiceInterface
      */
     public function setService(SearchServiceInterface $service)

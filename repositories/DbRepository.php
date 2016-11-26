@@ -3,6 +3,7 @@
 namespace app\repositories;
 
 use yii\base\ErrorException;
+use yii\db\Query;
 use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
@@ -15,7 +16,7 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     /**
      * @var object Query для построения запроса
      */
-    public $query;
+    private $query;
     /**
      * @var object CollectionInterface
      */
@@ -96,19 +97,6 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     }
     
     /**
-     * Возвращает объект CriteriaInterface для установки критериев фильтрации
-     * @return CriteriaInterface/null
-     */
-    public function getCriteria()
-    {
-        try {
-            return !empty($this->criteria) ? $this->criteria : null;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Присваивает CriteriaInterface свойству DbRepository::criteria
      * @param object $criteria CriteriaInterface
      */
@@ -116,6 +104,19 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
     {
         try {
             $this->criteria = $criteria;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект CriteriaInterface для установки критериев фильтрации
+     * @return CriteriaInterface/null
+     */
+    public function getCriteria()
+    {
+        try {
+            return !empty($this->criteria) ? $this->criteria : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
