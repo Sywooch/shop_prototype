@@ -4,6 +4,7 @@ namespace app\models;
 
 use yii\base\{ErrorException,
     Model};
+use yii\helpers\ArrayHelper;
 use app\models\{AbstractBaseCollection,
     CollectionInterface};
 
@@ -44,6 +45,24 @@ class Collection extends AbstractBaseCollection implements CollectionInterface
             }
             
             return false;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function map($key, $value)
+    {
+        try {
+            return ArrayHelper::map($this->items, $key, $value);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function sort($key, $type=SORT_ASC)
+    {
+        try {
+            ArrayHelper::multisort($this->items, $key, $type);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

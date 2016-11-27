@@ -10,10 +10,11 @@ use app\models\{Collection,
     ProductsModel,
     SphinxModel};
 use app\repositories\DbRepository;
-use app\services\{ProductsCollectionSearchService,
+use app\services\{ProductsListIndexService,
     SphinxSearchService};
 use app\queries\{LightPagination,
     QueryCriteria};
+use app\search\ProductsSearchModel;
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -25,9 +26,11 @@ class ProductsListController extends AbstractBaseController
         return [
             'index'=>[
                 'class'=>SearchCollectionAction::class,
-                'service'=>new ProductsCollectionSearchService([
-                    'collection'=>new Collection(),
-                    'pagination'=>new LightPagination()
+                'service'=>new ProductsListIndexService([
+                    'searchModel'=>new ProductsSearchModel([
+                        'collection'=>new Collection(),
+                        'pagination'=>new LightPagination(),
+                    ]),
                 ]),
                 'view'=>'products-list.twig'
             ],

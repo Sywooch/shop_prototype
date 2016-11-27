@@ -38,7 +38,7 @@ class FiltersWidget extends Widget
     /**
      * @var object RepositoryInterface
      */
-    public $sphinxService
+    public $sphinxService;
     /**
      * @var object ActiveRecord/Model, получает данные из формы
      */
@@ -83,60 +83,17 @@ class FiltersWidget extends Widget
             $renderArray['sortingFieldsList'] = ['date'=>\Yii::t('base', 'Sorting by date'), 'price'=>\Yii::t('base', 'Sorting by price')];
             $renderArray['sortingTypeList'] = ['SORT_ASC'=>\Yii::t('base', 'Sort ascending'), 'SORT_DESC'=>\Yii::t('base', 'Sort descending')];
             
-            if (!empty($this->sphinxRepository)) {
-                $criteria = $this->sphinxRepository->criteria;
-                $criteria->setFilter(new SelectFilter(['condition'=>['id']]));
-                $criteria->setFilter(new FromFilter(['condition'=>'{{shop}}']));
-                $criteria->setFilter(new MatchFilter(['condition'=>['fields'=>'[[@* :search]]', 'condition'=>['search'=>\Yii::$app->request->get(\Yii::$app->params['searchKey'])]]]));
-                $sphinxCollection = $this->sphinxRepository->getGroup();
-            }
-            
-            $criteria = $this->colorsRepository->criteria;
-            $criteria->setFilter(new SelectFilter(['condition'=>['[[colors.id]]', '[[colors.color]]']]));
-            $criteria->setFilter(new DistinctFilter());
-            $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{products_colors}}', 'condition'=>'[[colors.id]]=[[products_colors.id_color]]']]));
-            $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{products}}', 'condition'=>'[[products_colors.id_product]]=[[products.id]]']]));
-            $criteria->setFilter(new WhereFilter(['condition'=>['[[products.active]]'=>true]]));
-            if (!empty($sphinxCollection)) {
-                $criteria->setFilter(new WhereFilter(['condition'=>['[[products.id]]'=>ArrayHelper::getColumn($sphinxCollection, 'id')]]));
-            } else {
-                $criteria = $this->addCategory($criteria);
-            }
-            $colorsCollection = $this->colorsRepository->getGroup();
-            $colorsCollection = ArrayHelper::map($colorsCollection, 'id', 'color');
-            asort($colorsCollection, SORT_STRING);
-            $renderArray['colorsCollection'] = $colorsCollection;
+            $colorsCollection = $this->colorsService->search(\Yii::$app->request->get());
+            $colorsCollection->sort('color', SORT_ASC);
+            $renderArray['colorsCollection'] = $colorsCollection->map('id', 'color');
            
-            $criteria = $this->sizesRepository->criteria;
-            $criteria->setFilter(new SelectFilter(['condition'=>['[[sizes.id]]', '[[sizes.size]]']]));
-            $criteria->setFilter(new DistinctFilter());
-            $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{products_sizes}}', 'condition'=>'[[sizes.id]]=[[products_sizes.id_size]]']]));
-            $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{products}}', 'condition'=>'[[products_sizes.id_product]]=[[products.id]]']]));
-            $criteria->setFilter(new WhereFilter(['condition'=>['[[products.active]]'=>true]]));
-            if (!empty($sphinxCollection)) {
-                $criteria->setFilter(new WhereFilter(['condition'=>['[[products.id]]'=>ArrayHelper::getColumn($sphinxCollection, 'id')]]));
-            } else {
-                $criteria = $this->addCategory($criteria);
-            }
-            $sizesCollection = $this->sizesRepository->getGroup();
-            $sizesCollection = ArrayHelper::map($sizesCollection, 'id', 'size');
-            asort($sizesCollection, SORT_STRING);
-            $renderArray['sizesCollection'] = $sizesCollection;
-            
-            $criteria = $this->brandsRepository->criteria;
-            $criteria->setFilter(new SelectFilter(['condition'=>['[[brands.id]]', '[[brands.brand]]']]));
-            $criteria->setFilter(new DistinctFilter());
-            $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{products}}', 'condition'=>'[[products.id_brand]]=[[brands.id]]']]));
-            $criteria->setFilter(new WhereFilter(['condition'=>['[[products.active]]'=>true]]));
-            if (!empty($sphinxCollection)) {
-                $criteria->setFilter(new WhereFilter(['condition'=>['[[products.id]]'=>ArrayHelper::getColumn($sphinxCollection, 'id')]]));
-            } else {
-                $criteria = $this->addCategory($criteria);
-            }
-            $brandsCollection = $this->brandsRepository->getGroup();
-            $brandsCollection = ArrayHelper::map($brandsCollection, 'id', 'brand');
-            asort($brandsCollection, SORT_STRING);
-            $renderArray['brandsCollection'] = $brandsCollection;
+            $sizesCollection = $this->sizesService->search(\Yii::$app->request->get());
+            $sizesCollection->sort('size', SORT_ASC);
+            $renderArray['sizesCollection'] = $sizesCollection->map('id', 'size');
+           
+            $brandsCollection = $this->brandsService->search(\Yii::$app->request->get());
+            $brandsCollection->sort('brand', SORT_ASC);
+            $renderArray['brandsCollection'] = $brandsCollection->map('id', 'brand');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

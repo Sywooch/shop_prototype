@@ -29,9 +29,12 @@ use app\widgets\{CategoriesMenuWidget,
 use app\repositories\{DbRepository,
     SessionRepository};
 use app\queries\QueryCriteria;
-use app\services\{CategoriesMenuSearchService,
+use app\services\{BrandsFilterSearch,
+    CategoriesMenuSearchService,
     CategoryOneSearchService,
-    CurrencyCollectionSearchService};
+    ColorsFilterSearch,
+    CurrencyCollectionSearchService,
+    SizesFilterSearch};
 
 class ProductsListWidget extends Widget
 {
@@ -112,25 +115,19 @@ class ProductsListWidget extends Widget
                 'view'=>'pagination.twig'
             ]);
             
-            /*$renderArray['filters'] = FiltersWidget::widget([
-                'colorsRepository'=>new DbRepository([
-                    'query'=>ColorsModel::find(),
+            $renderArray['filters'] = FiltersWidget::widget([
+                'colorsService'=>new ColorsFilterSearch([
                     'collection'=>new Collection(),
-                    'criteria'=>new QueryCriteria()
                 ]),
-                'sizesRepository'=>new DbRepository([
-                    'query'=>SizesModel::find(),
+                'sizesService'=>new SizesFilterSearch([
                     'collection'=>new Collection(),
-                    'criteria'=>new QueryCriteria()
                 ]),
-                'brandsRepository'=>new DbRepository([
-                    'query'=>BrandsModel::find(),
+                'brandsService'=>new BrandsFilterSearch([
                     'collection'=>new Collection(),
-                    'criteria'=>new QueryCriteria()
                 ]),
                 'form'=>new ProductsFiltersFormModel(),
                 'view'=>'products-filters.twig'
-            ]);*/
+            ]);
             
             $collection = [];
             foreach ($this->collection as $good) {
