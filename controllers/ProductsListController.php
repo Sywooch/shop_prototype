@@ -27,14 +27,15 @@ class ProductsListController extends AbstractBaseController
             'index'=>[
                 'class'=>SearchCollectionAction::class,
                 'service'=>new ProductsListIndexService([
-                    'searchModel'=>new ProductsSearchModel([
-                        'collection'=>new Collection(),
-                        'pagination'=>new LightPagination(),
-                    ]),
+                    /*'productsSearchModel'=>new ProductsSearchModel([
+                        'collection'=>new Collection([
+                            'pagination'=>new LightPagination(),
+                        ]),
+                    ]),*/
                 ]),
                 'view'=>'products-list.twig'
             ],
-            'search'=>[
+            /*'search'=>[
                 'class'=>SearchCollectionAction::class,
                 'service'=>new SphinxSearchService([
                     'sphinxRepository'=>new DbRepository([
@@ -51,7 +52,7 @@ class ProductsListController extends AbstractBaseController
                     ]),
                 ]),
                 'view'=>'products-search.twig'
-            ],
+            ],*/
         ];
     }
     

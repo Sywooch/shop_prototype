@@ -3,75 +3,144 @@
 namespace app\services;
 
 use yii\base\{ErrorException,
+    Model,
     Object};
 use app\exceptions\ExceptionsTrait;
-use app\models\{CollectionInterface,
-    ProductsModel};
-use app\services\SearchServiceInterface;
-use app\queries\PaginationInterface;
+use app\models\{Collection,
+    CollectionInterface,
+    ChangeCurrencyFormModel,
+    CurrencyModel,
+    ProductsFiltersFormModel,
+    PurchasesCollection,
+    PurchasesModel};
+use app\services\{BrandsFilterSearch,
+    CategoryOneSearchService,
+    CategoriesMenuSearchService,
+    ColorsFilterSearch,
+    CurrencyCollectionSearchService,
+    SearchServiceInterface,
+    SizesFilterSearch};
+use app\widgets\{CategoriesBreadcrumbsWidget,
+    CategoriesMenuWidget,
+    CartWidget,
+    CurrencyWidget,
+    FiltersWidget,
+    ProductsListWidget,
+    SearchWidget,
+    UserInfoWidget};
+use app\repositories\SessionRepository;
+use app\search\ProductsSearchModel;
+use app\queries\LightPagination;
 
 class ProductsListIndexService extends Object implements SearchServiceInterface
 {
     use ExceptionsTrait;
     
     /**
-     * @var object CollectionInterface
+     * @var object Model
      */
-    public $searchModel;
+    private $productsSearchModel;
     
     public function init()
     {
         try {
             parent::init();
             
-            if (empty($this->collection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
-            }
-            if (empty($this->pagination)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('pagination'));
-            }
+            /*if (empty($this->productsSearchModel)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('productsSearchModel'));
+            }*/
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Обрабатывает запрос на поиск коллекции товаров
+     * Обрабатывает запрос на поиск информации для 
+     * формирования страницы каталога товаров
      * @param array $request
-     * @return CollectionInterface
      */
-    public function search($request): CollectionInterface
+    public function search($request)
     {
         try {
-           $collection = $this->searchModel->load($request);
+            $renderArray = [];
             
-            return $this->collection;
+            $renderArray['collection'] = ProductsListWidget::widget([
+                'searchModel'=>new ProductsSearchModel(array_merge($request, [
+                    'collection'=>new Collection([
+                        'pagination'=>new LightPagination()
+                    ])
+                ])),
+                'view'=>'products-list.twig',
+            ]);
+           
+           $renderArray['user'] = UserInfoWidget::widget([
+                'user'=>\Yii::$app->user,
+                'view'=>'user-info.twig',
+            ]);
+            
+            $renderArray['cart'] = CartWidget::widget([
+                'repository'=>new SessionRepository([
+                    'collection'=>new PurchasesCollection(),
+                    'class'=>PurchasesModel::class
+                ]), 
+                'repositoryCurrency'=>new SessionRepository([
+                    'class'=>CurrencyModel::class
+                ]), 
+                'view'=>'short-cart.twig'
+            ]);
+            
+            $renderArray['currency'] = CurrencyWidget::widget([
+                'service'=>new CurrencyCollectionSearchService([
+                    'collection'=>new Collection(),
+                ]),
+                'form'=>new ChangeCurrencyFormModel(),
+                'view'=>'currency-form.twig'
+            ]);
+            
+            $renderArray['search'] = SearchWidget::widget([
+                'view'=>'search.twig'
+            ]);
+            
+            $renderArray['menu'] = CategoriesMenuWidget::widget([
+                'service'=>new CategoriesMenuSearchService([
+                    'collection'=>new Collection(),
+                ]),
+            ]);
+            
+            $renderArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget([
+                'service'=>new CategoryOneSearchService(),
+                'category'=>$request[\Yii::$app->params['categoryKey']],
+                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
+            ]);
+            
+            $renderArray['filters'] = FiltersWidget::widget([
+                'colorsService'=>new ColorsFilterSearch([
+                    'collection'=>new Collection(),
+                ]),
+                'sizesService'=>new SizesFilterSearch([
+                    'collection'=>new Collection(),
+                ]),
+                'brandsService'=>new BrandsFilterSearch([
+                    'collection'=>new Collection(),
+                ]),
+                'form'=>new ProductsFiltersFormModel(),
+                'view'=>'products-filters.twig'
+            ]);
+            
+            return $renderArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает CollectionInterface свойству ProductsListIndexService::collection
-     * @param object $collection CollectionInterface
+     * Присваивает Model свойству ProductsListIndexService::productsSearchModel
+     * @param object $model Model
      */
-    public function setCollection(CollectionInterface $collection)
+    public function setProductsSearchModel(Model $model)
     {
         try {
-            $this->collection = $collection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает PaginationInterface свойству ProductsListIndexService::pagination
-     * @param object $pagination PaginationInterface
-     */
-    public function setPagination(PaginationInterface $pagination)
-    {
-        try {
-            $this->pagination = $pagination;
+            $this->productsSearchModel = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -1,5 +1,3 @@
-{% include('base.twig') %}
-
 <ol>
 {% for good in collection %}
     <li>
@@ -10,7 +8,5 @@
     </li>
 {% endfor %}
 </ol>
-
-{{ filters | raw }}
 
 {{ pagination | raw }}

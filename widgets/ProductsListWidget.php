@@ -3,47 +3,25 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
+    Model,
     Widget};
 use yii\helpers\Html;
 use app\exceptions\ExceptionsTrait;
-use app\models\{BrandsModel,
-    CategoriesModel,
-    ChangeCurrencyFormModel,
-    CollectionInterface,
-    CurrencyModel,
-    Collection,
-    ColorsModel,
-    ProductsFiltersFormModel,
-    PurchasesCollection,
-    PurchasesModel,
-    SizesModel};
-use app\widgets\{CategoriesMenuWidget,
-    CartWidget,
-    CurrencyWidget,
-    FiltersWidget,
-    PaginationWidget,
-    ThumbnailsWidget,
-    SearchWidget,
+use app\models\{CollectionInterface,
+    CurrencyModel};
+use app\widgets\{PaginationWidget,
     PriceWidget,
-    UserInfoWidget};
-use app\repositories\{DbRepository,
-    SessionRepository};
-use app\queries\QueryCriteria;
-use app\services\{BrandsFilterSearch,
-    CategoriesMenuSearchService,
-    CategoryOneSearchService,
-    ColorsFilterSearch,
-    CurrencyCollectionSearchService,
-    SizesFilterSearch};
+    ThumbnailsWidget};
+use app\repositories\SessionRepository;
 
 class ProductsListWidget extends Widget
 {
     use ExceptionsTrait;
     
     /**
-     * @var object CollectionInterface
+     * @var object Model
      */
-    private $collection;
+    private $searchModel;
     /**
      * @var string имя шаблона
      */
@@ -54,8 +32,8 @@ class ProductsListWidget extends Widget
         try {
             parent::init();
             
-            if (empty($this->collection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+            if (empty($this->searchModel)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('searchModel'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
@@ -68,87 +46,36 @@ class ProductsListWidget extends Widget
     public function run()
     {
         try {
+            $productsCollection = $this->searchModel->search();
+            
             $renderArray = [];
             
-            $renderArray['user'] = UserInfoWidget::widget([
-                'view'=>'user-info.twig',
-                'user'=>\Yii::$app->user
-            ]);
-            
-            $renderArray['cart'] = CartWidget::widget([
-                'repository'=>new SessionRepository([
-                    'collection'=>new PurchasesCollection(),
-                    'class'=>PurchasesModel::class
-                ]), 
-                'repositoryCurrency'=>new SessionRepository([
-                    'class'=>CurrencyModel::class
-                ]), 
-                'view'=>'short-cart.twig'
-            ]);
-            
-            $renderArray['currency'] = CurrencyWidget::widget([
-                'service'=>new CurrencyCollectionSearchService([
-                    'collection'=>new Collection(),
-                ]),
-                'form'=>new ChangeCurrencyFormModel(),
-                'view'=>'currency-form.twig'
-            ]);
-            
-            $renderArray['search'] = SearchWidget::widget([
-                'view'=>'search.twig'
-            ]);
-            
-            $renderArray['menu'] = CategoriesMenuWidget::widget([
-                'service'=>new CategoriesMenuSearchService([
-                    'collection'=>new Collection(),
-                ]),
-            ]);
-            
-            $renderArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget([
-                'service'=>new CategoryOneSearchService(),
-                'category'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey']),
-                'subcategory'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']),
-            ]);
-            
-            $renderArray['pagination'] = PaginationWidget::widget([
-                'pagination'=>$this->collection->pagination,
-                'view'=>'pagination.twig'
-            ]);
-            
-            $renderArray['filters'] = FiltersWidget::widget([
-                'colorsService'=>new ColorsFilterSearch([
-                    'collection'=>new Collection(),
-                ]),
-                'sizesService'=>new SizesFilterSearch([
-                    'collection'=>new Collection(),
-                ]),
-                'brandsService'=>new BrandsFilterSearch([
-                    'collection'=>new Collection(),
-                ]),
-                'form'=>new ProductsFiltersFormModel(),
-                'view'=>'products-filters.twig'
-            ]);
-            
             $collection = [];
-            foreach ($this->collection as $good) {
+            foreach ($productsCollection as $product) {
                 $set = [];
-                $set['link'] = Html::a($good->name, ['product-detail/index', 'seocode'=>$good->seocode]);
-                $set['short_description'] = $good->short_description;
+                $set['link'] = Html::a($product->name, ['product-detail/index', 'seocode'=>$product->seocode]);
+                $set['short_description'] = $product->short_description;
                 $set['price'] = PriceWidget::widget([
                     'repository'=>new SessionRepository([
                         'class'=>CurrencyModel::class
                     ]), 
-                    'price'=>$good->price
+                    'price'=>$product->price
                 ]);
-                if (!empty($good->images)) {
+                if (!empty($product->images)) {
                     $set['images'] = ThumbnailsWidget::widget([
-                        'path'=>$good->images, 
+                        'path'=>$product->images, 
                         'view'=>'thumbnails.twig'
                     ]);
                 }
                 $collection[] = $set;
             }
+            
             $renderArray['collection'] = $collection;
+            
+            $renderArray['pagination'] = PaginationWidget::widget([
+                'pagination'=>$productsCollection->pagination,
+                'view'=>'pagination.twig'
+            ]);
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
@@ -157,13 +84,13 @@ class ProductsListWidget extends Widget
     }
     
     /**
-     * Присваивает CollectionInterface свойству GoodsListWidget::collection
-     * @param object $collection CollectionInterface
+     * Присваивает Model свойству ProductsListIndexService::searchModel
+     * @param object $model Model
      */
-    public function setCollection(CollectionInterface $collection)
+    public function setSearchModel(Model $model)
     {
         try {
-            $this->collection = $collection;
+            $this->searchModel = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -1,5 +1,13 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
-{{ use('app/widgets/ProductsListWidget') }}
+{{ include('@app/widgets/views/base.twig') }}
 
-{{ products_list_widget_widget({'collection':collection, 'view':'products-list.twig'}) }}
+{{ collection | raw }}
+
+{{ filters | raw }}
+
+
+
+
+
+

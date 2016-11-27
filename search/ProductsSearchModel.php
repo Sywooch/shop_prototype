@@ -2,10 +2,12 @@
 
 namespace app\search;
 
-use yii\base\Model;
+use yii\base\{ErrorException,
+    Model};
 use app\exceptions\ExceptionsTrait;
 use app\models\{CollectionInterface,
     ProductsModel};
+use app\queries\PaginationInterface;
 
 class ProductsSearchModel extends Model
 {
@@ -16,36 +18,43 @@ class ProductsSearchModel extends Model
     public $page;
     
     private $collection;
-    private $pagination;
+    
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            if (empty($this->collection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+            }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
     
     public function search()
     {
         try {
-            if (empty($this->collection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
-            }
-            
             $query = ProductsModel::find();
             $query->select(['[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
             $query->where(['[[products.active]]'=>true]);
-            if (!empty($category)) {
+            if (!empty($this->category)) {
                 $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
-                $query->where(['[[categories.seocode]]'=>$category]);
-                if (!empty($subcategory)) {
+                $query->where(['[[categories.seocode]]'=>$this->category]);
+                if (!empty($this->subcategory)) {
                     $query->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
-                    $query->andWhere(['[[subcategory.seocode]]'=>$subcategory]);
+                    $query->andWhere(['[[subcategory.seocode]]'=>$this->subcategory]);
                 }
             }
             
-            $this->pagination->pageSize = \Yii::$app->params['limit'];
-            $this->pagination->page = !empty($page = $request[\Yii::$app->params['pagePointer']]) ? (int) $page - 1 : 0;
+            $this->collection->pagination->pageSize = \Yii::$app->params['limit'];
+            $this->collection->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
             
-            $query->offset($this->pagination->offset);
-            $query->limit($this->pagination->limit);
+            $query->offset($this->collection->pagination->offset);
+            $query->limit($this->collection->pagination->limit);
             $query->orderBy(['[[products.date]]'=>SORT_DESC]);
             
-            $this->pagination->configure($query);
-            $this->collection->pagination = $this->pagination;
+            $this->collection->pagination->configure($query);
             
             $productsArray = $query->all();
             
@@ -67,19 +76,6 @@ class ProductsSearchModel extends Model
     {
         try {
             $this->collection = $collection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает PaginationInterface свойству ProductsSearch::pagination
-     * @param object $pagination PaginationInterface
-     */
-    public function setPagination(PaginationInterface $pagination)
-    {
-        try {
-            $this->pagination = $pagination;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

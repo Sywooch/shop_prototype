@@ -43,13 +43,11 @@ class SearchCollectionAction extends AbstractBaseAction
     public function run()
     {
         try {
-            $collection = $this->service->search(\Yii::$app->request->get());
+            $this->renderArray = $this->service->search(\Yii::$app->request->get());
             
-            if ($collection->isEmpty()) {
+            if (empty($this->renderArray)) {
                 throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }
-            
-            $this->renderArray['collection'] = $collection;
             
             Url::remember(Url::current(), \Yii::$app->id);
             
