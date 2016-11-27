@@ -4,34 +4,16 @@ namespace app\services;
 
 use yii\base\{ErrorException,
     Object};
-use yii\db\Query;
 use app\exceptions\ExceptionsTrait;
-use app\repositories\RepositoryInterface;
-use app\models\CollectionInterface;
+use app\models\{CollectionInterface,
+    ProductsModel};
 use app\services\SearchServiceInterface;
-use app\filters\{JoinFilter,
-    LimitFilter,
-    OffsetFilter,
-    SortingFilter,
-    WhereFilter};
-use app\queries\CriteriaInterface;
+use app\queries\PaginationInterface;
 
 class ProductsCollectionSearchService extends Object implements SearchServiceInterface
 {
     use ExceptionsTrait;
     
-    /**
-     * @var object RepositoryInterface для поиска данных по запросу
-     */
-    private $repository;
-    /**
-     * @var object Query для построения запроса
-     */
-    private $query;
-    /**
-     * @var object CriteriaInterface
-     */
-    private $criteria;
     /**
      * @var object CollectionInterface
      */
@@ -46,15 +28,6 @@ class ProductsCollectionSearchService extends Object implements SearchServiceInt
         try {
             parent::init();
             
-            if (empty($this->repository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
-            }
-            if (empty($this->query)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('query'));
-            }
-            if (empty($this->criteria)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('query'));
-            }
             if (empty($this->collection)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('collection'));
             }
@@ -74,71 +47,35 @@ class ProductsCollectionSearchService extends Object implements SearchServiceInt
     public function search($request): CollectionInterface
     {
         try {
-            $this->criteria->setFilter(new WhereFilter(['condition'=>['[[products.active]]'=>true]]));
+            $query = ProductsModel::find();
+            $query->select(['[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
+            $query->where(['[[products.active]]'=>true]);
             if (!empty($category = $request[\Yii::$app->params['categoryKey']])) {
-                $this->criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{categories}}', 'condition'=>'[[categories.id]]=[[products.id_category]]']]));
-                $this->criteria->setFilter(new WhereFilter(['condition'=>['[[categories.seocode]]'=>$category]]));
+                $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
+                $query->where(['[[categories.seocode]]'=>$category]);
                 if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']])) {
-                    $this->criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{subcategory}}', 'condition'=>'[[subcategory.id]]=[[products.id_subcategory]]']]));
-                    $this->criteria->setFilter(new WhereFilter(['condition'=>['[[subcategory.seocode]]'=>$subcategory]]));
+                    $query->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
+                    $query->andWhere(['[[subcategory.seocode]]'=>$subcategory]);
                 }
             }
+            
             $this->pagination->pageSize = \Yii::$app->params['limit'];
             $this->pagination->page = !empty($page = $request[\Yii::$app->params['pagePointer']]) ? (int) $page - 1 : 0;
-            $this->criteria->setFilter(new OffsetFilter(['condition'=>$this->pagination->offset]));
-            $this->criteria->setFilter(new LimitFilter(['condition'=>$this->pagination->limit]));
-            $this->criteria->setFilter(new SortingFilter(['condition'=>['field'=>'date', 'type'=>SORT_DESC]]));
-            $this->criteria->apply($this->query);
             
-            $this->pagination->configure($this->query);
+            $query->offset($this->pagination->offset);
+            $query->limit($this->pagination->limit);
+            $query->orderBy(['[[products.date]]'=>SORT_DESC]);
             
+            $this->pagination->configure($query);
             $this->collection->pagination = $this->pagination;
             
-            $this->repository->query = $this->query;
-            $this->repository->collection = $this->collection;
+            $productsArray = $query->all();
             
-            $collection = $this->repository->getGroup();
+            foreach ($productsArray as $object) {
+                $this->collection->add($object);
+            }
             
-            return $collection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает RepositoryInterface свойству ProductsCollectionSearchService::repository
-     * @param object $repository RepositoryInterface
-     */
-    public function setRepository(RepositoryInterface $repository)
-    {
-        try {
-            $this->repository = $repository;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает Query свойству ProductsCollectionSearchService::query
-     * @param object $query Query
-     */
-    public function setQuery(Query $query)
-    {
-        try {
-            $this->query = $query;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает CriteriaInterface свойству ProductsCollectionSearchService::criteria
-     * @param object $criteria CriteriaInterface
-     */
-    public function setCriteria(CriteriaInterface $criteria)
-    {
-        try {
-            $this->criteria = $criteria;
+            return $this->collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

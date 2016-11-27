@@ -8,6 +8,7 @@ use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
 use app\models\CollectionInterface;
+use app\filters\FilterInterface;
 
 class DbRepository extends AbstractBaseRepository implements RepositoryInterface
 {
@@ -23,6 +24,23 @@ class DbRepository extends AbstractBaseRepository implements RepositoryInterface
      * @var object Model
      */
     private $entity;
+    
+    /**
+     * Применяет фильтр к запросу
+     * @param object $filter FilterInterface
+     */
+    public function setFilter(FilterInterface $filter)
+    {
+        try {
+            if (empty($this->query)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('query'));
+            }
+            
+            $filter->apply($this->query);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
     
     /**
      * Возвращает объект yii\base\Model

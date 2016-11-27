@@ -11,16 +11,14 @@ class FromFilter extends Object implements FilterInterface
 {
     use ExceptionsTrait;
     
-    public $condition;
+    private $condition;
     
-    public function init()
+    public function __construct($condition, $config=[])
     {
         try {
-            parent::init();
+            $this->condition = $condition;
             
-            if (empty($this->condition)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('condition'));
-            }
+            parent::__construct($config);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

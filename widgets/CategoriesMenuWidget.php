@@ -20,7 +20,7 @@ class CategoriesMenuWidget extends Menu
     /**
      * @var object GetGroupRepositoryInterface для поиска данных по запросу
      */
-    private $repository;
+    public $service;
     /**
      * @var string основной route
      */
@@ -47,13 +47,11 @@ class CategoriesMenuWidget extends Menu
         try {
             parent::init();
             
-            if (empty($this->repository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
+            if (empty($this->service)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('service'));
             }
             
-            $criteria = $this->repository->getCriteria();
-            $criteria->setFilter(new WithFilter(['condition'=>'subcategory']));
-            $this->categoriesList = $this->repository->getGroup();
+            $this->categoriesList = $this->service->search();
             
             if (!empty($this->categoriesList)) {
                 $this->setItems();

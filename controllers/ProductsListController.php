@@ -26,10 +26,7 @@ class ProductsListController extends AbstractBaseController
             'index'=>[
                 'class'=>SearchCollectionAction::class,
                 'service'=>new ProductsCollectionSearchService([
-                    'repository'=>new DbRepository(),
-                    'query'=>ProductsModel::find(),
-                    'criteria'=>new QueryCriteria(),
-                    'collection'=>new ProductsCollection(),
+                    'collection'=>new Collection(),
                     'pagination'=>new LightPagination()
                 ]),
                 'view'=>'products-list.twig'
@@ -40,14 +37,14 @@ class ProductsListController extends AbstractBaseController
                     'sphinxRepository'=>new DbRepository([
                         'query'=>SphinxModel::find(),
                         'collection'=>new Collection(),
-                        'criteria'=>new QueryCriteria()
+                        //'criteria'=>new QueryCriteria()
                     ]),
                     'productsRepository'=>new DbRepository([
                         'query'=>ProductsModel::find(),
                         'collection'=>new ProductsCollection([
                             'pagination'=>new LightPagination()
                         ]),
-                        'criteria'=>new QueryCriteria()
+                        //'criteria'=>new QueryCriteria()
                     ]),
                 ]),
                 'view'=>'products-search.twig'

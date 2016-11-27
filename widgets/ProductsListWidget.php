@@ -29,6 +29,9 @@ use app\widgets\{CategoriesMenuWidget,
 use app\repositories\{DbRepository,
     SessionRepository};
 use app\queries\QueryCriteria;
+use app\services\{CategoriesMenuSearchService,
+    CategoryOneSearchService,
+    CurrencyCollectionSearchService};
 
 class ProductsListWidget extends Widget
 {
@@ -81,10 +84,8 @@ class ProductsListWidget extends Widget
             ]);
             
             $renderArray['currency'] = CurrencyWidget::widget([
-                'repository'=>new DbRepository([
+                'service'=>new CurrencyCollectionSearchService([
                     'collection'=>new Collection(),
-                    'query'=>CurrencyModel::find(),
-                    'criteria'=>new QueryCriteria()
                 ]),
                 'form'=>new ChangeCurrencyFormModel(),
                 'view'=>'currency-form.twig'
@@ -95,18 +96,13 @@ class ProductsListWidget extends Widget
             ]);
             
             $renderArray['menu'] = CategoriesMenuWidget::widget([
-                'repository'=>new DbRepository([
+                'service'=>new CategoriesMenuSearchService([
                     'collection'=>new Collection(),
-                    'query'=>CategoriesModel::find(),
-                    'criteria'=>new QueryCriteria()
-                ])
+                ]),
             ]);
             
             $renderArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget([
-                'repository'=>new DbRepository([
-                    'query'=>CategoriesModel::find(),
-                    'criteria'=>new QueryCriteria()
-                ]),
+                'service'=>new CategoryOneSearchService(),
                 'category'=>\Yii::$app->request->get(\Yii::$app->params['categoryKey']),
                 'subcategory'=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey']),
             ]);
@@ -116,7 +112,7 @@ class ProductsListWidget extends Widget
                 'view'=>'pagination.twig'
             ]);
             
-            $renderArray['filters'] = FiltersWidget::widget([
+            /*$renderArray['filters'] = FiltersWidget::widget([
                 'colorsRepository'=>new DbRepository([
                     'query'=>ColorsModel::find(),
                     'collection'=>new Collection(),
@@ -134,7 +130,7 @@ class ProductsListWidget extends Widget
                 ]),
                 'form'=>new ProductsFiltersFormModel(),
                 'view'=>'products-filters.twig'
-            ]);
+            ]);*/
             
             $collection = [];
             foreach ($this->collection as $good) {

@@ -19,7 +19,7 @@ class CategoriesBreadcrumbsWidget extends BreadcrumbsWidget
     /**
      * @var object RepositoryInterface для поиска данных по запросу
      */
-    private $repository;
+    public $service;
     /**
      * @var string seocode категории
      */
@@ -32,16 +32,14 @@ class CategoriesBreadcrumbsWidget extends BreadcrumbsWidget
     public function init()
     {
         try {
-            if (empty($this->repository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
+            if (empty($this->service)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('service'));
             }
             
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
             if (!empty($this->category)) {
-                $criteria = $this->repository->criteria;
-                $criteria->setFilter(new WhereFilter(['condition'=>['[[seocode]]'=>$this->category]]));
-                $category = $this->repository->getOne();
+                $category = $this->service->search($this->category);
                 if ($category === null) {
                     throw new ErrorException(ExceptionsTrait::emptyError('category'));
                 }

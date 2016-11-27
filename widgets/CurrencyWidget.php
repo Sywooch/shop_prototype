@@ -20,7 +20,7 @@ class CurrencyWidget extends Widget
     /**
      * @var object RepositoryInterface
      */
-    private $repository;
+    public $service;
     /**
      * @var object ActiveRecord/Model, получает данные из формы
      */
@@ -35,9 +35,9 @@ class CurrencyWidget extends Widget
         try {
             parent::init();
             
-            if (empty($this->repository)) {
+            /*if (empty($this->repository)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('repository'));
-            }
+            }*/
             if (empty($this->form)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('form'));
             }
@@ -52,14 +52,12 @@ class CurrencyWidget extends Widget
     public function run()
     {
         try {
-            $criteria = $this->repository->criteria;
-            $criteria->setFilter(new SelectFilter(['condition'=>['id', 'code']]));
-            $currencyList = $this->repository->getGroup();
+            $collection = $this->service->search();
             
-            $currencyList = ArrayHelper::map($currencyList, 'id', 'code');
-            asort($currencyList, SORT_STRING);
+            $collection = ArrayHelper::map($collection, 'id', 'code');
+            asort($collection, SORT_STRING);
             
-            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$currencyList]);
+            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$collection]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

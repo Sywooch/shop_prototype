@@ -26,19 +26,19 @@ class FiltersWidget extends Widget
     /**
      * @var object RepositoryInterface
      */
-    private $colorsRepository;
+    public $colorsService;
     /**
      * @var object RepositoryInterface
      */
-    private $sizesRepository;
+    public $sizesService;
     /**
      * @var object RepositoryInterface
      */
-    private $brandsRepository;
+    public $brandsService;
     /**
      * @var object RepositoryInterface
      */
-    private $sphinxRepository;
+    public $sphinxService
     /**
      * @var object ActiveRecord/Model, получает данные из формы
      */
@@ -53,7 +53,7 @@ class FiltersWidget extends Widget
         try {
             parent::init();
             
-            if (empty($this->colorsRepository)) {
+            /*if (empty($this->colorsRepository)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('colorsRepository'));
             }
             if (empty($this->sizesRepository)) {
@@ -61,7 +61,7 @@ class FiltersWidget extends Widget
             }
             if (empty($this->brandsRepository)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('brandsRepository'));
-            }
+            }*/
             if (empty($this->form)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('form'));
             }
