@@ -3,7 +3,6 @@
 namespace app\actions;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
 use app\services\ServiceInterface;
@@ -48,8 +47,6 @@ class SearchAction extends AbstractBaseAction
             if (empty($dataArray)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('dataArray'));
             }
-            
-            Url::remember(Url::current(), \Yii::$app->id);
             
             return $this->controller->render($this->view, $dataArray);
         } catch (NotFoundHttpException $e) {

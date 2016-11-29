@@ -2,39 +2,24 @@
 
 namespace app\collections;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\ErrorException;
 use app\collections\{AbstractBaseCollection,
     CollectionInterface};
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
 class ProductsCollection extends AbstractBaseCollection implements CollectionInterface
 {
-    /**
-     * Проверяет существование в коллекции сущности с переданным данными
-     * @param object $object Model
-     * @return bool
-     */
-    public function hasEntity(Model $object)
-    {
-        try {
-            
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
+    use ExceptionsTrait;
     
-    /**
-     * Обновляет данные сущности 
-     * @param object $object Model
-     * @return bool
-     */
-    public function update(Model $object)
+    public function init()
     {
         try {
-            
+            if (empty($this->pagination)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('pagination'));
+            }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

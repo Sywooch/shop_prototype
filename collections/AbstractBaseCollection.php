@@ -3,122 +3,42 @@
 namespace app\collections;
 
 use yii\base\{ErrorException,
-    Model,
-    Object};
-use yii\data\Pagination;
+    Model};
+use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\queries\PaginationInterface;
+use app\collections\AbstractIterator;
 
 /**
  * Реализует интерфейс Iterator для доступа к коллекции сущностей
  */
-abstract class AbstractBaseCollection extends Object implements \Iterator
+abstract class AbstractBaseCollection extends AbstractIterator
 {
     use ExceptionsTrait;
     
-    /**
-     * @var array коллекция сущностей
-     */
-    protected $items = [];
-    /**
-     * @var int текущая позиция итерации
-     */
-    private $position = 0;
     /**
      * @var object PaginationInterface
      */
     private $pagination;
     
     /**
-     * Задает начальную позицию итерации
+     * Добавляет объект в коллекцию
+     * @param $object Model 
      */
-    public function __construct(array $config=[])
+    public function add(Model $object)
     {
         try {
-            $this->position = 0;
-            parent::__construct($config);
+            $this->items[] = $object;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Возвращает итератор на первый элемент
+     * Возвращает bool в зависимости от того, пуст или нет $this::items
+     * @return bool
      */
-    function rewind()
-    {
-        try {
-            $this->position = 0;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает итерируемый объект
-     */
-    function current()
-    {
-        try {
-            return $this->items[$this->position];
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает ключ текущего элемента
-     */
-    function key()
-    {
-        try {
-            return $this->position;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Переходит к следующему элементу
-     */
-    function next()
-    {
-        try {
-            ++$this->position;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Проверяет корректность позиции
-     */
-    function valid()
-    {
-        try {
-            return isset($this->items[$this->position]);
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Добавляет сущность в коллекцию
-     * @param mixed $entity
-     */
-    public function add(Model $entity)
-    {
-        try {
-            $this->items[] = $entity;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает bool в зависимости от того, пуст или нет Collection::items
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         try {
             return empty($this->items) ? true : false;
@@ -146,8 +66,30 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
     }
     
     /**
+     * Проверяет наличие объекта в коллекции $this::items
+     * @return bool
+     */
+    public function hasEntity(Model $object): bool
+    {
+        try {
+            
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    public function update(Model $object)
+    {
+        try {
+            
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Сохраняет объект пагинации
-     * @return Pagination/null
+     * @param object $pagination PaginationInterface
      */
     public function setPagination(PaginationInterface $pagination)
     {
@@ -160,12 +102,43 @@ abstract class AbstractBaseCollection extends Object implements \Iterator
     
     /**
      * Возвращает объект пагинации
-     * @return Pagination/null
+     * @return PaginationInterface/null
      */
     public function getPagination()
     {
         try {
             return !empty($this->pagination) ? $this->pagination : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные из $this::items в формате ключ=>значение, 
+     * где значения одного из свойств, становятся ключами возвращаемого массива, 
+     * а значения второго - значениями этих ключей
+     * @param string $key имя свойства, значения которого станут ключами
+     * @param string $value имя свойства, значения которого станут значениями
+     * @return array
+     */
+    public function map(string $key, string $value): array
+    {
+        try {
+            return ArrayHelper::map($this->items, $key, $value);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Сортирует объекты коллекции $this::items
+     * @param string $key имя свойства, по значениям которого будет выполнена сортировка
+     * @param string $type флаг, определяющий тип сортировки SORT_ASC / SORT_DESC
+     */
+    public function sort($key, $type=SORT_ASC)
+    {
+        try {
+            ArrayHelper::multisort($this->items, $key, $type);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

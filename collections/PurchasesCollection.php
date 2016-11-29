@@ -14,10 +14,10 @@ class PurchasesCollection extends AbstractBaseCollection implements CollectionIn
 {
     /**
      * Проверяет существование в коллекции сущности с переданным данными
-     * @param object $object Model
+     * @param $object Model
      * @return bool
      */
-    public function hasEntity(Model $object)
+    public function hasEntity(Model $object): bool
     {
         try {
             if (!empty($this->items)) {

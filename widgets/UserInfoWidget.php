@@ -19,7 +19,7 @@ class UserInfoWidget extends Widget
      */
     public $view;
     /**
-     * @var object
+     * @var object User
      */
     private $user;
     

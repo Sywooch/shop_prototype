@@ -28,25 +28,16 @@ class ThumbnailsWidget extends Widget
      */
     private $result = [];
     
-    public function init()
+    public function run()
     {
         try {
-            parent::init();
-            
             if (empty($this->path)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('path'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
             }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function run()
-    {
-        try {
+            
             $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
             
             if (!empty($imagesArray)) {

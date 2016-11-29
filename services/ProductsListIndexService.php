@@ -23,14 +23,21 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     CartWidget,
     CurrencyWidget,
     FiltersWidget,
+    PaginationWidget,
+    PriceWidget,
     ProductsListWidget,
     SearchWidget,
+    ThumbnailsWidget,
     UserInfoWidget};
 use app\repositories\SessionRepository;
-use app\finders\ProductsFinder;
+use app\finders\{CurrencySessionFinder,
+    ProductsFinder,
+    PurchasesSessionFinder};
 use app\queries\LightPagination;
 use app\collections\{Collection,
+    ProductsCollection,
     PurchasesCollection};
+use app\helpers\HashHelper;
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -47,34 +54,64 @@ class ProductsListIndexService extends Object implements ServiceInterface
     public function handle($request)
     {
         try {
-            $renderArray = [];
+            $dataArray = [];
             
-            $renderArray['collection'] = ProductsListWidget::widget([
-                'finder'=>new ProductsFinder(array_merge($request, [
-                    'collection'=>new Collection([
-                        'pagination'=>new LightPagination()
-                    ])
-                ])),
+            $productsFinder = new ProductsFinder([
+                'collection'=>new ProductsCollection([
+                    'pagination'=>new LightPagination()
+                ])
+            ]);
+            if ($productsFinder->load($request) === false) {
+                throw new ErrorException(ExceptionsTrait::methodError('productsFinder::load'));
+            }
+            $productsCollection = $productsFinder->find();
+            if ($productsCollection->isEmpty()) {
+                throw new NotFoundHttpException(ExceptionsTrait::Error404());
+            }
+            
+            $currencyFinder = new CurrencySessionFinder();
+            if ($currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]) === false) {
+                throw new ErrorException(ExceptionsTrait::methodError('currencyFinder::load'));
+            }
+            $currencyModel = $currencyFinder->find();
+            if (empty($currencyModel)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
+            }
+            
+            $dataArray['collection'] = ProductsListWidget::widget([
+                'productsCollection'=>$productsCollection,
+                'priceWidget'=>new PriceWidget([
+                    'currencyModel'=>$currencyModel, 
+                ]),
+                'thumbnailsWidget'=>new ThumbnailsWidget([
+                    'view'=>'thumbnails.twig'
+                ]),
+                'paginationWidget'=>new PaginationWidget([
+                    'view'=>'pagination.twig'
+                ]),
                 'view'=>'products-list.twig',
             ]);
-           
-           $renderArray['user'] = UserInfoWidget::widget([
+            
+           $dataArray['user'] = UserInfoWidget::widget([
                 'user'=>\Yii::$app->user,
                 'view'=>'user-info.twig',
             ]);
             
-            $renderArray['cart'] = CartWidget::widget([
-                'repository'=>new SessionRepository([
-                    'collection'=>new PurchasesCollection(),
-                    'class'=>PurchasesModel::class
-                ]), 
-                'repositoryCurrency'=>new SessionRepository([
-                    'class'=>CurrencyModel::class
-                ]), 
+            $purchasesFinder = new PurchasesSessionFinder([
+                'collection'=>new PurchasesCollection()
+            ]);
+            $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
+            if ($purchasesFinder->load(['key'=>$key]) === false) {
+                throw new ErrorException(ExceptionsTrait::methodError('purchasesFinder::load'));
+            }
+            $purchasesCollection = $purchasesFinder->find();
+            $dataArray['cart'] = CartWidget::widget([
+                'purchasesCollection'=>$purchasesCollection, 
+                'currencyModel'=>$currencyModel,
                 'view'=>'short-cart.twig'
             ]);
             
-            $renderArray['currency'] = CurrencyWidget::widget([
+            $dataArray['currency'] = CurrencyWidget::widget([
                 'service'=>new CurrencyCollectionSearchService([
                     'collection'=>new Collection(),
                 ]),
@@ -82,23 +119,23 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'view'=>'currency-form.twig'
             ]);
             
-            $renderArray['search'] = SearchWidget::widget([
+            $dataArray['search'] = SearchWidget::widget([
                 'view'=>'search.twig'
             ]);
             
-            $renderArray['menu'] = CategoriesMenuWidget::widget([
+            $dataArray['menu'] = CategoriesMenuWidget::widget([
                 'service'=>new CategoriesMenuSearchService([
                     'collection'=>new Collection(),
                 ]),
             ]);
             
-            $renderArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget([
+            $dataArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget([
                 'service'=>new CategoryOneSearchService(),
                 'category'=>$request[\Yii::$app->params['categoryKey']],
                 'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
             ]);
             
-            $renderArray['filters'] = FiltersWidget::widget([
+            $dataArray['filters'] = FiltersWidget::widget([
                 'colorsService'=>new ColorsFilterSearch([
                     'collection'=>new Collection(),
                 ]),
@@ -112,7 +149,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'view'=>'products-filters.twig'
             ]);
             
-            return $renderArray;
+            return $dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
         } catch (\Throwable $t) {

@@ -3,12 +3,13 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
+    Model,
     Widget};
 use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
 use app\helpers\HashHelper;
-use app\models\{CurrencyModel,
-    CollectionInterface};
+use app\models\CurrencyModel;
+use app\collections\CollectionInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -18,13 +19,13 @@ class CartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object RepositoryInterface для поиска данных по запросу
+     * @var object CollectionInterface
      */
-    private $repository;
-    /**
-     * @var object RepositoryInterface для поиска данных по запросу
+    private $purchasesCollection;
+   /**
+     * @var object Model
      */
-    private $repositoryCurrency;
+    private $currencyModel;
     /**
      * @var string имя шаблона
      */
@@ -38,25 +39,6 @@ class CartWidget extends Widget
      */
     private $cost = 0;
     
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->repository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
-            }
-            if (empty($this->repositoryCurrency)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('currency'));
-            }
-            if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
-            }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     /**
      * Конструирует HTML строку с информацией о текущем статусе корзины заказов
      * @return string
@@ -64,16 +46,22 @@ class CartWidget extends Widget
     public function run()
     {
         try {
-            $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-            $collection = $this->repository->getGroup($key);
-            
-            if (!empty($collection)) {
-                $this->goods = $collection->totalQuantity();
-                $this->cost = $collection->totalPrice();
+            if (empty($this->purchasesCollection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('purchasesCollection'));
+            }
+            if (empty($this->currencyModel)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
             }
             
-            $currency = $this->repositoryCurrency->getOne(\Yii::$app->params['currencyKey']);
-            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $currency->exchange_rate, 2) . ' ' . $currency->code;
+            if (!empty($this->purchasesCollection)) {
+                $this->goods = $this->purchasesCollection->totalQuantity();
+                $this->cost = $this->purchasesCollection->totalPrice();
+            }
+            
+            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currencyModel->exchange_rate, 2) . ' ' . $this->currencyModel->code;
             
             return $this->render($this->view, ['goods'=>$this->goods, 'cost'=>$this->cost]);
         } catch (\Throwable $t) {
@@ -82,26 +70,26 @@ class CartWidget extends Widget
     }
     
     /**
-     * Присваивает RepositoryInterface свойству CartWidget::repository
-     * @param object $repository RepositoryInterface
+     * Присваивает CollectionInterface свойству CartWidget::purchasesCollection
+     * @param object $collection CollectionInterface
      */
-    public function setRepository(RepositoryInterface $repository)
+    public function setPurchasesCollection(CollectionInterface $collection)
     {
         try {
-            $this->repository = $repository;
+            $this->purchasesCollection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает RepositoryInterface свойству CartWidget::currency
-     * @param object $currency RepositoryInterface
+     * Присваивает Model свойству CartWidget::currencyModel
+     * @param object $model Model
      */
-    public function setRepositoryCurrency(RepositoryInterface $repository)
+    public function setCurrencyModel(Model $model)
     {
         try {
-            $this->repositoryCurrency = $repository;
+            $this->currencyModel = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -26,26 +26,42 @@ class ProductsFinder extends Model implements FinderInterface
      */
     public $page;
     /**
-     * @var object CollectionInterface коллекция, в которую будут собраны модели товаров
+     * @var object CollectionInterface
      */
     private $collection;
     
-    public function init()
+    public function rules()
+    {
+        return [
+            [['category', 'subcategory', 'page'], 'safe']
+        ];
+    }
+    
+    /**
+     * Загружает данные в свойства модели
+     * @param $data массив данных
+     * @return bool
+     */
+    public function load($data, $formName=null)
     {
         try {
-            parent::init();
-            
-            if (empty($this->collection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
-            }
+            return parent::load($data, '');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
+    /**
+     * Возвращает данные из СУБД
+     * @return CollectionInterface
+     */
     public function find(): CollectionInterface
     {
         try {
+            if (empty($this->collection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+            }
+            
             if ($this->collection->isEmpty()) {
                 $query = ProductsModel::find();
                 $query->select(['[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
@@ -61,17 +77,18 @@ class ProductsFinder extends Model implements FinderInterface
                 
                 $this->collection->pagination->pageSize = \Yii::$app->params['limit'];
                 $this->collection->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
+                $this->collection->pagination->setTotalCount($query);
                 
                 $query->offset($this->collection->pagination->offset);
                 $query->limit($this->collection->pagination->limit);
                 $query->orderBy(['[[products.date]]'=>SORT_DESC]);
                 
-                $this->collection->pagination->configure($query);
-                
                 $productsArray = $query->all();
                 
-                foreach ($productsArray as $object) {
-                    $this->collection->add($object);
+                if (!empty($productsArray)) {
+                    foreach ($productsArray as $product) {
+                        $this->collection->add($product);
+                    }
                 }
             }
             
@@ -82,7 +99,7 @@ class ProductsFinder extends Model implements FinderInterface
     }
     
     /**
-     * Присваивает CollectionInterface свойству ProductsSearchModel::collection
+     * Присваивает CollectionInterface свойству ProductsFinder::collection
      * @param object $collection CollectionInterface
      */
     public function setCollection(CollectionInterface $collection)

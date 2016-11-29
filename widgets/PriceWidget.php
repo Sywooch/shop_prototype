@@ -3,9 +3,9 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
+    Model,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\repositories\RepositoryInterface;
 
 /**
  * Формирует HTML строку с данными о цене товара
@@ -15,29 +15,13 @@ class PriceWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object RepositoryInterface для поиска данных по запросу
+     * @var object Model
      */
-    private $repository;
+    private $currencyModel;
     /**
      * @var float цена товара
      */
     public $price;
-    
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->repository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
-            }
-            if (empty($this->price)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('price'));
-            }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
     
     /**
      * Форматирует стоимость с учетом текущей валюты
@@ -46,9 +30,14 @@ class PriceWidget extends Widget
     public function run()
     {
         try {
-            $currency = $this->repository->getOne(\Yii::$app->params['currencyKey']);
+            if (empty($this->currencyModel)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
+            }
+            if (empty($this->price)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('price'));
+            }
             
-            $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * $currency->exchange_rate, 2) . ' ' . $currency->code;
+            $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * $this->currencyModel->exchange_rate, 2) . ' ' . $this->currencyModel->code;
             
             return $correctedPrice ?? '';
         } catch(\Throwable $t) {
@@ -57,13 +46,13 @@ class PriceWidget extends Widget
     }
     
     /**
-     * Присваивает RepositoryInterface свойству PriceWidget::repository
-     * @param object $repository RepositoryInterface
+     * Присваивает Model свойству PriceWidget::currencyModel
+     * @param object $model Model
      */
-    public function setRepository(RepositoryInterface $repository)
+    public function setCurrencyModel(Model $model)
     {
         try {
-            $this->repository = $repository;
+            $this->currencyModel = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

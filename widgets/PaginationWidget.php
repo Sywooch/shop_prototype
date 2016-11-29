@@ -7,6 +7,7 @@ use yii\base\{ErrorException,
 use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
+use app\queries\PaginationInterface;
 
 /**
  * Формирует HTML строку с данными пагинации
@@ -16,15 +17,15 @@ class PaginationWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object yii\data\Pagination
+     * @var object PaginationInterface
      */
-    public $pagination;
+    private $pagination;
     /**
-     * @var string CSS class для активного пункта меню
+     * @var string CSS класс активного пункта меню
      */
     public $activePage = 'active';
     /**
-     * @var string имя дочернего для тега-контейнера тега, обрамляющего ссылки на страницы
+     * @var string имя тега-контейнера, обрамляющего ссылки на страницы
      */
     public $childTag = 'il';
     /**
@@ -50,7 +51,7 @@ class PaginationWidget extends Widget
      */
     private $nextMax;
     /**
-     * @var array массив ссылок на страницы, обернутых в тег $this->childTag
+     * @var array массив ссылок на страницы, обернутых в тег $this::childTag
      */
     private $tags = [];
     /**
@@ -62,22 +63,6 @@ class PaginationWidget extends Widget
      */
     public $view;
     
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->pagination)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('pagination'));
-            }
-            if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
-            }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     /**
      * Конструирует HTML строку пагинации
      * @return string
@@ -85,6 +70,13 @@ class PaginationWidget extends Widget
     public function run()
     {
         try {
+            if (empty($this->pagination)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('pagination'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+            
             if ($this->pagination->pageCount >= 2) {
                 
                 $this->settings();
@@ -206,6 +198,19 @@ class PaginationWidget extends Widget
                 $this->nextMax = $this->pagination->pageCount;
             }
         } catch(\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Сохраняет объект пагинации
+     * @param object $pagination PaginationInterface
+     */
+    public function setPagination(PaginationInterface $pagination)
+    {
+        try {
+            $this->pagination = $pagination;
+        } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }

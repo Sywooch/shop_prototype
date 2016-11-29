@@ -29,7 +29,7 @@ class LightPagination extends Object implements PaginationInterface
      * возвращаемых запросом, до применения LIMIT и OFFSET
      * @param object $query Query
      */
-    public function configure($query)
+    public function setTotalCount($query)
     {
         try {
             $countQuery = clone $query;
