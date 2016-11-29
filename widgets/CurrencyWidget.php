@@ -52,7 +52,7 @@ class CurrencyWidget extends Widget
     public function run()
     {
         try {
-            $collection = $this->service->search();
+            $collection = $this->service->handle();
             
             $collection = ArrayHelper::map($collection, 'id', 'code');
             asort($collection, SORT_STRING);

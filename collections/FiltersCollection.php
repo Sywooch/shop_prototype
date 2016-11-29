@@ -1,22 +1,17 @@
 <?php
 
-namespace app\models;
+namespace app\collections;
 
 use yii\base\{ErrorException,
     Model};
-use app\models\{AbstractBaseCollection,
+use app\collections\{AbstractBaseCollection,
     CollectionInterface};
 
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
-class ProductsCollection extends AbstractBaseCollection implements CollectionInterface
+class FiltersCollection extends AbstractBaseCollection implements CollectionInterface
 {
-    /**
-     * Проверяет существование в коллекции сущности с переданным данными
-     * @param object $object Model
-     * @return bool
-     */
     public function hasEntity(Model $object)
     {
         try {
@@ -26,11 +21,6 @@ class ProductsCollection extends AbstractBaseCollection implements CollectionInt
         }
     }
     
-    /**
-     * Обновляет данные сущности 
-     * @param object $object Model
-     * @return bool
-     */
     public function update(Model $object)
     {
         try {

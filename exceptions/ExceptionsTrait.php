@@ -3,6 +3,7 @@
 namespace app\exceptions;
 
 use yii\base\ErrorException;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Предоставляет методы записи логов и выброса маркированных исключений
@@ -20,7 +21,6 @@ trait ExceptionsTrait
     }
     
     /**
-     * Статический метод
      * Принимает любое исключение, маркирует и выбрасывает как yii\base\ErrorException
      * @param $t экземпляр \Throwable
      * @param $method полностью определенное имя метода, поймавшего исключение
@@ -28,6 +28,20 @@ trait ExceptionsTrait
     public static function throwStaticException(\Throwable $t, $method): ErrorException
     {
         throw new ErrorException(\Yii::t('base/errors', 'Method error: {method}' . PHP_EOL, ['method'=>$method]) . $t->getMessage());
+    }
+    
+    /**
+     * Принимает любое исключение, маркирует и выбрасывает как ServerErrorHttpException
+     * @param $t экземпляр \Throwable
+     * @param $method полностью определенное имя метода, поймавшего исключение
+     */
+    public function throwServerError(\Throwable $t, $method): ServerErrorHttpException
+    {
+        if (YII_ENV_DEV) {
+            throw new ServerErrorHttpException(\Yii::t('base/errors', 'Internal server error: {method}' . PHP_EOL, ['method'=>$method]) . $t->getMessage());
+        } else {
+            throw new ServerErrorHttpException();
+        }
     }
     
     /**

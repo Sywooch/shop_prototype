@@ -5,20 +5,18 @@ namespace app\services;
 use yii\base\{ErrorException,
     Model,
     Object};
+use yii\web\NotFoundHttpException;
 use app\exceptions\ExceptionsTrait;
-use app\models\{Collection,
-    CollectionInterface,
-    ChangeCurrencyFormModel,
+use app\models\{ChangeCurrencyFormModel,
     CurrencyModel,
     ProductsFiltersFormModel,
-    PurchasesCollection,
     PurchasesModel};
 use app\services\{BrandsFilterSearch,
     CategoryOneSearchService,
     CategoriesMenuSearchService,
     ColorsFilterSearch,
     CurrencyCollectionSearchService,
-    SearchServiceInterface,
+    ServiceInterface,
     SizesFilterSearch};
 use app\widgets\{CategoriesBreadcrumbsWidget,
     CategoriesMenuWidget,
@@ -29,43 +27,30 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     SearchWidget,
     UserInfoWidget};
 use app\repositories\SessionRepository;
-use app\search\ProductsSearchModel;
+use app\finders\ProductsFinder;
 use app\queries\LightPagination;
+use app\collections\{Collection,
+    PurchasesCollection};
 
-class ProductsListIndexService extends Object implements SearchServiceInterface
+/**
+ * Формирует массив данных для рендеринга страницы каталога товаров
+ */
+class ProductsListIndexService extends Object implements ServiceInterface
 {
     use ExceptionsTrait;
     
     /**
-     * @var object Model
-     */
-    private $productsSearchModel;
-    
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            /*if (empty($this->productsSearchModel)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('productsSearchModel'));
-            }*/
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Обрабатывает запрос на поиск информации для 
-     * формирования страницы каталога товаров
+     * Обрабатывает запрос на поиск данных для 
+     * формирования HTML страницы каталога товаров
      * @param array $request
      */
-    public function search($request)
+    public function handle($request)
     {
         try {
             $renderArray = [];
             
             $renderArray['collection'] = ProductsListWidget::widget([
-                'searchModel'=>new ProductsSearchModel(array_merge($request, [
+                'finder'=>new ProductsFinder(array_merge($request, [
                     'collection'=>new Collection([
                         'pagination'=>new LightPagination()
                     ])
@@ -128,19 +113,8 @@ class ProductsListIndexService extends Object implements SearchServiceInterface
             ]);
             
             return $renderArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает Model свойству ProductsListIndexService::productsSearchModel
-     * @param object $model Model
-     */
-    public function setProductsSearchModel(Model $model)
-    {
-        try {
-            $this->productsSearchModel = $model;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -39,7 +39,7 @@ class CategoriesBreadcrumbsWidget extends BreadcrumbsWidget
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
             
             if (!empty($this->category)) {
-                $category = $this->service->search($this->category);
+                $category = $this->service->handle($this->category);
                 if ($category === null) {
                     throw new ErrorException(ExceptionsTrait::emptyError('category'));
                 }

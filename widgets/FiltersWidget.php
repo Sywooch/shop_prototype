@@ -83,15 +83,15 @@ class FiltersWidget extends Widget
             $renderArray['sortingFieldsList'] = ['date'=>\Yii::t('base', 'Sorting by date'), 'price'=>\Yii::t('base', 'Sorting by price')];
             $renderArray['sortingTypeList'] = ['SORT_ASC'=>\Yii::t('base', 'Sort ascending'), 'SORT_DESC'=>\Yii::t('base', 'Sort descending')];
             
-            $colorsCollection = $this->colorsService->search(\Yii::$app->request->get());
+            $colorsCollection = $this->colorsService->handle(\Yii::$app->request->get());
             $colorsCollection->sort('color', SORT_ASC);
             $renderArray['colorsCollection'] = $colorsCollection->map('id', 'color');
            
-            $sizesCollection = $this->sizesService->search(\Yii::$app->request->get());
+            $sizesCollection = $this->sizesService->handle(\Yii::$app->request->get());
             $sizesCollection->sort('size', SORT_ASC);
             $renderArray['sizesCollection'] = $sizesCollection->map('id', 'size');
            
-            $brandsCollection = $this->brandsService->search(\Yii::$app->request->get());
+            $brandsCollection = $this->brandsService->handle(\Yii::$app->request->get());
             $brandsCollection->sort('brand', SORT_ASC);
             $renderArray['brandsCollection'] = $brandsCollection->map('id', 'brand');
             

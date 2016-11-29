@@ -6,16 +6,16 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
-use app\services\SearchServiceInterface;
+use app\services\ServiceInterface;
 use app\exceptions\ExceptionsTrait;
 
 /**
  * Обрабатывает запрос на вывод каталога товаров
  */
-class SearchCollectionAction extends AbstractBaseAction
+class SearchAction extends AbstractBaseAction
 {
     /**
-     * @var object SearchServiceInterface для поиска данных по запросу
+     * @var object ServiceInterface для поиска данных по запросу
      */
     private $service;
     /**
@@ -43,15 +43,15 @@ class SearchCollectionAction extends AbstractBaseAction
     public function run()
     {
         try {
-            $renderArray = $this->service->handle(\Yii::$app->request->get());
+            $dataArray = $this->service->handle(\Yii::$app->request->get());
             
-            if (empty($renderArray)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('renderArray'));
+            if (empty($dataArray)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('dataArray'));
             }
             
             Url::remember(Url::current(), \Yii::$app->id);
             
-            return $this->controller->render($this->view, $renderArray);
+            return $this->controller->render($this->view, $dataArray);
         } catch (NotFoundHttpException $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             throw $e;
@@ -62,10 +62,10 @@ class SearchCollectionAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает SearchServiceInterface свойству SearchCollectionAction::service
-     * @param object $service SearchServiceInterface
+     * Присваивает ServiceInterface свойству SearchAction::service
+     * @param object $service ServiceInterface
      */
-    public function setService(SearchServiceInterface $service)
+    public function setService(ServiceInterface $service)
     {
         try {
             $this->service = $service;

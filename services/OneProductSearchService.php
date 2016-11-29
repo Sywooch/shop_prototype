@@ -37,7 +37,7 @@ class OneProductSearchService extends Object implements SearchServiceInterface
      * @param object Request
      * @return ProductsModel
      */
-    public function search($request): ProductsModel
+    public function handle($request): ProductsModel
     {
         try {
             if (empty($seocode = $request[\Yii::$app->params['productKey']])) {

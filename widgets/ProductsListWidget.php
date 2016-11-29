@@ -6,6 +6,7 @@ use yii\base\{ErrorException,
     Model,
     Widget};
 use yii\helpers\Html;
+use yii\web\NotFoundHttpException;
 use app\exceptions\ExceptionsTrait;
 use app\models\{CollectionInterface,
     CurrencyModel};
@@ -13,15 +14,19 @@ use app\widgets\{PaginationWidget,
     PriceWidget,
     ThumbnailsWidget};
 use app\repositories\SessionRepository;
+use app\finders\FinderInterface;
 
+/**
+ * Формирует HTML строку, представляющую каталог товаров
+ */
 class ProductsListWidget extends Widget
 {
     use ExceptionsTrait;
     
     /**
-     * @var object Model
+     * @var object FinderInterface
      */
-    private $searchModel;
+    private $finder;
     /**
      * @var string имя шаблона
      */
@@ -32,8 +37,8 @@ class ProductsListWidget extends Widget
         try {
             parent::init();
             
-            if (empty($this->searchModel)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('searchModel'));
+            if (empty($this->finder)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('finder'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
@@ -46,11 +51,14 @@ class ProductsListWidget extends Widget
     public function run()
     {
         try {
-            $productsCollection = $this->searchModel->search();
+            $productsCollection = $this->finder->find();
+            
+            if ($productsCollection->isEmpty()) {
+                throw new NotFoundHttpException(ExceptionsTrait::Error404());
+            }
             
             $renderArray = [];
             
-            $collection = [];
             foreach ($productsCollection as $product) {
                 $set = [];
                 $set['link'] = Html::a($product->name, ['product-detail/index', 'seocode'=>$product->seocode]);
@@ -67,10 +75,8 @@ class ProductsListWidget extends Widget
                         'view'=>'thumbnails.twig'
                     ]);
                 }
-                $collection[] = $set;
+                $renderArray['collection'][] = $set;
             }
-            
-            $renderArray['collection'] = $collection;
             
             $renderArray['pagination'] = PaginationWidget::widget([
                 'pagination'=>$productsCollection->pagination,
@@ -78,19 +84,21 @@ class ProductsListWidget extends Widget
             ]);
             
             return $this->render($this->view, $renderArray);
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает Model свойству ProductsListIndexService::searchModel
-     * @param object $model Model
+     * Присваивает FinderInterface свойству ProductsListIndexService::searchModel
+     * @param object $model FinderInterface
      */
-    public function setSearchModel(Model $model)
+    public function setFinder(FinderInterface $finder)
     {
         try {
-            $this->searchModel = $model;
+            $this->finder = $finder;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\actions\SearchCollectionAction;
+use app\actions\SearchAction;
 use app\models\{Collection,
     ProductsCollection,
     ProductsModel,
@@ -25,18 +25,12 @@ class ProductsListController extends AbstractBaseController
     {
         return [
             'index'=>[
-                'class'=>SearchCollectionAction::class,
-                'service'=>new ProductsListIndexService([
-                    /*'productsSearchModel'=>new ProductsSearchModel([
-                        'collection'=>new Collection([
-                            'pagination'=>new LightPagination(),
-                        ]),
-                    ]),*/
-                ]),
+                'class'=>SearchAction::class,
+                'service'=>new ProductsListIndexService(),
                 'view'=>'products-list.twig'
             ],
             /*'search'=>[
-                'class'=>SearchCollectionAction::class,
+                'class'=>SearchAction::class,
                 'service'=>new SphinxSearchService([
                     'sphinxRepository'=>new DbRepository([
                         'query'=>SphinxModel::find(),

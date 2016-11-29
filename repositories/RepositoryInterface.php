@@ -4,7 +4,7 @@ namespace app\repositories;
 
 use yii\db\Query;
 use app\queries\CriteriaInterface;
-use app\models\CollectionInterface;
+use app\collections\CollectionInterface;
 
 /**
  * Интерфейс классов-репозиториев

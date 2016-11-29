@@ -18,7 +18,7 @@ class CategoryOneSearchService extends Object implements SearchServiceInterface
      * @param array $request
      * @return CollectionInterface
      */
-    public function search($seocode)
+    public function handle($seocode)
     {
         try {
             $query = CategoriesModel::find();

@@ -5,9 +5,9 @@ namespace app\services;
 use yii\base\{ErrorException,
     Object};
 use app\exceptions\ExceptionsTrait;
-use app\models\{CollectionInterface,
-    CategoriesModel};
+use app\models\CategoriesModel;
 use app\services\SearchServiceInterface;
+use app\collections\CollectionInterface;
 
 class CategoriesMenuSearchService extends Object implements SearchServiceInterface
 {
@@ -36,7 +36,7 @@ class CategoriesMenuSearchService extends Object implements SearchServiceInterfa
      * @param array $request
      * @return CollectionInterface
      */
-    public function search($request=null): CollectionInterface
+    public function handle($request=null): CollectionInterface
     {
         try {
             $query = CategoriesModel::find();

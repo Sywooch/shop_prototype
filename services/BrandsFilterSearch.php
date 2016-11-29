@@ -5,10 +5,10 @@ namespace app\services;
 use yii\base\{ErrorException,
     Object};
 use app\exceptions\ExceptionsTrait;
-use app\models\{CollectionInterface,
-    BrandsModel};
+use app\models\BrandsModel;
 use app\services\SearchServiceInterface;
 use app\queries\PaginationInterface;
+use app\collections\CollectionInterface;
 
 class BrandsFilterSearch extends Object implements SearchServiceInterface
 {
@@ -37,7 +37,7 @@ class BrandsFilterSearch extends Object implements SearchServiceInterface
      * @param array $request
      * @return CollectionInterface
      */
-    public function search($request): CollectionInterface
+    public function handle($request): CollectionInterface
     {
         try {
             $query = BrandsModel::find();

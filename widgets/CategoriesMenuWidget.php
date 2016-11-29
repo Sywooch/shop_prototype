@@ -51,7 +51,7 @@ class CategoriesMenuWidget extends Menu
                 throw new ErrorException(ExceptionsTrait::emptyError('service'));
             }
             
-            $this->categoriesList = $this->service->search();
+            $this->categoriesList = $this->service->handle();
             
             if (!empty($this->categoriesList)) {
                 $this->setItems();

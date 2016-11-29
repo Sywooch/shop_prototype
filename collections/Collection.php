@@ -1,11 +1,11 @@
 <?php
 
-namespace app\models;
+namespace app\collections;
 
 use yii\base\{ErrorException,
     Model};
 use yii\helpers\ArrayHelper;
-use app\models\{AbstractBaseCollection,
+use app\collections\{AbstractBaseCollection,
     CollectionInterface};
 
 /**

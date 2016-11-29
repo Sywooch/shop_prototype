@@ -51,7 +51,7 @@ class SphinxSearchService extends Object implements SearchServiceInterface
      * @param object Request
      * @return CollectionInterface
      */
-    public function search($request): CollectionInterface
+    public function handle($request): CollectionInterface
     {
         try {
             if (empty($request[\Yii::$app->params['searchKey']])) {

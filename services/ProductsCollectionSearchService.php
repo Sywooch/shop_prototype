@@ -44,7 +44,7 @@ class ProductsCollectionSearchService extends Object implements SearchServiceInt
      * @param array $request
      * @return CollectionInterface
      */
-    public function search($request): CollectionInterface
+    public function handle($request): CollectionInterface
     {
         try {
             $query = ProductsModel::find();

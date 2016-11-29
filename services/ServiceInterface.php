@@ -2,7 +2,7 @@
 
 namespace app\services;
 
-interface SearchServiceInterface
+interface ServiceInterface
 {
     public function handle($data);
 }

@@ -8,7 +8,7 @@ use app\repositories\{AbstractBaseRepository,
     RepositoryInterface};
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
-use app\models\CollectionInterface;
+use app\collections\CollectionInterface;
 use app\queries\CriteriaInterface;
 
 class SessionRepository extends AbstractBaseRepository implements RepositoryInterface

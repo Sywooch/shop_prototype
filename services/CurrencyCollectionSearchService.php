@@ -5,9 +5,9 @@ namespace app\services;
 use yii\base\{ErrorException,
     Object};
 use app\exceptions\ExceptionsTrait;
-use app\models\{CollectionInterface,
-    CurrencyModel};
+use app\models\CurrencyModel;
 use app\services\SearchServiceInterface;
+use app\collections\CollectionInterface;
 
 class CurrencyCollectionSearchService extends Object implements SearchServiceInterface
 {
@@ -36,7 +36,7 @@ class CurrencyCollectionSearchService extends Object implements SearchServiceInt
      * @param array $request
      * @return CollectionInterface
      */
-    public function search($request=null): CollectionInterface
+    public function handle($request=null): CollectionInterface
     {
         try {
             $currencyArray = CurrencyModel::find()->all();
