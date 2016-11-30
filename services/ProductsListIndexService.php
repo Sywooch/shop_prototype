@@ -29,7 +29,7 @@ use app\finders\{BrandsFilterFinder,
     PurchasesSessionFinder,
     SizesFilterFinder,
     SubcategorySeocodeFinder};
-use app\collections\{Collection,
+use app\collections\{BaseCollection,
     LightPagination,
     ProductsCollection,
     PurchasesCollection};
@@ -104,7 +104,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             
             $currencyFinder = new CurrencyFinder([
-                'collection'=>new Collection()
+                'collection'=>new BaseCollection()
             ]);
             $currencyCollection = $currencyFinder->find();
             if ($currencyCollection->isEmpty()) {
@@ -121,7 +121,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             
             $categoriesFinder = new CategoriesFinder([
-                'collection'=>new Collection()
+                'collection'=>new BaseCollection()
             ]);
             $categoriesCollection = $categoriesFinder->find();
             if ($categoriesCollection->isEmpty()) {
@@ -153,7 +153,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $dataArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget($categoriesBreadcrumbsConfig);
             
             $colorsFilterFinder = new ColorsFilterFinder([
-                'collection'=>new Collection()
+                'collection'=>new BaseCollection()
             ]);
             $colorsFilterFinder->load($request);
             $colorsCollection = $colorsFilterFinder->find();
@@ -162,7 +162,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             }
             
             $sizesFilterFinder = new SizesFilterFinder([
-                'collection'=>new Collection()
+                'collection'=>new BaseCollection()
             ]);
             $sizesFilterFinder->load($request);
             $sizesCollection = $sizesFilterFinder->find();
@@ -171,7 +171,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             }
             
             $brandsFilterFinder = new BrandsFilterFinder([
-                'collection'=>new Collection()
+                'collection'=>new BaseCollection()
             ]);
             $brandsFilterFinder->load($request);
             $brandsCollection = $brandsFilterFinder->find();

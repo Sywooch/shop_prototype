@@ -110,7 +110,7 @@ trait IteratorTrait implements \Iterator
     }
     
     /**
-     * Возвращает bool в зависимости от того, пуст или нет Collection::items
+     * Возвращает bool в зависимости от того, пуст или нет BaseCollection::items
      */
     public function isEmpty()
     {

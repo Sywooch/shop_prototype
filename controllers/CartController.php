@@ -7,7 +7,7 @@ use yii\helpers\Url;
 use app\controllers\{AbstractBaseController,
     CartControllerHelper};
 use app\helpers\UrlHelper;
-use app\models\{Collection,
+use app\models\{BaseCollection,
     PurchasesCollection,
     PurchasesFilter,
     PurchasesModel,

@@ -5,7 +5,7 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\actions\SearchAction;
-use app\models\{Collection,
+use app\models\{BaseCollection,
     ProductsCollection,
     ProductsModel,
     SphinxModel};
@@ -33,7 +33,7 @@ class ProductsListController extends AbstractBaseController
                 'service'=>new SphinxSearchService([
                     'sphinxRepository'=>new DbRepository([
                         'query'=>SphinxModel::find(),
-                        'collection'=>new Collection(),
+                        'collection'=>new BaseCollection(),
                         //'criteria'=>new QueryCriteria()
                     ]),
                     'productsRepository'=>new DbRepository([

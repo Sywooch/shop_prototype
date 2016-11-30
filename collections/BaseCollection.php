@@ -7,12 +7,13 @@ use yii\base\{ErrorException,
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\collections\{AbstractIterator,
+    CollectionInterface,
     PaginationInterface};
 
 /**
  * Реализует интерфейс Iterator для доступа к коллекции сущностей
  */
-abstract class AbstractBaseCollection extends AbstractIterator
+class BaseCollection extends AbstractIterator implements CollectionInterface
 {
     use ExceptionsTrait;
     
@@ -66,28 +67,6 @@ abstract class AbstractBaseCollection extends AbstractIterator
     }
     
     /**
-     * Проверяет наличие объекта в коллекции $this::items
-     * @return bool
-     */
-    public function hasEntity(Model $object): bool
-    {
-        try {
-            
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function update(Model $object)
-    {
-        try {
-            
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Сохраняет объект пагинации
      * @param object $pagination PaginationInterface
      */
@@ -135,10 +114,52 @@ abstract class AbstractBaseCollection extends AbstractIterator
      * @param string $key имя свойства, по значениям которого будет выполнена сортировка
      * @param string $type флаг, определяющий тип сортировки SORT_ASC / SORT_DESC
      */
-    public function sort($key, $type=SORT_ASC)
+    public function sort(string $key, $type=SORT_ASC)
     {
         try {
             ArrayHelper::multisort($this->items, $key, $type);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Проверяет существование в коллекции сущности с переданным данными
+     * @param $object Model
+     * @return bool
+     */
+    public function hasEntity(Model $object): bool
+    {
+        try {
+            if (!empty($this->items)) {
+                foreach ($this->items as $item) {
+                    if ($item->id === $object->id) {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет данные сущности 
+     * @param $object Model
+     */
+    public function update(Model $object)
+    {
+        try {
+            if (!empty($this->items)) {
+                foreach ($this->items as $item) {
+                    if ($item->id === $object->id) {
+                        unset($item);
+                        $this->add($object);
+                    }
+                }
+            }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

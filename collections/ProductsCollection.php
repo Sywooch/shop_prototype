@@ -3,17 +3,14 @@
 namespace app\collections;
 
 use yii\base\ErrorException;
-use app\collections\{AbstractBaseCollection,
-    CollectionInterface};
+use app\collections\BaseCollection;
 use app\exceptions\ExceptionsTrait;
 
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
-class ProductsCollection extends AbstractBaseCollection implements CollectionInterface
+class ProductsCollection extends BaseCollection
 {
-    use ExceptionsTrait;
-    
     public function init()
     {
         try {

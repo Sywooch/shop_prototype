@@ -4,13 +4,13 @@ namespace app\collections;
 
 use yii\base\{ErrorException,
     Model};
-use app\collections\{AbstractBaseCollection,
-    CollectionInterface};
+use app\collections\BaseCollection;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
-class PurchasesCollection extends AbstractBaseCollection implements CollectionInterface
+class PurchasesCollection extends BaseCollection
 {
     /**
      * Проверяет существование в коллекции сущности с переданным данными
@@ -39,7 +39,6 @@ class PurchasesCollection extends AbstractBaseCollection implements CollectionIn
     /**
      * Обновляет данные сущности 
      * @param object $object Model
-     * @return bool
      */
     public function update(Model $object)
     {
@@ -48,12 +47,9 @@ class PurchasesCollection extends AbstractBaseCollection implements CollectionIn
                 foreach ($this->items as $item) {
                     if ($item->id_product === $object->id_product) {
                         $item->quantity += $object->quantity;
-                        return true;
                     }
                 }
             }
-            
-            return false;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

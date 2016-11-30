@@ -20,7 +20,7 @@ use app\widgets\{CartWidget,
     UserInfoWidget};
 use app\models\{CategoriesModel,
     ChangeCurrencyFormModel,
-    Collection,
+    BaseCollection,
     CurrencyCollection,
     CurrencyModel,
     ProductsModel,
@@ -84,7 +84,7 @@ class ProductDetailWidget extends Widget
             
             $renderArray['currency'] = CurrencyWidget::widget([
                 'repository'=>new DbRepository([
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'query'=>CurrencyModel::find(),
                     'criteria'=>new QueryCriteria()
                 ]),
@@ -98,7 +98,7 @@ class ProductDetailWidget extends Widget
             
             $renderArray['menu'] = CategoriesMenuWidget::widget([
                 'repository'=>new DbRepository([
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'query'=>CategoriesModel::find(),
                     'criteria'=>new QueryCriteria()
                 ])
@@ -116,7 +116,7 @@ class ProductDetailWidget extends Widget
             
             $renderArray['similar'] = SeeAlsoSimilarWidget::widget([
                 'repository'=>new DbRepository([
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'query'=>ProductsModel::find(),
                     'criteria'=>new QueryCriteria()
                 ]), 
@@ -127,7 +127,7 @@ class ProductDetailWidget extends Widget
             
             $renderArray['related'] = SeeAlsoRelatedWidget::widget([
                 'repository'=>new DbRepository([
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'query'=>ProductsModel::find(),
                     'criteria'=>new QueryCriteria()
                 ]),

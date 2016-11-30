@@ -11,7 +11,7 @@ use app\models\{BrandsModel,
     ChangeCurrencyFormModel,
     CollectionInterface,
     CurrencyModel,
-    Collection,
+    BaseCollection,
     ColorsModel,
     ProductsFiltersFormModel,
     PurchasesCollection,
@@ -84,7 +84,7 @@ class ProductsSearchListWidget extends Widget
             
             $renderArray['currency'] = CurrencyWidget::widget([
                 'repository'=>new DbRepository([
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'query'=>CurrencyModel::find(),
                     'criteria'=>new QueryCriteria()
                 ]),
@@ -98,7 +98,7 @@ class ProductsSearchListWidget extends Widget
             
             $renderArray['menu'] = CategoriesMenuWidget::widget([
                 'repository'=>new DbRepository([
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'query'=>CategoriesModel::find(),
                     'criteria'=>new QueryCriteria()
                 ])
@@ -114,22 +114,22 @@ class ProductsSearchListWidget extends Widget
             $renderArray['filters'] = FiltersWidget::widget([
                 'colorsRepository'=>new DbRepository([
                     'query'=>ColorsModel::find(),
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'criteria'=>new QueryCriteria()
                 ]),
                 'sizesRepository'=>new DbRepository([
                     'query'=>SizesModel::find(),
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'criteria'=>new QueryCriteria()
                 ]),
                 'brandsRepository'=>new DbRepository([
                     'query'=>BrandsModel::find(),
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'criteria'=>new QueryCriteria()
                 ]),
                 'sphinxRepository'=>new DbRepository([
                     'query'=>SphinxModel::find(),
-                    'collection'=>new Collection(),
+                    'collection'=>new BaseCollection(),
                     'criteria'=>new QueryCriteria()
                 ]),
                 'form'=>new ProductsFiltersFormModel(),

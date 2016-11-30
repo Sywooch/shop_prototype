@@ -47,9 +47,12 @@ class LightPaginationTests extends TestCase
         
         $pagination = new LightPagination();
         $pagination->setTotalCount($query);
-        $pagination->setPageSize(3);
         
-        $this->assertEquals(ceil(count($data) / 2), $pagination->getPageCount());
+        $property = new \ReflectionProperty($pagination, 'totalCount');
+        $property->setAccessible(true);
+        $result = $property->getValue($pagination);
+        
+        $this->assertEquals(count($data), $result);
     }
     
     /**
@@ -57,17 +60,19 @@ class LightPaginationTests extends TestCase
      */
     public function testGetPageCount()
     {
-        $data = \Yii::$app->db->createCommand('SELECT * FROM {{products}}')->queryAll();
-        
-        $query = new Query();
-        $query->from('{{products}}');
-        
         $pagination = new LightPagination();
-        $pagination->setTotalCount($query);
-        $pagination->setPageSize(3);
         
-        $this->assertTrue(is_int($pagination->getPageCount()));
-        $this->assertEquals(ceil(count($data) / 3), $pagination->getPageCount());
+        $totalCount = new \ReflectionProperty($pagination, 'totalCount');
+        $totalCount->setAccessible(true);
+        $totalCount->setValue($pagination, 29);
+        
+        $pageSize = new \ReflectionProperty($pagination, 'pageSize');
+        $pageSize->setAccessible(true);
+        $pageSize->setValue($pagination, 10);
+        
+        $result = $pagination->getPageCount();
+        
+        $this->assertEquals(ceil(29 / 10), $result);
     }
     
     /**
@@ -76,17 +81,26 @@ class LightPaginationTests extends TestCase
     public function testGetOffset()
     {
         $pagination = new LightPagination();
-        $pagination->setPageSize(3);
-        $pagination->setPage(2);
         
-        $this->assertTrue(is_int($pagination->getOffset()));
-        $this->assertEquals(6, $pagination->getOffset());
+        $pageSize = new \ReflectionProperty($pagination, 'pageSize');
+        $pageSize->setAccessible(true);
+        $pageSize->setValue($pagination, 8);
         
-        $pagination = new LightPagination();
-        $pagination->setPageSize(-1);
-        $pagination->setPage(2);
+        $page = new \ReflectionProperty($pagination, 'page');
+        $page->setAccessible(true);
+        $page->setValue($pagination, 16);
         
-        $this->assertEquals(0, $pagination->getOffset());
+        $result = $pagination->getOffset();
+        
+        $this->assertEquals(8 * 16, $result);
+        
+        $pageSize = new \ReflectionProperty($pagination, 'pageSize');
+        $pageSize->setAccessible(true);
+        $pageSize->setValue($pagination, -1);
+        
+        $result = $pagination->getOffset();
+        
+        $this->assertEquals(0, $result);
     }
     
     /**
@@ -95,15 +109,90 @@ class LightPaginationTests extends TestCase
     public function testGetLimit()
     {
         $pagination = new LightPagination();
-        $pagination->setPageSize(3);
         
-        $this->assertTrue(is_int($pagination->getLimit()));
-        $this->assertEquals(3, $pagination->getLimit());
+        $pageSize = new \ReflectionProperty($pagination, 'pageSize');
+        $pageSize->setAccessible(true);
+        $pageSize->setValue($pagination, 8);
         
+        $result = $pagination->getLimit();
+        
+        $this->assertEquals(8, $result);
+        
+        $pageSize = new \ReflectionProperty($pagination, 'pageSize');
+        $pageSize->setAccessible(true);
+        $pageSize->setValue($pagination, -1);
+        
+        $result = $pagination->getLimit();
+        
+        $this->assertEquals(1, $result);
+    }
+    
+    /**
+     * Тестирует метод LightPagination::setPageSize
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPageSizeError()
+    {
         $pagination = new LightPagination();
-        $pagination->setPageSize(-1);
+        $pagination->setPageSize('');
+    }
+    
+    /**
+     * Тестирует метод LightPagination::setPageSize
+     */
+    public function testSetPageSize()
+    {
+        $pagination = new LightPagination();
+        $pagination->setPageSize(14);
         
-        $this->assertEquals(1, $pagination->getLimit());
+        $property = new \ReflectionProperty($pagination, 'pageSize');
+        $property->setAccessible(true);
+        $result = $property->getValue($pagination);
+        
+        $this->assertEquals(14, $result);
+    }
+    
+    /**
+     * Тестирует метод LightPagination::setPage
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPageError()
+    {
+        $pagination = new LightPagination();
+        $pagination->setPage('');
+    }
+    
+    /**
+     * Тестирует метод LightPagination::setPage
+     */
+    public function testSetPage()
+    {
+        $pagination = new LightPagination();
+        $pagination->setPage(76);
+        
+        $property = new \ReflectionProperty($pagination, 'page');
+        $property->setAccessible(true);
+        $result = $property->getValue($pagination);
+        
+        $this->assertEquals(76, $result);
+    }
+    
+    /**
+     * Тестирует метод LightPagination::getPage
+     */
+    public function testGetPage()
+    {
+        $pagination = new LightPagination();
+        
+        $property = new \ReflectionProperty($pagination, 'page');
+        $property->setAccessible(true);
+        $property->setValue($pagination, 34);
+        
+        $result = $pagination->getPage();
+        
+        $this->assertEquals(34, $result);
     }
     
     public static function tearDownAfterClass()
