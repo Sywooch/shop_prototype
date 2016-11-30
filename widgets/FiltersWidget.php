@@ -7,14 +7,7 @@ use yii\base\{ErrorException,
     Widget};
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\repositories\RepositoryInterface;
-use app\filters\{DistinctFilter,
-    FromFilter,
-    JoinFilter,
-    MatchFilter,
-    SelectFilter,
-    WhereFilter};
-use app\queries\CriteriaInterface;
+use app\collections\CollectionInterface;
 
 /**
  * Формирует HTML строку с формой, представляющей фильтры товаров
@@ -24,23 +17,19 @@ class FiltersWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object RepositoryInterface
+     * @var object CollectionInterface
      */
-    public $colorsService;
+    public $colorsCollection;
     /**
-     * @var object RepositoryInterface
+     * @var object CollectionInterface
      */
-    public $sizesService;
+    public $sizesCollection;
     /**
-     * @var object RepositoryInterface
+     * @var object CollectionInterface
      */
-    public $brandsService;
+    public $brandsCollection;
     /**
-     * @var object RepositoryInterface
-     */
-    public $sphinxService;
-    /**
-     * @var object ActiveRecord/Model, получает данные из формы
+     * @var object Model, получает данные из формы
      */
     private $form;
     /**
@@ -48,34 +37,25 @@ class FiltersWidget extends Widget
      */
     public $view;
     
-    public function init()
+    public function run()
     {
         try {
-            parent::init();
-            
-            /*if (empty($this->colorsRepository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('colorsRepository'));
+            if (empty($this->colorsCollection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('colorsCollection'));
             }
-            if (empty($this->sizesRepository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('sizesRepository'));
+            if (empty($this->sizesCollection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('sizesCollection'));
             }
-            if (empty($this->brandsRepository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('brandsRepository'));
-            }*/
+            if (empty($this->brandsCollection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('brandsCollection'));
+            }
             if (empty($this->form)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('form'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
             }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function run()
-    {
-        try {
+            
             $renderArray = [];
             
             $renderArray['header'] = \Yii::t('base', 'Filters');
@@ -83,17 +63,14 @@ class FiltersWidget extends Widget
             $renderArray['sortingFieldsList'] = ['date'=>\Yii::t('base', 'Sorting by date'), 'price'=>\Yii::t('base', 'Sorting by price')];
             $renderArray['sortingTypeList'] = ['SORT_ASC'=>\Yii::t('base', 'Sort ascending'), 'SORT_DESC'=>\Yii::t('base', 'Sort descending')];
             
-            $colorsCollection = $this->colorsService->handle(\Yii::$app->request->get());
-            $colorsCollection->sort('color', SORT_ASC);
-            $renderArray['colorsCollection'] = $colorsCollection->map('id', 'color');
+            $this->colorsCollection->sort('color');
+            $renderArray['colorsCollection'] = $this->colorsCollection->map('id', 'color');
            
-            $sizesCollection = $this->sizesService->handle(\Yii::$app->request->get());
-            $sizesCollection->sort('size', SORT_ASC);
-            $renderArray['sizesCollection'] = $sizesCollection->map('id', 'size');
+            $this->sizesCollection->sort('size');
+            $renderArray['sizesCollection'] = $this->sizesCollection->map('id', 'size');
            
-            $brandsCollection = $this->brandsService->handle(\Yii::$app->request->get());
-            $brandsCollection->sort('brand', SORT_ASC);
-            $renderArray['brandsCollection'] = $brandsCollection->map('id', 'brand');
+            $this->brandsCollection->sort('brand');
+            $renderArray['brandsCollection'] = $this->brandsCollection->map('id', 'brand');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
@@ -102,55 +79,39 @@ class FiltersWidget extends Widget
     }
     
     /**
-     * Присваивает RepositoryInterface свойству FiltersWidget::colorsRepository
-     * @param object $repository RepositoryInterface
+     * Присваивает CollectionInterface свойству FiltersWidget::colorsCollection
+     * @param object $colorsCollection CollectionInterface
      */
-    public function setColorsRepository(RepositoryInterface $repository)
+    public function setColorsCollection(CollectionInterface $collection)
     {
         try {
-            $this->colorsRepository = $repository;
+            $this->colorsCollection = $collection;
         } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает RepositoryInterface свойству FiltersWidget::sizesRepository
-     * @param object $repository RepositoryInterface
+     * Присваивает CollectionInterface свойству FiltersWidget::sizesCollection
+     * @param object $sizesCollection CollectionInterface
      */
-    public function setSizesRepository(RepositoryInterface $repository)
+    public function setSizesCollection(CollectionInterface $collection)
     {
         try {
-            $this->sizesRepository = $repository;
+            $this->sizesCollection = $collection;
         } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает RepositoryInterface свойству FiltersWidget::brandsRepository
-     * @param object $repository RepositoryInterface
+     * Присваивает CollectionInterface свойству FiltersWidget::brandsCollection
+     * @param object $brandsCollection CollectionInterface
      */
-    public function setBrandsRepository(RepositoryInterface $repository)
+    public function setBrandsCollection(CollectionInterface $collection)
     {
         try {
-            $this->brandsRepository = $repository;
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает RepositoryInterface свойству FiltersWidget::sphinxRepository
-     * @param object $repository RepositoryInterface
-     */
-    public function setSphinxRepository(RepositoryInterface $repository)
-    {
-        try {
-            $this->sphinxRepository = $repository;
+            $this->brandsCollection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -164,28 +125,6 @@ class FiltersWidget extends Widget
     {
         try {
             $this->form = $form;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Добавляет фильры по категории и подкатегории
-     * @param object $criteria CriteriaInterface
-     */
-    private function addCategory(CriteriaInterface $criteria): CriteriaInterface
-    {
-        try {
-            if (!empty($category = \Yii::$app->request->get(\Yii::$app->params['categoryKey']))) {
-                $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{categories}}', 'condition'=>'[[products.id_category]]=[[categories.id]]']]));
-                $criteria->setFilter(new WhereFilter(['condition'=>['[[categories.seocode]]'=>$category]]));
-                if (!empty($subcategory = \Yii::$app->request->get(\Yii::$app->params['subcategoryKey']))) {
-                    $criteria->setFilter(new JoinFilter(['condition'=>['type'=>'INNER JOIN', 'table'=>'{{subcategory}}', 'condition'=>'[[products.id_subcategory]]=[[subcategory.id]]']]));
-                    $criteria->setFilter(new WhereFilter(['condition'=>['[[subcategory.seocode]]'=>$subcategory]]));
-                }
-            }
-            
-            return $criteria;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

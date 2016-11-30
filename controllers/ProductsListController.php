@@ -12,8 +12,7 @@ use app\models\{Collection,
 use app\repositories\DbRepository;
 use app\services\{ProductsListIndexService,
     SphinxSearchService};
-use app\queries\{LightPagination,
-    QueryCriteria};
+use app\collections\LightPagination;
 use app\search\ProductsSearchModel;
 
 /**

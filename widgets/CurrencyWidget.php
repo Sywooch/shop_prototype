@@ -9,6 +9,7 @@ use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
 use app\filters\SelectFilter;
+use app\collections\CollectionInterface;
 
 /**
  * Формирует HTML строку с формой выбора валюты
@@ -18,11 +19,11 @@ class CurrencyWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object RepositoryInterface
+     * @var object CollectionInterface
      */
-    public $service;
+    private $currencyCollection;
     /**
-     * @var object ActiveRecord/Model, получает данные из формы
+     * @var object Model, получает данные из формы
      */
     private $form;
     /**
@@ -30,49 +31,37 @@ class CurrencyWidget extends Widget
      */
     public $view;
     
-    public function init()
+    public function run()
     {
         try {
-            parent::init();
-            
-            /*if (empty($this->repository)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('repository'));
-            }*/
+            if (empty($this->currencyCollection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('currencyCollection'));
+            }
             if (empty($this->form)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('form'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
             }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function run()
-    {
-        try {
-            $collection = $this->service->handle();
             
-            $collection = ArrayHelper::map($collection, 'id', 'code');
-            asort($collection, SORT_STRING);
+            $this->currencyCollection->sort('code');
+            $this->currencyCollection = $this->currencyCollection->map('id', 'code');
             
-            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$collection]);
+            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$this->currencyCollection]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает RepositoryInterface свойству CurrencyWidget::repository
-     * @param object $repository RepositoryInterface
+     * Присваивает CollectionInterface свойству CurrencyWidget::currencyCollection
+     * @param object $collection CollectionInterface
      */
-    public function setRepository(RepositoryInterface $repository)
+    public function setCurrencyCollection(CollectionInterface $collection)
     {
         try {
-            $this->repository = $repository;
+            $this->currencyCollection = $collection;
         } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
         }
     }

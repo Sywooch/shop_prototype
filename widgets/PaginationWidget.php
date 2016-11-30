@@ -7,7 +7,7 @@ use yii\base\{ErrorException,
 use yii\helpers\{Html,
     Url};
 use app\exceptions\ExceptionsTrait;
-use app\queries\PaginationInterface;
+use app\collections\PaginationInterface;
 
 /**
  * Формирует HTML строку с данными пагинации

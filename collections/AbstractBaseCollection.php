@@ -6,8 +6,8 @@ use yii\base\{ErrorException,
     Model};
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\queries\PaginationInterface;
-use app\collections\AbstractIterator;
+use app\collections\{AbstractIterator,
+    PaginationInterface};
 
 /**
  * Реализует интерфейс Iterator для доступа к коллекции сущностей

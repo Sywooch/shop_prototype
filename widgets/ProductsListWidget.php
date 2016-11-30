@@ -6,7 +6,6 @@ use yii\base\{ErrorException,
     Model,
     Widget};
 use yii\helpers\Html;
-use yii\web\NotFoundHttpException;
 use app\exceptions\ExceptionsTrait;
 use app\models\CurrencyModel;
 use app\widgets\{PaginationWidget,
@@ -85,8 +84,6 @@ class ProductsListWidget extends Widget
             $dataArray['pagination'] = $this->paginationWidget->run();
             
             return $this->render($this->view, $dataArray);
-        } catch (NotFoundHttpException $e) {
-            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

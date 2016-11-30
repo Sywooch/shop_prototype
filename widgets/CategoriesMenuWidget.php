@@ -5,10 +5,7 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\widgets\Menu;
 use app\exceptions\ExceptionsTrait;
-use app\models\{CollectionInterface,
-    CategoriesModel};
-use app\repositories\RepositoryInterface;
-use app\filters\WithFilter;
+use app\collections\CollectionInterface;
 
 /**
  * Формирует меню
@@ -18,9 +15,9 @@ class CategoriesMenuWidget extends Menu
     use ExceptionsTrait;
     
     /**
-     * @var object GetGroupRepositoryInterface для поиска данных по запросу
+     * @var object CollectionInterface
      */
-    public $service;
+    private $categoriesCollection;
     /**
      * @var string основной route
      */
@@ -37,25 +34,17 @@ class CategoriesMenuWidget extends Menu
      * @var array HTML атрибуты, которые будут применены к тегу-контейнеру меню (ul по-умолчанию)
      */
     public $options = ['class'=>'categories-menu'];
-    /**
-     * @var array массив объектов CategoriesModel
-     */
-    private $categoriesList;
     
     public function init()
     {
         try {
             parent::init();
             
-            if (empty($this->service)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('service'));
+            if (empty($this->categoriesCollection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('categoriesCollection'));
             }
             
-            $this->categoriesList = $this->service->handle();
-            
-            if (!empty($this->categoriesList)) {
-                $this->setItems();
-            }
+            $this->setItems();
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -67,28 +56,26 @@ class CategoriesMenuWidget extends Menu
     private function setItems()
     {
         try {
-            if (!empty($this->categoriesList)) {
-                foreach ($this->categoriesList as $category) {
-                    if (empty($category->active)) {
-                        continue;
-                    }
-                    $pack = [
-                        'label'=>$category->name,
-                        'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode]
-                    ];
-                    if (!empty($category->subcategory)) {
-                        foreach ($category->subcategory as $subcategory) {
-                            if (empty($subcategory->active)) {
-                                continue;
-                            }
-                            $pack['items'][] = [
-                                'label'=>$subcategory->name,
-                                'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode, \Yii::$app->params['subcategoryKey']=>$subcategory->seocode]
-                            ];
-                        }
-                    }
-                    $this->items[] = $pack;
+            foreach ($this->categoriesCollection as $category) {
+                if (empty($category->active)) {
+                    continue;
                 }
+                $pack = [
+                    'label'=>$category->name,
+                    'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode]
+                ];
+                if (!empty($category->subcategory)) {
+                    foreach ($category->subcategory as $subcategory) {
+                        if (empty($subcategory->active)) {
+                            continue;
+                        }
+                        $pack['items'][] = [
+                            'label'=>$subcategory->name,
+                            'url'=>[$this->rootRoute, \Yii::$app->params['categoryKey']=>$category->seocode, \Yii::$app->params['subcategoryKey']=>$subcategory->seocode]
+                        ];
+                    }
+                }
+                $this->items[] = $pack;
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
@@ -96,13 +83,13 @@ class CategoriesMenuWidget extends Menu
     }
     
     /**
-     * Присваивает GetGroupRepositoryInterface свойству CategoriesMenuWidget::repository
-     * @param object $repository GetGroupRepositoryInterface
+     * Присваивает CollectionInterface свойству CategoriesMenuWidget::categoriesCollection
+     * @param object $collection CollectionInterface
      */
-    public function setRepository(RepositoryInterface $repository)
+    public function setCategoriesCollection(CollectionInterface $collection)
     {
         try {
-            $this->repository = $repository;
+            $this->categoriesCollection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

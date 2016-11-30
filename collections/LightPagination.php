@@ -1,12 +1,16 @@
 <?php
 
-namespace app\queries;
+namespace app\collections;
 
 use yii\base\{ErrorException,
     Object};
-use app\queries\PaginationInterface;
+use yii\db\Query;
+use app\collections\PaginationInterface;
 use app\exceptions\ExceptionsTrait;
 
+/**
+ * Представляет информацию о разбиении коллекции сущностей на страницы
+ */
 class LightPagination extends Object implements PaginationInterface
 {
     use ExceptionsTrait;
@@ -29,7 +33,7 @@ class LightPagination extends Object implements PaginationInterface
      * возвращаемых запросом, до применения LIMIT и OFFSET
      * @param object $query Query
      */
-    public function setTotalCount($query)
+    public function setTotalCount(Query $query)
     {
         try {
             $countQuery = clone $query;

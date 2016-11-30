@@ -3,21 +3,11 @@
 namespace app\services;
 
 use yii\base\{ErrorException,
-    Model,
     Object};
 use yii\web\NotFoundHttpException;
 use app\exceptions\ExceptionsTrait;
 use app\models\{ChangeCurrencyFormModel,
-    CurrencyModel,
-    ProductsFiltersFormModel,
-    PurchasesModel};
-use app\services\{BrandsFilterSearch,
-    CategoryOneSearchService,
-    CategoriesMenuSearchService,
-    ColorsFilterSearch,
-    CurrencyCollectionSearchService,
-    ServiceInterface,
-    SizesFilterSearch};
+    ProductsFiltersFormModel};
 use app\widgets\{CategoriesBreadcrumbsWidget,
     CategoriesMenuWidget,
     CartWidget,
@@ -29,12 +19,18 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     SearchWidget,
     ThumbnailsWidget,
     UserInfoWidget};
-use app\repositories\SessionRepository;
-use app\finders\{CurrencySessionFinder,
+use app\finders\{BrandsFilterFinder,
+    CategoriesFinder,
+    CategorySeocodeFinder,
+    ColorsFilterFinder,
+    CurrencyFinder,
+    CurrencySessionFinder,
     ProductsFinder,
-    PurchasesSessionFinder};
-use app\queries\LightPagination;
+    PurchasesSessionFinder,
+    SizesFilterFinder,
+    SubcategorySeocodeFinder};
 use app\collections\{Collection,
+    LightPagination,
     ProductsCollection,
     PurchasesCollection};
 use app\helpers\HashHelper;
@@ -61,18 +57,14 @@ class ProductsListIndexService extends Object implements ServiceInterface
                     'pagination'=>new LightPagination()
                 ])
             ]);
-            if ($productsFinder->load($request) === false) {
-                throw new ErrorException(ExceptionsTrait::methodError('productsFinder::load'));
-            }
+            $productsFinder->load($request);
             $productsCollection = $productsFinder->find();
             if ($productsCollection->isEmpty()) {
                 throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }
             
             $currencyFinder = new CurrencySessionFinder();
-            if ($currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]) === false) {
-                throw new ErrorException(ExceptionsTrait::methodError('currencyFinder::load'));
-            }
+            $currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
             $currencyModel = $currencyFinder->find();
             if (empty($currencyModel)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
@@ -101,20 +93,25 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'collection'=>new PurchasesCollection()
             ]);
             $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-            if ($purchasesFinder->load(['key'=>$key]) === false) {
-                throw new ErrorException(ExceptionsTrait::methodError('purchasesFinder::load'));
-            }
+            $purchasesFinder->load(['key'=>$key]);
             $purchasesCollection = $purchasesFinder->find();
             $dataArray['cart'] = CartWidget::widget([
                 'purchasesCollection'=>$purchasesCollection, 
-                'currencyModel'=>$currencyModel,
+                'priceWidget'=>new PriceWidget([
+                    'currencyModel'=>$currencyModel, 
+                ]),
                 'view'=>'short-cart.twig'
             ]);
             
+            $currencyFinder = new CurrencyFinder([
+                'collection'=>new Collection()
+            ]);
+            $currencyCollection = $currencyFinder->find();
+            if ($currencyCollection->isEmpty()) {
+                throw new ErrorException(ExceptionsTrait::emptyError('currencyCollection'));
+            }
             $dataArray['currency'] = CurrencyWidget::widget([
-                'service'=>new CurrencyCollectionSearchService([
-                    'collection'=>new Collection(),
-                ]),
+                'currencyCollection'=>$currencyCollection,
                 'form'=>new ChangeCurrencyFormModel(),
                 'view'=>'currency-form.twig'
             ]);
@@ -123,28 +120,69 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'view'=>'search.twig'
             ]);
             
+            $categoriesFinder = new CategoriesFinder([
+                'collection'=>new Collection()
+            ]);
+            $categoriesCollection = $categoriesFinder->find();
+            if ($categoriesCollection->isEmpty()) {
+                throw new ErrorException(ExceptionsTrait::emptyError('categoriesCollection'));
+            }
             $dataArray['menu'] = CategoriesMenuWidget::widget([
-                'service'=>new CategoriesMenuSearchService([
-                    'collection'=>new Collection(),
-                ]),
+                'categoriesCollection'=>$categoriesCollection
             ]);
             
-            $dataArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget([
-                'service'=>new CategoryOneSearchService(),
-                'category'=>$request[\Yii::$app->params['categoryKey']],
-                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
+            $categoriesBreadcrumbsConfig = [];
+            if (!empty($category = $request[\Yii::$app->params['categoryKey']])) {
+                $categorySeocodeFinder = new CategorySeocodeFinder();
+                $categorySeocodeFinder->load(['seocode'=>$category]);
+                $categoryModel = $categorySeocodeFinder->find();
+                if (empty($categoryModel)) {
+                    throw new ErrorException(ExceptionsTrait::emptyError('categoryModel'));
+                }
+                $categoriesBreadcrumbsConfig['category'] = $categoryModel;
+                if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']])) {
+                    $subcategorySeocodeFinder = new SubcategorySeocodeFinder();
+                    $subcategorySeocodeFinder->load(['seocode'=>$subcategory]);
+                    $subcategoryModel = $subcategorySeocodeFinder->find();
+                    if (empty($subcategoryModel)) {
+                        throw new ErrorException(ExceptionsTrait::emptyError('subcategoryModel'));
+                    }
+                    $categoriesBreadcrumbsConfig['subcategory'] = $subcategoryModel;
+                }
+            }
+            $dataArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget($categoriesBreadcrumbsConfig);
+            
+            $colorsFilterFinder = new ColorsFilterFinder([
+                'collection'=>new Collection()
             ]);
+            $colorsFilterFinder->load($request);
+            $colorsCollection = $colorsFilterFinder->find();
+            if ($colorsCollection->isEmpty()) {
+                throw new ErrorException(ExceptionsTrait::emptyError('colorsCollection'));
+            }
+            
+            $sizesFilterFinder = new SizesFilterFinder([
+                'collection'=>new Collection()
+            ]);
+            $sizesFilterFinder->load($request);
+            $sizesCollection = $sizesFilterFinder->find();
+            if ($sizesCollection->isEmpty()) {
+                throw new ErrorException(ExceptionsTrait::emptyError('sizesCollection'));
+            }
+            
+            $brandsFilterFinder = new BrandsFilterFinder([
+                'collection'=>new Collection()
+            ]);
+            $brandsFilterFinder->load($request);
+            $brandsCollection = $brandsFilterFinder->find();
+            if ($brandsCollection->isEmpty()) {
+                throw new ErrorException(ExceptionsTrait::emptyError('brandsCollection'));
+            }
             
             $dataArray['filters'] = FiltersWidget::widget([
-                'colorsService'=>new ColorsFilterSearch([
-                    'collection'=>new Collection(),
-                ]),
-                'sizesService'=>new SizesFilterSearch([
-                    'collection'=>new Collection(),
-                ]),
-                'brandsService'=>new BrandsFilterSearch([
-                    'collection'=>new Collection(),
-                ]),
+                'colorsCollection'=>$colorsCollection,
+                'sizesCollection'=>$sizesCollection,
+                'brandsCollection'=>$brandsCollection,
                 'form'=>new ProductsFiltersFormModel(),
                 'view'=>'products-filters.twig'
             ]);

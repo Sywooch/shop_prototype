@@ -33,7 +33,7 @@ class PriceWidget extends Widget
             if (empty($this->currencyModel)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
             }
-            if (empty($this->price)) {
+            if (!isset($this->price)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('price'));
             }
             
