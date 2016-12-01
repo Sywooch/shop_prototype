@@ -11,7 +11,7 @@ use app\collections\{AbstractIterator,
     PaginationInterface};
 
 /**
- * Реализует интерфейс Iterator для доступа к коллекции сущностей
+ * Управляет коллекцией объектов
  */
 class BaseCollection extends AbstractIterator implements CollectionInterface
 {

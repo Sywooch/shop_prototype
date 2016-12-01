@@ -47,7 +47,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
      * формирования HTML страницы каталога товаров
      * @param array $request
      */
-    public function handle($request)
+    public function handle($request): array
     {
         try {
             $dataArray = [];
