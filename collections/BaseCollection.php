@@ -155,6 +155,52 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     }
     
     /**
+     * Получает 1 объект Model и добавляет его в коллекцию
+     */
+    public function getModel()
+    {
+        try {
+            if (empty($this->query)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('query'));
+            }
+            
+            if ($this->isEmpty()) {
+                $object = $this->query->one();
+                if (!empty($object)) {
+                    $this->add($object);
+                }
+            }
+            
+            return !empty($this->items) ? $this->items[0] : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает 1 массив данных и добавляет его в коллекцию
+     */
+    public function getArray()
+    {
+        try {
+            if (empty($this->query)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('query'));
+            }
+            
+            if ($this->isEmpty()) {
+                $array = $this->query->asArray()->one();
+                if (!empty($array)) {
+                    $this->addArray($array);
+                }
+            }
+            
+            return !empty($this->items) ? $this->items[0] : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Сохраняет объект пагинации
      * @param object $pagination PaginationInterface
      */
@@ -250,12 +296,12 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
                 foreach ($this->items as $key=>$item) {
                     if (is_array($item)) {
                         if ($item['id'] === $object->id) {
-                            unset($item[$key]);
+                            unset($this->items[$key]);
                             $this->addArray($object->toArray());
                         }
                     } else {
                         if ($item->id === $object->id) {
-                            unset($item[$key]);
+                            unset($this->items[$key]);
                             $this->add($object);
                         }
                     }

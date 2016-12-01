@@ -26,12 +26,13 @@ class BaseCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует наличие свойств
+     * Тестирует свойства BaseCollection
      */
     public function testProperties()
     {
         $reflection = new \ReflectionClass(BaseCollection::class);
         
+        $this->assertTrue($reflection->hasProperty('query'));
         $this->assertTrue($reflection->hasProperty('pagination'));
         $this->assertTrue($reflection->hasProperty('items'));
     }
@@ -497,6 +498,151 @@ class BaseCollectionTests extends TestCase
         
         $result = $collection->hasEntity($model_3);
         $this->assertTrue($result);
+    }
+    
+    /**
+     * Тестирует метод BaseCollection::update
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testUpdateError()
+    {
+        $model = new class() {};
+        $collection = new BaseCollection();
+        $collection->hasEntity($model);
+    }
+    
+    /**
+     * Тестирует метод BaseCollection::update
+     * при условии, что BaseCollection::items содержит объекты
+     */
+    public function testUpdateObjects()
+    {
+        $model_1 = new class() extends Model {
+            public $id = 1;
+            public $name = 'one';
+        };
+        $model_2 = new class() extends Model {
+            public $id = 2;
+        };
+        
+        $model_1_2 = new class() extends Model {
+            public $id = 1;
+            public $name = 'one two';
+        };
+        
+        $collection = new BaseCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2]);
+        
+        $result = $reflection->getValue($collection);
+        
+        foreach ($result as $object) {
+            if ($object->id === 1) {
+                $this->assertSame('one', $object->name);
+            }
+        }
+        
+        $collection->update($model_1_2);
+        
+        $result = $reflection->getValue($collection);
+        
+        $this->assertCount(2, $result);
+        
+        foreach ($result as $object) {
+            if ($object->id === 1) {
+                $this->assertSame('one two', $object->name);
+            }
+        }
+    }
+    
+    /**
+     * Тестирует метод BaseCollection::update
+     * при условии, что BaseCollection::items содержит массивы
+     */
+    public function testUpdateArrays()
+    {
+        $array_1 = ['id'=>1, 'name'=>'one'];
+        $array_2 = ['id'=>2];
+        
+        $model_1_2 = new class() extends Model {
+            public $id = 1;
+            public $name = 'one two';
+        };
+        
+        $collection = new BaseCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_1, $array_2]);
+        
+        $result = $reflection->getValue($collection);
+        
+        foreach ($result as $array) {
+            if ($array['id'] === 1) {
+                $this->assertSame('one', $array['name']);
+            }
+        }
+        
+        $collection->update($model_1_2);
+        
+        $result = $reflection->getValue($collection);
+        
+        $this->assertCount(2, $result);
+        
+        foreach ($result as $array) {
+            if ($array['id'] === 1) {
+                $this->assertSame('one two', $array['name']);
+            }
+        }
+    }
+    
+    /**
+     * Тестирует метод BaseCollection::getModel
+     */
+    public function testGetModel()
+    {
+        $query = ProductsModel::find();
+        
+        $collection = new BaseCollection();
+        $reflection = new \ReflectionProperty($collection, 'query');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, $query);
+        
+        $result = $collection->getModel();
+        
+        $this->assertInstanceOf(ProductsModel::class, $result);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        $this->assertCount(1, $result);
+    }
+    
+    /**
+     * Тестирует метод BaseCollection::getArray
+     */
+    public function testGetArray()
+    {
+        $query = ProductsModel::find();
+        
+        $collection = new BaseCollection();
+        $reflection = new \ReflectionProperty($collection, 'query');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, $query);
+        
+        $result = $collection->getArray();
+        
+        $this->assertTrue(is_array($result));
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        $this->assertCount(1, $result);
     }
     
     public static function tearDownAfterClass()
