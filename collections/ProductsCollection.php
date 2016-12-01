@@ -14,6 +14,8 @@ class ProductsCollection extends BaseCollection
     public function init()
     {
         try {
+            parent::init();
+            
             if (empty($this->pagination)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('pagination'));
             }

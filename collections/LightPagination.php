@@ -37,7 +37,7 @@ class LightPagination extends Object implements PaginationInterface
     {
         try {
             $countQuery = clone $query;
-            $this->totalCount = $countQuery->count();
+            $this->totalCount = (int) $countQuery->count();
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

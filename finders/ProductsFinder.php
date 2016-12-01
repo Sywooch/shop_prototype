@@ -64,7 +64,7 @@ class ProductsFinder extends Model implements FinderInterface
             
             if ($this->collection->isEmpty()) {
                 $query = ProductsModel::find();
-                $query->select(['[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
+                $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
                 $query->where(['[[products.active]]'=>true]);
                 if (!empty($this->category)) {
                     $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
@@ -83,13 +83,7 @@ class ProductsFinder extends Model implements FinderInterface
                 $query->limit($this->collection->pagination->limit);
                 $query->orderBy(['[[products.date]]'=>SORT_DESC]);
                 
-                $productsArray = $query->all();
-                
-                if (!empty($productsArray)) {
-                    foreach ($productsArray as $product) {
-                        $this->collection->add($product);
-                    }
-                }
+                $this->collection->query = $query;
             }
             
             return $this->collection;

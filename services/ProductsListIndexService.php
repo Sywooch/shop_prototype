@@ -59,6 +59,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             $productsFinder->load($request);
             $productsCollection = $productsFinder->find();
+            $productsCollection->getModels();
             if ($productsCollection->isEmpty()) {
                 throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }

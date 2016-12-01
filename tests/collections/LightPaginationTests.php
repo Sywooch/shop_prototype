@@ -52,7 +52,7 @@ class LightPaginationTests extends TestCase
         $property->setAccessible(true);
         $result = $property->getValue($pagination);
         
-        $this->assertEquals(count($data), $result);
+        $this->assertSame(count($data), $result);
     }
     
     /**
@@ -72,7 +72,7 @@ class LightPaginationTests extends TestCase
         
         $result = $pagination->getPageCount();
         
-        $this->assertEquals(ceil(29 / 10), $result);
+        $this->assertSame((int) ceil(29 / 10), $result);
     }
     
     /**
@@ -92,7 +92,7 @@ class LightPaginationTests extends TestCase
         
         $result = $pagination->getOffset();
         
-        $this->assertEquals(8 * 16, $result);
+        $this->assertSame(8 * 16, $result);
         
         $pageSize = new \ReflectionProperty($pagination, 'pageSize');
         $pageSize->setAccessible(true);
@@ -100,7 +100,7 @@ class LightPaginationTests extends TestCase
         
         $result = $pagination->getOffset();
         
-        $this->assertEquals(0, $result);
+        $this->assertSame(0, $result);
     }
     
     /**
@@ -116,7 +116,7 @@ class LightPaginationTests extends TestCase
         
         $result = $pagination->getLimit();
         
-        $this->assertEquals(8, $result);
+        $this->assertSame(8, $result);
         
         $pageSize = new \ReflectionProperty($pagination, 'pageSize');
         $pageSize->setAccessible(true);
@@ -124,7 +124,7 @@ class LightPaginationTests extends TestCase
         
         $result = $pagination->getLimit();
         
-        $this->assertEquals(1, $result);
+        $this->assertSame(1, $result);
     }
     
     /**
@@ -150,7 +150,7 @@ class LightPaginationTests extends TestCase
         $property->setAccessible(true);
         $result = $property->getValue($pagination);
         
-        $this->assertEquals(14, $result);
+        $this->assertSame(14, $result);
     }
     
     /**
@@ -176,7 +176,7 @@ class LightPaginationTests extends TestCase
         $property->setAccessible(true);
         $result = $property->getValue($pagination);
         
-        $this->assertEquals(76, $result);
+        $this->assertSame(76, $result);
     }
     
     /**
@@ -192,7 +192,7 @@ class LightPaginationTests extends TestCase
         
         $result = $pagination->getPage();
         
-        $this->assertEquals(34, $result);
+        $this->assertSame(34, $result);
     }
     
     public static function tearDownAfterClass()

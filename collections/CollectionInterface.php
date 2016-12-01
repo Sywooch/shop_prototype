@@ -3,6 +3,7 @@
 namespace app\collections;
 
 use yii\base\Model;
+use yii\db\Query;
 use app\collections\PaginationInterface;
 
 /**
@@ -10,9 +11,13 @@ use app\collections\PaginationInterface;
  */
 interface CollectionInterface
 {
-    public function add(Model $entity);
+    public function setQuery(Query $query);
+    public function getQuery();
+    public function add(Model $object);
+    public function addArray(array $array);
     public function isEmpty();
-    public function getArray();
+    public function getModels();
+    public function getArrays();
     public function setPagination(PaginationInterface $pagination);
     public function getPagination();
     public function map(string $key, string $value);
