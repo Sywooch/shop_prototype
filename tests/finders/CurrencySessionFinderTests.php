@@ -3,55 +3,39 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\ProductsFinder;
+use app\finders\CurrencySessionFinder;
 use app\collections\{CollectionInterface,
     PaginationInterface};
 use yii\db\Query;
 use yii\base\Model;
-use app\tests\DbManager;
-use app\tests\sources\fixtures\ProductsFixture;
 
-class ProductsFinderTests extends TestCase
+class CurrencySessionFinderTests extends TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager([
-            'fixtures'=>[
-                'products'=>ProductsFixture::class
-            ]
-        ]);
-        self::$dbClass->loadFixtures();
-    }
-    
     /**
-     * Тестирует свойства ProductsFinder
+     * Тестирует свойства CurrencySessionFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(ProductsFinder::class);
+        $reflection = new \ReflectionClass(CurrencySessionFinder::class);
         
-        $this->assertTrue($reflection->hasProperty('category'));
-        $this->assertTrue($reflection->hasProperty('subcategory'));
-        $this->assertTrue($reflection->hasProperty('page'));
+        $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('collection'));
     }
     
     /**
-     * Тестирует метод ProductsFinder::setCollection
+     * Тестирует метод CurrencySessionFinder::setCollection
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testSetCollectionError()
     {
         $collection = new class() {};
-        $finder = new ProductsFinder();
+        $finder = new CurrencySessionFinder();
         $finder->setCollection($collection);
     }
     
     /**
-     * Тестирует метод ProductsFinder::setCollection
+     * Тестирует метод CurrencySessionFinder::setCollection
      */
     public function testSetCollection()
     {
@@ -70,7 +54,7 @@ class ProductsFinderTests extends TestCase
             public function hasEntity(Model $object){}
             public function update(Model $object){}
         };
-        $finder = new ProductsFinder();
+        $finder = new CurrencySessionFinder();
         $finder->setCollection($collection);
         
         $reflection = new \ReflectionProperty($finder, 'collection');
@@ -81,54 +65,54 @@ class ProductsFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductsFinder::rules
+     * Тестирует метод CurrencySessionFinder::rules
      */
     public function testRules()
     {
-        $finder = new ProductsFinder();
-        $finder->attributes = [
-            'category'=>'category',
-            'subcategory'=>'subcategory',
-            'page'=>'page'
-        ];
+        $finder = new CurrencySessionFinder();
+        $finder->attributes = [];
+        $finder->validate();
         
-        $this->assertSame('category', $finder->category);
-        $this->assertSame('subcategory', $finder->subcategory);
-        $this->assertSame('page', $finder->page);
+        $this->assertCount(1, $finder->errors);
+        $this->assertArrayHasKey('key', $finder->errors);
+        
+        $finder->attributes = ['key'=>'key'];
+        $finder->validate();
+        
+        $this->assertEmpty($finder->errors);
     }
     
     /**
-     * Тестирует метод ProductsFinder::load
+     * Тестирует метод CurrencySessionFinder::load
      */
     public function testLoad()
     {
-        $data = [
-            'category'=>'category',
-            'subcategory'=>'subcategory',
-            'page'=>'page'
-        ];
+        $data = ['key'=>'key'];
         
-        $finder = new ProductsFinder();
+        $finder = new CurrencySessionFinder();
         $finder->load($data);
         
-        $this->assertSame('category', $finder->category);
-        $this->assertSame('subcategory', $finder->subcategory);
-        $this->assertSame('page', $finder->page);
+        $this->assertSame('key', $finder->key);
     }
     
-    /**
-     * Тестирует метод ProductsFinder::find
+     /**
+     * Тестирует метод CurrencySessionFinder::find
      */
     public function testFind()
     {
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set('currency', ['id'=>1, 'code'=>'USD', 'change'=>1.354]);
+        $session->close();
+        
         $collection = new class() implements CollectionInterface {
-            private $query;
-            public function setQuery(Query $query){
-                $this->query = $query;
-            }
+            private $items;
+            public function setQuery(Query $query){}
             public function getQuery(){}
             public function add(Model $object){}
-            public function addArray(array $array){}
+            public function addArray(array $array){
+                $this->items[] = $array;
+            }
             public function isEmpty(){}
             public function getModels(){}
             public function getArrays(){}
@@ -139,24 +123,22 @@ class ProductsFinderTests extends TestCase
             public function hasEntity(Model $object){}
             public function update(Model $object){}
         };
-        $finder = new ProductsFinder();
+        $finder = new CurrencySessionFinder();
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
         $reflection->setValue($finder, $collection);
+        $reflection = new \ReflectionProperty($finder, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($finder, 'currency');
         
         $collection = $finder->find();
         
         $this->assertInstanceOf(CollectionInterface::class, $collection);
         
-        $reflection = new \ReflectionProperty($collection, 'query');
+        /*$reflection = new \ReflectionProperty($collection, 'query');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($collection);
         
-        $this->assertInstanceOf(Query::class, $result);
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->unloadFixtures();
+        $this->assertInstanceOf(Query::class, $result);*/
     }
 }

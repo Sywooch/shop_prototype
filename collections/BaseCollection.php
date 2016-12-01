@@ -155,7 +155,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     }
     
     /**
-     * Получает 1 объект Model и добавляет его в коллекцию
+     * Возвращает 1 объект Model и добавляет его в коллекцию
      */
     public function getModel()
     {
@@ -178,7 +178,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     }
     
     /**
-     * Получает 1 массив данных и добавляет его в коллекцию
+     * Возвращает 1 массив данных и добавляет его в коллекцию
      */
     public function getArray()
     {

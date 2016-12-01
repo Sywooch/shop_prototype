@@ -30,6 +30,7 @@ use app\finders\{BrandsFilterFinder,
     SizesFilterFinder,
     SubcategorySeocodeFinder};
 use app\collections\{BaseCollection,
+    CurrencySessionCollection,
     LightPagination,
     ProductsCollection,
     PurchasesCollection};
@@ -64,9 +65,12 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }
             
-            $currencyFinder = new CurrencySessionFinder();
+            $currencyFinder = new CurrencySessionFinder([
+                'collection'=>new CurrencySessionCollection()
+            ]);
             $currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
-            $currencyModel = $currencyFinder->find();
+            $currencyCollection = $currencyFinder->find();
+            $currencyModel = $currencyCollection->getModel();
             if (empty($currencyModel)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
             }

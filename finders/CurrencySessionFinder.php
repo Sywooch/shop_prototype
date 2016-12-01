@@ -7,7 +7,7 @@ use yii\base\{ErrorException,
 use app\finders\FinderInterface;
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
-use app\models\CurrencyModel;
+use app\collections\CollectionInterface;
 
 class CurrencySessionFinder extends Model implements FinderInterface
 {
@@ -18,9 +18,9 @@ class CurrencySessionFinder extends Model implements FinderInterface
      */
     public $key;
     /**
-     * @var object Model
+     * @var object CollectionInterface
      */
-    private $entity;
+    private $collection;
     
     public function rules()
     {
@@ -45,21 +45,38 @@ class CurrencySessionFinder extends Model implements FinderInterface
     
     /**
      * Возвращает данные из сессионного хранилища
-     * @return Model/null
+     * @return CollectionInterface
      */
-    public function find()
+    public function find(): CollectionInterface
     {
         try {
-            if (empty($this->entity)) {
+            if (empty($this->collection)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+            }
+            
+            if ($this->collection->isEmpty()) {
                 if ($this->validate()) {
                     $data = SessionHelper::read($this->key);
                     if (!empty($data)) {
-                        $this->entity = new CurrencyModel($data);
+                        $this->collection->addArray($data);
                     }
                 }
             }
             
-            return !empty($this->entity) ? $this->entity : null;
+            return $this->collection;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CollectionInterface свойству ProductsFinder::collection
+     * @param object $collection CollectionInterface
+     */
+    public function setCollection(CollectionInterface $collection)
+    {
+        try {
+            $this->collection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
