@@ -9,6 +9,9 @@ use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
 use app\collections\CollectionInterface;
 
+/**
+ * Возвращает из сессии текущую валюту пользователя
+ */
 class CurrencySessionFinder extends Model implements FinderInterface
 {
     use ExceptionsTrait;

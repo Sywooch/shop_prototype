@@ -7,7 +7,7 @@ use app\collections\BaseCollection;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Реализует интерфейс доступа к данным коллекции сущностей
+ * Реализует интерфейс доступа к коллекции товаров
  */
 class ProductsCollection extends BaseCollection
 {

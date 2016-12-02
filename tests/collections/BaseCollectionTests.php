@@ -4,6 +4,7 @@ namespace app\tests\collections;
 
 use PHPUnit\Framework\TestCase;
 use app\collections\{BaseCollection,
+    CollectionInterface,
     PaginationInterface};
 use yii\base\Model;
 use yii\db\Query;
@@ -248,7 +249,9 @@ class BaseCollectionTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($collection, $query);
         
-        $collection->getModels();
+        $result = $collection->getModels();
+        
+        $this->assertInstanceOf(CollectionInterface::class, $result);
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
@@ -270,7 +273,9 @@ class BaseCollectionTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($collection, $query);
         
-        $collection->getArrays();
+        $result = $collection->getArrays();
+        
+        $this->assertInstanceOf(CollectionInterface::class, $result);
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);

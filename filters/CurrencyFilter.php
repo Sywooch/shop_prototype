@@ -7,6 +7,7 @@ use yii\base\{ActionFilter,
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
 use app\models\CurrencyModel;
+use app\finders\FinderInterface;
 
 /**
  * Устанавливает валюту для текущего запроса
@@ -14,6 +15,15 @@ use app\models\CurrencyModel;
 class CurrencyFilter extends ActionFilter
 {
     use ExceptionsTrait;
+    
+    /**
+     * @var object FinderInterface
+     */
+    private $sessionFinder;
+    /**
+     * @var object FinderInterface
+     */
+    private $finder;
     
     /**
      * Получает данные для валюты из сессии, 
@@ -24,22 +34,50 @@ class CurrencyFilter extends ActionFilter
     public function beforeAction($action)
     {
         try {
-            $currencyArray = SessionHelper::read(\Yii::$app->params['currencyKey']);
-            
-            if (empty($currencyArray)) {
-                $currencyQuery = CurrencyModel::find();
-                $currencyQuery->extendSelect(['id', 'code', 'exchange_rate', 'main']);
-                $currencyQuery->where(['[[currency.main]]'=>true]);
-                $currencyQuery->asArray();
-                $currencyArray = $currencyQuery->one();
-                if (!empty($currencyArray)) {
-                    SessionHelper::write(\Yii::$app->params['currencyKey'], $currencyArray);
-                }
+            if (empty($this->sessionFinder)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('sessionFinder'));
+            }
+            if (empty($this->finder)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('finder'));
             }
             
-            \Yii::configure(\Yii::$app->currency, $currencyArray);
+            $this->sessionFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
+            
+            if (empty($this->sessionFinder->find()->getArray())) {
+                $currencyArray = $this->finder->find()->getArray();
+                if (empty($currencyArray)) {
+                    throw new ErrorException(ExceptionsTrait::emptyError('currencyArray'));
+                }
+                SessionHelper::write(\Yii::$app->params['currencyKey'], $currencyArray);
+            }
             
             return parent::beforeAction($action);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает FinderInterface свойству CurrencyFilter::sessionFinder
+     * @param object $collection FinderInterface
+     */
+    public function setSessionFinder(FinderInterface $finder)
+    {
+        try {
+            $this->sessionFinder = $finder;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает FinderInterface свойству CurrencyFilter::finder
+     * @param object $collection FinderInterface
+     */
+    public function setFinder(FinderInterface $finder)
+    {
+        try {
+            $this->finder = $finder;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

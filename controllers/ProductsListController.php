@@ -5,15 +5,15 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\actions\SearchAction;
-use app\models\{BaseCollection,
-    ProductsCollection,
-    ProductsModel,
-    SphinxModel};
 use app\repositories\DbRepository;
 use app\services\{ProductsListIndexService,
     SphinxSearchService};
-use app\collections\LightPagination;
+use app\collections\{BaseCollection,
+    CurrencySessionCollection,
+    LightPagination};
 use app\search\ProductsSearchModel;
+use app\finders\{CurrencySessionFinder,
+    MainCurrencyFinder};
 
 /**
  * Обрабатывает запросы на получение списка продуктов
@@ -57,6 +57,12 @@ class ProductsListController extends AbstractBaseController
             ],
             [
                 'class'=>'app\filters\CurrencyFilter',
+                'sessionFinder'=>new CurrencySessionFinder([
+                    'collection'=>new CurrencySessionCollection()
+                ]),
+                'finder'=>new MainCurrencyFinder([
+                    'collection'=>new BaseCollection()
+                ])
             ],
             [
                 'class'=>'app\filters\CartFilter',

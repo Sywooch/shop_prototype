@@ -9,6 +9,9 @@ use app\models\ProductsModel;
 use app\finders\FinderInterface;
 use app\collections\CollectionInterface;
 
+/**
+ * Возвращает коллекцию товаров для каталога
+ */
 class ProductsFinder extends Model implements FinderInterface
 {
     use ExceptionsTrait;
@@ -63,6 +66,7 @@ class ProductsFinder extends Model implements FinderInterface
             }
             
             if ($this->collection->isEmpty()) {
+                
                 $query = ProductsModel::find();
                 $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
                 $query->where(['[[products.active]]'=>true]);

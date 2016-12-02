@@ -12,7 +12,7 @@ use app\collections\{AbstractIterator,
     PaginationInterface};
 
 /**
- * Управляет коллекцией объектов
+ * Реализует интерфейс доступа к коллекции объектов
  */
 class BaseCollection extends AbstractIterator implements CollectionInterface
 {
@@ -110,6 +110,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     
     /**
      * Получает массив обектов Model и добавляет их в коллекцию
+     * @return $this
      */
     public function getModels()
     {
@@ -126,6 +127,8 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
                     }
                 }
             }
+            
+            return $this;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -133,6 +136,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     
     /**
      * Получает массив массивов, представляющих строки в СУБД и добавляет их в коллекцию
+     * @return $this
      */
     public function getArrays()
     {
@@ -149,6 +153,8 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
                     }
                 }
             }
+            
+            return $this;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

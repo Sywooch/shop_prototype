@@ -53,39 +53,25 @@ class ProductsListIndexService extends Object implements ServiceInterface
         try {
             $dataArray = [];
             
-            $productsFinder = new ProductsFinder([
-                'collection'=>new ProductsCollection([
-                    'pagination'=>new LightPagination()
-                ])
-            ]);
+            $productsFinder = new ProductsFinder(['collection'=>new ProductsCollection(['pagination'=>new LightPagination()])]);
             $productsFinder->load($request);
-            $productsCollection = $productsFinder->find();
-            $productsCollection->getModels();
+            $productsCollection = $productsFinder->find()->getModels();
             if ($productsCollection->isEmpty()) {
                 throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }
             
-            $currencyFinder = new CurrencySessionFinder([
-                'collection'=>new CurrencySessionCollection()
-            ]);
+            $currencyFinder = new CurrencySessionFinder(['collection'=>new CurrencySessionCollection()]);
             $currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
-            $currencyCollection = $currencyFinder->find();
-            $currencyModel = $currencyCollection->getModel();
+            $currencyModel = $currencyFinder->find()->getModel();
             if (empty($currencyModel)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
             }
             
             $dataArray['collection'] = ProductsListWidget::widget([
                 'productsCollection'=>$productsCollection,
-                'priceWidget'=>new PriceWidget([
-                    'currencyModel'=>$currencyModel, 
-                ]),
-                'thumbnailsWidget'=>new ThumbnailsWidget([
-                    'view'=>'thumbnails.twig'
-                ]),
-                'paginationWidget'=>new PaginationWidget([
-                    'view'=>'pagination.twig'
-                ]),
+                'priceWidget'=>new PriceWidget(['currencyModel'=>$currencyModel]),
+                'thumbnailsWidget'=>new ThumbnailsWidget(['view'=>'thumbnails.twig']),
+                'paginationWidget'=>new PaginationWidget(['view'=>'pagination.twig']),
                 'view'=>'products-list.twig',
             ]);
             

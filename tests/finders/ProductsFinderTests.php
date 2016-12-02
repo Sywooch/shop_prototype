@@ -7,7 +7,8 @@ use app\finders\ProductsFinder;
 use app\collections\{CollectionInterface,
     PaginationInterface};
 use yii\db\Query;
-use yii\base\Model;
+use yii\base\{Model,
+    Object};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\ProductsFixture;
 
@@ -121,19 +122,38 @@ class ProductsFinderTests extends TestCase
      */
     public function testFind()
     {
-        $collection = new class() implements CollectionInterface {
+        $pagination = new class() extends Object implements PaginationInterface {
+            public function setPageSize(int $size){}
+            public function setPage(int $number){}
+            public function setTotalCount(Query $query){}
+            public function getPageCount(){}
+            public function getOffset(){
+                return 0;
+            }
+            public function getLimit(){
+                return 3;
+            }
+            public function getPage(){}
+        };
+        
+        $collection = new class() extends Object implements CollectionInterface {
             private $query;
+            private $pagination;
             public function setQuery(Query $query){
                 $this->query = $query;
             }
             public function getQuery(){}
             public function add(Model $object){}
             public function addArray(array $array){}
-            public function isEmpty(){}
+            public function isEmpty(){
+                return true;
+            }
             public function getModels(){}
             public function getArrays(){}
             public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
+            public function getPagination(){
+                return $this->pagination;
+            }
             public function map(string $key, string $value){}
             public function sort(string $key, $type){}
             public function hasEntity(Model $object){}
@@ -143,6 +163,10 @@ class ProductsFinderTests extends TestCase
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
         $reflection->setValue($finder, $collection);
+        
+        $reflection = new \ReflectionProperty($collection, 'pagination');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, $pagination);
         
         $collection = $finder->find();
         
