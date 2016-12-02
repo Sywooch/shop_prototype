@@ -104,7 +104,7 @@ class PaginationWidget extends Widget
     }
     
     /**
-     * Нормализует значения свойств класса
+     * Нормализует значения свойств
      */
     private function settings()
     {
@@ -113,7 +113,7 @@ class PaginationWidget extends Widget
                 $this->pageRange = 3;
             }
             
-            $this->pageRange = ceil($this->pageRange);
+            $this->pageRange = (int) ceil($this->pageRange);
             
             if ((int) $this->pageRange % 2 === 0) {
                 ++$this->pageRange;

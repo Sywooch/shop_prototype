@@ -15,29 +15,13 @@ class UserInfoWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var string имя шаблона
-     */
-    public $view;
-    /**
      * @var object User
      */
     private $user;
-    
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
-            }
-            if (empty($this->user)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('user'));
-            }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
+    /**
+     * @var string имя шаблона
+     */
+    public $view;
     
     /**
      * Конструирует HTML строку с информацией о текущем пользователе
@@ -46,6 +30,13 @@ class UserInfoWidget extends Widget
     public function run()
     {
         try {
+            if (empty($this->user)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('user'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+            }
+            
             if ($this->user->isGuest === false) {
                 $user = $this->user->identity;
             }

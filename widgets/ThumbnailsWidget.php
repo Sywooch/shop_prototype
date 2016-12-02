@@ -2,7 +2,7 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorExceptions,
+use yii\base\{ErrorException,
     Widget};
 use yii\helpers\Html;
 use app\exceptions\ExceptionsTrait;
@@ -23,10 +23,6 @@ class ThumbnailsWidget extends Widget
      * @var string имя шаблона
      */
     public $view;
-    /**
-     * @var array массив тегов img
-     */
-    private $result = [];
     
     public function run()
     {
@@ -41,10 +37,10 @@ class ThumbnailsWidget extends Widget
             $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
             
             if (!empty($imagesArray)) {
-                $this->result[] = Html::img(\Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]));
+                $result = Html::img(\Yii::getAlias('@imagesweb/' . $this->path . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]));
             }
             
-            return $this->render($this->view, ['images'=>!empty($this->result) ? implode('<br/>', $this->result) : '']);
+            return $this->render($this->view, ['images'=>!empty($result) ? $result : '']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

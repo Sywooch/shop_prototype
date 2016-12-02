@@ -195,7 +195,11 @@ class ProductsListWidgetTests extends TestCase
         };
         
         $widget = new ProductsListWidget();
-        $widget->productsCollection = $productsCollection;
+        
+        $reflection = new \ReflectionProperty($widget, 'productsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $productsCollection);
+        
         $widget->run();
     }
     
@@ -223,9 +227,18 @@ class ProductsListWidgetTests extends TestCase
             public function update(Model $object){}
         };
         
+        $priceWidget = new class() extends Widget {};
+        
         $widget = new ProductsListWidget();
-        $widget->productsCollection = $productsCollection;
-        $widget->priceWidget = new class() extends Widget {};
+        
+        $reflection = new \ReflectionProperty($widget, 'productsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $productsCollection);
+        
+        $reflection = new \ReflectionProperty($widget, 'priceWidget');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $priceWidget);
+        
         $widget->run();
     }
     
@@ -252,11 +265,23 @@ class ProductsListWidgetTests extends TestCase
             public function hasEntity(Model $object){}
             public function update(Model $object){}
         };
+        $priceWidget = new class() extends Widget {};
+        $thumbnailsWidget = new class() extends Widget {};
         
         $widget = new ProductsListWidget();
-        $widget->productsCollection = $productsCollection;
-        $widget->priceWidget = new class() extends Widget {};
-        $widget->thumbnailsWidget = new class() extends Widget {};
+        
+        $reflection = new \ReflectionProperty($widget, 'productsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $productsCollection);
+        
+        $reflection = new \ReflectionProperty($widget, 'priceWidget');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $priceWidget);
+        
+        $reflection = new \ReflectionProperty($widget, 'thumbnailsWidget');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $thumbnailsWidget);
+        
         $widget->run();
     }
     
@@ -283,12 +308,28 @@ class ProductsListWidgetTests extends TestCase
             public function hasEntity(Model $object){}
             public function update(Model $object){}
         };
+        $priceWidget = new class() extends Widget {};
+        $thumbnailsWidget = new class() extends Widget {};
+        $paginationWidget = new class() extends Widget {};
         
         $widget = new ProductsListWidget();
-        $widget->productsCollection = $productsCollection;
-        $widget->priceWidget = new class() extends Widget {};
-        $widget->thumbnailsWidget = new class() extends Widget {};
-        $widget->paginationWidget = new class() extends Widget {};
+        
+        $reflection = new \ReflectionProperty($widget, 'productsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $productsCollection);
+        
+        $reflection = new \ReflectionProperty($widget, 'priceWidget');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $priceWidget);
+        
+        $reflection = new \ReflectionProperty($widget, 'thumbnailsWidget');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $thumbnailsWidget);
+        
+        $reflection = new \ReflectionProperty($widget, 'paginationWidget');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $paginationWidget);
+        
         $widget->run();
     }
     
@@ -341,7 +382,7 @@ class ProductsListWidgetTests extends TestCase
             public $price;
             public function run()
             {
-                return $this->price . ' MANY';
+                return $this->price . ' MONEY';
             }
         };
         
@@ -392,8 +433,8 @@ class ProductsListWidgetTests extends TestCase
         $this->assertRegExp('/<a href=".+">Purple woman shirt<\/a>/', $result);
         $this->assertRegExp('/This Black mood shoes for crazy bunchers/', $result);
         $this->assertRegExp('/Nice shirt for nice women/', $result);
-        $this->assertRegExp('/' . \Yii::t('base', 'Price:') . ' 123.67 MANY/', $result);
-        $this->assertRegExp('/' . \Yii::t('base', 'Price:') . ' 32.14 MANY/', $result);
+        $this->assertRegExp('/' . \Yii::t('base', 'Price:') . ' 123.67 MONEY/', $result);
+        $this->assertRegExp('/' . \Yii::t('base', 'Price:') . ' 32.14 MONEY/', $result);
         $this->assertRegExp('/<img src=".+" alt="">/', $result);
         $this->assertRegExp('/<ol>/', $result);
         $this->assertRegExp('/<li>/', $result);
