@@ -514,7 +514,7 @@ class BaseCollectionTests extends TestCase
     {
         $model = new class() {};
         $collection = new BaseCollection();
-        $collection->hasEntity($model);
+        $collection->update($model);
     }
     
     /**

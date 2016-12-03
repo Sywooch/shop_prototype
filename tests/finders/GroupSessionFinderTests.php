@@ -3,39 +3,39 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\CurrencySessionFinder;
+use app\finders\GroupSessionFinder;
 use app\collections\{CollectionInterface,
     PaginationInterface};
 use yii\db\Query;
 use yii\base\Model;
 
-class CurrencySessionFinderTests extends TestCase
+class GroupSessionFinderTests extends TestCase
 {
     /**
-     * Тестирует свойства CurrencySessionFinder
+     * Тестирует свойства GroupSessionFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(CurrencySessionFinder::class);
+        $reflection = new \ReflectionClass(GroupSessionFinder::class);
         
         $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('collection'));
     }
     
     /**
-     * Тестирует метод CurrencySessionFinder::setCollection
+     * Тестирует метод GroupSessionFinder::setCollection
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testSetCollectionError()
     {
         $collection = new class() {};
-        $finder = new CurrencySessionFinder();
+        $finder = new GroupSessionFinder();
         $finder->setCollection($collection);
     }
     
     /**
-     * Тестирует метод CurrencySessionFinder::setCollection
+     * Тестирует метод GroupSessionFinder::setCollection
      */
     public function testSetCollection()
     {
@@ -54,7 +54,7 @@ class CurrencySessionFinderTests extends TestCase
             public function hasEntity(Model $object){}
             public function update(Model $object){}
         };
-        $finder = new CurrencySessionFinder();
+        $finder = new GroupSessionFinder();
         $finder->setCollection($collection);
         
         $reflection = new \ReflectionProperty($finder, 'collection');
@@ -65,11 +65,11 @@ class CurrencySessionFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrencySessionFinder::rules
+     * Тестирует метод GroupSessionFinder::rules
      */
     public function testRules()
     {
-        $finder = new CurrencySessionFinder();
+        $finder = new GroupSessionFinder();
         $finder->attributes = [];
         $finder->validate();
         
@@ -83,26 +83,26 @@ class CurrencySessionFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrencySessionFinder::load
+     * Тестирует метод GroupSessionFinder::load
      */
     public function testLoad()
     {
         $data = ['key'=>'key'];
         
-        $finder = new CurrencySessionFinder();
+        $finder = new GroupSessionFinder();
         $finder->load($data);
         
         $this->assertSame('key', $finder->key);
     }
     
      /**
-     * Тестирует метод CurrencySessionFinder::find
+     * Тестирует метод GroupSessionFinder::find
      */
     public function testFind()
     {
         $session = \Yii::$app->session;
         $session->open();
-        $session->set('currency', ['id'=>1, 'code'=>'USD', 'change'=>1.354]);
+        $session->set('some', [['id'=>1, 'one'=>'One-one', 'two-one'=>3134.35], ['id'=>2, 'one-two'=>'One', 'two-two'=>3134.35], ['id'=>3, 'one-three'=>'One', 'two-three'=>3134.35]]);
         $session->close();
         
         $collection = new class() implements CollectionInterface {
@@ -125,13 +125,13 @@ class CurrencySessionFinderTests extends TestCase
             public function hasEntity(Model $object){}
             public function update(Model $object){}
         };
-        $finder = new CurrencySessionFinder();
+        $finder = new GroupSessionFinder();
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
         $reflection->setValue($finder, $collection);
         $reflection = new \ReflectionProperty($finder, 'key');
         $reflection->setAccessible(true);
-        $reflection->setValue($finder, 'currency');
+        $reflection->setValue($finder, 'some');
         
         $collection = $finder->find();
         
@@ -142,7 +142,9 @@ class CurrencySessionFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertNotEmpty($result);
-        $this->assertCount(1, $result);
-        $this->assertInternalType('array', $result[0]);
+        $this->assertCount(3, $result);
+        foreach ($result as $element) {
+            $this->assertInternalType('array', $element);
+        }
     }
 }

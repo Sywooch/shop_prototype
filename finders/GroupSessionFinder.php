@@ -10,9 +10,9 @@ use app\helpers\SessionHelper;
 use app\collections\CollectionInterface;
 
 /**
- * Возвращает из сессии текущую валюту пользователя
+ * Возвращает коллекцию элементов из сессии
  */
-class CurrencySessionFinder extends Model implements FinderInterface
+class GroupSessionFinder extends Model implements FinderInterface
 {
     use ExceptionsTrait;
     
@@ -61,7 +61,9 @@ class CurrencySessionFinder extends Model implements FinderInterface
                 if ($this->validate()) {
                     $data = SessionHelper::read($this->key);
                     if (!empty($data)) {
-                        $this->collection->addArray($data);
+                        foreach ($data as $element) {
+                            $this->collection->addArray($data);
+                        }
                     }
                 }
             }

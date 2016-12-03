@@ -117,11 +117,16 @@ class UserInfoWidgetTests extends TestCase
             public $identityClass = 'SomeClass';
             public $isGuest = false;
             public $identity;
-            
             public function __construct()
             {
                 $this->identity = new class() {
-                    public $email = 'SomeClass';
+                    public $email;
+                    public function __construct()
+                    {
+                        $this->email = new class() {
+                            public $email = 'some@some.com';
+                        };
+                    }
                 };
             }
         };
@@ -139,6 +144,9 @@ class UserInfoWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('/<div class="user-info">/', $result);
-        $this->assertRegExp('/<p>' . \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>\Yii::t('base', 'Guest')]) . '<\/p>/', $result);
+        $this->assertRegExp('/<p>' . \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>'some@some.com']) . '<\/p>/', $result);
+        $this->assertRegExp('/<form id="user-logout-form"/', $result);
+        $this->assertRegExp('/<input type="hidden" name="userId"/', $result);
+        $this->assertRegExp('/<input type="submit" value="' . \Yii::t('base', 'Logout') . '">/', $result);
     }
 }

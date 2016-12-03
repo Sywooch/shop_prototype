@@ -1,0 +1,215 @@
+<?php
+
+namespace app\tests\collections;
+
+use PHPUnit\Framework\TestCase;
+use app\collections\PurchasesCollection;
+use yii\base\Model;
+
+/**
+ * Тестирует класс PurchasesCollection
+ */
+class PurchasesCollectionTests extends TestCase
+{
+    /**
+     * Тестирует метод PurchasesCollection::hasEntity
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testHasEntityError()
+    {
+        $model = new class() {};
+        $collection = new PurchasesCollection();
+        $collection->hasEntity($model);
+    }
+    
+    /**
+     * Тестирует метод PurchasesCollection::hasEntity
+     * при условии, что PurchasesCollection::items содержит объекты
+     */
+    public function testHasEntityObjects()
+    {
+        $model_1 = new class() extends Model {
+            public $id_product = 1;
+            public $id_color = 1;
+            public $id_size = 1;
+        };
+        $model_2 = new class() extends Model {
+            public $id_product = 2;
+            public $id_color = 2;
+            public $id_size = 2;
+        };
+        $model_3 = new class() extends Model {
+            public $id_product = 3;
+            public $id_color = 3;
+            public $id_size = 3;
+        };
+        $model_3_2 = new class() extends Model {
+            public $id_product = 3;
+            public $id_color = 2;
+            public $id_size = 3;
+        };
+        
+        $collection = new PurchasesCollection();
+        $result = $collection->hasEntity($model_1);
+        
+        $this->assertFalse($result);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2, $model_3]);
+        
+        $result = $collection->hasEntity($model_2);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_1);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_3);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_3_2);
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesCollection::hasEntity
+     * при условии, что PurchasesCollection::items содержит массивы
+     */
+    public function testHasEntityArrays()
+    {
+        $array_1 = ['id_product'=>1, 'id_color'=>1, 'id_size'=>1];
+        $array_2 = ['id_product'=>2, 'id_color'=>2, 'id_size'=>2];
+        $array_3 = ['id_product'=>3, 'id_color'=>3, 'id_size'=>3];
+        
+        $model_1 = new class() extends Model {
+            public $id_product = 1;
+            public $id_color = 1;
+            public $id_size = 1;
+        };
+        $model_2 = new class() extends Model {
+            public $id_product = 2;
+            public $id_color = 2;
+            public $id_size = 2;
+        };
+        $model_3 = new class() extends Model {
+            public $id_product = 3;
+            public $id_color = 3;
+            public $id_size = 3;
+        };
+        $model_3_2 = new class() extends Model {
+            public $id_product = 3;
+            public $id_color = 2;
+            public $id_size = 3;
+        };
+        
+        $collection = new PurchasesCollection();
+        $result = $collection->hasEntity($model_1);
+        
+        $this->assertFalse($result);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_1, $array_2, $array_3]);
+        
+        $result = $collection->hasEntity($model_2);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_1);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_3);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_3_2);
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesCollection::update
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testUpdateError()
+    {
+        $model = new class() {};
+        $collection = new PurchasesCollection();
+        $collection->update($model);
+    }
+    
+    /**
+     * Тестирует метод PurchasesCollection::update
+     * при условии, что PurchasesCollection::items содержит объекты
+     */
+    public function testUpdateObjects()
+    {
+        $model_1 = new class() extends Model {
+            public $id_product = 1;
+            public $quantity = 2;
+        };
+        $model_2 = new class() extends Model {
+            public $id_product = 2;
+            public $quantity = 1;
+        };
+        $model_3 = new class() extends Model {
+            public $id_product = 3;
+            public $quantity = 7;
+        };
+        $model_3_2 = new class() extends Model {
+            public $id_product = 3;
+            public $quantity = 11;
+        };
+        
+        $collection = new PurchasesCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2, $model_3]);
+        
+        $collection->update($model_3_2);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        foreach ($result as $element) {
+            if ($element->id_product === 3) {
+                $this->assertSame(18, $element->quantity);
+            }
+        }
+    }
+    
+    /**
+     * Тестирует метод PurchasesCollection::update
+     * при условии, что PurchasesCollection::items содержит массивы
+     */
+    public function testUpdateArrays()
+    {
+        $array_1 = ['id_product'=>1, 'quantity'=>11];
+        $array_2 = ['id_product'=>2, 'quantity'=>62];
+        $array_3 = ['id_product'=>3, 'quantity'=>31];
+        
+        $model_3_2 = new class() extends Model {
+            public $id_product = 3;
+            public $quantity = 11;
+        };
+        
+        $collection = new PurchasesCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_1, $array_2, $array_3]);
+        
+        $collection->update($model_3_2);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        foreach ($result as $element) {
+            if ($element['id_product'] === 3) {
+                $this->assertSame(42, $element['quantity']);
+            }
+        }
+    }
+}

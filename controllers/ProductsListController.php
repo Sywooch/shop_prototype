@@ -12,7 +12,7 @@ use app\collections\{BaseCollection,
     CurrencySessionCollection,
     LightPagination};
 use app\search\ProductsSearchModel;
-use app\finders\{CurrencySessionFinder,
+use app\finders\{OneSessionFinder,
     MainCurrencyFinder};
 
 /**
@@ -57,7 +57,7 @@ class ProductsListController extends AbstractBaseController
             ],
             [
                 'class'=>'app\filters\CurrencyFilter',
-                'sessionFinder'=>new CurrencySessionFinder([
+                'sessionFinder'=>new OneSessionFinder([
                     'collection'=>new CurrencySessionCollection()
                 ]),
                 'finder'=>new MainCurrencyFinder([

@@ -11,9 +11,6 @@ use app\models\CurrencyModel;
 use app\widgets\{PaginationWidget,
     PriceWidget,
     ThumbnailsWidget};
-use app\repositories\SessionRepository;
-use app\finders\{CurrencySessionFinder,
-    FinderInterface};
 use app\collections\CollectionInterface;
 
 /**

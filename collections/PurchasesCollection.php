@@ -22,9 +22,17 @@ class PurchasesCollection extends BaseCollection
         try {
             if (!empty($this->items)) {
                 foreach ($this->items as $item) {
-                    if ($item->id_product === $object->id_product) {
-                        if (empty(array_diff([$object->id_color, $object->id_size], [$item->id_color, $item->id_size]))) {
-                            return true;
+                    if (is_array($item)) {
+                        if ($item['id_product'] === $object->id_product) {
+                            if (empty(array_diff([$object->id_color, $object->id_size], [$item['id_color'], $item['id_size']]))) {
+                                return true;
+                            }
+                        }
+                    } else {
+                        if ($item->id_product === $object->id_product) {
+                            if (empty(array_diff([$object->id_color, $object->id_size], [$item->id_color, $item->id_size]))) {
+                                return true;
+                            }
                         }
                     }
                 }
@@ -44,9 +52,15 @@ class PurchasesCollection extends BaseCollection
     {
         try {
             if (!empty($this->items)) {
-                foreach ($this->items as $item) {
-                    if ($item->id_product === $object->id_product) {
-                        $item->quantity += $object->quantity;
+                foreach ($this->items as &$item) {
+                    if (is_array($item)) {
+                        if ($item['id_product'] === $object->id_product) {
+                            $item['quantity'] += $object->quantity;
+                        }
+                    } else {
+                        if ($item->id_product === $object->id_product) {
+                            $item->quantity += $object->quantity;
+                        }
                     }
                 }
             }

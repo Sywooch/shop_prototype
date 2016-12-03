@@ -19,16 +19,9 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     SearchWidget,
     ThumbnailsWidget,
     UserInfoWidget};
-use app\finders\{BrandsFilterFinder,
-    CategoriesFinder,
-    CategorySeocodeFinder,
-    ColorsFilterFinder,
-    CurrencyFinder,
-    CurrencySessionFinder,
-    ProductsFinder,
-    PurchasesSessionFinder,
-    SizesFilterFinder,
-    SubcategorySeocodeFinder};
+use app\finders\{GroupSessionFinderб
+    OneSessionFinder,
+    ProductsFinder};
 use app\collections\{BaseCollection,
     CurrencySessionCollection,
     LightPagination,
@@ -60,7 +53,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }
             
-            $currencyFinder = new CurrencySessionFinder(['collection'=>new CurrencySessionCollection()]);
+            $currencyFinder = new OneSessionFinder(['collection'=>new CurrencySessionCollection()]);
             $currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
             $currencyModel = $currencyFinder->find()->getModel();
             if (empty($currencyModel)) {
@@ -80,7 +73,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'view'=>'user-info.twig',
             ]);
             
-            $purchasesFinder = new PurchasesSessionFinder([
+            $purchasesFinder = new GroupSessionFinder([
                 'collection'=>new PurchasesCollection()
             ]);
             $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
