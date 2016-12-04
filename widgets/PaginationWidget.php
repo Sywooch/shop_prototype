@@ -71,10 +71,10 @@ class PaginationWidget extends Widget
     {
         try {
             if (empty($this->pagination)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('pagination'));
+                throw new ErrorException($this->emptyError('pagination'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+                throw new ErrorException($this->emptyError('view'));
             }
             
             if ($this->pagination->pageCount >= 2) {

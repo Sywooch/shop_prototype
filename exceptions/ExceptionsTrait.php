@@ -68,7 +68,7 @@ trait ExceptionsTrait
      * Конструирует строку сообщения об ошибке "Ошибка при вызове метода"
      * @return string
      */
-    public static function methodError(string $placeholder): string
+    public function methodError(string $placeholder): string
     {
         return \Yii::t('base/errors', 'Method error {placeholder}', ['placeholder'=>$placeholder]);
     }
@@ -77,7 +77,7 @@ trait ExceptionsTrait
      * Конструирует строку сообщения об ошибке "Отсутствуют необходимые данные"
      * @return string
      */
-    public static function emptyError(string $placeholder): string
+    public function emptyError(string $placeholder): string
     {
         return \Yii::t('base/errors', 'Missing required data: {placeholder}', ['placeholder'=>$placeholder]);
     }
@@ -86,7 +86,7 @@ trait ExceptionsTrait
      * Конструирует строку сообщения об ошибке "Получен неверный тип данных"
      * @return string
      */
-    public static function invalidError(string $placeholder): string
+    public function invalidError(string $placeholder): string
     {
         return \Yii::t('base/errors', 'Received invalid data type instead: {placeholder}', ['placeholder'=>$placeholder]);
     }
@@ -95,8 +95,22 @@ trait ExceptionsTrait
      * Конструирует строку сообщения об ошибке "Такой страницы не существует"
      * @return string
      */
-    public static function Error404(): string
+    public function error404(): string
     {
         return \Yii::t('base/errors', 'This page does not exist');
+    }
+    
+    /**
+     * Конструирует строку сообщения об ошибках в процессе валидации модели
+     * @return string
+     */
+    public function modelError(array $errors): string
+    {
+        $errorsText = [];
+        foreach ($errors as $error) {
+            $errorsText[] = implode(PHP_EOL, $error);
+        }
+        
+        return implode(PHP_EOL, $errorsText);
     }
 }

@@ -54,16 +54,18 @@ class GroupSessionFinder extends Model implements FinderInterface
     {
         try {
             if (empty($this->collection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+                throw new ErrorException($this->emptyError('collection'));
             }
             
             if ($this->collection->isEmpty()) {
-                if ($this->validate()) {
-                    $data = SessionHelper::read($this->key);
-                    if (!empty($data)) {
-                        foreach ($data as $element) {
-                            $this->collection->addArray($data);
-                        }
+                if ($this->validate() === false) {
+                    throw new ErrorException($this->modelError($this->errors));
+                }
+                
+                $data = SessionHelper::read($this->key);
+                if (!empty($data)) {
+                    foreach ($data as $element) {
+                        $this->collection->addArray($data);
                     }
                 }
             }

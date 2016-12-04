@@ -47,13 +47,13 @@ class CartWidget extends Widget
     {
         try {
             if (empty($this->purchasesCollection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('purchasesCollection'));
+                throw new ErrorException($this->emptyError('purchasesCollection'));
             }
             if (empty($this->priceWidget)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('priceWidget'));
+                throw new ErrorException($this->emptyError('priceWidget'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+                throw new ErrorException($this->emptyError('view'));
             }
             
             if ($this->purchasesCollection->isEmpty() === false) {

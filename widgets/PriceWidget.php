@@ -31,10 +31,10 @@ class PriceWidget extends Widget
     {
         try {
             if (empty($this->currencyModel)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
+                throw new ErrorException($this->emptyError('currencyModel'));
             }
             if (!isset($this->price)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('price'));
+                throw new ErrorException($this->emptyError('price'));
             }
             
             $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * $this->currencyModel->exchange_rate, 2) . ' ' . $this->currencyModel->code;

@@ -6,12 +6,39 @@ use yii\base\{ErrorException,
     Model};
 use app\collections\BaseCollection;
 use app\exceptions\ExceptionsTrait;
+use app\models\PurchasesModel;
 
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
 class PurchasesCollection extends BaseCollection
 {
+    /**
+     * Конструирует массив обектов из массивов данных, 
+     * полученных из сессионного хранилища
+     * @return $this
+     */
+    public function getModels()
+    {
+        try {
+            if ($this->isEmpty()) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            
+            $objectsArray = [];
+            
+            foreach ($this->items as $item) {
+                $objectsArray[] = new PurchasesModel($item);
+            }
+            
+            $this->item = $objectsArray;
+            
+            return $this;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     /**
      * Проверяет существование в коллекции сущности с переданным данными
      * @param $object Model

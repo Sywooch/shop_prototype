@@ -62,7 +62,7 @@ class ProductsFinder extends Model implements FinderInterface
     {
         try {
             if (empty($this->collection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('collection'));
+                throw new ErrorException($this->emptyError('collection'));
             }
             
             if ($this->collection->isEmpty()) {

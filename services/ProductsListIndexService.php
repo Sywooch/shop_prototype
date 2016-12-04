@@ -19,7 +19,8 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     SearchWidget,
     ThumbnailsWidget,
     UserInfoWidget};
-use app\finders\{GroupSessionFinder,
+use app\finders\{CurrencyFinder,
+    GroupSessionFinder,
     OneSessionFinder,
     ProductsFinder};
 use app\collections\{BaseCollection,
@@ -54,7 +55,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $productsFinder->load($request);
             $productsCollection = $productsFinder->find()->getModels();
             if ($productsCollection->isEmpty()) {
-                throw new NotFoundHttpException(ExceptionsTrait::Error404());
+                throw new NotFoundHttpException($this->error404());
             }
             
             $currencyFinder = new OneSessionFinder([
@@ -63,7 +64,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
             $currencyModel = $currencyFinder->find()->getModel();
             if (empty($currencyModel)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('currencyModel'));
+                throw new ErrorException($this->emptyError('currencyModel'));
             }
             
             $dataArray['collection'] = ProductsListWidget::widget([
@@ -82,9 +83,8 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $purchasesFinder = new GroupSessionFinder([
                 'collection'=>new PurchasesCollection()
             ]);
-            $key = HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
-            $purchasesFinder->load(['key'=>$key]);
-            $purchasesCollection = $purchasesFinder->find();
+            $purchasesFinder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
+            $purchasesCollection = $purchasesFinder->find()->getModels();
             $dataArray['cart'] = CartWidget::widget([
                 'purchasesCollection'=>$purchasesCollection, 
                 'priceWidget'=>new PriceWidget([
@@ -96,9 +96,9 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $currencyFinder = new CurrencyFinder([
                 'collection'=>new BaseCollection()
             ]);
-            $currencyCollection = $currencyFinder->find();
+            $currencyCollection = $currencyFinder->find()->getModels();
             if ($currencyCollection->isEmpty()) {
-                throw new ErrorException(ExceptionsTrait::emptyError('currencyCollection'));
+                throw new ErrorException($this->emptyError('currencyCollection'));
             }
             $dataArray['currency'] = CurrencyWidget::widget([
                 'currencyCollection'=>$currencyCollection,
@@ -115,7 +115,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             $categoriesCollection = $categoriesFinder->find();
             if ($categoriesCollection->isEmpty()) {
-                throw new ErrorException(ExceptionsTrait::emptyError('categoriesCollection'));
+                throw new ErrorException($this->emptyError('categoriesCollection'));
             }
             $dataArray['menu'] = CategoriesMenuWidget::widget([
                 'categoriesCollection'=>$categoriesCollection
@@ -127,7 +127,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 $categorySeocodeFinder->load(['seocode'=>$category]);
                 $categoryModel = $categorySeocodeFinder->find();
                 if (empty($categoryModel)) {
-                    throw new ErrorException(ExceptionsTrait::emptyError('categoryModel'));
+                    throw new ErrorException($this->emptyError('categoryModel'));
                 }
                 $categoriesBreadcrumbsConfig['category'] = $categoryModel;
                 if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']])) {
@@ -135,7 +135,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                     $subcategorySeocodeFinder->load(['seocode'=>$subcategory]);
                     $subcategoryModel = $subcategorySeocodeFinder->find();
                     if (empty($subcategoryModel)) {
-                        throw new ErrorException(ExceptionsTrait::emptyError('subcategoryModel'));
+                        throw new ErrorException($this->emptyError('subcategoryModel'));
                     }
                     $categoriesBreadcrumbsConfig['subcategory'] = $subcategoryModel;
                 }
@@ -148,7 +148,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $colorsFilterFinder->load($request);
             $colorsCollection = $colorsFilterFinder->find();
             if ($colorsCollection->isEmpty()) {
-                throw new ErrorException(ExceptionsTrait::emptyError('colorsCollection'));
+                throw new ErrorException($this->emptyError('colorsCollection'));
             }
             
             $sizesFilterFinder = new SizesFilterFinder([
@@ -157,7 +157,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $sizesFilterFinder->load($request);
             $sizesCollection = $sizesFilterFinder->find();
             if ($sizesCollection->isEmpty()) {
-                throw new ErrorException(ExceptionsTrait::emptyError('sizesCollection'));
+                throw new ErrorException($this->emptyError('sizesCollection'));
             }
             
             $brandsFilterFinder = new BrandsFilterFinder([
@@ -166,7 +166,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $brandsFilterFinder->load($request);
             $brandsCollection = $brandsFilterFinder->find();
             if ($brandsCollection->isEmpty()) {
-                throw new ErrorException(ExceptionsTrait::emptyError('brandsCollection'));
+                throw new ErrorException($this->emptyError('brandsCollection'));
             }
             
             $dataArray['filters'] = FiltersWidget::widget([

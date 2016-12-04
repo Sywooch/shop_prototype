@@ -12,7 +12,7 @@ use app\collections\CollectionInterface;
 /**
  * Возвращает из СУБД вылюту, отмеченную как валюта по умолчанию для приложения
  */
-class MainCurrencyFinder extends Model implements FinderInterface
+class CurrencyFinder extends Model implements FinderInterface
 {
     use ExceptionsTrait;
     
@@ -34,8 +34,7 @@ class MainCurrencyFinder extends Model implements FinderInterface
             
             if ($this->collection->isEmpty()) {
                 $query = CurrencyModel::find();
-                $query->select(['[[currency.id]]', '[[currency.code]]', '[[currency.exchange_rate]]', '[[currency.main]]']);
-                $query->where(['[[currency.main]]'=>true]);
+                $query->select(['[[currency.id]]', '[[currency.code]]']);
                 
                 $this->collection->query = $query;
             }
@@ -47,7 +46,7 @@ class MainCurrencyFinder extends Model implements FinderInterface
     }
     
     /**
-     * Присваивает CollectionInterface свойству MainCurrencyFinder::collection
+     * Присваивает CollectionInterface свойству CurrencyFinder::collection
      * @param object $collection CollectionInterface
      */
     public function setCollection(CollectionInterface $collection)

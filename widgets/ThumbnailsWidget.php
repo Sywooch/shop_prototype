@@ -28,10 +28,10 @@ class ThumbnailsWidget extends Widget
     {
         try {
             if (empty($this->path)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('path'));
+                throw new ErrorException($this->emptyError('path'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+                throw new ErrorException($this->emptyError('view'));
             }
             
             $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);

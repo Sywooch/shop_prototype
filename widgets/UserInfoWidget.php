@@ -31,10 +31,10 @@ class UserInfoWidget extends Widget
     {
         try {
             if (empty($this->user)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('user'));
+                throw new ErrorException($this->emptyError('user'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+                throw new ErrorException($this->emptyError('view'));
             }
             
             if ($this->user->isGuest === false) {

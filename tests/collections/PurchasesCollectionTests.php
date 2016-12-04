@@ -23,6 +23,15 @@ class PurchasesCollectionTests extends TestCase
         $collection->hasEntity($model);
     }
     
+     /**
+     * Тестирует метод PurchasesCollection::getModels
+     * при условии, что PurchasesCollection::items пуст
+     */
+    public function testGetModels()
+    {
+        
+    }
+    
     /**
      * Тестирует метод PurchasesCollection::hasEntity
      * при условии, что PurchasesCollection::items содержит объекты

@@ -45,19 +45,19 @@ class ProductsListWidget extends Widget
     {
         try {
             if (empty($this->productsCollection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('productsCollection'));
+                throw new ErrorException($this->emptyError('productsCollection'));
             }
             if (empty($this->priceWidget)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('priceWidget'));
+                throw new ErrorException($this->emptyError('priceWidget'));
             }
             if (empty($this->thumbnailsWidget)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('thumbnailsWidget'));
+                throw new ErrorException($this->emptyError('thumbnailsWidget'));
             }
             if (empty($this->paginationWidget)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('paginationWidget'));
+                throw new ErrorException($this->emptyError('paginationWidget'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+                throw new ErrorException($this->emptyError('view'));
             }
             
             $dataArray = [];

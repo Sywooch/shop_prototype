@@ -116,7 +116,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     {
         try {
             if (empty($this->query)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('query'));
+                throw new ErrorException($this->emptyError('query'));
             }
             
             if ($this->isEmpty()) {
@@ -142,7 +142,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     {
         try {
             if (empty($this->query)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('query'));
+                throw new ErrorException($this->emptyError('query'));
             }
             
             if ($this->isEmpty()) {
@@ -167,7 +167,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     {
         try {
             if (empty($this->query)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('query'));
+                throw new ErrorException($this->emptyError('query'));
             }
             
             if ($this->isEmpty()) {
@@ -190,7 +190,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     {
         try {
             if (empty($this->query)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('query'));
+                throw new ErrorException($this->emptyError('query'));
             }
             
             if ($this->isEmpty()) {
