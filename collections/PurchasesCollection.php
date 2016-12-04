@@ -79,7 +79,11 @@ class PurchasesCollection extends BaseCollection
             $result = 0;
             if (!empty($this->items)) {
                 foreach ($this->items as $item) {
-                    $result += $item->quantity;
+                    if (is_array($item)) {
+                        $result += $item['quantity'];
+                    } else {
+                        $result += $item->quantity;
+                    }
                 }
             }
             
@@ -99,7 +103,11 @@ class PurchasesCollection extends BaseCollection
             $result = 0;
             if (!empty($this->items)) {
                 foreach ($this->items as $item) {
-                    $result += $item->quantity * $item->price;
+                    if (is_array($item)) {
+                        $result += $item['quantity'] * $item['price'];
+                    } else {
+                        $result += $item->quantity * $item->price;
+                    }
                 }
             }
             

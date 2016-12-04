@@ -212,4 +212,109 @@ class PurchasesCollectionTests extends TestCase
             }
         }
     }
+    
+    /**
+     * Тестирует метод PurchasesCollection::totalQuantity
+     * при условии, что PurchasesCollection::items содержит объекты
+     */
+    public function testTotalQuantityObjects()
+    {
+        $model_1 = new class() extends Model {
+            public $id_product = 1;
+            public $quantity = 12;
+        };
+        $model_2 = new class() extends Model {
+            public $id_product = 2;
+            public $quantity = 15;
+        };
+        $model_3 = new class() extends Model {
+            public $id_product = 3;
+            public $quantity = 7;
+        };
+        
+        $collection = new PurchasesCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2, $model_3]);
+        
+        $result = $collection->totalQuantity();
+        
+        $this->assertSame(34, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesCollection::totalQuantity
+     * при условии, что PurchasesCollection::items содержит массивы
+     */
+    public function testTotalQuantityArrays()
+    {
+        $array_1 = ['id_product'=>1, 'quantity'=>11];
+        $array_2 = ['id_product'=>2, 'quantity'=>62];
+        $array_3 = ['id_product'=>3, 'quantity'=>31];
+        
+        $collection = new PurchasesCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_1, $array_2, $array_3]);
+        
+        $result = $collection->totalQuantity();
+        
+        $this->assertSame(104, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesCollection::totalPrice
+     * при условии, что PurchasesCollection::items содержит объекты
+     */
+    public function testTotalPriceObjects()
+    {
+        $model_1 = new class() extends Model {
+            public $id_product = 1;
+            public $quantity = 12;
+            public $price = 1687.00;
+        };
+        $model_2 = new class() extends Model {
+            public $id_product = 2;
+            public $quantity = 15;
+            public $price = 16.75;
+        };
+        $model_3 = new class() extends Model {
+            public $id_product = 3;
+            public $quantity = 7;
+            public $price = 912.34;
+        };
+        
+        $collection = new PurchasesCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2, $model_3]);
+        
+        $result = $collection->totalPrice();
+        
+        $this->assertSame(((12 * 1687.00) + (15 * 16.75) + (7 * 912.34)), $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesCollection::totalPrice
+     * при условии, что PurchasesCollection::items содержит массивы
+     */
+    public function testTotalPriceArrays()
+    {
+        $array_1 = ['id_product'=>1, 'quantity'=>11, 'price'=>14.97];
+        $array_2 = ['id_product'=>2, 'quantity'=>62, 'price'=>1896.05];
+        $array_3 = ['id_product'=>3, 'quantity'=>31, 'price'=>12897.89];
+        
+        $collection = new PurchasesCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_1, $array_2, $array_3]);
+        
+        $result = $collection->totalPrice();
+        
+        $this->assertSame(((11 * 14.97) + (62 * 1896.05) + (31 * 12897.89)), $result);
+    }
 }

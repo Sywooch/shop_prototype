@@ -19,7 +19,7 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     SearchWidget,
     ThumbnailsWidget,
     UserInfoWidget};
-use app\finders\{GroupSessionFinderб
+use app\finders\{GroupSessionFinder,
     OneSessionFinder,
     ProductsFinder};
 use app\collections\{BaseCollection,
@@ -46,14 +46,20 @@ class ProductsListIndexService extends Object implements ServiceInterface
         try {
             $dataArray = [];
             
-            $productsFinder = new ProductsFinder(['collection'=>new ProductsCollection(['pagination'=>new LightPagination()])]);
+            $productsFinder = new ProductsFinder([
+                'collection'=>new ProductsCollection([
+                    'pagination'=>new LightPagination()
+                ])
+            ]);
             $productsFinder->load($request);
             $productsCollection = $productsFinder->find()->getModels();
             if ($productsCollection->isEmpty()) {
                 throw new NotFoundHttpException(ExceptionsTrait::Error404());
             }
             
-            $currencyFinder = new OneSessionFinder(['collection'=>new CurrencySessionCollection()]);
+            $currencyFinder = new OneSessionFinder([
+                'collection'=>new CurrencySessionCollection()
+            ]);
             $currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
             $currencyModel = $currencyFinder->find()->getModel();
             if (empty($currencyModel)) {
