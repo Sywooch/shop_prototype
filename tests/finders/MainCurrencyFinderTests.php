@@ -11,6 +11,7 @@ use yii\base\{Model,
     Object};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
+use app\models\CurrencyModel;
 
 class MainCurrencyFinderTests extends TestCase
 {
@@ -120,6 +121,11 @@ class MainCurrencyFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertInstanceOf(Query::class, $result);
+        $this->assertSame(CurrencyModel::class, $result->modelClass);
+        
+        $expectedQuery = "SELECT `currency`.`id`, `currency`.`code`, `currency`.`exchange_rate`, `currency`.`main` FROM `currency` WHERE `currency`.`main`=TRUE";
+        
+        $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }
     
     public static function tearDownAfterClass()

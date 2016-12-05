@@ -35,27 +35,16 @@ class CategoriesMenuWidget extends Menu
      */
     public $options = ['class'=>'categories-menu'];
     
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->categoriesCollection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('categoriesCollection'));
-            }
-            
-            $this->setItems();
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     /**
      * Формирует массив ссылок для создания меню
      */
     private function setItems()
     {
         try {
+            if (empty($this->categoriesCollection)) {
+                throw new ErrorException($this->emptyError('categoriesCollection'));
+            }
+            
             foreach ($this->categoriesCollection as $category) {
                 if (empty($category->active)) {
                     continue;

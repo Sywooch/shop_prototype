@@ -34,6 +34,7 @@ class CategoriesFinder extends Model implements FinderInterface
             
             if ($this->collection->isEmpty()) {
                 $query = CategoriesModel::find();
+                $query->select(['[[categories.id]]', '[[categories.name]]', '[[categories.seocode]]', '[[categories.active]]']);
                 $query->with('subcategory');
                 
                 $this->collection->query = $query;

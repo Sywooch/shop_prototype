@@ -138,6 +138,10 @@ class CategoriesFinderTests extends TestCase
         
         $this->assertInstanceOf(Query::class, $result);
         $this->assertSame(CategoriesModel::class, $result->modelClass);
+        
+        $expectedQuery = "SELECT `categories`.`id`, `categories`.`name`, `categories`.`seocode`, `categories`.`active` FROM `categories`";
+        
+        $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }
     
     public static function tearDownAfterClass()

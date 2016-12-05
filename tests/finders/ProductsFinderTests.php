@@ -11,6 +11,7 @@ use yii\base\{Model,
     Object};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\ProductsFixture;
+use app\models\ProductsModel;
 
 class ProductsFinderTests extends TestCase
 {
@@ -179,6 +180,11 @@ class ProductsFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertInstanceOf(Query::class, $result);
+        $this->assertSame(ProductsModel::class, $result->modelClass);
+        
+        $expectedQuery = "SELECT `products`.`id`, `products`.`name`, `products`.`price`, `products`.`short_description`, `products`.`images`, `products`.`seocode` FROM `products` WHERE `products`.`active`=TRUE ORDER BY `products`.`date` DESC LIMIT 3";
+        
+        $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }
     
     public static function tearDownAfterClass()

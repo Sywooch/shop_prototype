@@ -18,7 +18,8 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     SearchWidget,
     ThumbnailsWidget,
     UserInfoWidget};
-use app\finders\{CurrencyFinder,
+use app\finders\{CategoriesFinder,
+    CurrencyFinder,
     GroupSessionFinder,
     OneSessionFinder,
     ProductsFinder};
@@ -114,7 +115,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $categoriesFinder = new CategoriesFinder([
                 'collection'=>new BaseCollection()
             ]);
-            $categoriesCollection = $categoriesFinder->find();
+            $categoriesCollection = $categoriesFinder->find()->getModels();
             if ($categoriesCollection->isEmpty()) {
                 throw new ErrorException($this->emptyError('categoriesCollection'));
             }

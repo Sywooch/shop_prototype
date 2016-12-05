@@ -10,6 +10,7 @@ use app\collections\{CollectionInterface,
     PaginationInterface};
 use yii\db\Query;
 use yii\base\Model;
+use app\models\CurrencyModel;
 
 /**
  * Тестирует класс CurrencyFinder
@@ -135,6 +136,11 @@ class CurrencyFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertInstanceOf(Query::class, $result);
+        $this->assertSame(CurrencyModel::class, $result->modelClass);
+        
+        $expectedQuery = "SELECT `currency`.`id`, `currency`.`code` FROM `currency`";
+        
+        $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }
     
     public static function tearDownAfterClass()

@@ -60,7 +60,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     public function add(Model $object)
     {
         try {
-            if (!empty($this->items)) {
+            if ($this->isEmpty() === false) {
                 foreach ($this->items as $item) {
                     if ((int) $item->id === (int) $object->id) {
                         return;
@@ -81,7 +81,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     public function addArray(array $array)
     {
         try {
-            if (!empty($this->items)) {
+            if ($this->isEmpty() === false) {
                 foreach ($this->items as $item) {
                     if ((int) $item['id'] === (int) $array['id']) {
                         return;
@@ -157,7 +157,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
                 throw new ErrorException($this->emptyError('query'));
             }
             
-            if ($this->isEmpty()) {
+            if ($this->isEmpty() === true) {
                 $objectsArray = $this->query->all();
                 if (!empty($objectsArray)) {
                     foreach ($objectsArray as $object) {
@@ -183,7 +183,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
                 throw new ErrorException($this->emptyError('query'));
             }
             
-            if ($this->isEmpty()) {
+            if ($this->isEmpty() === true) {
                 $arraysArray = $this->query->asArray()->all();
                 if (!empty($arraysArray)) {
                     foreach ($arraysArray as $array) {
@@ -208,7 +208,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
                 throw new ErrorException($this->emptyError('query'));
             }
             
-            if ($this->isEmpty()) {
+            if ($this->isEmpty() === true) {
                 $object = $this->query->one();
                 if (!empty($object)) {
                     $this->add($object);
@@ -231,7 +231,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
                 throw new ErrorException($this->emptyError('query'));
             }
             
-            if ($this->isEmpty()) {
+            if ($this->isEmpty() === true) {
                 $array = $this->query->asArray()->one();
                 if (!empty($array)) {
                     $this->addArray($array);
@@ -309,7 +309,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     public function hasEntity(Model $object): bool
     {
         try {
-            if (!empty($this->items)) {
+            if ($this->isEmpty() === false) {
                 foreach ($this->items as $item) {
                     if (is_array($item)) {
                         if ($item['id'] === $object->id) {
@@ -336,7 +336,7 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     public function update(Model $object)
     {
         try {
-            if (!empty($this->items)) {
+            if ($this->isEmpty() === false) {
                 foreach ($this->items as $key=>$item) {
                     if (is_array($item)) {
                         if ($item['id'] === $object->id) {
