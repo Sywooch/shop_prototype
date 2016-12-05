@@ -4,7 +4,8 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\CategoriesMenuWidget;
-use app\collections\{CollectionInterface,
+use app\collections\{BaseCollection,
+    CollectionInterface,
     PaginationInterface};
 use yii\db\Query;
 use yii\base\Model;
@@ -14,6 +15,15 @@ use yii\base\Model;
  */
 class CategoriesMenuWidgetTests extends TestCase
 {
+    private $widget;
+    
+    public function setUp()
+    {
+        $this->widget = new class() extends CategoriesMenuWidget {
+            public function init() {}
+        };
+    }
+    
     /**
      * Тестирует наличие свойств
      */
@@ -36,7 +46,7 @@ class CategoriesMenuWidgetTests extends TestCase
     public function testSetCategoriesCollectionError()
     {
         $categoriesCollection = new class() {};
-        $widget = new CategoriesMenuWidget();
+        $widget = new $this->widget();
         $widget->setCategoriesCollection($categoriesCollection);
     }
     
@@ -62,7 +72,7 @@ class CategoriesMenuWidgetTests extends TestCase
             public function update(Model $object){}
         };
         
-        $widget = new CategoriesMenuWidget();
+        $widget = new $this->widget();
         $widget->setCategoriesCollection($categoriesCollection);
         
         $reflection = new \ReflectionProperty($widget, 'categoriesCollection');
@@ -80,7 +90,7 @@ class CategoriesMenuWidgetTests extends TestCase
      */
     public function testSetItemsEmptyCategoriesCollection()
     {
-        $widget = new CategoriesMenuWidget();
+        $widget = new $this->widget();
         
         $reflection = new \ReflectionMethod($widget, 'setItems');
         $reflection->setAccessible(true);
@@ -103,27 +113,47 @@ class CategoriesMenuWidgetTests extends TestCase
             public $seocode = 'coat';
         };
         
-        $categoriesCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
+        $category_1 = new class() {
+            public $active = true;
+            public $name = 'Mens footwear';
+            public $seocode = 'mens-footwear';
+            public $subcategory;
         };
         
-        $widget = new CategoriesMenuWidget();
+        $reflection = new \ReflectionProperty($category_1, 'subcategory');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($category_1, [$subcategory_1]);
+        
+        $category_2 = new class() {
+            public $active = true;
+            public $name = 'mens-clothes';
+            public $seocode = 'mens-clothes';
+            public $subcategory;
+        };
+        
+        $reflection = new \ReflectionProperty($category_2, 'subcategory');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($category_2, [$subcategory_2]);
+        
+        $categoriesCollection = new class() extends BaseCollection implements CollectionInterface {
+            
+        };
+        
+        $reflection = new \ReflectionProperty($categoriesCollection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($categoriesCollection, [$category_1, $category_2]);
+        
+        $widget = new $this->widget();
+        
+        $reflection = new \ReflectionProperty($widget, 'categoriesCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $categoriesCollection);
         
         $reflection = new \ReflectionMethod($widget, 'setItems');
         $reflection->setAccessible(true);
         $reflection->invoke($widget);
+        
+        $this->assertNotEmpty($widget->items);
+        $this->assertCount(2, $widget->items);
     }
 }

@@ -4,7 +4,8 @@ namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
 use app\finders\ProductsFinder;
-use app\collections\{CollectionInterface,
+use app\collections\{BaseCollection,
+    CollectionInterface,
     PaginationInterface};
 use yii\db\Query;
 use yii\base\{Model,
@@ -57,22 +58,7 @@ class ProductsFinderTests extends TestCase
      */
     public function testSetCollection()
     {
-        $collection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $collection = new class() extends BaseCollection {};
         $finder = new ProductsFinder();
         $finder->setCollection($collection);
         
@@ -138,30 +124,7 @@ class ProductsFinderTests extends TestCase
             public function getPage(){}
         };
         
-        $collection = new class() extends Object implements CollectionInterface {
-            private $query;
-            private $pagination;
-            public function setQuery(Query $query){
-                $this->query = $query;
-            }
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){
-                return true;
-            }
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){
-                return $this->pagination;
-            }
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $collection = new class() extends BaseCollection {};
         $finder = new ProductsFinder();
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);

@@ -21,11 +21,11 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     /**
      * @var object Query
      */
-    private $query;
+    protected $query;
     /**
      * @var object PaginationInterface
      */
-    private $pagination;
+    protected $pagination;
     
     /**
      * Сохраняет объект запроса

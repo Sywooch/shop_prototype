@@ -17,7 +17,7 @@ class CategoriesMenuWidget extends Menu
     /**
      * @var object CollectionInterface
      */
-    private $categoriesCollection;
+    protected $categoriesCollection;
     /**
      * @var string основной route
      */
@@ -34,6 +34,17 @@ class CategoriesMenuWidget extends Menu
      * @var array HTML атрибуты, которые будут применены к тегу-контейнеру меню (ul по-умолчанию)
      */
     public $options = ['class'=>'categories-menu'];
+    
+    public function init()
+    {
+        try {
+            parent::init();
+            
+            $this->setItems();
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
     
     /**
      * Формирует массив ссылок для создания меню
