@@ -6,8 +6,7 @@ use yii\base\{ErrorException,
     Object};
 use yii\web\NotFoundHttpException;
 use app\exceptions\ExceptionsTrait;
-use app\models\{ChangeCurrencyFormModel,
-    ProductsFiltersFormModel};
+use app\models\ProductsFiltersFormModel;
 use app\widgets\{CategoriesBreadcrumbsWidget,
     CategoriesMenuWidget,
     CartWidget,
@@ -27,8 +26,9 @@ use app\collections\{BaseCollection,
     CurrencySessionCollection,
     LightPagination,
     ProductsCollection,
-    PurchasesCollection};
+    PurchasesSessionCollection};
 use app\helpers\HashHelper;
+use app\forms\ChangeCurrencyForm;
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -81,7 +81,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             
             $purchasesFinder = new GroupSessionFinder([
-                'collection'=>new PurchasesCollection()
+                'collection'=>new PurchasesSessionCollection()
             ]);
             $purchasesFinder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
             $purchasesCollection = $purchasesFinder->find()->getModels();
@@ -102,11 +102,12 @@ class ProductsListIndexService extends Object implements ServiceInterface
             }
             $dataArray['currency'] = CurrencyWidget::widget([
                 'currencyCollection'=>$currencyCollection,
-                'form'=>new ChangeCurrencyFormModel(),
+                'form'=>new ChangeCurrencyForm(),
                 'view'=>'currency-form.twig'
             ]);
             
             $dataArray['search'] = SearchWidget::widget([
+                'text'=>$request[\Yii::$app->params['searchKey']],
                 'view'=>'search.twig'
             ]);
             

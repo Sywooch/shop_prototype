@@ -59,6 +59,7 @@ class MainCurrencyFinderTests extends TestCase
             public function add(Model $object){}
             public function addArray(array $array){}
             public function isEmpty(){}
+            public function isArrays(){}
             public function getModels(){}
             public function getArrays(){}
             public function setPagination(PaginationInterface $pagination){}
@@ -94,6 +95,7 @@ class MainCurrencyFinderTests extends TestCase
             public function isEmpty(){
                 return true;
             }
+            public function isArrays(){}
             public function getModels(){}
             public function getArrays(){}
             public function setPagination(PaginationInterface $pagination){}

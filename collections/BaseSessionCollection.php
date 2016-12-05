@@ -17,7 +17,14 @@ class BaseSessionCollection extends BaseCollection
     public function getArray()
     {
         try {
-            return !empty($this->items) ? $this->items[0] : null;
+            if ($this->isEmpty()) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            if ($this->isArrays() === false) {
+                throw new ErrorException($this->invalidError('items'));
+            }
+            
+            return $this->items[0];
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

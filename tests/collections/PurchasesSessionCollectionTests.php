@@ -3,87 +3,99 @@
 namespace app\tests\collections;
 
 use PHPUnit\Framework\TestCase;
-use app\collections\PurchasesCollection;
+use app\collections\PurchasesSessionCollection;
 use yii\base\Model;
+use app\collections\CollectionInterface;
+use app\models\PurchasesModel;
 
 /**
- * Тестирует класс PurchasesCollection
+ * Тестирует класс PurchasesSessionCollection
  */
-class PurchasesCollectionTests extends TestCase
+class PurchasesSessionCollectionTests extends TestCase
 {
     /**
-     * Тестирует метод PurchasesCollection::hasEntity
+     * Тестирует метод PurchasesSessionCollection::getModels
+     * при условии, что PurchasesSessionCollection::items содержит не массивы
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Получен неверный тип данных вместо: items
+     */
+    public function testGetModelsNotArrays()
+    {
+        $array = ['id'=>1];
+        $model = new class() {};
+        
+        $collection = new PurchasesSessionCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array, $model]);
+        
+        $collection->getModels();
+    }
+    
+    /**
+     * Тестирует метод PurchasesSessionCollection::getModels
+     */
+    public function testGetModels()
+    {
+        $array_1 = ['id'=>1];
+        $array_2 = ['id'=>2];
+        
+        $collection = new PurchasesSessionCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_1, $array_2]);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        foreach ($result as $item) {
+            $this->assertInternalType('array', $item);
+        }
+        
+        $result = $collection->getModels();
+        
+        $this->assertInstanceOf(CollectionInterface::class, $result);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        foreach ($result as $item) {
+            $this->assertInstanceOf(PurchasesModel::class, $item);
+        }
+    }
+    
+    /**
+     * Тестирует метод PurchasesSessionCollection::hasEntity
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testHasEntityError()
     {
         $model = new class() {};
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
         $collection->hasEntity($model);
     }
     
-     /**
-     * Тестирует метод PurchasesCollection::getModels
-     * при условии, что PurchasesCollection::items пуст
+    /**
+     * Тестирует метод PurchasesSessionCollection::hasEntity
+     * при условии, что PurchasesSessionCollection::items пуст
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: items
      */
-    public function testGetModels()
+    public function testHasEntityEmpty()
     {
-        
+        $model = new class() extends Model {};
+        $collection = new PurchasesSessionCollection();
+        $collection->hasEntity($model);
     }
     
     /**
-     * Тестирует метод PurchasesCollection::hasEntity
-     * при условии, что PurchasesCollection::items содержит объекты
-     */
-    public function testHasEntityObjects()
-    {
-        $model_1 = new class() extends Model {
-            public $id_product = 1;
-            public $id_color = 1;
-            public $id_size = 1;
-        };
-        $model_2 = new class() extends Model {
-            public $id_product = 2;
-            public $id_color = 2;
-            public $id_size = 2;
-        };
-        $model_3 = new class() extends Model {
-            public $id_product = 3;
-            public $id_color = 3;
-            public $id_size = 3;
-        };
-        $model_3_2 = new class() extends Model {
-            public $id_product = 3;
-            public $id_color = 2;
-            public $id_size = 3;
-        };
-        
-        $collection = new PurchasesCollection();
-        $result = $collection->hasEntity($model_1);
-        
-        $this->assertFalse($result);
-        
-        $reflection = new \ReflectionProperty($collection, 'items');
-        $reflection->setAccessible(true);
-        $reflection->setValue($collection, [$model_1, $model_2, $model_3]);
-        
-        $result = $collection->hasEntity($model_2);
-        $this->assertTrue($result);
-        
-        $result = $collection->hasEntity($model_1);
-        $this->assertTrue($result);
-        
-        $result = $collection->hasEntity($model_3);
-        $this->assertTrue($result);
-        
-        $result = $collection->hasEntity($model_3_2);
-        $this->assertFalse($result);
-    }
-    
-    /**
-     * Тестирует метод PurchasesCollection::hasEntity
-     * при условии, что PurchasesCollection::items содержит массивы
+     * Тестирует метод PurchasesSessionCollection::hasEntity
+     * при условии, что PurchasesSessionCollection::items содержит массивы
      */
     public function testHasEntityArrays()
     {
@@ -112,7 +124,12 @@ class PurchasesCollectionTests extends TestCase
             public $id_size = 3;
         };
         
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_2, $array_3]);
+        
         $result = $collection->hasEntity($model_1);
         
         $this->assertFalse($result);
@@ -135,20 +152,87 @@ class PurchasesCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchasesCollection::update
+     * Тестирует метод PurchasesSessionCollection::hasEntity
+     * при условии, что PurchasesSessionCollection::items содержит объекты
+     */
+    public function testHasEntityObjects()
+    {
+        $model_1 = new class() extends Model {
+            public $id_product = 1;
+            public $id_color = 1;
+            public $id_size = 1;
+        };
+        $model_2 = new class() extends Model {
+            public $id_product = 2;
+            public $id_color = 2;
+            public $id_size = 2;
+        };
+        $model_3 = new class() extends Model {
+            public $id_product = 3;
+            public $id_color = 3;
+            public $id_size = 3;
+        };
+        $model_3_2 = new class() extends Model {
+            public $id_product = 3;
+            public $id_color = 2;
+            public $id_size = 3;
+        };
+        
+        $collection = new PurchasesSessionCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2]);
+        
+        $result = $collection->hasEntity($model_3);
+        
+        $this->assertFalse($result);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2, $model_3]);
+        
+        $result = $collection->hasEntity($model_2);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_1);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_3);
+        $this->assertTrue($result);
+        
+        $result = $collection->hasEntity($model_3_2);
+        $this->assertFalse($result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesSessionCollection::update
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testUpdateError()
     {
         $model = new class() {};
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
         $collection->update($model);
     }
     
     /**
-     * Тестирует метод PurchasesCollection::update
-     * при условии, что PurchasesCollection::items содержит объекты
+     * Тестирует метод PurchasesSessionCollection::update
+     * при условии, что PurchasesSessionCollection::items пуст
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: items
+     */
+    public function testUpdateEmpty()
+    {
+        $model = new class() extends Model {};
+        $collection = new PurchasesSessionCollection();
+        $collection->update($model);
+    }
+    
+    /**
+     * Тестирует метод PurchasesSessionCollection::update
+     * при условии, что PurchasesSessionCollection::items содержит объекты
      */
     public function testUpdateObjects()
     {
@@ -169,7 +253,7 @@ class PurchasesCollectionTests extends TestCase
             public $quantity = 11;
         };
         
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
@@ -189,8 +273,8 @@ class PurchasesCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchasesCollection::update
-     * при условии, что PurchasesCollection::items содержит массивы
+     * Тестирует метод PurchasesSessionCollection::update
+     * при условии, что PurchasesSessionCollection::items содержит массивы
      */
     public function testUpdateArrays()
     {
@@ -203,7 +287,7 @@ class PurchasesCollectionTests extends TestCase
             public $quantity = 11;
         };
         
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
@@ -223,8 +307,21 @@ class PurchasesCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchasesCollection::totalQuantity
-     * при условии, что PurchasesCollection::items содержит объекты
+     * Тестирует метод PurchasesSessionCollection::totalQuantity
+     * при условии, что PurchasesSessionCollection::items пуст
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: items
+     */
+    public function testTotalQuantityEmpty()
+    {
+        $model = new class() extends Model {};
+        $collection = new PurchasesSessionCollection();
+        $collection->totalQuantity();
+    }
+    
+    /**
+     * Тестирует метод PurchasesSessionCollection::totalQuantity
+     * при условии, что PurchasesSessionCollection::items содержит объекты
      */
     public function testTotalQuantityObjects()
     {
@@ -241,7 +338,7 @@ class PurchasesCollectionTests extends TestCase
             public $quantity = 7;
         };
         
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
@@ -253,8 +350,8 @@ class PurchasesCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchasesCollection::totalQuantity
-     * при условии, что PurchasesCollection::items содержит массивы
+     * Тестирует метод PurchasesSessionCollection::totalQuantity
+     * при условии, что PurchasesSessionCollection::items содержит массивы
      */
     public function testTotalQuantityArrays()
     {
@@ -262,7 +359,7 @@ class PurchasesCollectionTests extends TestCase
         $array_2 = ['id_product'=>2, 'quantity'=>62];
         $array_3 = ['id_product'=>3, 'quantity'=>31];
         
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
@@ -274,8 +371,21 @@ class PurchasesCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchasesCollection::totalPrice
-     * при условии, что PurchasesCollection::items содержит объекты
+     * Тестирует метод PurchasesSessionCollection::totalPrice
+     * при условии, что PurchasesSessionCollection::items пуст
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: items
+     */
+    public function testTotalPriceEmpty()
+    {
+        $model = new class() extends Model {};
+        $collection = new PurchasesSessionCollection();
+        $collection->totalPrice();
+    }
+    
+    /**
+     * Тестирует метод PurchasesSessionCollection::totalPrice
+     * при условии, что PurchasesSessionCollection::items содержит объекты
      */
     public function testTotalPriceObjects()
     {
@@ -295,7 +405,7 @@ class PurchasesCollectionTests extends TestCase
             public $price = 912.34;
         };
         
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
@@ -307,8 +417,8 @@ class PurchasesCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchasesCollection::totalPrice
-     * при условии, что PurchasesCollection::items содержит массивы
+     * Тестирует метод PurchasesSessionCollection::totalPrice
+     * при условии, что PurchasesSessionCollection::items содержит массивы
      */
     public function testTotalPriceArrays()
     {
@@ -316,7 +426,7 @@ class PurchasesCollectionTests extends TestCase
         $array_2 = ['id_product'=>2, 'quantity'=>62, 'price'=>1896.05];
         $array_3 = ['id_product'=>3, 'quantity'=>31, 'price'=>12897.89];
         
-        $collection = new PurchasesCollection();
+        $collection = new PurchasesSessionCollection();
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);

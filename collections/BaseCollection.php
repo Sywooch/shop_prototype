@@ -109,6 +109,44 @@ class BaseCollection extends AbstractIterator implements CollectionInterface
     }
     
     /**
+     * Возвращает bool в зависимости от содержит или нет $this::items массивы
+     * @return bool
+     */
+    public function isArrays(): bool
+    {
+        try {
+            foreach ($this->items as $item) {
+                if (is_array($item) === false) {
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает bool в зависимости от содержит или нет $this::items объекты
+     * @return bool
+     */
+    public function isObjects(): bool
+    {
+        try {
+            foreach ($this->items as $item) {
+                if (is_object($item) === false) {
+                    return false;
+                }
+            }
+            
+            return true;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Получает массив обектов Model и добавляет их в коллекцию
      * @return $this
      */

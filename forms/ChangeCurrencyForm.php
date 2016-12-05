@@ -1,15 +1,17 @@
 <?php
 
-namespace app\models;
+namespace app\forms;
 
-use yii\base\ErrorException;
-use app\models\{AbstractFormModel,
+use yii\base\{ErrorException,
+    Model};
+use app\forms\{AbstractBaseForm,
     FormInterface};
+use app\models\CurrencyModel;
 
 /**
  * Представляет данные формы изменения текущей валюты
  */
-class ChangeCurrencyFormModel extends AbstractFormModel implements FormInterface
+class ChangeCurrencyForm extends AbstractBaseForm implements FormInterface
 {
     /**
      * Сценарий изменения текущей валюты
@@ -31,18 +33,5 @@ class ChangeCurrencyFormModel extends AbstractFormModel implements FormInterface
             [['id'], 'app\validators\StripTagsValidator'],
             [['id'], 'required', 'on'=>self::CHANGE_CURRENCY],
         ];
-    }
-    
-    /**
-     * Возвращает объект модели, представляющий таблицу СУБД
-     * @return Model
-     */
-    public function getModel($name)
-    {
-        try {
-            
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
     }
 }

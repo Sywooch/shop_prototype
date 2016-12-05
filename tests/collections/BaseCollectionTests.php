@@ -232,9 +232,65 @@ class BaseCollectionTests extends TestCase
         $collection = new BaseCollection();
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
-        $reflection->setValue($collection, $model);
+        $reflection->setValue($collection, [$model]);
         
         $this->assertFalse($collection->isEmpty());
+    }
+    
+    /**
+     * Тестирует метод BaseCollection::isArrays
+     */
+    public function testIsArrays()
+    {
+        $model_1 = new class() extends Model{};
+        $model_2 = new class() extends Model{};
+        
+        $collection = new BaseCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2]);
+        
+        $this->assertFalse($collection->isArrays());
+        
+        $array_1 = ['id'=>1];
+        $array_2 = ['id'=>2];
+        
+        $collection = new BaseCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_1, $array_2]);
+        
+        $this->assertTrue($collection->isArrays());
+    }
+    
+    /**
+     * Тестирует метод BaseCollection::isObjects
+     */
+    public function testIsObjects()
+    {
+        $array_1 = ['id'=>1];
+        $array_2 = ['id'=>2];
+        
+        $collection = new BaseCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$array_1, $array_2]);
+        
+        $this->assertFalse($collection->isObjects());
+        
+        $model_1 = new class() extends Model{};
+        $model_2 = new class() extends Model{};
+        
+        $collection = new BaseCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1, $model_2]);
+        
+        $this->assertTrue($collection->isObjects());
     }
     
     /**

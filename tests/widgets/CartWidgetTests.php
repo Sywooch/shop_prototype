@@ -52,6 +52,7 @@ class CartWidgetTests extends TestCase
             public function add(Model $object){}
             public function addArray(array $array){}
             public function isEmpty(){}
+            public function isArrays(){}
             public function getModels(){}
             public function getArrays(){}
             public function setPagination(PaginationInterface $pagination){}
@@ -126,6 +127,7 @@ class CartWidgetTests extends TestCase
             public function add(Model $object){}
             public function addArray(array $array){}
             public function isEmpty(){}
+            public function isArrays(){}
             public function getModels(){}
             public function getArrays(){}
             public function setPagination(PaginationInterface $pagination){}
@@ -159,6 +161,7 @@ class CartWidgetTests extends TestCase
             public function add(Model $object){}
             public function addArray(array $array){}
             public function isEmpty(){}
+            public function isArrays(){}
             public function getModels(){}
             public function getArrays(){}
             public function setPagination(PaginationInterface $pagination){}
@@ -197,6 +200,7 @@ class CartWidgetTests extends TestCase
             public function isEmpty(){
                 return false;
             }
+            public function isArrays(){}
             public function getModels(){}
             public function getArrays(){}
             public function setPagination(PaginationInterface $pagination){}

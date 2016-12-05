@@ -5,10 +5,7 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Model,
     Widget};
-use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\repositories\RepositoryInterface;
-use app\filters\SelectFilter;
 use app\collections\CollectionInterface;
 
 /**
@@ -35,19 +32,19 @@ class CurrencyWidget extends Widget
     {
         try {
             if (empty($this->currencyCollection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('currencyCollection'));
+                throw new ErrorException($this->emptyError('currencyCollection'));
             }
             if (empty($this->form)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('form'));
+                throw new ErrorException($this->emptyError('form'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+                throw new ErrorException($this->emptyError('view'));
             }
             
             $this->currencyCollection->sort('code');
-            $this->currencyCollection = $this->currencyCollection->map('id', 'code');
+            $currencyCollection = $this->currencyCollection->map('id', 'code');
             
-            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$this->currencyCollection]);
+            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$currencyCollection]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

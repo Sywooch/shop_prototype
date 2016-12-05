@@ -18,7 +18,14 @@ class CurrencySessionCollection extends BaseSessionCollection
     public function getModel()
     {
         try {
-            return !empty($this->items) ? new CurrencyModel($this->items[0]) : null;
+            if ($this->isEmpty()) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            if ($this->isArrays() === false) {
+                throw new ErrorException($this->invalidError('items'));
+            }
+            
+            return new CurrencyModel($this->items[0]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

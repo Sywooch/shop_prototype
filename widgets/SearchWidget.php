@@ -4,8 +4,6 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
-use yii\helpers\{Html,
-    Url};
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -15,23 +13,14 @@ class SearchWidget extends Widget
 {
     use ExceptionsTrait;
     
+     /**
+     * @var string искомая фраза
+     */
+    public $text;
     /**
      * @var string имя шаблона
      */
     public $view;
-    
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
-            }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
     
     /**
      * Конструирует HTML строку с формой поиска
@@ -40,9 +29,11 @@ class SearchWidget extends Widget
     public function run()
     {
         try {
-            $text = \Yii::$app->request->get(\Yii::$app->params['searchKey']);
+            if (empty($this->view)) {
+                throw new ErrorException($this->emptyError('view'));
+            }
             
-            return $this->render($this->view, ['text'=>!empty($text) ? $text : '']);
+            return $this->render($this->view, ['text'=>!empty($this->text) ? $this->text : '']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

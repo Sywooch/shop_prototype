@@ -3,16 +3,20 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\ProductsFinder;
+use app\finders\CategoriesFinder;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\CategoriesFixture;
 use app\collections\{CollectionInterface,
     PaginationInterface};
 use yii\db\Query;
 use yii\base\{Model,
     Object};
-use app\tests\DbManager;
-use app\tests\sources\fixtures\ProductsFixture;
+use app\models\CategoriesModel;
 
-class ProductsFinderTests extends TestCase
+/**
+ * Тестирует класс CategoriesFinder
+ */
+class CategoriesFinderTests extends TestCase
 {
     private static $dbClass;
     
@@ -20,39 +24,36 @@ class ProductsFinderTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'products'=>ProductsFixture::class
+                'categories'=>CategoriesFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует свойства ProductsFinder
+     * Тестирует свойства CategoriesFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(ProductsFinder::class);
+        $reflection = new \ReflectionClass(CategoriesFinder::class);
         
-        $this->assertTrue($reflection->hasProperty('category'));
-        $this->assertTrue($reflection->hasProperty('subcategory'));
-        $this->assertTrue($reflection->hasProperty('page'));
         $this->assertTrue($reflection->hasProperty('collection'));
     }
     
     /**
-     * Тестирует метод ProductsFinder::setCollection
+     * Тестирует метод CategoriesFinder::setCollection
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testSetCollectionError()
     {
         $collection = new class() {};
-        $finder = new ProductsFinder();
+        $finder = new CategoriesFinder();
         $finder->setCollection($collection);
     }
     
     /**
-     * Тестирует метод ProductsFinder::setCollection
+     * Тестирует метод CategoriesFinder::setCollection
      */
     public function testSetCollection()
     {
@@ -72,7 +73,7 @@ class ProductsFinderTests extends TestCase
             public function hasEntity(Model $object){}
             public function update(Model $object){}
         };
-        $finder = new ProductsFinder();
+        $finder = new CategoriesFinder();
         $finder->setCollection($collection);
         
         $reflection = new \ReflectionProperty($finder, 'collection');
@@ -83,63 +84,24 @@ class ProductsFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductsFinder::rules
+     * Тестирует метод CategoriesFinder::find
+     * при отсутствии CategoriesFinder::collection
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: collection
      */
-    public function testRules()
+    public function testFindCollectionEmpty()
     {
-        $finder = new ProductsFinder();
-        $finder->attributes = [
-            'category'=>'category',
-            'subcategory'=>'subcategory',
-            'page'=>'page'
-        ];
-        
-        $this->assertSame('category', $finder->category);
-        $this->assertSame('subcategory', $finder->subcategory);
-        $this->assertSame('page', $finder->page);
+        $finder = new CategoriesFinder();
+        $finder->find();
     }
     
     /**
-     * Тестирует метод ProductsFinder::load
-     */
-    public function testLoad()
-    {
-        $data = [
-            'category'=>'category',
-            'subcategory'=>'subcategory',
-            'page'=>'page'
-        ];
-        
-        $finder = new ProductsFinder();
-        $finder->load($data);
-        
-        $this->assertSame('category', $finder->category);
-        $this->assertSame('subcategory', $finder->subcategory);
-        $this->assertSame('page', $finder->page);
-    }
-    
-    /**
-     * Тестирует метод ProductsFinder::find
+     * Тестирует метод CategoriesFinder::find
      */
     public function testFind()
     {
-        $pagination = new class() extends Object implements PaginationInterface {
-            public function setPageSize(int $size){}
-            public function setPage(int $number){}
-            public function setTotalCount(Query $query){}
-            public function getPageCount(){}
-            public function getOffset(){
-                return 0;
-            }
-            public function getLimit(){
-                return 3;
-            }
-            public function getPage(){}
-        };
-        
         $collection = new class() extends Object implements CollectionInterface {
             private $query;
-            private $pagination;
             public function setQuery(Query $query){
                 $this->query = $query;
             }
@@ -153,22 +115,18 @@ class ProductsFinderTests extends TestCase
             public function getModels(){}
             public function getArrays(){}
             public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){
-                return $this->pagination;
-            }
+            public function getPagination(){}
             public function map(string $key, string $value){}
             public function sort(string $key, $type){}
             public function hasEntity(Model $object){}
             public function update(Model $object){}
         };
-        $finder = new ProductsFinder();
+        
+        $finder = new CategoriesFinder();
+        
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
         $reflection->setValue($finder, $collection);
-        
-        $reflection = new \ReflectionProperty($collection, 'pagination');
-        $reflection->setAccessible(true);
-        $reflection->setValue($collection, $pagination);
         
         $collection = $finder->find();
         
@@ -179,6 +137,7 @@ class ProductsFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertInstanceOf(Query::class, $result);
+        $this->assertSame(CategoriesModel::class, $result->modelClass);
     }
     
     public static function tearDownAfterClass()

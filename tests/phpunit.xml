@@ -16,6 +16,7 @@
         <testsuite name="global">
             <directory suffix="Tests.php">collections</directory>
             <directory suffix="Tests.php">finders</directory>
+            <directory suffix="Tests.php">forms</directory>
             <directory suffix="Tests.php">widgets</directory>
             <!--<directory suffix="Tests.php">helpers</directory>
             <directory suffix="Tests.php">models</directory>
