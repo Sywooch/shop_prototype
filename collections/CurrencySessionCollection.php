@@ -3,14 +3,14 @@
 namespace app\collections;
 
 use yii\base\ErrorException;
-use app\collections\BaseSessionCollection;
+use app\collections\AbstarctBaseSessionCollection;
 use app\models\CurrencyModel;
 
 /**
- * Реализует интерфейс доступа к объекту валюты, 
+ * Реализует интерфейс доступа к объекту текущей валюты, 
  * полученному из сессионного хранилища
  */
-class CurrencySessionCollection extends BaseSessionCollection
+class CurrencySessionCollection extends AbstarctBaseSessionCollection
 {
     /**
      * Получает объект Model из коллекции

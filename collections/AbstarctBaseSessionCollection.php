@@ -20,12 +20,18 @@ abstract class AbstarctBaseSessionCollection extends AbstractIterator implements
      * Получает объекты из сессии и добавляет их в коллекцию
      * @return $this
      */
-    abstract public function getModels();
+    public function getModels()
+    {
+        return null;
+    }
     
     /**
      * Возвращает 1 объект из коллекции
      */
-    abstract public function getModel();
+    public function getModel()
+    {
+        return null;
+    }
     
     /**
      * Возвращает 1 массив из коллекции

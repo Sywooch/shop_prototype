@@ -4,18 +4,17 @@ namespace app\collections;
 
 use yii\base\{ErrorException,
     Model};
-use app\collections\BaseSessionCollection;
+use app\collections\AbstarctBaseSessionCollection;
 use app\exceptions\ExceptionsTrait;
 use app\models\PurchasesModel;
 
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
-class PurchasesSessionCollection extends BaseSessionCollection
+class PurchasesSessionCollection extends AbstarctBaseSessionCollection
 {
     /**
-     * Конструирует массив обектов из массивов данных, 
-     * полученных из сессионного хранилища
+     * Получает объекты из сессии и добавляет их в коллекцию
      * @return $this
      */
     public function getModels()
@@ -54,7 +53,7 @@ class PurchasesSessionCollection extends BaseSessionCollection
             }
             
             foreach ($this->items as $item) {
-                if ($this->isArrays()) {
+                if (is_array($item)) {
                     if ($item['id_product'] === $object->id_product) {
                         if (empty(array_diff([$object->id_color, $object->id_size], [$item['id_color'], $item['id_size']]))) {
                             return true;
@@ -87,7 +86,7 @@ class PurchasesSessionCollection extends BaseSessionCollection
             }
             
             foreach ($this->items as &$item) {
-                if ($this->isArrays()) {
+                if (is_array($item)) {
                     if ($item['id_product'] === $object->id_product) {
                         $item['quantity'] += $object->quantity;
                     }

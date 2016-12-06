@@ -13,7 +13,7 @@ class CurrencySessionCollectionTests extends TestCase
 {
     /**
      * Тестирует метод CurrencySessionCollection::getModel
-     * при условии что CurrencySessionCollection::items пуст
+     * если CurrencySessionCollection::items пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: items
      */
@@ -25,7 +25,7 @@ class CurrencySessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод CurrencySessionCollection::getModel
-     * при условии что CurrencySessionCollection::items содержит не массивы
+     * если CurrencySessionCollection::items содержит не массивы
      * @expectedException ErrorException
      * @expectedExceptionMessage Получен неверный тип данных вместо: items
      */

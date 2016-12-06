@@ -3,13 +3,12 @@
 namespace app\collections;
 
 use yii\base\ErrorException;
-use app\collections\BaseCollection;
-use app\exceptions\ExceptionsTrait;
+use app\collections\AbstractBaseCollection;
 
 /**
  * Реализует интерфейс доступа к коллекции товаров
  */
-class ProductsCollection extends BaseCollection
+class ProductsCollection extends AbstractBaseCollection
 {
     public function init()
     {
