@@ -2,25 +2,15 @@
 
 namespace app\finders;
 
-use yii\base\{ErrorException,
-    Model};
-use app\exceptions\ExceptionsTrait;
+use yii\base\ErrorException;
 use app\models\CurrencyModel;
-use app\finders\FinderInterface;
 use app\collections\CollectionInterface;
 
 /**
- * Возвращает из СУБД вылюту, отмеченную как валюта по умолчанию для приложения
+ * Возвращает валюту по умолчанию из СУБД
  */
-class MainCurrencyFinder extends Model implements FinderInterface
+class MainCurrencyFinder extends AbstractBaseFinder
 {
-    use ExceptionsTrait;
-    
-    /**
-     * @var object CollectionInterface
-     */
-    private $collection;
-    
     /**
      * Возвращает данные из СУБД
      * @return CollectionInterface
@@ -41,19 +31,6 @@ class MainCurrencyFinder extends Model implements FinderInterface
             }
             
             return $this->collection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает CollectionInterface свойству MainCurrencyFinder::collection
-     * @param object $collection CollectionInterface
-     */
-    public function setCollection(CollectionInterface $collection)
-    {
-        try {
-            $this->collection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

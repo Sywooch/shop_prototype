@@ -2,25 +2,16 @@
 
 namespace app\finders;
 
-use yii\base\{ErrorException,
-    Model};
-use app\exceptions\ExceptionsTrait;
+use yii\base\ErrorException;
 use app\models\CategoriesModel;
-use app\finders\FinderInterface;
+use app\finders\AbstractBaseFinder;
 use app\collections\CollectionInterface;
 
 /**
- * Возвращает из СУБД вылюту, отмеченную как валюта по умолчанию для приложения
+ * Возвращает доступные категории товаров из СУБД
  */
-class CategoriesFinder extends Model implements FinderInterface
+class CategoriesFinder extends AbstractBaseFinder
 {
-    use ExceptionsTrait;
-    
-    /**
-     * @var object CollectionInterface
-     */
-    private $collection;
-    
     /**
      * Возвращает данные из СУБД
      * @return CollectionInterface
@@ -41,19 +32,6 @@ class CategoriesFinder extends Model implements FinderInterface
             }
             
             return $this->collection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает CollectionInterface свойству CategoriesFinder::collection
-     * @param object $collection CollectionInterface
-     */
-    public function setCollection(CollectionInterface $collection)
-    {
-        try {
-            $this->collection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

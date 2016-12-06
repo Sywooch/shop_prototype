@@ -5,6 +5,9 @@ namespace app\collections;
 use yii\base\Object;
 use app\exceptions\ExceptionsTrait;
 
+/**
+ * Реализует интерфейс итератора для коллекции
+ */
 abstract class AbstractIterator extends Object implements \Iterator
 {
     use ExceptionsTrait;

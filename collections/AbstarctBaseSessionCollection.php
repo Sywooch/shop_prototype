@@ -3,16 +3,32 @@
 namespace app\collections;
 
 use yii\base\ErrorException;
-use app\collections\BaseCollection;
+use app\exceptions\ExceptionsTrait;
+use app\collections\{AbstractIterator,
+    BaseTrait,
+    SessionCollectionInterface};
 
 /**
  * Реализует интерфейс доступа к коллекции объектов, 
  * полученной из сессионного хранилища
  */
-class BaseSessionCollection extends BaseCollection
+abstract class AbstarctBaseSessionCollection extends AbstractIterator implements SessionCollectionInterface
 {
+    use ExceptionsTrait, BaseTrait;
+    
     /**
-     * Возвращает массив данных из коллекции
+     * Получает объекты из сессии и добавляет их в коллекцию
+     * @return $this
+     */
+    abstract public function getModels();
+    
+    /**
+     * Возвращает 1 объект из коллекции
+     */
+    abstract public function getModel();
+    
+    /**
+     * Возвращает 1 массив из коллекции
      */
     public function getArray()
     {

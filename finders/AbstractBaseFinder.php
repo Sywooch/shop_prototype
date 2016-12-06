@@ -5,7 +5,6 @@ namespace app\finders;
 use yii\base\{ErrorException,
     Model};
 use app\exceptions\ExceptionsTrait;
-use app\models\ProductsModel;
 use app\finders\FinderInterface;
 use app\collections\CollectionInterface;
 
@@ -36,7 +35,7 @@ abstract class AbstractBaseFinder extends Model implements FinderInterface
     }
     
     /**
-     * Присваивает CollectionInterface свойству $this->collection
+     * Присваивает CollectionInterface свойству static::collection
      * @param object $collection CollectionInterface
      */
     public function setCollection(CollectionInterface $collection)

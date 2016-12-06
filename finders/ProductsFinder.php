@@ -2,20 +2,16 @@
 
 namespace app\finders;
 
-use yii\base\{ErrorException,
-    Model};
-use app\exceptions\ExceptionsTrait;
+use yii\base\ErrorException;
 use app\models\ProductsModel;
-use app\finders\FinderInterface;
+use app\finders\AbstractBaseFinder;
 use app\collections\CollectionInterface;
 
 /**
- * Возвращает коллекцию товаров для каталога
+ * Возвращает коллекцию товаров из СУБД
  */
-class ProductsFinder extends Model implements FinderInterface
+class ProductsFinder extends AbstractBaseFinder
 {
-    use ExceptionsTrait;
-    
     /**
      * @var string GET параметр, определяющий текущую категорию каталога товаров
      */
@@ -28,30 +24,12 @@ class ProductsFinder extends Model implements FinderInterface
      * @var string GET параметр, определяющий текущую страницу каталога товаров
      */
     public $page;
-    /**
-     * @var object CollectionInterface
-     */
-    private $collection;
     
     public function rules()
     {
         return [
             [['category', 'subcategory', 'page'], 'safe']
         ];
-    }
-    
-    /**
-     * Загружает данные в свойства модели
-     * @param $data массив данных
-     * @return bool
-     */
-    public function load($data, $formName=null)
-    {
-        try {
-            return parent::load($data, '');
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
     }
     
     /**
@@ -91,19 +69,6 @@ class ProductsFinder extends Model implements FinderInterface
             }
             
             return $this->collection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает CollectionInterface свойству ProductsFinder::collection
-     * @param object $collection CollectionInterface
-     */
-    public function setCollection(CollectionInterface $collection)
-    {
-        try {
-            $this->collection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

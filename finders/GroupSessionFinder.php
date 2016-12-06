@@ -2,48 +2,26 @@
 
 namespace app\finders;
 
-use yii\base\{ErrorException,
-    Model};
-use app\finders\FinderInterface;
-use app\exceptions\ExceptionsTrait;
+use yii\base\ErrorException;
+use app\finders\AbstractBaseFinder;
 use app\helpers\SessionHelper;
 use app\collections\CollectionInterface;
 
 /**
  * Возвращает коллекцию элементов из сессии
  */
-class GroupSessionFinder extends Model implements FinderInterface
+class GroupSessionFinder extends AbstractBaseFinder
 {
-    use ExceptionsTrait;
-    
     /**
      * @var string key ключ доступа к данным
      */
     public $key;
-    /**
-     * @var object CollectionInterface
-     */
-    private $collection;
     
     public function rules()
     {
         return [
             [['key'], 'required'],
         ];
-    }
-    
-    /**
-     * Загружает данные в свойства модели
-     * @param $data массив данных
-     * @return bool
-     */
-    public function load($data, $formName=null)
-    {
-        try {
-            return parent::load($data, '');
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
     }
     
     /**
@@ -71,19 +49,6 @@ class GroupSessionFinder extends Model implements FinderInterface
             }
             
             return $this->collection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает CollectionInterface свойству ProductsFinder::collection
-     * @param object $collection CollectionInterface
-     */
-    public function setCollection(CollectionInterface $collection)
-    {
-        try {
-            $this->collection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -4,6 +4,7 @@ namespace app\finders;
 
 use yii\base\ErrorException;
 use app\models\CategoriesModel;
+use app\collections\CollectionInterface;
 
 /**
  * Возвращает объект категории
