@@ -4,7 +4,7 @@ namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
 use app\finders\ProductsFinder;
-use app\collections\{AbstractBaseCollection,
+use app\collections\{BaseCollection,
     CollectionInterface,
     LightPagination};
 use yii\db\Query;
@@ -69,7 +69,7 @@ class ProductsFinderTests extends TestCase
             }
         };
         
-        $collection = new class() extends AbstractBaseCollection {};
+        $collection = new class() extends BaseCollection {};
         $finder = new ProductsFinder();
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);

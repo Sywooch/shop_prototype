@@ -4,7 +4,7 @@ namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
 use app\finders\SubcategorySeocodeFinder;
-use app\collections\{AbstractBaseCollection,
+use app\collections\{BaseCollection,
     CollectionInterface};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\SubcategoryFixture;
@@ -61,7 +61,7 @@ class SubcategorySeocodeFinderTests extends TestCase
      */
     public function testFind()
     {
-        $collection = new class() extends AbstractBaseCollection {};
+        $collection = new class() extends BaseCollection {};
         $fixture = self::$dbClass->subcategory['subcategory_1'];
         
         $finder = new SubcategorySeocodeFinder();

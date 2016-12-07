@@ -4,7 +4,7 @@ namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
 use app\finders\AbstractBaseSessionFinder;
-use app\collections\{AbstarctBaseSessionCollection,
+use app\collections\{BaseSessionCollection,
     SessionCollectionInterface};
 
 /**
@@ -47,7 +47,7 @@ class AbstractBaseSessionFinderTests extends TestCase
      */
     public function testSetCollection()
     {
-        $collection = new class() extends AbstarctBaseSessionCollection {};
+        $collection = new class() extends BaseSessionCollection {};
         $this->finder->setCollection($collection);
         
         $reflection = new \ReflectionProperty($this->finder, 'collection');

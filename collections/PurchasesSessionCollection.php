@@ -4,14 +4,14 @@ namespace app\collections;
 
 use yii\base\{ErrorException,
     Model};
-use app\collections\AbstarctBaseSessionCollection;
+use app\collections\BaseSessionCollection;
 use app\exceptions\ExceptionsTrait;
 use app\models\PurchasesModel;
 
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
-class PurchasesSessionCollection extends AbstarctBaseSessionCollection
+class PurchasesSessionCollection extends BaseSessionCollection
 {
     /**
      * Получает объекты из сессии и добавляет их в коллекцию

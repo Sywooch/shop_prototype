@@ -12,7 +12,7 @@ use app\collections\{AbstractIterator,
  * Реализует интерфейс доступа к коллекции объектов, 
  * полученной из сессионного хранилища
  */
-abstract class AbstarctBaseSessionCollection extends AbstractIterator implements SessionCollectionInterface
+class BaseSessionCollection extends AbstractIterator implements SessionCollectionInterface
 {
     use ExceptionsTrait, BaseTrait;
     

@@ -4,7 +4,7 @@ namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
 use app\finders\GroupSessionFinder;
-use app\collections\{AbstarctBaseSessionCollection,
+use app\collections\{BaseSessionCollection,
     SessionCollectionInterface};
 
 class GroupSessionFinderTests extends TestCase
@@ -50,7 +50,7 @@ class GroupSessionFinderTests extends TestCase
         $session->set('some', [['id'=>1, 'one'=>'One-one', 'two-one'=>3134.35], ['id'=>2, 'one-two'=>'One', 'two-two'=>3134.35], ['id'=>3, 'one-three'=>'One', 'two-three'=>3134.35]]);
         $session->close();
         
-        $collection = new class() extends AbstarctBaseSessionCollection {};
+        $collection = new class() extends BaseSessionCollection {};
         $finder = new GroupSessionFinder();
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
@@ -69,7 +69,7 @@ class GroupSessionFinderTests extends TestCase
         $session->set('some', [['id'=>1, 'one'=>'One-one', 'two-one'=>3134.35], ['id'=>2, 'one-two'=>'One', 'two-two'=>3134.35], ['id'=>3, 'one-three'=>'One', 'two-three'=>3134.35]]);
         $session->close();
         
-        $collection = new class() extends AbstarctBaseSessionCollection {
+        $collection = new class() extends BaseSessionCollection {
             public function addArray(array $array){
                 $this->items[] = $array;
             }

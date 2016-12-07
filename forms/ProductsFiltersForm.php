@@ -1,15 +1,17 @@
 <?php
 
-namespace app\models;
+namespace app\forms;
 
-use yii\base\ErrorException;
-use app\models\{AbstractFormModel,
+use yii\base\{ErrorException,
+    Model};
+use app\forms\{AbstractBaseForm,
     FormInterface};
+use app\models\ProductsModel;
 
 /**
- * Представляет данные формы изменения текущей валюты
+ * Представляет данные формы фильтров для каталога товаров
  */
-class ProductsFiltersFormModel extends AbstractFormModel implements FormInterface
+class ProductsFiltersForm extends AbstractFormModel implements FormInterface
 {
     /**
      * Сценарий сохранения настроек фильтров
@@ -40,19 +42,6 @@ class ProductsFiltersFormModel extends AbstractFormModel implements FormInterfac
             $this->colors = [];
             $this->sizes = [];
             $this->brands = [];
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает объект модели, представляющий таблицу СУБД
-     * @return Model
-     */
-    public function getModel($name)
-    {
-        try {
-            
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

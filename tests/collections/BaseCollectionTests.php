@@ -3,7 +3,7 @@
 namespace app\tests\collections;
 
 use PHPUnit\Framework\TestCase;
-use app\collections\{AbstractBaseCollection,
+use app\collections\{BaseCollection,
     CollectionInterface,
     LightPagination,
     PaginationInterface};
@@ -11,99 +11,101 @@ use yii\base\Model;
 use yii\db\{ActiveRecord,
     Query};
 
-class AbstractBaseCollectionTests extends TestCase
+class BaseCollectionTests extends TestCase
 {
-    private $collection;
-    
     public static function setUpBeforeClass()
     {
         \Yii::$app->db->createCommand('CREATE TABLE IF NOT EXISTS abc_test (id INT, text VARCHAR(255))')->execute();
         \Yii::$app->db->createCommand('INSERT INTO abc_test (id, text) VALUES (1,\'one\'), (2,\'two\')')->execute();
     }
     
-    public function setUp()
-    {
-        $this->collection = new class() extends AbstractBaseCollection {};
-    }
-    
     /**
-     * Тестирует свойства AbstractBaseCollection
+     * Тестирует свойства BaseCollection
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AbstractBaseCollection::class);
+        $reflection = new \ReflectionClass(BaseCollection::class);
         
         $this->assertTrue($reflection->hasProperty('query'));
         $this->assertTrue($reflection->hasProperty('pagination'));
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::setQuery
+     * Тестирует метод BaseCollection::setQuery
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testSetQueryError()
     {
         $query = new class() {};
-        $this->collection->setQuery($query);
+        
+        $collection = new BaseCollection();
+        $collection->setQuery($query);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::setQuery
+     * Тестирует метод BaseCollection::setQuery
      */
     public function testSetQuery()
     {
         $query = new class() extends Query {};
-        $this->collection->setQuery($query);
         
-        $reflection = new \ReflectionProperty($this->collection, 'query');
+        $collection = new BaseCollection();
+        $collection->setQuery($query);
+        
+        $reflection = new \ReflectionProperty($collection, 'query');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertNotEmpty($result);
         $this->assertInstanceOf(Query::class, $result);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::getQuery
+     * Тестирует метод BaseCollection::getQuery
      */
     public function testGetQuery()
     {
         $query = new class() extends Query {};
-        $reflection = new \ReflectionProperty($this->collection, 'query');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->collection, $query);
         
-        $this->assertNotEmpty($this->collection->query);
-        $this->assertInstanceOf(Query::class, $this->collection->query);
+        $collection = new BaseCollection();
+        $reflection = new \ReflectionProperty($collection, 'query');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, $query);
+        
+        $this->assertNotEmpty($collection->query);
+        $this->assertInstanceOf(Query::class, $collection->query);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::add
+     * Тестирует метод BaseCollection::add
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testAddError()
     {
         $model = new class() {};
-        $this->collection->add($model);
+        
+        $collection = new BaseCollection();
+        $collection->add($model);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::add
-     * если AbstractBaseCollection::items пуст
+     * Тестирует метод BaseCollection::add
+     * если BaseCollection::items пуст
      */
     public function testAddEmptyItems()
     {
         $model = new class() extends Model{
             public $id = 1;
         };
-
-        $this->collection->add($model);
         
-        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $collection = new BaseCollection();
+        $collection->add($model);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertTrue(is_array($result));
         $this->assertNotEmpty($result);
@@ -111,8 +113,8 @@ class AbstractBaseCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::add
-     * если AbstractBaseCollection::items содержит объекты
+     * Тестирует метод BaseCollection::add
+     * если BaseCollection::items содержит объекты
      */
     public function testAdd()
     {
@@ -123,33 +125,35 @@ class AbstractBaseCollectionTests extends TestCase
             public $id = 2;
         };
         
-        $reflection = new \ReflectionProperty($this->collection, 'items');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->collection, [$model_1]);
+        $collection = new BaseCollection();
         
-        $result = $reflection->getValue($this->collection);
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model_1]);
+        
+        $result = $reflection->getValue($collection);
         
         $this->assertCount(1, $result);
         
-        $this->collection->add($model_1);
+        $collection->add($model_1);
         
-        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertCount(1, $result);
         
-        $this->collection->add($model_2);
+        $collection->add($model_2);
         
-        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertCount(2, $result);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::getModels
+     * Тестирует метод BaseCollection::getModels
      */
     public function testGetModels()
     {
@@ -162,24 +166,26 @@ class AbstractBaseCollectionTests extends TestCase
         
         $query = $model::className()::find();
         
-        $reflection = new \ReflectionProperty($this->collection, 'query');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->collection, $query);
+        $collection = new BaseCollection();
         
-        $result = $this->collection->getModels();
+        $reflection = new \ReflectionProperty($collection, 'query');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, $query);
+        
+        $result = $collection->getModels();
         
         $this->assertInstanceOf(CollectionInterface::class, $result);
         
-        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertNotEmpty($result);
         $this->assertInstanceOf($model::className(), $result[0]);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::getArrays
+     * Тестирует метод BaseCollection::getArrays
      */
     public function testGetArrays()
     {
@@ -192,24 +198,26 @@ class AbstractBaseCollectionTests extends TestCase
         
         $query = $model::className()::find();
         
-        $reflection = new \ReflectionProperty($this->collection, 'query');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->collection, $query);
+        $collection = new BaseCollection();
         
-        $result = $this->collection->getArrays();
+        $reflection = new \ReflectionProperty($collection, 'query');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, $query);
+        
+        $result = $collection->getArrays();
         
         $this->assertInstanceOf(CollectionInterface::class, $result);
         
-        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertNotEmpty($result);
         $this->assertInternalType('array', $result[0]);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::getModel
+     * Тестирует метод BaseCollection::getModel
      */
     public function testGetModel()
     {
@@ -222,23 +230,25 @@ class AbstractBaseCollectionTests extends TestCase
         
         $query = $model::className()::find();
         
-        $reflection = new \ReflectionProperty($this->collection, 'query');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->collection, $query);
+        $collection = new BaseCollection();
         
-        $result = $this->collection->getModel();
+        $reflection = new \ReflectionProperty($collection, 'query');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, $query);
+        
+        $result = $collection->getModel();
         
         $this->assertInstanceOf($model::className(), $result);
         
-        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertCount(1, $result);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::getArray
+     * Тестирует метод BaseCollection::getArray
      */
     public function testGetArray()
     {
@@ -251,60 +261,67 @@ class AbstractBaseCollectionTests extends TestCase
         
         $query = $model::className()::find();
         
-        $reflection = new \ReflectionProperty($this->collection, 'query');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->collection, $query);
+        $collection = new BaseCollection();
         
-        $result = $this->collection->getArray();
+        $reflection = new \ReflectionProperty($collection, 'query');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, $query);
+        
+        $result = $collection->getArray();
         
         $this->assertTrue(is_array($result));
         
-        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertCount(1, $result);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::setPagination
+     * Тестирует метод BaseCollection::setPagination
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testSetPaginationError()
     {
         $pagination = new class() {};
-        $this->collection->setPagination($pagination);
+        
+        $collection = new BaseCollection();
+        $collection->setPagination($pagination);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::setPagination
+     * Тестирует метод BaseCollection::setPagination
      */
     public function testSetPagination()
     {
         $pagination = new class() extends LightPagination {};
-        $this->collection->setPagination($pagination);
         
-        $reflection = new \ReflectionProperty($this->collection, 'pagination');
+        $collection = new BaseCollection();
+        $collection->setPagination($pagination);
+        
+        $reflection = new \ReflectionProperty($collection, 'pagination');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->collection);
+        $result = $reflection->getValue($collection);
         
         $this->assertNotEmpty($result);
         $this->assertInstanceOf(PaginationInterface::class, $result);
     }
     
     /**
-     * Тестирует метод AbstractBaseCollection::getPagination
+     * Тестирует метод BaseCollection::getPagination
      */
     public function testGetPagination()
     {
         $pagination = new class() extends LightPagination {};
         
-        $reflection = new \ReflectionProperty($this->collection, 'pagination');
+        $collection = new BaseCollection();
+        $reflection = new \ReflectionProperty($collection, 'pagination');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($this->collection, $pagination);
+        $result = $reflection->setValue($collection, $pagination);
         
-        $result = $this->collection->getPagination();
+        $result = $collection->getPagination();
         
         $this->assertNotEmpty($result);
         $this->assertInstanceOf(PaginationInterface::class, $result);

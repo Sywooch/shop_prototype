@@ -3,15 +3,15 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\ColorsFilterFinder;
+use app\finders\SizesFilterFinder;
 use app\collections\{BaseCollection,
     CollectionInterface};
 use yii\db\Query;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\ColorsFixture;
-use app\models\ColorsModel;
+use app\tests\sources\fixtures\SizesFixture;
+use app\models\SizesModel;
 
-class ColorsFilterFinderTests extends TestCase
+class SizesFilterFinderTests extends TestCase
 {
     private static $dbClass;
     
@@ -19,29 +19,29 @@ class ColorsFilterFinderTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'colors'=>ColorsFixture::class
+                'sizes'=>SizesFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует свойства ColorsFilterFinder
+     * Тестирует свойства SizesFilterFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(ColorsFilterFinder::class);
+        $reflection = new \ReflectionClass(SizesFilterFinder::class);
         
         $this->assertTrue($reflection->hasProperty('category'));
         $this->assertTrue($reflection->hasProperty('subcategory'));
     }
     
     /**
-     * Тестирует метод ColorsFilterFinder::rules
+     * Тестирует метод SizesFilterFinder::rules
      */
     public function testRules()
     {
-        $finder = new ColorsFilterFinder();
+        $finder = new SizesFilterFinder();
         $finder->attributes = [
             'category'=>'category',
             'subcategory'=>'subcategory',
@@ -52,13 +52,13 @@ class ColorsFilterFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод ColorsFilterFinder::find
+     * Тестирует метод SizesFilterFinder::find
      */
     public function testFind()
     {
         $collection = new class() extends BaseCollection {};
         
-        $finder = new ColorsFilterFinder();
+        $finder = new SizesFilterFinder();
         
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
@@ -73,22 +73,22 @@ class ColorsFilterFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertInstanceOf(Query::class, $result);
-        $this->assertSame(ColorsModel::class, $result->modelClass);
+        $this->assertSame(SizesModel::class, $result->modelClass);
         
-        $expectedQuery = "SELECT DISTINCT `colors`.`id`, `colors`.`color` FROM `colors` INNER JOIN `products_colors` ON `colors`.`id`=`products_colors`.`id_color` INNER JOIN `products` ON `products_colors`.`id_product`=`products`.`id` WHERE `products`.`active`=TRUE";
+        $expectedQuery = "SELECT DISTINCT `sizes`.`id`, `sizes`.`size` FROM `sizes` INNER JOIN `products_sizes` ON `sizes`.`id`=`products_sizes`.`id_size` INNER JOIN `products` ON `products_sizes`.`id_product`=`products`.`id` WHERE `products`.`active`=TRUE";
         
         $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }
     
     /**
-     * Тестирует метод ColorsFilterFinder::find
-     * если ColorsFilterFinder::category не пустое
+     * Тестирует метод SizesFilterFinder::find
+     * если SizesFilterFinder::category не пустое
      */
     public function testFindCategory()
     {
         $collection = new class() extends BaseCollection {};
         
-        $finder = new ColorsFilterFinder();
+        $finder = new SizesFilterFinder();
         
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
@@ -107,22 +107,22 @@ class ColorsFilterFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertInstanceOf(Query::class, $result);
-        $this->assertSame(ColorsModel::class, $result->modelClass);
+        $this->assertSame(SizesModel::class, $result->modelClass);
         
-        $expectedQuery = "SELECT DISTINCT `colors`.`id`, `colors`.`color` FROM `colors` INNER JOIN `products_colors` ON `colors`.`id`=`products_colors`.`id_color` INNER JOIN `products` ON `products_colors`.`id_product`=`products`.`id` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` WHERE (`products`.`active`=TRUE) AND (`categories`.`seocode`='shoes')";
+        $expectedQuery = "SELECT DISTINCT `sizes`.`id`, `sizes`.`size` FROM `sizes` INNER JOIN `products_sizes` ON `sizes`.`id`=`products_sizes`.`id_size` INNER JOIN `products` ON `products_sizes`.`id_product`=`products`.`id` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` WHERE (`products`.`active`=TRUE) AND (`categories`.`seocode`='shoes')";
         
         $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }
     
     /**
-     * Тестирует метод ColorsFilterFinder::find
-     * если ColorsFilterFinder::subcategory не пустое
+     * Тестирует метод SizesFilterFinder::find
+     * если SizesFilterFinder::subcategory не пустое
      */
     public function testFindSubcategory()
     {
         $collection = new class() extends BaseCollection {};
         
-        $finder = new ColorsFilterFinder();
+        $finder = new SizesFilterFinder();
         
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
@@ -145,9 +145,9 @@ class ColorsFilterFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertInstanceOf(Query::class, $result);
-        $this->assertSame(ColorsModel::class, $result->modelClass);
+        $this->assertSame(SizesModel::class, $result->modelClass);
         
-        $expectedQuery = "SELECT DISTINCT `colors`.`id`, `colors`.`color` FROM `colors` INNER JOIN `products_colors` ON `colors`.`id`=`products_colors`.`id_color` INNER JOIN `products` ON `products_colors`.`id_product`=`products`.`id` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`products`.`active`=TRUE) AND (`categories`.`seocode`='shoes')) AND (`subcategory`.`seocode`='sneakers')";
+        $expectedQuery = "SELECT DISTINCT `sizes`.`id`, `sizes`.`size` FROM `sizes` INNER JOIN `products_sizes` ON `sizes`.`id`=`products_sizes`.`id_size` INNER JOIN `products` ON `products_sizes`.`id_product`=`products`.`id` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`products`.`active`=TRUE) AND (`categories`.`seocode`='shoes')) AND (`subcategory`.`seocode`='sneakers')";
         
         $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }

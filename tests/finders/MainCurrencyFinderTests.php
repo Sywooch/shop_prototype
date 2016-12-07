@@ -4,7 +4,7 @@ namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
 use app\finders\MainCurrencyFinder;
-use app\collections\{AbstractBaseCollection,
+use app\collections\{BaseCollection,
     CollectionInterface};
 use yii\db\Query;
 use app\tests\DbManager;
@@ -33,7 +33,7 @@ class MainCurrencyFinderTests extends TestCase
      */
     public function testFind()
     {
-        $collection = new class() extends AbstractBaseCollection {};
+        $collection = new class() extends BaseCollection {};
         
         $finder = new MainCurrencyFinder();
         $reflection = new \ReflectionProperty($finder, 'collection');

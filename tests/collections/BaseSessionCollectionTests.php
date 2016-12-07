@@ -3,38 +3,28 @@
 namespace app\tests\collections;
 
 use PHPUnit\Framework\TestCase;
-use app\collections\AbstarctBaseSessionCollection;
+use app\collections\BaseSessionCollection;
 
 /**
- * Тестирует класс AbstarctBaseSessionCollection
+ * Тестирует класс BaseSessionCollection
  */
-class AbstarctBaseSessionCollectionTests extends TestCase
+class BaseSessionCollectionTests extends TestCase
 {
-    private $collection;
-    
-    public function setUp()
-    {
-        $this->collection = new class() extends AbstarctBaseSessionCollection {
-            public function getModels() {}
-            public function getModel() {}
-        };
-    }
-    
     /**
-     * Тестирует метод AbstarctBaseSessionCollection::getArray
-     * при условии что AbstarctBaseSessionCollection::items пуст
+     * Тестирует метод BaseSessionCollection::getArray
+     * при условии что BaseSessionCollection::items пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: items
      */
     public function testGetArrayEmpty()
     {
-        $collection = new $this->collection();
+        $collection = new BaseSessionCollection();
         $collection->getArray();
     }
     
     /**
-     * Тестирует метод AbstarctBaseSessionCollection::getArray
-     * при условии что AbstarctBaseSessionCollection::items содержит не массивы
+     * Тестирует метод BaseSessionCollection::getArray
+     * при условии что BaseSessionCollection::items содержит не массивы
      * @expectedException ErrorException
      * @expectedExceptionMessage Получен неверный тип данных вместо: items
      */
@@ -42,7 +32,7 @@ class AbstarctBaseSessionCollectionTests extends TestCase
     {
         $model = new class() {};
         
-        $collection = new $this->collection();
+        $collection = new BaseSessionCollection();
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
@@ -52,13 +42,13 @@ class AbstarctBaseSessionCollectionTests extends TestCase
     }
     
     /**
-     * Тестирует метод AbstarctBaseSessionCollection::getArray
+     * Тестирует метод BaseSessionCollection::getArray
      */
     public function testGetArray()
     {
         $array = ['id'=>1, 'one'=>'some one text', 'two'=>23.3467];
         
-        $collection = new $this->collection();
+        $collection = new BaseSessionCollection();
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);

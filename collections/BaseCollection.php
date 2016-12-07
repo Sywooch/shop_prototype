@@ -14,7 +14,7 @@ use app\collections\{AbstractIterator,
 /**
  * Реализует интерфейс доступа к коллекции объектов
  */
-abstract class AbstractBaseCollection extends AbstractIterator implements CollectionInterface
+class BaseCollection extends AbstractIterator implements CollectionInterface
 {
     use ExceptionsTrait, BaseTrait;
     

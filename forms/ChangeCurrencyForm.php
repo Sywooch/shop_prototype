@@ -4,14 +4,12 @@ namespace app\forms;
 
 use yii\base\{ErrorException,
     Model};
-use app\forms\{AbstractBaseForm,
-    FormInterface};
-use app\models\CurrencyModel;
+use app\forms\AbstractBaseForm;
 
 /**
  * Представляет данные формы изменения текущей валюты
  */
-class ChangeCurrencyForm extends AbstractBaseForm implements FormInterface
+class ChangeCurrencyForm extends AbstractBaseForm
 {
     /**
      * Сценарий изменения текущей валюты

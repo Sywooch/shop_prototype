@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use app\finders\CurrencyFinder;
 use app\tests\sources\fixtures\CurrencyFixture;
 use app\tests\DbManager;
-use app\collections\{AbstractBaseCollection,
+use app\collections\{BaseCollection,
     CollectionInterface};
 use yii\db\Query;
 use app\models\CurrencyModel;
@@ -45,7 +45,7 @@ class CurrencyFinderTests extends TestCase
      */
     public function testFind()
     {
-        $collection = new class() extends AbstractBaseCollection {};
+        $collection = new class() extends BaseCollection {};
         
         $finder = new CurrencyFinder();
         

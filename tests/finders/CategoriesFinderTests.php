@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use app\finders\CategoriesFinder;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CategoriesFixture;
-use app\collections\{AbstractBaseCollection,
+use app\collections\{BaseCollection,
     CollectionInterface};
 use yii\db\Query;
 use app\models\CategoriesModel;
@@ -45,7 +45,7 @@ class CategoriesFinderTests extends TestCase
      */
     public function testFind()
     {
-        $collection = new class() extends AbstractBaseCollection {};
+        $collection = new class() extends BaseCollection {};
         
         $finder = new CategoriesFinder();
         

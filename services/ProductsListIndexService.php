@@ -18,13 +18,15 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     SearchWidget,
     ThumbnailsWidget,
     UserInfoWidget};
-use app\finders\{CategoriesFinder,
+use app\finders\{BrandsFilterFinder,
+    CategoriesFinder,
+    ColorsFilterFinder,
     CurrencyFinder,
     GroupSessionFinder,
     OneSessionFinder,
-    ProductsFinder};
-use app\collections\{CategoriesCollection,
-    CurrencyCollection,
+    ProductsFinder,
+    SizesFilterFinder};
+use app\collections\{BaseCollection,
     CurrencySessionCollection,
     LightPagination,
     ProductsCollection,
@@ -96,7 +98,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             
             $currencyFinder = new CurrencyFinder([
-                'collection'=>new CurrencyCollection()
+                'collection'=>new BaseCollection()
             ]);
             $currencyCollection = $currencyFinder->find()->getModels();
             if ($currencyCollection->isEmpty()) {
@@ -114,7 +116,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             
             $categoriesFinder = new CategoriesFinder([
-                'collection'=>new CategoriesCollection()
+                'collection'=>new BaseCollection()
             ]);
             $categoriesCollection = $categoriesFinder->find()->getModels();
             if ($categoriesCollection->isEmpty()) {
@@ -149,7 +151,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'collection'=>new BaseCollection()
             ]);
             $colorsFilterFinder->load($request);
-            $colorsCollection = $colorsFilterFinder->find();
+            $colorsCollection = $colorsFilterFinder->find()->getModels();
             if ($colorsCollection->isEmpty()) {
                 throw new ErrorException($this->emptyError('colorsCollection'));
             }
@@ -158,7 +160,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'collection'=>new BaseCollection()
             ]);
             $sizesFilterFinder->load($request);
-            $sizesCollection = $sizesFilterFinder->find();
+            $sizesCollection = $sizesFilterFinder->find()->getModels();
             if ($sizesCollection->isEmpty()) {
                 throw new ErrorException($this->emptyError('sizesCollection'));
             }
@@ -167,7 +169,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'collection'=>new BaseCollection()
             ]);
             $brandsFilterFinder->load($request);
-            $brandsCollection = $brandsFilterFinder->find();
+            $brandsCollection = $brandsFilterFinder->find()->getModels();
             if ($brandsCollection->isEmpty()) {
                 throw new ErrorException($this->emptyError('brandsCollection'));
             }

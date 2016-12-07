@@ -8,7 +8,7 @@ use app\actions\SearchAction;
 use app\repositories\DbRepository;
 use app\services\{ProductsListIndexService,
     SphinxSearchService};
-use app\collections\{CurrencyCollection,
+use app\collections\{BaseCollection,
     CurrencySessionCollection,
     LightPagination};
 use app\search\ProductsSearchModel;
@@ -33,7 +33,7 @@ class ProductsListController extends AbstractBaseController
                 'service'=>new SphinxSearchService([
                     'sphinxRepository'=>new DbRepository([
                         'query'=>SphinxModel::find(),
-                        'collection'=>new CurrencyCollection(),
+                        'collection'=>new BaseCollection(),
                         //'criteria'=>new QueryCriteria()
                     ]),
                     'productsRepository'=>new DbRepository([
@@ -61,7 +61,7 @@ class ProductsListController extends AbstractBaseController
                     'collection'=>new CurrencySessionCollection()
                 ]),
                 'finder'=>new MainCurrencyFinder([
-                    'collection'=>new CurrencyCollection()
+                    'collection'=>new BaseCollection()
                 ])
             ],
             [
