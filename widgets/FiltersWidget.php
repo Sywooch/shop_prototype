@@ -19,15 +19,15 @@ class FiltersWidget extends Widget
     /**
      * @var object CollectionInterface
      */
-    public $colorsCollection;
+    private $colorsCollection;
     /**
      * @var object CollectionInterface
      */
-    public $sizesCollection;
+    private $sizesCollection;
     /**
      * @var object CollectionInterface
      */
-    public $brandsCollection;
+    private $brandsCollection;
     /**
      * @var object Model, получает данные из формы
      */

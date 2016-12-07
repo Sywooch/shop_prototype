@@ -6,7 +6,6 @@ use yii\base\{ErrorException,
     Object};
 use yii\web\NotFoundHttpException;
 use app\exceptions\ExceptionsTrait;
-use app\models\ProductsFiltersFormModel;
 use app\widgets\{CategoriesBreadcrumbsWidget,
     CategoriesMenuWidget,
     CartWidget,
@@ -20,19 +19,22 @@ use app\widgets\{CategoriesBreadcrumbsWidget,
     UserInfoWidget};
 use app\finders\{BrandsFilterFinder,
     CategoriesFinder,
+    CategorySeocodeFinder,
     ColorsFilterFinder,
     CurrencyFinder,
     GroupSessionFinder,
     OneSessionFinder,
     ProductsFinder,
-    SizesFilterFinder};
+    SizesFilterFinder,
+    SubcategorySeocodeFinder};
 use app\collections\{BaseCollection,
     CurrencySessionCollection,
     LightPagination,
     ProductsCollection,
     PurchasesSessionCollection};
 use app\helpers\HashHelper;
-use app\forms\ChangeCurrencyForm;
+use app\forms\{ChangeCurrencyForm,
+    FiltersForm};
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -128,7 +130,9 @@ class ProductsListIndexService extends Object implements ServiceInterface
             
             $categoriesBreadcrumbsConfig = [];
             if (!empty($category = $request[\Yii::$app->params['categoryKey']])) {
-                $categorySeocodeFinder = new CategorySeocodeFinder();
+                $categorySeocodeFinder = new CategorySeocodeFinder([
+                    'collection'=>new BaseCollection()
+                ]);
                 $categorySeocodeFinder->load(['seocode'=>$category]);
                 $categoryModel = $categorySeocodeFinder->find()->getModel();
                 if (empty($categoryModel)) {
@@ -136,7 +140,9 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 }
                 $categoriesBreadcrumbsConfig['category'] = $categoryModel;
                 if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']])) {
-                    $subcategorySeocodeFinder = new SubcategorySeocodeFinder();
+                    $subcategorySeocodeFinder = new SubcategorySeocodeFinder([
+                        'collection'=>new BaseCollection()
+                    ]);
                     $subcategorySeocodeFinder->load(['seocode'=>$subcategory]);
                     $subcategoryModel = $subcategorySeocodeFinder->find()->getModel();
                     if (empty($subcategoryModel)) {
@@ -178,7 +184,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'colorsCollection'=>$colorsCollection,
                 'sizesCollection'=>$sizesCollection,
                 'brandsCollection'=>$brandsCollection,
-                'form'=>new ProductsFiltersFormModel(),
+                'form'=>new FiltersForm(),
                 'view'=>'products-filters.twig'
             ]);
             

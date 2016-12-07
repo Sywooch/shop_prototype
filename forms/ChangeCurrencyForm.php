@@ -2,8 +2,7 @@
 
 namespace app\forms;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 
 /**
