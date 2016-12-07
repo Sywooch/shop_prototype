@@ -9,7 +9,7 @@ use app\exceptions\ExceptionsTrait;
 use app\repositories\RepositoryInterface;
 use app\helpers\HashHelper;
 use app\models\CurrencyModel;
-use app\collections\CollectionInterface;
+use app\collections\SessionCollectionInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -19,7 +19,7 @@ class CartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object CollectionInterface
+     * @var object SessionCollectionInterface
      */
     private $purchasesCollection;
     /**
@@ -71,10 +71,10 @@ class CartWidget extends Widget
     }
     
     /**
-     * Присваивает CollectionInterface свойству CartWidget::purchasesCollection
-     * @param object $collection CollectionInterface
+     * Присваивает SessionCollectionInterface свойству CartWidget::purchasesCollection
+     * @param object $collection SessionCollectionInterface
      */
-    public function setPurchasesCollection(CollectionInterface $collection)
+    public function setPurchasesCollection(SessionCollectionInterface $collection)
     {
         try {
             $this->purchasesCollection = $collection;

@@ -6,26 +6,26 @@ use yii\base\{ErrorException,
     Model};
 use app\exceptions\ExceptionsTrait;
 use app\finders\{BaseTrait,
-    FinderInterface};
-use app\collections\CollectionInterface;
+    SessionFinderInterface};
+use app\collections\SessionCollectionInterface;
 
 /**
  * Возвращает коллекцию товаров для каталога
  */
-abstract class AbstractBaseFinder extends Model implements FinderInterface
+abstract class AbstractBaseSessionFinder extends Model implements SessionFinderInterface
 {
     use ExceptionsTrait, BaseTrait;
     
     /**
-     * @var object CollectionInterface
+     * @var object SessionCollectionInterface
      */
     protected $collection;
     
     /**
-     * Присваивает CollectionInterface свойству static::collection
-     * @param object $collection CollectionInterface
+     * Присваивает SessionCollectionInterface свойству static::collection
+     * @param object $collection SessionCollectionInterface
      */
-    public function setCollection(CollectionInterface $collection)
+    public function setCollection(SessionCollectionInterface $collection)
     {
         try {
             $this->collection = $collection;

@@ -3,14 +3,14 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\finders\AbstractBaseFinder;
+use app\finders\AbstractBaseSessionFinder;
 use app\helpers\SessionHelper;
-use app\collections\CollectionInterface;
+use app\collections\SessionCollectionInterface;
 
 /**
  * Возвращает 1 элемент из сессии
  */
-class OneSessionFinder extends AbstractBaseFinder
+class OneSessionFinder extends AbstractBaseSessionFinder
 {
     /**
      * @var string key ключ доступа к данным
@@ -26,9 +26,9 @@ class OneSessionFinder extends AbstractBaseFinder
     
     /**
      * Возвращает данные из сессионного хранилища
-     * @return CollectionInterface
+     * @return SessionCollectionInterface
      */
-    public function find(): CollectionInterface
+    public function find(): SessionCollectionInterface
     {
         try {
             if (empty($this->collection)) {

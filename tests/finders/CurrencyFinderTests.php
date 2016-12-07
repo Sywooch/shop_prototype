@@ -6,10 +6,9 @@ use PHPUnit\Framework\TestCase;
 use app\finders\CurrencyFinder;
 use app\tests\sources\fixtures\CurrencyFixture;
 use app\tests\DbManager;
-use app\collections\{CollectionInterface,
-    PaginationInterface};
+use app\collections\{AbstractBaseCollection,
+    CollectionInterface};
 use yii\db\Query;
-use yii\base\Model;
 use app\models\CurrencyModel;
 
 /**
@@ -30,59 +29,6 @@ class CurrencyFinderTests extends TestCase
     }
     
     /**
-     * Тестирует свойства CurrencyFinder
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(CurrencyFinder::class);
-        
-        $this->assertTrue($reflection->hasProperty('collection'));
-    }
-    
-    /**
-     * Тестирует метод CurrencyFinder::setCollection
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetCollectionError()
-    {
-        $collection = new class() {};
-        $finder = new CurrencyFinder();
-        $finder->setCollection($collection);
-    }
-    
-    /**
-     * Тестирует метод CurrencyFinder::setCollection
-     */
-    public function testSetCollection()
-    {
-        $collection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
-        $finder = new CurrencyFinder();
-        $finder->setCollection($collection);
-        
-        $reflection = new \ReflectionProperty($finder, 'collection');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($finder);
-        
-        $this->assertInstanceOf(CollectionInterface::class, $result);
-    }
-    
-    /**
      * Тестирует метод CurrencyFinder::find
      * при отсутствии CurrencyFinder::collection
      * @expectedException ErrorException
@@ -99,27 +45,7 @@ class CurrencyFinderTests extends TestCase
      */
     public function testFind()
     {
-        $collection = new class() implements CollectionInterface {
-            private $items;
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){
-                $this->items[] = $array;
-            }
-            public function isEmpty(){
-                return true;
-            }
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $collection = new class() extends AbstractBaseCollection {};
         
         $finder = new CurrencyFinder();
         

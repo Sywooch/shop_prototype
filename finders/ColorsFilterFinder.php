@@ -3,14 +3,14 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\models\ProductsModel;
+use app\models\ColorsModel;
 use app\finders\AbstractBaseFinder;
 use app\collections\CollectionInterface;
 
 /**
  * Возвращает коллекцию товаров из СУБД
  */
-class ProductsFinder extends AbstractBaseFinder
+class ColorsFilterFinder extends AbstractBaseFinder
 {
     /**
      * @var string GET параметр, определяющий текущую категорию каталога товаров
@@ -20,15 +20,11 @@ class ProductsFinder extends AbstractBaseFinder
      * @var string GET параметр, определяющий текущую подкатегорию каталога товаров
      */
     public $subcategory;
-    /**
-     * @var string GET параметр, определяющий текущую страницу каталога товаров
-     */
-    public $page;
     
     public function rules()
     {
         return [
-            [['category', 'subcategory', 'page'], 'safe']
+            [['category', 'subcategory'], 'safe']
         ];
     }
     
@@ -45,9 +41,13 @@ class ProductsFinder extends AbstractBaseFinder
             
             if ($this->collection->isEmpty()) {
                 
-                $query = ProductsModel::find();
-                $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
+                $query = ColorsModel::find();
+                $query->select(['[[colors.id]]', '[[colors.color]]']);
+                $query->distinct();
+                $query->innerJoin('{{products_colors}}', '[[colors.id]]=[[products_colors.id_color]]');
+                $query->innerJoin('{{products}}', '[[products_colors.id_product]]=[[products.id]]');
                 $query->where(['[[products.active]]'=>true]);
+            
                 if (!empty($this->category)) {
                     $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
                     $query->andWhere(['[[categories.seocode]]'=>$this->category]);
@@ -56,14 +56,6 @@ class ProductsFinder extends AbstractBaseFinder
                         $query->andWhere(['[[subcategory.seocode]]'=>$this->subcategory]);
                     }
                 }
-                
-                $this->collection->pagination->pageSize = \Yii::$app->params['limit'];
-                $this->collection->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
-                $this->collection->pagination->setTotalCount($query);
-                
-                $query->offset($this->collection->pagination->offset);
-                $query->limit($this->collection->pagination->limit);
-                $query->orderBy(['[[products.date]]'=>SORT_DESC]);
                 
                 $this->collection->query = $query;
             }

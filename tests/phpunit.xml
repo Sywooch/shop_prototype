@@ -18,11 +18,6 @@
             <directory suffix="Tests.php">finders</directory>
             <directory suffix="Tests.php">forms</directory>
             <directory suffix="Tests.php">widgets</directory>
-            <!--<directory suffix="Tests.php">helpers</directory>
-            <directory suffix="Tests.php">models</directory>
-            <directory suffix="Tests.php">repositories</directory>
-            <directory suffix="Tests.php">services</directory>
-            <directory suffix="Tests.php">validators</directory>-->
         </testsuite>
         
     </testsuites>

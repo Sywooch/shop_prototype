@@ -7,7 +7,8 @@ use yii\base\{ActionFilter,
 use app\exceptions\ExceptionsTrait;
 use app\helpers\SessionHelper;
 use app\models\CurrencyModel;
-use app\finders\FinderInterface;
+use app\finders\{FinderInterface,
+    SessionFinderInterface};
 
 /**
  * Устанавливает валюту для текущего запроса
@@ -35,18 +36,18 @@ class CurrencyFilter extends ActionFilter
     {
         try {
             if (empty($this->sessionFinder)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('sessionFinder'));
+                throw new ErrorException($this->emptyError('sessionFinder'));
             }
             if (empty($this->finder)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('finder'));
+                throw new ErrorException($this->emptyError('finder'));
             }
             
             $this->sessionFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
             
-            if (empty($this->sessionFinder->find()->getArray())) {
+            if ($this->sessionFinder->find()->isEmpty() === true) {
                 $currencyArray = $this->finder->find()->getArray();
                 if (empty($currencyArray)) {
-                    throw new ErrorException(ExceptionsTrait::emptyError('currencyArray'));
+                    throw new ErrorException($this->emptyError('currencyArray'));
                 }
                 SessionHelper::write(\Yii::$app->params['currencyKey'], $currencyArray);
             }
@@ -58,10 +59,10 @@ class CurrencyFilter extends ActionFilter
     }
     
     /**
-     * Присваивает FinderInterface свойству CurrencyFilter::sessionFinder
-     * @param object $collection FinderInterface
+     * Присваивает SessionFinderInterface свойству CurrencyFilter::sessionFinder
+     * @param object $collection SessionFinderInterface
      */
-    public function setSessionFinder(FinderInterface $finder)
+    public function setSessionFinder(SessionFinderInterface $finder)
     {
         try {
             $this->sessionFinder = $finder;

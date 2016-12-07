@@ -5,7 +5,7 @@ namespace app\tests\collections;
 use PHPUnit\Framework\TestCase;
 use app\collections\PurchasesSessionCollection;
 use yii\base\Model;
-use app\collections\CollectionInterface;
+use app\collections\SessionCollectionInterface;
 use app\models\PurchasesModel;
 
 /**
@@ -15,7 +15,7 @@ class PurchasesSessionCollectionTests extends TestCase
 {
     /**
      * Тестирует метод PurchasesSessionCollection::getModels
-     * при условии, что PurchasesSessionCollection::items содержит не массивы
+     * если PurchasesSessionCollection::items содержит не массивы
      * @expectedException ErrorException
      * @expectedExceptionMessage Получен неверный тип данных вместо: items
      */
@@ -57,7 +57,7 @@ class PurchasesSessionCollectionTests extends TestCase
         
         $result = $collection->getModels();
         
-        $this->assertInstanceOf(CollectionInterface::class, $result);
+        $this->assertInstanceOf(SessionCollectionInterface::class, $result);
         
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
@@ -82,7 +82,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::hasEntity
-     * при условии, что PurchasesSessionCollection::items пуст
+     * если PurchasesSessionCollection::items пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: items
      */
@@ -95,7 +95,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::hasEntity
-     * при условии, что PurchasesSessionCollection::items содержит массивы
+     * если PurchasesSessionCollection::items содержит массивы
      */
     public function testHasEntityArrays()
     {
@@ -153,7 +153,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::hasEntity
-     * при условии, что PurchasesSessionCollection::items содержит объекты
+     * если PurchasesSessionCollection::items содержит объекты
      */
     public function testHasEntityObjects()
     {
@@ -219,7 +219,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::update
-     * при условии, что PurchasesSessionCollection::items пуст
+     * если PurchasesSessionCollection::items пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: items
      */
@@ -232,7 +232,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::update
-     * при условии, что PurchasesSessionCollection::items содержит объекты
+     * если PurchasesSessionCollection::items содержит объекты
      */
     public function testUpdateObjects()
     {
@@ -274,7 +274,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::update
-     * при условии, что PurchasesSessionCollection::items содержит массивы
+     * если PurchasesSessionCollection::items содержит массивы
      */
     public function testUpdateArrays()
     {
@@ -308,7 +308,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::totalQuantity
-     * при условии, что PurchasesSessionCollection::items пуст
+     * если PurchasesSessionCollection::items пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: items
      */
@@ -321,7 +321,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::totalQuantity
-     * при условии, что PurchasesSessionCollection::items содержит объекты
+     * если PurchasesSessionCollection::items содержит объекты
      */
     public function testTotalQuantityObjects()
     {
@@ -351,7 +351,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::totalQuantity
-     * при условии, что PurchasesSessionCollection::items содержит массивы
+     * если PurchasesSessionCollection::items содержит массивы
      */
     public function testTotalQuantityArrays()
     {
@@ -372,7 +372,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::totalPrice
-     * при условии, что PurchasesSessionCollection::items пуст
+     * если PurchasesSessionCollection::items пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: items
      */
@@ -385,7 +385,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::totalPrice
-     * при условии, что PurchasesSessionCollection::items содержит объекты
+     * если PurchasesSessionCollection::items содержит объекты
      */
     public function testTotalPriceObjects()
     {
@@ -418,7 +418,7 @@ class PurchasesSessionCollectionTests extends TestCase
     
     /**
      * Тестирует метод PurchasesSessionCollection::totalPrice
-     * при условии, что PurchasesSessionCollection::items содержит массивы
+     * если PurchasesSessionCollection::items содержит массивы
      */
     public function testTotalPriceArrays()
     {

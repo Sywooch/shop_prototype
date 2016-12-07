@@ -23,7 +23,8 @@ use app\finders\{CategoriesFinder,
     GroupSessionFinder,
     OneSessionFinder,
     ProductsFinder};
-use app\collections\{BaseCollection,
+use app\collections\{CategoriesCollection,
+    CurrencyCollection,
     CurrencySessionCollection,
     LightPagination,
     ProductsCollection,
@@ -95,7 +96,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             
             $currencyFinder = new CurrencyFinder([
-                'collection'=>new BaseCollection()
+                'collection'=>new CurrencyCollection()
             ]);
             $currencyCollection = $currencyFinder->find()->getModels();
             if ($currencyCollection->isEmpty()) {
@@ -113,7 +114,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             
             $categoriesFinder = new CategoriesFinder([
-                'collection'=>new BaseCollection()
+                'collection'=>new CategoriesCollection()
             ]);
             $categoriesCollection = $categoriesFinder->find()->getModels();
             if ($categoriesCollection->isEmpty()) {
@@ -127,7 +128,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             if (!empty($category = $request[\Yii::$app->params['categoryKey']])) {
                 $categorySeocodeFinder = new CategorySeocodeFinder();
                 $categorySeocodeFinder->load(['seocode'=>$category]);
-                $categoryModel = $categorySeocodeFinder->find();
+                $categoryModel = $categorySeocodeFinder->find()->getModel();
                 if (empty($categoryModel)) {
                     throw new ErrorException($this->emptyError('categoryModel'));
                 }
@@ -135,7 +136,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']])) {
                     $subcategorySeocodeFinder = new SubcategorySeocodeFinder();
                     $subcategorySeocodeFinder->load(['seocode'=>$subcategory]);
-                    $subcategoryModel = $subcategorySeocodeFinder->find();
+                    $subcategoryModel = $subcategorySeocodeFinder->find()->getModel();
                     if (empty($subcategoryModel)) {
                         throw new ErrorException($this->emptyError('subcategoryModel'));
                     }

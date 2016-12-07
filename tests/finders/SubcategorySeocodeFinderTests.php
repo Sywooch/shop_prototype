@@ -3,18 +3,18 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\CategorySeocodeFinder;
+use app\finders\SubcategorySeocodeFinder;
 use app\collections\{AbstractBaseCollection,
     CollectionInterface};
 use app\tests\DbManager;
-use app\tests\sources\fixtures\CategoriesFixture;
-use app\models\CategoriesModel;
+use app\tests\sources\fixtures\SubcategoryFixture;
+use app\models\SubcategoryModel;
 use yii\db\Query;
 
 /**
- * Тестирует класс CategorySeocodeFinder
+ * Тестирует класс SubcategorySeocodeFinder
  */
-class CategorySeocodeFinderTests extends TestCase
+class SubcategorySeocodeFinderTests extends TestCase
 {
     private static $dbClass;
     
@@ -22,28 +22,28 @@ class CategorySeocodeFinderTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>CategoriesFixture::class
+                'subcategory'=>SubcategoryFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует свойства CategorySeocodeFinder
+     * Тестирует свойства SubcategorySeocodeFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(CategorySeocodeFinder::class);
+        $reflection = new \ReflectionClass(SubcategorySeocodeFinder::class);
         
         $this->assertTrue($reflection->hasProperty('seocode'));
     }
     
     /**
-     * Тестирует метод CategorySeocodeFinder::rules
+     * Тестирует метод SubcategorySeocodeFinder::rules
      */
     public function testRules()
     {
-        $finder = new CategorySeocodeFinder();
+        $finder = new SubcategorySeocodeFinder();
         $finder->attributes = [];
         $finder->validate();
         
@@ -57,14 +57,14 @@ class CategorySeocodeFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод CategorySeocodeFinder::find
+     * Тестирует метод SubcategorySeocodeFinder::find
      */
     public function testFind()
     {
         $collection = new class() extends AbstractBaseCollection {};
-        $fixture = self::$dbClass->categories['category_1'];
+        $fixture = self::$dbClass->subcategory['subcategory_1'];
         
-        $finder = new CategorySeocodeFinder();
+        $finder = new SubcategorySeocodeFinder();
         
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
@@ -83,9 +83,9 @@ class CategorySeocodeFinderTests extends TestCase
         $result = $reflection->getValue($collection);
         
         $this->assertInstanceOf(Query::class, $result);
-        $this->assertSame(CategoriesModel::class, $result->modelClass);
+        $this->assertSame(SubcategoryModel::class, $result->modelClass);
         
-        $expectedQuery = sprintf("SELECT `categories`.`name`, `categories`.`seocode` FROM `categories` WHERE `categories`.`seocode`='%s'", $fixture['seocode']);
+        $expectedQuery = sprintf("SELECT `subcategory`.`name`, `subcategory`.`seocode` FROM `subcategory` WHERE `subcategory`.`seocode`='%s'", $fixture['seocode']);
         
         $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }

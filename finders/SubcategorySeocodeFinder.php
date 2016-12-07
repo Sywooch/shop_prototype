@@ -3,13 +3,13 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\models\CategoriesModel;
+use app\models\SubcategoryModel;
 use app\collections\CollectionInterface;
 
 /**
  * Возвращает объект категории
  */
-class CategorySeocodeFinder extends AbstractBaseFinder
+class SubcategorySeocodeFinder extends AbstractBaseFinder
 {
     /**
      * @var string GET параметр, определяющий искомую категорию
@@ -39,9 +39,9 @@ class CategorySeocodeFinder extends AbstractBaseFinder
                     throw new ErrorException($this->modelError($this->errors));
                 }
                 
-                $query = CategoriesModel::find();
-                $query->select(['[[categories.name]]', '[[categories.seocode]]']);
-                $query->where(['[[categories.seocode]]'=>$this->seocode]);
+                $query = SubcategoryModel::find();
+                $query->select(['[[subcategory.name]]', '[[subcategory.seocode]]']);
+                $query->where(['[[subcategory.seocode]]'=>$this->seocode]);
                 
                 
                 $this->collection->query = $query;
