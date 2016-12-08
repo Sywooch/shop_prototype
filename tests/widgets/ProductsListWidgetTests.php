@@ -5,11 +5,8 @@ namespace app\tests\widgets;
 use PHPUnit\Framework\TestCase;
 use app\widgets\ProductsListWidget;
 use app\collections\{BaseCollection,
-    CollectionInterface,
-    PaginationInterface};
-use yii\db\Query;
-use yii\base\{Model,
-    Widget};
+    CollectionInterface};
+use yii\base\Widget;
 use yii\helpers\Html;
 
 /**
@@ -48,21 +45,7 @@ class ProductsListWidgetTests extends TestCase
      */
     public function testSetProductsCollection()
     {
-        $productsCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $productsCollection = new class() extends BaseCollection {};
         
         $widget = new ProductsListWidget();
         $widget->setProductsCollection($productsCollection);
@@ -178,21 +161,7 @@ class ProductsListWidgetTests extends TestCase
      */
     public function testRunEmptyPriceWidget()
     {
-        $productsCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $productsCollection = new class() extends BaseCollection {};
         
         $widget = new ProductsListWidget();
         
@@ -211,21 +180,7 @@ class ProductsListWidgetTests extends TestCase
      */
     public function testRunEmptyThumbnailsWidget()
     {
-        $productsCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $productsCollection = new class() extends BaseCollection {};
         
         $priceWidget = new class() extends Widget {};
         
@@ -250,21 +205,8 @@ class ProductsListWidgetTests extends TestCase
      */
     public function testRunEmptyPaginationWidget()
     {
-        $productsCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $productsCollection = new class() extends BaseCollection {};
+        
         $priceWidget = new class() extends Widget {};
         $thumbnailsWidget = new class() extends Widget {};
         
@@ -293,21 +235,8 @@ class ProductsListWidgetTests extends TestCase
      */
     public function testRunEmptyView()
     {
-        $productsCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $productsCollection = new class() extends BaseCollection {};
+        
         $priceWidget = new class() extends Widget {};
         $thumbnailsWidget = new class() extends Widget {};
         $paginationWidget = new class() extends Widget {};
@@ -355,23 +284,10 @@ class ProductsListWidgetTests extends TestCase
             },
         ];
         
-        $productsCollection = new class() extends BaseCollection implements CollectionInterface {
-            protected $items;
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
+        $productsCollection = new class() extends BaseCollection {
             public function getPagination(){
                 return new class() {};
             }
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
         };
         
         $reflection = new \ReflectionProperty($productsCollection, 'items');

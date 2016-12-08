@@ -5,10 +5,7 @@ namespace app\tests\widgets;
 use PHPUnit\Framework\TestCase;
 use app\widgets\CategoriesMenuWidget;
 use app\collections\{BaseCollection,
-    CollectionInterface,
-    PaginationInterface};
-use yii\db\Query;
-use yii\base\Model;
+    CollectionInterface};
 
 /**
  * Тестирует класс CategoriesMenuWidget
@@ -55,22 +52,7 @@ class CategoriesMenuWidgetTests extends TestCase
      */
     public function testSetCategoriesCollection()
     {
-        $categoriesCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $categoriesCollection = new class() extends BaseCollection {};
         
         $widget = new $this->widget();
         $widget->setCategoriesCollection($categoriesCollection);
@@ -135,9 +117,7 @@ class CategoriesMenuWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($category_2, [$subcategory_2]);
         
-        $categoriesCollection = new class() extends BaseCollection implements CollectionInterface {
-            
-        };
+        $categoriesCollection = new class() extends BaseCollection {};
         
         $reflection = new \ReflectionProperty($categoriesCollection, 'items');
         $reflection->setAccessible(true);

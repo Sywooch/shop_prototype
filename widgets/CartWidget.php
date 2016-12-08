@@ -3,12 +3,8 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
-    Model,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\repositories\RepositoryInterface;
-use app\helpers\HashHelper;
-use app\models\CurrencyModel;
 use app\collections\SessionCollectionInterface;
 
 /**

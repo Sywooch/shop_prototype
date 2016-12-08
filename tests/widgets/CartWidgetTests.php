@@ -4,8 +4,8 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\CartWidget;
-use app\collections\{CollectionInterface,
-    PaginationInterface};
+use app\collections\{BaseSessionCollection,
+    SessionCollectionInterface};
 use yii\db\Query;
 use yii\base\{Model,
     Widget};
@@ -46,22 +46,7 @@ class CartWidgetTests extends TestCase
      */
     public function testSetPurchasesCollection()
     {
-        $purchasesCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $purchasesCollection = new class() extends BaseSessionCollection {};
         
         $widget = new CartWidget();
         $widget->setPurchasesCollection($purchasesCollection);
@@ -70,7 +55,7 @@ class CartWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(CollectionInterface::class, $result);
+        $this->assertInstanceOf(SessionCollectionInterface::class, $result);
     }
     
     /**
@@ -121,22 +106,7 @@ class CartWidgetTests extends TestCase
      */
     public function testRunEmptyPriceWidget()
     {
-        $purchasesCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $purchasesCollection = new class() extends BaseSessionCollection {};
         
         $widget = new CartWidget();
         
@@ -155,22 +125,7 @@ class CartWidgetTests extends TestCase
      */
     public function testRunEmptyView()
     {
-        $purchasesCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $purchasesCollection = new class() extends BaseSessionCollection {};
         
         $priceWidget = new class() extends Widget {};
         
@@ -192,23 +147,10 @@ class CartWidgetTests extends TestCase
      */
     public function testRun()
     {
-        $purchasesCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
+        $purchasesCollection = new class() extends BaseSessionCollection {
             public function isEmpty(){
                 return false;
             }
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
             public function totalQuantity() {
                 return 14;
             }

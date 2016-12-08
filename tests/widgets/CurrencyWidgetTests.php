@@ -4,9 +4,8 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\CurrencyWidget;
-use app\collections\{CollectionInterface,
-    PaginationInterface};
-use yii\db\Query;
+use app\collections\{BaseCollection,
+    CollectionInterface};
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
 
@@ -44,22 +43,7 @@ class CurrencyWidgetTests extends TestCase
      */
     public function testSetCurrencyCollection()
     {
-        $currencyCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $currencyCollection = new class() extends BaseCollection {};
         
         $widget = new CurrencyWidget();
         $widget->setCurrencyCollection($currencyCollection);
@@ -119,22 +103,7 @@ class CurrencyWidgetTests extends TestCase
      */
     public function testRunEmptyForm()
     {
-        $currencyCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $currencyCollection = new class() extends BaseCollection {};
         
         $widget = new CurrencyWidget();
         
@@ -153,22 +122,7 @@ class CurrencyWidgetTests extends TestCase
      */
     public function testRunEmptyView()
     {
-        $currencyCollection = new class() implements CollectionInterface {
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
-            public function map(string $key, string $value){}
-            public function sort(string $key, $type){}
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
-        };
+        $currencyCollection = new class() extends BaseCollection {};
         
         $form = new class() extends Model {};
         
@@ -199,26 +153,13 @@ class CurrencyWidgetTests extends TestCase
             public $code = 'TWO';
         };
         
-        $currencyCollection = new class() implements CollectionInterface {
-            private $items;
-            public function setQuery(Query $query){}
-            public function getQuery(){}
-            public function add(Model $object){}
-            public function addArray(array $array){}
-            public function isEmpty(){}
-            public function isArrays(){}
-            public function getModels(){}
-            public function getArrays(){}
-            public function setPagination(PaginationInterface $pagination){}
-            public function getPagination(){}
+        $currencyCollection = new class() extends BaseCollection {
             public function map(string $key, string $value){
                 return ArrayHelper::map($this->items, $key, $value);
             }
             public function sort(string $key, $type=SORT_ASC){
                 ArrayHelper::multisort($this->items, $key, $type);
             }
-            public function hasEntity(Model $object){}
-            public function update(Model $object){}
         };
         
         $reflection = new \ReflectionProperty($currencyCollection, 'items');

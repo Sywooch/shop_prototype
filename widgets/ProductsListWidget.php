@@ -3,14 +3,9 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
-    Model,
     Widget};
 use yii\helpers\Html;
 use app\exceptions\ExceptionsTrait;
-use app\models\CurrencyModel;
-use app\widgets\{PaginationWidget,
-    PriceWidget,
-    ThumbnailsWidget};
 use app\collections\CollectionInterface;
 
 /**
