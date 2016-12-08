@@ -28,13 +28,15 @@ use app\finders\{BrandsFilterFinder,
     SizesFilterFinder,
     SubcategorySeocodeFinder};
 use app\collections\{BaseCollection,
-    CurrencySessionCollection,
+    BaseSessionCollection,
     LightPagination,
     ProductsCollection,
     PurchasesSessionCollection};
 use app\helpers\HashHelper;
 use app\forms\{ChangeCurrencyForm,
     FiltersForm};
+use app\models\{CurrencyModel,
+    PurchasesModel};
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -53,107 +55,109 @@ class ProductsListIndexService extends Object implements ServiceInterface
         try {
             $dataArray = [];
             
-            $productsFinder = new ProductsFinder([
+            # Данные для вывода списка товаров
+            
+            $finder = new ProductsFinder([
                 'collection'=>new ProductsCollection([
                     'pagination'=>new LightPagination()
                 ])
             ]);
-            $productsFinder->load($request);
-            $productsCollection = $productsFinder->find()->getModels();
-            if ($productsCollection->isEmpty()) {
+            $finder->load($request);
+            $collection = $finder->find()->getModels();
+            if ($collection->isEmpty()) {
                 throw new NotFoundHttpException($this->error404());
             }
             
-            $currencyFinder = new OneSessionFinder([
-                'collection'=>new CurrencySessionCollection()
+            $dataArray['productsConfig']['productsCollection'] = $collection;
+            
+            $finder = new OneSessionFinder([
+                'collection'=>new BaseSessionCollection()
             ]);
-            $currencyFinder->load(['key'=>\Yii::$app->params['currencyKey']]);
-            $currencyModel = $currencyFinder->find()->getModel();
+            $finder->load(['key'=>\Yii::$app->params['currencyKey']]);
+            $currencyModel = $finder->find()->getModel(CurrencyModel::class);
             if (empty($currencyModel)) {
                 throw new ErrorException($this->emptyError('currencyModel'));
             }
             
-            $dataArray['collection'] = ProductsListWidget::widget([
-                'productsCollection'=>$productsCollection,
-                'priceWidget'=>new PriceWidget(['currencyModel'=>$currencyModel]),
-                'thumbnailsWidget'=>new ThumbnailsWidget(['view'=>'thumbnails.twig']),
-                'paginationWidget'=>new PaginationWidget(['view'=>'pagination.twig']),
-                'view'=>'products-list.twig',
-            ]);
+            $dataArray['productsConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$currencyModel]);
+            $dataArray['productsConfig']['thumbnailsWidget'] = new ThumbnailsWidget(['view'=>'thumbnails.twig']);
+            $dataArray['productsConfig']['paginationWidget'] = new PaginationWidget(['view'=>'pagination.twig']);
+            $dataArray['productsConfig']['view'] = 'products-list.twig';
             
-           $dataArray['user'] = UserInfoWidget::widget([
-                'user'=>\Yii::$app->user,
-                'view'=>'user-info.twig',
-            ]);
+            # Данные для вывода информации о текущем пользователе
             
-            $purchasesFinder = new GroupSessionFinder([
+            $dataArray['userConfig']['user'] = \Yii::$app->user;
+            $dataArray['userConfig']['view'] = 'user-info.twig';
+            
+            # Данные для вывода информации о состоянии корзины
+            
+            $finder = new GroupSessionFinder([
                 'collection'=>new PurchasesSessionCollection()
             ]);
-            $purchasesFinder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
-            $purchasesCollection = $purchasesFinder->find()->getModels();
-            $dataArray['cart'] = CartWidget::widget([
-                'purchasesCollection'=>$purchasesCollection, 
-                'priceWidget'=>new PriceWidget([
-                    'currencyModel'=>$currencyModel, 
-                ]),
-                'view'=>'short-cart.twig'
-            ]);
+            $finder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
+            $collection = $finder->find()->getModels(PurchasesModel::class);
             
-            $currencyFinder = new CurrencyFinder([
+            $dataArray['cartConfig']['purchasesCollection'] = $collection;
+            $dataArray['cartConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$currencyModel]);
+            $dataArray['cartConfig']['view'] = 'short-cart.twig';
+            
+            # Данные для вывода списка доступных валют
+            
+            $finder = new CurrencyFinder([
                 'collection'=>new BaseCollection()
             ]);
-            $currencyCollection = $currencyFinder->find()->getModels();
-            if ($currencyCollection->isEmpty()) {
+            $collection = $finder->find()->getModels();
+            if ($collection->isEmpty()) {
                 throw new ErrorException($this->emptyError('currencyCollection'));
             }
-            $dataArray['currency'] = CurrencyWidget::widget([
-                'currencyCollection'=>$currencyCollection,
-                'form'=>new ChangeCurrencyForm(),
-                'view'=>'currency-form.twig'
-            ]);
             
-            $dataArray['search'] = SearchWidget::widget([
-                'text'=>$request[\Yii::$app->params['searchKey']],
-                'view'=>'search.twig'
-            ]);
+            $dataArray['currencyConfig']['currencyCollection'] = $collection;
+            $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm();
+            $dataArray['currencyConfig']['view'] = 'currency-form.twig';
             
-            $categoriesFinder = new CategoriesFinder([
+            # Данные для вывода строки поиска
+            
+            $dataArray['searchConfig']['text'] = $request[\Yii::$app->params['searchKey']];
+            $dataArray['searchConfig']['view'] = 'search.twig';
+            
+            # Данные для вывода меню категорий
+            
+            $finder = new CategoriesFinder([
                 'collection'=>new BaseCollection()
             ]);
-            $categoriesCollection = $categoriesFinder->find()->getModels();
-            if ($categoriesCollection->isEmpty()) {
+            $collection = $finder->find()->getModels();
+            if ($collection->isEmpty()) {
                 throw new ErrorException($this->emptyError('categoriesCollection'));
             }
-            $dataArray['menu'] = CategoriesMenuWidget::widget([
-                'categoriesCollection'=>$categoriesCollection
-            ]);
             
-            $categoriesBreadcrumbsConfig = [];
+            $dataArray['menuConfig']['categoriesCollection'] = $collection;
+            
+            # Данные для вывода breadcrumbs
+            
             if (!empty($category = $request[\Yii::$app->params['categoryKey']])) {
-                $categorySeocodeFinder = new CategorySeocodeFinder([
+                $finder = new CategorySeocodeFinder([
                     'collection'=>new BaseCollection()
                 ]);
-                $categorySeocodeFinder->load(['seocode'=>$category]);
-                $categoryModel = $categorySeocodeFinder->find()->getModel();
+                $finder->load(['seocode'=>$category]);
+                $categoryModel = $finder->find()->getModel();
                 if (empty($categoryModel)) {
                     throw new ErrorException($this->emptyError('categoryModel'));
                 }
-                $categoriesBreadcrumbsConfig['category'] = $categoryModel;
+                $dataArray['breadcrumbsConfig']['category'] = $categoryModel;
                 if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']])) {
-                    $subcategorySeocodeFinder = new SubcategorySeocodeFinder([
+                    $finder = new SubcategorySeocodeFinder([
                         'collection'=>new BaseCollection()
                     ]);
-                    $subcategorySeocodeFinder->load(['seocode'=>$subcategory]);
-                    $subcategoryModel = $subcategorySeocodeFinder->find()->getModel();
+                    $finder->load(['seocode'=>$subcategory]);
+                    $subcategoryModel = $finder->find()->getModel();
                     if (empty($subcategoryModel)) {
                         throw new ErrorException($this->emptyError('subcategoryModel'));
                     }
-                    $categoriesBreadcrumbsConfig['subcategory'] = $subcategoryModel;
+                    $dataArray['breadcrumbsConfig']['subcategory'] = $subcategoryModel;
                 }
             }
-            $dataArray['breadcrumbs'] = CategoriesBreadcrumbsWidget::widget($categoriesBreadcrumbsConfig);
             
-            $colorsFilterFinder = new ColorsFilterFinder([
+            /*$colorsFilterFinder = new ColorsFilterFinder([
                 'collection'=>new BaseCollection()
             ]);
             $colorsFilterFinder->load($request);
@@ -186,7 +190,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'brandsCollection'=>$brandsCollection,
                 'form'=>new FiltersForm(),
                 'view'=>'products-filters.twig'
-            ]);
+            ]);*/
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {

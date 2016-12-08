@@ -9,7 +9,7 @@ use app\repositories\DbRepository;
 use app\services\{ProductsListIndexService,
     SphinxSearchService};
 use app\collections\{BaseCollection,
-    CurrencySessionCollection,
+    BaseSessionCollection,
     LightPagination};
 use app\search\ProductsSearchModel;
 use app\finders\{OneSessionFinder,
@@ -26,7 +26,7 @@ class ProductsListController extends AbstractBaseController
             'index'=>[
                 'class'=>SearchAction::class,
                 'service'=>new ProductsListIndexService(),
-                'view'=>'products-list.twig'
+                'view'=>'products-list-changes.twig'
             ],
             /*'search'=>[
                 'class'=>SearchAction::class,
@@ -58,7 +58,7 @@ class ProductsListController extends AbstractBaseController
             [
                 'class'=>'app\filters\CurrencyFilter',
                 'sessionFinder'=>new OneSessionFinder([
-                    'collection'=>new CurrencySessionCollection()
+                    'collection'=>new BaseSessionCollection()
                 ]),
                 'finder'=>new MainCurrencyFinder([
                     'collection'=>new BaseCollection()

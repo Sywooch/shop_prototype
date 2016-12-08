@@ -5,41 +5,12 @@ namespace app\collections;
 use yii\base\{ErrorException,
     Model};
 use app\collections\BaseSessionCollection;
-use app\exceptions\ExceptionsTrait;
-use app\models\PurchasesModel;
 
 /**
  * Реализует интерфейс доступа к данным коллекции сущностей
  */
 class PurchasesSessionCollection extends BaseSessionCollection
 {
-    /**
-     * Получает объекты из сессии и добавляет их в коллекцию
-     * @return $this
-     */
-    public function getModels()
-    {
-        try {
-            if ($this->isEmpty() === false) {
-                if ($this->isArrays() === false) {
-                    throw new ErrorException($this->invalidError('items'));
-                }
-                
-                $objectsArray = [];
-                
-                foreach ($this->items as $item) {
-                    $objectsArray[] = new PurchasesModel($item);
-                }
-                
-                $this->items = $objectsArray;
-            }
-            
-            return $this;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     /**
      * Проверяет существование в коллекции элемента с переданным данными
      * @param $object Model

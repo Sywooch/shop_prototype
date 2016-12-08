@@ -13,8 +13,8 @@ interface SessionCollectionInterface
     public function isEmpty();
     public function isArrays();
     public function isObjects();
-    public function getModels();
-    public function getModel();
+    public function getModels(string $class);
+    public function getModel(string $class);
     public function getArray();
     public function map(string $key, string $value);
     public function sort(string $key, $type);

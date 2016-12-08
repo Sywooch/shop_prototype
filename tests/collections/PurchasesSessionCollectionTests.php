@@ -5,69 +5,12 @@ namespace app\tests\collections;
 use PHPUnit\Framework\TestCase;
 use app\collections\PurchasesSessionCollection;
 use yii\base\Model;
-use app\collections\SessionCollectionInterface;
-use app\models\PurchasesModel;
 
 /**
  * Тестирует класс PurchasesSessionCollection
  */
 class PurchasesSessionCollectionTests extends TestCase
 {
-    /**
-     * Тестирует метод PurchasesSessionCollection::getModels
-     * если PurchasesSessionCollection::items содержит не массивы
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Получен неверный тип данных вместо: items
-     */
-    public function testGetModelsNotArrays()
-    {
-        $array = ['id'=>1];
-        $model = new class() {};
-        
-        $collection = new PurchasesSessionCollection();
-        
-        $reflection = new \ReflectionProperty($collection, 'items');
-        $reflection->setAccessible(true);
-        $reflection->setValue($collection, [$array, $model]);
-        
-        $collection->getModels();
-    }
-    
-    /**
-     * Тестирует метод PurchasesSessionCollection::getModels
-     */
-    public function testGetModels()
-    {
-        $array_1 = ['id'=>1];
-        $array_2 = ['id'=>2];
-        
-        $collection = new PurchasesSessionCollection();
-        
-        $reflection = new \ReflectionProperty($collection, 'items');
-        $reflection->setAccessible(true);
-        $reflection->setValue($collection, [$array_1, $array_2]);
-        
-        $reflection = new \ReflectionProperty($collection, 'items');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($collection);
-        
-        foreach ($result as $item) {
-            $this->assertInternalType('array', $item);
-        }
-        
-        $result = $collection->getModels();
-        
-        $this->assertInstanceOf(SessionCollectionInterface::class, $result);
-        
-        $reflection = new \ReflectionProperty($collection, 'items');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($collection);
-        
-        foreach ($result as $item) {
-            $this->assertInstanceOf(PurchasesModel::class, $item);
-        }
-    }
-    
     /**
      * Тестирует метод PurchasesSessionCollection::hasEntity
      * передаю параметр неверного типа

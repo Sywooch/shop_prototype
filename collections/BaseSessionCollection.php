@@ -2,7 +2,8 @@
 
 namespace app\collections;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use app\exceptions\ExceptionsTrait;
 use app\collections\{AbstractIterator,
     BaseTrait,
@@ -18,19 +19,51 @@ class BaseSessionCollection extends AbstractIterator implements SessionCollectio
     
     /**
      * Получает объекты из сессии и добавляет их в коллекцию
-     * @return $this
+     * @param string $class имя класса, объект которого будет создан
+     * @return SessionCollectionInterface
      */
-    public function getModels()
+    public function getModels(string $class): SessionCollectionInterface
     {
-        return null;
+        try {
+            if ($this->isEmpty() === false) {
+                if ($this->isArrays() === false) {
+                    throw new ErrorException($this->invalidError('items'));
+                }
+                
+                $objectsArray = [];
+                
+                foreach ($this->items as $item) {
+                    $objectsArray[] = new $class($item);
+                }
+                
+                $this->items = $objectsArray;
+            }
+            
+            return $this;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
     
     /**
      * Возвращает 1 объект из коллекции
+     * @param string $class имя класса, объект которого будет создан
+     * @return Model
      */
-    public function getModel()
+    public function getModel(string $class): Model
     {
-        return null;
+        try {
+            if ($this->isEmpty()) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            if ($this->isArrays() === false) {
+                throw new ErrorException($this->invalidError('items'));
+            }
+            
+            return new $class($this->items[0]);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
     
     /**
