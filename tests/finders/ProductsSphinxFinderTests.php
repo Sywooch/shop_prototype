@@ -3,46 +3,51 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\ProductsFinder;
+use app\finders\ProductsSphinxFinder;
 use app\collections\{BaseCollection,
     CollectionInterface,
     LightPagination};
 use yii\db\Query;
 use app\models\ProductsModel;
 
-class ProductsFinderTests extends TestCase
+class ProductsSphinxFinderTests extends TestCase
 {
     /**
-     * Тестирует свойства ProductsFinder
+     * Тестирует свойства ProductsSphinxFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(ProductsFinder::class);
+        $reflection = new \ReflectionClass(ProductsSphinxFinder::class);
         
-        $this->assertTrue($reflection->hasProperty('category'));
-        $this->assertTrue($reflection->hasProperty('subcategory'));
+        $this->assertTrue($reflection->hasProperty('found'));
         $this->assertTrue($reflection->hasProperty('page'));
     }
     
     /**
-     * Тестирует метод ProductsFinder::rules
+     * Тестирует метод ProductsSphinxFinder::rules
      */
     public function testRules()
     {
-        $finder = new ProductsFinder();
+        $finder = new ProductsSphinxFinder();
+        $finder->attributes = [];
+        $finder->validate();
+        
+        $this->assertNotEmpty($finder->errors);
+        $this->assertArrayHasKey('found', $finder->errors);
+        
+        $finder = new ProductsSphinxFinder();
         $finder->attributes = [
-            'category'=>'category',
-            'subcategory'=>'subcategory',
+            'found'=>'found',
             'page'=>'page'
         ];
         
-        $this->assertSame('category', $finder->category);
-        $this->assertSame('subcategory', $finder->subcategory);
+        $this->assertEmpty($finder->errors);
+        $this->assertSame('found', $finder->found);
         $this->assertSame('page', $finder->page);
     }
     
     /**
-     * Тестирует метод ProductsFinder::find
+     * Тестирует метод ProductsSphinxFinder::find
      */
     public function testFind()
     {
@@ -57,7 +62,11 @@ class ProductsFinderTests extends TestCase
         
         $collection = new class() extends BaseCollection {};
         
-        $finder = new ProductsFinder();
+        $finder = new ProductsSphinxFinder();
+        
+        $reflection = new \ReflectionProperty($finder, 'found');
+        $reflection->setAccessible(true);
+        $reflection->setValue($finder, [1, 2, 3, 4, 5]);
         
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
@@ -78,7 +87,7 @@ class ProductsFinderTests extends TestCase
         $this->assertInstanceOf(Query::class, $result);
         $this->assertSame(ProductsModel::class, $result->modelClass);
         
-        $expectedQuery = "SELECT `products`.`id`, `products`.`name`, `products`.`price`, `products`.`short_description`, `products`.`images`, `products`.`seocode` FROM `products` WHERE `products`.`active`=TRUE ORDER BY `products`.`date` DESC LIMIT 3";
+        $expectedQuery = "SELECT `products`.`id`, `products`.`name`, `products`.`price`, `products`.`short_description`, `products`.`images`, `products`.`seocode` FROM `products` WHERE (`products`.`active`=TRUE) AND (`products`.`id` IN (1, 2, 3, 4, 5)) ORDER BY `products`.`date` DESC LIMIT 3";
         
         $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
     }

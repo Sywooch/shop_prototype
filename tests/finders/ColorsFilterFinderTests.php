@@ -7,24 +7,10 @@ use app\finders\ColorsFilterFinder;
 use app\collections\{BaseCollection,
     CollectionInterface};
 use yii\db\Query;
-use app\tests\DbManager;
-use app\tests\sources\fixtures\ColorsFixture;
 use app\models\ColorsModel;
 
 class ColorsFilterFinderTests extends TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager([
-            'fixtures'=>[
-                'colors'=>ColorsFixture::class
-            ]
-        ]);
-        self::$dbClass->loadFixtures();
-    }
-    
     /**
      * Тестирует свойства ColorsFilterFinder
      */
@@ -150,10 +136,5 @@ class ColorsFilterFinderTests extends TestCase
         $expectedQuery = "SELECT DISTINCT `colors`.`id`, `colors`.`color` FROM `colors` INNER JOIN `products_colors` ON `colors`.`id`=`products_colors`.`id_color` INNER JOIN `products` ON `products_colors`.`id_product`=`products`.`id` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`products`.`active`=TRUE) AND (`categories`.`seocode`='shoes')) AND (`subcategory`.`seocode`='sneakers')";
         
         $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->unloadFixtures();
     }
 }

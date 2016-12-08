@@ -221,6 +221,7 @@ class BaseTraitTests extends TestCase
         $reflection = new \ReflectionProperty($this->class, 'items');
         $reflection->setAccessible(true);
         $reflection->setValue($this->class, [$model_1, $model_2]);
+        
         $result = $this->class->map('one', 'two');
         
         $this->assertTrue(is_array($result));
@@ -228,6 +229,33 @@ class BaseTraitTests extends TestCase
         $this->assertArrayHasKey('three', $result);
         $this->assertContains('two', $result);
         $this->assertContains('four', $result);
+    }
+    
+    /**
+     * Тестирует метод BaseTrait::column
+     */
+    public function testColumn()
+    {
+        $model_1 = new class() {
+            public $one = 'one';
+            public $two = 'two';
+        };
+        
+        $model_2 = new class() {
+            public $one = 'three';
+            public $two = 'four';
+        };
+        
+        $reflection = new \ReflectionProperty($this->class, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->class, [$model_1, $model_2]);
+        
+        $result = $this->class->column('one');
+        
+        $this->assertTrue(is_array($result));
+        $this->assertCount(2, $result);
+        $this->assertContains('one', $result);
+        $this->assertContains('three', $result);
     }
     
     /**

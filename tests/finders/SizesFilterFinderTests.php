@@ -7,24 +7,10 @@ use app\finders\SizesFilterFinder;
 use app\collections\{BaseCollection,
     CollectionInterface};
 use yii\db\Query;
-use app\tests\DbManager;
-use app\tests\sources\fixtures\SizesFixture;
 use app\models\SizesModel;
 
 class SizesFilterFinderTests extends TestCase
 {
-    private static $dbClass;
-    
-    public static function setUpBeforeClass()
-    {
-        self::$dbClass = new DbManager([
-            'fixtures'=>[
-                'sizes'=>SizesFixture::class
-            ]
-        ]);
-        self::$dbClass->loadFixtures();
-    }
-    
     /**
      * Тестирует свойства SizesFilterFinder
      */
@@ -150,10 +136,5 @@ class SizesFilterFinderTests extends TestCase
         $expectedQuery = "SELECT DISTINCT `sizes`.`id`, `sizes`.`size` FROM `sizes` INNER JOIN `products_sizes` ON `sizes`.`id`=`products_sizes`.`id_size` INNER JOIN `products` ON `products_sizes`.`id_product`=`products`.`id` INNER JOIN `categories` ON `categories`.`id`=`products`.`id_category` INNER JOIN `subcategory` ON `subcategory`.`id`=`products`.`id_subcategory` WHERE ((`products`.`active`=TRUE) AND (`categories`.`seocode`='shoes')) AND (`subcategory`.`seocode`='sneakers')";
         
         $this->assertSame($expectedQuery, $result->createCommand()->getRawSql());
-    }
-    
-    public static function tearDownAfterClass()
-    {
-        self::$dbClass->unloadFixtures();
     }
 }

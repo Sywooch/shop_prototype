@@ -6,21 +6,23 @@ use yii\base\{ErrorException,
     Object};
 use yii\web\NotFoundHttpException;
 use app\exceptions\ExceptionsTrait;
-use app\finders\{BrandsFilterFinder,
+use app\finders\{BrandsSphinxFilterFinder,
     CategoriesFinder,
     CategorySeocodeFinder,
-    ColorsFilterFinder,
+    ColorsSphinxFilterFinder,
     CurrencyFinder,
     GroupSessionFinder,
     OneSessionFinder,
-    ProductsFinder,
-    SizesFilterFinder,
+    ProductsSphinxFinder,
+    SizesSphinxFilterFinder,
+    SphinxFinder,
     SubcategorySeocodeFinder};
 use app\collections\{BaseCollection,
     BaseSessionCollection,
     LightPagination,
     ProductsCollection,
-    PurchasesSessionCollection};
+    PurchasesSessionCollection,
+    SphinxCollection};
 use app\helpers\HashHelper;
 use app\forms\{ChangeCurrencyForm,
     FiltersForm};
@@ -60,12 +62,12 @@ class ProductsListSearchService extends Object implements ServiceInterface
             
             # Данные для вывода списка товаров
             
-            /*$finder = new ProductsFinder([
+            $finder = new ProductsSphinxFinder([
                 'collection'=>new ProductsCollection([
                     'pagination'=>new LightPagination()
                 ])
             ]);
-            $finder->load($request);
+            $finder->load(array_merge($request, ['found'=>$sphinxCollection->column('id')]));
             $collection = $finder->find()->getModels();
             if ($collection->isEmpty()) {
                 throw new NotFoundHttpException($this->error404());
@@ -162,30 +164,30 @@ class ProductsListSearchService extends Object implements ServiceInterface
             
             # Данные для вывода фильтров каталога
             
-            $finder = new ColorsFilterFinder([
+            $finder = new ColorsSphinxFilterFinder([
                 'collection'=>new BaseCollection()
             ]);
-            $finder->load($request);
+            $finder->load(array_merge($request, ['found'=>$sphinxCollection->column('id')]));
             $collection = $finder->find()->getModels();
             if ($collection->isEmpty()) {
                 throw new ErrorException($this->emptyError('colorsCollection'));
             }
             $dataArray['filtersConfig']['colorsCollection'] = $collection;
             
-            $finder = new SizesFilterFinder([
+            $finder = new SizesSphinxFilterFinder([
                 'collection'=>new BaseCollection()
             ]);
-            $finder->load($request);
+            $finder->load(array_merge($request, ['found'=>$sphinxCollection->column('id')]));
             $collection = $finder->find()->getModels();
             if ($collection->isEmpty()) {
                 throw new ErrorException($this->emptyError('sizesCollection'));
             }
             $dataArray['filtersConfig']['sizesCollection'] = $collection;
             
-            $finder = new BrandsFilterFinder([
+            $finder = new BrandsSphinxFilterFinder([
                 'collection'=>new BaseCollection()
             ]);
-            $finder->load($request);
+            $finder->load(array_merge($request, ['found'=>$sphinxCollection->column('id')]));
             $collection = $finder->find()->getModels();
             if ($collection->isEmpty()) {
                 throw new ErrorException($this->emptyError('brandsCollection'));
@@ -193,7 +195,7 @@ class ProductsListSearchService extends Object implements ServiceInterface
             $dataArray['filtersConfig']['brandsCollection'] = $collection;
             
             $dataArray['filtersConfig']['form'] = new FiltersForm();
-            $dataArray['filtersConfig']['view'] = 'products-filters.twig';*/
+            $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {

@@ -105,6 +105,24 @@ trait BaseTrait
     }
     
     /**
+     * Возвращает данные 1 колонки из static::items
+     * @param string $key имя свойства, значения которого будут возвращены
+     * @return array
+     */
+    public function column(string $key): array
+    {
+        try {
+            if ($this->isEmpty()) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            
+            return ArrayHelper::getColumn($this->items, $key);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Сортирует объекты коллекции static::items
      * @param string $key имя свойства, по значениям которого будет выполнена сортировка
      * @param string $type флаг, определяющий тип сортировки SORT_ASC / SORT_DESC

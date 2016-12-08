@@ -5,13 +5,10 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\actions\SearchAction;
-use app\repositories\DbRepository;
 use app\services\{ProductsListIndexService,
-    SphinxSearchService};
+    ProductsListSearchService};
 use app\collections\{BaseCollection,
-    BaseSessionCollection,
-    LightPagination};
-use app\search\ProductsSearchModel;
+    BaseSessionCollection};
 use app\finders\{OneSessionFinder,
     MainCurrencyFinder};
 
@@ -26,26 +23,13 @@ class ProductsListController extends AbstractBaseController
             'index'=>[
                 'class'=>SearchAction::class,
                 'service'=>new ProductsListIndexService(),
-                'view'=>'products-list-changes.twig'
+                'view'=>'products-list.twig'
             ],
-            /*'search'=>[
+            'search'=>[
                 'class'=>SearchAction::class,
-                'service'=>new SphinxSearchService([
-                    'sphinxRepository'=>new DbRepository([
-                        'query'=>SphinxModel::find(),
-                        'collection'=>new BaseCollection(),
-                        //'criteria'=>new QueryCriteria()
-                    ]),
-                    'productsRepository'=>new DbRepository([
-                        'query'=>ProductsModel::find(),
-                        'collection'=>new ProductsCollection([
-                            'pagination'=>new LightPagination()
-                        ]),
-                        //'criteria'=>new QueryCriteria()
-                    ]),
-                ]),
-                'view'=>'products-search.twig'
-            ],*/
+                'service'=>new ProductsListSearchService(),
+                'view'=>'products-list.twig'
+            ],
         ];
     }
     

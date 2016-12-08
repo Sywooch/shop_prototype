@@ -25,6 +25,7 @@ interface CollectionInterface
     public function setPagination(PaginationInterface $pagination);
     public function getPagination();
     public function map(string $key, string $value);
+    public function column(string $key);
     public function sort(string $key, $type);
     public function hasEntity(Model $object);
     public function update(Model $object);
