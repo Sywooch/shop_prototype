@@ -41,19 +41,19 @@ class FiltersWidget extends Widget
     {
         try {
             if (empty($this->colorsCollection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('colorsCollection'));
+                throw new ErrorException($this->emptyError('colorsCollection'));
             }
             if (empty($this->sizesCollection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('sizesCollection'));
+                throw new ErrorException($this->emptyError('sizesCollection'));
             }
             if (empty($this->brandsCollection)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('brandsCollection'));
+                throw new ErrorException($this->emptyError('brandsCollection'));
             }
             if (empty($this->form)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('form'));
+                throw new ErrorException($this->emptyError('form'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+                throw new ErrorException($this->emptyError('view'));
             }
             
             $renderArray = [];

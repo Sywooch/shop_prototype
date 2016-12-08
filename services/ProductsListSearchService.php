@@ -33,7 +33,7 @@ use app\widgets\{PaginationWidget,
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
  */
-class ProductsListIndexService extends Object implements ServiceInterface
+class ProductsListSearchService extends Object implements ServiceInterface
 {
     use ExceptionsTrait;
     
@@ -47,9 +47,20 @@ class ProductsListIndexService extends Object implements ServiceInterface
         try {
             $dataArray = [];
             
+            # Данные, найденные в ответ на запрос
+            
+            $finder = new SphinxFinder([
+                'collection'=>new SphinxCollection()
+            ]);
+            $finder->load($request);
+            $sphinxCollection = $finder->find()->getArrays();
+            if ($sphinxCollection->isEmpty()) {
+                throw new NotFoundHttpException($this->error404());
+            }
+            
             # Данные для вывода списка товаров
             
-            $finder = new ProductsFinder([
+            /*$finder = new ProductsFinder([
                 'collection'=>new ProductsCollection([
                     'pagination'=>new LightPagination()
                 ])
@@ -182,7 +193,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $dataArray['filtersConfig']['brandsCollection'] = $collection;
             
             $dataArray['filtersConfig']['form'] = new FiltersForm();
-            $dataArray['filtersConfig']['view'] = 'products-filters.twig';
+            $dataArray['filtersConfig']['view'] = 'products-filters.twig';*/
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {

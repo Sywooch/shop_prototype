@@ -6,7 +6,6 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
 use app\services\ServiceInterface;
-use app\exceptions\ExceptionsTrait;
 
 /**
  * Обрабатывает запрос на вывод каталога товаров
@@ -22,30 +21,20 @@ class SearchAction extends AbstractBaseAction
      */
     public $view;
     
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->service)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('service'));
-            }
-            if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
-            }
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwServerError($t, __METHOD__);
-        }
-    }
-    
     public function run()
     {
         try {
+            if (empty($this->service)) {
+                throw new ErrorException($this->emptyError('service'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException($this->emptyError('view'));
+            }
+            
             $dataArray = $this->service->handle(\Yii::$app->request->get());
             
             if (empty($dataArray)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('dataArray'));
+                throw new ErrorException($this->emptyError('dataArray'));
             }
             
             return $this->controller->render($this->view, $dataArray);

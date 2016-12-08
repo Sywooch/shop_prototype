@@ -70,7 +70,9 @@ class ProductsFinderTests extends TestCase
         };
         
         $collection = new class() extends BaseCollection {};
+        
         $finder = new ProductsFinder();
+        
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
         $reflection->setValue($finder, $collection);
