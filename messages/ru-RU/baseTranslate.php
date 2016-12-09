@@ -105,6 +105,7 @@ $translate = [
     'Your subscription to shop.com'=>'Ваши подписки на shop.com',
     'You successfully subscribed to mailings:'=>'Вы успешно подписались на рассылки:',
     'You are already subscribed to the mailing list:'=>'Вы уже подписаны на  эти рассылки:',
+    'Search for <strong>{placeholder}</strong> returned no results'=>'Поиск <strong>{placeholder}</strong> не дал результатов'
 ];
 
 return $translate;

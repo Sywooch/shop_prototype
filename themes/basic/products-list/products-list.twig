@@ -1,28 +1,15 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
-{{ use('app/widgets/UserInfoWidget') }}
-{{ use('app/widgets/CartWidget') }}
-{{ use('app/widgets/CurrencyWidget') }}
-{{ use('app/widgets/SearchWidget') }}
-{{ use('app/widgets/CategoriesMenuWidget') }}
-{{ use('app/widgets/ProductsListWidget') }}
 {{ use('app/widgets/CategoriesBreadcrumbsWidget') }}
 {{ use('app/widgets/FiltersWidget') }}
+{{ use('app/widgets/ProductsListWidget') }}
 
-{{ user_info_widget_widget(userConfig) }}
-
-{{ cart_widget_widget(cartConfig) }}
-
-{{ currency_widget_widget(currencyConfig) }}
-
-{{ search_widget_widget(searchConfig) }}
-
-{{ categories_menu_widget_widget(menuConfig) }}
+{{ include('@theme/products-list/common.twig') }}
 
 {{ categories_breadcrumbs_widget_widget(breadcrumbsConfig) }}
 
-{{ products_list_widget_widget(productsConfig) }}
-
 {{ filters_widget_widget(filtersConfig) }}
+
+{{ products_list_widget_widget(productsConfig) }}
 
 

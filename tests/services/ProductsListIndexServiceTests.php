@@ -3,7 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\{ProductsListSearchService,
+use app\services\{ProductsListIndexService,
     ServiceInterface};
 use app\models\{CategoriesModel,
     CurrencyModel,
@@ -21,9 +21,9 @@ use app\tests\sources\fixtures\{CategoriesFixture,
 use app\forms\FiltersForm;
 
 /**
- * Тестирует класс ProductsListSearchService
+ * Тестирует класс ProductsListIndexService
  */
-class ProductsListSearchServiceTests extends TestCase
+class ProductsListIndexServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -42,26 +42,26 @@ class ProductsListSearchServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductsListSearchService::setCommonService
+     * Тестирует метод ProductsListIndexService::setCommonService
      * если передан аргумент неверного типа
      * @expectedException TypeError
      */
     public function testSetCommonServiceError()
     {
         $commonService = new class() {};
-        $service = new ProductsListSearchService();
+        $service = new ProductsListIndexService();
         $service->setCommonService($commonService);
     }
     
     /**
-     * Тестирует метод ProductsListSearchService::setCommonService
+     * Тестирует метод ProductsListIndexService::setCommonService
      */
     public function testSetCommonService()
     {
         $commonService = new class() implements ServiceInterface {
             public function handle($data) {}
         };
-        $service = new ProductsListSearchService();
+        $service = new ProductsListIndexService();
         $service->setCommonService($commonService);
         
         $reflection = new \ReflectionProperty($service, 'commonService');
@@ -72,11 +72,14 @@ class ProductsListSearchServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductsListSearchService::handle
+     * Тестирует метод ProductsListIndexService::handle
      */
     public function testHandle()
     {
-        $request = [\Yii::$app->params['searchKey']=>'рубашка'];
+        $category = self::$dbClass->categories['category_1'];
+        $subcategory = self::$dbClass->subcategory['subcategory_1'];
+        
+        $request = [\Yii::$app->params['categoryKey']=>$category['seocode'], \Yii::$app->params['subcategoryKey']=>$subcategory['seocode']];
         
         $commonService = new class() implements ServiceInterface {
             public function handle($data) {
@@ -84,7 +87,7 @@ class ProductsListSearchServiceTests extends TestCase
             }
         };
         
-        $service = new ProductsListSearchService();
+        $service = new ProductsListIndexService();
         
         $reflection = new \ReflectionProperty($service, 'commonService');
         $reflection->setAccessible(true);
@@ -107,6 +110,12 @@ class ProductsListSearchServiceTests extends TestCase
         $this->assertInstanceOf(PaginationWidget::class, $result['productsConfig']['paginationWidget']);
         $this->assertInternalType('string', $result['productsConfig']['view']);
         
+        $this->assertArrayHasKey('breadcrumbsConfig', $result);
+        $this->assertArrayHasKey('category', $result['breadcrumbsConfig']);
+        $this->assertArrayHasKey('subcategory', $result['breadcrumbsConfig']);
+        $this->assertInstanceOf(CategoriesModel::class, $result['breadcrumbsConfig']['category']);
+        $this->assertInstanceOf(SubcategoryModel::class, $result['breadcrumbsConfig']['subcategory']);
+        
         $this->assertArrayHasKey('filtersConfig', $result);
         $this->assertArrayHasKey('colorsCollection', $result['filtersConfig']);
         $this->assertArrayHasKey('sizesCollection', $result['filtersConfig']);
@@ -118,41 +127,6 @@ class ProductsListSearchServiceTests extends TestCase
         $this->assertInstanceOf(CollectionInterface::class, $result['filtersConfig']['brandsCollection']);
         $this->assertInstanceOf(FiltersForm::class, $result['filtersConfig']['form']);
         $this->assertInternalType('string', $result['filtersConfig']['view']);
-        
-        $this->assertArrayNotHasKey('emptySphinxConfig', $result);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::handle
-     * если sphinx ничего не нашел
-     */
-    public function testHandleSphinxEmpty()
-    {
-        $request = [\Yii::$app->params['searchKey']=>'этого нет'];
-        
-        $commonService = new class() implements ServiceInterface {
-            public function handle($data) {
-                return ['currencyModel'=>new CurrencyModel(['code'=>'MONEY', 'exchange_rate'=>7.0975, 'main'=>true])];
-            }
-        };
-        
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionProperty($service, 'commonService');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($service, $commonService);
-        
-        $result = $service->handle($request);
-        
-        $this->assertNotEmpty($result);
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayNotHasKey('productsConfig', $result);
-        $this->assertArrayNotHasKey('filtersConfig', $result);
-        
-        $this->assertArrayHasKey('emptySphinxConfig', $result);
-        $this->assertArrayHasKey('text', $result['emptySphinxConfig']);
-        $this->assertArrayHasKey('view', $result['emptySphinxConfig']);
     }
     
     public static function tearDownAfterClass()

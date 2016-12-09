@@ -5,7 +5,8 @@ namespace app\controllers;
 use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
 use app\actions\SearchAction;
-use app\services\{ProductsListIndexService,
+use app\services\{CommonFrontendService,
+    ProductsListIndexService,
     ProductsListSearchService};
 use app\collections\{BaseCollection,
     BaseSessionCollection};
@@ -22,13 +23,17 @@ class ProductsListController extends AbstractBaseController
         return [
             'index'=>[
                 'class'=>SearchAction::class,
-                'service'=>new ProductsListIndexService(),
+                'service'=>new ProductsListIndexService([
+                    'commonService'=>new CommonFrontendService()
+                ]),
                 'view'=>'products-list.twig'
             ],
             'search'=>[
                 'class'=>SearchAction::class,
-                'service'=>new ProductsListSearchService(),
-                'view'=>'products-list.twig'
+                'service'=>new ProductsListSearchService([
+                    'commonService'=>new CommonFrontendService()
+                ]),
+                'view'=>'products-search.twig'
             ],
         ];
     }
@@ -38,15 +43,6 @@ class ProductsListController extends AbstractBaseController
         return [
             [
                 'class'=>'app\filters\ProductsFilter',
-            ],
-            [
-                'class'=>'app\filters\CurrencyFilter',
-                'sessionFinder'=>new OneSessionFinder([
-                    'collection'=>new BaseSessionCollection()
-                ]),
-                'finder'=>new MainCurrencyFinder([
-                    'collection'=>new BaseCollection()
-                ])
             ],
             [
                 'class'=>'app\filters\CartFilter',

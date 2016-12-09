@@ -5,27 +5,18 @@ namespace app\services;
 use yii\base\{ErrorException,
     Object};
 use yii\web\NotFoundHttpException;
+use app\services\ServiceInterface;
 use app\exceptions\ExceptionsTrait;
 use app\finders\{BrandsFilterFinder,
-    CategoriesFinder,
     CategorySeocodeFinder,
     ColorsFilterFinder,
-    CurrencyFinder,
-    GroupSessionFinder,
-    OneSessionFinder,
     ProductsFinder,
     SizesFilterFinder,
     SubcategorySeocodeFinder};
 use app\collections\{BaseCollection,
-    BaseSessionCollection,
     LightPagination,
-    ProductsCollection,
-    PurchasesSessionCollection};
-use app\helpers\HashHelper;
-use app\forms\{ChangeCurrencyForm,
-    FiltersForm};
-use app\models\{CurrencyModel,
-    PurchasesModel};
+    ProductsCollection};
+use app\forms\FiltersForm;
 use app\widgets\{PaginationWidget,
     PriceWidget,
     ThumbnailsWidget};
@@ -38,6 +29,11 @@ class ProductsListIndexService extends Object implements ServiceInterface
     use ExceptionsTrait;
     
     /**
+     * @var object ServiceInterface данные, общие для всех frontend сервисов
+     */
+    private $commonService;
+    
+    /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
      * @param array $request
@@ -45,7 +41,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
     public function handle($request): array
     {
         try {
-            $dataArray = [];
+            $dataArray = $this->commonService->handle($request);
             
             # Данные для вывода списка товаров
             
@@ -61,68 +57,10 @@ class ProductsListIndexService extends Object implements ServiceInterface
             }
             
             $dataArray['productsConfig']['productsCollection'] = $collection;
-            
-            $finder = new OneSessionFinder([
-                'collection'=>new BaseSessionCollection()
-            ]);
-            $finder->load(['key'=>\Yii::$app->params['currencyKey']]);
-            $currencyModel = $finder->find()->getModel(CurrencyModel::class);
-            if (empty($currencyModel)) {
-                throw new ErrorException($this->emptyError('currencyModel'));
-            }
-            
-            $dataArray['productsConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$currencyModel]);
+            $dataArray['productsConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
             $dataArray['productsConfig']['thumbnailsWidget'] = new ThumbnailsWidget(['view'=>'thumbnails.twig']);
             $dataArray['productsConfig']['paginationWidget'] = new PaginationWidget(['view'=>'pagination.twig']);
             $dataArray['productsConfig']['view'] = 'products-list.twig';
-            
-            # Данные для вывода информации о текущем пользователе
-            
-            $dataArray['userConfig']['user'] = \Yii::$app->user;
-            $dataArray['userConfig']['view'] = 'user-info.twig';
-            
-            # Данные для вывода информации о состоянии корзины
-            
-            $finder = new GroupSessionFinder([
-                'collection'=>new PurchasesSessionCollection()
-            ]);
-            $finder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
-            $collection = $finder->find()->getModels(PurchasesModel::class);
-            
-            $dataArray['cartConfig']['purchasesCollection'] = $collection;
-            $dataArray['cartConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$currencyModel]);
-            $dataArray['cartConfig']['view'] = 'short-cart.twig';
-            
-            # Данные для вывода списка доступных валют
-            
-            $finder = new CurrencyFinder([
-                'collection'=>new BaseCollection()
-            ]);
-            $collection = $finder->find()->getModels();
-            if ($collection->isEmpty()) {
-                throw new ErrorException($this->emptyError('currencyCollection'));
-            }
-            
-            $dataArray['currencyConfig']['currencyCollection'] = $collection;
-            $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm();
-            $dataArray['currencyConfig']['view'] = 'currency-form.twig';
-            
-            # Данные для вывода строки поиска
-            
-            $dataArray['searchConfig']['text'] = $request[\Yii::$app->params['searchKey']];
-            $dataArray['searchConfig']['view'] = 'search.twig';
-            
-            # Данные для вывода меню категорий
-            
-            $finder = new CategoriesFinder([
-                'collection'=>new BaseCollection()
-            ]);
-            $collection = $finder->find()->getModels();
-            if ($collection->isEmpty()) {
-                throw new ErrorException($this->emptyError('categoriesCollection'));
-            }
-            
-            $dataArray['menuConfig']['categoriesCollection'] = $collection;
             
             # Данные для вывода breadcrumbs
             
@@ -187,6 +125,19 @@ class ProductsListIndexService extends Object implements ServiceInterface
             return $dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ServiceInterface свойствуProductsListSearchService::commonService
+     * @param ServiceInterface $service
+     */
+    public function setCommonService(ServiceInterface $service)
+    {
+        try {
+            $this->commonService = $service;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

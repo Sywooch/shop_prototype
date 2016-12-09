@@ -65,6 +65,38 @@ $data = [
         'total_products'=>18,
         'seocode'=>'rubashka-chernaya-modnogo-fasona'
     ],
+    'product_5'=>[
+        'id'=>28,
+        'date'=>time(),
+        'code'=>'NPSMA-09',
+        'name'=>'Рубашка желтая, модного фасона',
+        'description'=>'Товар не произведен и не доступен для производства. Гарантируются только обещания поставки',
+        'short_description'=>'Товар не произведен и не доступен для производства',
+        'price'=>106.00,
+        'images'=>'test',
+        'id_category'=>1,
+        'id_subcategory'=>1,
+        'id_brand'=>2,
+        'active'=>true,
+        'total_products'=>18,
+        'seocode'=>'rubashka-true-zheltaya-modnogo-fasona'
+    ],
+    'product_6'=>[
+        'id'=>42,
+        'date'=>time(),
+        'code'=>'A125432',
+        'name'=>'Рубашка черная, модного фасона',
+        'description'=>'Товар не произведен и не доступен для производства. Гарантируются только обещания поставки',
+        'short_description'=>'Товар не произведен и не доступен для производства',
+        'price'=>112.00,
+        'images'=>'test',
+        'id_category'=>1,
+        'id_subcategory'=>2,
+        'id_brand'=>2,
+        'active'=>true,
+        'total_products'=>18,
+        'seocode'=>'rubashka-new-chernaya-modnogo-fasona'
+    ],
 ];
 
 return $data;

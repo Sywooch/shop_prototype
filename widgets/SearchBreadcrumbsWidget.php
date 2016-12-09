@@ -7,7 +7,7 @@ use app\widgets\BreadcrumbsWidget;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Формирует breadcrumbs для страницы товара
+ * Формирует breadcrumbs для страницы поиска
  */
 class SearchBreadcrumbsWidget extends BreadcrumbsWidget
 {
