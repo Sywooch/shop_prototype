@@ -24,6 +24,7 @@ class FiltersFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('colors'));
         $this->assertTrue($reflection->hasProperty('sizes'));
         $this->assertTrue($reflection->hasProperty('brands'));
+        $this->assertTrue($reflection->hasProperty('url'));
     }
     
     /**
@@ -38,6 +39,7 @@ class FiltersFormTests extends TestCase
             'colors'=>[12, 4],
             'sizes'=>[3, 7],
             'brands'=>2,
+            'url'=>'http://shop.com',
         ];
         
         $reflection = new \ReflectionProperty($form, 'sortingField');
@@ -59,5 +61,30 @@ class FiltersFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'brands');
         $result = $reflection->getValue($form);
         $this->assertSame(2, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'url');
+        $result = $reflection->getValue($form);
+        $this->assertSame('http://shop.com', $result);
+    }
+    
+    /**
+     * Тестирует правила проверки
+     */
+    public function testRules()
+    {
+        $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
+        $form->attributes = [];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('url', $form->errors);
+        
+        $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
+        $form->attributes = ['url'=>'http://shop.com'];
+        
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
     }
 }

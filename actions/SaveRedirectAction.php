@@ -3,66 +3,51 @@
 namespace app\actions;
 
 use yii\base\ErrorException;
+use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
-use app\exceptions\ExceptionsTrait;
-use app\services\SaveServiceInterface;
+use app\services\ServiceInterface;
 
 /**
- * Обрабатывает запрос на добавление товара в корзину
+ * Обрабатывает запрос на вывод каталога товаров
  */
 class SaveRedirectAction extends AbstractBaseAction
 {
     /**
-     * @var object SaveServiceInterface для поиска данных по запросу
+     * @var object ServiceInterface, обрабатывающий запрос
      */
     private $service;
-    /**
-     * @var string URL для редиректа
-     */
-    public $url;
-    
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->service)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('service'));
-            }
-            if (empty($this->url)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('url'));
-            }
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
-        }
-    }
     
     public function run()
     {
         try {
-            if (\Yii::$app->request->isPost) {
-                $this->service->save(\Yii::$app->request->post());
+            if (empty($this->service)) {
+                throw new ErrorException($this->emptyError('service'));
             }
             
-            return $this->controller->redirect($this->url);
+            $redirectUrl = $this->service->handle(\Yii::$app->request->post());
+            
+            if (empty($redirectUrl)) {
+                throw new ErrorException($this->emptyError('redirectUrl'));
+            }
+            
+            return $this->controller->redirect($redirectUrl);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
+            $this->throwServerError($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает SaveServiceInterface свойству SaveRedirectAction::service
-     * @param object $service SaveServiceInterface
+     * Присваивает ServiceInterface свойству SaveAction::service
+     * @param object $service ServiceInterface
      */
-    public function setService(SaveServiceInterface $service)
+    public function setService(ServiceInterface $service)
     {
         try {
             $this->service = $service;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
+            $this->throwServerError($t, __METHOD__);
         }
     }
 }

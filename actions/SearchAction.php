@@ -13,7 +13,7 @@ use app\services\ServiceInterface;
 class SearchAction extends AbstractBaseAction
 {
     /**
-     * @var object ServiceInterface для поиска данных по запросу
+     * @var object ServiceInterface, обрабатывающий запрос
      */
     private $service;
     /**

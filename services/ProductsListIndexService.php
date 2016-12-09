@@ -5,6 +5,7 @@ namespace app\services;
 use yii\base\{ErrorException,
     Object};
 use yii\web\NotFoundHttpException;
+use yii\helpers\Url;
 use app\services\ServiceInterface;
 use app\exceptions\ExceptionsTrait;
 use app\finders\{BrandsFilterFinder,
@@ -119,7 +120,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             }
             $dataArray['filtersConfig']['brandsCollection'] = $collection;
             
-            $dataArray['filtersConfig']['form'] = new FiltersForm();
+            $dataArray['filtersConfig']['form'] = new FiltersForm(['url'=>Url::current()]);
             $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             
             return $dataArray;

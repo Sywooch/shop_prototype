@@ -6,27 +6,21 @@ use yii\base\ErrorException;
 use app\controllers\{AbstractBaseController,
     FiltersControllerHelper};
 use app\helpers\UrlHelper;
+use app\actions\SaveRedirectAction;
 
 /**
  * Обрабатывает запросы, связанные с применением фильтров
  */
 class FiltersController extends AbstractBaseController
 {
-    /**
-     * Обрабатывает запрос на применение фильтров
-     */
-    public function actionSet()
+    public function actions()
     {
-        try {
-            if (\Yii::$app->request->isPost) {
-                $key = FiltersControllerHelper::setPost();
-            }
-            
-            return $this->redirect(!empty($key) ? $key : UrlHelper::previous('shop'));
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
-        }
+        return [
+            'set'=>[
+                'class'=>SaveRedirectAction::class,
+                'service'=>new FiltersSetService()
+            ],
+        ];
     }
     
     /**
