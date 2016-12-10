@@ -23,7 +23,8 @@ use app\forms\FiltersForm;
 use app\widgets\{PaginationWidget,
     PriceWidget,
     ThumbnailsWidget};
-use app\helpers\StringHelper;
+use app\helpers\{HashHelper,
+    StringHelper};
 use app\filters\ProductsFilters;
 
 /**
@@ -53,10 +54,15 @@ class ProductsListIndexService extends Object implements ServiceInterface
             $finder = new OneSessionFinder([
                 'collection'=>new BaseSessionCollection()
             ]);
-            $finder->load(['key'=>StringHelper::cutPage(Url::current())]);
+            $finder->load(['key'=>HashHelper::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? ''])]);
             $collection = $finder->find();
             if ($collection->isEmpty() === false) {
-                $filters = $collection->getModel(ProductsFilters::class);
+                $filtersArray = $collection->getArray();
+            }
+            
+            $filters = new ProductsFilters();
+            if (!empty($filtersArray)) {
+                $filters->attributes = $filtersArray;
             }
             
             # Данные для вывода списка товаров
@@ -65,10 +71,8 @@ class ProductsListIndexService extends Object implements ServiceInterface
                 'collection'=>new ProductsCollection([
                     'pagination'=>new LightPagination()
                 ]),
+                'filters'=>$filters
             ]);
-            if (!empty($filters)) {
-                $finder->filters = $filters;
-            }
             $finder->load($request);
             $collection = $finder->find()->getModels();
             if ($collection->isEmpty()) {
@@ -138,7 +142,7 @@ class ProductsListIndexService extends Object implements ServiceInterface
             }
             $dataArray['filtersConfig']['brandsCollection'] = $collection;
             
-            $dataArray['filtersConfig']['form'] = new FiltersForm(array_merge(['url'=>Url::current()], !empty($filters) ? $filters->toArray() : []));
+            $dataArray['filtersConfig']['form'] = new FiltersForm(array_merge(['url'=>Url::current()], !empty($filtersArray) ? $filtersArray : []));
             $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             
             return $dataArray;

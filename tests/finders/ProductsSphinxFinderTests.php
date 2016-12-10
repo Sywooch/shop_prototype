@@ -9,6 +9,8 @@ use app\collections\{BaseCollection,
     LightPagination};
 use yii\db\Query;
 use app\models\ProductsModel;
+use app\filters\{ProductsFiltersInterface,
+    ProductsFilters};
 
 class ProductsSphinxFinderTests extends TestCase
 {
@@ -21,6 +23,7 @@ class ProductsSphinxFinderTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('found'));
         $this->assertTrue($reflection->hasProperty('page'));
+        $this->assertTrue($reflection->hasProperty('filters'));
     }
     
     /**
@@ -47,6 +50,69 @@ class ProductsSphinxFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод ProductsSphinxFinder::setFilters
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetFiltersError()
+    {
+        $filter = new class() {};
+        
+        $finder = new ProductsSphinxFinder();
+        
+        $finder->setFilters($filter);
+    }
+    
+    /**
+     * Тестирует метод ProductsSphinxFinder::setFilters
+     */
+    public function testSetFilters()
+    {
+        $filters = new class() extends ProductsFilters {};
+        
+        $finder = new ProductsSphinxFinder();
+        
+        $finder->setFilters($filters);
+        
+        $reflection = new \ReflectionProperty($finder, 'filters');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($finder);
+        
+        $this->assertInstanceOf(ProductsFiltersInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsSphinxFinder::find
+     * усли пуст ProductsSphinxFinder::collection
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: collection
+     */
+    public function testFindEmptyCollection()
+    {
+        $finder = new ProductsSphinxFinder();
+        $finder->find();
+    }
+    
+    /**
+     * Тестирует метод ProductsSphinxFinder::find
+     * усли пуст ProductsSphinxFinder::filters
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: filters
+     */
+    public function testFindEmptyFilters()
+    {
+        $finder = new ProductsSphinxFinder();
+        
+        $collection = new class() extends BaseCollection {};
+        
+        $reflection = new \ReflectionProperty($finder, 'collection');
+        $reflection->setAccessible(true);
+        $reflection->setValue($finder, $collection);
+        
+        $finder->find();
+    }
+    
+    /**
      * Тестирует метод ProductsSphinxFinder::find
      */
     public function testFind()
@@ -62,6 +128,8 @@ class ProductsSphinxFinderTests extends TestCase
         
         $collection = new class() extends BaseCollection {};
         
+        $filters = new class() extends ProductsFilters {};
+        
         $finder = new ProductsSphinxFinder();
         
         $reflection = new \ReflectionProperty($finder, 'found');
@@ -71,6 +139,10 @@ class ProductsSphinxFinderTests extends TestCase
         $reflection = new \ReflectionProperty($finder, 'collection');
         $reflection->setAccessible(true);
         $reflection->setValue($finder, $collection);
+        
+        $reflection = new \ReflectionProperty($finder, 'filters');
+        $reflection->setAccessible(true);
+        $reflection->setValue($finder, $filters);
         
         $reflection = new \ReflectionProperty($collection, 'pagination');
         $reflection->setAccessible(true);

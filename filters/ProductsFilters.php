@@ -14,29 +14,42 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
     /**
      * @var string имя столбца, покоторому будут отсортированы результаты
      */
-    public $sortingField;
+    private $sortingField;
     /**
      * @var string тип сортировки
      */
-    public $sortingType;
+    private $sortingType;
     /**
      * @var array массив ID цветов для сортировки
      */
-    public $colors;
+    private $colors;
     /**
      * @var array массив ID размеров для сортировки
      */
-    public $sizes;
+    private $sizes;
     /**
      * @var array массив ID брендов для сортировки
      */
-    public $brands;
+    private $brands;
     
     public function rules()
     {
         return [
             [['sortingField', 'sortingType', 'colors', 'sizes', 'brands'], 'safe'],
         ];
+    }
+    
+    /**
+     * Присваивает значение ProductsFilters::sortingField
+     * @param string $sortingField
+     */
+    public function setSortingField(string $sortingField)
+    {
+        try {
+            $this->sortingField = $sortingField;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
     }
     
     /**
@@ -47,6 +60,19 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
     {
         try {
             return !empty($this->sortingField) ? $this->sortingField : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение ProductsFilters::sortingType
+     * @param string $sortingType
+     */
+    public function setSortingType(string $sortingType)
+    {
+        try {
+            $this->sortingType = $sortingType;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -66,6 +92,19 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
     }
     
     /**
+     * Присваивает значение ProductsFilters::colors
+     * @param mixed $colors
+     */
+    public function setColors($colors)
+    {
+        try {
+            $this->colors = $colors;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает значение ProductsFilters::colors
      * @return mixed
      */
@@ -79,6 +118,19 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
     }
     
     /**
+     * Присваивает значение ProductsFilters::sizes
+     * @param mixed $colors
+     */
+    public function setSizes($sizes)
+    {
+        try {
+            $this->sizes = $sizes;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает значение ProductsFilters::sizes
      * @return mixed
      */
@@ -86,6 +138,19 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
     {
         try {
             return !empty($this->sizes) ? $this->sizes : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение ProductsFilters::brands
+     * @param mixed $brands
+     */
+    public function setBrands($brands)
+    {
+        try {
+            $this->brands = $brands;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

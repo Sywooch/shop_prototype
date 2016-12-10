@@ -10,10 +10,12 @@ use app\services\ServiceInterface;
 use app\exceptions\ExceptionsTrait;
 use app\finders\{BrandsSphinxFilterFinder,
     ColorsSphinxFilterFinder,
+    OneSessionFinder,
     ProductsSphinxFinder,
     SizesSphinxFilterFinder,
     SphinxFinder};
 use app\collections\{BaseCollection,
+    BaseSessionCollection,
     LightPagination,
     ProductsCollection,
     SphinxCollection};
@@ -21,6 +23,9 @@ use app\forms\FiltersForm;
 use app\widgets\{PaginationWidget,
     PriceWidget,
     ThumbnailsWidget};
+use app\helpers\{HashHelper,
+    StringHelper};
+use app\filters\ProductsFilters;
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -44,6 +49,22 @@ class ProductsListSearchService extends Object implements ServiceInterface
         try {
             $dataArray = $this->commonService->handle($request);
             
+            # Товарные фильтры
+            
+            $finder = new OneSessionFinder([
+                'collection'=>new BaseSessionCollection()
+            ]);
+            $finder->load(['key'=>HashHelper::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? ''])]);
+            $collection = $finder->find();
+            if ($collection->isEmpty() === false) {
+                $filtersArray = $collection->getArray();
+            }
+            
+            $filters = new ProductsFilters();
+            if (!empty($filtersArray)) {
+                $filters->attributes = $filtersArray;
+            }
+            
             # Данные, найденные в ответ на поисковый запрос
             
             $finder = new SphinxFinder([
@@ -59,7 +80,8 @@ class ProductsListSearchService extends Object implements ServiceInterface
                 $finder = new ProductsSphinxFinder([
                     'collection'=>new ProductsCollection([
                         'pagination'=>new LightPagination()
-                    ])
+                    ]),
+                    'filters'=>$filters
                 ]);
                 $finder->load(array_merge($request, ['found'=>$sphinxCollection->column('id')]));
                 $collection = $finder->find()->getModels();
@@ -106,7 +128,7 @@ class ProductsListSearchService extends Object implements ServiceInterface
                 }
                 $dataArray['filtersConfig']['brandsCollection'] = $collection;
                 
-                $dataArray['filtersConfig']['form'] = new FiltersForm(['url'=>Url::current()]);
+                $dataArray['filtersConfig']['form'] = new FiltersForm(array_merge(['url'=>Url::current()], !empty($filtersArray) ? $filtersArray : []));
                 $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             } else {
                 $dataArray['emptySphinxConfig']['text'] = $request[\Yii::$app->params['searchKey']];

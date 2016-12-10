@@ -7,7 +7,8 @@ use yii\base\{ErrorException,
 use app\exceptions\ExceptionsTrait;
 use app\services\ServiceInterface;
 use app\forms\FiltersForm;
-use app\helpers\{SessionHelper,
+use app\helpers\{HashHelper,
+    SessionHelper,
     StringHelper};
 use app\savers\OneSessionSaver;
 
@@ -32,7 +33,7 @@ class FiltersSetService extends Object implements ServiceInterface
                 if ($form->validate() === false) {
                     throw new ErrorException($this->modelError($form->errors));
                 }
-                $key = StringHelper::cutPage($form->url);
+                $key = HashHelper::createHash([StringHelper::cutPage($form->url), \Yii::$app->user->id ?? '']);
                 if (!empty($key)) {
                     $saver = new OneSessionSaver();
                     $saver->load(['key'=>$key, 'model'=>$form]);
