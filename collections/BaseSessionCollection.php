@@ -33,7 +33,9 @@ class BaseSessionCollection extends AbstractIterator implements SessionCollectio
                 $objectsArray = [];
                 
                 foreach ($this->items as $item) {
-                    $objectsArray[] = new $class($item);
+                    $model = new $class();
+                    $model->attributes = $item;
+                    $objectsArray[] = $model;
                 }
                 
                 $this->items = $objectsArray;
@@ -60,7 +62,10 @@ class BaseSessionCollection extends AbstractIterator implements SessionCollectio
                 throw new ErrorException($this->invalidError('items'));
             }
             
-            return new $class($this->items[0]);
+            $model = new $class();
+            $model->attributes = $this->items[0];
+            
+            return $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

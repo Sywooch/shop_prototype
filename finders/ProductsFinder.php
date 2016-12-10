@@ -42,12 +42,16 @@ class ProductsFinder extends AbstractBaseFinder
             if (empty($this->collection)) {
                 throw new ErrorException($this->emptyError('collection'));
             }
+            if (empty($this->filters)) {
+                throw new ErrorException($this->emptyError('filters'));
+            }
             
             if ($this->collection->isEmpty()) {
                 
                 $query = ProductsModel::find();
                 $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
                 $query->where(['[[products.active]]'=>true]);
+                
                 if (!empty($this->category)) {
                     $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
                     $query->andWhere(['[[categories.seocode]]'=>$this->category]);

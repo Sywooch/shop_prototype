@@ -29,7 +29,6 @@ class FiltersSetService extends Object implements ServiceInterface
             $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
             
             if ($form->load($request)) {
-                print_r($form);
                 if ($form->validate() === false) {
                     throw new ErrorException($this->modelError($form->errors));
                 }

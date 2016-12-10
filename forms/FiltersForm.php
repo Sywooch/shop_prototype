@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\filters\ProductsFiltersInterface;
 
 /**
  * Представляет данные формы фильтров для каталога товаров

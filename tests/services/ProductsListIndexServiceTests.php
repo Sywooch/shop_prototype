@@ -19,6 +19,7 @@ use app\tests\sources\fixtures\{CategoriesFixture,
     ProductsSizesFixture,
     SubcategoryFixture};
 use app\forms\FiltersForm;
+use app\controllers\ProductsListController;
 
 /**
  * Тестирует класс ProductsListIndexService
@@ -76,6 +77,8 @@ class ProductsListIndexServiceTests extends TestCase
      */
     public function testHandle()
     {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
         $category = self::$dbClass->categories['category_1'];
         $subcategory = self::$dbClass->subcategory['subcategory_1'];
         

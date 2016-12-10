@@ -284,6 +284,7 @@ class FiltersWidgetTests extends TestCase
             public $colors;
             public $sizes;
             public $brands;
+            public $url;
         };
         
         $widget = new FiltersWidget();

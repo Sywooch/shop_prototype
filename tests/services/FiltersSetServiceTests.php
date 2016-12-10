@@ -12,6 +12,27 @@ class FiltersSetServiceTests extends TestCase
 {
     /**
      * Тестирует метод FiltersSetService::handle
+     * если данные не валидны
+     * @expectedException ErrorException
+     */
+    public function testHandleError()
+    {
+        $request = [
+            'FiltersForm'=>[
+                'sortingField'=>'price', 
+                'sortingType'=>'SORT_DESC', 
+                'colors'=>[2, 5], 
+                'sizes'=>[11, 2], 
+                'brands'=>[1],
+            ]
+        ];
+        
+        $service = new FiltersSetService();
+        $result = $service->handle($request);
+    }
+    
+    /**
+     * Тестирует метод FiltersSetService::handle
      */
     public function testHandle()
     {
@@ -29,6 +50,6 @@ class FiltersSetServiceTests extends TestCase
         $service = new FiltersSetService();
         $result = $service->handle($request);
         
-        print_r($result);
+        $this->assertSame('/shop-12', $result);
     }
 }

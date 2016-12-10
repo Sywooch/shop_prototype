@@ -7,6 +7,7 @@ use app\controllers\{AbstractBaseController,
     FiltersControllerHelper};
 use app\helpers\UrlHelper;
 use app\actions\SaveRedirectAction;
+use app\services\FiltersSetService;
 
 /**
  * Обрабатывает запросы, связанные с применением фильтров
