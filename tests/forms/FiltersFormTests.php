@@ -18,6 +18,7 @@ class FiltersFormTests extends TestCase
         $reflection = new \ReflectionClass(FiltersForm::class);
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('CLEAN'));
         
         $this->assertTrue($reflection->hasProperty('sortingField'));
         $this->assertTrue($reflection->hasProperty('sortingType'));
@@ -65,6 +66,13 @@ class FiltersFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'url');
         $result = $reflection->getValue($form);
         $this->assertSame('http://shop.com', $result);
+        
+        $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
+        $form->attributes = ['url'=>'http://shop.com'];
+        
+        $reflection = new \ReflectionProperty($form, 'url');
+        $result = $reflection->getValue($form);
+        $this->assertSame('http://shop.com', $result);
     }
     
     /**
@@ -81,6 +89,21 @@ class FiltersFormTests extends TestCase
         $this->assertArrayHasKey('url', $form->errors);
         
         $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
+        $form->attributes = ['url'=>'http://shop.com'];
+        
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
+        $form->attributes = [];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('url', $form->errors);
+        
+        $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
         $form->attributes = ['url'=>'http://shop.com'];
         
         $form->validate();

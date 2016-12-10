@@ -1,6 +1,6 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<p><strong>{{ header }}</strong>{{ currentUrl }}</p>
+<p><strong>{{ header }}</strong></p>
 
 {% set form=active_form_begin({'id':'products-filters-form', 'action':url.to({0:'/filters/set'}), 'method':'POST'}) %}
     {{ form.field(formModel, 'sortingField').dropDownList(sortingFieldsList) | raw }}
@@ -12,6 +12,7 @@
     <input type="submit" value="{{ yii.t('base', 'Apply') }}">
 {{ active_form_end() }}
 
-{% set form = active_form_begin({'id':'products-filters-clean', 'action':url.to({0:'/filters/clean'}), 'method':'POST'}) %}
+{% set form = active_form_begin({'id':'products-filters-clean', 'action':url.to({0:'/filters/unset'}), 'method':'POST'}) %}
+    {{ form.field(formModel, 'url').hiddenInput({'value':currentUrl}).label(false) | raw }}
     <input type="submit" value="{{ yii.t('base', 'Clean') }}">
 {{ active_form_end() }}

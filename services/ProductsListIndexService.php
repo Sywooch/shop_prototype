@@ -6,7 +6,8 @@ use yii\base\{ErrorException,
     Object};
 use yii\web\NotFoundHttpException;
 use yii\helpers\Url;
-use app\services\ServiceInterface;
+use app\services\{CommonFrontendService,
+    ServiceInterface};
 use app\exceptions\ExceptionsTrait;
 use app\finders\{BrandsFilterFinder,
     CategorySeocodeFinder,
@@ -35,11 +36,6 @@ class ProductsListIndexService extends Object implements ServiceInterface
     use ExceptionsTrait;
     
     /**
-     * @var object ServiceInterface данные, общие для всех frontend сервисов
-     */
-    private $commonService;
-    
-    /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
      * @param array $request
@@ -47,7 +43,10 @@ class ProductsListIndexService extends Object implements ServiceInterface
     public function handle($request): array
     {
         try {
-            $dataArray = $this->commonService->handle($request);
+            # Общие для всех frontend сервисов данные
+            
+            $common = new CommonFrontendService();
+            $dataArray = $common->handle($request);
             
             # Товарные фильтры
             
@@ -148,19 +147,6 @@ class ProductsListIndexService extends Object implements ServiceInterface
             return $dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает ServiceInterface свойствуProductsListSearchService::commonService
-     * @param ServiceInterface $service
-     */
-    public function setCommonService(ServiceInterface $service)
-    {
-        try {
-            $this->commonService = $service;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -10,24 +10,23 @@ use app\forms\FiltersForm;
 use app\helpers\{HashHelper,
     SessionHelper,
     StringHelper};
-use app\savers\OneSessionSaver;
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
  */
-class FiltersSetService extends Object implements ServiceInterface
+class FiltersCleanService extends Object implements ServiceInterface
 {
     use ExceptionsTrait;
     
     /**
-     * Обрабатывает запрос на сохранение товарных фильтров
+     * Обрабатывает запрос на обнуление товарных фильтров
      * @param array $request
      * @return string URL
      */
     public function handle($request): string
     {
         try {
-            $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
+            $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
             
             if ($form->load($request)) {
                 if ($form->validate() === false) {
@@ -38,9 +37,7 @@ class FiltersSetService extends Object implements ServiceInterface
                 $key = HashHelper::createHash([$cutUrl, \Yii::$app->user->id ?? '']);
                 
                 if (!empty($key)) {
-                    $saver = new OneSessionSaver();
-                    $saver->load(['key'=>$key, 'model'=>$form]);
-                    $saver->save();
+                    SessionHelper::remove([$key]);
                 }
             }
             

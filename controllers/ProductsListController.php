@@ -4,8 +4,7 @@ namespace app\controllers;
 
 use app\controllers\AbstractBaseController;
 use app\actions\SearchAction;
-use app\services\{CommonFrontendService,
-    ProductsListIndexService,
+use app\services\{ProductsListIndexService,
     ProductsListSearchService};
 
 /**
@@ -18,16 +17,12 @@ class ProductsListController extends AbstractBaseController
         return [
             'index'=>[
                 'class'=>SearchAction::class,
-                'service'=>new ProductsListIndexService([
-                    'commonService'=>new CommonFrontendService()
-                ]),
+                'service'=>new ProductsListIndexService(),
                 'view'=>'products-list.twig'
             ],
             'search'=>[
                 'class'=>SearchAction::class,
-                'service'=>new ProductsListSearchService([
-                    'commonService'=>new CommonFrontendService()
-                ]),
+                'service'=>new ProductsListSearchService(),
                 'view'=>'products-search.twig'
             ],
         ];

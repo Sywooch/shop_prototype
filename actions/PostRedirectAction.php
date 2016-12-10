@@ -3,14 +3,13 @@
 namespace app\actions;
 
 use yii\base\ErrorException;
-use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
 use app\services\ServiceInterface;
 
 /**
  * Обрабатывает запрос на вывод каталога товаров
  */
-class SaveRedirectAction extends AbstractBaseAction
+class PostRedirectAction extends AbstractBaseAction
 {
     /**
      * @var object ServiceInterface, обрабатывающий запрос

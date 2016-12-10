@@ -2,12 +2,10 @@
 
 namespace app\controllers;
 
-use yii\base\ErrorException;
-use app\controllers\{AbstractBaseController,
-    FiltersControllerHelper};
-use app\helpers\UrlHelper;
-use app\actions\SaveRedirectAction;
-use app\services\FiltersSetService;
+use app\controllers\AbstractBaseController;
+use app\actions\PostRedirectAction;
+use app\services\{FiltersCleanService,
+    FiltersSetService};
 
 /**
  * Обрабатывает запросы, связанные с применением фильтров
@@ -18,26 +16,13 @@ class FiltersController extends AbstractBaseController
     {
         return [
             'set'=>[
-                'class'=>SaveRedirectAction::class,
+                'class'=>PostRedirectAction::class,
                 'service'=>new FiltersSetService()
             ],
+            'unset'=>[
+                'class'=>PostRedirectAction::class,
+                'service'=>new FiltersCleanService()
+            ],
         ];
-    }
-    
-    /**
-     * Обрабатывает запрос на очистку фильтров
-     */
-    public function actionUnset()
-    {
-        try {
-            if (\Yii::$app->request->isPost) {
-                $key = FiltersControllerHelper::unsetPost();
-            }
-            
-            return $this->redirect(!empty($key) ? $key : UrlHelper::previous('shop'));
-        } catch (\Throwable $t) {
-            $this->writeErrorInLogs($t, __METHOD__);
-            $this->throwException($t, __METHOD__);
-        }
     }
 }

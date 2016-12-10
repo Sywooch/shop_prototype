@@ -91,7 +91,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             # Данные для вывода строки поиска
             
-            $dataArray['searchConfig']['text'] = $request[\Yii::$app->params['searchKey']];
+            $dataArray['searchConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? '';
             $dataArray['searchConfig']['view'] = 'search.twig';
             
             # Данные для вывода меню категорий

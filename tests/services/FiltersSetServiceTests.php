@@ -50,6 +50,6 @@ class FiltersSetServiceTests extends TestCase
         $service = new FiltersSetService();
         $result = $service->handle($request);
         
-        $this->assertSame('/shop-12', $result);
+        $this->assertSame('/shop', $result);
     }
 }

@@ -14,6 +14,7 @@ use app\widgets\{PaginationWidget,
     ThumbnailsWidget};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
+    CurrencyFixture,
     ProductsColorsFixture,
     ProductsFixture,
     ProductsSizesFixture,
@@ -37,39 +38,10 @@ class ProductsListIndexServiceTests extends TestCase
                 'subcategory'=>SubcategoryFixture::class,
                 'colors'=>ProductsColorsFixture::class,
                 'sizes'=>ProductsSizesFixture::class,
+                'currency'=>CurrencyFixture::class,
             ],
         ]);
         self::$dbClass->loadFixtures();
-    }
-    
-    /**
-     * Тестирует метод ProductsListIndexService::setCommonService
-     * если передан аргумент неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetCommonServiceError()
-    {
-        $commonService = new class() {};
-        $service = new ProductsListIndexService();
-        $service->setCommonService($commonService);
-    }
-    
-    /**
-     * Тестирует метод ProductsListIndexService::setCommonService
-     */
-    public function testSetCommonService()
-    {
-        $commonService = new class() implements ServiceInterface {
-            public function handle($data) {}
-        };
-        $service = new ProductsListIndexService();
-        $service->setCommonService($commonService);
-        
-        $reflection = new \ReflectionProperty($service, 'commonService');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($service);
-        
-        $this->assertInstanceOf(ServiceInterface::class, $result);
     }
     
     /**
@@ -84,17 +56,7 @@ class ProductsListIndexServiceTests extends TestCase
         
         $request = [\Yii::$app->params['categoryKey']=>$category['seocode'], \Yii::$app->params['subcategoryKey']=>$subcategory['seocode']];
         
-        $commonService = new class() implements ServiceInterface {
-            public function handle($data) {
-                return ['currencyModel'=>new CurrencyModel(['code'=>'MONEY', 'exchange_rate'=>7.0975, 'main'=>true])];
-            }
-        };
-        
         $service = new ProductsListIndexService();
-        
-        $reflection = new \ReflectionProperty($service, 'commonService');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($service, $commonService);
         
         $result = $service->handle($request);
         

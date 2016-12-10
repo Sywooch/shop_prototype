@@ -14,11 +14,13 @@ use app\widgets\{PaginationWidget,
     ThumbnailsWidget};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
+    CurrencyFixture,
     ProductsColorsFixture,
     ProductsFixture,
     ProductsSizesFixture,
     SubcategoryFixture};
 use app\forms\FiltersForm;
+use app\controllers\ProductsListController;
 
 /**
  * Тестирует класс ProductsListSearchService
@@ -36,39 +38,10 @@ class ProductsListSearchServiceTests extends TestCase
                 'subcategory'=>SubcategoryFixture::class,
                 'colors'=>ProductsColorsFixture::class,
                 'sizes'=>ProductsSizesFixture::class,
+                'currency'=>CurrencyFixture::class,
             ],
         ]);
         self::$dbClass->loadFixtures();
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::setCommonService
-     * если передан аргумент неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetCommonServiceError()
-    {
-        $commonService = new class() {};
-        $service = new ProductsListSearchService();
-        $service->setCommonService($commonService);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::setCommonService
-     */
-    public function testSetCommonService()
-    {
-        $commonService = new class() implements ServiceInterface {
-            public function handle($data) {}
-        };
-        $service = new ProductsListSearchService();
-        $service->setCommonService($commonService);
-        
-        $reflection = new \ReflectionProperty($service, 'commonService');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($service);
-        
-        $this->assertInstanceOf(ServiceInterface::class, $result);
     }
     
     /**
@@ -76,19 +49,11 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testHandle()
     {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
         $request = [\Yii::$app->params['searchKey']=>'рубашка'];
         
-        $commonService = new class() implements ServiceInterface {
-            public function handle($data) {
-                return ['currencyModel'=>new CurrencyModel(['code'=>'MONEY', 'exchange_rate'=>7.0975, 'main'=>true])];
-            }
-        };
-        
         $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionProperty($service, 'commonService');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($service, $commonService);
         
         $result = $service->handle($request);
         
@@ -130,17 +95,7 @@ class ProductsListSearchServiceTests extends TestCase
     {
         $request = [\Yii::$app->params['searchKey']=>'этого нет'];
         
-        $commonService = new class() implements ServiceInterface {
-            public function handle($data) {
-                return ['currencyModel'=>new CurrencyModel(['code'=>'MONEY', 'exchange_rate'=>7.0975, 'main'=>true])];
-            }
-        };
-        
         $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionProperty($service, 'commonService');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($service, $commonService);
         
         $result = $service->handle($request);
         
