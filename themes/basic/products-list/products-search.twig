@@ -3,6 +3,7 @@
 {{ use('app/widgets/SearchBreadcrumbsWidget') }}
 {{ use('app/widgets/FiltersWidget') }}
 {{ use('app/widgets/EmptySphinxWidget') }}
+{{ use('app/widgets/EmptyProductsWidget') }}
 {{ use('app/widgets/ProductsListWidget') }}
 
 {{ include('@theme/products-list/common.twig') }}
@@ -14,5 +15,9 @@
 {% else %}
     {{ filters_widget_widget(filtersConfig) }}
     
-    {{ products_list_widget_widget(productsConfig) }}
+    {% if emptyConfig %}
+        {{ empty_products_widget_widget(emptyConfig) }}
+    {% else %}
+        {{ products_list_widget_widget(productsConfig) }}
+    {% endif %}
 {% endif %}

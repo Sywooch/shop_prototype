@@ -14,11 +14,15 @@ use app\finders\{BrandsSphinxFilterFinder,
     OneSessionFinder,
     ProductsSphinxFinder,
     SizesSphinxFilterFinder,
+    SortingFieldsFinder,
+    SortingTypesFinder,
     SphinxFinder};
 use app\collections\{BaseCollection,
     BaseSessionCollection,
     LightPagination,
     ProductsCollection,
+    SortingFieldsCollection,
+    SortingTypesCollection,
     SphinxCollection};
 use app\forms\FiltersForm;
 use app\widgets\{PaginationWidget,
@@ -84,16 +88,19 @@ class ProductsListSearchService extends Object implements ServiceInterface
                 ]);
                 $finder->load(array_merge($request, ['found'=>$sphinxCollection->column('id')]));
                 $collection = $finder->find()->getModels();
+                
                 if ($collection->isEmpty()) {
-                    throw new NotFoundHttpException($this->error404());
+                    if ($collection->pagination->pageCount > 0 && $collection->pagination->pageCount < $collection->pagination->page + 1) {
+                        throw new NotFoundHttpException($this->error404());
+                    }
+                    $dataArray['emptyConfig']['view'] = 'empty-products.twig';
+                } else {
+                    $dataArray['productsConfig']['productsCollection'] = $collection;
+                    $dataArray['productsConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
+                    $dataArray['productsConfig']['thumbnailsWidget'] = new ThumbnailsWidget(['view'=>'thumbnails.twig']);
+                    $dataArray['productsConfig']['paginationWidget'] = new PaginationWidget(['view'=>'pagination.twig']);
+                    $dataArray['productsConfig']['view'] = 'products-list.twig';
                 }
-                
-                $dataArray['productsConfig']['productsCollection'] = $collection;
-                
-                $dataArray['productsConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
-                $dataArray['productsConfig']['thumbnailsWidget'] = new ThumbnailsWidget(['view'=>'thumbnails.twig']);
-                $dataArray['productsConfig']['paginationWidget'] = new PaginationWidget(['view'=>'pagination.twig']);
-                $dataArray['productsConfig']['view'] = 'products-list.twig';
                 
                 # Данные для вывода фильтров каталога
                 
@@ -127,7 +134,33 @@ class ProductsListSearchService extends Object implements ServiceInterface
                 }
                 $dataArray['filtersConfig']['brandsCollection'] = $collection;
                 
-                $dataArray['filtersConfig']['form'] = new FiltersForm(array_merge(['url'=>Url::current()], !empty($filtersArray) ? $filtersArray : []));
+                $finder = new SortingFieldsFinder([
+                    'collection'=>new SortingFieldsCollection()
+                ]);
+                $sortingFieldsCollection = $finder->find();
+                if ($sortingFieldsCollection->isEmpty()) {
+                    throw new ErrorException($this->emptyError('sortingFieldsCollection'));
+                }
+                $dataArray['filtersConfig']['sortingFieldsCollection'] = $sortingFieldsCollection;
+                
+                $finder = new SortingTypesFinder([
+                    'collection'=>new SortingTypesCollection()
+                ]);
+                $sortingTypesCollection = $finder->find();
+                if ($sortingTypesCollection->isEmpty()) {
+                    throw new ErrorException($this->emptyError('sortingTypesCollection'));
+                }
+                $dataArray['filtersConfig']['sortingTypesCollection'] = $sortingTypesCollection;
+                
+                $form = new FiltersForm(array_merge(['url'=>Url::current()], !empty($filtersArray) ? $filtersArray : []));
+                if (empty($form->sortingField)) {
+                    $form->sortingField = $sortingFieldsCollection->getDefault();
+                }
+                if (empty($form->sortingType)) {
+                    $form->sortingType = $sortingTypesCollection->getDefault();
+                }
+                $dataArray['filtersConfig']['form'] = $form;
+                
                 $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             } else {
                 $dataArray['emptySphinxConfig']['text'] = $request[\Yii::$app->params['searchKey']];

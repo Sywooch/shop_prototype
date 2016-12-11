@@ -78,15 +78,19 @@ class ProductsListIndexService extends Object implements ServiceInterface
             ]);
             $finder->load($request);
             $collection = $finder->find()->getModels();
-            if ($collection->isEmpty()) {
-                throw new NotFoundHttpException($this->error404());
-            }
             
-            $dataArray['productsConfig']['productsCollection'] = $collection;
-            $dataArray['productsConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
-            $dataArray['productsConfig']['thumbnailsWidget'] = new ThumbnailsWidget(['view'=>'thumbnails.twig']);
-            $dataArray['productsConfig']['paginationWidget'] = new PaginationWidget(['view'=>'pagination.twig']);
-            $dataArray['productsConfig']['view'] = 'products-list.twig';
+            if ($collection->isEmpty()) {
+                if ($collection->pagination->pageCount > 0 && $collection->pagination->pageCount < $collection->pagination->page + 1) {
+                    throw new NotFoundHttpException($this->error404());
+                }
+                $dataArray['emptyConfig']['view'] = 'empty-products.twig';
+            } else {
+                $dataArray['productsConfig']['productsCollection'] = $collection;
+                $dataArray['productsConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
+                $dataArray['productsConfig']['thumbnailsWidget'] = new ThumbnailsWidget(['view'=>'thumbnails.twig']);
+                $dataArray['productsConfig']['paginationWidget'] = new PaginationWidget(['view'=>'pagination.twig']);
+                $dataArray['productsConfig']['view'] = 'products-list.twig';
+            }
             
             # Данные для вывода breadcrumbs
             
