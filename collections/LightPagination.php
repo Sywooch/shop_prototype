@@ -44,6 +44,19 @@ class LightPagination extends Object implements PaginationInterface
     }
     
     /**
+     * Возвращает количество строк, возвращаемых запросом, до применения LIMIT и OFFSET
+     * @return int
+     */
+    public function getTotalCount(): int
+    {
+        try {
+            return (int) $this->totalCount;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает количество страниц
      * @return int
      */

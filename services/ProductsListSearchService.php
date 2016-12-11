@@ -90,7 +90,7 @@ class ProductsListSearchService extends Object implements ServiceInterface
                 $collection = $finder->find()->getModels();
                 
                 if ($collection->isEmpty()) {
-                    if ($collection->pagination->pageCount > 0 && $collection->pagination->pageCount < $collection->pagination->page + 1) {
+                    if ($collection->pagination->totalCount > 0) {
                         throw new NotFoundHttpException($this->error404());
                     }
                     $dataArray['emptyConfig']['view'] = 'empty-products.twig';

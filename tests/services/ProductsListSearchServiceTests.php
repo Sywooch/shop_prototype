@@ -21,6 +21,9 @@ use app\tests\sources\fixtures\{CategoriesFixture,
     SubcategoryFixture};
 use app\forms\FiltersForm;
 use app\controllers\ProductsListController;
+use app\helpers\{HashHelper,
+    StringHelper};
+use yii\helpers\Url;
 
 /**
  * Тестирует класс ProductsListSearchService
@@ -42,6 +45,56 @@ class ProductsListSearchServiceTests extends TestCase
             ],
         ]);
         self::$dbClass->loadFixtures();
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::handle
+     * если коллекция пуста, но есть данные по запросу
+     * @expectedException \yii\web\NotFoundHttpException
+     */
+    public function testHandle404()
+    {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
+        $request = [\Yii::$app->params['searchKey']=>'рубашка', \Yii::$app->params['pagePointer']=>18];
+        
+        $service = new ProductsListSearchService();
+        
+        $result = $service->handle($request);
+        
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::handle
+     * если коллекция пуста и отсутствуют данные по запросу
+     */
+    public function testHandleEmpty()
+    {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set(HashHelper::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? '']), ['colors'=>[14]]);
+        
+        $category = self::$dbClass->categories['category_1'];
+        $subcategory = self::$dbClass->subcategory['subcategory_1'];
+        
+        $request = [\Yii::$app->params['searchKey']=>'рубашка'];
+        
+        $service = new ProductsListSearchService();
+        
+        $result = $service->handle($request);
+        
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('emptyConfig', $result);
+        $this->assertArrayNotHasKey('productsConfig', $result);
+        
+        $session->remove(HashHelper::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? '']));
+        $session->close();
     }
     
     /**

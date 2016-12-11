@@ -4,7 +4,8 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\PaginationWidget;
-use app\collections\PaginationInterface;
+use app\collections\{LightPagination,
+    PaginationInterface};
 use yii\db\Query;
 use yii\base\Object;
 
@@ -50,15 +51,7 @@ class PaginationWidgetTests extends TestCase
      */
     public function testSetPagination()
     {
-        $pagination = new class() implements PaginationInterface {
-            public function setPageSize(int $size){}
-            public function setPage(int $number){}
-            public function setTotalCount(Query $query){}
-            public function getPageCount(){}
-            public function getOffset(){}
-            public function getLimit(){}
-            public function getPage(){}
-        };
+        $pagination = new class() extends LightPagination {};
         
         $widget = new PaginationWidget();
         $widget->setPagination($pagination);
@@ -76,14 +69,8 @@ class PaginationWidgetTests extends TestCase
      */
     public function testSettingsEmptyPageRange()
     {
-        $pagination = new class() extends Object implements PaginationInterface {
+        $pagination = new class() extends LightPagination {
             private $page;
-            public function setPageSize(int $size){}
-            public function setPage(int $number){}
-            public function setTotalCount(Query $query){}
-            public function getPageCount(){}
-            public function getOffset(){}
-            public function getLimit(){}
             public function getPage(){
                 return $this->page;
             }
@@ -116,14 +103,8 @@ class PaginationWidgetTests extends TestCase
      */
     public function testSettingsEvenPageRange()
     {
-        $pagination = new class() extends Object implements PaginationInterface {
+        $pagination = new class() extends LightPagination {
             private $page;
-            public function setPageSize(int $size){}
-            public function setPage(int $number){}
-            public function setTotalCount(Query $query){}
-            public function getPageCount(){}
-            public function getOffset(){}
-            public function getLimit(){}
             public function getPage(){
                 return $this->page;
             }
@@ -156,14 +137,8 @@ class PaginationWidgetTests extends TestCase
      */
     public function testSettingsPagePointer()
     {
-        $pagination = new class() extends Object implements PaginationInterface {
+        $pagination = new class() extends LightPagination {
             private $page = 14;
-            public function setPageSize(int $size){}
-            public function setPage(int $number){}
-            public function setTotalCount(Query $query){}
-            public function getPageCount(){}
-            public function getOffset(){}
-            public function getLimit(){}
             public function getPage(){
                 return $this->page;
             }
@@ -191,15 +166,10 @@ class PaginationWidgetTests extends TestCase
      */
     public function testGetRange()
     {
-        $pagination = new class() extends Object implements PaginationInterface {
-            public function setPageSize(int $size){}
-            public function setPage(int $number){}
-            public function setTotalCount(Query $query){}
+        $pagination = new class() extends LightPagination {
             public function getPageCount(){
                 return 15;
             }
-            public function getOffset(){}
-            public function getLimit(){}
             public function getPage(){
                 return $this->page;
             }
@@ -313,15 +283,10 @@ class PaginationWidgetTests extends TestCase
      */
     public function testCheckMaxPage()
     {
-        $pagination = new class() extends Object implements PaginationInterface {
-            public function setPageSize(int $size){}
-            public function setPage(int $number){}
-            public function setTotalCount(Query $query){}
+        $pagination = new class() extends LightPagination {
             public function getPageCount(){
                 return 15;
             }
-            public function getOffset(){}
-            public function getLimit(){}
             public function getPage(){
                 return $this->page;
             }

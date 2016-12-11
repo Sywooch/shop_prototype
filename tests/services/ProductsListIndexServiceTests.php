@@ -21,6 +21,9 @@ use app\tests\sources\fixtures\{CategoriesFixture,
     SubcategoryFixture};
 use app\forms\FiltersForm;
 use app\controllers\ProductsListController;
+use app\helpers\{HashHelper,
+    StringHelper};
+use yii\helpers\Url;
 
 /**
  * Тестирует класс ProductsListIndexService
@@ -42,6 +45,59 @@ class ProductsListIndexServiceTests extends TestCase
             ],
         ]);
         self::$dbClass->loadFixtures();
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::handle
+     * если коллекция пуста, но есть данные по запросу
+     * @expectedException \yii\web\NotFoundHttpException
+     */
+    public function testHandle404()
+    {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
+        $category = self::$dbClass->categories['category_1'];
+        $subcategory = self::$dbClass->subcategory['subcategory_1'];
+        
+        $request = [\Yii::$app->params['categoryKey']=>$category['seocode'], \Yii::$app->params['subcategoryKey']=>$subcategory['seocode'], \Yii::$app->params['pagePointer']=>18];
+        
+        $service = new ProductsListIndexService();
+        
+        $result = $service->handle($request);
+        
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::handle
+     * если коллекция пуста, отсутствуют данные по запросу
+     */
+    public function testHandleEmpty()
+    {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set(HashHelper::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? '']), ['colors'=>[14]]);
+        
+        $category = self::$dbClass->categories['category_1'];
+        $subcategory = self::$dbClass->subcategory['subcategory_1'];
+        
+        $request = [\Yii::$app->params['categoryKey']=>$category['seocode'], \Yii::$app->params['subcategoryKey']=>$subcategory['seocode']];
+        
+        $service = new ProductsListIndexService();
+        
+        $result = $service->handle($request);
+        
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('emptyConfig', $result);
+        $this->assertArrayNotHasKey('productsConfig', $result);
+        
+        $session->remove(HashHelper::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? '']));
+        $session->close();
     }
     
     /**

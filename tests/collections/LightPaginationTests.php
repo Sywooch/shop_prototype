@@ -48,11 +48,32 @@ class LightPaginationTests extends TestCase
         $pagination = new LightPagination();
         $pagination->setTotalCount($query);
         
-        $property = new \ReflectionProperty($pagination, 'totalCount');
-        $property->setAccessible(true);
-        $result = $property->getValue($pagination);
+        $reflection = new \ReflectionProperty($pagination, 'totalCount');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($pagination);
         
         $this->assertSame(count($data), $result);
+    }
+    
+    /**
+     * Тестирует метод LightPagination::getTotalCount
+     */
+    public function testGetTotalCount()
+    {
+        
+        $pagination = new LightPagination();
+        
+        $result = $pagination->getTotalCount();
+        
+        $this->assertSame(0, $result);
+        
+        $reflection = new \ReflectionProperty($pagination, 'totalCount');
+        $reflection->setAccessible(true);
+        $reflection->setValue($pagination, 75);
+        
+        $result = $pagination->getTotalCount();
+        
+        $this->assertSame(75, $result);
     }
     
     /**
