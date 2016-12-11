@@ -41,7 +41,14 @@ class BaseSessionCollectionTests extends TestCase
         $array_2 = ['id'=>2];
         
         $model = new class() extends Model {
+            const DBMS = 'dbms';
             public $id;
+            public function rules()
+            {
+                return [
+                    [['id'], 'safe', 'on'=>self::DBMS],
+                ];
+            }
         };
         
         $collection = new BaseSessionCollection();
@@ -100,7 +107,14 @@ class BaseSessionCollectionTests extends TestCase
         $array_2 = ['id'=>2];
         
         $model = new class() extends Model {
+            const DBMS = 'dbms';
             public $id;
+            public function rules()
+            {
+                return [
+                    [['id'], 'safe', 'on'=>self::DBMS],
+                ];
+            }
         };
         
         $collection = new BaseSessionCollection();

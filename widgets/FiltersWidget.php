@@ -29,6 +29,14 @@ class FiltersWidget extends Widget
      */
     private $brandsCollection;
     /**
+     * @var object CollectionInterface
+     */
+    private $sortingFieldsCollection;
+    /**
+     * @var object CollectionInterface
+     */
+    private $sortingTypesCollection;
+    /**
      * @var object Model, получает данные из формы
      */
     private $form;
@@ -49,6 +57,12 @@ class FiltersWidget extends Widget
             if (empty($this->brandsCollection)) {
                 throw new ErrorException($this->emptyError('brandsCollection'));
             }
+            if (empty($this->sortingFieldsCollection)) {
+                throw new ErrorException($this->emptyError('sortingFieldsCollection'));
+            }
+            if (empty($this->sortingTypesCollection)) {
+                throw new ErrorException($this->emptyError('sortingTypesCollection'));
+            }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
@@ -60,8 +74,12 @@ class FiltersWidget extends Widget
             
             $renderArray['header'] = \Yii::t('base', 'Filters');
             $renderArray['formModel'] = $this->form;
-            $renderArray['sortingFieldsList'] = ['date'=>\Yii::t('base', 'Sorting by date'), 'price'=>\Yii::t('base', 'Sorting by price')];
-            $renderArray['sortingTypeList'] = ['SORT_ASC'=>\Yii::t('base', 'Sort ascending'), 'SORT_DESC'=>\Yii::t('base', 'Sort descending')];
+            
+            $this->sortingFieldsCollection->sort('name');
+            $renderArray['sortingFieldsCollection'] = $this->sortingFieldsCollection->map('name', 'value');
+            
+            $this->sortingTypesCollection->sort('name');
+            $renderArray['sortingTypeCollection'] = $this->sortingTypesCollection->map('name', 'value');
             
             $this->colorsCollection->sort('color');
             $renderArray['colorsCollection'] = $this->colorsCollection->map('id', 'color');
@@ -112,6 +130,32 @@ class FiltersWidget extends Widget
     {
         try {
             $this->brandsCollection = $collection;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CollectionInterface свойству FiltersWidget::sortingFieldsCollection
+     * @param object $brandsCollection CollectionInterface
+     */
+    public function setSortingFieldsCollection(CollectionInterface $collection)
+    {
+        try {
+            $this->sortingFieldsCollection = $collection;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CollectionInterface свойству FiltersWidget::sortingTypesCollection
+     * @param object $brandsCollection CollectionInterface
+     */
+    public function setSortingTypesCollection(CollectionInterface $collection)
+    {
+        try {
+            $this->sortingTypesCollection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

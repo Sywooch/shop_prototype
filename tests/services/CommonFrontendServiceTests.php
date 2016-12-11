@@ -13,6 +13,7 @@ use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture};
 use app\forms\FormInterface;
+use app\controllers\ProductsListController;
 
 /**
  * Тестирует класс CommonFrontendService
@@ -38,6 +39,8 @@ class CommonFrontendServiceTests extends TestCase
      */
     public function testHandleSessionCurrency()
     {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
         $session = \Yii::$app->session;
         $session->open();
         $session->set(\Yii::$app->params['currencyKey'], ['code'=>'MONEY', 'exchange_rate'=>14.7654, 'main'=>true]);

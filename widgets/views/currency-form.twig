@@ -4,5 +4,6 @@
 
 {% set form=active_form_begin({'id':'set-currency-form', 'action':url.to({0:'/currency/set'}), 'method':'POST'}) %}
     {{ form.field(formModel, 'id').dropDownList(currencyList) | raw }}
+    {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
     <input type="submit" value="{{ yii.t('base', 'Change') }}">
 {{ active_form_end() }}

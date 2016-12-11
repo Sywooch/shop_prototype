@@ -23,6 +23,8 @@ class FiltersWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('colorsCollection'));
         $this->assertTrue($reflection->hasProperty('sizesCollection'));
         $this->assertTrue($reflection->hasProperty('brandsCollection'));
+        $this->assertTrue($reflection->hasProperty('sortingFieldsCollection'));
+        $this->assertTrue($reflection->hasProperty('sortingTypesCollection'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('view'));
     }
@@ -105,6 +107,64 @@ class FiltersWidgetTests extends TestCase
         $widget->setBrandsCollection($collection);
         
         $reflection = new \ReflectionProperty($widget, 'brandsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInstanceOf(CollectionInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::setSortingFieldsCollection
+     * если передаю неверный тип аргумента
+     * @expectedException TypeError
+     */
+    public function testSetSortingFieldsCollectionError()
+    {
+        $collection = new class() {};
+        $widget = new FiltersWidget();
+        $widget->setSortingFieldsCollection($collection);
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::setSortingFieldsCollection
+     */
+    public function testSetSortingFieldsCollection()
+    {
+        $collection = new class() extends BaseCollection {};
+        
+        $widget = new FiltersWidget();
+        $widget->setSortingFieldsCollection($collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingFieldsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInstanceOf(CollectionInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::setSortingTypesCollection
+     * если передаю неверный тип аргумента
+     * @expectedException TypeError
+     */
+    public function testSetSortingTypesCollectionError()
+    {
+        $collection = new class() {};
+        $widget = new FiltersWidget();
+        $widget->setSortingTypesCollection($collection);
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::setSortingTypesCollection
+     */
+    public function testSetSortingTypesCollection()
+    {
+        $collection = new class() extends BaseCollection {};
+        
+        $widget = new FiltersWidget();
+        $widget->setSortingTypesCollection($collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingTypesCollection');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
@@ -195,6 +255,64 @@ class FiltersWidgetTests extends TestCase
     
     /**
      * Тестирует метод FiltersWidget::run
+     * если пуст FiltersWidget::sortingFieldsCollection
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: sortingFieldsCollection
+     */
+    public function testRunEmptySortingFieldsCollection()
+    {
+        $collection = new class() extends BaseCollection {};
+        
+        $widget = new FiltersWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'colorsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sizesCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'brandsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::run
+     * если пуст FiltersWidget::sortingTypesCollection
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: sortingTypesCollection
+     */
+    public function testRunEmptySortingTypesCollection()
+    {
+        $collection = new class() extends BaseCollection {};
+        
+        $widget = new FiltersWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'colorsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sizesCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'brandsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingFieldsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: form
@@ -214,6 +332,14 @@ class FiltersWidgetTests extends TestCase
         $result = $reflection->setValue($widget, $collection);
         
         $reflection = new \ReflectionProperty($widget, 'brandsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingFieldsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingTypesCollection');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $collection);
         
@@ -242,6 +368,14 @@ class FiltersWidgetTests extends TestCase
         $result = $reflection->setValue($widget, $collection);
         
         $reflection = new \ReflectionProperty($widget, 'brandsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingFieldsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $collection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingTypesCollection');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $collection);
         
@@ -278,6 +412,20 @@ class FiltersWidgetTests extends TestCase
             ];
         };
         
+        $sortingFieldsCollection = new class() extends BaseCollection {
+            public $items = [
+                ['name'=>'date', 'value'=>'Sorting by date'],
+                ['name'=>'price', 'value'=>'Sorting by price'],
+            ];
+        };
+        
+        $sortingTypesCollection = new class() extends BaseCollection {
+            public $items = [
+                ['name'=>'SORT_ASC', 'value'=>'Sort ascending'],
+                ['name'=>'SORT_DESC', 'value'=>'Sort descending'],
+            ];
+        };
+        
         $form = new class() extends Model {
             public $sortingField;
             public $sortingType;
@@ -301,6 +449,14 @@ class FiltersWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $brandsCollection);
         
+        $reflection = new \ReflectionProperty($widget, 'sortingFieldsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $sortingFieldsCollection);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingTypesCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $sortingTypesCollection);
+        
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
@@ -313,10 +469,10 @@ class FiltersWidgetTests extends TestCase
         
         $this->assertRegExp('/<p><strong>' . \Yii::t('base', 'Filters') . '<\/strong><\/p>/', $result);
         $this->assertRegExp('/<form id="products-filters-form"/', $result);
-        $this->assertRegExp('/<option value="date">' . \Yii::t('base', 'Sorting by date') . '<\/option>/', $result);
-        $this->assertRegExp('/<option value="price">' . \Yii::t('base', 'Sorting by price') . '<\/option>/', $result);
-        $this->assertRegExp('/<option value="SORT_ASC">' . \Yii::t('base', 'Sort ascending') . '<\/option>/', $result);
-        $this->assertRegExp('/<option value="SORT_DESC">' . \Yii::t('base', 'Sort descending') . '<\/option>/', $result);
+        $this->assertRegExp('/<option value="date">Sorting by date<\/option>/', $result);
+        $this->assertRegExp('/<option value="price">Sorting by price<\/option>/', $result);
+        $this->assertRegExp('/<option value="SORT_ASC">Sort ascending<\/option>/', $result);
+        $this->assertRegExp('/<option value="SORT_DESC">Sort descending<\/option>/', $result);
         $this->assertRegExp('/<label class="control-label">' . \Yii::t('base', 'Colors') . '<\/label>/', $result);
         $this->assertRegExp('/<label class="control-label">' . \Yii::t('base', 'Sizes') . '<\/label>/', $result);
         $this->assertRegExp('/<label class="control-label">' . \Yii::t('base', 'Brands') . '<\/label>/', $result);

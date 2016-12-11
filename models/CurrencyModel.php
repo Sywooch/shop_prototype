@@ -10,6 +10,11 @@ use app\models\AbstractBaseModel;
 class CurrencyModel extends AbstractBaseModel
 {
     /**
+     * Сценарий загрузки данных из СУБД
+     */
+    const DBMS = 'dbms';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -26,6 +31,7 @@ class CurrencyModel extends AbstractBaseModel
     {
         return [
             [['code'], 'app\validators\StripTagsValidator'],
+            [['id', 'code', 'exchange_rate', 'main'], 'safe', 'on'=>self::DBMS],
         ];
     }
 }

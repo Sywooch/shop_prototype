@@ -168,6 +168,7 @@ class CurrencyWidgetTests extends TestCase
         
         $form = new class() extends Model {
             public $id;
+            public $url;
         };
         
         $widget = new CurrencyWidget();

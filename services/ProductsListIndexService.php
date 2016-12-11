@@ -15,11 +15,15 @@ use app\finders\{BrandsFilterFinder,
     OneSessionFinder,
     ProductsFinder,
     SizesFilterFinder,
+    SortingFieldsFinder,
+    SortingTypesFinder,
     SubcategorySeocodeFinder};
 use app\collections\{BaseCollection,
     BaseSessionCollection,
     LightPagination,
-    ProductsCollection};
+    ProductsCollection,
+    SortingFieldsCollection,
+    SortingTypesCollection};
 use app\forms\FiltersForm;
 use app\widgets\{PaginationWidget,
     PriceWidget,
@@ -141,7 +145,33 @@ class ProductsListIndexService extends Object implements ServiceInterface
             }
             $dataArray['filtersConfig']['brandsCollection'] = $collection;
             
-            $dataArray['filtersConfig']['form'] = new FiltersForm(array_merge(['url'=>Url::current()], !empty($filtersArray) ? $filtersArray : []));
+            $finder = new SortingFieldsFinder([
+                'collection'=>new SortingFieldsCollection()
+            ]);
+            $sortingFieldsCollection = $finder->find();
+            if ($sortingFieldsCollection->isEmpty()) {
+                throw new ErrorException($this->emptyError('sortingFieldsCollection'));
+            }
+            $dataArray['filtersConfig']['sortingFieldsCollection'] = $sortingFieldsCollection;
+            
+            $finder = new SortingTypesFinder([
+                'collection'=>new SortingTypesCollection()
+            ]);
+            $sortingTypesCollection = $finder->find();
+            if ($sortingTypesCollection->isEmpty()) {
+                throw new ErrorException($this->emptyError('sortingTypesCollection'));
+            }
+            $dataArray['filtersConfig']['sortingTypesCollection'] = $sortingTypesCollection;
+            
+            $form = new FiltersForm(array_merge(['url'=>Url::current()], !empty($filtersArray) ? $filtersArray : []));
+            if (empty($form->sortingField)) {
+                $form->sortingField = $sortingFieldsCollection->getDefault();
+            }
+            if (empty($form->sortingType)) {
+                $form->sortingType = $sortingTypesCollection->getDefault();
+            }
+            $dataArray['filtersConfig']['form'] = $form;
+            
             $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             
             return $dataArray;

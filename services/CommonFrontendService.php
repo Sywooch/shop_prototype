@@ -4,6 +4,7 @@ namespace app\services;
 
 use yii\base\{ErrorException,
     Object};
+use yii\helpers\Url;
 use app\services\ServiceInterface;
 use app\exceptions\ExceptionsTrait;
 use app\finders\{CategoriesFinder,
@@ -20,6 +21,7 @@ use app\helpers\{HashHelper,
     SessionHelper};
 use app\widgets\PriceWidget;
 use app\forms\ChangeCurrencyForm;
+use app\savers\OneSessionSaver;
 
 /**
  * Формирует массив данных для рендеринга страниц пользовательского интерфейса
@@ -39,10 +41,14 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             # Данные текущей валюты
             
+            $key = HashHelper::createHash([\Yii::$app->params['currencyKey'], \Yii::$app->user->id ?? '']);
+            
             $finder = new OneSessionFinder([
                 'collection'=>new BaseSessionCollection()
             ]);
-            $finder->load(['key'=>\Yii::$app->params['currencyKey']]);
+            if (!empty($key)) {
+                $finder->load(['key'=>$key]);
+            }
             $collection = $finder->find();
             if ($collection->isEmpty() === false) {
                 $model = $collection->getModel(CurrencyModel::class);
@@ -54,7 +60,11 @@ class CommonFrontendService extends Object implements ServiceInterface
                 if (empty($model)) {
                     throw new ErrorException($this->emptyError('currencyModel'));
                 }
-                SessionHelper::write(\Yii::$app->params['currencyKey'], $model->toArray());
+                if (!empty($key)) {
+                    $saver = new OneSessionSaver();
+                    $saver->load(['key'=>$key, 'model'=>$model]);
+                    $saver->save();
+                }
             }
             $dataArray['currencyModel'] = $model;
             
@@ -86,7 +96,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             }
             
             $dataArray['currencyConfig']['currencyCollection'] = $collection;
-            $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm();
+            $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$dataArray['currencyModel']->id]);
             $dataArray['currencyConfig']['view'] = 'currency-form.twig';
             
             # Данные для вывода строки поиска

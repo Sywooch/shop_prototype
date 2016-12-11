@@ -13,22 +13,29 @@ class ChangeCurrencyForm extends AbstractBaseForm
     /**
      * Сценарий изменения текущей валюты
     */
-    const CHANGE_CURRENCY = 'changeCurrency';
+    const CHANGE = 'change';
     
+    /**
+     * @var int ID валюты, которая будет установлена как текущая
+     */
     public $id;
+    /**
+     * @var string URL, с которого была запрошена сортировка
+     */
+    public $url;
     
     public function scenarios()
     {
         return [
-            self::CHANGE_CURRENCY=>['id'],
+            self::CHANGE=>['id', 'url'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['id'], 'app\validators\StripTagsValidator'],
-            [['id'], 'required', 'on'=>self::CHANGE_CURRENCY],
+            [['id', 'url'], 'app\validators\StripTagsValidator'],
+            [['id', 'url'], 'required', 'on'=>self::CHANGE],
         ];
     }
 }

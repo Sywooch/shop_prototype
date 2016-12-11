@@ -17,8 +17,9 @@ class ChangeCurrencyFormTests extends TestCase
     {
         $reflection = new \ReflectionClass(ChangeCurrencyForm::class);
         
-        $this->assertTrue($reflection->hasConstant('CHANGE_CURRENCY'));
+        $this->assertTrue($reflection->hasConstant('CHANGE'));
         $this->assertTrue($reflection->hasProperty('id'));
+        $this->assertTrue($reflection->hasProperty('url'));
     }
     
     /**
@@ -26,13 +27,19 @@ class ChangeCurrencyFormTests extends TestCase
      */
     public function testScenarios()
     {
-        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::CHANGE_CURRENCY]);
-        $form->attributes = ['id'=>1];
+        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::CHANGE]);
+        $form->attributes = [
+            'id'=>1,
+            'url'=>'http://shop.com',
+        ];
         
         $reflection = new \ReflectionProperty($form, 'id');
         $result = $reflection->getValue($form);
+        $this->assertSame(1, $result);
         
-        $this->assertNotEmpty($result);
+        $reflection = new \ReflectionProperty($form, 'url');
+        $result = $reflection->getValue($form);
+        $this->assertSame('http://shop.com', $result);
     }
     
     /**
@@ -40,11 +47,21 @@ class ChangeCurrencyFormTests extends TestCase
      */
     public function testRules()
     {
-        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::CHANGE_CURRENCY]);
+        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::CHANGE]);
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
+        $this->assertCount(2, $form->errors);
         $this->assertArrayHasKey('id', $form->errors);
-        $this->assertSame('Необходимо заполнить «Id».', $form->errors['id'][0]);
+        $this->assertArrayHasKey('url', $form->errors);
+        
+        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::CHANGE]);
+        $form->attributes = [
+            'id'=>1,
+            'url'=>'http://shop.com',
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
     }
 }
