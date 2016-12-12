@@ -2,7 +2,7 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorExceptions,
+use yii\base\{ErrorException,
     Widget};
 use yii\helpers\Html;
 use app\exceptions\ExceptionsTrait;
@@ -27,25 +27,16 @@ class ImagesWidget extends Widget
      */
     private $result = [];
     
-    public function init()
-    {
-        try {
-            parent::init();
-            
-            if (empty($this->path)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('path'));
-            }
-            if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
-            }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
     public function run()
     {
         try {
+            if (empty($this->path)) {
+                throw new ErrorException($this->emptyError('path'));
+            }
+            if (empty($this->view)) {
+                throw new ErrorException($this->emptyError('view'));
+            }
+            
             $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->path) . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
             
             if (!empty($imagesArray)) {

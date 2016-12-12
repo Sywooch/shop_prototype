@@ -1,5 +1,13 @@
 {{ register_asset_bundle('app/assets/ProductDetailAsset') }}
 
+{{ use('app/widgets/ProductBreadcrumbsWidget') }}
 {{ use('app/widgets/ProductDetailWidget') }}
+{{ use('app/widgets/ToCartWidget') }}
 
-{{ product_detail_widget_widget({'model':model, 'view':'product-detail.twig'}) }}
+{{ include('@theme/common/frontend-common.twig') }}
+
+{{ product_breadcrumbs_widget_widget(breadcrumbsConfig) }}
+
+{{ product_detail_widget_widget(productConfig) }}
+
+{{ to_cart_widget_widget(toCartConfig) }}

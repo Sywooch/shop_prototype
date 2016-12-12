@@ -15,7 +15,7 @@ class ProductBreadcrumbsWidget extends BreadcrumbsWidget
     use ExceptionsTrait;
     
     /**
-     * @var object ActiveRecord/Model
+     * @var object Model
      */
     private $model;
     
@@ -23,7 +23,7 @@ class ProductBreadcrumbsWidget extends BreadcrumbsWidget
     {
         try {
             if (empty($this->model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('model'));
+                throw new ErrorException($this->emptyError('model'));
             }
             
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];

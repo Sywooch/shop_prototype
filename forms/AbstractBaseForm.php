@@ -27,7 +27,10 @@ abstract class AbstractBaseForm extends Model  implements FormInterface
                 throw new ErrorException($this->emptyError('toArray'));
             }
             
-            return new $name($data);
+            $model = new $name();
+            $model->attributes = $data;
+            
+            return $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

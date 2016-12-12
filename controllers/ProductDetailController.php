@@ -2,16 +2,12 @@
 
 namespace app\controllers;
 
-use yii\base\ErrorException;
 use app\controllers\AbstractBaseController;
-use app\actions\SearchDetailAction;
-use app\services\OneProductSearchService;
-use app\repositories\DbRepository;
-use app\models\ProductsModel;
-use app\queries\QueryCriteria;
+use app\actions\SearchAction;
+use app\services\ProductDetailIndexService;
 
 /**
- * Обрабатывает запросы на получение информации о конкретном продукте
+ * Обрабатывает запросы на получение информации о конкретном товаре
  */
 class ProductDetailController extends AbstractBaseController
 {
@@ -19,23 +15,9 @@ class ProductDetailController extends AbstractBaseController
     {
         return [
             'index'=>[
-                'class'=>SearchDetailAction::class,
-                'service'=>new OneProductSearchService([
-                    'repository'=>new DbRepository([
-                        'query'=>ProductsModel::find(),
-                        'criteria'=>new QueryCriteria()
-                    ])
-                ]),
+                'class'=>SearchAction::class,
+                'service'=>new ProductDetailIndexService(),
                 'view'=>'product-detail.twig',
-            ],
-        ];
-    }
-    
-    public function behaviors()
-    {
-        return [
-            [
-                'class'=>'app\filters\CurrencyFilter',
             ],
         ];
     }

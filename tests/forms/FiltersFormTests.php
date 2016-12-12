@@ -13,7 +13,7 @@ class FiltersFormTests extends TestCase
     /**
      * Тестирует наличие свойств и констант
      */
-    public function testProperty()
+    public function testProperties()
     {
         $reflection = new \ReflectionClass(FiltersForm::class);
         

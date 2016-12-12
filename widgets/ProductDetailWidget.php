@@ -7,151 +7,68 @@ use yii\base\{ErrorException,
     Widget};
 use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\widgets\{CartWidget,
-    CategoriesMenuWidget,
-    CurrencyWidget,
-    ImagesWidget,
-    PriceWidget,
-    ProductBreadcrumbsWidget,
-    SearchWidget,
-    SeeAlsoRelatedWidget,
-    SeeAlsoSimilarWidget,
-    ToCartWidget,
-    UserInfoWidget};
-use app\models\{CategoriesModel,
-    ChangeCurrencyFormModel,
-    BaseCollection,
-    CurrencyCollection,
-    CurrencyModel,
-    ProductsModel,
-    PurchasesCollection,
-    PurchasesModel,
-    ToCartFormModel,
-    User};
-use app\repositories\{DbRepository,
-    SessionRepository};
-use app\queries\QueryCriteria;
+use app\widgets\{ImagesWidget,
+    PriceWidget};
 
 class ProductDetailWidget extends Widget
 {
     use ExceptionsTrait;
     
     /**
-     * @var object ActiveRecord/Model
+     * @var Model
      */
     private $model;
+    /**
+     * @var object Widget
+     */
+    private $imagesWidget;
+    /**
+     * @var object Widget
+     */
+    private $priceWidget;
     /**
      * @var string имя шаблона
      */
     public $view;
     
-    public function init()
+    public function run()
     {
         try {
-            parent::init();
-            
             if (empty($this->model)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('model'));
+            }
+            if (empty($this->imagesWidget)) {
+                throw new ErrorException($this->emptyError('imagesWidget'));
+            }
+            if (empty($this->priceWidget)) {
+                throw new ErrorException($this->emptyError('priceWidget'));
             }
             if (empty($this->view)) {
                 throw new ErrorException(ExceptionsTrait::emptyError('view'));
             }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    public function run()
-    {
-        try {
+            
             $renderArray = [];
             
-            $renderArray['user'] = UserInfoWidget::widget([
-                'view'=>'user-info.twig',
-                'user'=>\Yii::$app->user
-            ]);
-            
-            $renderArray['cart'] = CartWidget::widget([
-                'repository'=>new SessionRepository([
-                    'collection'=>new PurchasesCollection(),
-                    'class'=>PurchasesModel::class
-                ]), 
-                'repositoryCurrency'=>new SessionRepository([
-                    'class'=>CurrencyModel::class
-                ]), 
-                'view'=>'short-cart.twig'
-            ]);
-            
-            $renderArray['currency'] = CurrencyWidget::widget([
-                'repository'=>new DbRepository([
-                    'collection'=>new BaseCollection(),
-                    'query'=>CurrencyModel::find(),
-                    'criteria'=>new QueryCriteria()
-                ]),
-                'form'=>new ChangeCurrencyFormModel(),
-                'view'=>'currency-form.twig'
-            ]);
-            
-            $renderArray['search'] = SearchWidget::widget([
-                'view'=>'search.twig'
-            ]);
-            
-            $renderArray['menu'] = CategoriesMenuWidget::widget([
-                'repository'=>new DbRepository([
-                    'collection'=>new BaseCollection(),
-                    'query'=>CategoriesModel::find(),
-                    'criteria'=>new QueryCriteria()
-                ])
-            ]);
-            
-            $renderArray['breadcrumbs'] = ProductBreadcrumbsWidget::widget([
-                'model'=>$this->model
-            ]);
-            
-            $renderArray['toCart'] = ToCartWidget::widget([
-                'model'=>$this->model,
-                'purchase'=>new ToCartFormModel(['quantity'=>1]),
-                'view'=>'add-to-cart-form.twig',
-            ]);
-            
-            $renderArray['similar'] = SeeAlsoSimilarWidget::widget([
-                'repository'=>new DbRepository([
-                    'collection'=>new BaseCollection(),
-                    'query'=>ProductsModel::find(),
-                    'criteria'=>new QueryCriteria()
-                ]), 
-                'model'=>$this->model, 
-                'text'=>\Yii::t('base', 'Similar products:'), 
-                'view'=>'see-also.twig'
-            ]);
-            
-            $renderArray['related'] = SeeAlsoRelatedWidget::widget([
-                'repository'=>new DbRepository([
-                    'collection'=>new BaseCollection(),
-                    'query'=>ProductsModel::find(),
-                    'criteria'=>new QueryCriteria()
-                ]),
-                'model'=>$this->model, 
-                'text'=>\Yii::t('base', 'Related products:'), 
-                'view'=>'see-also.twig'
-            ]);
-            
             $renderArray['name'] = $this->model->name;
+            
             $renderArray['description'] = $this->model->description;
+            
             if (!empty($this->model->images)) {
-                $renderArray['images'] = ImagesWidget::widget([
-                    'path'=>$this->model->images, 
-                    'view'=>'images.twig'
-                ]);
+                $this->imagesWidget->path = $this->model->images;
+                $renderArray['images'] = $this->imagesWidget->run();
             }
-            $renderArray['colors'] = ArrayHelper::getColumn($this->model->colors, 'color');
-            $renderArray['sizes'] = ArrayHelper::getColumn($this->model->sizes, 'size');
-            $renderArray['price'] = PriceWidget::widget([
-                'repository'=>new SessionRepository([
-                    'class'=>CurrencyModel::class
-                ]), 
-                'price'=>$this->model->price
-            ]);
+            
+            $colors = ArrayHelper::getColumn($this->model->colors, 'color');
+            ArrayHelper::multisort($colors, 'color');
+            $renderArray['colors'] = $colors;
+            
+            $sizes = ArrayHelper::getColumn($this->model->sizes, 'size');
+            ArrayHelper::multisort($sizes, 'size');
+            $renderArray['sizes'] = $sizes;
+            
+            $this->priceWidget->price = $this->model->price;
+            $renderArray['price'] = $this->priceWidget->run();
+            
             $renderArray['code'] = $this->model->code;
             
             return $this->render($this->view, $renderArray);
@@ -168,6 +85,32 @@ class ProductDetailWidget extends Widget
     {
         try {
             $this->model = $model;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает Widget свойству ProductDetailWidget::imagesWidget
+     * @param Widget $widget
+     */
+    public function setImagesWidget(Widget $widget)
+    {
+        try {
+            $this->imagesWidget = $widget;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает Widget свойству ProductDetailWidget::priceWidget
+     * @param Widget $widget
+     */
+    public function setPriceWidget(Widget $widget)
+    {
+        try {
+            $this->priceWidget = $widget;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

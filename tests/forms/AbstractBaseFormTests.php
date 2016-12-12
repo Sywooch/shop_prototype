@@ -22,6 +22,12 @@ class AbstractBaseFormTests extends TestCase
         
         $this->model = new class() extends Model {
             public $id;
+            public function rules()
+            {
+                return [
+                    [['id'], 'safe']
+                ];
+            }
         };
     }
     
