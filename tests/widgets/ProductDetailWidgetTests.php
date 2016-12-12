@@ -7,6 +7,8 @@ use app\widgets\ProductDetailWidget;
 use yii\base\{Model,
     Widget};
 use yii\helpers\Html;
+use app\collections\{BaseCollection,
+    CollectionInterface};
 
 /**
  * Тестирует класс ProductDetailWidget
@@ -204,16 +206,38 @@ class ProductDetailWidgetTests extends TestCase
      */
     public function testRun()
     {
+        $colors = new class() extends Model {
+            public function sort($data) {}
+            public function column($data) {
+                return ['black', 'red'];
+            }
+        };
+        
+        $sizes = new class() extends Model {
+            public function sort($data) {}
+            public function column($data) {
+                return [45, 52.5];
+            }
+        };
+        
         $model = new class() extends Model {
             public $name = 'Name';
             public $description = 'Description';
             public $images = 'test';
-            public $colors = [['color'=>'black'], ['color'=>'white']];
-            public $sizes = [['size'=>52], ['size'=>35.8]];
             public $price = 85.78;
             public $code = 'TEST';
+            public $colors;
+            public $sizes;
             
         };
+        
+        $reflection = new \ReflectionProperty($model, 'colors');
+        $reflection->setAccessible(true);
+        $reflection->setValue($model, $colors);
+        
+        $reflection = new \ReflectionProperty($model, 'sizes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($model, $sizes);
         
         $priceWidget = new class() extends Widget {
             public $price;
@@ -263,10 +287,10 @@ class ProductDetailWidgetTests extends TestCase
         $this->assertRegExp('/<img src=".+" alt=""><br\/>/', $result);
         $this->assertRegExp('/<p><strong>Цвета:<\/strong><\/p>/', $result);
         $this->assertRegExp('/<li>black<\/li>/', $result);
-        $this->assertRegExp('/<li>white<\/li>/', $result);
+        $this->assertRegExp('/<li>red<\/li>/', $result);
         $this->assertRegExp('/<p><strong>Размеры:<\/strong><\/p>/', $result);
-        $this->assertRegExp('/<li>52<\/li>/', $result);
-        $this->assertRegExp('/<li>35.8<\/li>/', $result);
+        $this->assertRegExp('/<li>45<\/li>/', $result);
+        $this->assertRegExp('/<li>52.5<\/li>/', $result);
         $this->assertRegExp('/<p><strong>Цена:<\/strong> 85.78 MONEY<\/p>/', $result);
         $this->assertRegExp('/<p><strong>Код:<\/strong> TEST<\/p>/', $result);
     }

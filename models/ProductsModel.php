@@ -13,6 +13,12 @@ use app\helpers\PicturesHelper;
 use app\exceptions\ExceptionsTrait;
 use app\repositories\{GetGroupRepositoryInterface,
     SimilarProductsRepository};
+use app\finders\{CategoryFinder,
+    ColorsProductFinder,
+    SizesProductFinder,
+    SubcategoryFinder};
+use app\collections\{BaseCollection,
+    CollectionInterface};
 
 /**
  * Представляет данные таблицы products
@@ -27,6 +33,11 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий сохранения данных из формы добавления товара в корзину
     */
     const GET_FROM_ADD_TO_CART = 'getFromAddToCart';
+    
+    private $colorsFinder;
+    private $sizesFinder;
+    private $categoryFinder;
+    private $subcategoryFinder;
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -68,10 +79,20 @@ class ProductsModel extends AbstractBaseModel
      * Получает объект CategoriesModel, с которой связан текущий объект ProductsModel
      * @return ActiveQueryInterface the relational query object
      */
-    public function getCategory()
+    public function getCategory(): CategoriesModel
     {
         try {
-            return $this->hasOne(CategoriesModel::class, ['id'=>'id_category'])->inverseOf('products');
+            if (empty($this->categoryFinder)) {
+                $this->categoryFinder = new CategoryFinder(['collection'=>new BaseCollection()]);
+            }
+            $this->categoryFinder->load(['id'=>$this->id_category]);
+            $model = $this->categoryFinder->find()->getModel();
+            if (empty($model)) {
+                throw new ErrorException($this->emptyError('category'));
+            }
+            
+            return $model;
+            //return $this->hasOne(CategoriesModel::class, ['id'=>'id_category'])->inverseOf('products');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -81,10 +102,20 @@ class ProductsModel extends AbstractBaseModel
      * Получает объект SubcategoryModel, с которой связан текущий объект ProductsModel
      * @return ActiveQueryInterface the relational query object
      */
-    public function getSubcategory()
+    public function getSubcategory(): SubcategoryModel
     {
         try {
-            return $this->hasOne(SubcategoryModel::class, ['id'=>'id_subcategory'])->inverseOf('products');
+            if (empty($this->subcategoryFinder)) {
+                $this->subcategoryFinder = new SubcategoryFinder(['collection'=>new BaseCollection()]);
+            }
+            $this->subcategoryFinder->load(['id'=>$this->id_subcategory]);
+            $model = $this->subcategoryFinder->find()->getModel();
+            if (empty($model)) {
+                throw new ErrorException($this->emptyError('subcategory'));
+            }
+            
+            return $model;
+            //return $this->hasOne(SubcategoryModel::class, ['id'=>'id_subcategory'])->inverseOf('products');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -94,10 +125,20 @@ class ProductsModel extends AbstractBaseModel
      * Получает массив ColorsModel, с которыми связан текущий объект ProductsModel
      * @return ActiveQueryInterface the relational query object
      */
-    public function getColors()
+    public function getColors(): CollectionInterface
     {
         try {
-            return $this->hasMany(ColorsModel::class, ['id'=>'id_color'])->viaTable('products_colors', ['id_product'=>'id']);
+            if (empty($this->colorsFinder)) {
+                $this->colorsFinder = new ColorsProductFinder(['collection'=>new BaseCollection()]);
+            }
+            $this->colorsFinder->load(['id_product'=>$this->id]);
+            $collection = $this->colorsFinder->find()->getModels();
+            if ($collection->isEmpty() === true) {
+                throw new ErrorException($this->emptyError('colors'));
+            }
+            
+            return $collection;
+            //return $this->hasMany(ColorsModel::class, ['id'=>'id_color'])->viaTable('products_colors', ['id_product'=>'id']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -107,10 +148,20 @@ class ProductsModel extends AbstractBaseModel
      * Получает массив SizesModel, с которыми связан текущий объект ProductsModel
      * @return ActiveQueryInterface the relational query object
      */
-    public function getSizes()
+    public function getSizes(): CollectionInterface
     {
         try {
-            return $this->hasMany(SizesModel::class, ['id'=>'id_size'])->viaTable('products_sizes', ['id_product'=>'id']);
+            if (empty($this->sizesFinder)) {
+                $this->sizesFinder = new SizesProductFinder(['collection'=>new BaseCollection()]);
+            }
+            $this->sizesFinder->load(['id_product'=>$this->id]);
+            $collection = $this->sizesFinder->find()->getModels();
+            if ($collection->isEmpty() === true) {
+                throw new ErrorException($this->emptyError('sizes'));
+            }
+            
+            return $collection;
+            //return $this->hasMany(SizesModel::class, ['id'=>'id_size'])->viaTable('products_sizes', ['id_product'=>'id']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

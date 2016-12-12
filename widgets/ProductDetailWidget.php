@@ -5,10 +5,7 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Model,
     Widget};
-use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\widgets\{ImagesWidget,
-    PriceWidget};
 
 class ProductDetailWidget extends Widget
 {
@@ -35,7 +32,7 @@ class ProductDetailWidget extends Widget
     {
         try {
             if (empty($this->model)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('model'));
+                throw new ErrorException($this->emptyError('model'));
             }
             if (empty($this->imagesWidget)) {
                 throw new ErrorException($this->emptyError('imagesWidget'));
@@ -44,13 +41,12 @@ class ProductDetailWidget extends Widget
                 throw new ErrorException($this->emptyError('priceWidget'));
             }
             if (empty($this->view)) {
-                throw new ErrorException(ExceptionsTrait::emptyError('view'));
+                throw new ErrorException($this->emptyError('view'));
             }
             
             $renderArray = [];
             
             $renderArray['name'] = $this->model->name;
-            
             $renderArray['description'] = $this->model->description;
             
             if (!empty($this->model->images)) {
@@ -58,13 +54,11 @@ class ProductDetailWidget extends Widget
                 $renderArray['images'] = $this->imagesWidget->run();
             }
             
-            $colors = ArrayHelper::getColumn($this->model->colors, 'color');
-            ArrayHelper::multisort($colors, 'color');
-            $renderArray['colors'] = $colors;
+            $this->model->colors->sort('color');
+            $renderArray['colors'] = $this->model->colors->column('color');
             
-            $sizes = ArrayHelper::getColumn($this->model->sizes, 'size');
-            ArrayHelper::multisort($sizes, 'size');
-            $renderArray['sizes'] = $sizes;
+            $this->model->sizes->sort('size');
+            $renderArray['sizes'] = $this->model->sizes->column('size');
             
             $this->priceWidget->price = $this->model->price;
             $renderArray['price'] = $this->priceWidget->run();

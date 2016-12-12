@@ -8,7 +8,9 @@ use yii\web\NotFoundHttpException;
 use app\services\{CommonFrontendService,
     ServiceInterface};
 use app\exceptions\ExceptionsTrait;
-use app\finders\ProductDetailFinder;
+use app\finders\{ColorsProductFinder,
+    ProductDetailFinder,
+    SizesProductFinder};
 use app\collections\BaseCollection;
 use app\widgets\{ImagesWidget,
     PriceWidget};
@@ -34,29 +36,29 @@ class ProductDetailIndexService extends Object implements ServiceInterface
             $common = new CommonFrontendService();
             $dataArray = $common->handle($request);
             
-            # Данные для вывода данных о товаре
+            # Данные товара
             
             $finder = new ProductDetailFinder([
                 'collection'=>new BaseCollection(),
             ]);
             $finder->load($request);
-            $model = $finder->find()->getModel();
-            if (empty($model)) {
+            $productModel = $finder->find()->getModel();
+            if (empty($productModel)) {
                 throw new NotFoundHttpException($this->error404());
             }
+            $dataArray['productConfig']['model'] = $productModel;
             
-            $dataArray['productConfig']['model'] = $model;
             $dataArray['productConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
             $dataArray['productConfig']['imagesWidget'] = new ImagesWidget(['view'=>'images.twig']);
             $dataArray['productConfig']['view'] = 'product-detail.twig';
             
             # Данные для вывода breadcrumbs
             
-            $dataArray['breadcrumbsConfig']['model'] = $model;
+            $dataArray['breadcrumbsConfig']['model'] = $productModel;
             
             # Данные для вывода формы заказа
             
-            $dataArray['toCartConfig']['model'] = $model;
+            $dataArray['toCartConfig']['model'] = $productModel;
             $dataArray['toCartConfig']['form'] = new PurchaseForm(['quantity'=>1]);
             $dataArray['toCartConfig']['view'] = 'add-to-cart-form.twig';
             

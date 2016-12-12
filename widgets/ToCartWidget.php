@@ -5,7 +5,6 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Model,
     Widget};
-use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -46,13 +45,11 @@ class ToCartWidget extends Widget
             $renderArray['formModel'] = $this->form;
             $renderArray['product'] = $this->model;
             
-            $colors = ArrayHelper::map($this->model->colors, 'id', 'color');
-            ArrayHelper::multisort($colors, 'color');
-            $renderArray['colors'] = $colors;
+            $this->model->colors->sort('color');
+            $renderArray['colors'] = $this->model->colors->column('color');
             
-            $sizes = ArrayHelper::map($this->model->sizes, 'id', 'size');
-            ArrayHelper::multisort($colors, 'size');
-            $renderArray['sizes'] = $sizes;
+            $this->model->sizes->sort('size');
+            $renderArray['sizes'] = $this->model->sizes->column('size');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

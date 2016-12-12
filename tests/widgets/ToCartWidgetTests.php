@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 use app\widgets\ToCartWidget;
 use yii\base\Model;
 use app\forms\PurchaseForm;
+use app\collections\{BaseCollection,
+    CollectionInterface};
 
 /**
  * Тестирует класс ToCartWidget
@@ -143,12 +145,34 @@ class ToCartWidgetTests extends TestCase
      */
     public function testRun()
     {
+        $colors = new class() extends Model {
+            public function sort($data) {}
+            public function column($data) {
+                return ['black', 'red'];
+            }
+        };
+        
+        $sizes = new class() extends Model {
+            public function sort($data) {}
+            public function column($data) {
+                return [45, 52.5];
+            }
+        };
+        
         $model = new class() extends Model {
             public $id = 23;
             public $price = 56.00;
-            public $colors = [['id'=>1, 'color'=>'black'], ['id'=>2, 'color'=>'green']];
-            public $sizes = [['id'=>1, 'size'=>56.5], ['id'=>2, 'size'=>42]];
+            public $colors;
+            public $sizes;
         };
+        
+        $reflection = new \ReflectionProperty($model, 'colors');
+        $reflection->setAccessible(true);
+        $reflection->setValue($model, $colors);
+        
+        $reflection = new \ReflectionProperty($model, 'sizes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($model, $sizes);
         
         $form = new class() extends PurchaseForm {};
         
@@ -173,10 +197,10 @@ class ToCartWidgetTests extends TestCase
         $this->assertRegExp('#step="1" min="1">#', $result);
         $this->assertRegExp('#<label class="control-label" for=".+">Id Color</label>#', $result);
         $this->assertRegExp('#<option value="0">black</option>#', $result);
-        $this->assertRegExp('#<option value="1">green</option>#', $result);
+        $this->assertRegExp('#<option value="1">red</option>#', $result);
         $this->assertRegExp('#<label class="control-label" for=".+">Id Size</label>#', $result);
-        $this->assertRegExp('#<option value="1">56.5</option>#', $result);
-        $this->assertRegExp('#<option value="2">42</option>#', $result);
+        $this->assertRegExp('#<option value="0">45</option>#', $result);
+        $this->assertRegExp('#<option value="1">52.5</option>#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+" value="23">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+" value="56">#', $result);
         $this->assertRegExp('#<input type="submit" value="Добавить в корзину">#', $result);
