@@ -18,6 +18,8 @@ class ProductDetailFinder extends AbstractBaseFinder
      */
     public $seocode;
     
+    private $storage;
+    
     public function rules()
     {
         return [
@@ -29,17 +31,17 @@ class ProductDetailFinder extends AbstractBaseFinder
      * Возвращает данные из СУБД
      * @return CollectionInterface
      */
-    public function find(): CollectionInterface
+    public function find()
     {
         try {
-            if (empty($this->collection)) {
+            /*if (empty($this->collection)) {
                 throw new ErrorException($this->emptyError('collection'));
-            }
-            if (empty($this->seocode)) {
+            }*/
+            /*if (empty($this->seocode)) {
                 throw new ErrorException($this->emptyError('seocode'));
-            }
+            }*/
             
-            if ($this->collection->isEmpty()) {
+            if (empty($this->storage)) {
                 if ($this->validate() === false) {
                     throw new ErrorException($this->modelError($this->errors));
                 }
@@ -48,10 +50,10 @@ class ProductDetailFinder extends AbstractBaseFinder
                 $query->select(['[[products.id]]', '[[products.code]]', '[[products.name]]', '[[products.price]]', '[[products.description]]', '[[products.images]]', '[[products.seocode]]', '[[products.id_category]]', '[[products.id_subcategory]]']);
                 $query->where(['[[products.seocode]]'=>$this->seocode]);
                 
-                $this->collection->query = $query;
+                $this->storage = $query->one();
             }
             
-            return $this->collection;
+            return $this->storage;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

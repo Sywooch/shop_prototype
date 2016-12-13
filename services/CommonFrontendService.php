@@ -4,14 +4,17 @@ namespace app\services;
 
 use yii\base\{ErrorException,
     Object};
-use yii\helpers\Url;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\services\ServiceInterface;
 use app\exceptions\ExceptionsTrait;
 use app\finders\{CategoriesFinder,
+    CurrentCurrencySessionFinder,
     CurrencyFinder,
     GroupSessionFinder,
     MainCurrencyFinder,
-    OneSessionFinder};
+    OneSessionFinder,
+    PurchasesSessionFinder};
 use app\collections\{BaseCollection,
     BaseSessionCollection,
     PurchasesSessionCollection};
@@ -43,20 +46,14 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             $key = HashHelper::createHash([\Yii::$app->params['currencyKey'], \Yii::$app->user->id ?? '']);
             
-            $finder = new OneSessionFinder([
-                'collection'=>new BaseSessionCollection()
-            ]);
+            $finder = new CurrentCurrencySessionFinder();
             if (!empty($key)) {
                 $finder->load(['key'=>$key]);
             }
-            $collection = $finder->find();
-            if ($collection->isEmpty() === false) {
-                $model = $collection->getModel(CurrencyModel::class);
-            } else {
-                $finder = new MainCurrencyFinder([
-                    'collection'=>new BaseCollection()
-                ]);
-                $model = $finder->find()->getModel();
+            $model = $finder->find();
+            if (empty($model)) {
+                $finder = new MainCurrencyFinder();
+                $model = $finder->find();
                 if (empty($model)) {
                     throw new ErrorException($this->emptyError('currencyModel'));
                 }
@@ -75,11 +72,9 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             # Данные для вывода информации о состоянии корзины
             
-            $finder = new GroupSessionFinder([
-                'collection'=>new PurchasesSessionCollection()
-            ]);
+            $finder = new PurchasesSessionFinder();
             $finder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
-            $collection = $finder->find()->getModels(PurchasesModel::class);
+            $collection = $finder->find();
             
             $dataArray['cartConfig']['purchasesCollection'] = $collection;
             $dataArray['cartConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
@@ -87,15 +82,15 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             # Данные для вывода списка доступных валют
             
-            $finder = new CurrencyFinder([
-                'collection'=>new BaseCollection()
-            ]);
-            $collection = $finder->find()->getModels();
-            if ($collection->isEmpty()) {
-                throw new ErrorException($this->emptyError('currencyCollection'));
+            $finder = new CurrencyFinder();
+            $currencyArray = $finder->find();
+            if (empty($currencyArray)) {
+                throw new ErrorException($this->emptyError('currencyArray'));
             }
+            ArrayHelper::multisort($currencyArray, 'code');
+            $currencyArray = ArrayHelper::map($currencyArray, 'id', 'code');
+            $dataArray['currencyConfig']['currencyArray'] = $currencyArray;
             
-            $dataArray['currencyConfig']['currencyCollection'] = $collection;
             $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$dataArray['currencyModel']->id]);
             $dataArray['currencyConfig']['view'] = 'currency-form.twig';
             
@@ -106,14 +101,12 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             # Данные для вывода меню категорий
             
-            $finder = new CategoriesFinder([
-                'collection'=>new BaseCollection()
-            ]);
-            $collection = $finder->find()->getModels();
-            if ($collection->isEmpty()) {
-                throw new ErrorException($this->emptyError('categoriesCollection'));
+            $finder = new CategoriesFinder();
+            $categoriesArray = $finder->find();
+            if (empty($categoriesArray)) {
+                throw new ErrorException($this->emptyError('categoriesArray'));
             }
-            $dataArray['menuConfig']['categoriesCollection'] = $collection;
+            $dataArray['menuConfig']['categoriesArray'] = $categoriesArray;
             
             return $dataArray;
         } catch (\Throwable $t) {

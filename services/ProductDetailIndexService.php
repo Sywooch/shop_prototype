@@ -38,11 +38,9 @@ class ProductDetailIndexService extends Object implements ServiceInterface
             
             # Данные товара
             
-            $finder = new ProductDetailFinder([
-                'collection'=>new BaseCollection(),
-            ]);
+            $finder = new ProductDetailFinder();
             $finder->load($request);
-            $productModel = $finder->find()->getModel();
+            $productModel = $finder->find();
             if (empty($productModel)) {
                 throw new NotFoundHttpException($this->error404());
             }

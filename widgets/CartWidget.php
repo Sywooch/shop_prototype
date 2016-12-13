@@ -5,7 +5,7 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\collections\SessionCollectionInterface;
+use app\collections\PurchasesCollectionInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -70,7 +70,7 @@ class CartWidget extends Widget
      * Присваивает SessionCollectionInterface свойству CartWidget::purchasesCollection
      * @param object $collection SessionCollectionInterface
      */
-    public function setPurchasesCollection(SessionCollectionInterface $collection)
+    public function setPurchasesCollection(PurchasesCollectionInterface $collection)
     {
         try {
             $this->purchasesCollection = $collection;

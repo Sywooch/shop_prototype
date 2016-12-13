@@ -11,26 +11,28 @@ use app\collections\CollectionInterface;
  */
 class MainCurrencyFinder extends AbstractBaseFinder
 {
+    private $storage;
+    
     /**
      * Возвращает данные из СУБД
      * @return CollectionInterface
      */
-    public function find(): CollectionInterface
+    public function find()
     {
         try {
-            if (empty($this->collection)) {
+            /*if (empty($this->collection)) {
                 throw new ErrorException($this->emptyError('collection'));
-            }
+            }*/
             
-            if ($this->collection->isEmpty()) {
+            if (empty($this->storage)) {
                 $query = CurrencyModel::find();
                 $query->select(['[[currency.id]]', '[[currency.code]]', '[[currency.exchange_rate]]', '[[currency.main]]']);
                 $query->where(['[[currency.main]]'=>true]);
                 
-                $this->collection->query = $query;
+                $this->storage = $query->one();
             }
             
-            return $this->collection;
+            return $this->storage;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

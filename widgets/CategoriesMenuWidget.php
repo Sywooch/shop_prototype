@@ -17,7 +17,7 @@ class CategoriesMenuWidget extends Menu
     /**
      * @var object CollectionInterface
      */
-    protected $categoriesCollection;
+    public $categoriesArray;
     /**
      * @var string основной route
      */
@@ -52,11 +52,11 @@ class CategoriesMenuWidget extends Menu
     private function setItems()
     {
         try {
-            if (empty($this->categoriesCollection)) {
+            /*if (empty($this->categoriesCollection)) {
                 throw new ErrorException($this->emptyError('categoriesCollection'));
-            }
+            }*/
             
-            foreach ($this->categoriesCollection as $category) {
+            foreach ($this->categoriesArray as $category) {
                 if (empty($category->active)) {
                     continue;
                 }
@@ -86,12 +86,12 @@ class CategoriesMenuWidget extends Menu
      * Присваивает CollectionInterface свойству CategoriesMenuWidget::categoriesCollection
      * @param object $collection CollectionInterface
      */
-    public function setCategoriesCollection(CollectionInterface $collection)
+    /*public function setCategoriesCollection(CollectionInterface $collection)
     {
         try {
             $this->categoriesCollection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
 }

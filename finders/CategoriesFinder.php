@@ -12,26 +12,28 @@ use app\collections\CollectionInterface;
  */
 class CategoriesFinder extends AbstractBaseFinder
 {
+    private $storage;
+    
     /**
      * Возвращает данные из СУБД
      * @return CollectionInterface
      */
-    public function find(): CollectionInterface
+    public function find()
     {
         try {
-            if (empty($this->collection)) {
+            /*if (empty($this->collection)) {
                 throw new ErrorException($this->emptyError('collection'));
-            }
+            }*/
             
-            if ($this->collection->isEmpty()) {
+            if (empty($this->storage)) {
                 $query = CategoriesModel::find();
                 $query->select(['[[categories.id]]', '[[categories.name]]', '[[categories.seocode]]', '[[categories.active]]']);
                 $query->with('subcategory');
                 
-                $this->collection->query = $query;
+                $this->storage = $query->all();
             }
             
-            return $this->collection;
+            return $this->storage;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

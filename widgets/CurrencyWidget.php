@@ -18,7 +18,7 @@ class CurrencyWidget extends Widget
     /**
      * @var object CollectionInterface
      */
-    private $currencyCollection;
+    public $currencyArray;
     /**
      * @var object Model, получает данные из формы
      */
@@ -31,9 +31,9 @@ class CurrencyWidget extends Widget
     public function run()
     {
         try {
-            if (empty($this->currencyCollection)) {
+            /*if (empty($this->currencyCollection)) {
                 throw new ErrorException($this->emptyError('currencyCollection'));
-            }
+            }*/
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
@@ -41,10 +41,10 @@ class CurrencyWidget extends Widget
                 throw new ErrorException($this->emptyError('view'));
             }
             
-            $this->currencyCollection->sort('code');
-            $currencyCollection = $this->currencyCollection->map('id', 'code');
+            //$this->currencyCollection->sort('code');
+            //$currencyCollection = $this->currencyCollection->map('id', 'code');
             
-            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$currencyCollection]);
+            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$this->currencyArray]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -54,14 +54,14 @@ class CurrencyWidget extends Widget
      * Присваивает CollectionInterface свойству CurrencyWidget::currencyCollection
      * @param object $collection CollectionInterface
      */
-    public function setCurrencyCollection(CollectionInterface $collection)
+    /*public function setCurrencyCollection(CollectionInterface $collection)
     {
         try {
             $this->currencyCollection = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Присваивает Model свойству CurrencyWidget::form
