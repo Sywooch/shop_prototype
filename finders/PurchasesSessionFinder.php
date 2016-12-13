@@ -3,22 +3,24 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\finders\AbstractBaseSessionFinder;
+use app\finders\AbstractBaseFinder;
 use app\helpers\SessionHelper;
 use app\collections\PurchasesCollection;
 use app\models\PurchasesModel;
 
 /**
- * Возвращает коллекцию элементов из сессии
+ * Возвращает коллекцию PurchasesModel из сессии
  */
-class PurchasesSessionFinder extends AbstractBaseSessionFinder
+class PurchasesSessionFinder extends AbstractBaseFinder
 {
     /**
      * @var string key ключ доступа к данным
      */
     public $key;
-    
-    private $storage;
+    /**
+     * @var PurchasesCollection
+     */
+    private $storage = null;
     
     public function rules()
     {
@@ -29,15 +31,11 @@ class PurchasesSessionFinder extends AbstractBaseSessionFinder
     
     /**
      * Возвращает данные из сессионного хранилища
-     * @return SessionCollectionInterface
+     * @return mixed
      */
     public function find()
     {
         try {
-            /*if (empty($this->collection)) {
-                throw new ErrorException($this->emptyError('collection'));
-            }*/
-            
             if (empty($this->storage)) {
                 if ($this->validate() === false) {
                     throw new ErrorException($this->modelError($this->errors));
@@ -48,7 +46,9 @@ class PurchasesSessionFinder extends AbstractBaseSessionFinder
                 $array = SessionHelper::read($this->key);
                 if (!empty($array)) {
                     foreach ($array as $data) {
-                        $this->storage->add(new PurchasesModel($data));
+                        $model = new PurchasesModel();
+                        $model->attributes = $data;
+                        $this->storage->add($model);
                     }
                 }
             }

@@ -5,11 +5,9 @@ namespace app\finders;
 use yii\base\ErrorException;
 use app\models\ProductsModel;
 use app\finders\AbstractBaseFinder;
-use app\collections\CollectionInterface;
-use app\filters\ProductsFiltersInterface;
 
 /**
- * Возвращает коллекцию товаров из СУБД
+ * Возвращает ProductsModel выбранного товара из СУБД
  */
 class ProductDetailFinder extends AbstractBaseFinder
 {
@@ -17,8 +15,10 @@ class ProductDetailFinder extends AbstractBaseFinder
      * @var string GET параметр, определяющий запрашиваемый товар
      */
     public $seocode;
-    
-    private $storage;
+    /**
+     * @var загруженный ProductsModel
+     */
+    private $storage = null;
     
     public function rules()
     {
@@ -29,18 +29,11 @@ class ProductDetailFinder extends AbstractBaseFinder
     
     /**
      * Возвращает данные из СУБД
-     * @return CollectionInterface
+     * @return mixed
      */
     public function find()
     {
         try {
-            /*if (empty($this->collection)) {
-                throw new ErrorException($this->emptyError('collection'));
-            }*/
-            /*if (empty($this->seocode)) {
-                throw new ErrorException($this->emptyError('seocode'));
-            }*/
-            
             if (empty($this->storage)) {
                 if ($this->validate() === false) {
                     throw new ErrorException($this->modelError($this->errors));

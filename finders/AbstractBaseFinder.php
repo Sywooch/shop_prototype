@@ -2,33 +2,26 @@
 
 namespace app\finders;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\Model;
 use app\exceptions\ExceptionsTrait;
-use app\finders\{BaseTrait,
-    FinderInterface};
-use app\collections\CollectionInterface;
+use app\finders\FinderInterface;
 
 /**
- * Возвращает коллекцию товаров для каталога
+ * Базовый класс для finders
  */
 abstract class AbstractBaseFinder extends Model implements FinderInterface
 {
-    use ExceptionsTrait, BaseTrait;
+    use ExceptionsTrait;
     
     /**
-     * @var object CollectionInterface
+     * Загружает данные в свойства модели
+     * @param $data массив данных
+     * @return bool
      */
-    protected $collection;
-    
-    /**
-     * Присваивает CollectionInterface свойству static::collection
-     * @param object $collection CollectionInterface
-     */
-    public function setCollection(CollectionInterface $collection)
+    public function load($data, $formName=null)
     {
         try {
-            $this->collection = $collection;
+            return parent::load($data, '');
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

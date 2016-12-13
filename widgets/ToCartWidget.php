@@ -6,6 +6,7 @@ use yii\base\{ErrorException,
     Model,
     Widget};
 use app\exceptions\ExceptionsTrait;
+use yii\helpers\ArrayHelper;
 
 /**
  * Формирует HTML строку с тегами img
@@ -45,11 +46,13 @@ class ToCartWidget extends Widget
             $renderArray['formModel'] = $this->form;
             $renderArray['product'] = $this->model;
             
-            $this->model->colors->sort('color');
-            $renderArray['colors'] = $this->model->colors->column('color');
+            $colors = $this->model->colors;
+            ArrayHelper::multisort($colors, 'color');
+            $renderArray['colors'] = ArrayHelper::getColumn($colors, 'color');
             
-            $this->model->sizes->sort('size');
-            $renderArray['sizes'] = $this->model->sizes->column('size');
+            $sizes = $this->model->sizes;
+            ArrayHelper::multisort($sizes, 'size');
+            $renderArray['sizes'] = ArrayHelper::getColumn($sizes, 'size');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

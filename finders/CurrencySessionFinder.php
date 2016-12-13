@@ -3,19 +3,23 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\finders\AbstractBaseSessionFinder;
+use app\finders\AbstractBaseFinder;
 use app\helpers\SessionHelper;
-use app\collections\SessionCollectionInterface;
+use app\models\CurrencyModel;
 
 /**
- * Возвращает 1 элемент из сессии
+ * Возвращает CurrencyModel текущей валюты из сессии
  */
-class OneSessionFinder extends AbstractBaseSessionFinder
+class CurrencySessionFinder extends AbstractBaseFinder
 {
     /**
      * @var string key ключ доступа к данным
      */
     public $key;
+    /**
+     * @var загруженный CurrencyModel
+     */
+    private $storage = null;
     
     public function rules()
     {
@@ -26,27 +30,26 @@ class OneSessionFinder extends AbstractBaseSessionFinder
     
     /**
      * Возвращает данные из сессионного хранилища
-     * @return SessionCollectionInterface
+     * @return mixed
      */
-    public function find(): SessionCollectionInterface
+    public function find()
     {
         try {
-            if (empty($this->collection)) {
-                throw new ErrorException($this->emptyError('collection'));
-            }
-            
-            if ($this->collection->isEmpty()) {
+            if (empty($this->storage)) {
                 if ($this->validate() === false) {
                     throw new ErrorException($this->modelError($this->errors));
                 }
                 
                 $data = SessionHelper::read($this->key);
+                
                 if (!empty($data)) {
-                    $this->collection->addArray($data);
+                    $model = new CurrencyModel();
+                    $model->attributes = $data;
+                    $this->storage = $model;
                 }
             }
             
-            return $this->collection;
+            return $this->storage;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

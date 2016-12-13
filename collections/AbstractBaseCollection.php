@@ -2,13 +2,12 @@
 
 namespace app\collections;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\Model;
 use app\exceptions\ExceptionsTrait;
 use app\collections\AbstractIterator;
 
 /**
- * Реализует интерфейс доступа к коллекции объектов
+ * Базовый класс коллекций
  */
 class AbstractBaseCollection extends AbstractIterator
 {

@@ -9,7 +9,7 @@ use yii\helpers\{ArrayHelper,
 use app\services\ServiceInterface;
 use app\exceptions\ExceptionsTrait;
 use app\finders\{CategoriesFinder,
-    CurrentCurrencySessionFinder,
+    CurrencySessionFinder,
     CurrencyFinder,
     GroupSessionFinder,
     MainCurrencyFinder,
@@ -46,7 +46,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             $key = HashHelper::createHash([\Yii::$app->params['currencyKey'], \Yii::$app->user->id ?? '']);
             
-            $finder = new CurrentCurrencySessionFinder();
+            $finder = new CurrencySessionFinder();
             if (!empty($key)) {
                 $finder->load(['key'=>$key]);
             }

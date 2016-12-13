@@ -6,6 +6,7 @@ use yii\base\{ErrorException,
     Model,
     Widget};
 use app\exceptions\ExceptionsTrait;
+use yii\helpers\ArrayHelper;
 
 class ProductDetailWidget extends Widget
 {
@@ -54,11 +55,13 @@ class ProductDetailWidget extends Widget
                 $renderArray['images'] = $this->imagesWidget->run();
             }
             
-            $this->model->colors->sort('color');
-            $renderArray['colors'] = $this->model->colors->column('color');
+            $colors = $this->model->colors;
+            ArrayHelper::multisort($colors, 'color');
+            $renderArray['colors'] = ArrayHelper::getColumn($colors, 'color');
             
-            $this->model->sizes->sort('size');
-            $renderArray['sizes'] = $this->model->sizes->column('size');
+            $sizes = $this->model->sizes;
+            ArrayHelper::multisort($sizes, 'size');
+            $renderArray['sizes'] = ArrayHelper::getColumn($sizes, 'size');
             
             $this->priceWidget->price = $this->model->price;
             $renderArray['price'] = $this->priceWidget->run();

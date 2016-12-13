@@ -27,11 +27,17 @@ class CurrencyModel extends AbstractBaseModel
         }
     }
     
+    public function scenarios()
+    {
+        return [
+            self::DBMS=>['id', 'code', 'exchange_rate', 'main']
+        ];
+    }
+    
     public function rules()
     {
         return [
             [['code'], 'app\validators\StripTagsValidator'],
-            [['id', 'code', 'exchange_rate', 'main'], 'safe', 'on'=>self::DBMS],
         ];
     }
 }

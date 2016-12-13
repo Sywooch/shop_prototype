@@ -2,11 +2,11 @@
 
 namespace app\finders;
 
-use app\collections\CollectionInterface;
-
+/**
+ * Интерфейс классов finders
+ */
 interface FinderInterface
 {
     public function find();
     public function load($data, $formName);
-    public function setCollection(CollectionInterface $collection);
 }

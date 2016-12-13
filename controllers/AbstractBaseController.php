@@ -6,7 +6,7 @@ use yii\web\Controller;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Определяет методы, общие для разных типов контроллеров
+ * Базовый класс контроллеров
  */
 abstract class AbstractBaseController extends Controller
 {

@@ -2,10 +2,8 @@
 
 namespace app\collections;
 
-use yii\base\Model;
-
 /**
- * Интерфейс коллекции объектов, получаемых из сессии
+ * Интерфейс коллекции покупок
  */
 interface PurchasesCollectionInterface
 {

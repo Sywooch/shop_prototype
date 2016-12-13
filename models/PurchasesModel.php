@@ -14,11 +14,6 @@ use app\models\{ColorsModel,
 class PurchasesModel extends AbstractBaseModel
 {
     /**
-     * Сценарий удаления 1 товара из корзины
-    */
-    const GET_FROM_DELETE_FROM_CART = 'getFromDeleteFromCart';
-    
-    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -31,23 +26,9 @@ class PurchasesModel extends AbstractBaseModel
         }
     }
     
-    public function scenarios()
-    {
-        return [
-            self::GET_FROM_DELETE_FROM_CART=>['id_product'],
-        ];
-    }
-    
-    public function rules()
-    {
-        return [
-            [['id_product'], 'required', 'on'=>self::GET_FROM_DELETE_FROM_CART],
-        ];
-    }
-    
     /**
-     * Получает объект ProductsModel, с которым связан текущий объект PurchasesModel
-     * @return ActiveQueryInterface the relational query object
+     * Получает объект ProductsModel
+     * @return ActiveQueryInterface
      */
     public function getProduct()
     {
@@ -59,8 +40,8 @@ class PurchasesModel extends AbstractBaseModel
     }
     
     /**
-     * Получает объект ColorsModel, с которым связан текущий объект PurchasesModel
-     * @return ActiveQueryInterface the relational query object
+     * Получает объект ColorsModel
+     * @return ActiveQueryInterface
      */
     public function getColor()
     {
@@ -72,8 +53,8 @@ class PurchasesModel extends AbstractBaseModel
     }
     
     /**
-     * Получает объект SizesModel, с которым связан текущий объект PurchasesModel
-     * @return ActiveQueryInterface the relational query object
+     * Получает объект SizesModel
+     * @return ActiveQueryInterface
      */
     public function getSize()
     {
@@ -81,56 +62,6 @@ class PurchasesModel extends AbstractBaseModel
             return $this->hasOne(SizesModel::class, ['id'=>'id_size']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Выполняет пакетное сохранение
-     * @param array $toRecordArray массив исходных данных 
-     * @return int
-     */
-    public static function batchInsert(array $purchasesArray, int $name, int $surname, int $email, int $phone, int $address, int $city, int $country, int $postcode, int $delivery, int $payment, int $user): int
-    {
-        try {
-            $counter = 0;
-            
-            if (!empty($purchasesArray)) {
-                $date = time();
-                
-                $toRecord = [];
-                foreach ($purchasesArray as $purchase) {
-                    $toRecord[] = [
-                        $user,
-                        $name,
-                        $surname,
-                        $email, 
-                        $phone, 
-                        $address,
-                        $city, 
-                        $country, 
-                        $postcode,
-                        $purchase['id_product'],
-                        $purchase['quantity'],
-                        $purchase['id_color'],
-                        $purchase['id_size'],
-                        $delivery,
-                        $payment,
-                        true,
-                        $date,
-                    ];
-                    ++$counter;
-                }
-                
-                $fields = ['[[id_user]]', '[[id_name]]', '[[id_surname]]', '[[id_email]]', '[[id_phone]]', '[[id_address]]', '[[id_city]]', '[[id_country]]', '[[id_postcode]]', '[[id_product]]', '[[quantity]]', '[[id_color]]', '[[id_size]]', '[[id_delivery]]', '[[id_payment]]', '[[received]]', '[[received_date]]'];
-                
-                if (!\Yii::$app->db->createCommand()->batchInsert('{{purchases}}', $fields, $toRecord)->execute()) {
-                    throw new ErrorException(ExceptionsTrait::methodError('PurchsesModel::batchInsert'));
-                }
-            }
-            
-            return $counter;
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
     }
 }

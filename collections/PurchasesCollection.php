@@ -2,13 +2,12 @@
 
 namespace app\collections;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\ErrorException;
 use app\collections\{AbstractBaseCollection,
     PurchasesCollectionInterface};
 
 /**
- * Реализует интерфейс доступа к данным коллекции сущностей
+ * Коллекция объектов PurchasesModel
  */
 class PurchasesCollection extends AbstractBaseCollection implements PurchasesCollectionInterface
 {

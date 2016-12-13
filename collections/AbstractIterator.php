@@ -13,7 +13,7 @@ abstract class AbstractIterator extends Object implements \Iterator
     use ExceptionsTrait;
     
     /**
-     * @var array коллекция сущностей
+     * @var array элементы коллекции
      */
     protected $items = [];
     /**

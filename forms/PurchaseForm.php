@@ -4,7 +4,6 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\filters\ProductsFiltersInterface;
 
 /**
  * Представляет данные формы фильтров для каталога товаров
@@ -14,7 +13,7 @@ class PurchaseForm extends AbstractBaseForm
     /**
      * Сценарий добавления товара в корзину
      */
-    const ADD = 'add';
+    const GET = 'get';
     
     /**
      * @var int количество единиц товара
@@ -40,14 +39,14 @@ class PurchaseForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::ADD=>['quantity', 'id_color', 'id_size', 'id_product', 'price']
+            self::GET=>['quantity', 'id_color', 'id_size', 'id_product', 'price']
         ];
     }
     
     public function rules()
     {
         return [
-            [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::ADD]
+            [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::GET]
         ];
     }
 }
