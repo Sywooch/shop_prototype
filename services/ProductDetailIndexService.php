@@ -2,16 +2,10 @@
 
 namespace app\services;
 
-use yii\base\{ErrorException,
-    Object};
+use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
-use app\services\{CommonFrontendService,
-    ServiceInterface};
-use app\exceptions\ExceptionsTrait;
-use app\finders\{ColorsProductFinder,
-    ProductDetailFinder,
-    SizesProductFinder};
-use app\collections\BaseCollection;
+use app\services\CommonFrontendService;
+use app\finders\ProductDetailFinder;
 use app\widgets\{ImagesWidget,
     PriceWidget};
 use app\forms\PurchaseForm;
@@ -19,10 +13,8 @@ use app\forms\PurchaseForm;
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
  */
-class ProductDetailIndexService extends Object implements ServiceInterface
+class ProductDetailIndexService extends CommonFrontendService
 {
-    use ExceptionsTrait;
-    
     /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
@@ -33,8 +25,7 @@ class ProductDetailIndexService extends Object implements ServiceInterface
         try {
             # Общие для всех frontend сервисов данные
             
-            $common = new CommonFrontendService();
-            $dataArray = $common->handle($request);
+            $dataArray = parent::handle($request);
             
             # Данные товара
             

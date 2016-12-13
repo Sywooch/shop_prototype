@@ -43,7 +43,7 @@ class CurrencySessionFinder extends AbstractBaseFinder
                 $data = SessionHelper::read($this->key);
                 
                 if (!empty($data)) {
-                    $model = new CurrencyModel();
+                    $model = new CurrencyModel(['scenario'=>CurrencyModel::DBMS]);
                     $model->attributes = $data;
                     $this->storage = $model;
                 }

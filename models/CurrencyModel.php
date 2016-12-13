@@ -30,7 +30,7 @@ class CurrencyModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::DBMS=>['id', 'code', 'exchange_rate', 'main']
+            self::DBMS=>['id', 'code', 'exchange_rate', 'main'],
         ];
     }
     

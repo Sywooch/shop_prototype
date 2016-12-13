@@ -14,6 +14,11 @@ use app\models\{ColorsModel,
 class PurchasesModel extends AbstractBaseModel
 {
     /**
+     * Сценарий загрузки данных из СУБД
+     */
+    const DBMS = 'dbms';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -24,6 +29,13 @@ class PurchasesModel extends AbstractBaseModel
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
+    }
+    
+    public function scenarios()
+    {
+        return [
+            self::DBMS=>['id', 'id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'price', 'id_delivery', 'id_payment', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
+        ];
     }
     
     /**

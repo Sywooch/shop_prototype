@@ -11,17 +11,9 @@ use app\exceptions\ExceptionsTrait;
 use app\finders\{CategoriesFinder,
     CurrencySessionFinder,
     CurrencyFinder,
-    GroupSessionFinder,
     MainCurrencyFinder,
-    OneSessionFinder,
     PurchasesSessionFinder};
-use app\collections\{BaseCollection,
-    BaseSessionCollection,
-    PurchasesSessionCollection};
-use app\models\{CurrencyModel,
-    PurchasesModel};
-use app\helpers\{HashHelper,
-    SessionHelper};
+use app\helpers\HashHelper;
 use app\widgets\PriceWidget;
 use app\forms\ChangeCurrencyForm;
 use app\savers\OneSessionSaver;
@@ -47,23 +39,19 @@ class CommonFrontendService extends Object implements ServiceInterface
             $key = HashHelper::createHash([\Yii::$app->params['currencyKey'], \Yii::$app->user->id ?? '']);
             
             $finder = new CurrencySessionFinder();
-            if (!empty($key)) {
-                $finder->load(['key'=>$key]);
-            }
-            $model = $finder->find();
-            if (empty($model)) {
+            $finder->load(['key'=>$key]);
+            $currencyModel = $finder->find();
+            if (empty($currencyModel)) {
                 $finder = new MainCurrencyFinder();
-                $model = $finder->find();
-                if (empty($model)) {
+                $currencyModel = $finder->find();
+                if (empty($currencyModel)) {
                     throw new ErrorException($this->emptyError('currencyModel'));
                 }
-                if (!empty($key)) {
-                    $saver = new OneSessionSaver();
-                    $saver->load(['key'=>$key, 'model'=>$model]);
-                    $saver->save();
-                }
+                $saver = new OneSessionSaver();
+                $saver->load(['key'=>$key, 'model'=>$currencyModel]);
+                $saver->save();
             }
-            $dataArray['currencyModel'] = $model;
+            $dataArray['currencyModel'] = $currencyModel;
             
             # Данные для вывода информации о текущем пользователе
             
@@ -74,10 +62,10 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             $finder = new PurchasesSessionFinder();
             $finder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
-            $collection = $finder->find();
+            $purchasesCollection = $finder->find();
             
-            $dataArray['cartConfig']['purchasesCollection'] = $collection;
-            $dataArray['cartConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
+            $dataArray['cartConfig']['purchasesCollection'] = $purchasesCollection;
+            $dataArray['cartConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$currencyModel]);
             $dataArray['cartConfig']['view'] = 'short-cart.twig';
             
             # Данные для вывода списка доступных валют
@@ -91,7 +79,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             $currencyArray = ArrayHelper::map($currencyArray, 'id', 'code');
             $dataArray['currencyConfig']['currencyArray'] = $currencyArray;
             
-            $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$dataArray['currencyModel']->id]);
+            $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$currencyModel->id]);
             $dataArray['currencyConfig']['view'] = 'currency-form.twig';
             
             # Данные для вывода строки поиска
