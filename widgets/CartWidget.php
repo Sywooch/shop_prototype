@@ -17,7 +17,7 @@ class CartWidget extends Widget
     /**
      * @var object PurchasesCollection
      */
-    private $purchasesCollection;
+    private $purchases;
     /**
      * @var object Widget
      */
@@ -42,8 +42,8 @@ class CartWidget extends Widget
     public function run()
     {
         try {
-            if (empty($this->purchasesCollection)) {
-                throw new ErrorException($this->emptyError('purchasesCollection'));
+            if (empty($this->purchases)) {
+                throw new ErrorException($this->emptyError('purchases'));
             }
             if (empty($this->priceWidget)) {
                 throw new ErrorException($this->emptyError('priceWidget'));
@@ -52,9 +52,9 @@ class CartWidget extends Widget
                 throw new ErrorException($this->emptyError('view'));
             }
             
-            if ($this->purchasesCollection->isEmpty() === false) {
-                $this->goods = $this->purchasesCollection->totalQuantity();
-                $this->cost = $this->purchasesCollection->totalPrice();
+            if ($this->purchases->isEmpty() === false) {
+                $this->goods = $this->purchases->totalQuantity();
+                $this->cost = $this->purchases->totalPrice();
             }
             
             $this->priceWidget->price = $this->cost;
@@ -67,13 +67,13 @@ class CartWidget extends Widget
     }
     
     /**
-     * Присваивает PurchasesCollection свойству CartWidget::purchasesCollection
+     * Присваивает PurchasesCollection свойству CartWidget::purchases
      * @param object $collection PurchasesCollection
      */
-    public function setPurchasesCollection(PurchasesCollection $collection)
+    public function setPurchases(PurchasesCollection $collection)
     {
         try {
-            $this->purchasesCollection = $collection;
+            $this->purchases = $collection;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

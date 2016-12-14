@@ -37,7 +37,7 @@ class ProductDetailIndexService extends CommonFrontendService
             }
             $dataArray['productConfig']['model'] = $productModel;
             
-            $dataArray['productConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$dataArray['currencyModel']]);
+            $dataArray['productConfig']['priceWidget'] = new PriceWidget(['model'=>$dataArray['currencyModel']]);
             $dataArray['productConfig']['imagesWidget'] = new ImagesWidget(['view'=>'images.twig']);
             $dataArray['productConfig']['view'] = 'product-detail.twig';
             

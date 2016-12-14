@@ -17,7 +17,7 @@ class PriceWidget extends Widget
     /**
      * @var object Model
      */
-    private $currencyModel;
+    private $model;
     /**
      * @var float цена товара
      */
@@ -30,14 +30,14 @@ class PriceWidget extends Widget
     public function run()
     {
         try {
-            if (empty($this->currencyModel)) {
-                throw new ErrorException($this->emptyError('currencyModel'));
+            if (empty($this->model)) {
+                throw new ErrorException($this->emptyError('model'));
             }
             if (!isset($this->price)) {
                 throw new ErrorException($this->emptyError('price'));
             }
             
-            $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * $this->currencyModel->exchange_rate, 2) . ' ' . $this->currencyModel->code;
+            $correctedPrice = \Yii::$app->formatter->asDecimal($this->price * $this->model->exchange_rate, 2) . ' ' . $this->model->code;
             
             return $correctedPrice ?? '';
         } catch(\Throwable $t) {
@@ -46,13 +46,13 @@ class PriceWidget extends Widget
     }
     
     /**
-     * Присваивает Model свойству PriceWidget::currencyModel
+     * Присваивает Model свойству PriceWidget::model
      * @param object $model Model
      */
-    public function setCurrencyModel(Model $model)
+    public function setModel(Model $model)
     {
         try {
-            $this->currencyModel = $model;
+            $this->model = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

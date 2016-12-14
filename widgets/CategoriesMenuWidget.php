@@ -15,9 +15,9 @@ class CategoriesMenuWidget extends Menu
     use ExceptionsTrait;
     
     /**
-     * @var object CollectionInterface
+     * @var array
      */
-    public $categoriesArray;
+    public $categories;
     /**
      * @var string основной route
      */
@@ -56,7 +56,7 @@ class CategoriesMenuWidget extends Menu
                 throw new ErrorException($this->emptyError('categoriesCollection'));
             }*/
             
-            foreach ($this->categoriesArray as $category) {
+            foreach ($this->categories as $category) {
                 if (empty($category->active)) {
                     continue;
                 }

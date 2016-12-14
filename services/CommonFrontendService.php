@@ -16,7 +16,7 @@ use app\finders\{CategoriesFinder,
 use app\helpers\HashHelper;
 use app\widgets\PriceWidget;
 use app\forms\ChangeCurrencyForm;
-use app\savers\OneSessionSaver;
+use app\savers\SessionSaver;
 
 /**
  * Формирует массив данных для рендеринга страниц пользовательского интерфейса
@@ -47,8 +47,8 @@ class CommonFrontendService extends Object implements ServiceInterface
                 if (empty($currencyModel)) {
                     throw new ErrorException($this->emptyError('currencyModel'));
                 }
-                $saver = new OneSessionSaver();
-                $saver->load(['key'=>$key, 'model'=>$currencyModel]);
+                $saver = new SessionSaver();
+                $saver->load(['key'=>$key, 'models'=>[$currencyModel]]);
                 $saver->save();
             }
             $dataArray['currencyModel'] = $currencyModel;
@@ -64,8 +64,8 @@ class CommonFrontendService extends Object implements ServiceInterface
             $finder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
             $purchasesCollection = $finder->find();
             
-            $dataArray['cartConfig']['purchasesCollection'] = $purchasesCollection;
-            $dataArray['cartConfig']['priceWidget'] = new PriceWidget(['currencyModel'=>$currencyModel]);
+            $dataArray['cartConfig']['purchases'] = $purchasesCollection;
+            $dataArray['cartConfig']['priceWidget'] = new PriceWidget(['model'=>$currencyModel]);
             $dataArray['cartConfig']['view'] = 'short-cart.twig';
             
             # Данные для вывода списка доступных валют
@@ -77,7 +77,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             }
             ArrayHelper::multisort($currencyArray, 'code');
             $currencyArray = ArrayHelper::map($currencyArray, 'id', 'code');
-            $dataArray['currencyConfig']['currencyArray'] = $currencyArray;
+            $dataArray['currencyConfig']['currency'] = $currencyArray;
             
             $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$currencyModel->id]);
             $dataArray['currencyConfig']['view'] = 'currency-form.twig';
@@ -94,7 +94,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             if (empty($categoriesArray)) {
                 throw new ErrorException($this->emptyError('categoriesArray'));
             }
-            $dataArray['menuConfig']['categoriesArray'] = $categoriesArray;
+            $dataArray['menuConfig']['categories'] = $categoriesArray;
             
             return $dataArray;
         } catch (\Throwable $t) {

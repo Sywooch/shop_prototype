@@ -9,6 +9,7 @@ use app\tests\sources\fixtures\{ColorsFixture,
     ProductsFixture,
     SizesFixture};
 use app\models\{ColorsModel,
+    ProductsModel,
     SizesModel};
 
 /**
@@ -158,64 +159,43 @@ class PurchasesModelTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchasesModel::getCategory
+     * Тестирует метод PurchasesModel::getProduct
      */
-    /*public function testGetCategory()
+    public function testGetProduct()
     {
         $model = new PurchasesModel();
-        $model->id_category = 1;
+        $model->id_product = 1;
         
-        $result = $model->category;
+        $result = $model->product;
         
-        $this->assertInstanceOf(CategoriesModel::class, $result);
-    }*/
+        $this->assertInstanceOf(ProductsModel::class, $result);
+    }
     
     /**
-     * Тестирует метод PurchasesModel::getSubcategory
+     * Тестирует метод PurchasesModel::getColor
      */
-    /*public function testGetSubcategory()
+    public function testGetColor()
     {
         $model = new PurchasesModel();
-        $model->id_subcategory = 1;
+        $model->id_color = 1;
         
-        $result = $model->subcategory;
+        $result = $model->color;
         
-        $this->assertInstanceOf(SubcategoryModel::class, $result);
-    }*/
+        $this->assertInstanceOf(ColorsModel::class, $result);
+    }
     
     /**
-     * Тестирует метод PurchasesModel::getColors
+     * Тестирует метод PurchasesModel::getSize
      */
-    /*public function testGetColors()
+    public function testGetSize()
     {
         $model = new PurchasesModel();
-        $model->id = 1;
+        $model->id_size = 1;
         
-        $result = $model->colors;
+        $result = $model->size;
         
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        foreach ($result as $item) {
-            $this->assertInstanceOf(ColorsModel::class, $item);
-        }
-    }*/
-    
-    /**
-     * Тестирует метод PurchasesModel::getSizes
-     */
-    /*public function testGetSizes()
-    {
-        $model = new PurchasesModel();
-        $model->id = 1;
-        
-        $result = $model->sizes;
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        foreach ($result as $item) {
-            $this->assertInstanceOf(SizesModel::class, $item);
-        }
-    }*/
+        $this->assertInstanceOf(SizesModel::class, $result);
+    }
     
     public static function tearDownAfterClass()
     {

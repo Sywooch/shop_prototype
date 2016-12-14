@@ -6,7 +6,6 @@ use yii\base\{ErrorException,
     Model,
     Widget};
 use app\exceptions\ExceptionsTrait;
-use app\collections\CollectionInterface;
 
 /**
  * Формирует HTML строку с формой выбора валюты
@@ -16,9 +15,9 @@ class CurrencyWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object CollectionInterface
+     * @var array
      */
-    public $currencyArray;
+    public $currency;
     /**
      * @var object Model, получает данные из формы
      */
@@ -44,7 +43,7 @@ class CurrencyWidget extends Widget
             //$this->currencyCollection->sort('code');
             //$currencyCollection = $this->currencyCollection->map('id', 'code');
             
-            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$this->currencyArray]);
+            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$this->currency]);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

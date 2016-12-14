@@ -6,25 +6,27 @@ use yii\base\{ErrorException,
     Model};
 use app\savers\AbstractBaseSaver;
 use app\helpers\SessionHelper;
+use app\validators\ModelsArrayValidator;
 
 /**
  * Сохранаяет данные в сессионном хранилище
  */
-class OneSessionSaver extends AbstractBaseSaver
+class SessionSaver extends AbstractBaseSaver
 {
     /**
      * @var staring ключ, под которым будут сохранены данные в сессии
      */
     public $key;
     /**
-     * @var Model модель, которая содержит данные для записи
+     * @var array объектов Model
      */
-    private $model;
+    private $models = [];
     
     public function rules()
     {
         return [
-            [['key', 'model'], 'required']
+            [['key', 'models'], 'required'],
+            [['models'], ModelsArrayValidator::class]
         ];
     }
     
@@ -39,7 +41,16 @@ class OneSessionSaver extends AbstractBaseSaver
                 throw new ErrorException($this->modelError($this->errors));
             }
             
-            SessionHelper::write($this->key, $this->model->toArray());
+            if (count($this->models) > 1) {
+                $toRecord = [];
+                foreach ($this->models as $model) {
+                    $toRecord[] = $model->toArray();
+                }
+            } else {
+                $toRecord = $this->models[0]->toArray();
+            }
+            
+            SessionHelper::write($this->key, $toRecord);
             
             return true;
         } catch (\Throwable $t) {
@@ -48,26 +59,25 @@ class OneSessionSaver extends AbstractBaseSaver
     }
     
     /**
-     * Присваивает Model OneSessionSaver::model
-     * @param Model $model
+     * Присваивает array Model SessionSaver::models
      */
-    public function setModel(Model $model)
+    public function setModels(array $models)
     {
         try {
-            $this->model = $model;
+            $this->models = $models;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Возвращает OneSessionSaver::model
-     * @return Model
+     * Возвращает данные Model SessionSaver::models
+     * @return array
      */
-    public function getModel()
+    public function getModels(): array
     {
         try {
-            return $this->model;
+            return $this->models;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
