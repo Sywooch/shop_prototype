@@ -6,6 +6,7 @@ use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
 use app\collections\PurchasesCollection;
+use app\models\CurrencyModel;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -19,9 +20,9 @@ class CartWidget extends Widget
      */
     private $purchases;
     /**
-     * @var object Widget
+     * @var CurrencyModel
      */
-    private $priceWidget;
+    private $currency;
     /**
      * @var string имя шаблона
      */
@@ -45,8 +46,8 @@ class CartWidget extends Widget
             if (empty($this->purchases)) {
                 throw new ErrorException($this->emptyError('purchases'));
             }
-            if (empty($this->priceWidget)) {
-                throw new ErrorException($this->emptyError('priceWidget'));
+            if (empty($this->currency)) {
+                throw new ErrorException($this->emptyError('currency'));
             }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
@@ -57,8 +58,7 @@ class CartWidget extends Widget
                 $this->cost = $this->purchases->totalPrice();
             }
             
-            $this->priceWidget->price = $this->cost;
-            $this->cost = $this->priceWidget->run();
+            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
             
             return $this->render($this->view, ['goods'=>$this->goods, 'cost'=>$this->cost]);
         } catch (\Throwable $t) {
@@ -80,13 +80,13 @@ class CartWidget extends Widget
     }
     
     /**
-     * Присваивает Widget свойству ProductsListWidget::priceWidget
-     * @param object $widget Widget
+     * Присваивает CurrencyModel свойству ProductsListWidget::currency
+     * @param CurrencyModel $model
      */
-    public function setPriceWidget(Widget $widget)
+    public function setCurrency(CurrencyModel $model)
     {
         try {
-            $this->priceWidget = $widget;
+            $this->currency = $model;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

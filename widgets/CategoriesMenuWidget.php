@@ -15,9 +15,9 @@ class CategoriesMenuWidget extends Menu
     use ExceptionsTrait;
     
     /**
-     * @var array
+     * @var array CategoriesModel
      */
-    public $categories;
+    private $categories;
     /**
      * @var string основной route
      */
@@ -52,9 +52,9 @@ class CategoriesMenuWidget extends Menu
     private function setItems()
     {
         try {
-            /*if (empty($this->categoriesCollection)) {
-                throw new ErrorException($this->emptyError('categoriesCollection'));
-            }*/
+            if (empty($this->categories)) {
+                throw new ErrorException($this->emptyError('categories'));
+            }
             
             foreach ($this->categories as $category) {
                 if (empty($category->active)) {
@@ -83,15 +83,15 @@ class CategoriesMenuWidget extends Menu
     }
     
     /**
-     * Присваивает CollectionInterface свойству CategoriesMenuWidget::categoriesCollection
-     * @param object $collection CollectionInterface
+     * Присваивает array CategoriesMenuWidget::categories
+     * @param array $categories
      */
-    /*public function setCategoriesCollection(CollectionInterface $collection)
+    public function setCategories(array $categories)
     {
         try {
-            $this->categoriesCollection = $collection;
+            $this->categories = $categories;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }*/
+    }
 }

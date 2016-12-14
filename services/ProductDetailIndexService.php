@@ -6,8 +6,6 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\CommonFrontendService;
 use app\finders\ProductDetailFinder;
-use app\widgets\{ImagesWidget,
-    PriceWidget};
 use app\forms\PurchaseForm;
 
 /**
@@ -35,19 +33,18 @@ class ProductDetailIndexService extends CommonFrontendService
             if (empty($productModel)) {
                 throw new NotFoundHttpException($this->error404());
             }
-            $dataArray['productConfig']['model'] = $productModel;
+            $dataArray['productConfig']['product'] = $productModel;
             
-            $dataArray['productConfig']['priceWidget'] = new PriceWidget(['model'=>$dataArray['currencyModel']]);
-            $dataArray['productConfig']['imagesWidget'] = new ImagesWidget(['view'=>'images.twig']);
+            $dataArray['productConfig']['currency'] = $dataArray['currencyModel'];
             $dataArray['productConfig']['view'] = 'product-detail.twig';
             
             # Данные для вывода breadcrumbs
             
-            $dataArray['breadcrumbsConfig']['model'] = $productModel;
+            $dataArray['breadcrumbsConfig']['product'] = $productModel;
             
             # Данные для вывода формы заказа
             
-            $dataArray['toCartConfig']['model'] = $productModel;
+            $dataArray['toCartConfig']['product'] = $productModel;
             $dataArray['toCartConfig']['form'] = new PurchaseForm(['quantity'=>1]);
             $dataArray['toCartConfig']['view'] = 'add-to-cart-form.twig';
             

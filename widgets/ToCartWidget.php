@@ -7,6 +7,8 @@ use yii\base\{ErrorException,
     Widget};
 use app\exceptions\ExceptionsTrait;
 use yii\helpers\ArrayHelper;
+use app\models\ProductsModel;
+use app\forms\PurchaseForm;
 
 /**
  * Формирует HTML строку с тегами img
@@ -16,11 +18,11 @@ class ToCartWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var object Model
+     * @var ProductsModel
      */
-    private $model;
+    private $product;
     /**
-     * @var object Model, форма для получения данных из формы
+     * @var PurchaseForm
      */
     private $form;
     /**
@@ -31,8 +33,8 @@ class ToCartWidget extends Widget
     public function run()
     {
         try {
-            if (empty($this->model)) {
-                throw new ErrorException($this->emptyError('model'));
+            if (empty($this->product)) {
+                throw new ErrorException($this->emptyError('product'));
             }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
@@ -44,13 +46,15 @@ class ToCartWidget extends Widget
             $renderArray = [];
             
             $renderArray['formModel'] = $this->form;
-            $renderArray['product'] = $this->model;
             
-            $colors = $this->model->colors;
+            $renderArray['id'] = $this->product->id;
+            $renderArray['price'] = $this->product->price;
+            
+            $colors = $this->product->colors;
             ArrayHelper::multisort($colors, 'color');
             $renderArray['colors'] = ArrayHelper::getColumn($colors, 'color');
             
-            $sizes = $this->model->sizes;
+            $sizes = $this->product->sizes;
             ArrayHelper::multisort($sizes, 'size');
             $renderArray['sizes'] = ArrayHelper::getColumn($sizes, 'size');
             
@@ -61,23 +65,23 @@ class ToCartWidget extends Widget
     }
     
     /**
-     * Присваивает Model свойству ToCartWidget::model
-     * @param object $model Model
+     * Присваивает ProductsModel свойству ToCartWidget::model
+     * @param ProductsModel $model
      */
-    public function setModel(Model $model)
+    public function setProduct(ProductsModel $product)
     {
         try {
-            $this->model = $model;
+            $this->product = $product;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает Model свойству ToCartWidget::form
-     * @param object $model Model
+     * Присваивает PurchaseForm свойству ToCartWidget::form
+     * @param PurchaseForm $model
      */
-    public function setForm(Model $form)
+    public function setForm(PurchaseForm $form)
     {
         try {
             $this->form = $form;

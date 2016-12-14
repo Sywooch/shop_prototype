@@ -11,8 +11,7 @@ use app\controllers\ProductDetailController;
 use app\models\CurrencyModel;
 use yii\web\User;
 use app\collections\PurchasesCollectionInterface;
-use app\widgets\PriceWidget;
-use yii\base\Model;
+use app\forms\ChangeCurrencyForm;
 
 /**
  * Тестирует класс CommonFrontendService
@@ -64,10 +63,10 @@ class CommonFrontendServiceTests extends TestCase
         
         $this->assertArrayHasKey('cartConfig', $result);
         $this->assertArrayHasKey('purchases', $result['cartConfig']);
-        $this->assertArrayHasKey('priceWidget', $result['cartConfig']);
+        $this->assertArrayHasKey('currency', $result['cartConfig']);
         $this->assertArrayHasKey('view', $result['cartConfig']);
         $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['cartConfig']['purchases']);
-        $this->assertInstanceOf(PriceWidget::class, $result['cartConfig']['priceWidget']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['cartConfig']['currency']);
         $this->assertInternalType('string', $result['cartConfig']['view']);
         
         $this->assertArrayHasKey('currencyConfig', $result);
@@ -75,7 +74,7 @@ class CommonFrontendServiceTests extends TestCase
         $this->assertArrayHasKey('form', $result['currencyConfig']);
         $this->assertArrayHasKey('view', $result['currencyConfig']);
         $this->assertInternalType('array', $result['currencyConfig']['currency']);
-        $this->assertInstanceOf(Model::class, $result['currencyConfig']['form']);
+        $this->assertInstanceOf(ChangeCurrencyForm::class, $result['currencyConfig']['form']);
         $this->assertInternalType('string', $result['currencyConfig']['view']);
         
         $this->assertArrayHasKey('searchConfig', $result);
@@ -121,10 +120,10 @@ class CommonFrontendServiceTests extends TestCase
         
         $this->assertArrayHasKey('cartConfig', $result);
         $this->assertArrayHasKey('purchases', $result['cartConfig']);
-        $this->assertArrayHasKey('priceWidget', $result['cartConfig']);
+        $this->assertArrayHasKey('currency', $result['cartConfig']);
         $this->assertArrayHasKey('view', $result['cartConfig']);
         $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['cartConfig']['purchases']);
-        $this->assertInstanceOf(PriceWidget::class, $result['cartConfig']['priceWidget']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['cartConfig']['currency']);
         $this->assertInternalType('string', $result['cartConfig']['view']);
         
         $this->assertArrayHasKey('currencyConfig', $result);
@@ -132,7 +131,7 @@ class CommonFrontendServiceTests extends TestCase
         $this->assertArrayHasKey('form', $result['currencyConfig']);
         $this->assertArrayHasKey('view', $result['currencyConfig']);
         $this->assertInternalType('array', $result['currencyConfig']['currency']);
-        $this->assertInstanceOf(Model::class, $result['currencyConfig']['form']);
+        $this->assertInstanceOf(ChangeCurrencyForm::class, $result['currencyConfig']['form']);
         $this->assertInternalType('string', $result['currencyConfig']['view']);
         
         $this->assertArrayHasKey('searchConfig', $result);

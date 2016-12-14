@@ -65,7 +65,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             $purchasesCollection = $finder->find();
             
             $dataArray['cartConfig']['purchases'] = $purchasesCollection;
-            $dataArray['cartConfig']['priceWidget'] = new PriceWidget(['model'=>$currencyModel]);
+            $dataArray['cartConfig']['currency'] = $currencyModel;
             $dataArray['cartConfig']['view'] = 'short-cart.twig';
             
             # Данные для вывода списка доступных валют

@@ -6,6 +6,7 @@ use yii\base\{ErrorException,
     Model};
 use app\widgets\BreadcrumbsWidget;
 use app\exceptions\ExceptionsTrait;
+use app\models\ProductsModel;
 
 /**
  * Формирует breadcrumbs для страницы товара
@@ -15,21 +16,21 @@ class ProductBreadcrumbsWidget extends BreadcrumbsWidget
     use ExceptionsTrait;
     
     /**
-     * @var object Model
+     * @var ProductsModel
      */
-    private $model;
+    private $product;
     
     public function init()
     {
         try {
-            if (empty($this->model)) {
-                throw new ErrorException($this->emptyError('model'));
+            if (empty($this->product)) {
+                throw new ErrorException($this->emptyError('product'));
             }
             
             \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index'], 'label'=>\Yii::t('base', 'All catalog')];
-            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$this->model->category->seocode], 'label'=>$this->model->category->name];
-            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$this->model->category->seocode, \Yii::$app->params['subcategoryKey']=>$this->model->subcategory->seocode], 'label'=>$this->model->subcategory->name];
-            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/product-detail/index', \Yii::$app->params['productKey']=>$this->model->seocode], 'label'=>$this->model->name];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$this->product->category->seocode], 'label'=>$this->product->category->name];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/products-list/index', \Yii::$app->params['categoryKey']=>$this->product->category->seocode, \Yii::$app->params['subcategoryKey']=>$this->product->subcategory->seocode], 'label'=>$this->product->subcategory->name];
+            \Yii::$app->params['breadcrumbs'][] = ['url'=>['/product-detail/index', \Yii::$app->params['productKey']=>$this->product->seocode], 'label'=>$this->product->name];
             
             parent::init();
         } catch (\Throwable $t) {
@@ -38,13 +39,13 @@ class ProductBreadcrumbsWidget extends BreadcrumbsWidget
     }
     
     /**
-     * Присваивает Model свойству ProductBreadcrumbsWidget::model
-     * @param object $model Model
+     * Присваивает ProductsModel свойству ProductBreadcrumbsWidget::model
+     * @param ProductsModel $model
      */
-    public function setModel(Model $model)
+    public function setProduct(ProductsModel $product)
     {
         try {
-            $this->model = $model;
+            $this->product = $product;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

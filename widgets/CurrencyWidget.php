@@ -6,6 +6,7 @@ use yii\base\{ErrorException,
     Model,
     Widget};
 use app\exceptions\ExceptionsTrait;
+use app\forms\ChangeCurrencyForm;
 
 /**
  * Формирует HTML строку с формой выбора валюты
@@ -15,11 +16,11 @@ class CurrencyWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var array
+     * @var array CurrencyModel
      */
-    public $currency;
+    private $currency;
     /**
-     * @var object Model, получает данные из формы
+     * @var ChangeCurrencyForm, получает данные из формы
      */
     private $form;
     /**
@@ -30,18 +31,15 @@ class CurrencyWidget extends Widget
     public function run()
     {
         try {
-            /*if (empty($this->currencyCollection)) {
-                throw new ErrorException($this->emptyError('currencyCollection'));
-            }*/
+            if (empty($this->currency)) {
+                throw new ErrorException($this->emptyError('currency'));
+            }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
             }
-            
-            //$this->currencyCollection->sort('code');
-            //$currencyCollection = $this->currencyCollection->map('id', 'code');
             
             return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$this->currency]);
         } catch (\Throwable $t) {
@@ -50,23 +48,23 @@ class CurrencyWidget extends Widget
     }
     
     /**
-     * Присваивает CollectionInterface свойству CurrencyWidget::currencyCollection
-     * @param object $collection CollectionInterface
+     * Присваивает array CurrencyWidget::currency
+     * @param array $currency
      */
-    /*public function setCurrencyCollection(CollectionInterface $collection)
+    public function setCurrency(array $currency)
     {
         try {
-            $this->currencyCollection = $collection;
+            $this->currency = $currency;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }*/
+    }
     
     /**
-     * Присваивает Model свойству CurrencyWidget::form
-     * @param object $model Model
+     * Присваивает ChangeCurrencyForm свойству CurrencyWidget::form
+     * @param ChangeCurrencyForm $form
      */
-    public function setForm(Model $form)
+    public function setForm(ChangeCurrencyForm $form)
     {
         try {
             $this->form = $form;
