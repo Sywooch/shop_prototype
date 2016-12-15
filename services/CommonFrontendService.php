@@ -38,8 +38,9 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             $key = HashHelper::createHash([\Yii::$app->params['currencyKey'], \Yii::$app->user->id ?? '']);
             
-            $finder = new CurrencySessionFinder();
-            $finder->load(['key'=>$key]);
+            $finder = new CurrencySessionFinder([
+                'key'=>$key
+            ]);
             $currencyModel = $finder->find();
             if (empty($currencyModel)) {
                 $finder = new MainCurrencyFinder();
@@ -47,8 +48,10 @@ class CommonFrontendService extends Object implements ServiceInterface
                 if (empty($currencyModel)) {
                     throw new ErrorException($this->emptyError('currencyModel'));
                 }
-                $saver = new SessionSaver();
-                $saver->load(['key'=>$key, 'models'=>[$currencyModel]]);
+                $saver = new SessionSaver([
+                    'key'=>$key,
+                    'models'=>[$currencyModel]
+                ]);
                 $saver->save();
             }
             $dataArray['currencyModel'] = $currencyModel;
@@ -60,8 +63,9 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             # Данные для вывода информации о состоянии корзины
             
-            $finder = new PurchasesSessionFinder();
-            $finder->load(['key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])]);
+            $finder = new PurchasesSessionFinder([
+                'key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])
+            ]);
             $purchasesCollection = $finder->find();
             
             $dataArray['cartConfig']['purchases'] = $purchasesCollection;
@@ -76,9 +80,7 @@ class CommonFrontendService extends Object implements ServiceInterface
                 throw new ErrorException($this->emptyError('currencyArray'));
             }
             ArrayHelper::multisort($currencyArray, 'code');
-            $currencyArray = ArrayHelper::map($currencyArray, 'id', 'code');
-            $dataArray['currencyConfig']['currency'] = $currencyArray;
-            
+            $dataArray['currencyConfig']['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
             $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$currencyModel->id]);
             $dataArray['currencyConfig']['view'] = 'currency-form.twig';
             

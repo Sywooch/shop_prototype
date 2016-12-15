@@ -9,5 +9,4 @@ interface SaverInterface
 {
     public function save();
     public function setModels(array $models);
-    public function getModels();
 }

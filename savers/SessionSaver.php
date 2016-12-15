@@ -2,11 +2,9 @@
 
 namespace app\savers;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\ErrorException;
 use app\savers\AbstractBaseSaver;
 use app\helpers\SessionHelper;
-use app\validators\ModelsArrayValidator;
 
 /**
  * Сохранаяет данные в сессионном хранилище
@@ -22,14 +20,6 @@ class SessionSaver extends AbstractBaseSaver
      */
     private $models = [];
     
-    public function rules()
-    {
-        return [
-            [['key', 'models'], 'required'],
-            [['models'], ModelsArrayValidator::class]
-        ];
-    }
-    
     /**
      * Сохраняет данные в сессионном хранилище
      * @return bool
@@ -37,8 +27,11 @@ class SessionSaver extends AbstractBaseSaver
     public function save()
     {
         try {
-            if ($this->validate() === false) {
-                throw new ErrorException($this->modelError($this->errors));
+            if (empty($this->key)) {
+                throw new ErrorException($this->emptyError('key'));
+            }
+            if (empty($this->models)) {
+                throw new ErrorException($this->emptyError('models'));
             }
             
             if (count($this->models) > 1) {
@@ -65,19 +58,6 @@ class SessionSaver extends AbstractBaseSaver
     {
         try {
             $this->models = $models;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает данные Model SessionSaver::models
-     * @return array
-     */
-    public function getModels(): array
-    {
-        try {
-            return $this->models;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

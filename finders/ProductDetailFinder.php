@@ -20,13 +20,6 @@ class ProductDetailFinder extends AbstractBaseFinder
      */
     private $storage = null;
     
-    public function rules()
-    {
-        return [
-            [['seocode'], 'required']
-        ];
-    }
-    
     /**
      * Возвращает данные из СУБД
      * @return mixed
@@ -35,8 +28,8 @@ class ProductDetailFinder extends AbstractBaseFinder
     {
         try {
             if (empty($this->storage)) {
-                if ($this->validate() === false) {
-                    throw new ErrorException($this->modelError($this->errors));
+                if (empty($this->seocode)) {
+                    throw new ErrorException($this->emptyError('seocode'));
                 }
                 
                 $query = ProductsModel::find();

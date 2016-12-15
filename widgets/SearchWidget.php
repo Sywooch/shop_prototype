@@ -2,17 +2,14 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorException,
-    Widget};
-use app\exceptions\ExceptionsTrait;
+use yii\base\ErrorException;
+use app\widgets\AbstractBaseWidget;
 
 /**
  * Формирует HTML строку с формой поиска
  */
-class SearchWidget extends Widget
+class SearchWidget extends AbstractBaseWidget
 {
-    use ExceptionsTrait;
-    
      /**
      * @var string искомая фраза
      */

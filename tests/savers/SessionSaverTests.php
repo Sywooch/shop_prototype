@@ -23,53 +23,6 @@ class SessionSaverTests extends TestCase
     }
     
     /**
-     * Тестирует метод SessionSaver::rules
-     * если не указаны SessionSaver::key, SessionSaver::models
-     */
-    public function testRulesRequired()
-    {
-        $saver = new SessionSaver();
-        $saver->validate();
-        
-        $this->assertNotEmpty($saver->errors);
-        $this->assertCount(2, $saver->errors);
-        $this->assertArrayHasKey('key', $saver->errors);
-        $this->assertArrayHasKey('models', $saver->errors);
-    }
-    
-    /**
-     * Тестирует метод SessionSaver::rules
-     * если SessionSaver::models содержит неверные типы
-     */
-    public function testRulesModelsNotObject()
-    {
-        $saver = new SessionSaver();
-        
-        $reflection = new \ReflectionProperty($saver, 'key');
-        $reflection->setValue($saver,'test_key');
-        
-        $reflection = new \ReflectionProperty($saver, 'models');
-        $reflection->setAccessible(true);
-        $reflection->setValue($saver, [1]);
-        
-        $saver->validate();
-        
-        $this->assertNotEmpty($saver->errors);
-        $this->assertCount(1, $saver->errors);
-        $this->assertArrayHasKey('models', $saver->errors);
-        
-        $model = new class() extends Model {};
-        
-        $reflection = new \ReflectionProperty($saver, 'models');
-        $reflection->setAccessible(true);
-        $reflection->setValue($saver, [$model]);
-        
-        $saver->validate();
-        
-        $this->assertEmpty($saver->errors);
-    }
-    
-    /**
      * Тестирует метод SessionSaver::setModels
      * передаю параметр неверного типа
      * @expectedException TypeError
@@ -77,7 +30,7 @@ class SessionSaverTests extends TestCase
     public function testSetModelsError()
     {
         $saver = new SessionSaver();
-        $saver->setModels('a');
+        $saver->setModels('string');
     }
     
     /**
@@ -100,23 +53,31 @@ class SessionSaverTests extends TestCase
     }
     
     /**
-     * Тестирует метод SessionSaver::getModels
+     * Тестирует метод SessionSaver::save
+     * если пуст SessionSaver::key
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: key
      */
-    public function testGetModels()
+    public function testSaveEmptyKey()
     {
-        $model = new class() extends Model {};
-        
+        $saver = new SessionSaver();
+        $saver->save();
+    }
+    
+    /**
+     * Тестирует метод SessionSaver::save
+     * если пуст SessionSaver::models
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: models
+     */
+    public function testSaveEmptyModels()
+    {
         $saver = new SessionSaver();
         
-        $reflection = new \ReflectionProperty($saver, 'models');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($saver, [$model]);
+        $reflection = new \ReflectionProperty($saver, 'key');
+        $reflection->setValue($saver, 'key_test');
         
-        $result = $saver->getModels();
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertInstanceOf(Model::class, $result[0]);
+        $saver->save();
     }
     
     /**

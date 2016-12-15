@@ -5,7 +5,8 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\CommonFrontendService;
-use app\finders\ProductDetailFinder;
+use app\finders\{ProductDetailFinder,
+    SimilarFinder};
 use app\forms\PurchaseForm;
 
 /**
@@ -27,8 +28,9 @@ class ProductDetailIndexService extends CommonFrontendService
             
             # Данные товара
             
-            $finder = new ProductDetailFinder();
-            $finder->load($request);
+            $finder = new ProductDetailFinder([
+                'seocode'=>$request[\Yii::$app->params['productKey']]
+            ]);
             $productModel = $finder->find();
             if (empty($productModel)) {
                 throw new NotFoundHttpException($this->error404());
@@ -47,6 +49,16 @@ class ProductDetailIndexService extends CommonFrontendService
             $dataArray['toCartConfig']['product'] = $productModel;
             $dataArray['toCartConfig']['form'] = new PurchaseForm(['quantity'=>1]);
             $dataArray['toCartConfig']['view'] = 'add-to-cart-form.twig';
+            
+            # Похожие товары
+            
+            $finder = new SimilarFinder([
+                'product'=>$productModel
+            ]);
+            $similarArray = $finder->find();
+            $dataArray['similarConfig']['products'] = $similarArray;
+            $dataArray['similarConfig']['currency'] = $dataArray['currencyModel'];
+            $dataArray['similarConfig']['view'] = 'see-also.twig';
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {

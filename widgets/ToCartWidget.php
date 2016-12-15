@@ -2,10 +2,8 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorException,
-    Model,
-    Widget};
-use app\exceptions\ExceptionsTrait;
+use yii\base\ErrorException;
+use app\widgets\AbstractBaseWidget;
 use yii\helpers\ArrayHelper;
 use app\models\ProductsModel;
 use app\forms\PurchaseForm;
@@ -13,10 +11,8 @@ use app\forms\PurchaseForm;
 /**
  * Формирует HTML строку с тегами img
  */
-class ToCartWidget extends Widget
+class ToCartWidget extends AbstractBaseWidget
 {
-    use ExceptionsTrait;
-    
     /**
      * @var ProductsModel
      */
@@ -46,7 +42,6 @@ class ToCartWidget extends Widget
             $renderArray = [];
             
             $renderArray['formModel'] = $this->form;
-            
             $renderArray['id'] = $this->product->id;
             $renderArray['price'] = $this->product->price;
             

@@ -8,6 +8,7 @@ use app\collections\{BaseCollection,
     CollectionInterface};
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
+use app\forms\ChangeCurrencyForm;
 
 /**
  * Тестирует класс CurrencyWidget
@@ -27,52 +28,55 @@ class CurrencyWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrencyWidget::setCurrencyCollection
+     * Тестирует метод CurrencyWidget::setCurrency
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testSetCurrencyError()
     {
-        $currencyCollection = new class() {};
+        $model = new class() {};
+        
         $widget = new CurrencyWidget();
-        $widget->setCurrencyCollection($currencyCollection);
+        $widget->setCurrency($model);
     }
     
     /**
-     * Тестирует метод CurrencyWidget::setCurrencyCollection
+     * Тестирует метод CurrencyWidget::setCurrency
      */
-    /*public function testSetCurrencyCollection()
+    public function testSetCurrency()
     {
-        $currencyCollection = new class() extends BaseCollection {};
+        $currency = [1=>'ONE', 2=>'TWO'];
         
         $widget = new CurrencyWidget();
-        $widget->setCurrencyCollection($currencyCollection);
+        $widget->setCurrency($currency);
         
-        $reflection = new \ReflectionProperty($widget, 'currencyCollection');
+        $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(CollectionInterface::class, $result);
-    }*/
+        $this->assertInternalType('array', $result);
+    }
     
     /**
      * Тестирует метод CurrencyWidget::setForm
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
-    /*public function testSetFormError()
+    public function testSetFormError()
     {
         $form = new class() {};
+        
         $widget = new CurrencyWidget();
         $widget->setForm($form);
-    }*/
+    }
     
     /**
      * Тестирует метод CurrencyWidget::setForm
      */
-    /*public function testSetForm()
+    public function testSetForm()
     {
-        $form = new class() extends Model {};
+        $form = new class() extends ChangeCurrencyForm {};
+        
         $widget = new CurrencyWidget();
         $widget->setForm($form);
         
@@ -80,102 +84,79 @@ class CurrencyWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(Model::class, $result);
-    }*/
+        $this->assertInstanceOf(ChangeCurrencyForm::class, $result);
+    }
     
     /**
      * Тестирует метод CurrencyWidget::run
-     * при условии, что CurrencyWidget::currencyCollection пуст
+     * если пуст CurrencyWidget::currency
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: currencyCollection
+     * @expectedExceptionMessage Missing required data: currency
      */
-    /*public function testRunEmptyCurrencyCollection()
+    public function testRunEmptyCurrency()
     {
         $widget = new CurrencyWidget();
         $widget->run();
-    }*/
+    }
     
     /**
      * Тестирует метод CurrencyWidget::run
-     * при условии, что CurrencyWidget::form пуст
+     * если пуст CurrencyWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: form
      */
-    /*public function testRunEmptyForm()
+    public function testRunEmptyForm()
     {
-        $currencyCollection = new class() extends BaseCollection {};
+        $currency = [1=>'ONE', 2=>'TWO'];
         
         $widget = new CurrencyWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'currencyCollection');
+        $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $currencyCollection);
+        $result = $reflection->setValue($widget, $currency);
         
         $widget->run();
-    }*/
+    }
     
     /**
      * Тестирует метод CurrencyWidget::run
-     * при условии, что CurrencyWidget::view пуст
+     * если пуст CurrencyWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: view
      */
-    /*public function testRunEmptyView()
+    public function testRunEmptyView()
     {
-        $currencyCollection = new class() extends BaseCollection {};
+        $currency = [1=>'ONE', 2=>'TWO'];
         
-        $form = new class() extends Model {};
+        $form = new class() extends ChangeCurrencyForm {};
         
         $widget = new CurrencyWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'currencyCollection');
+        $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $currencyCollection);
+        $result = $reflection->setValue($widget, $currency);
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
         
         $widget->run();
-    }*/
+    }
     
     /**
      * Тестирует метод CurrencyWidget::run
      */
-    /*public function testRun()
+    public function testRun()
     {
-        $model_1 = new class() {
-            public $id = 1;
-            public $code = 'ONE';
-        };
-        $model_2 = new class() {
-            public $id = 2;
-            public $code = 'TWO';
-        };
+        $currency = [1=>'ONE', 2=>'TWO'];
         
-        $currencyCollection = new class() extends BaseCollection {
-            public function map(string $key, string $value){
-                return ArrayHelper::map($this->items, $key, $value);
-            }
-            public function sort(string $key, $type=SORT_ASC){
-                ArrayHelper::multisort($this->items, $key, $type);
-            }
-        };
-        
-        $reflection = new \ReflectionProperty($currencyCollection, 'items');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($currencyCollection, [$model_1, $model_2]);
-        
-        $form = new class() extends Model {
-            public $id;
-            public $url;
-        };
+        $form = new class() extends ChangeCurrencyForm {};
         
         $widget = new CurrencyWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'currencyCollection');
+        $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $currencyCollection);
+        $result = $reflection->setValue($widget, $currency);
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
@@ -192,5 +173,5 @@ class CurrencyWidgetTests extends TestCase
         $this->assertRegExp('/<option value="1">ONE<\/option>/', $result);
         $this->assertRegExp('/<option value="2">TWO<\/option>/', $result);
         $this->assertRegExp('/<input type="submit" value="' . \Yii::t('base', 'Change') . '">/', $result);
-    }*/
+    }
 }

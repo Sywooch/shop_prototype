@@ -37,23 +37,15 @@ class ProductDetailFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductDetailFinder::rules
+     * Тестирует метод ProductDetailFinder::find
+     * если пуст ProductDetailFinder::seocode
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: seocode
      */
-    public function testRules()
+    public function testFindEmptySeocode()
     {
         $finder = new ProductDetailFinder();
-        $finder->validate();
-        
-        $this->assertNotEmpty($finder->errors);
-        $this->assertCount(1, $finder->errors);
-        $this->assertArrayHasKey('seocode', $finder->errors);
-        
-        $finder = new ProductDetailFinder();
-        $reflection = new \ReflectionProperty($finder, 'seocode');
-        $reflection->setValue($finder, 'seocode');
-        $finder->validate();
-        
-        $this->assertEmpty($finder->errors);
+        $finder->find();
     }
     
     /**

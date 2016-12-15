@@ -23,23 +23,15 @@ class CurrencySessionFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrencySessionFinder::rules
+     * Тестирует метод CurrencySessionFinder::find
+     * если пуст CurrencySessionFinder::key
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: key
      */
-    public function testRules()
+    public function testFindEmptyKey()
     {
         $finder = new CurrencySessionFinder();
-        $finder->validate();
-        
-        $this->assertNotEmpty($finder->errors);
-        $this->assertCount(1, $finder->errors);
-        $this->assertArrayHasKey('key', $finder->errors);
-        
-        $finder = new CurrencySessionFinder();
-        $reflection = new \ReflectionProperty($finder, 'key');
-        $reflection->setValue($finder, 'key');
-        $finder->validate();
-        
-        $this->assertEmpty($finder->errors);
+        $finder->find();
     }
     
     /**

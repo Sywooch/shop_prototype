@@ -2,8 +2,7 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\ErrorException;
 use app\widgets\BreadcrumbsWidget;
 use app\exceptions\ExceptionsTrait;
 use app\models\ProductsModel;

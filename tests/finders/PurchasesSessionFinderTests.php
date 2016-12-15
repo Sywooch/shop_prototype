@@ -24,23 +24,15 @@ class PurchasesSessionFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchasesSessionFinder::rules
+     * Тестирует метод PurchasesSessionFinder::find
+     * если пуст PurchasesSessionFinder::key
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Missing required data: key
      */
-    public function testRules()
+    public function testFindEmptyKey()
     {
         $finder = new PurchasesSessionFinder();
-        $finder->validate();
-        
-        $this->assertNotEmpty($finder->errors);
-        $this->assertCount(1, $finder->errors);
-        $this->assertArrayHasKey('key', $finder->errors);
-        
-        $finder = new PurchasesSessionFinder();
-        $reflection = new \ReflectionProperty($finder, 'key');
-        $reflection->setValue($finder, 'key');
-        $finder->validate();
-        
-        $this->assertEmpty($finder->errors);
+        $finder->find();
     }
     
     /**

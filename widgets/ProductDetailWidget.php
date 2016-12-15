@@ -2,27 +2,22 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorException,
-    Model,
-    Widget};
-use app\exceptions\ExceptionsTrait;
+use yii\base\ErrorException;
+use app\widgets\AbstractBaseWidget;
 use yii\helpers\{ArrayHelper,
     Html};
 use app\models\{CurrencyModel,
     ProductsModel};
 
-class ProductDetailWidget extends Widget
+/**
+ * Выводит информацию о товаре
+ */
+class ProductDetailWidget extends AbstractBaseWidget
 {
-    use ExceptionsTrait;
-    
     /**
      * @var ProductsModel
      */
     private $product;
-    /**
-     * @var object Widget
-     */
-    //private $imagesWidget;
     /**
      * @var CurrencyModel
      */
@@ -38,9 +33,6 @@ class ProductDetailWidget extends Widget
             if (empty($this->product)) {
                 throw new ErrorException($this->emptyError('product'));
             }
-            /*if (empty($this->imagesWidget)) {
-                throw new ErrorException($this->emptyError('imagesWidget'));
-            }*/
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
@@ -54,11 +46,7 @@ class ProductDetailWidget extends Widget
             $renderArray['description'] = $this->product->description;
             
             if (!empty($this->product->images)) {
-                /*$this->imagesWidget->path = $this->model->images;
-                $renderArray['images'] = $this->imagesWidget->run();*/
-                
                 $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $this->product->images) . '/*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-                
                 if (!empty($imagesArray)) {
                     $result = [];
                     foreach ($imagesArray as $image) {
@@ -89,8 +77,8 @@ class ProductDetailWidget extends Widget
     }
     
     /**
-     * Присваивает Model свойству ProductDetailWidget::model
-     * @param object $model Model
+     * Присваивает ProductsModel свойству ProductDetailWidget::product
+     * @param ProductsModel $product
      */
     public function setProduct(ProductsModel $product)
     {
@@ -102,21 +90,8 @@ class ProductDetailWidget extends Widget
     }
     
     /**
-     * Присваивает Widget свойству ProductDetailWidget::imagesWidget
-     * @param Widget $widget
-     */
-    /*public function setImagesWidget(Widget $widget)
-    {
-        try {
-            $this->imagesWidget = $widget;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }*/
-    
-    /**
      * Присваивает CurrencyModel свойству ProductDetailWidget::currency
-     * @param CurrencyModel $model
+     * @param CurrencyModel $currency
      */
     public function setCurrency(CurrencyModel $currency)
     {

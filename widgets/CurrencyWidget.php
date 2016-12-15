@@ -3,18 +3,15 @@
 namespace app\widgets;
 
 use yii\base\{ErrorException,
-    Model,
     Widget};
-use app\exceptions\ExceptionsTrait;
+use app\widgets\AbstractBaseWidget;
 use app\forms\ChangeCurrencyForm;
 
 /**
  * Формирует HTML строку с формой выбора валюты
  */
-class CurrencyWidget extends Widget
+class CurrencyWidget extends AbstractBaseWidget
 {
-    use ExceptionsTrait;
-    
     /**
      * @var array CurrencyModel
      */

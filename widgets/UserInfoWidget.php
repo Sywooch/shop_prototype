@@ -5,15 +5,13 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use yii\web\User;
-use app\exceptions\ExceptionsTrait;
+use app\widgets\AbstractBaseWidget;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе аутентификации
  */
-class UserInfoWidget extends Widget
+class UserInfoWidget extends AbstractBaseWidget
 {
-    use ExceptionsTrait;
-    
     /**
      * @var object User
      */
@@ -49,7 +47,7 @@ class UserInfoWidget extends Widget
     
     /**
      * Присваивает User свойству UserInfoWidget::user
-     * @param object $user
+     * @param User $user
      */
     public function setUser(User $user)
     {

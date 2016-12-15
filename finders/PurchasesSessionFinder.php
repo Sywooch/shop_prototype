@@ -22,13 +22,6 @@ class PurchasesSessionFinder extends AbstractBaseFinder
      */
     private $storage = null;
     
-    public function rules()
-    {
-        return [
-            [['key'], 'required'],
-        ];
-    }
-    
     /**
      * Возвращает данные из сессионного хранилища
      * @return mixed
@@ -37,8 +30,8 @@ class PurchasesSessionFinder extends AbstractBaseFinder
     {
         try {
             if (empty($this->storage)) {
-                if ($this->validate() === false) {
-                    throw new ErrorException($this->modelError($this->errors));
+                if (empty($this->key)) {
+                    throw new ErrorException($this->emptyError('key'));
                 }
                 
                 $this->storage = new PurchasesCollection();

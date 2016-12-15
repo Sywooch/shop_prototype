@@ -2,19 +2,16 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorException,
-    Widget};
-use app\exceptions\ExceptionsTrait;
+use yii\base\ErrorException;
+use app\widgets\AbstractBaseWidget;
 use app\collections\PurchasesCollection;
 use app\models\CurrencyModel;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
  */
-class CartWidget extends Widget
+class CartWidget extends AbstractBaseWidget
 {
-    use ExceptionsTrait;
-    
     /**
      * @var object PurchasesCollection
      */
