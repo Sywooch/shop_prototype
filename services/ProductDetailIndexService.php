@@ -4,12 +4,14 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
+use yii\helpers\ArrayHelper;
 use app\services\CommonFrontendService;
 use app\finders\{CommentsFinder,
     ProductDetailFinder,
     SimilarFinder,
     RelatedFinder};
-use app\forms\PurchaseForm;
+use app\forms\{CommentForm,
+    PurchaseForm};
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -80,8 +82,10 @@ class ProductDetailIndexService extends CommonFrontendService
                 'product'=>$productModel
             ]);
             $commentsArray = $finder->find();
+            ArrayHelper::multisort($commentsArray, 'date', SORT_DESC);
             $dataArray['commentsConfig']['comments'] = $commentsArray;
-            $dataArray['commentsConfig']['view'] = 'see-also.twig';
+            $dataArray['commentsConfig']['form'] = new CommentForm(['id_product'=>$productModel->id]);
+            $dataArray['commentsConfig']['view'] = 'comments.twig';
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {

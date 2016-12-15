@@ -4,6 +4,7 @@
 {{ use('app/widgets/ProductDetailWidget') }}
 {{ use('app/widgets/ToCartWidget') }}
 {{ use('app/widgets/SeeAlsoWidget') }}
+{{ use('app/widgets/CommentsWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
@@ -16,3 +17,5 @@
 {{ see_also_widget_widget(similarConfig) }}
 
 {{ see_also_widget_widget(relatedConfig) }}
+
+{{ comments_widget_widget(commentsConfig) }}

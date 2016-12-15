@@ -38,7 +38,13 @@ class CurrencyWidget extends AbstractBaseWidget
                 throw new ErrorException($this->emptyError('view'));
             }
             
-            return $this->render($this->view, ['formModel'=>$this->form, 'currencyList'=>$this->currency]);
+            $renderArray = [];
+            
+            $renderArray['header'] = \Yii::t('base', 'Currency');
+            $renderArray['formModel'] = $this->form;
+            $renderArray['currencyList'] = $this->currency;
+            
+            return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

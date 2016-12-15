@@ -60,7 +60,7 @@ $translate = [
     'Similar products'=>'Похожие товары',
     'Related products'=>'Связанные товары',
     'Add to cart'=>'Добавить в корзину',
-    'Currency:'=>'Валюта:',
+    'Currency'=>'Валюта',
     'Products in cart: {goods}, Total cost: {cost}'=>'Товаров в корзине: {goods}, Общая стоимость: {cost}',
     'To cart'=>'В корзину',
     'Cart'=>'Корзина',
@@ -106,7 +106,8 @@ $translate = [
     'You successfully subscribed to mailings:'=>'Вы успешно подписались на рассылки:',
     'You are already subscribed to the mailing list:'=>'Вы уже подписаны на  эти рассылки:',
     'Search for <strong>{placeholder}</strong> returned no results'=>'Поиск <strong>{placeholder}</strong> не дал результатов',
-    'Search by this parameters returned no results'=>'Поиск по этим параметрам не дал результатов'
+    'Search by this parameters returned no results'=>'Поиск по этим параметрам не дал результатов',
+    'Comments'=>'Комментарии'
 ];
 
 return $translate;

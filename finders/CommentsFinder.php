@@ -34,9 +34,9 @@ class CommentsFinder extends AbstractBaseFinder
                 }
                 
                 $query = CommentsModel::find();
-                $query->select(['[[comments.id]]', '[[comments.date]]', '[[comments.text]]', '[[comments.name]]', '[[comments.id_email]]', '[[comments.id_product]]', '[[comments.active]]']);
-                $query->where(['[[comments.active]]'=>true]);
-                $query->andWhere(['[[comments.id_product]]'=>$this->product->id]);
+                $query->select(['[[comments.date]]', '[[comments.text]]', '[[comments.name]]']);
+                $query->where(['[[comments.id_product]]'=>$this->product->id]);
+                $query->andWhere(['[[comments.active]]'=>true]);
                 
                 $this->storage = $query->all();
             }
