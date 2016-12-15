@@ -11,7 +11,7 @@ use app\models\CurrencyModel;
 /**
  * Выводит информацию о похожих товарах
  */
-class SimilarWidget extends AbstractBaseWidget
+class SeeAlsoWidget extends AbstractBaseWidget
 {
     /**
      * @var array ProductsModel
@@ -22,6 +22,10 @@ class SimilarWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
+     * @var string заголовок
+     */
+    public $header;
+    /**
      * @var string имя шаблона
      */
     public $view;
@@ -30,10 +34,13 @@ class SimilarWidget extends AbstractBaseWidget
     {
         try {
             if (empty($this->products)) {
-                throw new ErrorException($this->emptyError('products'));
+                return '';
             }
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
+            }
+            if (empty($this->header)) {
+                throw new ErrorException($this->emptyError('header'));
             }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
@@ -41,7 +48,7 @@ class SimilarWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['text'] = \Yii::t('base', 'Similar products');
+            $renderArray['header'] = $this->header;
             $renderArray['priceText'] = \Yii::t('base', 'Price:');
             
             foreach ($this->products as $product) {
@@ -68,7 +75,7 @@ class SimilarWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array ProductsModel свойству ProductDetailWidget::products
+     * Присваивает array ProductsModel свойству SeeAlsoWidget::products
      * @param array $products
      */
     public function setProducts(array $products)
@@ -81,7 +88,7 @@ class SimilarWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству ProductDetailWidget::currency
+     * Присваивает CurrencyModel свойству SeeAlsoWidget::currency
      * @param CurrencyModel $model
      */
     public function setCurrency(CurrencyModel $currency)

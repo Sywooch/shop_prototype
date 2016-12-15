@@ -5,8 +5,10 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\CommonFrontendService;
-use app\finders\{ProductDetailFinder,
-    SimilarFinder};
+use app\finders\{CommentsFinder,
+    ProductDetailFinder,
+    SimilarFinder,
+    RelatedFinder};
 use app\forms\PurchaseForm;
 
 /**
@@ -58,7 +60,28 @@ class ProductDetailIndexService extends CommonFrontendService
             $similarArray = $finder->find();
             $dataArray['similarConfig']['products'] = $similarArray;
             $dataArray['similarConfig']['currency'] = $dataArray['currencyModel'];
+            $dataArray['similarConfig']['header'] = \Yii::t('base', 'Similar products');
             $dataArray['similarConfig']['view'] = 'see-also.twig';
+            
+            # Связанные товары
+            
+            $finder = new RelatedFinder([
+                'product'=>$productModel
+            ]);
+            $relatedArray = $finder->find();
+            $dataArray['relatedConfig']['products'] = $relatedArray;
+            $dataArray['relatedConfig']['currency'] = $dataArray['currencyModel'];
+            $dataArray['relatedConfig']['header'] = \Yii::t('base', 'Related products');
+            $dataArray['relatedConfig']['view'] = 'see-also.twig';
+            
+            # Комментарии
+            
+            $finder = new CommentsFinder([
+                'product'=>$productModel
+            ]);
+            $commentsArray = $finder->find();
+            $dataArray['commentsConfig']['comments'] = $commentsArray;
+            $dataArray['commentsConfig']['view'] = 'see-also.twig';
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {

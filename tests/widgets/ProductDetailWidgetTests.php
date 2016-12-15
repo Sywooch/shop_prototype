@@ -13,7 +13,7 @@ use app\models\{CurrencyModel,
 class ProductDetailWidgetTests extends TestCase
 {
     /**
-     * Тестирует наличие свойств
+     * Тестирует наличие свойств ProductDetailWidget
      */
     public function testProperties()
     {

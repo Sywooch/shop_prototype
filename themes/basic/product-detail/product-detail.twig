@@ -3,7 +3,7 @@
 {{ use('app/widgets/ProductBreadcrumbsWidget') }}
 {{ use('app/widgets/ProductDetailWidget') }}
 {{ use('app/widgets/ToCartWidget') }}
-{{ use('app/widgets/SimilarWidget') }}
+{{ use('app/widgets/SeeAlsoWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
@@ -13,4 +13,6 @@
 
 {{ to_cart_widget_widget(toCartConfig) }}
 
-{{ similar_widget_widget(similarConfig) }}
+{{ see_also_widget_widget(similarConfig) }}
+
+{{ see_also_widget_widget(relatedConfig) }}
