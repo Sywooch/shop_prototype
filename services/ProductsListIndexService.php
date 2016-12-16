@@ -4,7 +4,13 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
-use app\services\CommonFrontendService,
+use yii\helpers\Url;
+use app\services\CommonFrontendService;
+use app\finders\{CategorySeocodeFinder,
+    FiltersSessionFinder,
+    ProductsFinder,
+    SubcategorySeocodeFinder};
+use app\helpers\HashHelper;
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -25,19 +31,13 @@ class ProductsListIndexService extends CommonFrontendService
             
             # Товарные фильтры
             
-            /*$finder = new OneSessionFinder([
-                'collection'=>new BaseSessionCollection()
+            $finder = new FiltersSessionFinder([
+                'key'=>HashHelper::createFiltersKey()
             ]);
-            $finder->load(['key'=>HashHelper::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? ''])]);
-            $collection = $finder->find();
-            if ($collection->isEmpty() === false) {
-                $filtersArray = $collection->getArray();
+            $filtersModel = $finder->find();
+            if (empty($filtersModel)) {
+                throw new ErrorException($this->emptyError('filtersModel'));
             }
-            
-            $filters = new ProductsFilters();
-            if (!empty($filtersArray)) {
-                $filters->attributes = $filtersArray;
-            }*/
             
             # Данные для вывода списка товаров
             
@@ -45,7 +45,7 @@ class ProductsListIndexService extends CommonFrontendService
                 'category'=>$request[\Yii::$app->params['categoryKey']],
                 'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
                 'page'=>$request[\Yii::$app->params['pagePointer']],
-                'filters'=>$filters
+                'filters'=>$filtersModel
             ]);
             $productsCollection = $finder->find();
             
@@ -62,28 +62,26 @@ class ProductsListIndexService extends CommonFrontendService
             
             # Данные для вывода breadcrumbs
             
-            /*if (!empty($category = $request[\Yii::$app->params['categoryKey']])) {
+            if (!empty($category = $request[\Yii::$app->params['categoryKey']])) {
                 $finder = new CategorySeocodeFinder([
-                    'collection'=>new BaseCollection()
+                    'seocode'=>$category
                 ]);
-                $finder->load(['seocode'=>$category]);
-                $categoryModel = $finder->find()->getModel();
+                $categoryModel = $finder->find();
                 if (empty($categoryModel)) {
                     throw new ErrorException($this->emptyError('categoryModel'));
                 }
                 $dataArray['breadcrumbsConfig']['category'] = $categoryModel;
                 if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']])) {
                     $finder = new SubcategorySeocodeFinder([
-                        'collection'=>new BaseCollection()
+                        'seocode'=>$subcategory
                     ]);
-                    $finder->load(['seocode'=>$subcategory]);
-                    $subcategoryModel = $finder->find()->getModel();
+                    $subcategoryModel = $finder->find();
                     if (empty($subcategoryModel)) {
                         throw new ErrorException($this->emptyError('subcategoryModel'));
                     }
                     $dataArray['breadcrumbsConfig']['subcategory'] = $subcategoryModel;
                 }
-            }*/
+            }
             
             # Данные для вывода фильтров каталога
             

@@ -36,7 +36,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             # Данные текущей валюты
             
-            $key = HashHelper::createHash([\Yii::$app->params['currencyKey'], \Yii::$app->user->id ?? '']);
+            $key = HashHelper::createCurrencyKey();
             
             $finder = new CurrencySessionFinder([
                 'key'=>$key
@@ -64,7 +64,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             # Данные для вывода информации о состоянии корзины
             
             $finder = new PurchasesSessionFinder([
-                'key'=>HashHelper::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? ''])
+                'key'=>HashHelper::createCartKey()
             ]);
             $purchasesCollection = $finder->find();
             

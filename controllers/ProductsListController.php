@@ -20,11 +20,11 @@ class ProductsListController extends AbstractBaseController
                 'service'=>new ProductsListIndexService(),
                 'view'=>'products-list.twig'
             ],
-            'search'=>[
+            /*'search'=>[
                 'class'=>SearchAction::class,
                 'service'=>new ProductsListSearchService(),
                 'view'=>'products-search.twig'
-            ],
+            ],*/
         ];
     }
 }

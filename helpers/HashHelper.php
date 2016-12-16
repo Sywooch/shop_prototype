@@ -3,8 +3,10 @@
 namespace app\helpers;
 
 use yii\base\ErrorException;
+use yii\helpers\Url;
 use app\exceptions\ExceptionsTrait;
 use app\models\EmailsModel;
+use app\helpers\StringHelper;
 
 /**
  * Коллекция методов для создания хеша
@@ -26,6 +28,45 @@ class HashHelper
             }
             
             return !empty($inputArray) ? sha1(implode('', $inputArray)) : '';
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Конструирует ключ для сохранения товарных фильтров
+     * @return string
+     */
+    public static function createFiltersKey(): string
+    {
+        try {
+            return self::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? '']);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Конструирует ключ для сохранения текущей валюты
+     * @return string
+     */
+    public static function createCurrencyKey(): string
+    {
+        try {
+            return self::createHash([\Yii::$app->params['currencyKey'], \Yii::$app->user->id ?? '']);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Конструирует ключ для сохранения корзины покупок
+     * @return string
+     */
+    public static function createCartKey(): string
+    {
+        try {
+            return self::createHash([\Yii::$app->params['cartKey'], \Yii::$app->user->id ?? '']);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
