@@ -6,9 +6,13 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Url;
 use app\services\CommonFrontendService;
-use app\finders\{CategorySeocodeFinder,
+use app\finders\{BrandsFilterFinder,
+    CategorySeocodeFinder,
+    ColorsFilterFinder,
     FiltersSessionFinder,
     ProductsFinder,
+    SizesFilterFinder,
+    SortingFieldsFinder,
     SubcategorySeocodeFinder};
 use app\helpers\HashHelper;
 
@@ -85,46 +89,44 @@ class ProductsListIndexService extends CommonFrontendService
             
             # Данные для вывода фильтров каталога
             
-            /*$finder = new ColorsFilterFinder([
-                'collection'=>new BaseCollection()
+            $finder = new ColorsFilterFinder([
+                'category'=>$request[\Yii::$app->params['categoryKey']],
+                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
             ]);
-            $finder->load($request);
-            $collection = $finder->find()->getModels();
-            if ($collection->isEmpty()) {
-                throw new ErrorException($this->emptyError('colorsCollection'));
+            $colorsArray = $finder->find();
+            if (empty($colorsArray)) {
+                throw new ErrorException($this->emptyError('colorsArray'));
             }
-            $dataArray['filtersConfig']['colorsCollection'] = $collection;
+            $dataArray['filtersConfig']['colors'] = $colorsArray;
             
             $finder = new SizesFilterFinder([
-                'collection'=>new BaseCollection()
+                'category'=>$request[\Yii::$app->params['categoryKey']],
+                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
             ]);
-            $finder->load($request);
-            $collection = $finder->find()->getModels();
-            if ($collection->isEmpty()) {
-                throw new ErrorException($this->emptyError('sizesCollection'));
+            $sizesArray = $finder->find();
+            if (empty($sizesArray)) {
+                throw new ErrorException($this->emptyError('sizesArray'));
             }
-            $dataArray['filtersConfig']['sizesCollection'] = $collection;
+            $dataArray['filtersConfig']['sizes'] = $sizesArray;
             
             $finder = new BrandsFilterFinder([
-                'collection'=>new BaseCollection()
+                'category'=>$request[\Yii::$app->params['categoryKey']],
+                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
             ]);
-            $finder->load($request);
-            $collection = $finder->find()->getModels();
-            if ($collection->isEmpty()) {
-                throw new ErrorException($this->emptyError('brandsCollection'));
+            $brandsArray = $finder->find();
+            if (empty($brandsArray)) {
+                throw new ErrorException($this->emptyError('brandsArray'));
             }
-            $dataArray['filtersConfig']['brandsCollection'] = $collection;
+            $dataArray['filtersConfig']['brands'] = $brandsArray;
             
-            $finder = new SortingFieldsFinder([
-                'collection'=>new SortingFieldsCollection()
-            ]);
-            $sortingFieldsCollection = $finder->find();
-            if ($sortingFieldsCollection->isEmpty()) {
-                throw new ErrorException($this->emptyError('sortingFieldsCollection'));
+            $finder = new SortingFieldsFinder();
+            $sortingFieldsArray = $finder->find();
+            if (empty($sortingFieldsArray)) {
+                throw new ErrorException($this->emptyError('sortingFieldsArray'));
             }
-            $dataArray['filtersConfig']['sortingFieldsCollection'] = $sortingFieldsCollection;
+            $dataArray['filtersConfig']['sortingFields'] = $sortingFieldsArray;
             
-            $finder = new SortingTypesFinder([
+            /*$finder = new SortingTypesFinder([
                 'collection'=>new SortingTypesCollection()
             ]);
             $sortingTypesCollection = $finder->find();
