@@ -1,17 +1,17 @@
 <h1>{{ name }}</h1>
 <p>{{ description }}</p>
 {{ images | raw }}
-<p><strong>{{ yii.t('base', 'Colors:') }}</strong></p>
+<p><strong>{{ colorsText }}</strong></p>
 <ul>
     {% for color in colors %}
         <li>{{ color }}</li>
     {% endfor %}
 </ul>
-<p><strong>{{ yii.t('base', 'Sizes:') }}</strong></p>
+<p><strong>{{ sizesText }}</strong></p>
 <ul>
     {% for size in sizes %}
         <li>{{ size }}</li>
     {% endfor %}
 </ul>
-<p><strong>{{ yii.t('base', 'Price:') }}</strong> {{ price }}</p>
-<p><strong>{{ yii.t('base', 'Code:') }}</strong> {{ code }}</p>
+<p><strong>{{ priceText }}</strong> {{ price }}</p>
+<p><strong>{{ codeText }}</strong> {{ code }}</p>

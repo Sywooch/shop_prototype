@@ -5,6 +5,8 @@ namespace app\widgets;
 use yii\base\{ErrorException,
     Widget};
 use yii\web\User;
+use yii\helpers\{Html,
+    Url};
 use app\widgets\AbstractBaseWidget;
 
 /**
@@ -39,7 +41,22 @@ class UserInfoWidget extends AbstractBaseWidget
                 $user = $this->user->identity;
             }
             
-            return $this->render($this->view, ['user'=>isset($user) ? $user->email->email : \Yii::t('base', 'Guest'), 'authenticated'=>isset($user) ? true : false]);
+            $renderArray = [];
+            
+            $renderArray['header'] = \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>isset($user) ? $user->email->email : \Yii::t('base', 'Guest')]);
+            $renderArray['authenticated'] = isset($user) ? true : false;
+            
+            $renderArray['loginHref'] = Url::to(['/user/login']);
+            $renderArray['loginText'] = \Yii::t('base', 'Login');
+            $renderArray['registrationHref'] = Url::to(['/user/registration']);
+            $renderArray['registrationText'] = \Yii::t('base', 'Registration');
+            
+            $renderArray['formId'] = 'user-logout-form';
+            $renderArray['formAction'] = Url::to(['/user/logout']);
+            $renderArray['userId'] = isset($user) ? $user->id : '';
+            $renderArray['button'] = \Yii::t('base', 'Logout');
+            
+            return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

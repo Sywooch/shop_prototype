@@ -4,7 +4,8 @@ namespace app\widgets;
 
 use yii\base\ErrorException;
 use app\widgets\AbstractBaseWidget;
-use yii\helpers\ArrayHelper;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\models\ProductsModel;
 use app\forms\PurchaseForm;
 
@@ -40,6 +41,10 @@ class ToCartWidget extends AbstractBaseWidget
             }
             
             $renderArray = [];
+            
+            $renderArray['formAction'] = Url::to(['/cart/set']);
+            $renderArray['formId'] = 'add-to-cart-form';
+            $renderArray['button'] = \Yii::t('base', 'Add to cart');
             
             $renderArray['formModel'] = $this->form;
             $renderArray['id'] = $this->product->id;

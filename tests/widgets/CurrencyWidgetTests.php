@@ -168,10 +168,10 @@ class CurrencyWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('/<p><strong>' . \Yii::t('base', 'Currency:') . '<\/strong><\/p>/', $result);
-        $this->assertRegExp('/<form id="set-currency-form"/', $result);
-        $this->assertRegExp('/<option value="1">ONE<\/option>/', $result);
-        $this->assertRegExp('/<option value="2">TWO<\/option>/', $result);
-        $this->assertRegExp('/<input type="submit" value="' . \Yii::t('base', 'Change') . '">/', $result);
+        $this->assertRegExp('#<p><strong>Валюта</strong></p>#', $result);
+        $this->assertRegExp('#<form id="set-currency-form"#', $result);
+        $this->assertRegExp('#<option value="1">ONE</option>#', $result);
+        $this->assertRegExp('#<option value="2">TWO</option>#', $result);
+        $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
     }
 }

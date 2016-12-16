@@ -3,6 +3,7 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
+use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
 use app\collections\PurchasesCollection;
 use app\models\CurrencyModel;
@@ -55,9 +56,21 @@ class CartWidget extends AbstractBaseWidget
                 $this->cost = $this->purchases->totalPrice();
             }
             
+            $renderArray = [];
+            
             $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
             
-            return $this->render($this->view, ['goods'=>$this->goods, 'cost'=>$this->cost]);
+            $renderArray['extended'] = $this->goods > 0 ? true : false;
+            
+            $renderArray['goodsText'] = \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>$this->goods, 'cost'=>$this->cost]);
+            $renderArray['toCartHref'] = Url::to(['/cart/index']);
+            $renderArray['toCartText'] = \Yii::t('base', 'To cart');
+            
+            $renderArray['formId'] = 'clean-cart-form';
+            $renderArray['formAction'] = Url::to(['/cart/clean']);
+            $renderArray['button'] = \Yii::t('base', 'Clean');
+            
+            return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

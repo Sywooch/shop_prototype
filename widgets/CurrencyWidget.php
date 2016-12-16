@@ -4,6 +4,7 @@ namespace app\widgets;
 
 use yii\base\{ErrorException,
     Widget};
+use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
 use app\forms\ChangeCurrencyForm;
 
@@ -41,8 +42,11 @@ class CurrencyWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['header'] = \Yii::t('base', 'Currency');
+            $renderArray['formId'] = 'set-currency-form';
+            $renderArray['formAction'] = Url::to(['/currency/set']);
+            $renderArray['button'] = \Yii::t('base', 'Change');
             $renderArray['formModel'] = $this->form;
-            $renderArray['currencyList'] = $this->currency;
+            $renderArray['currency'] = $this->currency;
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

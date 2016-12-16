@@ -3,6 +3,7 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
+use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
 use app\forms\CommentForm;
 
@@ -40,6 +41,8 @@ class CommentsWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['header'] = \Yii::t('base', 'Comments');
+            $renderArray['formId'] = 'add-comment-form';
+            $renderArray['formAction'] = Url::to(['']);
             $renderArray['button'] = \Yii::t('base', 'Send');
             $renderArray['modelForm'] = $this->form;
             

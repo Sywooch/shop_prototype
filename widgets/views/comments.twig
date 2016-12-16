@@ -1,4 +1,4 @@
-{{ use('yii/base/Widget') }}
+{{ use('yii/widgets/ActiveForm') }}
 
 <p><strong>{{ header }}</strong></p>
 
@@ -12,7 +12,7 @@
     {% endfor %}
 </ul>
 
-{% set form=active_form_begin({'id':'comment-form', 'action':'', 'method':'POST'}) %}
+{% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'POST'}) %}
     {{ form.field(modelForm, 'name') | raw }}
     {{ form.field(modelForm, 'email') | raw }}
     {{ form.field(modelForm, 'text').textarea() | raw }}

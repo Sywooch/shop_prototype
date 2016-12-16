@@ -2,8 +2,8 @@
 
 <p><strong>{{ header }}</strong></p>
 
-{% set form=active_form_begin({'id':'set-currency-form', 'action':url.to({0:'/currency/set'}), 'method':'POST'}) %}
-    {{ form.field(formModel, 'id').dropDownList(currencyList) | raw }}
+{% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'POST'}) %}
+    {{ form.field(formModel, 'id').dropDownList(currency) | raw }}
     {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
-    <input type="submit" value="{{ yii.t('base', 'Change') }}">
+    <input type="submit" value="{{ button }}">
 {{ active_form_end() }}
