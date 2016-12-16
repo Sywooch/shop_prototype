@@ -10,7 +10,7 @@ use app\models\{CommentsModel,
 /**
  * Возвращает похожие товары
  */
-class CommentsFinder extends AbstractBaseFinder
+class CommentsProductFinder extends AbstractBaseFinder
 {
     /**
      * @var ProductsModel, для которого будут найдены связанные

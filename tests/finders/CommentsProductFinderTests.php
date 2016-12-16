@@ -3,16 +3,16 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\CommentsFinder;
+use app\finders\CommentsProductFinder;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CommentsFixture;
 use app\models\{CommentsModel,
     ProductsModel};
 
 /**
- * Тестирует класс CommentsFinder
+ * Тестирует класс CommentsProductFinder
  */
-class CommentsFinderTests extends TestCase
+class CommentsProductFinderTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,18 +27,18 @@ class CommentsFinderTests extends TestCase
     }
     
     /**
-     * Тестирует свойства CommentsFinder
+     * Тестирует свойства CommentsProductFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(CommentsFinder::class);
+        $reflection = new \ReflectionClass(CommentsProductFinder::class);
         
         $this->assertTrue($reflection->hasProperty('product'));
         $this->assertTrue($reflection->hasProperty('storage'));
     }
     
     /**
-     * Тестирует метод CommentsFinder::setProduct
+     * Тестирует метод CommentsProductFinder::setProduct
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
@@ -46,18 +46,18 @@ class CommentsFinderTests extends TestCase
     {
         $product = new class() {};
         
-        $finder = new CommentsFinder();
+        $finder = new CommentsProductFinder();
         $finder->setProduct($product);
     }
     
     /**
-     * Тестирует метод CommentsFinder::setProduct
+     * Тестирует метод CommentsProductFinder::setProduct
      */
     public function testSetProduct()
     {
         $product = new class() extends ProductsModel {};
         
-        $finder = new CommentsFinder();
+        $finder = new CommentsProductFinder();
         $finder->setProduct($product);
         
         $reflection = new \ReflectionProperty($finder, 'product');
@@ -68,19 +68,19 @@ class CommentsFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод CommentsFinder::find
-     * если пуст CommentsFinder::product
+     * Тестирует метод CommentsProductFinder::find
+     * если пуст CommentsProductFinder::product
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: product
      */
     public function testFindEmptyProduct()
     {
-        $finder = new CommentsFinder();
+        $finder = new CommentsProductFinder();
         $finder->find();
     }
     
     /**
-     * Тестирует метод CommentsFinder::find
+     * Тестирует метод CommentsProductFinder::find
      */
     public function testFind()
     {
@@ -88,7 +88,7 @@ class CommentsFinderTests extends TestCase
             public $id = 1;
         };
         
-        $finder = new CommentsFinder();
+        $finder = new CommentsProductFinder();
         
         $reflection = new \ReflectionProperty($finder, 'product');
         $reflection->setAccessible(true);

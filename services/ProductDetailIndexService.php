@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
 use app\services\CommonFrontendService;
-use app\finders\{CommentsFinder,
+use app\finders\{CommentsProductFinder,
     ProductDetailFinder,
     SimilarFinder,
     RelatedFinder};
@@ -78,7 +78,7 @@ class ProductDetailIndexService extends CommonFrontendService
             
             # Комментарии
             
-            $finder = new CommentsFinder([
+            $finder = new CommentsProductFinder([
                 'product'=>$productModel
             ]);
             $commentsArray = $finder->find();

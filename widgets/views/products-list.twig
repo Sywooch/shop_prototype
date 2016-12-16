@@ -1,0 +1,10 @@
+<ol>
+{% for product in collection %}
+    <li>
+        {{ product.link | raw }}
+        <br>{{ product.short_description }}
+        <br>{{ priceText }} {{ product.price }}
+        {{ product.image | raw }}
+    </li>
+{% endfor %}
+</ol>
