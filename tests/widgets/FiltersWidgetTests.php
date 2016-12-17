@@ -413,7 +413,7 @@ class FiltersWidgetTests extends TestCase
         
         $sortingFields = ['date'=>'Sorting by date', 'price'=>'Sorting by price'];
         
-        $sortingTypes = ['SORT_ASC'=>'Sort ascending', 'SORT_DESC'=>'Sort descending'];
+        $sortingTypes = [SORT_ASC=>'Sort ascending', SORT_DESC=>'Sort descending'];
         
         $form = new class() extends FiltersForm {
             public $sortingField;
@@ -460,8 +460,8 @@ class FiltersWidgetTests extends TestCase
         $this->assertRegExp('#<form id="products-filters-form"#', $result);
         $this->assertRegExp('#<option value="date">Sorting by date</option>#', $result);
         $this->assertRegExp('#<option value="price">Sorting by price</option>#', $result);
-        $this->assertRegExp('#<option value="SORT_ASC">Sort ascending</option>#', $result);
-        $this->assertRegExp('#<option value="SORT_DESC">Sort descending</option>#', $result);
+        $this->assertRegExp('#<option value="4">Sort ascending</option>#', $result);
+        $this->assertRegExp('#<option value="3">Sort descending</option>#', $result);
         $this->assertRegExp('#<label class="control-label">Colors</label>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+" value="1"> black</label>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+" value="2"> green</label>#', $result);

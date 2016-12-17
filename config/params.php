@@ -8,6 +8,8 @@ $params = [
     
     # Фильтры
     'filterKeys'=>['colors', 'sizes', 'brands'], # Ключи, по которым доступны значения фильтров
+    'sortingField'=>'date', # Поле сортировки по умолчанию
+    'sortingType'=>SORT_DESC, # Тип сортировки по умолчанию
     
     # Путь к товару
     'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступна текущая категория

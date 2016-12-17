@@ -12,16 +12,12 @@ use app\filters\ProductsFiltersInterface;
 /**
  * Возвращает ProductsModel выбранного товара из СУБД
  */
-class ProductsFinder extends AbstractBaseFinder
+class ProductsSphinxFinder extends AbstractBaseFinder
 {
     /**
-     * @var string GET параметр, определяющий текущую категорию каталога товаров
+     * @var array массив ID товаров, найденный sphinx в ответ на запрос
      */
-    public $category;
-    /**
-     * @var string GET параметр, определяющий текущую подкатегорию каталога товаров
-     */
-    public $subcategory;
+    private $sphinx;
     /**
      * @var string GET параметр, определяющий текущую страницу каталога товаров
      */
@@ -43,6 +39,9 @@ class ProductsFinder extends AbstractBaseFinder
     {
         try {
             if (empty($this->storage)) {
+                if (empty($this->sphinx)) {
+                    throw new ErrorException($this->emptyError('sphinx'));
+                }
                 if (empty($this->filters)) {
                     throw new ErrorException($this->emptyError('filters'));
                 }
@@ -53,14 +52,7 @@ class ProductsFinder extends AbstractBaseFinder
                 $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
                 $query->where(['[[products.active]]'=>true]);
                 
-                if (!empty($this->category)) {
-                    $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
-                    $query->andWhere(['[[categories.seocode]]'=>$this->category]);
-                    if (!empty($this->subcategory)) {
-                        $query->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
-                        $query->andWhere(['[[subcategory.seocode]]'=>$this->subcategory]);
-                    }
-                }
+                $query->andWhere(['[[products.id]]'=>$this->sphinx]);
                 
                 if (!empty($this->filters->colors)) {
                     $query->innerJoin('{{products_colors}}', '[[products_colors.id_product]]=[[products.id]]');
@@ -105,7 +97,20 @@ class ProductsFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает ProductsFiltersInterface ProductsFinder::filters
+     * Присваивает array ProductsSphinxFinder::sphinx
+     * @param array $sphinx
+     */
+    public function setSphinx(array $sphinx)
+    {
+        try {
+            $this->sphinx = $sphinx;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ProductsFiltersInterface ProductsSphinxFinder::filters
      * @param ProductsFiltersInterface $filters
      */
     public function setFilters(ProductsFiltersInterface $filters)

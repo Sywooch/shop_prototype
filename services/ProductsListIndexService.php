@@ -152,14 +152,14 @@ class ProductsListIndexService extends CommonFrontendService
             $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel->toArray())));
             if (empty($form->sortingField)) {
                 foreach ($sortingFieldsArray as $item) {
-                    if ($item['name'] === 'date') {
+                    if ($item['name'] === \Yii::$app->params['sortingField']) {
                         $form->sortingField = $item;
                     }
                 }
             }
             if (empty($form->sortingType)) {
                 foreach ($sortingTypesArray as $item) {
-                    if ($item['name'] === 'SORT_DESC') {
+                    if ($item['name'] === \Yii::$app->params['sortingType']) {
                         $form->sortingType = $item;
                     }
                 }

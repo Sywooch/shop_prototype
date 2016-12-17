@@ -121,11 +121,11 @@ class ProductsFiltersTests extends TestCase
         
         $reflection = new \ReflectionProperty($filter, 'sortingType');
         $reflection->setAccessible(true);
-        $reflection->setValue($filter, 'SORT_DESC');
+        $reflection->setValue($filter, SORT_DESC);
         
         $result = $filter->getSortingType();
         
-        $this->assertSame('SORT_DESC', $result);
+        $this->assertSame(SORT_DESC, $result);
     }
     
     /**
