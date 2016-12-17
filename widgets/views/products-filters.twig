@@ -1,0 +1,18 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+{% set form=active_form_begin({'id':formIdApply, 'action':formActionApply, 'method':'POST'}) %}
+    {{ form.field(formModel, 'sortingField').dropDownList(sortingFields) | raw }}
+    {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes) | raw }}
+    {{ form.field(formModel, 'colors').checkboxList(colors) | raw }}
+    {{ form.field(formModel, 'sizes').checkboxList(sizes) | raw }}
+    {{ form.field(formModel, 'brands').checkboxList(brands) | raw }}
+    {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    <input type="submit" value="{{ buttonApply }}">
+{{ active_form_end() }}
+
+{% set form = active_form_begin({'id':formIdClean, 'action':formActionClean, 'method':'POST'}) %}
+    {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    <input type="submit" value="{{ buttonClean }}">
+{{ active_form_end() }}

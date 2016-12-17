@@ -1,12 +1,15 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/CategoriesBreadcrumbsWidget') }}
-{{ use('app/widgets/ProductsWidget') }}
+{{ use('app/widgets/FiltersWidget') }}
 {{ use('app/widgets/EmptyProductsWidget') }}
+{{ use('app/widgets/ProductsWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
 {{ categories_breadcrumbs_widget_widget(breadcrumbsConfig) }}
+
+{{ filters_widget_widget(filtersConfig) }}
 
 {% if emptyConfig %}
     {{ empty_products_widget_widget(emptyConfig) }}

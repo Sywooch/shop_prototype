@@ -3,13 +3,15 @@
 namespace app\collections;
 
 use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use app\exceptions\ExceptionsTrait;
-use app\collections\AbstractIterator;
+use app\collections\{AbstractIterator,
+    CollectionInterface};
 
 /**
  * Базовый класс коллекций
  */
-class AbstractBaseCollection extends AbstractIterator
+abstract class AbstractBaseCollection extends AbstractIterator implements CollectionInterface
 {
     use ExceptionsTrait;
     
@@ -27,6 +29,19 @@ class AbstractBaseCollection extends AbstractIterator
     }
     
     /**
+     * Добавляет массив в коллекцию
+     * @param array $array 
+     */
+    public function addArray(array $array)
+    {
+        try {
+            $this->items[] = $array;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает bool в зависимости от того, пуст или нет static::items
      * @return bool
      */
@@ -34,6 +49,45 @@ class AbstractBaseCollection extends AbstractIterator
     {
         try {
             return empty($this->items) ? true : false;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Сортирует объекты коллекции static::items
+     * @param string $key имя свойства, по значениям которого будет выполнена сортировка
+     * @param string $type флаг, определяющий тип сортировки SORT_ASC / SORT_DESC
+     */
+    public function multisort(string $key, $type=SORT_ASC)
+    {
+        try {
+            if ($this->isEmpty() === true) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            
+            ArrayHelper::multisort($this->items, $key, $type);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные из static::items в формате ключ=>значение, 
+     * где значения одного из свойств, становятся ключами возвращаемого массива, 
+     * а значения второго - значениями этих ключей
+     * @param string $key имя свойства, значения которого станут ключами
+     * @param string $value имя свойства, значения которого станут значениями
+     * @return array
+     */
+    public function map(string $key, string $value): array
+    {
+        try {
+            if ($this->isEmpty() === true) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            
+            return ArrayHelper::map($this->items, $key, $value);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

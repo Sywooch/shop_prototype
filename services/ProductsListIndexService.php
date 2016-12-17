@@ -4,7 +4,8 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
-use yii\helpers\Url;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\services\CommonFrontendService;
 use app\finders\{BrandsFilterFinder,
     CategorySeocodeFinder,
@@ -13,8 +14,10 @@ use app\finders\{BrandsFilterFinder,
     ProductsFinder,
     SizesFilterFinder,
     SortingFieldsFinder,
+    SortingTypesFinder,
     SubcategorySeocodeFinder};
 use app\helpers\HashHelper;
+use app\forms\FiltersForm;
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -97,7 +100,8 @@ class ProductsListIndexService extends CommonFrontendService
             if (empty($colorsArray)) {
                 throw new ErrorException($this->emptyError('colorsArray'));
             }
-            $dataArray['filtersConfig']['colors'] = $colorsArray;
+            ArrayHelper::multisort($colorsArray, 'color');
+            $dataArray['filtersConfig']['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
             
             $finder = new SizesFilterFinder([
                 'category'=>$request[\Yii::$app->params['categoryKey']],
@@ -107,7 +111,8 @@ class ProductsListIndexService extends CommonFrontendService
             if (empty($sizesArray)) {
                 throw new ErrorException($this->emptyError('sizesArray'));
             }
-            $dataArray['filtersConfig']['sizes'] = $sizesArray;
+            ArrayHelper::multisort($sizesArray, 'size');
+            $dataArray['filtersConfig']['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
             $finder = new BrandsFilterFinder([
                 'category'=>$request[\Yii::$app->params['categoryKey']],
@@ -117,34 +122,43 @@ class ProductsListIndexService extends CommonFrontendService
             if (empty($brandsArray)) {
                 throw new ErrorException($this->emptyError('brandsArray'));
             }
-            $dataArray['filtersConfig']['brands'] = $brandsArray;
+            ArrayHelper::multisort($brandsArray, 'brand');
+            $dataArray['filtersConfig']['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
             
             $finder = new SortingFieldsFinder();
             $sortingFieldsArray = $finder->find();
             if (empty($sortingFieldsArray)) {
                 throw new ErrorException($this->emptyError('sortingFieldsArray'));
             }
-            $dataArray['filtersConfig']['sortingFields'] = $sortingFieldsArray;
+            ArrayHelper::multisort($sortingFieldsArray, 'value');
+            $dataArray['filtersConfig']['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
             
-            /*$finder = new SortingTypesFinder([
-                'collection'=>new SortingTypesCollection()
-            ]);
-            $sortingTypesCollection = $finder->find();
-            if ($sortingTypesCollection->isEmpty()) {
-                throw new ErrorException($this->emptyError('sortingTypesCollection'));
+            $finder = new SortingTypesFinder();
+            $sortingTypesArray = $finder->find();
+            if (empty($sortingTypesArray)) {
+                throw new ErrorException($this->emptyError('sortingTypesArray'));
             }
-            $dataArray['filtersConfig']['sortingTypesCollection'] = $sortingTypesCollection;
+            ArrayHelper::multisort($sortingTypesArray, 'value');
+            $dataArray['filtersConfig']['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
             
-            $form = new FiltersForm(array_merge(['url'=>Url::current()], !empty($filtersArray) ? $filtersArray : []));
+            $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel->toArray())));
             if (empty($form->sortingField)) {
-                $form->sortingField = $sortingFieldsCollection->getDefault();
+                foreach ($sortingFieldsArray as $item) {
+                    if ($item['name'] === 'date') {
+                        $form->sortingField = $item;
+                    }
+                }
             }
             if (empty($form->sortingType)) {
-                $form->sortingType = $sortingTypesCollection->getDefault();
+                foreach ($sortingTypesArray as $item) {
+                    if ($item['name'] === 'SORT_DESC') {
+                        $form->sortingType = $item;
+                    }
+                }
             }
             $dataArray['filtersConfig']['form'] = $form;
             
-            $dataArray['filtersConfig']['view'] = 'products-filters.twig';*/
+            $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {
