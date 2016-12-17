@@ -49,9 +49,9 @@ class ProductsListIndexService extends CommonFrontendService
             # Данные для вывода списка товаров
             
             $finder = new ProductsFinder([
-                'category'=>$request[\Yii::$app->params['categoryKey']],
-                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
-                'page'=>$request[\Yii::$app->params['pagePointer']],
+                'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
+                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
+                'page'=>$request[\Yii::$app->params['pagePointer']] ?? 0,
                 'filters'=>$filtersModel
             ]);
             $productsCollection = $finder->find();
@@ -67,9 +67,17 @@ class ProductsListIndexService extends CommonFrontendService
                 $dataArray['productsConfig']['view'] = 'products-list.twig';
             }
             
+            # Пагинатор
+            
+            if (empty($productsCollection->pagination)) {
+                throw new ErrorException($this->emptyError('pagination'));
+            }
+            $dataArray['paginationConfig']['pagination'] = $productsCollection->pagination;
+            $dataArray['paginationConfig']['view'] = 'pagination.twig';
+            
             # Данные для вывода breadcrumbs
             
-            if (!empty($category = $request[\Yii::$app->params['categoryKey']])) {
+            if (!empty($category = $request[\Yii::$app->params['categoryKey']] ?? null)) {
                 $finder = new CategorySeocodeFinder([
                     'seocode'=>$category
                 ]);
@@ -78,7 +86,7 @@ class ProductsListIndexService extends CommonFrontendService
                     throw new ErrorException($this->emptyError('categoryModel'));
                 }
                 $dataArray['breadcrumbsConfig']['category'] = $categoryModel;
-                if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']])) {
+                if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']] ?? null)) {
                     $finder = new SubcategorySeocodeFinder([
                         'seocode'=>$subcategory
                     ]);
@@ -93,8 +101,8 @@ class ProductsListIndexService extends CommonFrontendService
             # Данные для вывода фильтров каталога
             
             $finder = new ColorsFilterFinder([
-                'category'=>$request[\Yii::$app->params['categoryKey']],
-                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
+                'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
+                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
             ]);
             $colorsArray = $finder->find();
             if (empty($colorsArray)) {
@@ -104,8 +112,8 @@ class ProductsListIndexService extends CommonFrontendService
             $dataArray['filtersConfig']['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
             
             $finder = new SizesFilterFinder([
-                'category'=>$request[\Yii::$app->params['categoryKey']],
-                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
+                'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
+                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
             ]);
             $sizesArray = $finder->find();
             if (empty($sizesArray)) {
@@ -115,8 +123,8 @@ class ProductsListIndexService extends CommonFrontendService
             $dataArray['filtersConfig']['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
             $finder = new BrandsFilterFinder([
-                'category'=>$request[\Yii::$app->params['categoryKey']],
-                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']],
+                'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
+                'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
             ]);
             $brandsArray = $finder->find();
             if (empty($brandsArray)) {

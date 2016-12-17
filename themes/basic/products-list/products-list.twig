@@ -4,6 +4,7 @@
 {{ use('app/widgets/FiltersWidget') }}
 {{ use('app/widgets/EmptyProductsWidget') }}
 {{ use('app/widgets/ProductsWidget') }}
+{{ use('app/widgets/PaginationWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
@@ -15,6 +16,8 @@
     {{ empty_products_widget_widget(emptyConfig) }}
 {% else %}
     {{ products_widget_widget(productsConfig) }}
+    
+    {{ pagination_widget_widget(paginationConfig) }}
 {% endif %}
 
 
