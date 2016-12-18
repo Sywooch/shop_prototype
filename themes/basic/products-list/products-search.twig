@@ -1,14 +1,15 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/SearchBreadcrumbsWidget') }}
-{{ use('app/widgets/FiltersWidget') }}
 {{ use('app/widgets/EmptySphinxWidget') }}
+{{ use('app/widgets/FiltersWidget') }}
 {{ use('app/widgets/EmptyProductsWidget') }}
-{{ use('app/widgets/ProductsListWidget') }}
+{{ use('app/widgets/ProductsWidget') }}
+{{ use('app/widgets/PaginationWidget') }}
 
-{{ include('@theme/products-list/common.twig') }}
+{{ include('@theme/common/frontend-common.twig') }}
 
-{{ search_breadcrumbs_widget_widget() }}
+{{ search_breadcrumbs_widget_widget(breadcrumbsConfig) }}
 
 {% if emptySphinxConfig %}
     {{ empty_sphinx_widget_widget(emptySphinxConfig) }}
@@ -18,6 +19,8 @@
     {% if emptyConfig %}
         {{ empty_products_widget_widget(emptyConfig) }}
     {% else %}
-        {{ products_list_widget_widget(productsConfig) }}
+        {{ products_widget_widget(productsConfig) }}
+        
+        {{ pagination_widget_widget(paginationConfig) }}
     {% endif %}
 {% endif %}

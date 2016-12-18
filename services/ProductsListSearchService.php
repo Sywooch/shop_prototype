@@ -7,12 +7,12 @@ use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\services\CommonFrontendService;
-use app\finders\{BrandsFilterFinder,
+use app\finders\{BrandsFilterSphinxFinder,
     CategorySeocodeFinder,
-    ColorsFilterFinder,
+    ColorsFilterSphinxFinder,
     FiltersSessionFinder,
     ProductsSphinxFinder,
-    SizesFilterFinder,
+    SizesFilterSphinxFinder,
     SortingFieldsFinder,
     SortingTypesFinder,
     SphinxFinder,
@@ -86,12 +86,12 @@ class ProductsListSearchService extends CommonFrontendService
                 
                 # Данные для вывода breadcrumbs
                 
+                $dataArray['breadcrumbsConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? null;
                 
                 # Данные для вывода фильтров каталога
                 
-                $finder = new ColorsFilterFinder([
-                    'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
-                    'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
+                $finder = new ColorsFilterSphinxFinder([
+                    'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
                 ]);
                 $colorsArray = $finder->find();
                 if (empty($colorsArray)) {
@@ -100,9 +100,8 @@ class ProductsListSearchService extends CommonFrontendService
                 ArrayHelper::multisort($colorsArray, 'color');
                 $dataArray['filtersConfig']['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
                 
-                $finder = new SizesFilterFinder([
-                    'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
-                    'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
+                $finder = new SizesFilterSphinxFinder([
+                    'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
                 ]);
                 $sizesArray = $finder->find();
                 if (empty($sizesArray)) {
@@ -111,9 +110,8 @@ class ProductsListSearchService extends CommonFrontendService
                 ArrayHelper::multisort($sizesArray, 'size');
                 $dataArray['filtersConfig']['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
                 
-                $finder = new BrandsFilterFinder([
-                    'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
-                    'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
+                $finder = new BrandsFilterSphinxFinder([
+                    'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
                 ]);
                 $brandsArray = $finder->find();
                 if (empty($brandsArray)) {
@@ -157,7 +155,8 @@ class ProductsListSearchService extends CommonFrontendService
                 
                 $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             } else {
-                
+                $dataArray['emptySphinxConfig']['text'] = $request[\Yii::$app->params['searchKey']];
+                $dataArray['emptySphinxConfig']['view'] = 'empty-sphinx.twig';
             }
                 
             return $dataArray;

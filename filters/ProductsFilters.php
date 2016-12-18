@@ -5,12 +5,15 @@ namespace app\filters;
 use yii\base\{ErrorException,
     Model};
 use app\filters\ProductsFiltersInterface;
+use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные формы фильтров для каталога товаров
  */
 class ProductsFilters extends Model implements ProductsFiltersInterface
 {
+    use ExceptionsTrait;
+    
     /**
      * Сценарий загрузки данных из сессии
      */

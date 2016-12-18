@@ -4,13 +4,16 @@ namespace app\finders;
 
 use yii\base\ErrorException;
 use app\models\BrandsModel;
-use app\finders\AbstractBaseFinder;
+use app\finders\{AbstractBaseFinder,
+    BrandsFilterFindersTrait};
 
 /**
  * Возвращает коллекцию цветов из СУБД
  */
 class BrandsFilterFinder extends AbstractBaseFinder
 {
+    use BrandsFilterFindersTrait;
+    
     /**
      * @var string GET параметр, определяющий текущую категорию каталога товаров
      */
@@ -32,11 +35,7 @@ class BrandsFilterFinder extends AbstractBaseFinder
     {
         try {
             if (empty($this->storage)) {
-                $query = BrandsModel::find();
-                $query->select(['[[brands.id]]', '[[brands.brand]]']);
-                $query->distinct();
-                $query->innerJoin('{{products}}', '[[products.id_brand]]=[[brands.id]]');
-                $query->where(['[[products.active]]'=>true]);
+                $query = $this->createQuery();
             
                 if (!empty($this->category)) {
                     $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');

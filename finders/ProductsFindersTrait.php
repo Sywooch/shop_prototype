@@ -26,6 +26,7 @@ trait ProductsFindersTrait
     
     /**
      * Создает объект запроса
+     * @return Query
      */
     public function createQuery(): Query
     {
@@ -42,6 +43,8 @@ trait ProductsFindersTrait
     
     /**
      * Добавляет фильтры к запросу
+     * @param Query $query
+     * @return Query
      */
     public function addFilters(Query $query): Query
     {
@@ -70,6 +73,8 @@ trait ProductsFindersTrait
     
     /**
      * Конфигурирует пагинатор, добавляет LIMIT OFFSET к запросу
+     * @param Query $query
+     * @return Query
      */
     public function addPagination(Query $query): Query
     {
@@ -89,6 +94,8 @@ trait ProductsFindersTrait
     
     /**
      * Добавляет сортировку к запросу
+     * @param Query $query
+     * @return Query
      */
     public function addSorting(Query $query): Query
     {
@@ -105,6 +112,7 @@ trait ProductsFindersTrait
     
     /**
      * Получает данные и добавляет их в коллекцию
+     * @param Query $query
      */
     public function get(Query $query)
     {
