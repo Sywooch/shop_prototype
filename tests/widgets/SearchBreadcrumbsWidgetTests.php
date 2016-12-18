@@ -11,6 +11,15 @@ use app\widgets\SearchBreadcrumbsWidget;
 class SearchBreadcrumbsWidgetTests extends TestCase
 {
     /**
+     * Тестирует наличие свойств
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(SearchBreadcrumbsWidget::class);
+        
+        $this->assertTrue($reflection->hasProperty('text'));
+    }
+    /**
      * Тестирует метод SearchBreadcrumbsWidget::run
      */
     public function testRun()

@@ -15,7 +15,8 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\helpers\HashHelper;
 use app\widgets\PriceWidget;
-use app\forms\ChangeCurrencyForm;
+use app\forms\{ChangeCurrencyForm,
+    SearchForm};
 use app\savers\SessionSaver;
 
 /**
@@ -86,7 +87,7 @@ class CommonFrontendService extends Object implements ServiceInterface
             
             # Данные для вывода строки поиска
             
-            $dataArray['searchConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? '';
+            $dataArray['searchConfig']['form'] = new SearchForm(['text'=>$request[\Yii::$app->params['searchKey']] ?? '', 'url'=>Url::current()]);
             $dataArray['searchConfig']['view'] = 'search.twig';
             
             # Данные для вывода меню категорий

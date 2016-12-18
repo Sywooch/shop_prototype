@@ -18,13 +18,17 @@ class SearchBreadcrumbsWidget extends BreadcrumbsWidget
      * @var string искомая фраза
      */
     public $text;
+    /**
+     * @var bool нужно ли экранировать label
+     */
+    public $encodeLabels = false;
     
     public function init()
     {
         try {
-            $text = !empty($this->text) ? ' ' . Html::tag('strong', Html::encode($this->text)) : '';
+            $text = !empty($this->text) ? Html::tag('strong', Html::encode($this->text)) : '';
             
-            \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Searching results') . $text];
+            \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Searching results {placeholder}', ['placeholder'=>$text])];
             
             parent::init();
         } catch (\Throwable $t) {

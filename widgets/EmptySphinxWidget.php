@@ -15,10 +15,6 @@ class EmptySphinxWidget extends Widget
     use ExceptionsTrait;
     
     /**
-     * @var string искомая фраза
-     */
-    public $text;
-    /**
      * @var string имя шаблона
      */
     public $view;
@@ -30,16 +26,13 @@ class EmptySphinxWidget extends Widget
     public function run()
     {
         try {
-            if (empty($this->text)) {
-                throw new ErrorException($this->emptyError('text'));
-            }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
             }
             
             $renderArray = [];
             
-            $renderArray['text'] = Html::tag('p', \Yii::t('base', 'Search for <strong>{placeholder}</strong> returned no results', ['placeholder'=>$this->text]));
+            $renderArray['text'] = Html::tag('p', \Yii::t('base', 'Search returned no results'));
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

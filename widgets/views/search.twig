@@ -1,8 +1,8 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<div class="search-form">
-    <p>{% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'GET', 'options':formOptions}) %}
-        <input type="text" name="{{ searchKey }}" value="{{ text }}" size="40">
-        <input type="submit" value="{{ button }}">
-    {{ active_form_end() }}</p>
-</div>
+<p class="search-form">
+    {% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'POST', 'options':formOptions}) %}
+        {{ form.field(formModel, 'text').textInput({'value':text, 'size':60, 'placeholder':placeholder}).label(false) | raw }}
+        {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    {{ active_form_end() }}
+</p>

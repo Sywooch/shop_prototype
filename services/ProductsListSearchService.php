@@ -47,6 +47,10 @@ class ProductsListSearchService extends CommonFrontendService
                 throw new ErrorException($this->emptyError('filtersModel'));
             }
             
+            # Данные для вывода breadcrumbs
+            
+            $dataArray['breadcrumbsConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? null;
+            
             # Данные Sphinxsearch
             
             $finder = new SphinxFinder([
@@ -83,10 +87,6 @@ class ProductsListSearchService extends CommonFrontendService
                 }
                 $dataArray['paginationConfig']['pagination'] = $productsCollection->pagination;
                 $dataArray['paginationConfig']['view'] = 'pagination.twig';
-                
-                # Данные для вывода breadcrumbs
-                
-                $dataArray['breadcrumbsConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? null;
                 
                 # Данные для вывода фильтров каталога
                 
@@ -155,7 +155,6 @@ class ProductsListSearchService extends CommonFrontendService
                 
                 $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             } else {
-                $dataArray['emptySphinxConfig']['text'] = $request[\Yii::$app->params['searchKey']];
                 $dataArray['emptySphinxConfig']['view'] = 'empty-sphinx.twig';
             }
                 

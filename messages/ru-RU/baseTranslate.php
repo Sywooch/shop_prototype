@@ -6,7 +6,7 @@ $translate = [
     'Home'=>'Главная',
     'Search'=>'Найти',
     'All catalog'=>'Весь каталог',
-    'Searching results'=>'Результаты поиска',
+    'Searching results {placeholder}'=>'Результаты поиска {placeholder}',
     'Hello, {placeholder}!'=>'Привет, {placeholder}!',
     'Guest'=>'Гость',
     'Authentication'=>'Аутентификация',
@@ -105,7 +105,7 @@ $translate = [
     'Your subscription to shop.com'=>'Ваши подписки на shop.com',
     'You successfully subscribed to mailings:'=>'Вы успешно подписались на рассылки:',
     'You are already subscribed to the mailing list:'=>'Вы уже подписаны на  эти рассылки:',
-    'Search for <strong>{placeholder}</strong> returned no results'=>'Поиск <strong>{placeholder}</strong> не дал результатов',
+    'Search returned no results'=>'Поиск не дал результатов',
     'Search by this parameters returned no results'=>'Поиск по этим параметрам не дал результатов',
     'Comments'=>'Комментарии'
 ];
