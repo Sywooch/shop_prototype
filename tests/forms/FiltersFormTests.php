@@ -36,7 +36,7 @@ class FiltersFormTests extends TestCase
         $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
         $form->attributes = [
             'sortingField'=>'name',
-            'sortingType'=>'SORT_ASC',
+            'sortingType'=>SORT_ASC,
             'colors'=>[1, 4],
             'sizes'=>[2, 3],
             'brands'=>[1],
@@ -47,7 +47,7 @@ class FiltersFormTests extends TestCase
         $this->assertSame('name', $reflection->getValue($form));
         
         $reflection = new \ReflectionProperty($form, 'sortingType');
-        $this->assertSame('SORT_ASC', $reflection->getValue($form));
+        $this->assertSame(SORT_ASC, $reflection->getValue($form));
         
         $reflection = new \ReflectionProperty($form, 'colors');
         $this->assertSame([1, 4], $reflection->getValue($form));

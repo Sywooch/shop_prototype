@@ -41,7 +41,7 @@ class FiltersSessionFinderTests extends TestCase
     {
         $session = \Yii::$app->session;
         $session->open();
-        $session->set('key_test', [['sortingField'=>'price', 'sortingType'=>'SORT_ASC', 'colors'=>[1, 3], 'sizes'=>[1, 2], 'brands'=>[1]]]);
+        $session->set('key_test', [['sortingField'=>'price', 'sortingType'=>SORT_ASC, 'colors'=>[1, 3], 'sizes'=>[1, 2], 'brands'=>[1]]]);
         
         $finder = new FiltersSessionFinder();
         

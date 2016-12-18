@@ -171,7 +171,7 @@ class FiltersWidgetTests extends TestCase
      */
     public function testSetSortingTypes()
     {
-        $collection = ['SORT_ASC'=>'asc'];
+        $collection = [SORT_ASC=>'asc'];
         
         $widget = new FiltersWidget();
         $widget->setSortingTypes($collection);

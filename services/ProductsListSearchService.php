@@ -11,7 +11,7 @@ use app\finders\{BrandsFilterFinder,
     CategorySeocodeFinder,
     ColorsFilterFinder,
     FiltersSessionFinder,
-    ProductsFinder,
+    ProductsSphinxFinder,
     SizesFilterFinder,
     SortingFieldsFinder,
     SortingTypesFinder,
@@ -55,11 +55,11 @@ class ProductsListSearchService extends CommonFrontendService
             $sphinxArray = $finder->find();
             
             if (!empty($sphinxArray)) {
+                
                 # Данные для вывода списка товаров
                 
-                $finder = new ProductsFinder([
-                    'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
-                    'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
+                $finder = new ProductsSphinxFinder([
+                    'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
                     'page'=>$request[\Yii::$app->params['pagePointer']] ?? 0,
                     'filters'=>$filtersModel
                 ]);

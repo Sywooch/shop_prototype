@@ -34,7 +34,7 @@ class ProductsFiltersTests extends TestCase
         $filter = new ProductsFilters(['scenario'=>ProductsFilters::SESSION]);
         $filter->attributes = [
             'sortingField'=>'price',
-            'sortingType'=>'SORT_ASC',
+            'sortingType'=>SORT_ASC,
             'colors'=>[12, 4],
             'sizes'=>[3, 7],
             'brands'=>[2],
@@ -48,7 +48,7 @@ class ProductsFiltersTests extends TestCase
         $reflection = new \ReflectionProperty($filter, 'sortingType');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($filter);
-        $this->assertSame('SORT_ASC', $result);
+        $this->assertSame(SORT_ASC, (int) $result);
         
         $reflection = new \ReflectionProperty($filter, 'colors');
         $reflection->setAccessible(true);
@@ -103,13 +103,13 @@ class ProductsFiltersTests extends TestCase
     public function testSetSortingType()
     {
         $filter = new ProductsFilters();
-        $filter->setSortingType('SORT_ASC');
+        $filter->setSortingType(SORT_ASC);
         
         $reflection = new \ReflectionProperty($filter, 'sortingType');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($filter);
         
-        $this->assertSame('SORT_ASC', $result);
+        $this->assertSame(SORT_ASC, (int) $result);
     }
     
     /**

@@ -319,7 +319,7 @@ class ProductsFinderTests extends TestCase
     {
         $filters = new class() extends ProductsFilters {
             public $sortingField = 'price';
-            public $sortingType = 'SORT_ASC';
+            public $sortingType = SORT_ASC;
         };
         
         $finder = new ProductsFinder();
