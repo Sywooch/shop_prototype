@@ -18,7 +18,7 @@ class SearchForm extends AbstractBaseForm
     /**
      * @var string искомая фраза
      */
-    public $text;
+    public $search;
     /**
      * @var string URL, с которого был запрошен поиск
      */
@@ -27,14 +27,14 @@ class SearchForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::GET=>['text', 'url'],
+            self::GET=>['search', 'url'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['text', 'url'], 'required', 'on'=>self::GET],
+            [['search', 'url'], 'required', 'on'=>self::GET],
         ];
     }
 }

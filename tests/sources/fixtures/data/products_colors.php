@@ -29,6 +29,22 @@ $data = [
         'id_product'=>28,
         'id_color'=>1
     ],
+    'product_color_8'=>[
+        'id_product'=>13,
+        'id_color'=>2
+    ],
+    'product_color_9'=>[
+        'id_product'=>14,
+        'id_color'=>1
+    ],
+    'product_color_10'=>[
+        'id_product'=>15,
+        'id_color'=>2
+    ],
+    'product_color_11'=>[
+        'id_product'=>16,
+        'id_color'=>1
+    ],
 ];
 
 return $data;

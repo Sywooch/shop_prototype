@@ -33,6 +33,10 @@ class ProductsListSearchService extends CommonFrontendService
     public function handle($request): array
     {
         try {
+            if (empty($request[\Yii::$app->params['searchKey']])) {
+                throw new ErrorException($this->emptyError('searchKey'));
+            }
+            
             # Общие для всех frontend сервисов данные
             
             $dataArray = parent::handle($request);

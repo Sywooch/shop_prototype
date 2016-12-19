@@ -19,7 +19,7 @@ class SearchFormTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('GET'));
         
-        $this->assertTrue($reflection->hasProperty('text'));
+        $this->assertTrue($reflection->hasProperty('search'));
         $this->assertTrue($reflection->hasProperty('url'));
     }
     
@@ -30,11 +30,11 @@ class SearchFormTests extends TestCase
     {
         $form = new SearchForm(['scenario'=>SearchForm::GET]);
         $form->attributes = [
-            'text'=>'Some text',
+            'search'=>'Some text',
             'url'=>'http:://shop.com'
         ];
         
-        $reflection = new \ReflectionProperty($form, 'text');
+        $reflection = new \ReflectionProperty($form, 'search');
         $result = $reflection->getValue($form);
         $this->assertSame('Some text', $result);
         
@@ -53,12 +53,12 @@ class SearchFormTests extends TestCase
         
         $this->assertNotEmpty($form->errors);
         $this->assertCount(2, $form->errors);
-        $this->assertArrayHasKey('text', $form->errors);
+        $this->assertArrayHasKey('search', $form->errors);
         $this->assertArrayHasKey('url', $form->errors);
         
         $form = new SearchForm(['scenario'=>SearchForm::GET]);
         $form->attributes = [
-            'text'=>'Some text',
+            'search'=>'Some text',
             'url'=>'http:://shop.com'
         ];
         $form->validate();

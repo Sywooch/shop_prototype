@@ -4,7 +4,7 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\SearchWidget;
-use app\forms\SearchForm;
+use app\controllers\ProductsListController;
 
 /**
  * Тестирует класс SearchWidget
@@ -18,38 +18,8 @@ class SearchWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(SearchWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('form'));
+        $this->assertTrue($reflection->hasProperty('text'));
         $this->assertTrue($reflection->hasProperty('view'));
-    }
-    
-    /**
-     * Тестирует метод SearchWidget::setForm
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetFormError()
-    {
-        $form = new class() {};
-        
-        $widget = new SearchWidget();
-        $widget->setForm($form);
-    }
-    
-    /**
-     * Тестирует метод SearchWidget::setForm
-     */
-    public function testSetForm()
-    {
-        $form = new class() extends SearchForm {};
-        
-        $widget = new SearchWidget();
-        $widget->setForm($form);
-        
-        $reflection = new \ReflectionProperty($widget, 'form');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
-        
-        $this->assertInstanceOf(SearchForm::class, $result);
     }
     
     /**
@@ -58,18 +28,20 @@ class SearchWidgetTests extends TestCase
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: view
      */
-    /*public function testRunEmptyView()
+    public function testRunEmptyView()
     {
         $widget = new SearchWidget();
         $widget->run();
-    }*/
+    }
     
     /**
      * Тестирует метод SearchWidget::run
-     * при отсутствии SearchWidget::text
+     * если поиск пуст
      */
-    /*public function testRunWithoutText()
+    public function testRunEmptySearchText()
     {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
         $widget = new SearchWidget();
         
         $reflection = new \ReflectionProperty($widget, 'view');
@@ -77,30 +49,29 @@ class SearchWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('/<div class="search-form">/', $result);
-        $this->assertRegExp('/<form id="search-form" name="search-form"/', $result);
-        $this->assertRegExp('/value=""/', $result);
-        $this->assertRegExp('/<input type="submit" value="'. \Yii::t('base', 'Search') . '">/', $result);
-    }*/
+        $this->assertRegExp('#<form id="search-form" name="search-form"#', $result);
+        $this->assertRegExp('#<input type="text" name="search" value="" size=60 placeholder="Найти">#', $result);
+    }
     
     /**
      * Тестирует метод SearchWidget::run
      */
-    /*public function testRunWithText()
+    public function testRun()
     {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
         $widget = new SearchWidget();
         
         $reflection = new \ReflectionProperty($widget, 'text');
-        $reflection->setValue($widget, 'Silver moon');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Some text');
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setValue($widget, 'search.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('/<div class="search-form">/', $result);
-        $this->assertRegExp('/<form id="search-form" name="search-form"/', $result);
-        $this->assertRegExp('/value="Silver moon"/', $result);
-        $this->assertRegExp('/<input type="submit" value="'. \Yii::t('base', 'Search') . '">/', $result);
-    }*/
+        $this->assertRegExp('#<form id="search-form" name="search-form"#', $result);
+        $this->assertRegExp('#<input type="text" name="search" value="Some text" size=60 placeholder="Найти">#', $result);
+    }
 }
