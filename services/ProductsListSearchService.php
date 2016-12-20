@@ -44,7 +44,7 @@ class ProductsListSearchService extends CommonFrontendService
             # Товарные фильтры
             
             $finder = new FiltersSessionFinder([
-                'key'=>HashHelper::createFiltersKey()
+                'key'=>HashHelper::createFiltersKey(Url::current())
             ]);
             $filtersModel = $finder->find();
             if (empty($filtersModel)) {

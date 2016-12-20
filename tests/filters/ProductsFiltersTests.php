@@ -220,4 +220,46 @@ class ProductsFiltersTests extends TestCase
         
         $this->assertSame(3, $result);
     }
+    
+    /**
+     * Тестирует метод ProductsFilters::fields
+     */
+    public function testFields()
+    {
+        $filter = new ProductsFilters();
+        
+        $reflection = new \ReflectionProperty($filter, 'sortingField');
+        $reflection->setAccessible(true);
+        $reflection->setValue($filter, 'price');
+        
+        $reflection = new \ReflectionProperty($filter, 'sortingType');
+        $reflection->setAccessible(true);
+        $reflection->setValue($filter, SORT_ASC);
+        
+        $reflection = new \ReflectionProperty($filter, 'colors');
+        $reflection->setAccessible(true);
+        $reflection->setValue($filter, [2, 14, 4]);
+        
+        $reflection = new \ReflectionProperty($filter, 'sizes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($filter, [1, 3]);
+        
+        $reflection = new \ReflectionProperty($filter, 'brands');
+        $reflection->setAccessible(true);
+        $reflection->setValue($filter, [12]);
+        
+        $result = $filter->toArray();
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('sortingField', $result);
+        $this->assertArrayHasKey('sortingType', $result);
+        $this->assertArrayHasKey('colors', $result);
+        $this->assertArrayHasKey('sizes', $result);
+        $this->assertArrayHasKey('brands', $result);
+        $this->assertSame('price', $result['sortingField']);
+        $this->assertSame(SORT_ASC, $result['sortingType']);
+        $this->assertSame([2, 14, 4], $result['colors']);
+        $this->assertSame([1, 3], $result['sizes']);
+        $this->assertSame([12], $result['brands']);
+    }
 }

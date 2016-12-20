@@ -2,12 +2,10 @@
 
 namespace app\services;
 
-use yii\base\{ErrorException,
-    Object};
+use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
-use app\services\ServiceInterface;
-use app\exceptions\ExceptionsTrait;
+use app\services\AbstractBaseService;
 use app\finders\{CategoriesFinder,
     CurrencySessionFinder,
     CurrencyFinder,
@@ -21,10 +19,8 @@ use app\savers\SessionSaver;
 /**
  * Формирует массив данных для рендеринга страниц пользовательского интерфейса
  */
-class CommonFrontendService extends Object implements ServiceInterface
+class CommonFrontendService extends AbstractBaseService
 {
-    use ExceptionsTrait;
-    
     /**
      * Обрабатывает запрос на поиск данных для формирования HTML страницы
      * @param array $request

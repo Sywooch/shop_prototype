@@ -37,10 +37,10 @@ class HashHelper
      * Конструирует ключ для сохранения товарных фильтров
      * @return string
      */
-    public static function createFiltersKey(): string
+    public static function createFiltersKey(string $url): string
     {
         try {
-            return self::createHash([StringHelper::cutPage(Url::current()), \Yii::$app->user->id ?? '']);
+            return self::createHash([StringHelper::cutPage($url), \Yii::$app->user->id ?? '']);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

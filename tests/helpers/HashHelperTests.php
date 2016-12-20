@@ -5,6 +5,7 @@ namespace app\tests;
 use PHPUnit\Framework\TestCase;
 use app\helpers\HashHelper;
 use app\controllers\ProductsListController;
+use yii\helpers\Url;
 
 /**
  * Тестирует класс HashHelper
@@ -32,11 +33,11 @@ class HashHelperTests extends TestCase
     {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $hash = HashHelper::createFiltersKey();
+        $hash = HashHelper::createFiltersKey(Url::current());
         
         $this->assertEquals(40, strlen($hash));
         
-        $expectedHash = HashHelper::createFiltersKey();
+        $expectedHash = HashHelper::createFiltersKey(Url::current());
         
         $this->assertEquals($expectedHash, $hash);
     }

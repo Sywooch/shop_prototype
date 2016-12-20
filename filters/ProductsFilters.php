@@ -176,4 +176,33 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив данных при вызове ProductsFilters::toArray
+     * @return array
+     */
+    public function fields()
+    {
+        try {
+            return [
+                'sortingField'=>function() {
+                    return $this->sortingField;
+                },
+                'sortingType'=>function() {
+                    return $this->sortingType;
+                },
+                'colors'=>function() {
+                    return $this->colors;
+                },
+                'sizes'=>function() {
+                    return $this->sizes;
+                },
+                'brands'=>function() {
+                    return $this->brands;
+                },
+            ];
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

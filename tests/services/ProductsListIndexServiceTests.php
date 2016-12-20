@@ -20,6 +20,7 @@ use app\collections\{LightPagination,
 use app\models\CurrencyModel;
 use app\forms\FiltersForm;
 use app\helpers\HashHelper;
+use yii\helpers\Url;
 
 /**
  * Тестирует класс ProductsListIndexService
@@ -232,7 +233,7 @@ class ProductsListIndexServiceTests extends TestCase
         
         $session = \Yii::$app->session;
         $session->open();
-        $session->set(HashHelper::createFiltersKey(), [
+        $session->set(HashHelper::createFiltersKey(Url::current()), [
             'colors'=>[1, 2, 3, 4, 5],
             'sizes'=>[1, 2, 3, 4, 5],
             'brands'=>[1, 2, 3, 4, 5],
@@ -278,7 +279,7 @@ class ProductsListIndexServiceTests extends TestCase
         $this->assertInstanceOf(FiltersForm::class, $result['filtersConfig']['form']);
         $this->assertInternalType('string', $result['filtersConfig']['view']);
         
-        $session->remove(HashHelper::createFiltersKey());
+        $session->remove(HashHelper::createFiltersKey(Url::current()));
         $session->close();
     }
     
@@ -294,7 +295,7 @@ class ProductsListIndexServiceTests extends TestCase
         
         $session = \Yii::$app->session;
         $session->open();
-        $session->set(HashHelper::createFiltersKey(), [
+        $session->set(HashHelper::createFiltersKey(Url::current()), [
             'colors'=>[12],
             'sizes'=>[12],
             'brands'=>[12],
@@ -335,7 +336,7 @@ class ProductsListIndexServiceTests extends TestCase
         $this->assertInstanceOf(FiltersForm::class, $result['filtersConfig']['form']);
         $this->assertInternalType('string', $result['filtersConfig']['view']);
         
-        $session->remove(HashHelper::createFiltersKey());
+        $session->remove(HashHelper::createFiltersKey(Url::current()));
         $session->close();
     }
     
