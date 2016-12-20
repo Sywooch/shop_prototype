@@ -7,22 +7,22 @@ use app\services\AbstractBaseService;
 use app\forms\FiltersForm;
 use app\helpers\{HashHelper,
     StringHelper};
-use app\savers\SessionSaver;
+use app\cleaners\SessionCleaner;
 
 /**
- * Сохраняет фильтры каталога товаров
+ * Очищает фильтры каталога товаров
  */
-class FiltersSetService extends AbstractBaseService
+class FiltersCleanService extends AbstractBaseService
 {
     /**
-     * Обрабатывает запрос на сохранение товарных фильтров
+     * Обрабатывает запрос на обнуление товарных фильтров
      * @param array $request
      * @return string URL
      */
     public function handle($request): string
     {
         try {
-            $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
+            $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
             
             if ($form->load($request) === false) {
                 throw new ErrorException($this->emptyError('request'));
@@ -35,11 +35,10 @@ class FiltersSetService extends AbstractBaseService
             $key = HashHelper::createFiltersKey($form->url);
             
             if (!empty($key)) {
-                $saver = new SessionSaver([
-                    'key'=>$key,
-                    'models'=>[$form]
+                $cleaner = new SessionCleaner([
+                    'keys'=>[$key],
                 ]);
-                $saver->save();
+                $cleaner->clean();
             }
             
             return StringHelper::cutPage($form->url);

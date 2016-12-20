@@ -34,14 +34,27 @@ class FiltersSetServiceTests extends TestCase
         ];
         
         $filter = new FiltersSetService();
-        $filter->handle($request);
+        $result = $filter->handle($request);
+        
+        $this->assertSame($url, $result);
         
         $key = HashHelper::createFiltersKey($url);
         $session = \Yii::$app->session;
         $session->open();
         $result = $session->get($key);
         
-        print_r($result);
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('sortingField', $result);
+        $this->assertArrayHasKey('sortingType', $result);
+        $this->assertArrayHasKey('colors', $result);
+        $this->assertArrayHasKey('sizes', $result);
+        $this->assertArrayHasKey('brands', $result);
+        $this->assertSame('price', $result['sortingField']);
+        $this->assertSame(SORT_ASC, $result['sortingType']);
+        $this->assertSame([12, 4], $result['colors']);
+        $this->assertSame([3, 7], $result['sizes']);
+        $this->assertSame([2], $result['brands']);
         
         $session->remove($key);
         $session->close();

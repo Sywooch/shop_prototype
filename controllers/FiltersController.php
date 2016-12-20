@@ -19,10 +19,10 @@ class FiltersController extends AbstractBaseController
                 'class'=>PostRedirectAction::class,
                 'service'=>new FiltersSetService()
             ],
-            /*'unset'=>[
+            'unset'=>[
                 'class'=>PostRedirectAction::class,
                 'service'=>new FiltersCleanService()
-            ],*/
+            ],
         ];
     }
 }
