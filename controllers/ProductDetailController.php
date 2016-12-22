@@ -2,14 +2,14 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
+use yii\web\Controller;
 use app\actions\SearchAction;
 use app\services\ProductDetailIndexService;
 
 /**
  * Обрабатывает запросы на получение информации о конкретном товаре
  */
-class ProductDetailController extends AbstractBaseController
+class ProductDetailController extends Controller
 {
     public function actions()
     {

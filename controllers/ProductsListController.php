@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
+use yii\web\Controller;
 use app\actions\SearchAction;
 use app\services\{ProductsListIndexService,
     ProductsListSearchService};
@@ -10,7 +10,7 @@ use app\services\{ProductsListIndexService,
 /**
  * Обрабатывает запросы на получение списка продуктов
  */
-class ProductsListController extends AbstractBaseController
+class ProductsListController extends Controller
 {
     public function actions()
     {

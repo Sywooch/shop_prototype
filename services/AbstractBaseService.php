@@ -4,7 +4,7 @@ namespace app\services;
 
 use yii\base\Object;
 use app\exceptions\ExceptionsTrait;
-use app\savers\SessionSaver;
+use app\services\ServiceInterface;
 
 /**
  * Базовый класс для services

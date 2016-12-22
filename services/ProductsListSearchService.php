@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
-use app\services\CommonFrontendService;
+use app\services\AbstarctFrontendService;
 use app\finders\{BrandsFilterSphinxFinder,
     CategorySeocodeFinder,
     ColorsFilterSphinxFinder,
@@ -23,7 +23,7 @@ use app\forms\FiltersForm;
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
  */
-class ProductsListSearchService extends CommonFrontendService
+class ProductsListSearchService extends AbstarctFrontendService
 {
     /**
      * Обрабатывает запрос на поиск данных для 
@@ -39,7 +39,13 @@ class ProductsListSearchService extends CommonFrontendService
             
             # Общие для всех frontend сервисов данные
             
-            $dataArray = parent::handle($request);
+            $dataArray = [];
+            
+            $dataArray['userConfig'] = $this->user();
+            $dataArray['cartConfig'] = $this->cart();
+            $dataArray['currencyConfig'] = $this->currency();
+            $dataArray['searchConfig'] = $this->search();
+            $dataArray['menuConfig'] = $this->categories();
             
             # Товарные фильтры
             
@@ -80,7 +86,7 @@ class ProductsListSearchService extends CommonFrontendService
                     $dataArray['emptyConfig']['view'] = 'empty-products.twig';
                 } else {
                     $dataArray['productsConfig']['products'] = $productsCollection;
-                    $dataArray['productsConfig']['currency'] = $dataArray['currencyModel'];
+                    $dataArray['productsConfig']['currency'] = $this->currentCurrency();
                     $dataArray['productsConfig']['view'] = 'products-list.twig';
                 }
                 

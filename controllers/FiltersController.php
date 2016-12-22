@@ -2,7 +2,7 @@
 
 namespace app\controllers;
 
-use app\controllers\AbstractBaseController;
+use yii\web\Controller;
 use app\actions\PostRedirectAction;
 use app\services\{FiltersCleanService,
     FiltersSetService};
@@ -10,7 +10,7 @@ use app\services\{FiltersCleanService,
 /**
  * Обрабатывает запросы, связанные с применением фильтров
  */
-class FiltersController extends AbstractBaseController
+class FiltersController extends Controller
 {
     public function actions()
     {

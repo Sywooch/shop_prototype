@@ -5,7 +5,7 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
-use app\services\CommonFrontendService;
+use app\services\AbstarctFrontendService;
 use app\finders\{CommentsProductFinder,
     ProductDetailFinder,
     SimilarFinder,
@@ -16,7 +16,7 @@ use app\forms\{CommentForm,
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
  */
-class ProductDetailIndexService extends CommonFrontendService
+class ProductDetailIndexService extends AbstarctFrontendService
 {
     /**
      * Обрабатывает запрос на поиск данных для 
@@ -28,7 +28,13 @@ class ProductDetailIndexService extends CommonFrontendService
         try {
             # Общие для всех frontend сервисов данные
             
-            $dataArray = parent::handle($request);
+            $dataArray = [];
+            
+            $dataArray['userConfig'] = $this->user();
+            $dataArray['cartConfig'] = $this->cart();
+            $dataArray['currencyConfig'] = $this->currency();
+            $dataArray['searchConfig'] = $this->search();
+            $dataArray['menuConfig'] = $this->categories();
             
             # Данные товара
             
@@ -41,7 +47,7 @@ class ProductDetailIndexService extends CommonFrontendService
             }
             $dataArray['productConfig']['product'] = $productModel;
             
-            $dataArray['productConfig']['currency'] = $dataArray['currencyModel'];
+            $dataArray['productConfig']['currency'] = $this->currentCurrency();
             $dataArray['productConfig']['view'] = 'product-detail.twig';
             
             # Данные для вывода breadcrumbs
@@ -61,7 +67,7 @@ class ProductDetailIndexService extends CommonFrontendService
             ]);
             $similarArray = $finder->find();
             $dataArray['similarConfig']['products'] = $similarArray;
-            $dataArray['similarConfig']['currency'] = $dataArray['currencyModel'];
+            $dataArray['similarConfig']['currency'] = $this->currentCurrency();
             $dataArray['similarConfig']['header'] = \Yii::t('base', 'Similar products');
             $dataArray['similarConfig']['view'] = 'see-also.twig';
             
@@ -72,7 +78,7 @@ class ProductDetailIndexService extends CommonFrontendService
             ]);
             $relatedArray = $finder->find();
             $dataArray['relatedConfig']['products'] = $relatedArray;
-            $dataArray['relatedConfig']['currency'] = $dataArray['currencyModel'];
+            $dataArray['relatedConfig']['currency'] = $this->currentCurrency();
             $dataArray['relatedConfig']['header'] = \Yii::t('base', 'Related products');
             $dataArray['relatedConfig']['view'] = 'see-also.twig';
             
