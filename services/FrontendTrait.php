@@ -5,7 +5,6 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
-use app\services\AbstractBaseService;
 use app\finders\{CategoriesFinder,
     CurrencySessionFinder,
     CurrencyFinder,
@@ -48,9 +47,11 @@ trait FrontendTrait
     
     /**
      * Возвращает данные текущей валюты
+     * Первый запрос отправляет в сессию, 
+     * если данных нет, в СУБД и сохраняет полученные данные в сессию
      * @return CurrencyModel
      */
-    protected function currentCurrency(): CurrencyModel
+    private function getCurrencyModel(): CurrencyModel
     {
         try {
             if (empty($this->currencyModel)) {
@@ -67,6 +68,7 @@ trait FrontendTrait
                     if (empty($currencyModel)) {
                         throw new ErrorException($this->emptyError('currencyModel'));
                     }
+                    
                     $saver = new SessionSaver([
                         'key'=>$key,
                         'models'=>[$currencyModel]
@@ -87,7 +89,7 @@ trait FrontendTrait
      * Возвращает данные для вывода информации о текущем пользователе
      * @return array
      */
-    protected function user(): array
+    private function getUserArray(): array
     {
         try {
             if (empty($this->userArray)) {
@@ -109,7 +111,7 @@ trait FrontendTrait
      * Возвращает данные для вывода информации о состоянии корзины
      * @return array
      */
-    protected function cart(): array
+    private function getCartArray(): array
     {
         try {
             if (empty($this->cartArray)) {
@@ -121,7 +123,7 @@ trait FrontendTrait
                 $purchasesCollection = $finder->find();
                 
                 $dataArray['purchases'] = $purchasesCollection;
-                $dataArray['currency'] = $this->currentCurrency();
+                $dataArray['currency'] = $this->getCurrencyModel();
                 $dataArray['view'] = 'short-cart.twig';
                 
                 $this->cartArray = $dataArray;
@@ -137,7 +139,7 @@ trait FrontendTrait
      * Возвращает данные для вывода списка доступных валют
      * @return array
      */
-    protected function currency(): array
+    private function getCurrencyArray(): array
     {
         try {
             if (empty($this->currencyArray)) {
@@ -151,7 +153,7 @@ trait FrontendTrait
                 
                 ArrayHelper::multisort($currencyArray, 'code');
                 $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
-                $dataArray['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$this->currentCurrency()->id]);
+                $dataArray['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$this->getCurrencyModel()->id]);
                 $dataArray['view'] = 'currency-form.twig';
                 
                 $this->currencyArray = $dataArray;
@@ -167,7 +169,7 @@ trait FrontendTrait
      * Возвращает данные для вывода строки поиска
      * @return array
      */
-    protected function search(): array
+    private function getSearchArray(): array
     {
         try {
             if (empty($this->searchArray)) {
@@ -189,7 +191,7 @@ trait FrontendTrait
      * Возвращает данные для вывода меню категорий
      * @return array
      */
-    protected function categories(): array
+    private function getCategoriesArray(): array
     {
         try {
             if (empty($this->categoriesArray)) {

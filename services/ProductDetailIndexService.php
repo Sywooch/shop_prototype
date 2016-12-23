@@ -13,6 +13,7 @@ use app\finders\{CommentsProductFinder,
     RelatedFinder};
 use app\forms\{CommentForm,
     PurchaseForm};
+use app\models\ProductsModel;
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -22,6 +23,35 @@ class ProductDetailIndexService extends AbstractBaseService
     use FrontendTrait;
     
     /**
+     * @var ProductsModel текущий товар
+     */
+    private $productsModel = null;
+    /**
+     * @var array данные товара
+     */
+    private $productArray = [];
+    /**
+     * @var array данные формы заказа
+     */
+    private $purchaseFormArray = [];
+    /**
+     * @var array данные breadcrumbs
+     */
+    private $breadcrumbsArray = [];
+    /**
+     * @var array данные похожих товаров
+     */
+    private $similarArray = [];
+    /**
+     * @var array данные связанных товаров
+     */
+    private $relatedArray = [];
+    /**
+     * @var array данные комментариев
+     */
+    private $commentsArray = [];
+    
+    /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
      * @param array $request
@@ -29,76 +59,213 @@ class ProductDetailIndexService extends AbstractBaseService
     public function handle($request): array
     {
         try {
-            # Общие для всех frontend сервисов данные
-            
             $dataArray = [];
             
-            $dataArray['userConfig'] = $this->user();
-            $dataArray['cartConfig'] = $this->cart();
-            $dataArray['currencyConfig'] = $this->currency();
-            $dataArray['searchConfig'] = $this->search();
-            $dataArray['menuConfig'] = $this->categories();
-            
-            # Данные товара
-            
-            $finder = new ProductDetailFinder([
-                'seocode'=>$request[\Yii::$app->params['productKey']]
-            ]);
-            $productModel = $finder->find();
-            if (empty($productModel)) {
-                throw new NotFoundHttpException($this->error404());
-            }
-            $dataArray['productConfig']['product'] = $productModel;
-            
-            $dataArray['productConfig']['currency'] = $this->currentCurrency();
-            $dataArray['productConfig']['view'] = 'product-detail.twig';
-            
-            # Данные для вывода breadcrumbs
-            
-            $dataArray['breadcrumbsConfig']['product'] = $productModel;
-            
-            # Данные для вывода формы заказа
-            
-            $dataArray['toCartConfig']['product'] = $productModel;
-            $dataArray['toCartConfig']['form'] = new PurchaseForm(['quantity'=>1]);
-            $dataArray['toCartConfig']['view'] = 'add-to-cart-form.twig';
-            
-            # Похожие товары
-            
-            $finder = new SimilarFinder([
-                'product'=>$productModel
-            ]);
-            $similarArray = $finder->find();
-            $dataArray['similarConfig']['products'] = $similarArray;
-            $dataArray['similarConfig']['currency'] = $this->currentCurrency();
-            $dataArray['similarConfig']['header'] = \Yii::t('base', 'Similar products');
-            $dataArray['similarConfig']['view'] = 'see-also.twig';
-            
-            # Связанные товары
-            
-            $finder = new RelatedFinder([
-                'product'=>$productModel
-            ]);
-            $relatedArray = $finder->find();
-            $dataArray['relatedConfig']['products'] = $relatedArray;
-            $dataArray['relatedConfig']['currency'] = $this->currentCurrency();
-            $dataArray['relatedConfig']['header'] = \Yii::t('base', 'Related products');
-            $dataArray['relatedConfig']['view'] = 'see-also.twig';
-            
-            # Комментарии
-            
-            $finder = new CommentsProductFinder([
-                'product'=>$productModel
-            ]);
-            $commentsArray = $finder->find();
-            ArrayHelper::multisort($commentsArray, 'date', SORT_DESC);
-            $dataArray['commentsConfig']['comments'] = $commentsArray;
-            $dataArray['commentsConfig']['form'] = new CommentForm(['id_product'=>$productModel->id]);
-            $dataArray['commentsConfig']['view'] = 'comments.twig';
+            $dataArray['userConfig'] = $this->getUserArray();
+            $dataArray['cartConfig'] = $this->getCartArray();
+            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $dataArray['searchConfig'] = $this->getSearchArray();
+            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            $dataArray['productConfig'] = $this->getProductArray($request);
+            $dataArray['toCartConfig'] = $this->getPurchaseFormArray($request);
+            $dataArray['breadcrumbsConfig'] = $this->getBreadcrumbsArray($request);
+            $dataArray['similarConfig'] = $this->getSimilarArray($request);
+            $dataArray['relatedConfig'] = $this->getRelatedArray($request);
+            $dataArray['commentsConfig'] = $this->getCommentsArray($request);
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные выбранного товара
+     * @param array $request массив данных запроса
+     * @return ProductsModel
+     */
+    private function getProductsModel(array $request): ProductsModel
+    {
+        try {
+            if (empty($this->productsModel)) {
+                $finder = new ProductDetailFinder([
+                    'seocode'=>$request[\Yii::$app->params['productKey']]
+                ]);
+                $productsModel = $finder->find();
+                if (empty($productsModel)) {
+                    throw new NotFoundHttpException($this->error404());
+                }
+                
+                $this->productsModel = $productsModel;
+            }
+            
+            return $this->productsModel;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные для вывода информации о товаре
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getProductArray(array $request): array
+    {
+        try {
+            if (empty($this->productArray)) {
+                $dataArray = [];
+                
+                $dataArray['product'] = $this->getProductsModel($request);
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['view'] = 'product-detail.twig';
+                
+                $this->productArray = $dataArray;
+            }
+            
+            return $this->productArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные для вывода формы заказа
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getPurchaseFormArray(array $request): array
+    {
+        try {
+            if (empty($this->purchaseFormArray)) {
+                $dataArray = [];
+                
+                $dataArray['product'] = $this->getProductsModel($request);
+                $dataArray['form'] = new PurchaseForm(['quantity'=>1]);
+                $dataArray['view'] = 'add-to-cart-form.twig';
+                
+                $this->purchaseFormArray = $dataArray;
+            }
+            
+            return $this->purchaseFormArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные для вывода breadcrumbs
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getBreadcrumbsArray(array $request): array
+    {
+        try {
+            if (empty($this->breadcrumbsArray)) {
+                $dataArray = [];
+                
+                $dataArray['product'] = $this->getProductsModel($request);
+                
+                $this->breadcrumbsArray = $dataArray;
+            }
+            
+            return $this->breadcrumbsArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные для вывода похожих товаров
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getSimilarArray(array $request): array
+    {
+        try {
+            if (empty($this->similarArray)) {
+                $dataArray = [];
+                
+                $finder = new SimilarFinder([
+                    'product'=>$this->getProductsModel($request)
+                ]);
+                $similarArray = $finder->find();
+                
+                $dataArray['products'] = $similarArray;
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['header'] = \Yii::t('base', 'Similar products');
+                $dataArray['view'] = 'see-also.twig';
+                
+                $this->similarArray = $dataArray;
+            }
+            
+            return $this->similarArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные для вывода связанных товаров
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getRelatedArray(array $request): array
+    {
+        try {
+            if (empty($this->relatedArray)) {
+                $dataArray = [];
+                
+                $finder = new RelatedFinder([
+                    'product'=>$this->getProductsModel($request)
+                ]);
+                $relatedArray = $finder->find();
+                
+                $dataArray['products'] = $relatedArray;
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['header'] = \Yii::t('base', 'Related products');
+                $dataArray['view'] = 'see-also.twig';
+                
+                $this->relatedArray = $dataArray;
+            }
+            
+            return $this->relatedArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные для вывода комментариев
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getCommentsArray(array $request): array
+    {
+        try {
+            if (empty($this->commentsArray)) {
+                $dataArray = [];
+                
+                $productsModel = $this->getProductsModel($request);
+                
+                $finder = new CommentsProductFinder([
+                    'product'=>$productsModel
+                ]);
+                $commentsArray = $finder->find();
+                
+                ArrayHelper::multisort($commentsArray, 'date', SORT_DESC);
+                $dataArray['comments'] = $commentsArray;
+                $dataArray['form'] = new CommentForm(['id_product'=>$productsModel->id]);
+                $dataArray['view'] = 'comments.twig';
+                
+                $this->commentsArray = $dataArray;
+            }
+            
+            return $this->commentsArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
