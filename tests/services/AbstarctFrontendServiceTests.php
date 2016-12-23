@@ -16,5 +16,7 @@ class AbstarctFrontendServiceTests extends TestCase
     public function testProperties()
     {
         $reflection = new \ReflectionClass(AbstarctFrontendService::class);
+        
+        $this->assertTrue($reflection->hasProperty('xxx'));
     }
 }

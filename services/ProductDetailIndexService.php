@@ -5,7 +5,8 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
-use app\services\AbstarctFrontendService;
+use app\services\{AbstractBaseService,
+    FrontendTrait};
 use app\finders\{CommentsProductFinder,
     ProductDetailFinder,
     SimilarFinder,
@@ -16,8 +17,10 @@ use app\forms\{CommentForm,
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
  */
-class ProductDetailIndexService extends AbstarctFrontendService
+class ProductDetailIndexService extends AbstractBaseService
 {
+    use FrontendTrait;
+    
     /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
