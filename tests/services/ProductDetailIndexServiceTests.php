@@ -121,12 +121,13 @@ class ProductDetailIndexServiceTests extends TestCase
         $result = $reflection->invoke($service, $request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('product', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(ProductsModel::class, $result['product']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertArrayHasKey('productConfig', $result);
+        $this->assertArrayHasKey('product', $result['productConfig']);
+        $this->assertArrayHasKey('currency', $result['productConfig']);
+        $this->assertArrayHasKey('view', $result['productConfig']);
+        $this->assertInstanceOf(ProductsModel::class, $result['productConfig']['product']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['productConfig']['currency']);
+        $this->assertInternalType('string', $result['productConfig']['view']);
     }
     
     /**
@@ -157,12 +158,13 @@ class ProductDetailIndexServiceTests extends TestCase
         $result = $reflection->invoke($service, $request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('product', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(ProductsModel::class, $result['product']);
-        $this->assertInstanceOf(PurchaseForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertArrayHasKey('toCartConfig', $result);
+        $this->assertArrayHasKey('product', $result['toCartConfig']);
+        $this->assertArrayHasKey('form', $result['toCartConfig']);
+        $this->assertArrayHasKey('view', $result['toCartConfig']);
+        $this->assertInstanceOf(ProductsModel::class, $result['toCartConfig']['product']);
+        $this->assertInstanceOf(PurchaseForm::class, $result['toCartConfig']['form']);
+        $this->assertInternalType('string', $result['toCartConfig']['view']);
     }
     
     /**
@@ -193,8 +195,9 @@ class ProductDetailIndexServiceTests extends TestCase
         $result = $reflection->invoke($service, $request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('product', $result);
-        $this->assertInstanceOf(ProductsModel::class, $result['product']);
+        $this->assertArrayHasKey('breadcrumbsConfig', $result);
+        $this->assertArrayHasKey('product', $result['breadcrumbsConfig']);
+        $this->assertInstanceOf(ProductsModel::class, $result['breadcrumbsConfig']['product']);
     }
     
     /**
@@ -225,17 +228,18 @@ class ProductDetailIndexServiceTests extends TestCase
         $result = $reflection->invoke($service, $request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('products', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('array', $result['products']);
-        foreach ($result['products'] as $item) {
+        $this->assertArrayHasKey('similarConfig', $result);
+        $this->assertArrayHasKey('products', $result['similarConfig']);
+        $this->assertArrayHasKey('currency', $result['similarConfig']);
+        $this->assertArrayHasKey('header', $result['similarConfig']);
+        $this->assertArrayHasKey('view', $result['similarConfig']);
+        $this->assertInternalType('array', $result['similarConfig']['products']);
+        foreach ($result['similarConfig']['products'] as $item) {
             $this->assertInstanceOf(ProductsModel::class, $item);
         }
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['similarConfig']['currency']);
+        $this->assertInternalType('string', $result['similarConfig']['header']);
+        $this->assertInternalType('string', $result['similarConfig']['view']);
     }
     
     /**
@@ -266,17 +270,18 @@ class ProductDetailIndexServiceTests extends TestCase
         $result = $reflection->invoke($service, $request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('products', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('array', $result['products']);
-        foreach ($result['products'] as $item) {
+        $this->assertArrayHasKey('relatedConfig', $result);
+        $this->assertArrayHasKey('products', $result['relatedConfig']);
+        $this->assertArrayHasKey('currency', $result['relatedConfig']);
+        $this->assertArrayHasKey('header', $result['relatedConfig']);
+        $this->assertArrayHasKey('view', $result['relatedConfig']);
+        $this->assertInternalType('array', $result['relatedConfig']['products']);
+        foreach ($result['relatedConfig']['products'] as $item) {
             $this->assertInstanceOf(ProductsModel::class, $item);
         }
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['relatedConfig']['currency']);
+        $this->assertInternalType('string', $result['relatedConfig']['header']);
+        $this->assertInternalType('string', $result['relatedConfig']['view']);
     }
     
     /**
@@ -307,12 +312,13 @@ class ProductDetailIndexServiceTests extends TestCase
         $result = $reflection->invoke($service, $request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('comments', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('array', $result['comments']);
-        $this->assertInstanceOf(CommentForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertArrayHasKey('commentsConfig', $result);
+        $this->assertArrayHasKey('comments', $result['commentsConfig']);
+        $this->assertArrayHasKey('form', $result['commentsConfig']);
+        $this->assertArrayHasKey('view', $result['commentsConfig']);
+        $this->assertInternalType('array', $result['commentsConfig']['comments']);
+        $this->assertInstanceOf(CommentForm::class, $result['commentsConfig']['form']);
+        $this->assertInternalType('string', $result['commentsConfig']['view']);
     }
     
     /**

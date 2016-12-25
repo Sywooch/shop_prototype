@@ -95,8 +95,8 @@ trait FrontendTrait
             if (empty($this->userArray)) {
                 $dataArray = [];
                 
-                $dataArray['user'] = \Yii::$app->user;
-                $dataArray['view'] = 'user-info.twig';
+                $dataArray['userConfig']['user'] = \Yii::$app->user;
+                $dataArray['userConfig']['view'] = 'user-info.twig';
                 
                 $this->userArray = $dataArray;
             }
@@ -122,9 +122,9 @@ trait FrontendTrait
                 ]);
                 $purchasesCollection = $finder->find();
                 
-                $dataArray['purchases'] = $purchasesCollection;
-                $dataArray['currency'] = $this->getCurrencyModel();
-                $dataArray['view'] = 'short-cart.twig';
+                $dataArray['cartConfig']['purchases'] = $purchasesCollection;
+                $dataArray['cartConfig']['currency'] = $this->getCurrencyModel();
+                $dataArray['cartConfig']['view'] = 'short-cart.twig';
                 
                 $this->cartArray = $dataArray;
             }
@@ -152,9 +152,9 @@ trait FrontendTrait
                 }
                 
                 ArrayHelper::multisort($currencyArray, 'code');
-                $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
-                $dataArray['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$this->getCurrencyModel()->id]);
-                $dataArray['view'] = 'currency-form.twig';
+                $dataArray['currencyConfig']['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
+                $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$this->getCurrencyModel()->id]);
+                $dataArray['currencyConfig']['view'] = 'currency-form.twig';
                 
                 $this->currencyArray = $dataArray;
             }
@@ -175,8 +175,8 @@ trait FrontendTrait
             if (empty($this->searchArray)) {
                 $dataArray = [];
                 
-                $dataArray['text'] = $request[\Yii::$app->params['searchKey']] ?? '';
-                $dataArray['view'] = 'search.twig';
+                $dataArray['searchConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? '';
+                $dataArray['searchConfig']['view'] = 'search.twig';
                 
                 $this->searchArray = $dataArray;
             }
@@ -203,7 +203,7 @@ trait FrontendTrait
                     throw new ErrorException($this->emptyError('categoriesArray'));
                 }
                 
-                $dataArray['categories'] = $categoriesArray;
+                $dataArray['menuConfig']['categories'] = $categoriesArray;
             
                 $this->categoriesArray = $dataArray;
             }

@@ -117,10 +117,11 @@ class FrontendTraitTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty('array', $result);
-        $this->assertArrayHasKey('user', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(User::class, $result['user']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertArrayHasKey('userConfig', $result);
+        $this->assertArrayHasKey('user', $result['userConfig']);
+        $this->assertArrayHasKey('view', $result['userConfig']);
+        $this->assertInstanceOf(User::class, $result['userConfig']['user']);
+        $this->assertInternalType('string', $result['userConfig']['view']);
     }
     
     /**
@@ -134,12 +135,13 @@ class FrontendTraitTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty('array', $result);
-        $this->assertArrayHasKey('purchases', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertArrayHasKey('cartConfig', $result);
+        $this->assertArrayHasKey('purchases', $result['cartConfig']);
+        $this->assertArrayHasKey('currency', $result['cartConfig']);
+        $this->assertArrayHasKey('view', $result['cartConfig']);
+        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['cartConfig']['purchases']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['cartConfig']['currency']);
+        $this->assertInternalType('string', $result['cartConfig']['view']);
     }
     
     /**
@@ -155,12 +157,13 @@ class FrontendTraitTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty('array', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('array', $result['currency']);
-        $this->assertInstanceOf(ChangeCurrencyForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertArrayHasKey('currencyConfig', $result);
+        $this->assertArrayHasKey('currency', $result['currencyConfig']);
+        $this->assertArrayHasKey('form', $result['currencyConfig']);
+        $this->assertArrayHasKey('view', $result['currencyConfig']);
+        $this->assertInternalType('array', $result['currencyConfig']['currency']);
+        $this->assertInstanceOf(ChangeCurrencyForm::class, $result['currencyConfig']['form']);
+        $this->assertInternalType('string', $result['currencyConfig']['view']);
     }
     
     /**
@@ -174,10 +177,11 @@ class FrontendTraitTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty('array', $result);
-        $this->assertArrayHasKey('text', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('string', $result['text']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertArrayHasKey('searchConfig', $result);
+        $this->assertArrayHasKey('text', $result['searchConfig']);
+        $this->assertArrayHasKey('view', $result['searchConfig']);
+        $this->assertInternalType('string', $result['searchConfig']['text']);
+        $this->assertInternalType('string', $result['searchConfig']['view']);
     }
     
     /**
@@ -191,8 +195,9 @@ class FrontendTraitTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty('array', $result);
-        $this->assertArrayHasKey('categories', $result);
-        foreach ($result['categories'] as $item) {
+        $this->assertArrayHasKey('menuConfig', $result);
+        $this->assertArrayHasKey('categories', $result['menuConfig']);
+        foreach ($result['menuConfig']['categories'] as $item) {
             $this->assertInstanceOf(CategoriesModel::class, $item);
         }
     }

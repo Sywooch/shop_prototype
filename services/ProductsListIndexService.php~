@@ -55,35 +55,6 @@ class ProductsListIndexService extends AbstractBaseService
     private $filtersArray = [];
     
     /**
-     * Обрабатывает запрос на поиск данных для 
-     * формирования HTML страницы каталога товаров
-     * @param array $request
-     */
-    public function handle($request): array
-    {
-        try {
-            $dataArray = [];
-            
-            $dataArray = array_merge($dataArray, $this->getUserArray());
-            $dataArray = array_merge($dataArray, $this->getCartArray());
-            $dataArray = array_merge($dataArray, $this->getCurrencyArray());
-            $dataArray = array_merge($dataArray, $this->getSearchArray());
-            $dataArray = array_merge($dataArray, $this->getCategoriesArray());
-            
-            $dataArray = array_merge($dataArray, $this->getProductsArray($request));
-            $dataArray = array_merge($dataArray, $this->getPaginationArray($request));
-            $dataArray = array_merge($dataArray, $this->getBreadcrumbsArray($request));
-            $dataArray = array_merge($dataArray, $this->getFiltersArray($request));
-            
-            return $dataArray;
-        } catch (NotFoundHttpException $e) {
-            throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Возвращает модель товарных фильтров
      * @return ProductsFilters
      */
@@ -111,10 +82,9 @@ class ProductsListIndexService extends AbstractBaseService
     
     /**
      * Возвращает коллекцию товаров
-     * @param array $request массив данных запроса
      * @return ProductsCollection
      */
-    private function getProductsCollection(array $request): ProductsCollection
+    private function getProductsCollection(): ProductsCollection
     {
         try {
             if (empty($this->productsCollection)) {
@@ -144,15 +114,13 @@ class ProductsListIndexService extends AbstractBaseService
             if (empty($this->productsArray)) {
                 $dataArray = [];
                 
-                $productsCollection = $this->getProductsCollection($request);
-                
-                if ($productsCollection->isEmpty() === true) {
-                    if ($productsCollection->pagination->totalCount > 0) {
+                if ($this->getProductsCollection()->isEmpty() === true) {
+                    if ($this->getProductsCollection()->pagination->totalCount > 0) {
                         throw new NotFoundHttpException($this->error404());
                     }
                     $dataArray['emptyConfig']['view'] = 'empty-products.twig';
                 } else {
-                    $dataArray['productsConfig']['products'] = $productsCollection;
+                    $dataArray['productsConfig']['products'] = $this->getProductsCollection();
                     $dataArray['productsConfig']['currency'] = $this->getCurrencyModel();
                     $dataArray['productsConfig']['view'] = 'products-list.twig';
                 }
@@ -173,19 +141,17 @@ class ProductsListIndexService extends AbstractBaseService
      * @param array $request массив данных запроса
      * @return array
      */
-    private function getPaginationArray(array $request): array
+    private function getPaginationArray(): array
     {
         try {
             if (empty($this->paginationArray)) {
                 $dataArray = [];
                 
-                $pagination = $this->getProductsCollection($request)->pagination;
-                
-                if (empty($pagination)) {
+                if (empty($this->getProductsCollection()->pagination)) {
                     throw new ErrorException($this->emptyError('pagination'));
                 }
                 
-                $dataArray['paginationConfig']['pagination'] = $pagination;
+                $dataArray['paginationConfig']['pagination'] = $this->getProductsCollection()->pagination;
                 $dataArray['paginationConfig']['view'] = 'pagination.twig';
                 
                 $this->paginationArray = $dataArray;
@@ -250,12 +216,9 @@ class ProductsListIndexService extends AbstractBaseService
             if (empty($this->filtersArray)) {
                 $dataArray = [];
                 
-                $category = $request[\Yii::$app->params['categoryKey']] ?? null;
-                $subcategory = $request[\Yii::$app->params['subcategoryKey']] ?? null;
-                
                 $finder = new ColorsFilterFinder([
-                    'category'=>$category,
-                    'subcategory'=>$subcategory,
+                    'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
+                    'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
                 ]);
                 $colorsArray = $finder->find();
                 if (empty($colorsArray)) {
@@ -265,8 +228,8 @@ class ProductsListIndexService extends AbstractBaseService
                 $dataArray['filtersConfig']['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
                 
                 $finder = new SizesFilterFinder([
-                    'category'=>$category,
-                    'subcategory'=>$subcategory,
+                    'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
+                    'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
                 ]);
                 $sizesArray = $finder->find();
                 if (empty($sizesArray)) {
@@ -276,8 +239,8 @@ class ProductsListIndexService extends AbstractBaseService
                 $dataArray['filtersConfig']['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
                 
                 $finder = new BrandsFilterFinder([
-                    'category'=>$category,
-                    'subcategory'=>$subcategory,
+                    'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
+                    'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
                 ]);
                 $brandsArray = $finder->find();
                 if (empty($brandsArray)) {
@@ -303,6 +266,7 @@ class ProductsListIndexService extends AbstractBaseService
                 $dataArray['filtersConfig']['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
                 
                 $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($this->getFiltersModel()->toArray())));
+                
                 if (empty($form->sortingField)) {
                     foreach ($sortingFieldsArray as $item) {
                         if ($item['name'] === \Yii::$app->params['sortingField']) {
@@ -310,6 +274,7 @@ class ProductsListIndexService extends AbstractBaseService
                         }
                     }
                 }
+                
                 if (empty($form->sortingType)) {
                     foreach ($sortingTypesArray as $item) {
                         if ($item['name'] === \Yii::$app->params['sortingType']) {
@@ -317,6 +282,7 @@ class ProductsListIndexService extends AbstractBaseService
                         }
                     }
                 }
+                
                 $dataArray['filtersConfig']['form'] = $form;
                 $dataArray['filtersConfig']['view'] = 'products-filters.twig';
                 
@@ -324,6 +290,35 @@ class ProductsListIndexService extends AbstractBaseService
             }
             
             return $this->filtersArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обрабатывает запрос на поиск данных для 
+     * формирования HTML страницы каталога товаров
+     * @param array $request
+     */
+    public function handle($request): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['userConfig'] = $this->getUserArray();
+            $dataArray['cartConfig'] = $this->getCartArray();
+            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $dataArray['searchConfig'] = $this->getSearchArray();
+            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            
+            $dataArray = array_merge($dataArray, $this->getProductsArray($request));
+            $dataArray = array_merge($dataArray, $this->getPaginationArray());
+            $dataArray = array_merge($dataArray, $this->getBreadcrumbsArray($request));
+            $dataArray = array_merge($dataArray, $this->getFiltersArray($request));
+            
+            return $dataArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
