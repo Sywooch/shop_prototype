@@ -38,19 +38,23 @@ class ProductsListIndexService extends AbstractBaseService
      */
     private $productsCollection = null;
     /**
-     * @var array данные товаров
+     * @var array данные для EmptyProductsWidget
+     */
+    private $emptyProductsArray = [];
+    /**
+     * @var array данные для ProductsWidget
      */
     private $productsArray = [];
     /**
-     * @var array данные пагинации
+     * @var array данные для PaginationWidget
      */
     private $paginationArray = [];
     /**
-     * @var array данные breadcrumbs
+     * @var array данные для CategoriesBreadcrumbsWidget
      */
     private $breadcrumbsArray = [];
     /**
-     * @var array данные товарных фильтров
+     * @var array данные для FiltersWidget
      */
     private $filtersArray = [];
     
@@ -64,16 +68,25 @@ class ProductsListIndexService extends AbstractBaseService
         try {
             $dataArray = [];
             
-            $dataArray = array_merge($dataArray, $this->getUserArray());
-            $dataArray = array_merge($dataArray, $this->getCartArray());
-            $dataArray = array_merge($dataArray, $this->getCurrencyArray());
-            $dataArray = array_merge($dataArray, $this->getSearchArray());
-            $dataArray = array_merge($dataArray, $this->getCategoriesArray());
+            $dataArray['userConfig'] = $this->getUserArray();
+            $dataArray['cartConfig'] = $this->getCartArray();
+            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $dataArray['searchConfig'] = $this->getSearchArray();
+            $dataArray['menuConfig'] = $this->getCategoriesArray();
             
-            $dataArray = array_merge($dataArray, $this->getProductsArray($request));
-            $dataArray = array_merge($dataArray, $this->getPaginationArray($request));
-            $dataArray = array_merge($dataArray, $this->getBreadcrumbsArray($request));
-            $dataArray = array_merge($dataArray, $this->getFiltersArray($request));
+            $productsCollection = $this->getProductsCollection($request);
+            if ($productsCollection->isEmpty() === true) {
+                if ($productsCollection->pagination->totalCount > 0) {
+                    throw new NotFoundHttpException($this->error404());
+                }
+                $dataArray['emptyConfig'] = $this->getEmptyProductsArray();
+            } else {
+                $dataArray['productsConfig'] = $this->getProductsArray($request);
+            }
+            
+            $dataArray['paginationConfig'] = $this->getPaginationArray($request);
+            $dataArray['breadcrumbsConfig'] = $this->getBreadcrumbsArray($request);
+            $dataArray['filtersConfig'] = $this->getFiltersArray($request);
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {
@@ -134,7 +147,28 @@ class ProductsListIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода списка товаров
+     * Возвращает массив конфигурации для виджета EmptyProductsWidget
+     * @return array
+     */
+    private function getEmptyProductsArray(): array
+    {
+        try {
+            if (empty($this->productsArray)) {
+                $dataArray = [];
+                
+                $dataArray['view'] = 'empty-products.twig';
+                
+                $this->productsArray = $dataArray;
+            }
+            
+            return $this->productsArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета ProductsWidget
      * @param array $request массив данных запроса
      * @return array
      */
@@ -144,32 +178,21 @@ class ProductsListIndexService extends AbstractBaseService
             if (empty($this->productsArray)) {
                 $dataArray = [];
                 
-                $productsCollection = $this->getProductsCollection($request);
-                
-                if ($productsCollection->isEmpty() === true) {
-                    if ($productsCollection->pagination->totalCount > 0) {
-                        throw new NotFoundHttpException($this->error404());
-                    }
-                    $dataArray['emptyConfig']['view'] = 'empty-products.twig';
-                } else {
-                    $dataArray['productsConfig']['products'] = $productsCollection;
-                    $dataArray['productsConfig']['currency'] = $this->getCurrencyModel();
-                    $dataArray['productsConfig']['view'] = 'products-list.twig';
-                }
+                $dataArray['products'] = $this->getProductsCollection($request);
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['view'] = 'products-list.twig';
                 
                 $this->productsArray = $dataArray;
             }
             
             return $this->productsArray;
-        } catch (NotFoundHttpException $e) {
-            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Возвращает данные для вывода пагинации
+     * Возвращает массив конфигурации для виджета PaginationWidget
      * @param array $request массив данных запроса
      * @return array
      */
@@ -185,8 +208,8 @@ class ProductsListIndexService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('pagination'));
                 }
                 
-                $dataArray['paginationConfig']['pagination'] = $pagination;
-                $dataArray['paginationConfig']['view'] = 'pagination.twig';
+                $dataArray['pagination'] = $pagination;
+                $dataArray['view'] = 'pagination.twig';
                 
                 $this->paginationArray = $dataArray;
             }
@@ -198,7 +221,7 @@ class ProductsListIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода breadcrumbs
+     * Возвращает массив конфигурации для виджета CategoriesBreadcrumbsWidget
      * @param array $request массив данных запроса
      * @return array
      */
@@ -208,7 +231,10 @@ class ProductsListIndexService extends AbstractBaseService
             if (empty($this->breadcrumbsArray)) {
                 $dataArray = [];
                 
-                if (!empty($category = $request[\Yii::$app->params['categoryKey']] ?? null)) {
+                $category = $request[\Yii::$app->params['categoryKey']] ?? null;
+                $subcategory = $request[\Yii::$app->params['subcategoryKey']] ?? null;
+                
+                if (!empty($category)) {
                     $finder = new CategorySeocodeFinder([
                         'seocode'=>$category
                     ]);
@@ -216,9 +242,9 @@ class ProductsListIndexService extends AbstractBaseService
                     if (empty($categoryModel)) {
                         throw new ErrorException($this->emptyError('categoryModel'));
                     }
-                    $dataArray['breadcrumbsConfig']['category'] = $categoryModel;
+                    $dataArray['category'] = $categoryModel;
                     
-                    if (!empty($subcategory = $request[\Yii::$app->params['subcategoryKey']] ?? null)) {
+                    if (!empty($subcategory)) {
                         $finder = new SubcategorySeocodeFinder([
                             'seocode'=>$subcategory
                         ]);
@@ -226,7 +252,7 @@ class ProductsListIndexService extends AbstractBaseService
                         if (empty($subcategoryModel)) {
                             throw new ErrorException($this->emptyError('subcategoryModel'));
                         }
-                        $dataArray['breadcrumbsConfig']['subcategory'] = $subcategoryModel;
+                        $dataArray['subcategory'] = $subcategoryModel;
                     }
                 }
                 
@@ -240,8 +266,8 @@ class ProductsListIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода фильтров каталога
-     * @param array $request массив данных запроса
+     * Возвращает массив конфигурации для виджета FiltersWidget
+     * @param array $request массив данных запроса 
      * @return array
      */
     private function getFiltersArray(array $request): array
@@ -262,7 +288,7 @@ class ProductsListIndexService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('colorsArray'));
                 }
                 ArrayHelper::multisort($colorsArray, 'color');
-                $dataArray['filtersConfig']['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
+                $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
                 
                 $finder = new SizesFilterFinder([
                     'category'=>$category,
@@ -273,7 +299,7 @@ class ProductsListIndexService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('sizesArray'));
                 }
                 ArrayHelper::multisort($sizesArray, 'size');
-                $dataArray['filtersConfig']['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
+                $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
                 
                 $finder = new BrandsFilterFinder([
                     'category'=>$category,
@@ -284,7 +310,7 @@ class ProductsListIndexService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('brandsArray'));
                 }
                 ArrayHelper::multisort($brandsArray, 'brand');
-                $dataArray['filtersConfig']['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
+                $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
                 
                 $finder = new SortingFieldsFinder();
                 $sortingFieldsArray = $finder->find();
@@ -292,7 +318,7 @@ class ProductsListIndexService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('sortingFieldsArray'));
                 }
                 ArrayHelper::multisort($sortingFieldsArray, 'value');
-                $dataArray['filtersConfig']['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
+                $dataArray['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
                 
                 $finder = new SortingTypesFinder();
                 $sortingTypesArray = $finder->find();
@@ -300,7 +326,7 @@ class ProductsListIndexService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('sortingTypesArray'));
                 }
                 ArrayHelper::multisort($sortingTypesArray, 'value');
-                $dataArray['filtersConfig']['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
+                $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
                 
                 $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($this->getFiltersModel()->toArray())));
                 if (empty($form->sortingField)) {
@@ -317,8 +343,8 @@ class ProductsListIndexService extends AbstractBaseService
                         }
                     }
                 }
-                $dataArray['filtersConfig']['form'] = $form;
-                $dataArray['filtersConfig']['view'] = 'products-filters.twig';
+                $dataArray['form'] = $form;
+                $dataArray['view'] = 'products-filters.twig';
                 
                 $this->filtersArray = $dataArray;
             }

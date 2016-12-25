@@ -25,23 +25,23 @@ trait FrontendTrait
      */
     private $currencyModel = null;
     /**
-     * @var array текущий пользователь
+     * @var array данные для UserInfoWidget
      */
     private $userArray = [];
     /**
-     * @var array текущее состояние корзины
+     * @var array данные для CartWidget
      */
     private $cartArray = [];
     /**
-     * @var array доступные валюты
+     * @var array данные для CurrencyWidget
      */
     private $currencyArray = [];
     /**
-     * @var array строка поиска
+     * @var array данные для SearchWidget
      */
     private $searchArray = [];
     /**
-     * @var array меню категорий
+     * @var array данные для CategoriesMenuWidget
      */
     private $categoriesArray = [];
     
@@ -86,7 +86,7 @@ trait FrontendTrait
     }
     
     /**
-     * Возвращает данные для вывода информации о текущем пользователе
+     * Возвращает массив конфигурации для виджета UserInfoWidget
      * @return array
      */
     private function getUserArray(): array
@@ -95,8 +95,8 @@ trait FrontendTrait
             if (empty($this->userArray)) {
                 $dataArray = [];
                 
-                $dataArray['userConfig']['user'] = \Yii::$app->user;
-                $dataArray['userConfig']['view'] = 'user-info.twig';
+                $dataArray['user'] = \Yii::$app->user;
+                $dataArray['view'] = 'user-info.twig';
                 
                 $this->userArray = $dataArray;
             }
@@ -108,7 +108,7 @@ trait FrontendTrait
     }
     
     /**
-     * Возвращает данные для вывода информации о состоянии корзины
+     * Возвращает массив конфигурации для виджета CartWidget
      * @return array
      */
     private function getCartArray(): array
@@ -122,9 +122,9 @@ trait FrontendTrait
                 ]);
                 $purchasesCollection = $finder->find();
                 
-                $dataArray['cartConfig']['purchases'] = $purchasesCollection;
-                $dataArray['cartConfig']['currency'] = $this->getCurrencyModel();
-                $dataArray['cartConfig']['view'] = 'short-cart.twig';
+                $dataArray['purchases'] = $purchasesCollection;
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['view'] = 'short-cart.twig';
                 
                 $this->cartArray = $dataArray;
             }
@@ -136,7 +136,7 @@ trait FrontendTrait
     }
     
     /**
-     * Возвращает данные для вывода списка доступных валют
+     * Возвращает массив конфигурации для виджета CurrencyWidget
      * @return array
      */
     private function getCurrencyArray(): array
@@ -152,9 +152,9 @@ trait FrontendTrait
                 }
                 
                 ArrayHelper::multisort($currencyArray, 'code');
-                $dataArray['currencyConfig']['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
-                $dataArray['currencyConfig']['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$this->getCurrencyModel()->id]);
-                $dataArray['currencyConfig']['view'] = 'currency-form.twig';
+                $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
+                $dataArray['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$this->getCurrencyModel()->id]);
+                $dataArray['view'] = 'currency-form.twig';
                 
                 $this->currencyArray = $dataArray;
             }
@@ -166,7 +166,7 @@ trait FrontendTrait
     }
     
     /**
-     * Возвращает данные для вывода строки поиска
+     * Возвращает массив конфигурации для виджета SearchWidget
      * @return array
      */
     private function getSearchArray(): array
@@ -175,8 +175,8 @@ trait FrontendTrait
             if (empty($this->searchArray)) {
                 $dataArray = [];
                 
-                $dataArray['searchConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? '';
-                $dataArray['searchConfig']['view'] = 'search.twig';
+                $dataArray['text'] = $request[\Yii::$app->params['searchKey']] ?? '';
+                $dataArray['view'] = 'search.twig';
                 
                 $this->searchArray = $dataArray;
             }
@@ -188,7 +188,7 @@ trait FrontendTrait
     }
     
     /**
-     * Возвращает данные для вывода меню категорий
+     * Возвращает массив конфигурации для виджета CategoriesMenuWidget
      * @return array
      */
     private function getCategoriesArray(): array
@@ -203,7 +203,7 @@ trait FrontendTrait
                     throw new ErrorException($this->emptyError('categoriesArray'));
                 }
                 
-                $dataArray['menuConfig']['categories'] = $categoriesArray;
+                $dataArray['categories'] = $categoriesArray;
             
                 $this->categoriesArray = $dataArray;
             }

@@ -27,27 +27,27 @@ class ProductDetailIndexService extends AbstractBaseService
      */
     private $productsModel = null;
     /**
-     * @var array данные товара
+     * @var array данные для ProductDetailWidget
      */
     private $productArray = [];
     /**
-     * @var array данные формы заказа
+     * @var array данные для ToCartWidget
      */
     private $purchaseFormArray = [];
     /**
-     * @var array данные breadcrumbs
+     * @var array данные для ProductBreadcrumbsWidget
      */
     private $breadcrumbsArray = [];
     /**
-     * @var array данные похожих товаров
+     * @var array данные для SeeAlsoWidget
      */
     private $similarArray = [];
     /**
-     * @var array данные связанных товаров
+     * @var array данные для SeeAlsoWidget
      */
     private $relatedArray = [];
     /**
-     * @var array данные комментариев
+     * @var array данные для CommentsWidget
      */
     private $commentsArray = [];
     
@@ -61,18 +61,18 @@ class ProductDetailIndexService extends AbstractBaseService
         try {
             $dataArray = [];
             
-            $dataArray = array_merge($dataArray, $this->getUserArray());
-            $dataArray = array_merge($dataArray, $this->getCartArray());
-            $dataArray = array_merge($dataArray, $this->getCurrencyArray());
-            $dataArray = array_merge($dataArray, $this->getSearchArray());
-            $dataArray = array_merge($dataArray, $this->getCategoriesArray());
+            $dataArray['userConfig'] = $this->getUserArray();
+            $dataArray['cartConfig'] = $this->getCartArray();
+            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $dataArray['searchConfig'] = $this->getSearchArray();
+            $dataArray['menuConfig'] = $this->getCategoriesArray();
             
-            $dataArray = array_merge($dataArray, $this->getProductArray($request));
-            $dataArray = array_merge($dataArray, $this->getPurchaseFormArray($request));
-            $dataArray = array_merge($dataArray, $this->getBreadcrumbsArray($request));
-            $dataArray = array_merge($dataArray, $this->getSimilarArray($request));
-            $dataArray = array_merge($dataArray, $this->getRelatedArray($request));
-            $dataArray = array_merge($dataArray, $this->getCommentsArray($request));
+            $dataArray['productConfig'] = $this->getProductArray($request);
+            $dataArray['toCartConfig'] = $this->getPurchaseFormArray($request);
+            $dataArray['breadcrumbsConfig'] = $this->getBreadcrumbsArray($request);
+            $dataArray['similarConfig'] = $this->getSimilarArray($request);
+            $dataArray['relatedConfig'] = $this->getRelatedArray($request);
+            $dataArray['commentsConfig'] = $this->getCommentsArray($request);
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {
@@ -111,7 +111,7 @@ class ProductDetailIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода информации о товаре
+     * Возвращает массив конфигурации для виджета ProductDetailWidget
      * @param array $request массив данных запроса
      * @return array
      */
@@ -121,9 +121,9 @@ class ProductDetailIndexService extends AbstractBaseService
             if (empty($this->productArray)) {
                 $dataArray = [];
                 
-                $dataArray['productConfig']['product'] = $this->getProductsModel($request);
-                $dataArray['productConfig']['currency'] = $this->getCurrencyModel();
-                $dataArray['productConfig']['view'] = 'product-detail.twig';
+                $dataArray['product'] = $this->getProductsModel($request);
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['view'] = 'product-detail.twig';
                 
                 $this->productArray = $dataArray;
             }
@@ -135,7 +135,7 @@ class ProductDetailIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода формы заказа
+     * Возвращает массив конфигурации для виджета ToCartWidget
      * @param array $request массив данных запроса
      * @return array
      */
@@ -145,9 +145,9 @@ class ProductDetailIndexService extends AbstractBaseService
             if (empty($this->purchaseFormArray)) {
                 $dataArray = [];
                 
-                $dataArray['toCartConfig']['product'] = $this->getProductsModel($request);
-                $dataArray['toCartConfig']['form'] = new PurchaseForm(['quantity'=>1]);
-                $dataArray['toCartConfig']['view'] = 'add-to-cart-form.twig';
+                $dataArray['product'] = $this->getProductsModel($request);
+                $dataArray['form'] = new PurchaseForm(['quantity'=>1]);
+                $dataArray['view'] = 'add-to-cart-form.twig';
                 
                 $this->purchaseFormArray = $dataArray;
             }
@@ -159,7 +159,7 @@ class ProductDetailIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода breadcrumbs
+     * Возвращает массив конфигурации для виджета ProductBreadcrumbsWidget
      * @param array $request массив данных запроса
      * @return array
      */
@@ -169,7 +169,7 @@ class ProductDetailIndexService extends AbstractBaseService
             if (empty($this->breadcrumbsArray)) {
                 $dataArray = [];
                 
-                $dataArray['breadcrumbsConfig']['product'] = $this->getProductsModel($request);
+                $dataArray['product'] = $this->getProductsModel($request);
                 
                 $this->breadcrumbsArray = $dataArray;
             }
@@ -181,7 +181,8 @@ class ProductDetailIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода похожих товаров
+     * Возвращает массив конфигурации для виджета SeeAlsoWidget, 
+     * с информацией о похожих товарах
      * @param array $request массив данных запроса
      * @return array
      */
@@ -196,10 +197,10 @@ class ProductDetailIndexService extends AbstractBaseService
                 ]);
                 $similarArray = $finder->find();
                 
-                $dataArray['similarConfig']['products'] = $similarArray;
-                $dataArray['similarConfig']['currency'] = $this->getCurrencyModel();
-                $dataArray['similarConfig']['header'] = \Yii::t('base', 'Similar products');
-                $dataArray['similarConfig']['view'] = 'see-also.twig';
+                $dataArray['products'] = $similarArray;
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['header'] = \Yii::t('base', 'Similar products');
+                $dataArray['view'] = 'see-also.twig';
                 
                 $this->similarArray = $dataArray;
             }
@@ -211,7 +212,8 @@ class ProductDetailIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода связанных товаров
+     * Возвращает массив конфигурации для виджета SeeAlsoWidget, 
+     * с информацией о связанных товарах
      * @param array $request массив данных запроса
      * @return array
      */
@@ -226,10 +228,10 @@ class ProductDetailIndexService extends AbstractBaseService
                 ]);
                 $relatedArray = $finder->find();
                 
-                $dataArray['relatedConfig']['products'] = $relatedArray;
-                $dataArray['relatedConfig']['currency'] = $this->getCurrencyModel();
-                $dataArray['relatedConfig']['header'] = \Yii::t('base', 'Related products');
-                $dataArray['relatedConfig']['view'] = 'see-also.twig';
+                $dataArray['products'] = $relatedArray;
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['header'] = \Yii::t('base', 'Related products');
+                $dataArray['view'] = 'see-also.twig';
                 
                 $this->relatedArray = $dataArray;
             }
@@ -241,7 +243,7 @@ class ProductDetailIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные для вывода комментариев
+     * Возвращает массив конфигурации для виджета CommentsWidget
      * @param array $request массив данных запроса
      * @return array
      */
@@ -259,9 +261,9 @@ class ProductDetailIndexService extends AbstractBaseService
                 $commentsArray = $finder->find();
                 
                 ArrayHelper::multisort($commentsArray, 'date', SORT_DESC);
-                $dataArray['commentsConfig']['comments'] = $commentsArray;
-                $dataArray['commentsConfig']['form'] = new CommentForm(['id_product'=>$productsModel->id]);
-                $dataArray['commentsConfig']['view'] = 'comments.twig';
+                $dataArray['comments'] = $commentsArray;
+                $dataArray['form'] = new CommentForm(['id_product'=>$productsModel->id]);
+                $dataArray['view'] = 'comments.twig';
                 
                 $this->commentsArray = $dataArray;
             }

@@ -15,9 +15,11 @@ use app\tests\sources\fixtures\{BrandsFixture,
     SizesFixture,
     SubcategoryFixture};
 use app\controllers\ProductsListController;
-use app\collections\{LightPagination,
+use app\collections\{PaginationInterface,
     ProductsCollection};
-use app\models\CurrencyModel;
+use app\models\{CategoriesModel,
+    CurrencyModel,
+    SubcategoryModel};
 use app\forms\FiltersForm;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
@@ -171,6 +173,183 @@ class ProductsListIndexServiceTests extends TestCase
 
         $session->remove($key);
         $session->close();
+    }
+    
+     /**
+     * Тестирует метод ProductsListIndexService::getEmptyProductsArray
+     */
+    public function testGetEmptyProductsArray()
+    {
+        $request = [];
+        
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getEmptyProductsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInternalType('string', $result['view']);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::getProductsArray
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetProductsArrayEmptyRequest()
+    {
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getProductsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::getProductsArray
+     */
+    public function testGetProductsArray()
+    {
+        $request = [
+            \Yii::$app->params['categoryKey']=>self::$dbClass->categories['category_1'],
+            \Yii::$app->params['subcategoryKey']=>self::$dbClass->subcategory['subcategory_1'],
+            \Yii::$app->params['pagePointer']=>2,
+        ];
+        
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getProductsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('products', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInstanceOf(ProductsCollection::class, $result['products']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInternalType('string', $result['view']);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::getPaginationArray
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetPaginationArrayEmptyRequest()
+    {
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getPaginationArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::getPaginationArray
+     */
+    public function testGetPaginationArray()
+    {
+        $request = [
+            \Yii::$app->params['categoryKey']=>self::$dbClass->categories['category_1'],
+            \Yii::$app->params['subcategoryKey']=>self::$dbClass->subcategory['subcategory_1'],
+            \Yii::$app->params['pagePointer']=>2,
+        ];
+        
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getPaginationArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('pagination', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
+        $this->assertInternalType('string', $result['view']);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::getBreadcrumbsArray
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetBreadcrumbsArrayEmptyRequest()
+    {
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getBreadcrumbsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::getBreadcrumbsArray
+     */
+    public function testGetBreadcrumbsArray()
+    {
+        $request = [
+            \Yii::$app->params['categoryKey']=>self::$dbClass->categories['category_1'],
+            \Yii::$app->params['subcategoryKey']=>self::$dbClass->subcategory['subcategory_1'],
+        ];
+        
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getBreadcrumbsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('category', $result);
+        $this->assertArrayHasKey('subcategory', $result);
+        $this->assertInstanceOf(CategoriesModel::class, $result['category']);
+        $this->assertInstanceOf(SubcategoryModel::class, $result['subcategory']);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::getFiltersArray
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetFiltersArrayEmptyRequest()
+    {
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getFiltersArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+    }
+    
+    /**
+     * Тестирует метод ProductsListIndexService::getFiltersArray
+     */
+    public function testGetFiltersArray()
+    {
+        $request = [];
+        
+        $service = new ProductsListIndexService();
+        
+        $reflection = new \ReflectionMethod($service, 'getFiltersArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('colors', $result);
+        $this->assertArrayHasKey('sizes', $result);
+        $this->assertArrayHasKey('brands', $result);
+        $this->assertArrayHasKey('sortingFields', $result);
+        $this->assertArrayHasKey('sortingTypes', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInternalType('array', $result['colors']);
+        $this->assertInternalType('array', $result['sizes']);
+        $this->assertInternalType('array', $result['brands']);
+        $this->assertInternalType('array', $result['sortingFields']);
+        $this->assertInternalType('array', $result['sortingTypes']);
+        $this->assertInstanceOf(FiltersForm::class, $result['form']);
+        $this->assertInternalType('string', $result['view']);
     }
     
     public static function tearDownAfterClass()
