@@ -6,7 +6,8 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
-use app\services\AbstarctFrontendService;
+use app\services\{AbstractBaseService,
+    FrontendTrait};
 use app\finders\{BrandsFilterSphinxFinder,
     CategorySeocodeFinder,
     ColorsFilterSphinxFinder,
@@ -23,8 +24,116 @@ use app\forms\FiltersForm;
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
  */
-class ProductsListSearchService extends AbstarctFrontendService
+class ProductsListSearchService extends AbstractBaseService
 {
+    use FrontendTrait;
+    
+    /**
+     * @var array данные для SearchBreadcrumbsWidget
+     */
+    private $breadcrumbsArray = [];
+    /**
+     * @var array данные, найденные sphinx
+     */
+    private $sphinxArray = [];
+    /**
+     * @var array данные для EmptySphinxWidget
+     */
+    private $emptySphinxArray = [];
+    /**
+     * @var ProductsCollection коллекция товаров
+     */
+    private $productsCollection = null;
+    
+    /**
+     * Возвращает массив конфигурации для виджета CategoriesBreadcrumbsWidget
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getBreadcrumbsArray(array $request): array
+    {
+        try {
+            if (empty($this->breadcrumbsArray)) {
+                $dataArray = [];
+                
+                $dataArray['text'] = $request[\Yii::$app->params['searchKey']] ?? null;
+                
+                $this->breadcrumbsArray = $dataArray;
+            }
+            
+            return $this->breadcrumbsArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив ID товаров, найденных sphinx в ответ на поисковый запрос
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getSphinxArray(array $request): array
+    {
+        try {
+            if (empty($this->sphinxArray)) {
+                $finder = new SphinxFinder([
+                    'search'=>$request[\Yii::$app->params['searchKey']] ?? null,
+                ]);
+                $sphinxArray = $finder->find();
+                
+                $this->sphinxArray = $sphinxArray;
+            }
+            
+            return $this->sphinxArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета EmptySphinxWidget
+     * @return array
+     */
+    private function getEmptySphinxArray(): array
+    {
+        try {
+            if (empty($this->emptySphinxArray)) {
+                $dataArray = [];
+                
+                $dataArray['view'] = 'empty-sphinx.twig';
+                
+                $this->emptySphinxArray = $dataArray;
+            }
+            
+            return $this->emptySphinxArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает коллекцию товаров
+     * @param array $request массив данных запроса
+     * @return ProductsCollection
+     */
+    private function getProductsCollection(array $request): ProductsCollection
+    {
+        try {
+            if (empty($this->productsCollection)) {
+                $finder = new ProductsSphinxFinder([
+                    'sphinx'=>ArrayHelper::getColumn($this->getSphinxArray($request), 'id'),
+                    'page'=>$request[\Yii::$app->params['pagePointer']] ?? 0,
+                    'filters'=>$this->getFiltersModel()
+                ]);
+                $this->productsCollection = $finder->find();
+            }
+            
+            return $this->productsCollection;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
     /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
@@ -37,49 +146,54 @@ class ProductsListSearchService extends AbstarctFrontendService
                 throw new ErrorException($this->emptyError('searchKey'));
             }
             
-            # Общие для всех frontend сервисов данные
-            
             $dataArray = [];
             
-            $dataArray['userConfig'] = $this->user();
-            $dataArray['cartConfig'] = $this->cart();
-            $dataArray['currencyConfig'] = $this->currency();
-            $dataArray['searchConfig'] = $this->search();
-            $dataArray['menuConfig'] = $this->categories();
+            $dataArray['userConfig'] = $this->getUserArray();
+            $dataArray['cartConfig'] = $this->getCartArray();
+            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $dataArray['searchConfig'] = $this->getSearchArray();
+            $dataArray['menuConfig'] = $this->getCategoriesArray();
             
-            # Товарные фильтры
+            $dataArray['breadcrumbsConfig'] = $this->getBreadcrumbsArray($request);
             
-            $finder = new FiltersSessionFinder([
-                'key'=>HashHelper::createFiltersKey(Url::current())
-            ]);
-            $filtersModel = $finder->find();
-            if (empty($filtersModel)) {
-                throw new ErrorException($this->emptyError('filtersModel'));
+            if (empty($this->getSphinxArray($request))) {
+                $dataArray['emptySphinxConfig'] = $this->getEmptySphinxArray();
+            } else {
+                $productsCollection = $this->getProductsCollection($request);
+                
+                if ($productsCollection->isEmpty() === true) {
+                    if ($productsCollection->pagination->totalCount > 0) {
+                        throw new NotFoundHttpException($this->error404());
+                    }
+                    $dataArray['emptyConfig'] = $this->getEmptyProductsArray();
+                } else {
+                    $dataArray['productsConfig'] = $this->getProductsArray($request);
+                }
             }
             
             # Данные для вывода breadcrumbs
             
-            $dataArray['breadcrumbsConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? null;
+            //$dataArray['breadcrumbsConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? null;
             
             # Данные Sphinxsearch
             
-            $finder = new SphinxFinder([
+            /*$finder = new SphinxFinder([
                 'search'=>$request[\Yii::$app->params['searchKey']] ?? null,
             ]);
-            $sphinxArray = $finder->find();
+            $sphinxArray = $finder->find();*/
             
             if (!empty($sphinxArray)) {
                 
                 # Данные для вывода списка товаров
                 
-                $finder = new ProductsSphinxFinder([
+                /*$finder = new ProductsSphinxFinder([
                     'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
                     'page'=>$request[\Yii::$app->params['pagePointer']] ?? 0,
                     'filters'=>$filtersModel
                 ]);
-                $productsCollection = $finder->find();
+                $productsCollection = $finder->find();*/
                 
-                if ($productsCollection->isEmpty() === true) {
+                /*if ($productsCollection->isEmpty() === true) {
                     if ($productsCollection->pagination->totalCount > 0) {
                         throw new NotFoundHttpException($this->error404());
                     }
@@ -88,7 +202,7 @@ class ProductsListSearchService extends AbstarctFrontendService
                     $dataArray['productsConfig']['products'] = $productsCollection;
                     $dataArray['productsConfig']['currency'] = $this->currentCurrency();
                     $dataArray['productsConfig']['view'] = 'products-list.twig';
-                }
+                }*/
                 
                 # Пагинатор
                 
@@ -165,7 +279,7 @@ class ProductsListSearchService extends AbstarctFrontendService
                 
                 $dataArray['filtersConfig']['view'] = 'products-filters.twig';
             } else {
-                $dataArray['emptySphinxConfig']['view'] = 'empty-sphinx.twig';
+                //$dataArray['emptySphinxConfig']['view'] = 'empty-sphinx.twig';
             }
                 
             return $dataArray;

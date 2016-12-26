@@ -19,7 +19,6 @@ use app\finders\{BrandsFilterFinder,
     SubcategorySeocodeFinder};
 use app\helpers\HashHelper;
 use app\forms\FiltersForm;
-use app\filters\ProductsFilters;
 use app\collections\ProductsCollection;
 
 /**
@@ -30,21 +29,9 @@ class ProductsListIndexService extends AbstractBaseService
     use FrontendTrait;
     
     /**
-     * @var ProductsFilters объект текущих фильтров
-     */
-    private $filtersModel = null;
-    /**
      * @var ProductsCollection коллекция товаров
      */
     private $productsCollection = null;
-    /**
-     * @var array данные для EmptyProductsWidget
-     */
-    private $emptyProductsArray = [];
-    /**
-     * @var array данные для ProductsWidget
-     */
-    private $productsArray = [];
     /**
      * @var array данные для PaginationWidget
      */
@@ -75,6 +62,7 @@ class ProductsListIndexService extends AbstractBaseService
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             
             $productsCollection = $this->getProductsCollection($request);
+            
             if ($productsCollection->isEmpty() === true) {
                 if ($productsCollection->pagination->totalCount > 0) {
                     throw new NotFoundHttpException($this->error404());
@@ -91,32 +79,6 @@ class ProductsListIndexService extends AbstractBaseService
             return $dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает модель товарных фильтров
-     * @return ProductsFilters
-     */
-    private function getFiltersModel(): ProductsFilters
-    {
-        try {
-            if (empty($this->filtersModel)) {
-                $finder = new FiltersSessionFinder([
-                    'key'=>HashHelper::createFiltersKey(Url::current())
-                 ]);
-                $filtersModel = $finder->find();
-                
-                if (empty($filtersModel)) {
-                    throw new ErrorException($this->emptyError('filtersModel'));
-                }
-                
-                $this->filtersModel = $filtersModel;
-            }
-            
-            return $this->filtersModel;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -141,51 +103,6 @@ class ProductsListIndexService extends AbstractBaseService
             }
             
             return $this->productsCollection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета EmptyProductsWidget
-     * @return array
-     */
-    private function getEmptyProductsArray(): array
-    {
-        try {
-            if (empty($this->productsArray)) {
-                $dataArray = [];
-                
-                $dataArray['view'] = 'empty-products.twig';
-                
-                $this->productsArray = $dataArray;
-            }
-            
-            return $this->productsArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета ProductsWidget
-     * @param array $request массив данных запроса
-     * @return array
-     */
-    private function getProductsArray(array $request): array
-    {
-        try {
-            if (empty($this->productsArray)) {
-                $dataArray = [];
-                
-                $dataArray['products'] = $this->getProductsCollection($request);
-                $dataArray['currency'] = $this->getCurrencyModel();
-                $dataArray['view'] = 'products-list.twig';
-                
-                $this->productsArray = $dataArray;
-            }
-            
-            return $this->productsArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

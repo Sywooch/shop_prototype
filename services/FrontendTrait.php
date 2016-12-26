@@ -8,12 +8,14 @@ use yii\helpers\{ArrayHelper,
 use app\finders\{CategoriesFinder,
     CurrencySessionFinder,
     CurrencyFinder,
+    FiltersSessionFinder,
     MainCurrencyFinder,
     PurchasesSessionFinder};
 use app\helpers\HashHelper;
 use app\forms\ChangeCurrencyForm;
 use app\savers\SessionSaver;
 use app\models\CurrencyModel;
+use app\filters\ProductsFilters;
 
 /**
  * Коллекция свойств и методов для рендеринга страниц пользовательского интерфейса
@@ -24,6 +26,10 @@ trait FrontendTrait
      * @var CurrencyModel текущая валюта
      */
     private $currencyModel = null;
+    /**
+     * @var ProductsFilters объект текущих фильтров
+     */
+    private $filtersModel = null;
     /**
      * @var array данные для UserInfoWidget
      */
@@ -44,6 +50,14 @@ trait FrontendTrait
      * @var array данные для CategoriesMenuWidget
      */
     private $categoriesArray = [];
+    /**
+     * @var array данные для EmptyProductsWidget
+     */
+    private $emptyProductsArray = [];
+    /**
+     * @var array данные для ProductsWidget
+     */
+    private $productsArray = [];
     
     /**
      * Возвращает данные текущей валюты
@@ -80,6 +94,32 @@ trait FrontendTrait
             }
             
             return $this->currencyModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает модель товарных фильтров
+     * @return ProductsFilters
+     */
+    private function getFiltersModel(): ProductsFilters
+    {
+        try {
+            if (empty($this->filtersModel)) {
+                $finder = new FiltersSessionFinder([
+                    'key'=>HashHelper::createFiltersKey(Url::current())
+                 ]);
+                $filtersModel = $finder->find();
+                
+                if (empty($filtersModel)) {
+                    throw new ErrorException($this->emptyError('filtersModel'));
+                }
+                
+                $this->filtersModel = $filtersModel;
+            }
+            
+            return $this->filtersModel;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -209,6 +249,51 @@ trait FrontendTrait
             }
             
             return $this->categoriesArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета EmptyProductsWidget
+     * @return array
+     */
+    private function getEmptyProductsArray(): array
+    {
+        try {
+            if (empty($this->emptyProductsArray)) {
+                $dataArray = [];
+                
+                $dataArray['view'] = 'empty-products.twig';
+                
+                $this->emptyProductsArray = $dataArray;
+            }
+            
+            return $this->emptyProductsArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета ProductsWidget
+     * @param array $request массив данных запроса
+     * @return array
+     */
+    private function getProductsArray(array $request): array
+    {
+        try {
+            if (empty($this->productsArray)) {
+                $dataArray = [];
+                
+                $dataArray['products'] = $this->getProductsCollection($request);
+                $dataArray['currency'] = $this->getCurrencyModel();
+                $dataArray['view'] = 'products-list.twig';
+                
+                $this->productsArray = $dataArray;
+            }
+            
+            return $this->productsArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

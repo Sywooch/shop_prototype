@@ -57,30 +57,12 @@ class ProductsListIndexServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(ProductsListIndexService::class);
         
-        $this->assertTrue($reflection->hasProperty('filtersModel'));
         $this->assertTrue($reflection->hasProperty('productsCollection'));
-        $this->assertTrue($reflection->hasProperty('productsArray'));
         $this->assertTrue($reflection->hasProperty('paginationArray'));
         $this->assertTrue($reflection->hasProperty('breadcrumbsArray'));
         $this->assertTrue($reflection->hasProperty('filtersArray'));
     }
-
-    /**
-     * Тестирует метод ProductsListIndexService::getFiltersModel
-     */
-    public function testGetFiltersModel()
-    {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        $service = new ProductsListIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getFiltersModel');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-
-        $this->assertInstanceOf(ProductsFilters::class, $result);
-    }
-
+    
     /**
      * Тестирует метод ProductsListIndexService::getProductsCollection
      * если отсутствует параметр $request
@@ -94,7 +76,7 @@ class ProductsListIndexServiceTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->invoke($service);
     }
-
+    
     /**
      * Тестирует метод ProductsListIndexService::getProductsCollection
      * category === null
@@ -104,6 +86,8 @@ class ProductsListIndexServiceTests extends TestCase
      */
     public function testGetProductsClean()
     {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
         $request = [];
         
         $service = new ProductsListIndexService();
@@ -173,64 +157,6 @@ class ProductsListIndexServiceTests extends TestCase
 
         $session->remove($key);
         $session->close();
-    }
-    
-     /**
-     * Тестирует метод ProductsListIndexService::getEmptyProductsArray
-     */
-    public function testGetEmptyProductsArray()
-    {
-        $request = [];
-        
-        $service = new ProductsListIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getEmptyProductsArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('string', $result['view']);
-    }
-    
-    /**
-     * Тестирует метод ProductsListIndexService::getProductsArray
-     * если отсутствует параметр $request
-     * @expectedException TypeError
-     */
-    public function testGetProductsArrayEmptyRequest()
-    {
-        $service = new ProductsListIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getProductsArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-    }
-    
-    /**
-     * Тестирует метод ProductsListIndexService::getProductsArray
-     */
-    public function testGetProductsArray()
-    {
-        $request = [
-            \Yii::$app->params['categoryKey']=>self::$dbClass->categories['category_1'],
-            \Yii::$app->params['subcategoryKey']=>self::$dbClass->subcategory['subcategory_1'],
-            \Yii::$app->params['pagePointer']=>2,
-        ];
-        
-        $service = new ProductsListIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getProductsArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('products', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(ProductsCollection::class, $result['products']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInternalType('string', $result['view']);
     }
     
     /**

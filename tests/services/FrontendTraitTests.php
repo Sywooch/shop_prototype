@@ -9,12 +9,15 @@ use app\helpers\HashHelper;
 use app\models\{CategoriesModel,
     CurrencyModel};
 use app\tests\sources\fixtures\{CategoriesFixture,
-    CurrencyFixture};
+    CurrencyFixture,
+    SubcategoryFixture};
 use yii\web\User;
-use app\collections\PurchasesCollectionInterface;
+use app\collections\{ProductsCollection,
+    PurchasesCollectionInterface};
 use app\forms\ChangeCurrencyForm;
 use app\exceptions\ExceptionsTrait;
 use app\controllers\ProductsListController;
+use app\filters\ProductsFilters;
 
 /**
  * Тестирует класс FrontendTrait
@@ -29,6 +32,7 @@ class FrontendTraitTests extends TestCase
         self::$dbClass = new DbManager([
             'fixtures'=>[
                 'categories'=>CategoriesFixture::class,
+                'subcategory'=>SubcategoryFixture::class,
                 'currency'=>CurrencyFixture::class,
             ],
         ]);
@@ -39,6 +43,9 @@ class FrontendTraitTests extends TestCase
     {
         $this->trait = new class() {
             use FrontendTrait, ExceptionsTrait;
+            public function getProductsCollection($request) {
+                return new ProductsCollection();
+            }
         };
     }
     
@@ -50,11 +57,14 @@ class FrontendTraitTests extends TestCase
         $reflection = new \ReflectionClass(FrontendTrait::class);
         
         $this->assertTrue($reflection->hasProperty('currencyModel'));
+        $this->assertTrue($reflection->hasProperty('filtersModel'));
         $this->assertTrue($reflection->hasProperty('userArray'));
         $this->assertTrue($reflection->hasProperty('cartArray'));
         $this->assertTrue($reflection->hasProperty('currencyArray'));
         $this->assertTrue($reflection->hasProperty('searchArray'));
         $this->assertTrue($reflection->hasProperty('categoriesArray'));
+        $this->assertTrue($reflection->hasProperty('emptyProductsArray'));
+        $this->assertTrue($reflection->hasProperty('productsArray'));
     }
     
     /**
@@ -104,6 +114,20 @@ class FrontendTraitTests extends TestCase
         
         $session->remove($key);
         $session->close();
+    }
+    
+    /**
+     * Тестирует метод FrontendTrait::getFiltersModel
+     */
+    public function testGetFiltersModel()
+    {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
+        $reflection = new \ReflectionMethod($this->trait, 'getFiltersModel');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->trait);
+
+        $this->assertInstanceOf(ProductsFilters::class, $result);
     }
     
     /**
@@ -195,6 +219,54 @@ class FrontendTraitTests extends TestCase
         foreach ($result['categories'] as $item) {
             $this->assertInstanceOf(CategoriesModel::class, $item);
         }
+    }
+    
+    /**
+     * Тестирует метод FrontendTrait::getEmptyProductsArray
+     */
+    public function testGetEmptyProductsArray()
+    {
+        $request = [];
+        
+        $reflection = new \ReflectionMethod($this->trait, 'getEmptyProductsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->trait, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInternalType('string', $result['view']);
+    }
+    
+    /**
+     * Тестирует метод FrontendTrait::getProductsArray
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetProductsArrayEmptyRequest()
+    {
+        $reflection = new \ReflectionMethod($this->trait, 'getProductsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->trait);
+    }
+    
+    /**
+     * Тестирует метод FrontendTrait::getProductsArray
+     */
+    public function testGetProductsArray()
+    {
+        $request = [];
+        
+        $reflection = new \ReflectionMethod($this->trait, 'getProductsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->trait, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('products', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInstanceOf(ProductsCollection::class, $result['products']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInternalType('string', $result['view']);
     }
     
     public static function tearDownAfterClass()
