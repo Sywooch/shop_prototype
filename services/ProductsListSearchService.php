@@ -7,26 +7,24 @@ use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
-    FrontendTrait};
+    FrontendTrait,
+    ProductsListTrait};
 use app\finders\{BrandsFilterSphinxFinder,
-    CategorySeocodeFinder,
     ColorsFilterSphinxFinder,
-    FiltersSessionFinder,
     ProductsSphinxFinder,
     SizesFilterSphinxFinder,
     SortingFieldsFinder,
     SortingTypesFinder,
-    SphinxFinder,
-    SubcategorySeocodeFinder};
-use app\helpers\HashHelper;
+    SphinxFinder};
 use app\forms\FiltersForm;
+use app\collections\ProductsCollection;
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
  */
 class ProductsListSearchService extends AbstractBaseService
 {
-    use FrontendTrait;
+    use FrontendTrait, ProductsListTrait;
     
     /**
      * @var array данные для SearchBreadcrumbsWidget
@@ -44,6 +42,56 @@ class ProductsListSearchService extends AbstractBaseService
      * @var ProductsCollection коллекция товаров
      */
     private $productsCollection = null;
+    /**
+     * @var array данные для FiltersWidget
+     */
+    private $filtersArray = [];
+    
+    /**
+     * Обрабатывает запрос на поиск данных для 
+     * формирования HTML страницы каталога товаров
+     * @param array $request
+     */
+    public function handle($request): array
+    {
+        try {
+            if (empty($request[\Yii::$app->params['searchKey']])) {
+                throw new ErrorException($this->emptyError('searchKey'));
+            }
+            
+            $dataArray = [];
+            
+            $dataArray['userConfig'] = $this->getUserArray();
+            $dataArray['cartConfig'] = $this->getCartArray();
+            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $dataArray['searchConfig'] = $this->getSearchArray();
+            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            
+            if (empty($this->getSphinxArray($request))) {
+                $dataArray['emptySphinxConfig'] = $this->getEmptySphinxArray();
+            } else {
+                $productsCollection = $this->getProductsCollection($request);
+                if ($productsCollection->isEmpty() === true) {
+                    if ($productsCollection->pagination->totalCount > 0) {
+                        throw new NotFoundHttpException($this->error404());
+                    }
+                    $dataArray['emptyConfig'] = $this->getEmptyProductsArray();
+                } else {
+                    $dataArray['productsConfig'] = $this->getProductsArray($request);
+                    $dataArray['paginationConfig'] = $this->getPaginationArray($request);
+                }
+                $dataArray['filtersConfig'] = $this->getFiltersArray($request);
+            }
+            
+            $dataArray['breadcrumbsConfig'] = $this->getBreadcrumbsArray($request);
+                
+            return $dataArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
     
     /**
      * Возвращает массив конфигурации для виджета CategoriesBreadcrumbsWidget
@@ -135,84 +183,17 @@ class ProductsListSearchService extends AbstractBaseService
     }
     
     /**
-     * Обрабатывает запрос на поиск данных для 
-     * формирования HTML страницы каталога товаров
-     * @param array $request
+     * Возвращает массив конфигурации для виджета FiltersWidget
+     * @param array $request массив данных запроса 
+     * @return array
      */
-    public function handle($request): array
+    private function getFiltersArray(array $request): array
     {
         try {
-            if (empty($request[\Yii::$app->params['searchKey']])) {
-                throw new ErrorException($this->emptyError('searchKey'));
-            }
-            
-            $dataArray = [];
-            
-            $dataArray['userConfig'] = $this->getUserArray();
-            $dataArray['cartConfig'] = $this->getCartArray();
-            $dataArray['currencyConfig'] = $this->getCurrencyArray();
-            $dataArray['searchConfig'] = $this->getSearchArray();
-            $dataArray['menuConfig'] = $this->getCategoriesArray();
-            
-            $dataArray['breadcrumbsConfig'] = $this->getBreadcrumbsArray($request);
-            
-            if (empty($this->getSphinxArray($request))) {
-                $dataArray['emptySphinxConfig'] = $this->getEmptySphinxArray();
-            } else {
-                $productsCollection = $this->getProductsCollection($request);
+            if (empty($this->filtersArray)) {
+                $dataArray = [];
                 
-                if ($productsCollection->isEmpty() === true) {
-                    if ($productsCollection->pagination->totalCount > 0) {
-                        throw new NotFoundHttpException($this->error404());
-                    }
-                    $dataArray['emptyConfig'] = $this->getEmptyProductsArray();
-                } else {
-                    $dataArray['productsConfig'] = $this->getProductsArray($request);
-                }
-            }
-            
-            # Данные для вывода breadcrumbs
-            
-            //$dataArray['breadcrumbsConfig']['text'] = $request[\Yii::$app->params['searchKey']] ?? null;
-            
-            # Данные Sphinxsearch
-            
-            /*$finder = new SphinxFinder([
-                'search'=>$request[\Yii::$app->params['searchKey']] ?? null,
-            ]);
-            $sphinxArray = $finder->find();*/
-            
-            if (!empty($sphinxArray)) {
-                
-                # Данные для вывода списка товаров
-                
-                /*$finder = new ProductsSphinxFinder([
-                    'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
-                    'page'=>$request[\Yii::$app->params['pagePointer']] ?? 0,
-                    'filters'=>$filtersModel
-                ]);
-                $productsCollection = $finder->find();*/
-                
-                /*if ($productsCollection->isEmpty() === true) {
-                    if ($productsCollection->pagination->totalCount > 0) {
-                        throw new NotFoundHttpException($this->error404());
-                    }
-                    $dataArray['emptyConfig']['view'] = 'empty-products.twig';
-                } else {
-                    $dataArray['productsConfig']['products'] = $productsCollection;
-                    $dataArray['productsConfig']['currency'] = $this->currentCurrency();
-                    $dataArray['productsConfig']['view'] = 'products-list.twig';
-                }*/
-                
-                # Пагинатор
-                
-                if (empty($productsCollection->pagination)) {
-                    throw new ErrorException($this->emptyError('pagination'));
-                }
-                $dataArray['paginationConfig']['pagination'] = $productsCollection->pagination;
-                $dataArray['paginationConfig']['view'] = 'pagination.twig';
-                
-                # Данные для вывода фильтров каталога
+                $sphinxArray = $this->getSphinxArray($request);
                 
                 $finder = new ColorsFilterSphinxFinder([
                     'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
@@ -222,7 +203,7 @@ class ProductsListSearchService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('colorsArray'));
                 }
                 ArrayHelper::multisort($colorsArray, 'color');
-                $dataArray['filtersConfig']['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
+                $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
                 
                 $finder = new SizesFilterSphinxFinder([
                     'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
@@ -232,7 +213,7 @@ class ProductsListSearchService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('sizesArray'));
                 }
                 ArrayHelper::multisort($sizesArray, 'size');
-                $dataArray['filtersConfig']['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
+                $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
                 
                 $finder = new BrandsFilterSphinxFinder([
                     'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
@@ -242,7 +223,7 @@ class ProductsListSearchService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('brandsArray'));
                 }
                 ArrayHelper::multisort($brandsArray, 'brand');
-                $dataArray['filtersConfig']['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
+                $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
                 
                 $finder = new SortingFieldsFinder();
                 $sortingFieldsArray = $finder->find();
@@ -250,7 +231,7 @@ class ProductsListSearchService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('sortingFieldsArray'));
                 }
                 ArrayHelper::multisort($sortingFieldsArray, 'value');
-                $dataArray['filtersConfig']['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
+                $dataArray['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
                 
                 $finder = new SortingTypesFinder();
                 $sortingTypesArray = $finder->find();
@@ -258,9 +239,9 @@ class ProductsListSearchService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('sortingTypesArray'));
                 }
                 ArrayHelper::multisort($sortingTypesArray, 'value');
-                $dataArray['filtersConfig']['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
+                $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
                 
-                $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel->toArray())));
+                $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($this->getFiltersModel()->toArray())));
                 if (empty($form->sortingField)) {
                     foreach ($sortingFieldsArray as $item) {
                         if ($item['name'] === \Yii::$app->params['sortingField']) {
@@ -275,16 +256,13 @@ class ProductsListSearchService extends AbstractBaseService
                         }
                     }
                 }
-                $dataArray['filtersConfig']['form'] = $form;
+                $dataArray['form'] = $form;
+                $dataArray['view'] = 'products-filters.twig';
                 
-                $dataArray['filtersConfig']['view'] = 'products-filters.twig';
-            } else {
-                //$dataArray['emptySphinxConfig']['view'] = 'empty-sphinx.twig';
+                $this->filtersArray = $dataArray;
             }
-                
-            return $dataArray;
-        } catch (NotFoundHttpException $e) {
-            throw $e;
+            
+            return $this->filtersArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

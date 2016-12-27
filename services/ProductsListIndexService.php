@@ -7,7 +7,8 @@ use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
-    FrontendTrait};
+    FrontendTrait,
+    ProductsListTrait};
 use app\finders\{BrandsFilterFinder,
     CategorySeocodeFinder,
     ColorsFilterFinder,
@@ -26,16 +27,12 @@ use app\collections\ProductsCollection;
  */
 class ProductsListIndexService extends AbstractBaseService
 {
-    use FrontendTrait;
+    use FrontendTrait, ProductsListTrait;
     
     /**
      * @var ProductsCollection коллекция товаров
      */
     private $productsCollection = null;
-    /**
-     * @var array данные для PaginationWidget
-     */
-    private $paginationArray = [];
     /**
      * @var array данные для CategoriesBreadcrumbsWidget
      */
@@ -70,9 +67,9 @@ class ProductsListIndexService extends AbstractBaseService
                 $dataArray['emptyConfig'] = $this->getEmptyProductsArray();
             } else {
                 $dataArray['productsConfig'] = $this->getProductsArray($request);
+                $dataArray['paginationConfig'] = $this->getPaginationArray($request);
             }
             
-            $dataArray['paginationConfig'] = $this->getPaginationArray($request);
             $dataArray['breadcrumbsConfig'] = $this->getBreadcrumbsArray($request);
             $dataArray['filtersConfig'] = $this->getFiltersArray($request);
             
@@ -103,35 +100,6 @@ class ProductsListIndexService extends AbstractBaseService
             }
             
             return $this->productsCollection;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета PaginationWidget
-     * @param array $request массив данных запроса
-     * @return array
-     */
-    private function getPaginationArray(array $request): array
-    {
-        try {
-            if (empty($this->paginationArray)) {
-                $dataArray = [];
-                
-                $pagination = $this->getProductsCollection($request)->pagination;
-                
-                if (empty($pagination)) {
-                    throw new ErrorException($this->emptyError('pagination'));
-                }
-                
-                $dataArray['pagination'] = $pagination;
-                $dataArray['view'] = 'pagination.twig';
-                
-                $this->paginationArray = $dataArray;
-            }
-            
-            return $this->paginationArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

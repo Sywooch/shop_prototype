@@ -15,8 +15,7 @@ use app\tests\sources\fixtures\{BrandsFixture,
     SizesFixture,
     SubcategoryFixture};
 use app\controllers\ProductsListController;
-use app\collections\{PaginationInterface,
-    ProductsCollection};
+use app\collections\ProductsCollection;
 use app\models\{CategoriesModel,
     CurrencyModel,
     SubcategoryModel};
@@ -58,7 +57,6 @@ class ProductsListIndexServiceTests extends TestCase
         $reflection = new \ReflectionClass(ProductsListIndexService::class);
         
         $this->assertTrue($reflection->hasProperty('productsCollection'));
-        $this->assertTrue($reflection->hasProperty('paginationArray'));
         $this->assertTrue($reflection->hasProperty('breadcrumbsArray'));
         $this->assertTrue($reflection->hasProperty('filtersArray'));
     }
@@ -157,44 +155,6 @@ class ProductsListIndexServiceTests extends TestCase
 
         $session->remove($key);
         $session->close();
-    }
-    
-    /**
-     * Тестирует метод ProductsListIndexService::getPaginationArray
-     * если отсутствует параметр $request
-     * @expectedException TypeError
-     */
-    public function testGetPaginationArrayEmptyRequest()
-    {
-        $service = new ProductsListIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getPaginationArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-    }
-    
-    /**
-     * Тестирует метод ProductsListIndexService::getPaginationArray
-     */
-    public function testGetPaginationArray()
-    {
-        $request = [
-            \Yii::$app->params['categoryKey']=>self::$dbClass->categories['category_1'],
-            \Yii::$app->params['subcategoryKey']=>self::$dbClass->subcategory['subcategory_1'],
-            \Yii::$app->params['pagePointer']=>2,
-        ];
-        
-        $service = new ProductsListIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getPaginationArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('pagination', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
-        $this->assertInternalType('string', $result['view']);
     }
     
     /**

@@ -8,7 +8,8 @@ use app\services\{ProductsListIndexService,
     ProductsListSearchService};
 
 /**
- * Обрабатывает запросы на получение списка продуктов
+ * Обрабатывает запросы на получение списка продуктов 
+ * в ответ на поисковый запрос
  */
 class ProductsListController extends Controller
 {
@@ -20,11 +21,11 @@ class ProductsListController extends Controller
                 'service'=>new ProductsListIndexService(),
                 'view'=>'products-list.twig'
             ],
-            /*'search'=>[
+            'search'=>[
                 'class'=>SearchAction::class,
                 'service'=>new ProductsListSearchService(),
                 'view'=>'products-search.twig'
-            ],*/
+            ],
         ];
     }
 }

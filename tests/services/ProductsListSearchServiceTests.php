@@ -44,286 +44,323 @@ class ProductsListSearchServiceTests extends TestCase
     }
     
     /**
+     * Тестирует свойства ProductsListSearchService
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(ProductsListSearchService::class);
+        
+        $this->assertTrue($reflection->hasProperty('breadcrumbsArray'));
+        $this->assertTrue($reflection->hasProperty('sphinxArray'));
+        $this->assertTrue($reflection->hasProperty('emptySphinxArray'));
+        $this->assertTrue($reflection->hasProperty('productsCollection'));
+        $this->assertTrue($reflection->hasProperty('filtersArray'));
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getBreadcrumbsArray
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetBreadcrumbsArrayEmptyRequest()
+    {
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getBreadcrumbsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getBreadcrumbsArray
+     */
+    public function testGetBreadcrumbsArray()
+    {
+        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
+        
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getBreadcrumbsArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('text', $result);
+        $this->assertInternalType('string', $result['text']);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getSphinxArray
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetSphinxArrayEmptyRequest()
+    {
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getSphinxArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getSphinxArray
+     */
+    public function testGetSphinxArray()
+    {
+        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
+        
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getSphinxArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getEmptySphinxArray
+     */
+    public function testGetEmptySphinxArray()
+    {
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getEmptySphinxArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInternalType('string', $result['view']);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getProductsCollection
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetProductsCollectionEmptyRequest()
+    {
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getProductsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getProductsCollection
+     */
+    public function testGetProductsCollection()
+    {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
+        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
+        
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getProductsCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInstanceOf(ProductsCollection::class, $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getFiltersArray
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetFiltersArrayEmptyRequest()
+    {
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getFiltersArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::getFiltersArray
+     */
+    public function testGetFiltersArray()
+    {
+        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
+        
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'getFiltersArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('colors', $result);
+        $this->assertArrayHasKey('sizes', $result);
+        $this->assertArrayHasKey('brands', $result);
+        $this->assertArrayHasKey('sortingFields', $result);
+        $this->assertArrayHasKey('sortingTypes', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInternalType('array', $result['colors']);
+        $this->assertInternalType('array', $result['sizes']);
+        $this->assertInternalType('array', $result['brands']);
+        $this->assertInternalType('array', $result['sortingFields']);
+        $this->assertInternalType('array', $result['sortingTypes']);
+        $this->assertInstanceOf(FiltersForm::class, $result['form']);
+        $this->assertInternalType('string', $result['view']);
+    }
+    
+    /**
      * Тестирует метод ProductsListSearchService::handle
-     * если поисковый запрос пуст
+     * если отсутствует параметр $request
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: searchKey
      */
-    public function testHandleEmptySearch()
+    public function testHandleEmptyRequest()
     {
-        $request = [];
-        
         $service = new ProductsListSearchService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionMethod($service, 'handle');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
     }
     
     /**
      * Тестирует метод ProductsListSearchService::handle
-     * страница === 0, фильтры отсутствуют,
-     * поиск не дал результатов
+     * если sphinx ничего не нашел
      */
-    public function testHandleNotFound()
+    public function testHandleEmptySphinx()
     {
-         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        $request = [\Yii::$app->params['searchKey']=>'то чего нет'];
+        $request = [\Yii::$app->params['searchKey']=>'abrakadabra'];
         
         $service = new ProductsListSearchService();
-        $result = $service->handle($request);
         
-        $this->assertNotEmpty($result);
+        $reflection = new \ReflectionMethod($service, 'handle');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
         $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('breadcrumbsConfig', $result);
-        $this->assertArrayHasKey('text', $result['breadcrumbsConfig']);
-        $this->assertInternalType('string', $result['breadcrumbsConfig']['text']);
-        
+        $this->assertArrayHasKey('userConfig', $result);
+        $this->assertArrayHasKey('cartConfig', $result);
+        $this->assertArrayHasKey('currencyConfig', $result);
+        $this->assertArrayHasKey('searchConfig', $result);
+        $this->assertArrayHasKey('menuConfig', $result);
         $this->assertArrayHasKey('emptySphinxConfig', $result);
-        $this->assertArrayHasKey('view', $result['emptySphinxConfig']);
-        $this->assertInternalType('string', $result['emptySphinxConfig']['view']);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::handle
-     * страница === 0, фильтры отсутствуют,
-     * выборка не пуста
-     */
-    public function testHandle()
-    {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
-        
-        $service = new ProductsListSearchService();
-        $result = $service->handle($request);
-        
-        $this->assertNotEmpty($result);
-        $this->assertInternalType('array', $result);
-        
         $this->assertArrayHasKey('breadcrumbsConfig', $result);
-        $this->assertArrayHasKey('text', $result['breadcrumbsConfig']);
-        $this->assertInternalType('string', $result['breadcrumbsConfig']['text']);
-        
-        $this->assertArrayNotHasKey('emptySphinxConfig', $result);
         
         $this->assertArrayNotHasKey('emptyConfig', $result);
-        
-        $this->assertArrayHasKey('productsConfig', $result);
-        $this->assertArrayHasKey('products', $result['productsConfig']);
-        $this->assertArrayHasKey('currency', $result['productsConfig']);
-        $this->assertArrayHasKey('view', $result['productsConfig']);
-        $this->assertInstanceOf(ProductsCollection::class, $result['productsConfig']['products']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['productsConfig']['currency']);
-        $this->assertInternalType('string', $result['productsConfig']['view']);
-        
-        $this->assertArrayHasKey('paginationConfig', $result);
-        $this->assertArrayHasKey('pagination', $result['paginationConfig']);
-        $this->assertArrayHasKey('view', $result['paginationConfig']);
-        $this->assertInstanceOf(LightPagination::class, $result['paginationConfig']['pagination']);
-        $this->assertInternalType('string', $result['paginationConfig']['view']);
-        
-        $this->assertArrayHasKey('filtersConfig', $result);
-        $this->assertArrayHasKey('colors', $result['filtersConfig']);
-        $this->assertArrayHasKey('sizes', $result['filtersConfig']);
-        $this->assertArrayHasKey('brands', $result['filtersConfig']);
-        $this->assertArrayHasKey('sortingFields', $result['filtersConfig']);
-        $this->assertArrayHasKey('sortingTypes', $result['filtersConfig']);
-        $this->assertArrayHasKey('form', $result['filtersConfig']);
-        $this->assertArrayHasKey('view', $result['filtersConfig']);
-        $this->assertInternalType('array', $result['filtersConfig']['colors']);
-        $this->assertInternalType('array', $result['filtersConfig']['sizes']);
-        $this->assertInternalType('array', $result['filtersConfig']['brands']);
-        $this->assertInternalType('array', $result['filtersConfig']['sortingFields']);
-        $this->assertInternalType('array', $result['filtersConfig']['sortingTypes']);
-        $this->assertInstanceOf(FiltersForm::class, $result['filtersConfig']['form']);
-        $this->assertInternalType('string', $result['filtersConfig']['view']);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::handle
-     * страница === 0, фильтры отсутствуют,
-     * выборка пуста
-     */
-    public function testHandleEmptyProducts()
-    {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
-        
-        $session = \Yii::$app->session;
-        $session->open();
-        $session->set(HashHelper::createFiltersKey(Url::current()), [
-            'colors'=>[18],
-            'sizes'=>[15],
-            'brands'=>[10],
-        ]);
-        
-        $service = new ProductsListSearchService();
-        $result = $service->handle($request);
-        
-        $this->assertNotEmpty($result);
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('breadcrumbsConfig', $result);
-        $this->assertArrayHasKey('text', $result['breadcrumbsConfig']);
-        $this->assertInternalType('string', $result['breadcrumbsConfig']['text']);
-        
-        $this->assertArrayHasKey('emptyConfig', $result);
-        $this->assertArrayHasKey('view', $result['emptyConfig']);
-        $this->assertInternalType('string', $result['emptyConfig']['view']);
-        
         $this->assertArrayNotHasKey('productsConfig', $result);
-        
-        $this->assertArrayHasKey('paginationConfig', $result);
-        $this->assertArrayHasKey('pagination', $result['paginationConfig']);
-        $this->assertArrayHasKey('view', $result['paginationConfig']);
-        $this->assertInstanceOf(LightPagination::class, $result['paginationConfig']['pagination']);
-        $this->assertInternalType('string', $result['paginationConfig']['view']);
-        
-        $this->assertArrayHasKey('filtersConfig', $result);
-        $this->assertArrayHasKey('colors', $result['filtersConfig']);
-        $this->assertArrayHasKey('sizes', $result['filtersConfig']);
-        $this->assertArrayHasKey('brands', $result['filtersConfig']);
-        $this->assertArrayHasKey('sortingFields', $result['filtersConfig']);
-        $this->assertArrayHasKey('sortingTypes', $result['filtersConfig']);
-        $this->assertArrayHasKey('form', $result['filtersConfig']);
-        $this->assertArrayHasKey('view', $result['filtersConfig']);
-        $this->assertInternalType('array', $result['filtersConfig']['colors']);
-        $this->assertInternalType('array', $result['filtersConfig']['sizes']);
-        $this->assertInternalType('array', $result['filtersConfig']['brands']);
-        $this->assertInternalType('array', $result['filtersConfig']['sortingFields']);
-        $this->assertInternalType('array', $result['filtersConfig']['sortingTypes']);
-        $this->assertInstanceOf(FiltersForm::class, $result['filtersConfig']['form']);
-        $this->assertInternalType('string', $result['filtersConfig']['view']);
-        
-        $session->remove(HashHelper::createFiltersKey(Url::current()));
-        $session->close();
+        $this->assertArrayNotHasKey('paginationConfig', $result);
+        $this->assertArrayNotHasKey('filtersConfig', $result);
     }
     
     /**
      * Тестирует метод ProductsListSearchService::handle
-     * страница === 0, заданы,
-     * выборка не пуста
+     * если запрошена несуществующая страница
+     * @expectedException \yii\web\NotFoundHttpException
+     * @expectedExceptionMessage Такой страницы не существует
      */
-    public function testHandleFilters()
+    public function testHandle404()
     {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
-        
-        $session = \Yii::$app->session;
-        $session->open();
-        $session->set(HashHelper::createFiltersKey(Url::current()), [
-            'colors'=>[1, 2, 3, 4, 5, 6],
-            'sizes'=>[1, 2, 3, 4, 5, 6],
-            'brands'=>[1, 2, 3, 4, 5, 6],
-        ]);
-        
-        $service = new ProductsListSearchService();
-        $result = $service->handle($request);
-        
-        $this->assertNotEmpty($result);
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('breadcrumbsConfig', $result);
-        $this->assertArrayHasKey('text', $result['breadcrumbsConfig']);
-        $this->assertInternalType('string', $result['breadcrumbsConfig']['text']);
-        
-        $this->assertArrayNotHasKey('emptySphinxConfig', $result);
-        
-        $this->assertArrayNotHasKey('emptyConfig', $result);
-        
-        $this->assertArrayHasKey('productsConfig', $result);
-        $this->assertArrayHasKey('products', $result['productsConfig']);
-        $this->assertArrayHasKey('currency', $result['productsConfig']);
-        $this->assertArrayHasKey('view', $result['productsConfig']);
-        $this->assertInstanceOf(ProductsCollection::class, $result['productsConfig']['products']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['productsConfig']['currency']);
-        $this->assertInternalType('string', $result['productsConfig']['view']);
-        
-        $this->assertArrayHasKey('paginationConfig', $result);
-        $this->assertArrayHasKey('pagination', $result['paginationConfig']);
-        $this->assertArrayHasKey('view', $result['paginationConfig']);
-        $this->assertInstanceOf(LightPagination::class, $result['paginationConfig']['pagination']);
-        $this->assertInternalType('string', $result['paginationConfig']['view']);
-        
-        $this->assertArrayHasKey('filtersConfig', $result);
-        $this->assertArrayHasKey('colors', $result['filtersConfig']);
-        $this->assertArrayHasKey('sizes', $result['filtersConfig']);
-        $this->assertArrayHasKey('brands', $result['filtersConfig']);
-        $this->assertArrayHasKey('sortingFields', $result['filtersConfig']);
-        $this->assertArrayHasKey('sortingTypes', $result['filtersConfig']);
-        $this->assertArrayHasKey('form', $result['filtersConfig']);
-        $this->assertArrayHasKey('view', $result['filtersConfig']);
-        $this->assertInternalType('array', $result['filtersConfig']['colors']);
-        $this->assertInternalType('array', $result['filtersConfig']['sizes']);
-        $this->assertInternalType('array', $result['filtersConfig']['brands']);
-        $this->assertInternalType('array', $result['filtersConfig']['sortingFields']);
-        $this->assertInternalType('array', $result['filtersConfig']['sortingTypes']);
-        $this->assertInstanceOf(FiltersForm::class, $result['filtersConfig']['form']);
-        $this->assertInternalType('string', $result['filtersConfig']['view']);
-        
-        $session->remove(HashHelper::createFiltersKey(Url::current()));
-        $session->close();
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::handle
-     * задана страница, фильтры отсутствуют,
-     * выборка не пуста
-     */
-    public function testHandlePage()
-    {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
         $request = [
             \Yii::$app->params['searchKey']=>'пиджак',
-            \Yii::$app->params['pagePointer']=>2,
+            \Yii::$app->params['pagePointer']=>14,
         ];
         
         $service = new ProductsListSearchService();
-        $result = $service->handle($request);
         
-        $this->assertNotEmpty($result);
+        $reflection = new \ReflectionMethod($service, 'handle');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::handle
+     * если после применения фильтров ничего не найдено
+     */
+    public function testHandleTooMuchFilters()
+    {
+        $key = HashHelper::createFiltersKey(Url::current());
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set($key, [
+            'colors'=>[12],
+            'sizes'=>[77],
+            'brands'=>[9],
+        ]);
+        
+        $request = [
+            \Yii::$app->params['searchKey']=>'пиджак',
+            \Yii::$app->params['pagePointer']=>14,
+        ];
+        
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'handle');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
         $this->assertInternalType('array', $result);
-        
+        $this->assertArrayHasKey('userConfig', $result);
+        $this->assertArrayHasKey('cartConfig', $result);
+        $this->assertArrayHasKey('currencyConfig', $result);
+        $this->assertArrayHasKey('searchConfig', $result);
+        $this->assertArrayHasKey('menuConfig', $result);
+        $this->assertArrayHasKey('emptyConfig', $result);
+        $this->assertArrayHasKey('filtersConfig', $result);
         $this->assertArrayHasKey('breadcrumbsConfig', $result);
-        $this->assertArrayHasKey('text', $result['breadcrumbsConfig']);
-        $this->assertInternalType('string', $result['breadcrumbsConfig']['text']);
         
         $this->assertArrayNotHasKey('emptySphinxConfig', $result);
+        $this->assertArrayNotHasKey('productsConfig', $result);
+        $this->assertArrayNotHasKey('paginationConfig', $result);
         
+        $session->remove($key);
+        $session->close();
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::handle
+     */
+    public function testHandle()
+    {
+        $key = HashHelper::createFiltersKey(Url::current());
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set($key, [
+            'colors'=>[1, 2, 3, 4, 5],
+            'sizes'=>[1, 2, 3, 4, 5],
+            'brands'=>[1, 2, 3, 4, 5],
+        ]);
+        
+        $request = [
+            \Yii::$app->params['searchKey']=>'пиджак',
+        ];
+        
+        $service = new ProductsListSearchService();
+        
+        $reflection = new \ReflectionMethod($service, 'handle');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service, $request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('userConfig', $result);
+        $this->assertArrayHasKey('cartConfig', $result);
+        $this->assertArrayHasKey('currencyConfig', $result);
+        $this->assertArrayHasKey('searchConfig', $result);
+        $this->assertArrayHasKey('menuConfig', $result);
+        $this->assertArrayHasKey('productsConfig', $result);
+        $this->assertArrayHasKey('paginationConfig', $result);
+        $this->assertArrayHasKey('filtersConfig', $result);
+        $this->assertArrayHasKey('breadcrumbsConfig', $result);
+        
+        $this->assertArrayNotHasKey('emptySphinxConfig', $result);
         $this->assertArrayNotHasKey('emptyConfig', $result);
         
-        $this->assertArrayHasKey('productsConfig', $result);
-        $this->assertArrayHasKey('products', $result['productsConfig']);
-        $this->assertArrayHasKey('currency', $result['productsConfig']);
-        $this->assertArrayHasKey('view', $result['productsConfig']);
-        $this->assertInstanceOf(ProductsCollection::class, $result['productsConfig']['products']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['productsConfig']['currency']);
-        $this->assertInternalType('string', $result['productsConfig']['view']);
-        
-        $this->assertArrayHasKey('paginationConfig', $result);
-        $this->assertArrayHasKey('pagination', $result['paginationConfig']);
-        $this->assertArrayHasKey('view', $result['paginationConfig']);
-        $this->assertInstanceOf(LightPagination::class, $result['paginationConfig']['pagination']);
-        $this->assertInternalType('string', $result['paginationConfig']['view']);
-        
-        $this->assertArrayHasKey('filtersConfig', $result);
-        $this->assertArrayHasKey('colors', $result['filtersConfig']);
-        $this->assertArrayHasKey('sizes', $result['filtersConfig']);
-        $this->assertArrayHasKey('brands', $result['filtersConfig']);
-        $this->assertArrayHasKey('sortingFields', $result['filtersConfig']);
-        $this->assertArrayHasKey('sortingTypes', $result['filtersConfig']);
-        $this->assertArrayHasKey('form', $result['filtersConfig']);
-        $this->assertArrayHasKey('view', $result['filtersConfig']);
-        $this->assertInternalType('array', $result['filtersConfig']['colors']);
-        $this->assertInternalType('array', $result['filtersConfig']['sizes']);
-        $this->assertInternalType('array', $result['filtersConfig']['brands']);
-        $this->assertInternalType('array', $result['filtersConfig']['sortingFields']);
-        $this->assertInternalType('array', $result['filtersConfig']['sortingTypes']);
-        $this->assertInstanceOf(FiltersForm::class, $result['filtersConfig']['form']);
-        $this->assertInternalType('string', $result['filtersConfig']['view']);
+        $session->remove($key);
+        $session->close();
     }
     
     public static function tearDownAfterClass()
