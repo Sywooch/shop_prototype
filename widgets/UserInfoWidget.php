@@ -46,7 +46,7 @@ class UserInfoWidget extends AbstractBaseWidget
             $renderArray['header'] = \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>isset($user) ? $user->email->email : \Yii::t('base', 'Guest')]);
             $renderArray['authenticated'] = isset($user) ? true : false;
             
-            $renderArray['loginHref'] = Url::to(['/user/login']);
+            $renderArray['loginHref'] = Url::to(['/user/login-form']);
             $renderArray['loginText'] = \Yii::t('base', 'Login');
             $renderArray['registrationHref'] = Url::to(['/user/registration']);
             $renderArray['registrationText'] = \Yii::t('base', 'Registration');

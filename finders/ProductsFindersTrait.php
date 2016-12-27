@@ -102,7 +102,7 @@ trait ProductsFindersTrait
         try {
             $sortingField = $this->filters->sortingField ?? \Yii::$app->params['sortingField'];
             $sortingType = $this->filters->sortingType ?? \Yii::$app->params['sortingType'];
-            $query->orderBy(['[[products.' . $sortingField . ']]'=>$sortingType]);
+            $query->orderBy(['[[products.' . $sortingField . ']]'=>(int) $sortingType]);
             
             return $query;
         } catch (\Throwable $t) {

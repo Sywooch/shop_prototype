@@ -2,15 +2,17 @@
 
 <p><strong>{{ header }}</strong></p>
 
-<ul>
-    {% for comment in comments %}
-        <li>
-            {{ comment.name | raw }}</br>
-            {{ comment.date | raw }}</br>
-            {{ comment.text | raw }}</br>
-        </li>
-    {% endfor %}
-</ul>
+{% if comments %}
+    <ul>
+        {% for comment in comments %}
+            <li>
+                {{ comment.name | raw }}</br>
+                {{ comment.date | raw }}</br>
+                {{ comment.text | raw }}</br>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
 {% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'POST'}) %}
     {{ form.field(modelForm, 'name') | raw }}

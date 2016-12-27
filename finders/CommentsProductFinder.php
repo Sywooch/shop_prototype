@@ -8,7 +8,7 @@ use app\models\{CommentsModel,
     ProductsModel};
 
 /**
- * Возвращает похожие товары
+ * Возвращает массив комментариев к товару
  */
 class CommentsProductFinder extends AbstractBaseFinder
 {

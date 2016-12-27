@@ -1,0 +1,8 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('app/widgets/UserLoginWidget') }}
+
+{{ include('@theme/common/frontend-common.twig') }}
+
+{{ user_login_widget_widget(formConfig) }}
+

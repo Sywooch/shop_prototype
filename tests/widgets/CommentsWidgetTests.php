@@ -87,18 +87,6 @@ class CommentsWidgetTests extends TestCase
     
     /**
      * Тестирует метод CommentsWidget::run
-     * если пуст CommentsWidget::comments
-     */
-    public function testRunEmptyComponents()
-    {
-        $widget = new CommentsWidget();
-        $result = $widget->run();
-        
-        $this->assertSame('', $result);
-    }
-    
-    /**
-     * Тестирует метод CommentsWidget::run
      * если пуст CommentsWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: form
@@ -106,11 +94,6 @@ class CommentsWidgetTests extends TestCase
     public function testRunEmptyForm()
     {
         $widget = new CommentsWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'comments');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, [1]);
-        
         $result = $widget->run();
     }
     
@@ -124,10 +107,6 @@ class CommentsWidgetTests extends TestCase
     {
         $widget = new CommentsWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'comments');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, [1]);
-        
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, new class() {});
@@ -137,6 +116,42 @@ class CommentsWidgetTests extends TestCase
     
     /**
      * Тестирует метод CommentsWidget::run
+     * если отсутствуют комментарии
+     */
+    public function testRunEmptyCommants()
+    {
+        \Yii::$app->controller = new ProductDetailController('product-detail', \Yii::$app);
+        
+        $comments = [];
+        
+        $form = new class() extends CommentForm {};
+        
+        $widget = new CommentsWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'comments');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $comments);
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, 'comments.twig');
+        
+        $result = $widget->run();
+        
+        $this->assertRegExp('#<p><strong>Комментарии</strong></p>#', $result);
+        $this->assertRegExp('#<form id="add-comment-form"#', $result);
+        $this->assertRegExp('#<input type="text"#', $result);
+        $this->assertRegExp('#<textarea#', $result);
+        $this->assertRegExp('#<input type="submit" value="Отправить">#', $result);
+    }
+    
+    /**
+     * Тестирует метод CommentsWidget::run
+     * если добавлены комментарии
      */
     public function testRun()
     {

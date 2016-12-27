@@ -28,9 +28,6 @@ class CommentsWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->comments)) {
-                return '';
-            }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }

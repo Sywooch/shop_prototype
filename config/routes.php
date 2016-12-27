@@ -20,7 +20,7 @@ $routes = [
     'search'=>'products-list/search',
     
     # Пользователь
-    'login'=>'user/login',
+    'login'=>'user/login-form',
     'logout'=>'user/logout',
     'registration'=>'user/registration',
     'restore'=>'user/restore',

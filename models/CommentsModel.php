@@ -6,7 +6,7 @@ use app\models\AbstractBaseModel;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Представляет данные таблицы related_products
+ * Представляет данные таблицы comments
  */
 class CommentsModel extends AbstractBaseModel
 {
