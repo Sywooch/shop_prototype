@@ -19,6 +19,7 @@ class SearchBreadcrumbsWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('text'));
     }
+    
     /**
      * Тестирует метод SearchBreadcrumbsWidget::run
      */

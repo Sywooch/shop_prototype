@@ -33,6 +33,7 @@ class UserLoginFormService extends AbstractBaseService
             $dataArray['currencyConfig'] = $this->getCurrencyArray();
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
+            
             $dataArray['formConfig'] = $this->getUserLoginArray();
             
             return $dataArray;

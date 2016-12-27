@@ -105,11 +105,13 @@ class CommentsWidgetTests extends TestCase
      */
     public function testRunEmptyView()
     {
+        $form = new class() extends CommentForm {};
+        
         $widget = new CommentsWidget();
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, new class() {});
+        $result = $reflection->setValue($widget, $form);
         
         $result = $widget->run();
     }

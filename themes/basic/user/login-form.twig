@@ -1,8 +1,11 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/UserLoginWidget') }}
+{{ use('app/widgets/LoginBreadcrumbsWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
+
+{{ login_breadcrumbs_widget_widget() }}
 
 {{ user_login_widget_widget(formConfig) }}
 

@@ -23,7 +23,7 @@ class UserLoginWidget extends AbstractBaseWidget
     public $view;
     
     /**
-     * Конструирует HTML строку с информацией о текущем пользователе
+     * Конструирует HTML строку с формой аутентификации
      * @return string
      */
     public function run()
