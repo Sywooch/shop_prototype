@@ -1,0 +1,75 @@
+<?php
+
+namespace app\tests\validators;
+
+use PHPUnit\Framework\TestCase;
+use app\validators\PasswordCorrectAuthValidator;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\{EmailsFixture,
+    UsersFixture};
+use yii\base\Model;
+
+/**
+ * Тестирует класс PasswordCorrectAuthValidator
+ */
+class PasswordCorrectAuthValidatorTests extends TestCase
+{
+    private static $_dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'emails'=>EmailsFixture::class,
+                'users'=>UsersFixture::class,
+            ],
+        ]);
+        self::$_dbClass->loadFixtures();
+    }
+    
+    /**
+     * Тестирует метод PasswordCorrectAuthValidator::validateAttribute
+     */
+    public function testValidateAttribute()
+    {
+        $fixtureEmail = self::$_dbClass->emails['email_1'];
+        $fixtureUser = self::$_dbClass->users['user_1'];
+        
+        $model = new class() extends Model {
+            public $email;
+            public $password = 'wrong';
+        };
+        
+        $reflection = new \ReflectionProperty($model, 'email');
+        $reflection->setValue($model, $fixtureEmail['email']);
+        
+        $validator = new PasswordCorrectAuthValidator();
+        $validator->validateAttribute($model, 'password');
+        
+        $this->assertEquals(1, count($model->errors));
+        $this->assertTrue(array_key_exists('password', $model->errors));
+        
+        $model = new class() extends Model {
+            public $email;
+            public $password;
+        };
+        
+        \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password')->bindValue(':password', password_hash($fixtureUser['password'], PASSWORD_DEFAULT))->execute();
+        
+        $reflection = new \ReflectionProperty($model, 'email');
+        $reflection->setValue($model, $fixtureEmail['email']);
+        
+        $reflection = new \ReflectionProperty($model, 'password');
+        $reflection->setValue($model, $fixtureUser['password']);
+        
+        $validator = new PasswordCorrectAuthValidator();
+        $validator->validateAttribute($model, 'password');
+        
+        $this->assertEquals(0, count($model->errors));
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->unloadFixtures();
+    }
+}

@@ -2,14 +2,16 @@
 
 namespace app\services;
 
+use yii\helpers\Url;
 use app\services\{AbstractBaseService,
     FrontendTrait};
 use app\forms\UserLoginForm;
+use app\finders\UserEmailFinder;
 
 /**
  * Формирует массив данных для рендеринга страницы формы аутентификации
  */
-class UserLoginFormService extends AbstractBaseService
+class UserLoginService extends AbstractBaseService
 {
     use FrontendTrait;
     
@@ -17,15 +19,34 @@ class UserLoginFormService extends AbstractBaseService
      * @var array данные для UserLoginWidget
      */
     private $userLoginArray = [];
+    /**
+     * @var UserLoginForm
+     */
+    private $form = null;
     
     /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML формы аутентификации
      * @param array $request
      */
-    public function handle($request): array
+    public function handle($request)
     {
         try {
+            $this->form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
+            
+            if ($request->isPost) {
+                if ($this->form->load($request->post()) === true) {
+                    if ($this->form->validate() === true) {
+                        $finder = new UserEmailFinder([
+                            'email'=>$this->form->email,
+                        ]);
+                        $usersModel = $finder->find();
+                        \Yii::$app->user->login($usersModel);
+                        return Url::to(['/products-list/index']);
+                    }
+                }
+            }
+            
             $dataArray = [];
             
             $dataArray['userConfig'] = $this->getUserArray();
@@ -52,7 +73,7 @@ class UserLoginFormService extends AbstractBaseService
             if (empty($this->userLoginArray)) {
                 $dataArray = [];
                 
-                $dataArray['form'] = new UserLoginForm();
+                $dataArray['form'] = $this->form;
                 $dataArray['view'] = 'login-form.twig';
                 
                 $this->userLoginArray = $dataArray;

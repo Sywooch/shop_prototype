@@ -4,12 +4,28 @@ namespace app\tests\forms;
 
 use PHPUnit\Framework\TestCase;
 use app\forms\UserLoginForm;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\{EmailsFixture,
+    UsersFixture};
 
 /**
  * Тестирует класс UserLoginForm
  */
 class UserLoginFormTests extends TestCase
 {
+    private static $_dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'emails'=>EmailsFixture::class,
+                'users'=>UsersFixture::class,
+            ],
+        ]);
+        self::$_dbClass->loadFixtures();
+    }
+    
     /**
      * Тестирует свойства UserLoginForm
      */
@@ -31,7 +47,7 @@ class UserLoginFormTests extends TestCase
         $form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
         $form->attributes = [
             'email'=>'some@some.com',
-            'password'=>'hGju97Uy'
+            'password'=>'password'
         ];
         
         $reflection = new \ReflectionProperty($form, 'email');
@@ -40,7 +56,7 @@ class UserLoginFormTests extends TestCase
         
         $reflection = new \ReflectionProperty($form, 'password');
         $result = $reflection->getValue($form);
-        $this->assertSame('hGju97Uy', $result);
+        $this->assertSame('password', $result);
     }
     
     /**
@@ -48,6 +64,8 @@ class UserLoginFormTests extends TestCase
      */
     public function testRules()
     {
+        $fixtureEmail = self::$_dbClass->emails['email_1'];
+        
         $form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
         $form->validate();
         
@@ -56,11 +74,10 @@ class UserLoginFormTests extends TestCase
         $this->assertArrayHasKey('email', $form->errors);
         $this->assertArrayHasKey('password', $form->errors);
         
-        
         $form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
         $form->attributes = [
             'email'=>'some',
-            'password'=>'hGju97Uy'
+            'password'=>'password'
         ];
         $form->validate();
         
@@ -70,11 +87,18 @@ class UserLoginFormTests extends TestCase
         
         $form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
         $form->attributes = [
-            'email'=>'some@some.com',
-            'password'=>'hGju97Uy'
+            'email'=>$fixtureEmail['email'],
+            'password'=>'password'
         ];
         $form->validate();
         
-        $this->assertEmpty($form->errors);
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('password', $form->errors);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->unloadFixtures();
     }
 }

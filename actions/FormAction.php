@@ -26,6 +26,9 @@ class FormAction extends AbstractBaseAction
             if (empty($this->service)) {
                 throw new ErrorException($this->emptyError('service'));
             }
+            if (empty($this->view)) {
+                throw new ErrorException($this->emptyError('view'));
+            }
             
             $result = $this->service->handle(\Yii::$app->request);
             
@@ -33,12 +36,13 @@ class FormAction extends AbstractBaseAction
                 throw new ErrorException($this->emptyError('result'));
             }
             
-            if (is_array($result)) {
-                return $this->controller->render($this->view, $result);
-            } elseif (is_string($result)) {
-                return $this->controller->redirect($result);
-            } else {
-                throw new ErrorException($this->invalidError('result'));
+            switch (gettype($result)) {
+                case 'array':
+                    return $this->controller->render($this->view, $result);
+                case 'string':
+                    return $this->controller->redirect($result);
+                default:
+                    throw new ErrorException($this->invalidError('result'));
             }
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);

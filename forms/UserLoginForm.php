@@ -4,6 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\{UserEmailExistsAuthValidator,
+    PasswordCorrectAuthValidator};
 
 /**
  * Представляет данные формы аутентификации пользователя
@@ -36,6 +38,10 @@ class UserLoginForm extends AbstractBaseForm
         return [
             [['email', 'password'], 'required'],
             [['email'], 'email'],
+            [['email'], UserEmailExistsAuthValidator::class, 'on'=>self::GET],
+            [['password'], PasswordCorrectAuthValidator::class, 'on'=>self::GET, 'when'=>function($model, $attribute) {
+                return empty($this->errors);
+            }],
         ];
     }
 }

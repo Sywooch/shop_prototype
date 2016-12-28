@@ -23,13 +23,13 @@ class PostRedirectAction extends AbstractBaseAction
                 throw new ErrorException($this->emptyError('service'));
             }
             
-            $redirectUrl = $this->service->handle(\Yii::$app->request->post());
+            $url = $this->service->handle(\Yii::$app->request->post());
             
-            if (empty($redirectUrl)) {
-                throw new ErrorException($this->emptyError('redirectUrl'));
+            if (empty($url)) {
+                throw new ErrorException($this->emptyError('url'));
             }
             
-            return $this->controller->redirect($redirectUrl);
+            return $this->controller->redirect($url);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwServerError($t, __METHOD__);
