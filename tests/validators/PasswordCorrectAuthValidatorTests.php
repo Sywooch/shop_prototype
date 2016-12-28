@@ -49,12 +49,15 @@ class PasswordCorrectAuthValidatorTests extends TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('password', $model->errors));
         
+        $fixtureEmail = self::$_dbClass->emails['email_2'];
+        $fixtureUser = self::$_dbClass->users['user_2'];
+        
         $model = new class() extends Model {
             public $email;
             public $password;
         };
         
-        \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password')->bindValue(':password', password_hash($fixtureUser['password'], PASSWORD_DEFAULT))->execute();
+        \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password WHERE [[id]]=:id')->bindValues([':password'=>password_hash($fixtureUser['password'], PASSWORD_DEFAULT), ':id'=>$fixtureUser['id']])->execute();
         
         $reflection = new \ReflectionProperty($model, 'email');
         $reflection->setValue($model, $fixtureEmail['email']);

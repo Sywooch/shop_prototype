@@ -21,9 +21,7 @@ class UserEmailExistsAuthValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $finder = new UserEmailFinder([
-                'email'=>$model->$attribute
-            ]);
+            $finder = \Yii::$app->registry->get(UserEmailFinder::class, ['email'=>$model->$attribute]);
             $result = $finder->find();
             
             if ($result === null) {

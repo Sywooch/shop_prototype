@@ -21,9 +21,7 @@ class PasswordCorrectAuthValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $finder = new UserEmailFinder([
-                'email'=>$model->email
-            ]);
+            $finder = \Yii::$app->registry->get(UserEmailFinder::class, ['email'=>$model->email]);
             $usersModel = $finder->find();
             
             if (password_verify($model->$attribute, $usersModel->password) === false) {

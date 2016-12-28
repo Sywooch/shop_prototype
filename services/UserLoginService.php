@@ -2,6 +2,7 @@
 
 namespace app\services;
 
+use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\services\{AbstractBaseService,
     FrontendTrait};
@@ -37,10 +38,11 @@ class UserLoginService extends AbstractBaseService
             if ($request->isPost) {
                 if ($this->form->load($request->post()) === true) {
                     if ($this->form->validate() === true) {
-                        $finder = new UserEmailFinder([
-                            'email'=>$this->form->email,
-                        ]);
+                        $finder = \Yii::$app->registry->get(UserEmailFinder::class, ['email'=>$this->form->email]);
                         $usersModel = $finder->find();
+                        if (empty($usersModel)) {
+                            throw new ErrorException($this->emptyError('usersModel'));
+                        }
                         \Yii::$app->user->login($usersModel);
                         return Url::to(['/products-list/index']);
                     }

@@ -121,6 +121,10 @@ $components = [
     'currency'=>[
         'class'=>'app\models\CurrencyModel',
     ],
+    
+    'registry'=>[
+        'class'=>'app\registry\Registry',
+    ],
 ];
 
 return $components;
