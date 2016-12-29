@@ -2,7 +2,8 @@
 
 namespace app\registry;
 
-use yii\base\Object;
+use yii\base\{ErrorException,
+    Object};
 use app\exceptions\ExceptionsTrait;
 use app\helpers\HashHelper;
 
@@ -27,6 +28,13 @@ class Registry extends Object
     public function get(string $class, array $params)
     {
         try {
+            if (empty($class)) {
+                throw new ErrorException($this->emptyError('class'));
+            }
+            if (empty($params)) {
+                throw new ErrorException($this->emptyError('params'));
+            }
+            
             $key = $this->getKey(array_merge([$class], $params));
             
             if (array_key_exists($key, $this->items) === false) {
@@ -41,9 +49,20 @@ class Registry extends Object
         }
     }
     
-    private function getKey(array $params)
+    /**
+     * Создает ключ для сохранения созданного объект в реестре
+     * Ключ создается из имени класса и значений передаваемых 
+     * для создания объекта параметров
+     * @param array $params массив данных для создания ключа
+     * @return string
+     */
+    private function getKey(array $params): string
     {
         try {
+            if (empty($params)) {
+                throw new ErrorException($this->emptyError('params'));
+            }
+            
             $keyArray = [];
             
             foreach ($params as $param) {
