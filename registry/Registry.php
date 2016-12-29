@@ -74,4 +74,16 @@ class Registry extends Object
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Очищает данные Registry::items
+     */
+    public function clean()
+    {
+        try {
+            $this->items = [];
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

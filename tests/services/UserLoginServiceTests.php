@@ -113,7 +113,9 @@ class UserLoginServiceTests extends TestCase
      */
     public function testHandlePost()
     {
-         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        \Yii::$app->registry->clean();
+        
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
         $fixtureEmail = self::$dbClass->emails['email_1'];
         $fixtureUser = self::$dbClass->users['user_1'];
@@ -157,5 +159,6 @@ class UserLoginServiceTests extends TestCase
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
+        \Yii::$app->registry->clean();
     }
 }

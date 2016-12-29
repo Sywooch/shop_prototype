@@ -32,6 +32,8 @@ class UserEmailExistsAuthValidatorTests extends TestCase
      */
     public function testValidateAttribute()
     {
+        \Yii::$app->registry->clean();
+        
         $fixture = self::$_dbClass->emails['email_1'];
         
         $model = new class() extends Model {

@@ -137,4 +137,34 @@ class RegistryTests extends TestCase
         
         $this->assertSame($object_1, $object_2);
     }
+    
+    /**
+     * Тестирует метод Registry::clean
+     */
+    public function testClean()
+    {
+        $params = ['a'=>1, 'b'=>[1, 2, 3]];
+        
+        $registry = new Registry();
+        
+        $reflection = new \ReflectionProperty($registry, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($registry, $params);
+        
+        $reflection = new \ReflectionProperty($registry, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($registry);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        
+        $registry->clean();
+        
+        $reflection = new \ReflectionProperty($registry, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($registry);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertEmpty($result);
+    }
 }

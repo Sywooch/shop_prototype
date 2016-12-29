@@ -32,6 +32,8 @@ class PasswordCorrectAuthValidatorTests extends TestCase
      */
     public function testValidateAttribute()
     {
+        \Yii::$app->registry->clean();
+        
         $fixtureEmail = self::$dbClass->emails['email_1'];
         $fixtureUser = self::$dbClass->users['user_1'];
         
