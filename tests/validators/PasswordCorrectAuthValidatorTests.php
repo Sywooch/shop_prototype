@@ -14,17 +14,17 @@ use yii\base\Model;
  */
 class PasswordCorrectAuthValidatorTests extends TestCase
 {
-    private static $_dbClass;
+    private static $dbClass;
     
     public static function setUpBeforeClass()
     {
-        self::$_dbClass = new DbManager([
+        self::$dbClass = new DbManager([
             'fixtures'=>[
                 'emails'=>EmailsFixture::class,
                 'users'=>UsersFixture::class,
             ],
         ]);
-        self::$_dbClass->loadFixtures();
+        self::$dbClass->loadFixtures();
     }
     
     /**
@@ -32,8 +32,8 @@ class PasswordCorrectAuthValidatorTests extends TestCase
      */
     public function testValidateAttribute()
     {
-        $fixtureEmail = self::$_dbClass->emails['email_1'];
-        $fixtureUser = self::$_dbClass->users['user_1'];
+        $fixtureEmail = self::$dbClass->emails['email_1'];
+        $fixtureUser = self::$dbClass->users['user_1'];
         
         $model = new class() extends Model {
             public $email;
@@ -49,8 +49,8 @@ class PasswordCorrectAuthValidatorTests extends TestCase
         $this->assertEquals(1, count($model->errors));
         $this->assertTrue(array_key_exists('password', $model->errors));
         
-        $fixtureEmail = self::$_dbClass->emails['email_2'];
-        $fixtureUser = self::$_dbClass->users['user_2'];
+        $fixtureEmail = self::$dbClass->emails['email_2'];
+        $fixtureUser = self::$dbClass->users['user_2'];
         
         $model = new class() extends Model {
             public $email;
@@ -73,6 +73,6 @@ class PasswordCorrectAuthValidatorTests extends TestCase
     
     public static function tearDownAfterClass()
     {
-        self::$_dbClass->unloadFixtures();
+        self::$dbClass->unloadFixtures();
     }
 }
