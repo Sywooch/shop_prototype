@@ -104,14 +104,25 @@ class RegistryTests extends TestCase
     
     /**
      * Тестирует метод Registry::get
-     * если передан пустой массив параметров
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: params
+     * если массив параметров пуст
      */
     public function testGetEmptyParams()
     {
         $registry = new Registry();
-        $registry->get(MockClass::class, []);
+        $object_1 = $registry->get(MockClass::class);
+        
+        $this->assertInstanceOf(MockClass::class, $object_1);
+        
+        $reflection = new \ReflectionProperty($registry, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($registry);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        
+        $object_2 = $registry->get(MockClass::class);
+        
+        $this->assertSame($object_1, $object_2);
     }
     
     /**

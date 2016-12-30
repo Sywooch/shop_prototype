@@ -33,7 +33,7 @@ class UserLoginService extends AbstractBaseService
     public function handle($request)
     {
         try {
-            $this->form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
+            $this->form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
             
             if ($request->isPost) {
                 if ($this->form->load($request->post()) === true) {

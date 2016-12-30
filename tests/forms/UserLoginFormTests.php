@@ -33,10 +33,12 @@ class UserLoginFormTests extends TestCase
     {
         $reflection = new \ReflectionClass(UserLoginForm::class);
         
-        $this->assertTrue($reflection->hasConstant('GET'));
+        $this->assertTrue($reflection->hasConstant('LOGIN'));
+        $this->assertTrue($reflection->hasConstant('LOGOUT'));
         
         $this->assertTrue($reflection->hasProperty('email'));
         $this->assertTrue($reflection->hasProperty('password'));
+        $this->assertTrue($reflection->hasProperty('id'));
     }
     
     /**
@@ -44,7 +46,7 @@ class UserLoginFormTests extends TestCase
      */
     public function testScenarios()
     {
-        $form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
+        $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
         $form->attributes = [
             'email'=>'some@some.com',
             'password'=>'password'
@@ -57,6 +59,15 @@ class UserLoginFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'password');
         $result = $reflection->getValue($form);
         $this->assertSame('password', $result);
+        
+        $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGOUT]);
+        $form->attributes = [
+            'id'=>18
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(18, $result);
     }
     
     /**
@@ -66,7 +77,7 @@ class UserLoginFormTests extends TestCase
     {
         $fixtureEmail = self::$_dbClass->emails['email_1'];
         
-        $form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
+        $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
@@ -74,7 +85,7 @@ class UserLoginFormTests extends TestCase
         $this->assertArrayHasKey('email', $form->errors);
         $this->assertArrayHasKey('password', $form->errors);
         
-        $form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
+        $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
         $form->attributes = [
             'email'=>'some',
             'password'=>'password'
@@ -85,7 +96,7 @@ class UserLoginFormTests extends TestCase
         $this->assertCount(1, $form->errors);
         $this->assertArrayHasKey('email', $form->errors);
         
-        $form = new UserLoginForm(['scenario'=>UserLoginForm::GET]);
+        $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
         $form->attributes = [
             'email'=>$fixtureEmail['email'],
             'password'=>'password'
@@ -95,6 +106,21 @@ class UserLoginFormTests extends TestCase
         $this->assertNotEmpty($form->errors);
         $this->assertCount(1, $form->errors);
         $this->assertArrayHasKey('password', $form->errors);
+        
+        $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGOUT]);
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('id', $form->errors);
+        
+        $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGOUT]);
+        $form->attributes = [
+            'id'=>18
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
     }
     
     public static function tearDownAfterClass()

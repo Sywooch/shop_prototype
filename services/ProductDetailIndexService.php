@@ -262,7 +262,6 @@ class ProductDetailIndexService extends AbstractBaseService
                 
                 ArrayHelper::multisort($commentsArray, 'date', SORT_DESC);
                 $dataArray['comments'] = $commentsArray;
-                $dataArray['form'] = new CommentForm(['id_product'=>$productsModel->id]);
                 $dataArray['view'] = 'comments.twig';
                 
                 $this->commentsArray = $dataArray;

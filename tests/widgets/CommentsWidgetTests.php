@@ -4,7 +4,6 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\CommentsWidget;
-use app\forms\CommentForm;
 use app\controllers\ProductDetailController;
 
 /**
@@ -20,7 +19,6 @@ class CommentsWidgetTests extends TestCase
         $reflection = new \ReflectionClass(CommentsWidget::class);
         
         $this->assertTrue($reflection->hasProperty('comments'));
-        $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('view'));
     }
     
@@ -56,48 +54,6 @@ class CommentsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CommentsWidget::setForm
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetFormError()
-    {
-        $form = new class() {};
-        
-        $widget = new CommentsWidget();
-        $widget->setForm($form);
-    }
-    
-    /**
-     * Тестирует метод CommentsWidget::setForm
-     */
-    public function testSetForm()
-    {
-        $form = new class() extends CommentForm {};
-        
-        $widget = new CommentsWidget();
-        $widget->setForm($form);
-        
-        $reflection = new \ReflectionProperty($widget, 'form');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
-        
-        $this->assertInstanceOf(CommentForm::class, $result);
-    }
-    
-    /**
-     * Тестирует метод CommentsWidget::run
-     * если пуст CommentsWidget::form
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
-     */
-    public function testRunEmptyForm()
-    {
-        $widget = new CommentsWidget();
-        $result = $widget->run();
-    }
-    
-    /**
      * Тестирует метод CommentsWidget::run
      * если пуст CommentsWidget::view
      * @expectedException ErrorException
@@ -105,14 +61,7 @@ class CommentsWidgetTests extends TestCase
      */
     public function testRunEmptyView()
     {
-        $form = new class() extends CommentForm {};
-        
         $widget = new CommentsWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'form');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $form);
-        
         $result = $widget->run();
     }
     
@@ -126,17 +75,11 @@ class CommentsWidgetTests extends TestCase
         
         $comments = [];
         
-        $form = new class() extends CommentForm {};
-        
         $widget = new CommentsWidget();
         
         $reflection = new \ReflectionProperty($widget, 'comments');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $comments);
-        
-        $reflection = new \ReflectionProperty($widget, 'form');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $form);
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
@@ -172,17 +115,11 @@ class CommentsWidgetTests extends TestCase
             },
         ];
         
-        $form = new class() extends CommentForm {};
-        
         $widget = new CommentsWidget();
         
         $reflection = new \ReflectionProperty($widget, 'comments');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $comments);
-        
-        $reflection = new \ReflectionProperty($widget, 'form');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $form);
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);

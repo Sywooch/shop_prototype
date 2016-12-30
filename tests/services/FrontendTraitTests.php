@@ -3,7 +3,8 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FrontendTrait;
+use app\services\{CurrentCurrencyService,
+    FrontendTrait};
 use app\tests\DbManager;
 use app\helpers\HashHelper;
 use app\models\{CategoriesModel,
@@ -66,51 +67,15 @@ class FrontendTraitTests extends TestCase
     
     /**
      * Тестирует метод FrontendTrait::getCurrencyModel
-     * если данные валюты сохранены в сессии
-     */
-    public function testGetCurrencyModelSession()
-    {
-        $key = HashHelper::createCurrencyKey();
-        
-        $session = \Yii::$app->session;
-        $session->open();
-        $session->set($key, ['id'=>1, 'code'=>'MONEY', 'exchange_rate'=>12.0987, 'main'=>true]);
-        
-        $this->assertTrue($session->has($key));
-        
-        $reflection = new \ReflectionMethod($this->trait, 'getCurrencyModel');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->trait);
-        
-        $this->assertInstanceOf(CurrencyModel::class, $result);
-        
-        $session->remove($key);
-        $session->close();
-    }
-    
-    /**
-     * Тестирует метод FrontendTrait::getCurrencyModel
      * если данные достаются из СУБД
      */
     public function testGetCurrencyModel()
     {
-        $key = HashHelper::createCurrencyKey();
-        
-        $session = \Yii::$app->session;
-        $session->open();
-        $this->assertFalse($session->has($key));
-        $session->close();
-        
         $reflection = new \ReflectionMethod($this->trait, 'getCurrencyModel');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($this->trait);
         
         $this->assertInstanceOf(CurrencyModel::class, $result);
-        
-        $this->assertTrue($session->has($key));
-        
-        $session->remove($key);
-        $session->close();
     }
     
     /**
@@ -163,10 +128,10 @@ class FrontendTraitTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty('array', $result);
         $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('service', $result);
         $this->assertArrayHasKey('view', $result);
         $this->assertInternalType('array', $result['currency']);
-        $this->assertInstanceOf(ChangeCurrencyForm::class, $result['form']);
+        $this->assertInstanceOf(CurrentCurrencyService::class, $result['service']);
         $this->assertInternalType('string', $result['view']);
     }
     

@@ -7,6 +7,8 @@ use yii\base\{ErrorException,
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
 use app\forms\ChangeCurrencyForm;
+use app\services\ServiceInterface;
+use app\models\CurrencyModel;
 
 /**
  * Формирует HTML строку с формой выбора валюты
@@ -18,9 +20,9 @@ class CurrencyWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
-     * @var ChangeCurrencyForm, получает данные из формы
+     * @var ServiceInterface, возвращает текущую валюту
      */
-    private $form;
+    private $service;
     /**
      * @var string имя HTML шаблона
      */
@@ -32,8 +34,8 @@ class CurrencyWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            if (empty($this->form)) {
-                throw new ErrorException($this->emptyError('form'));
+            if (empty($this->service)) {
+                throw new ErrorException($this->emptyError('service'));
             }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
@@ -42,11 +44,21 @@ class CurrencyWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['header'] = \Yii::t('base', 'Currency');
+            $renderArray['currency'] = $this->currency;
+            
+            $currencyModel = $this->service->handle();
+            if (!$currencyModel instanceof CurrencyModel) {
+                throw new ErrorException($this->invalidError('currencyModel'));
+            }
+            
+            $renderArray['formModel'] = new ChangeCurrencyForm([
+                'scenario'=>ChangeCurrencyForm::GET,
+                'url'=>Url::current(),
+                'id'=>$currencyModel->id
+            ]);
             $renderArray['formId'] = 'set-currency-form';
             $renderArray['formAction'] = Url::to(['/currency/set']);
             $renderArray['button'] = \Yii::t('base', 'Change');
-            $renderArray['formModel'] = $this->form;
-            $renderArray['currency'] = $this->currency;
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
@@ -68,13 +80,13 @@ class CurrencyWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает ChangeCurrencyForm свойству CurrencyWidget::form
-     * @param ChangeCurrencyForm $form
+     * Присваивает ServiceInterface CurrencyWidget::service
+     * @param ServiceInterface $service
      */
-    public function setForm(ChangeCurrencyForm $form)
+    public function setService(ServiceInterface $service)
     {
         try {
-            $this->form = $form;
+            $this->service = $service;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

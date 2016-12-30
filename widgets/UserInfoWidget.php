@@ -8,6 +8,7 @@ use yii\web\User;
 use yii\helpers\{Html,
     Url};
 use app\widgets\AbstractBaseWidget;
+use app\forms\UserLoginForm;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе аутентификации
@@ -51,9 +52,9 @@ class UserInfoWidget extends AbstractBaseWidget
             $renderArray['registrationHref'] = Url::to(['/user/registration']);
             $renderArray['registrationText'] = \Yii::t('base', 'Registration');
             
+            $renderArray['formModel'] = new UserLoginForm(['id'=>isset($user) ? $user->id : '']);
             $renderArray['formId'] = 'user-logout-form';
             $renderArray['formAction'] = Url::to(['/user/logout']);
-            $renderArray['userId'] = isset($user) ? $user->id : '';
             $renderArray['button'] = \Yii::t('base', 'Logout');
             
             return $this->render($this->view, $renderArray);

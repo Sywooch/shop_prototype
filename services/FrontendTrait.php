@@ -16,6 +16,7 @@ use app\forms\ChangeCurrencyForm;
 use app\savers\SessionSaver;
 use app\models\CurrencyModel;
 use app\filters\ProductsFilters;
+use app\services\CurrentCurrencyService;
 
 /**
  * Коллекция свойств и методов для рендеринга страниц пользовательского интерфейса
@@ -49,33 +50,16 @@ trait FrontendTrait
     
     /**
      * Возвращает данные текущей валюты
-     * Первый запрос отправляет в сессию, 
-     * если данных нет, в СУБД и сохраняет полученные данные в сессию
      * @return CurrencyModel
      */
     private function getCurrencyModel(): CurrencyModel
     {
         try {
             if (empty($this->currencyModel)) {
-                $key = HashHelper::createCurrencyKey();
-                
-                $finder = new CurrencySessionFinder([
-                    'key'=>$key
-                ]);
-                $currencyModel = $finder->find();
-                
-                if (empty($currencyModel)) {
-                    $finder = new MainCurrencyFinder();
-                    $currencyModel = $finder->find();
-                    if (empty($currencyModel)) {
-                        throw new ErrorException($this->emptyError('currencyModel'));
-                    }
-                    
-                    $saver = new SessionSaver([
-                        'key'=>$key,
-                        'models'=>[$currencyModel]
-                    ]);
-                    $saver->save();
+                $service = new CurrentCurrencyService();
+                $currencyModel = $service->handle();
+                if (!$currencyModel instanceof CurrencyModel) {
+                    throw new ErrorException($this->invalidError('currencyModel'));
                 }
                 
                 $this->currencyModel = $currencyModel;
@@ -155,7 +139,7 @@ trait FrontendTrait
                 
                 ArrayHelper::multisort($currencyArray, 'code');
                 $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
-                $dataArray['form'] = new ChangeCurrencyForm(['url'=>Url::current(), 'id'=>$this->getCurrencyModel()->id]);
+                $dataArray['service'] = new CurrentCurrencyService();
                 $dataArray['view'] = 'currency-form.twig';
                 
                 $this->currencyArray = $dataArray;

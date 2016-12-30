@@ -308,10 +308,8 @@ class ProductDetailIndexServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('comments', $result);
-        $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('view', $result);
         $this->assertInternalType('array', $result['comments']);
-        $this->assertInstanceOf(CommentForm::class, $result['form']);
         $this->assertInternalType('string', $result['view']);
     }
     

@@ -8,7 +8,9 @@ use app\collections\{BaseCollection,
     CollectionInterface};
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
-use app\forms\ChangeCurrencyForm;
+use app\services\ServiceInterface;
+use app\models\CurrencyModel;
+use app\controllers\ProductsListController;
 
 /**
  * Тестирует класс CurrencyWidget
@@ -23,7 +25,7 @@ class CurrencyWidgetTests extends TestCase
         $reflection = new \ReflectionClass(CurrencyWidget::class);
         
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('form'));
+        $this->assertTrue($reflection->hasProperty('service'));
         $this->assertTrue($reflection->hasProperty('view'));
     }
     
@@ -58,33 +60,35 @@ class CurrencyWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CurrencyWidget::setForm
+     * Тестирует метод CurrencyWidget::setService
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
-    public function testSetFormError()
+    public function testSetServiceError()
     {
-        $form = new class() {};
+        $service = new class() {};
         
         $widget = new CurrencyWidget();
-        $widget->setForm($form);
+        $widget->setService($service);
     }
     
     /**
-     * Тестирует метод CurrencyWidget::setForm
+     * Тестирует метод CurrencyWidget::setService
      */
-    public function testSetForm()
+    public function testSetService()
     {
-        $form = new class() extends ChangeCurrencyForm {};
+        $service = new class() implements ServiceInterface {
+            public function handle($data) {}
+        };
         
         $widget = new CurrencyWidget();
-        $widget->setForm($form);
+        $widget->setService($service);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($widget, 'service');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(ChangeCurrencyForm::class, $result);
+        $this->assertInstanceOf(ServiceInterface::class, $result);
     }
     
     /**
@@ -101,11 +105,11 @@ class CurrencyWidgetTests extends TestCase
     
     /**
      * Тестирует метод CurrencyWidget::run
-     * если пуст CurrencyWidget::form
+     * если пуст CurrencyWidget::service
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Missing required data: service
      */
-    public function testRunEmptyForm()
+    public function testRunEmptyService()
     {
         $currency = [1=>'ONE', 2=>'TWO'];
         
@@ -128,7 +132,9 @@ class CurrencyWidgetTests extends TestCase
     {
         $currency = [1=>'ONE', 2=>'TWO'];
         
-        $form = new class() extends ChangeCurrencyForm {};
+        $service = new class() implements ServiceInterface {
+            public function handle($data) {}
+        };
         
         $widget = new CurrencyWidget();
         
@@ -136,9 +142,9 @@ class CurrencyWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($widget, 'service');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $form);
+        $result = $reflection->setValue($widget, $service);
         
         $widget->run();
     }
@@ -148,9 +154,15 @@ class CurrencyWidgetTests extends TestCase
      */
     public function testRun()
     {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
         $currency = [1=>'ONE', 2=>'TWO'];
         
-        $form = new class() extends ChangeCurrencyForm {};
+        $service = new class() implements ServiceInterface {
+            public function handle($data=null) {
+                return new CurrencyModel(['id'=>1]);
+            }
+        };
         
         $widget = new CurrencyWidget();
         
@@ -158,9 +170,9 @@ class CurrencyWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($widget, 'service');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $form);
+        $result = $reflection->setValue($widget, $service);
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
@@ -170,7 +182,7 @@ class CurrencyWidgetTests extends TestCase
         
         $this->assertRegExp('#<p><strong>Валюта</strong></p>#', $result);
         $this->assertRegExp('#<form id="set-currency-form"#', $result);
-        $this->assertRegExp('#<option value="1">ONE</option>#', $result);
+        $this->assertRegExp('#<option value="1" selected>ONE</option>#', $result);
         $this->assertRegExp('#<option value="2">TWO</option>#', $result);
         $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
     }

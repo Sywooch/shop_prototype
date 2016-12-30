@@ -25,14 +25,11 @@ class Registry extends Object
      * @param array $params массив параметров
      * @return object
      */
-    public function get(string $class, array $params)
+    public function get(string $class, array $params=[])
     {
         try {
             if (empty($class)) {
                 throw new ErrorException($this->emptyError('class'));
-            }
-            if (empty($params)) {
-                throw new ErrorException($this->emptyError('params'));
             }
             
             $key = $this->getKey(array_merge([$class], $params));
