@@ -6,7 +6,8 @@ use yii\web\Controller;
 use app\actions\{FormAction,
     PostRedirectAction};
 use app\services\{UserLoginService,
-    UserLogoutService};
+    UserLogoutService,
+    UserRegistrationService};
 
 /**
  * Обрабатывает запросы на аутентификацию пользователя
@@ -24,6 +25,11 @@ class UserController extends Controller
             'logout'=>[
                 'class'=>PostRedirectAction::class,
                 'service'=>new UserLogoutService(),
+            ],
+            'registration'=>[
+                'class'=>FormAction::class,
+                'service'=>new UserRegistrationService(),
+                'view'=>'registration-form.twig',
             ],
         ];
     }

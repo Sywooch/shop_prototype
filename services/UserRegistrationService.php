@@ -6,45 +6,38 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\services\{AbstractBaseService,
     FrontendTrait};
-use app\forms\UserLoginForm;
-use app\finders\UserEmailFinder;
+use app\forms\UserRegistrationForm;
 
 /**
- * Формирует массив данных для рендеринга страницы формы аутентификации
+ * Формирует массив данных для рендеринга страницы формы регистрации
  */
-class UserLoginService extends AbstractBaseService
+class UserRegistrationService extends AbstractBaseService
 {
     use FrontendTrait;
     
     /**
-     * @var array данные для UserLoginWidget
+     * @var array данные для UserRegistrationWidget
      */
-    private $userLoginArray = [];
+    private $userRegistrationArray = [];
     /**
-     * @var UserLoginForm
+     * @var UserRegistrationForm
      */
     private $form = null;
     
     /**
      * Обрабатывает запрос на поиск и обработку данных для 
-     * формирования HTML формы аутентификации
+     * формирования HTML формы регистрации
      * @param array $request
      */
     public function handle($request)
     {
         try {
-            $this->form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
+            $this->form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
             
             if ($request->isPost) {
                 if ($this->form->load($request->post()) === true) {
                     if ($this->form->validate() === true) {
-                        $finder = \Yii::$app->registry->get(UserEmailFinder::class, ['email'=>$this->form->email]);
-                        $usersModel = $finder->find();
-                        if (empty($usersModel)) {
-                            throw new ErrorException($this->emptyError('usersModel'));
-                        }
-                        \Yii::$app->user->login($usersModel);
-                        return Url::to(['/products-list/index']);
+                        
                     }
                 }
             }
@@ -57,7 +50,7 @@ class UserLoginService extends AbstractBaseService
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             
-            $dataArray['formConfig'] = $this->getUserLoginArray();
+            $dataArray['formConfig'] = $this->getUserRegistrationArray();
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -66,22 +59,21 @@ class UserLoginService extends AbstractBaseService
     }
     
     /**
-     * Возвращает массив конфигурации для виджета UserLoginWidget
+     * Возвращает массив конфигурации для виджета UserRegistrationWidget
      * @return array
      */
-    private function getUserLoginArray(): array
+    private function getUserRegistrationArray(): array
     {
         try {
-            if (empty($this->userLoginArray)) {
+            if (empty($this->userRegistrationArray)) {
                 $dataArray = [];
                 
-                $dataArray['form'] = $this->form;
-                $dataArray['view'] = 'login-form.twig';
+                $dataArray['view'] = 'registration-form.twig';
                 
-                $this->userLoginArray = $dataArray;
+                $this->userRegistrationArray = $dataArray;
             }
             
-            return $this->userLoginArray;
+            return $this->userRegistrationArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

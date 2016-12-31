@@ -9,7 +9,7 @@ use app\widgets\AbstractBaseWidget;
 use app\forms\UserLoginForm;
 
 /**
- * Формирует HTML строку с информацией о текущем статусе аутентификации
+ * Формирует HTML строку с формой аутентификации
  */
 class UserLoginWidget extends AbstractBaseWidget
 {
