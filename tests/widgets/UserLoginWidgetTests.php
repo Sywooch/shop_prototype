@@ -84,7 +84,7 @@ class UserLoginWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CommentsWidget::run
+     * Тестирует метод UserLoginWidget::run
      * если добавлены комментарии
      */
     public function testRun()

@@ -128,10 +128,10 @@ class FrontendTraitTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty('array', $result);
         $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('service', $result);
+        $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('view', $result);
         $this->assertInternalType('array', $result['currency']);
-        $this->assertInstanceOf(CurrentCurrencyService::class, $result['service']);
+        $this->assertInstanceOf(ChangeCurrencyForm::class, $result['form']);
         $this->assertInternalType('string', $result['view']);
     }
     

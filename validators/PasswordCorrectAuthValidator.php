@@ -7,7 +7,7 @@ use app\exceptions\ExceptionsTrait;
 use app\finders\UserEmailFinder;
 
 /**
- * Проверяет атрибуты модели EmailsModel
+ * Проверяет валидность данных для формы UserLoginForm
  */
 class PasswordCorrectAuthValidator extends Validator
 {

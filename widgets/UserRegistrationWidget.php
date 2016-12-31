@@ -14,6 +14,10 @@ use app\forms\UserRegistrationForm;
 class UserRegistrationWidget extends AbstractBaseWidget
 {
     /**
+     * @var object UserRegistrationForm
+     */
+    private $form;
+    /**
      * @var string имя шаблона
      */
     public $view;
@@ -25,6 +29,9 @@ class UserRegistrationWidget extends AbstractBaseWidget
     public function run()
     {
         try {
+            if (empty($this->form)) {
+                throw new ErrorException($this->emptyError('form'));
+            }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
             }
@@ -33,12 +40,25 @@ class UserRegistrationWidget extends AbstractBaseWidget
             
             $renderArray['header'] = \Yii::t('base', 'Registration');
             
-            $renderArray['formModel'] = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
+            $renderArray['formModel'] = $this->form;
             $renderArray['formId'] = 'registration-form';
             $renderArray['formAction'] = Url::to(['/user/registration']);
             $renderArray['button'] = \Yii::t('base', 'Send');
             
             return $this->render($this->view, $renderArray);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает UserRegistrationForm свойству UserRegistrationWidget::form
+     * @param UserRegistrationForm $form
+     */
+    public function setForm(UserRegistrationForm $form)
+    {
+        try {
+            $this->form = $form;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

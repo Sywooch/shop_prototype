@@ -68,6 +68,7 @@ class UserRegistrationService extends AbstractBaseService
             if (empty($this->userRegistrationArray)) {
                 $dataArray = [];
                 
+                $dataArray['form'] = $this->form;
                 $dataArray['view'] = 'registration-form.twig';
                 
                 $this->userRegistrationArray = $dataArray;

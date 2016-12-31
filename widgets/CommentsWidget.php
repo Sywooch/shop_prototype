@@ -17,6 +17,10 @@ class CommentsWidget extends AbstractBaseWidget
      */
     private $comments;
     /**
+     * @var object CommentForm
+     */
+    private $form;
+    /**
      * @var string имя шаблона
      */
     public $view;
@@ -24,6 +28,9 @@ class CommentsWidget extends AbstractBaseWidget
     public function run()
     {
         try {
+            if (empty($this->form)) {
+                throw new ErrorException($this->emptyError('form'));
+            }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
             }
@@ -32,7 +39,7 @@ class CommentsWidget extends AbstractBaseWidget
             
             $renderArray['header'] = \Yii::t('base', 'Comments');
             
-            $renderArray['modelForm'] = new CommentForm(['scenario'=>CommentForm::GET]);
+            $renderArray['modelForm'] = $this->form;
             $renderArray['formId'] = 'add-comment-form';
             $renderArray['formAction'] = Url::to(['']);
             $renderArray['button'] = \Yii::t('base', 'Send');
@@ -59,6 +66,19 @@ class CommentsWidget extends AbstractBaseWidget
     {
         try {
             $this->comments = $comments;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает CommentForm свойству CommentsWidget::form
+     * @param CommentForm $form
+     */
+    public function setForm(CommentForm $form)
+    {
+        try {
+            $this->form = $form;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

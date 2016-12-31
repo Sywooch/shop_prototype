@@ -139,7 +139,11 @@ trait FrontendTrait
                 
                 ArrayHelper::multisort($currencyArray, 'code');
                 $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
-                $dataArray['service'] = new CurrentCurrencyService();
+                $dataArray['form'] = new ChangeCurrencyForm([
+                    'scenario'=>ChangeCurrencyForm::GET,
+                    'url'=>Url::current(),
+                    'id'=>$this->getCurrencyModel()->id
+                ]);
                 $dataArray['view'] = 'currency-form.twig';
                 
                 $this->currencyArray = $dataArray;
