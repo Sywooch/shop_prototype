@@ -5,7 +5,7 @@ namespace app\savers;
 /**
  * Интерфейс классов savers
  */
-interface SaverInterface
+interface SaverArrayInterface
 {
     public function save();
     public function setModels(array $models);

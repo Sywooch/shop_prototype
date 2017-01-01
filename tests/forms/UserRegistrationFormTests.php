@@ -4,12 +4,28 @@ namespace app\tests\forms;
 
 use PHPUnit\Framework\TestCase;
 use app\forms\UserRegistrationForm;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\{EmailsFixture,
+    UsersFixture};
 
 /**
  * Тестирует класс UserRegistrationForm
  */
 class UserRegistrationFormTests extends TestCase
 {
+    private static $dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'emails'=>EmailsFixture::class,
+                'users'=>UsersFixture::class
+            ],
+        ]);
+        self::$dbClass->loadFixtures();
+    }
+    
     
     /**
      * Тестирует свойства UserRegistrationForm
@@ -55,6 +71,9 @@ class UserRegistrationFormTests extends TestCase
      */
     public function testRules()
     {
+        $emailFixture = self::$dbClass->emails['email_1'];
+        
+        # Если все поля пусты
         $form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
         $form->validate();
         
@@ -64,6 +83,7 @@ class UserRegistrationFormTests extends TestCase
         $this->assertArrayHasKey('password', $form->errors);
         $this->assertArrayHasKey('password2', $form->errors);
         
+        # Если передан некорректный email
         $form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
         $form->attributes = [
             'email'=>'some@some',
@@ -76,6 +96,33 @@ class UserRegistrationFormTests extends TestCase
         $this->assertCount(1, $form->errors);
         $this->assertArrayHasKey('email', $form->errors);
         
+        # Если передан уже связанный с пользователем email
+        $form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
+        $form->attributes = [
+            'email'=>$emailFixture['email'],
+            'password'=>'password',
+            'password2'=>'password'
+        ];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('email', $form->errors);
+        
+        # Если пароли не совпадают
+        $form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
+        $form->attributes = [
+            'email'=>'some@some.com',
+            'password'=>'password',
+            'password2'=>'password2'
+        ];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('password2', $form->errors);
+        
+        # Если все поля корректны
         $form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
         $form->attributes = [
             'email'=>'some@some.com',
@@ -85,5 +132,10 @@ class UserRegistrationFormTests extends TestCase
         $form->validate();
         
         $this->assertEmpty($form->errors);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$dbClass->unloadFixtures();
     }
 }

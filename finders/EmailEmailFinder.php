@@ -3,20 +3,20 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\models\CategoriesModel;
+use app\models\EmailsModel;
 use app\finders\AbstractBaseFinder;
 
 /**
  * Возвращает доступные категории товаров из СУБД
  */
-class CategorySeocodeFinder extends AbstractBaseFinder
+class EmailEmailFinder extends AbstractBaseFinder
 {
     /**
-     * @var string seocode категории
+     * @var string email
      */
-    public $seocode;
+    public $email;
     /**
-     * @var CategoriesModel
+     * @var EmailsModel
      */
     private $storage = null;
     
@@ -28,13 +28,13 @@ class CategorySeocodeFinder extends AbstractBaseFinder
     {
         try {
             if (empty($this->storage)) {
-                if (empty($this->seocode)) {
-                    throw new ErrorException($this->emptyError('seocode'));
+                if (empty($this->email)) {
+                    throw new ErrorException($this->emptyError('email'));
                 }
                 
-                $query = CategoriesModel::find();
-                $query->select(['[[categories.id]]', '[[categories.name]]', '[[categories.seocode]]', '[[categories.active]]']);
-                $query->where(['[[categories.seocode]]'=>$this->seocode]);
+                $query = EmailsModel::find();
+                $query->select(['[[emails.id]]', '[[emails.email]]']);
+                $query->where(['[[emails.email]]'=>$this->email]);
                 
                 $this->storage = $query->one();
             }

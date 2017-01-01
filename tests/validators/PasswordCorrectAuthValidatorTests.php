@@ -48,8 +48,8 @@ class PasswordCorrectAuthValidatorTests extends TestCase
         $validator = new PasswordCorrectAuthValidator();
         $validator->validateAttribute($model, 'password');
         
-        $this->assertEquals(1, count($model->errors));
-        $this->assertTrue(array_key_exists('password', $model->errors));
+        $this->assertCount(1, $model->errors);
+        $this->assertArrayHasKey('password', $model->errors);
         
         $fixtureEmail = self::$dbClass->emails['email_2'];
         $fixtureUser = self::$dbClass->users['user_2'];
@@ -70,7 +70,7 @@ class PasswordCorrectAuthValidatorTests extends TestCase
         $validator = new PasswordCorrectAuthValidator();
         $validator->validateAttribute($model, 'password');
         
-        $this->assertEquals(0, count($model->errors));
+        $this->assertEmpty($model->errors);
     }
     
     public static function tearDownAfterClass()

@@ -3,13 +3,14 @@
 namespace app\savers;
 
 use yii\base\ErrorException;
-use app\savers\AbstractBaseSaver;
+use app\savers\{AbstractBaseSaver,
+    SaverArrayInterface};
 use app\helpers\SessionHelper;
 
 /**
  * Сохранаяет данные в сессионном хранилище
  */
-class SessionSaver extends AbstractBaseSaver
+class SessionSaver extends AbstractBaseSaver implements SaverArrayInterface
 {
     /**
      * @var staring ключ, под которым будут сохранены данные в сессии

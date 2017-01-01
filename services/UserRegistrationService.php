@@ -7,6 +7,7 @@ use yii\helpers\Url;
 use app\services\{AbstractBaseService,
     FrontendTrait};
 use app\forms\UserRegistrationForm;
+use app\finders\EmailEmailFinder;
 
 /**
  * Формирует массив данных для рендеринга страницы формы регистрации
@@ -37,6 +38,15 @@ class UserRegistrationService extends AbstractBaseService
             if ($request->isPost) {
                 if ($this->form->load($request->post()) === true) {
                     if ($this->form->validate() === true) {
+                        
+                        $finder = new EmailEmailFinder([
+                            'email'=>$this->form->email,
+                        ]);
+                        $emailModel = $finder->find();
+                        
+                        if ($emailModel === null) {
+                            
+                        }
                         
                     }
                 }

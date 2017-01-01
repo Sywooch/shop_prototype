@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\UserEmailExistsRegValidator;
+use app\validators\{PasswordIdenticRegValidator,
+    UserEmailExistsRegValidator};
 
 /**
  * Представляет данные формы аутентификации пользователя
@@ -42,6 +43,7 @@ class UserRegistrationForm extends AbstractBaseForm
             [['email', 'password', 'password2'], 'required', 'on'=>self::REGISTRATION],
             [['email'], 'email', 'on'=>self::REGISTRATION],
             [['email'], UserEmailExistsRegValidator::class, 'on'=>self::REGISTRATION],
+            [['password2'], PasswordIdenticRegValidator::class, 'on'=>self::REGISTRATION],
         ];
     }
 }
