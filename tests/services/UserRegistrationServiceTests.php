@@ -3,20 +3,20 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\UserLoginService;
+use app\services\UserRegistrationService;
+use app\forms\UserRegistrationForm;
+use app\controllers\UserController;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture,
     EmailsFixture,
     UsersFixture};
-use app\forms\UserLoginForm;
-use app\controllers\ProductsListController;
 use yii\helpers\Url;
 
 /**
- * Тестирует класс UserLoginService
+ * Тестирует класс UserRegistrationService
  */
-class UserLoginServiceTests extends TestCase
+class UserRegistrationServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -24,66 +24,65 @@ class UserLoginServiceTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'users'=>UsersFixture::class,
-                'emails'=>EmailsFixture::class,
                 'currency'=>CurrencyFixture::class,
                 'categories'=>CategoriesFixture::class,
+                'emails'=>EmailsFixture::class,
+                'users'=>UsersFixture::class,
             ]
         ]);
         self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует свойства UserLoginService
+     * Тестирует свойства UserRegistrationService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(UserLoginService::class);
+        $reflection = new \ReflectionClass(UserRegistrationService::class);
         
-        $this->assertTrue($reflection->hasProperty('userLoginArray'));
+        $this->assertTrue($reflection->hasProperty('userRegistrationArray'));
         $this->assertTrue($reflection->hasProperty('form'));
     }
     
     /**
-     * Тестирует метод UserLoginService::getUserLoginArray
+     * Тестирует метод UserRegistrationService::getUserRegistrationArray
      */
-    public function testGetUserLoginArray()
+    public function testGetUserRegistrationArray()
     {
-        $form = new class() extends UserLoginForm {};
-        
-        $service = new UserLoginService();
+        $service = new UserRegistrationService();
         
         $reflection = new \ReflectionProperty($service, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, $form);
+        $reflection->setValue($service, new class() extends UserRegistrationForm {});
         
-        $reflection = new \ReflectionMethod($service, 'getUserLoginArray');
+        $reflection = new \ReflectionMethod($service, 'getUserRegistrationArray');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($service);
         
         $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(UserLoginForm::class, $result['form']);
+        $this->assertInstanceOf(UserRegistrationForm::class, $result['form']);
         $this->assertInternalType('string', $result['view']);
     }
-    
+
     /**
-     * Тестирует метод UserLoginService::handle
+     * Тестирует метод UserRegistrationService::handle
      * если GET
      */
     public function testHandleGet()
     {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
+        \Yii::$app->controller = new UserController('user', \Yii::$app);
+
         $request = new class() {
             public $isPost = false;
         };
-        
-        $service = new UserLoginService();
+
+        $service = new UserRegistrationService();
         
         $result = $service->handle($request);
-        
+
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('userConfig', $result);
@@ -92,7 +91,7 @@ class UserLoginServiceTests extends TestCase
         $this->assertArrayHasKey('searchConfig', $result);
         $this->assertArrayHasKey('menuConfig', $result);
         $this->assertArrayHasKey('formConfig', $result);
-        
+
         $this->assertInternalType('array', $result['userConfig']);
         $this->assertInternalType('array', $result['cartConfig']);
         $this->assertInternalType('array', $result['currencyConfig']);
@@ -100,53 +99,42 @@ class UserLoginServiceTests extends TestCase
         $this->assertInternalType('array', $result['menuConfig']);
         $this->assertInternalType('array', $result['formConfig']);
     }
-    
+
     /**
-     * Тестирует метод UserLoginService::handle
+     * Тестирует метод UserRegistrationService::handle
      * если POST
      */
     public function testHandlePost()
     {
-        \Yii::$app->registry->clean();
-        
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        $fixtureEmail = self::$dbClass->emails['email_1'];
-        $fixtureUser = self::$dbClass->users['user_1'];
-        
-        \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password WHERE [[id]]=:id')->bindValues([':password'=>password_hash($fixtureUser['password'], PASSWORD_DEFAULT), ':id'=>$fixtureUser['id']])->execute();
-        
+        \Yii::$app->controller = new UserController('user', \Yii::$app);
+
         $request = new class() {
             public $isPost = true;
             public $email;
             public $password;
+            public $password2;
             public function post()
             {
                 return [
-                    'UserLoginForm'=>[
-                        'email'=>$this->email,
-                        'password'=>$this->password,
+                    'UserRegistrationForm'=>[
+                        'email'=>'some@gmail.com',
+                        'password'=>'password',
+                        'password2'=>'password',
                     ],
                 ];
             }
         };
-        $reflection = new \ReflectionProperty($request, 'email');
-        $reflection->setValue($request, $fixtureEmail['email']);
-        $reflection = new \ReflectionProperty($request, 'password');
-        $reflection->setValue($request, $fixtureUser['password']);
-        
-        $service = new UserLoginService();
+        $service = new UserRegistrationService();
         
         $result = $service->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
-        $this->assertSame(Url::to(['/products-list/index']), $result);
+        $this->assertSame(Url::to(['/user/login']), $result);
     }
-    
+
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
-        \Yii::$app->registry->clean();
     }
 }

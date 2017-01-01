@@ -13,6 +13,11 @@ use app\finders\UserIdFinder;
 class UsersModel extends AbstractBaseModel implements IdentityInterface
 {
     /**
+     * Сценарий сохранения нового пользователя
+     */
+    const SAVE = 'save';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -23,6 +28,13 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
+    }
+    
+    public function rules()
+    {
+        return [
+            [['id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode'], 'default', 'value'=>0, 'on'=>self::SAVE],
+        ];
     }
     
     /**

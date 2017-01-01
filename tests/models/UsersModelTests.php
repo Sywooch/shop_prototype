@@ -37,6 +37,10 @@ class UsersModelTests extends TestCase
      */
     public function testProperties()
     {
+        $reflection = new \ReflectionClass(UsersModel::class);
+        
+        $this->assertTrue($reflection->hasConstant('SAVE'));
+        
         $model = new UsersModel();
         
         $this->assertTrue(array_key_exists('id', $model->attributes));
@@ -49,6 +53,33 @@ class UsersModelTests extends TestCase
         $this->assertTrue(array_key_exists('id_city', $model->attributes));
         $this->assertTrue(array_key_exists('id_country', $model->attributes));
         $this->assertTrue(array_key_exists('id_postcode', $model->attributes));
+    }
+    
+    /**
+     * Тестирует метод UsersModel::rules
+     */
+    public function testRules()
+    {
+        $model = new UsersModel();
+        
+        $this->assertSame(null, $model->id_name);
+        $this->assertSame(null, $model->id_surname);
+        $this->assertSame(null, $model->id_phone);
+        $this->assertSame(null, $model->id_address);
+        $this->assertSame(null, $model->id_city);
+        $this->assertSame(null, $model->id_country);
+        $this->assertSame(null, $model->id_postcode);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::SAVE]);
+        $model->validate();
+        
+        $this->assertSame(0, $model->id_name);
+        $this->assertSame(0, $model->id_surname);
+        $this->assertSame(0, $model->id_phone);
+        $this->assertSame(0, $model->id_address);
+        $this->assertSame(0, $model->id_city);
+        $this->assertSame(0, $model->id_country);
+        $this->assertSame(0, $model->id_postcode);
     }
     
     /**

@@ -8,6 +8,9 @@ use app\services\{AbstractBaseService,
     FrontendTrait};
 use app\forms\UserRegistrationForm;
 use app\finders\EmailEmailFinder;
+use app\savers\ModelSaver;
+use app\models\{EmailsModel,
+    UsersModel};
 
 /**
  * Формирует массив данных для рендеринга страницы формы регистрации
@@ -42,12 +45,36 @@ class UserRegistrationService extends AbstractBaseService
                         $finder = new EmailEmailFinder([
                             'email'=>$this->form->email,
                         ]);
-                        $emailModel = $finder->find();
+                        $emailsModel = $finder->find();
                         
-                        if ($emailModel === null) {
+                        if ($emailsModel === null) {
+                            $rawEmailsModel = new EmailsModel();
+                            $rawEmailsModel->email = $this->form->email;
+                            $saver = new ModelSaver([
+                                'model'=>$rawEmailsModel
+                            ]);
+                            $saver->save();
                             
+                            $finder = new EmailEmailFinder([
+                                'email'=>$rawEmailsModel->email
+                            ]);
+                            $emailsModel = $finder->find();
+                            
+                            if ($emailsModel === null) {
+                                throw new ErrorException($this->emptyError('emailsModel'));
+                            }
                         }
                         
+                        $rawUsersModel = new UsersModel(['scenario'=>UsersModel::SAVE]);
+                        $rawUsersModel->id_email = $emailsModel->id;
+                        $rawUsersModel->password = password_hash($this->form->password, PASSWORD_DEFAULT);
+                        $rawUsersModel->validate();
+                        $saver = new ModelSaver([
+                            'model'=>$rawUsersModel
+                        ]);
+                        $saver->save();
+                        
+                        return Url::to(['/user/login']);
                     }
                 }
             }
