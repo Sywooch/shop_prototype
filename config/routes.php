@@ -23,8 +23,7 @@ $routes = [
     'login'=>'user/login',
     'logout'=>'user/logout',
     'registration'=>'user/registration',
-    'restore'=>'user/restore',
-    'forgot'=>'user/forgot',
+    'forget'=>'user/forget',
     
     # Валюта
     'set-currency'=>'currency/set',

@@ -12,6 +12,7 @@ use app\tests\sources\fixtures\{CategoriesFixture,
     EmailsFixture,
     UsersFixture};
 use yii\helpers\Url;
+use app\models\EmailsModel;
 
 /**
  * Тестирует класс UserRegistrationService
@@ -42,6 +43,7 @@ class UserRegistrationServiceTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('userRegistrationArray'));
         $this->assertTrue($reflection->hasProperty('form'));
+        $this->assertTrue($reflection->hasProperty('email'));
     }
     
     /**
@@ -65,6 +67,26 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertArrayHasKey('view', $result);
         $this->assertInstanceOf(UserRegistrationForm::class, $result['form']);
         $this->assertInternalType('string', $result['view']);
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationService::getEmail
+     */
+    public function testGetEmail()
+    {
+        $emailFixture = self::$dbClass->emails['email_1'];
+        
+        $service = new UserRegistrationService();
+        
+        $reflection = new \ReflectionProperty($service, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, $emailFixture['email']);
+        
+        $reflection = new \ReflectionMethod($service, 'getEmail');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+        
+        $this->assertInstanceOf(EmailsModel::class, $result);
     }
 
     /**
@@ -98,6 +120,11 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertInternalType('array', $result['searchConfig']);
         $this->assertInternalType('array', $result['menuConfig']);
         $this->assertInternalType('array', $result['formConfig']);
+        
+        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
+        $files = glob($saveDir . '/*.eml');
+        
+        $this->assertEmpty($files);
     }
 
     /**
@@ -131,10 +158,28 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
         $this->assertSame(Url::to(['/user/login']), $result);
+        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}} INNER JOIN {{emails}} ON [[users.id_email]]=[[emails.id]] WHERE [[emails.email]]=:email')->bindValue(':email', 'some@gmail.com')->queryOne();
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        
+        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
+        $files = glob($saveDir . '/*.eml');
+        
+        $this->assertNotEmpty($files);
     }
 
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
+        
+        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
+        if (file_exists($saveDir) && is_dir($saveDir)) {
+            $files = glob($saveDir . '/*.eml');
+            foreach ($files as $file) {
+                unlink($file);
+            }
+        }
     }
 }

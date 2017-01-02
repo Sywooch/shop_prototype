@@ -1,18 +1,5 @@
+{{ use('app/widgets/EmailRegistrationWidget') }}
 
-<h1>{{ yii.t('base', 'Hello! This is information about your account!') }}</h2>
+{{ email_registration_widget_widget(letterConfig) }}
 
-<p>{{ yii.t('base', 'You can operate it in his <a href="{href}">personal account</a>', {'href':url.to({0:'/user/login'}, true)}) | raw }}
-<br>{{ yii.t('base', 'Your username: {email}', {'email':email}) }}</p>
 
-{% if subscribes %}
-    <p>{{ yii.t('base', 'You also subscribed to the list:') }}</p>
-    <ol>
-        {% for subscribe in subscribes %}
-            <li>{{ subscribe.name }}</li>
-        {% endfor %}
-    </ol>
-    
-    <p>{{ yii.t('base', 'Every week you\'ll get reviews of new products, discounts and special offers for subscribers!') }}</p>
-    
-    <p>{{ yii.t('base', 'If you wish to unsubscribe, click here') }}</p>
-{% endif %}

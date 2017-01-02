@@ -1,0 +1,15 @@
+<h1>{{ header }}</h1>
+
+<p>{{ text | raw }}
+<br>{{ email }}</p>
+
+{% if subscribes %}
+    <h2>{{ subscribesHeader }}</h2>
+    <ol>
+        {% for subscribe in subscribes %}
+            <li>{{ subscribe.name }}</li>
+        {% endfor %}
+    </ol>
+    
+    <p>{{ subscribesText }}</p>
+{% endif %}
