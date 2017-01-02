@@ -27,8 +27,6 @@ class UserRegistrationSuccessWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['text'] = \Yii::t('base', 'You have successfully signed up! Now you can log in using your E-mail and password');
-            $renderArray['href'] = Url::to(['/user/login']);
-            $renderArray['hrefText'] = \Yii::t('base', 'Login');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

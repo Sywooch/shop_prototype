@@ -4,6 +4,8 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     FrontendTrait};
 use app\forms\UserLoginForm;

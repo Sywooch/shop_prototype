@@ -2,7 +2,7 @@
 
 <p><strong>{{ header }}</strong></p>
 
-{% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'POST'}) %}
+{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'action':formAction, 'method':'POST'}) %}
     {{ form.field(formModel, 'email') | raw }}
     {{ form.field(formModel, 'password').passwordInput() | raw }}
     <input type="submit" value="{{ button }}">

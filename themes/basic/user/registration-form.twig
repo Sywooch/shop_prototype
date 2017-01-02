@@ -3,6 +3,7 @@
 {{ use('app/widgets/RegistrationBreadcrumbsWidget') }}
 {{ use('app/widgets/UserRegistrationWidget') }}
 {{ use('app/widgets/UserRegistrationSuccessWidget') }}
+{{ use('app/widgets/UserLoginWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
@@ -10,6 +11,8 @@
 
 {% if successConfig %}
     {{ user_registration_success_widget_widget(successConfig) }}
+    
+    {{ user_login_widget_widget(loginFormConfig) }}
 {% else %}
     {{ user_registration_widget_widget(formConfig) }}
 {% endif %}

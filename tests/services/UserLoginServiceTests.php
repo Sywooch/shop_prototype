@@ -70,6 +70,43 @@ class UserLoginServiceTests extends TestCase
     
     /**
      * Тестирует метод UserLoginService::handle
+     * если AJAX
+     */
+    public function testHandleAjax()
+    {
+        \Yii::$app->registry->clean();
+        
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
+        $fixtureEmail = self::$dbClass->emails['email_1'];
+        
+        $request = new class() {
+            public $isAjax = true;
+            public $email;
+            public $password;
+            public function post()
+            {
+                return [
+                    'UserLoginForm'=>[
+                        'email'=>$this->email,
+                        'password'=>'somepassword',
+                    ],
+                ];
+            }
+        };
+        $reflection = new \ReflectionProperty($request, 'email');
+        $reflection->setValue($request, $fixtureEmail['email']);
+        
+        $service = new UserLoginService();
+        
+        $result = $service->handle($request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+    }
+    
+    /**
+     * Тестирует метод UserLoginService::handle
      * если GET
      */
     public function testHandleGet()
@@ -78,6 +115,7 @@ class UserLoginServiceTests extends TestCase
         
         $request = new class() {
             public $isPost = false;
+            public $isAjax = false;
         };
         
         $service = new UserLoginService();
@@ -118,6 +156,7 @@ class UserLoginServiceTests extends TestCase
         
         $request = new class() {
             public $isPost = true;
+            public $isAjax = false;
             public $email;
             public $password;
             public function post()

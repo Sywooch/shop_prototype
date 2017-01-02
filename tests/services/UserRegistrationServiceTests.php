@@ -106,7 +106,36 @@ class UserRegistrationServiceTests extends TestCase
         
         $this->assertInstanceOf(EmailsModel::class, $result);
     }
+    
+    /**
+     * Тестирует метод UserRegistrationService::handle
+     * если AJAX
+     */
+    public function testHandleAjax()
+    {
+        \Yii::$app->controller = new UserController('user', \Yii::$app);
 
+        $request = new class() {
+            public $isAjax = true;
+            public function post()
+            {
+                return [
+                    'UserRegistrationForm'=>[
+                        'email'=>'some@gmail.com',
+                        'password'=>'password',
+                        'password2'=>'password2',
+                    ],
+                ];
+            }
+        };
+        
+        $service = new UserRegistrationService();
+        $result = $service->handle($request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+    }
+    
     /**
      * Тестирует метод UserRegistrationService::handle
      * если GET
@@ -117,6 +146,7 @@ class UserRegistrationServiceTests extends TestCase
 
         $request = new class() {
             public $isPost = false;
+            public $isAjax = false;
         };
 
         $service = new UserRegistrationService();
@@ -157,9 +187,7 @@ class UserRegistrationServiceTests extends TestCase
 
         $request = new class() {
             public $isPost = true;
-            public $email;
-            public $password;
-            public $password2;
+            public $isAjax = false;
             public function post()
             {
                 return [

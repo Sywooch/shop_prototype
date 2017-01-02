@@ -9,7 +9,8 @@ use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     FrontendTrait,
     RegistrationEmailService};
-use app\forms\UserRegistrationForm;
+use app\forms\{UserLoginForm,
+    UserRegistrationForm};
 use app\finders\EmailEmailFinder;
 use app\savers\ModelSaver;
 use app\models\{EmailsModel,
@@ -38,6 +39,10 @@ class UserRegistrationService extends AbstractBaseService
      * @var string email регистрируемого пользователя
      */
     private $email = null;
+    /**
+     * @var array данные для UserLoginWidget
+     */
+    private $userLoginArray = [];
     
     /**
      * Обрабатывает запрос на поиск и обработку данных для 
@@ -98,6 +103,7 @@ class UserRegistrationService extends AbstractBaseService
                             $transaction->commit();
                             
                             $dataArray['successConfig'] = $this->getUserRegistrationSuccessArray();
+                            $dataArray['loginFormConfig'] = $this->getUserLoginArray();
                         } catch (\Throwable $t) {
                             $transaction->rollBack();
                             throw $t;
@@ -178,6 +184,28 @@ class UserRegistrationService extends AbstractBaseService
             $emailsModel = $finder->find();
             
             return $emailsModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета UserLoginWidget
+     * @return array
+     */
+    private function getUserLoginArray(): array
+    {
+        try {
+            if (empty($this->userLoginArray)) {
+                $dataArray = [];
+                
+                $dataArray['form'] = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
+                $dataArray['view'] = 'login-form.twig';
+                
+                $this->userLoginArray = $dataArray;
+            }
+            
+            return $this->userLoginArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
