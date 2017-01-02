@@ -10,16 +10,22 @@ use app\exceptions\ExceptionsTrait;
  */
 class MailHelper
 {
+    use ExceptionsTrait;
+    
     /**
      * @var array массив готовых к отправке сообщений
      */
-    private static $messagesArray = [];
+    private $messagesArray = [];
+    /**
+     * @var array массив данных для создания сообщений
+     */
+    private $rawMessagesArray = [];
     
     /**
-     * Формирует и отправляет сообщение пользователю
-     * @param array $rawMessagesArray массив данных для создания сообщений. 
-     * Каждая группа данных, представляющая письмо является массивом 
-     * Элементы массива, представляющего каждое письмо: 
+     * Конструирует объект класса
+     * @param array $rawMessagesArray массив данных для создания сообщений
+     * Каждая группа данных, представляющая письмо, является массивом 
+     * Элементы массива, представляющего письмо: 
      * - template - string путь к шаблону
      * - from - array адрес отправителя array('email@address.com' => 'Real Name')
      * - to - array адрес получателя array('email@address.com' => 'Real Name')
@@ -27,24 +33,36 @@ class MailHelper
      * - subject - string тема письма
      * - templateData - array данные для генерации шаблона
      * - template, from, to, subject являются обязательными
-     * @return int количество отправленных писем
      */
-    public static function send(array $rawMessagesArray): int
+    public function __construct(array $rawMessagesArray)
     {
         try {
-            if (!empty($rawMessagesArray)) {
-                foreach ($rawMessagesArray as $messageArray) {
-                    self::configure($messageArray);
+            $this->rawMessagesArray = $rawMessagesArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Формирует и отправляет сообщения пользователю
+     * @return int количество отправленных писем
+     */
+    public function send(): int
+    {
+        try {
+            if (!empty($this->rawMessagesArray)) {
+                foreach ($this->rawMessagesArray as $messageArray) {
+                    $this->configure($messageArray);
                 }
                 
-                if (!empty(self::$messagesArray)) {
-                    $sent = \Yii::$app->mailer->sendMultiple(self::$messagesArray);
+                if (!empty($this->messagesArray)) {
+                    $sent = \Yii::$app->mailer->sendMultiple($this->messagesArray);
                 }
             }
             
             return $sent ?? 0;
         } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         }
     }
     
@@ -53,7 +71,7 @@ class MailHelper
      * @param array $messageArray массив данных письма
      * @return bool
      */
-    public static function configure(array $messageArray): bool
+    private function configure(array $messageArray): bool
     {
         try {
             $message = \Yii::$app->mailer->compose();
@@ -65,11 +83,11 @@ class MailHelper
             }
             $message->setSubject($messageArray['subject']);
             
-            self::$messagesArray[] = $message;
+            $this->messagesArray[] = $message;
             
             return true;
         } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
+            $this->throwException($t, __METHOD__);
         }
     }
 }

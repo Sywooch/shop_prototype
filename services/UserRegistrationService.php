@@ -4,6 +4,8 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
+use yii\web\Response;
+use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     FrontendTrait,
     RegistrationEmailService};
@@ -25,6 +27,10 @@ class UserRegistrationService extends AbstractBaseService
      */
     private $userRegistrationArray = [];
     /**
+     * @var array данные для UserRegistrationSuccessWidget
+     */
+    private $userRegistrationSuccessArray = [];
+    /**
      * @var UserRegistrationForm
      */
     private $form = null;
@@ -43,7 +49,16 @@ class UserRegistrationService extends AbstractBaseService
         try {
             $this->form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
             
-            if ($request->isPost) {
+            $dataArray = [];
+            
+            if ($request->isAjax === true) {
+                if ($this->form->load($request->post()) === true) {
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($this->form);
+                }
+            }
+            
+            if ($request->isPost === true) {
                 if ($this->form->load($request->post()) === true) {
                     if ($this->form->validate() === true) {
                         $transaction  = \Yii::$app->db->beginTransaction();
@@ -82,7 +97,7 @@ class UserRegistrationService extends AbstractBaseService
                             
                             $transaction->commit();
                             
-                            return Url::to(['/user/login']);
+                            $dataArray['successConfig'] = $this->getUserRegistrationSuccessArray();
                         } catch (\Throwable $t) {
                             $transaction->rollBack();
                             throw $t;
@@ -91,15 +106,15 @@ class UserRegistrationService extends AbstractBaseService
                 }
             }
             
-            $dataArray = [];
-            
             $dataArray['userConfig'] = $this->getUserArray();
             $dataArray['cartConfig'] = $this->getCartArray();
             $dataArray['currencyConfig'] = $this->getCurrencyArray();
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             
-            $dataArray['formConfig'] = $this->getUserRegistrationArray();
+            if (!isset($dataArray['successConfig'])) {
+                $dataArray['formConfig'] = $this->getUserRegistrationArray();
+            }
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -124,6 +139,27 @@ class UserRegistrationService extends AbstractBaseService
             }
             
             return $this->userRegistrationArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета UserRegistrationSuccessWidget
+     * @return array
+     */
+    private function getUserRegistrationSuccessArray(): array
+    {
+        try {
+            if (empty($this->userRegistrationSuccessArray)) {
+                $dataArray = [];
+                
+                $dataArray['view'] = 'registration-success.twig';
+                
+                $this->userRegistrationSuccessArray = $dataArray;
+            }
+            
+            return $this->userRegistrationSuccessArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -107,7 +107,8 @@ $translate = [
     'You are already subscribed to the mailing list:'=>'Вы уже подписаны на  эти рассылки:',
     'Search returned no results'=>'Поиск не дал результатов',
     'Search by this parameters returned no results'=>'Поиск по этим параметрам не дал результатов',
-    'Comments'=>'Комментарии'
+    'Comments'=>'Комментарии',
+    'You have successfully signed up! Now you can log in using your E-mail and password'=>'Вы успешно зарегистрировались! Теперь вы можете войти в систему с помощью логина и пароля'
 ];
 
 return $translate;

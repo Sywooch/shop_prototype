@@ -35,6 +35,13 @@ class UserLoginService extends AbstractBaseService
         try {
             $this->form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
             
+            if ($request->isAjax === true) {
+                if ($this->form->load($request->post()) === true) {
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    return ActiveForm::validate($this->form);
+                }
+            }
+            
             if ($request->isPost) {
                 if ($this->form->load($request->post()) === true) {
                     if ($this->form->validate() === true) {

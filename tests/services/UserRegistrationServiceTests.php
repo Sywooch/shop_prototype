@@ -42,6 +42,7 @@ class UserRegistrationServiceTests extends TestCase
         $reflection = new \ReflectionClass(UserRegistrationService::class);
         
         $this->assertTrue($reflection->hasProperty('userRegistrationArray'));
+        $this->assertTrue($reflection->hasProperty('userRegistrationSuccessArray'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('email'));
     }
@@ -66,6 +67,23 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('view', $result);
         $this->assertInstanceOf(UserRegistrationForm::class, $result['form']);
+        $this->assertInternalType('string', $result['view']);
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationService::getUserRegistrationSuccessArray
+     */
+    public function testGetUserRegistrationSuccessArray()
+    {
+        $service = new UserRegistrationService();
+        
+        $reflection = new \ReflectionMethod($service, 'getUserRegistrationSuccessArray');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($service);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('view', $result);
         $this->assertInternalType('string', $result['view']);
     }
     
@@ -113,6 +131,8 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertArrayHasKey('searchConfig', $result);
         $this->assertArrayHasKey('menuConfig', $result);
         $this->assertArrayHasKey('formConfig', $result);
+        
+        $this->assertArrayNotHasKey('successConfig', $result);
 
         $this->assertInternalType('array', $result['userConfig']);
         $this->assertInternalType('array', $result['cartConfig']);
@@ -155,9 +175,21 @@ class UserRegistrationServiceTests extends TestCase
         
         $result = $service->handle($request);
         
-        $this->assertInternalType('string', $result);
+        $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertSame(Url::to(['/user/login']), $result);
+        $this->assertArrayHasKey('userConfig', $result);
+        $this->assertArrayHasKey('cartConfig', $result);
+        $this->assertArrayHasKey('currencyConfig', $result);
+        $this->assertArrayHasKey('searchConfig', $result);
+        $this->assertArrayHasKey('menuConfig', $result);
+        $this->assertArrayHasKey('successConfig', $result);
+        
+        $this->assertInternalType('array', $result['userConfig']);
+        $this->assertInternalType('array', $result['cartConfig']);
+        $this->assertInternalType('array', $result['currencyConfig']);
+        $this->assertInternalType('array', $result['searchConfig']);
+        $this->assertInternalType('array', $result['menuConfig']);
+        $this->assertInternalType('array', $result['successConfig']);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}} INNER JOIN {{emails}} ON [[users.id_email]]=[[emails.id]] WHERE [[emails.email]]=:email')->bindValue(':email', 'some@gmail.com')->queryOne();
         

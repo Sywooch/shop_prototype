@@ -33,7 +33,7 @@ class RegistrationEmailService extends AbstractBaseService
             
             $this->email = $request['email'];
             
-            $sent = MailHelper::send([
+            $mailHelper = new MailHelper([
                 [
                     'from'=>['admin@shop.com'=>'Shop'], 
                     'to'=>['timofey@localhost'=>'Timofey'], 
@@ -42,6 +42,8 @@ class RegistrationEmailService extends AbstractBaseService
                     'templateData'=>['letterConfig'=>$this->getEmailRegistrationArray()],
                 ]
             ]);
+            $sent = $mailHelper->send();
+            
             if ($sent !== 1) {
                 throw new ErrorException($this->methodError('sendEmail'));
             }

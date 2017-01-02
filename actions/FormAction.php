@@ -32,6 +32,10 @@ class FormAction extends AbstractBaseAction
             
             $result = $this->service->handle(\Yii::$app->request);
             
+            if (\Yii::$app->request->isAjax) {
+                return $result;
+            }
+            
             if (empty($result)) {
                 throw new ErrorException($this->emptyError('result'));
             }
@@ -40,7 +44,7 @@ class FormAction extends AbstractBaseAction
                 case 'array':
                     return $this->controller->render($this->view, $result);
                 case 'string':
-                    return $this->controller->redirect($result);
+                       return $this->controller->redirect($result);
                 default:
                     throw new ErrorException($this->invalidError('result'));
             }

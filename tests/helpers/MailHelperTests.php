@@ -25,6 +25,17 @@ class MailHelperTests extends TestCase
     }
     
     /**
+     * Тестирует свойства MailHelper
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(MailHelper::class);
+        
+        $this->assertTrue($reflection->hasProperty('messagesArray'));
+        $this->assertTrue($reflection->hasProperty('rawMessagesArray'));
+    }
+    
+    /**
      * Тестирует метод MailHelper::send
      */
     public function testSend()
@@ -37,7 +48,8 @@ class MailHelperTests extends TestCase
             'templateData'=>self::$templateData,
         ];
         
-        $result = MailHelper::send([$messageArray]);
+        $helper = new MailHelper([$messageArray]);
+        $result = $helper->send();
         
         $this->assertEquals(1, $result);
         

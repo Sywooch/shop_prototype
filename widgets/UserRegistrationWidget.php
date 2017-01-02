@@ -42,6 +42,7 @@ class UserRegistrationWidget extends AbstractBaseWidget
             
             $renderArray['formModel'] = $this->form;
             $renderArray['formId'] = 'registration-form';
+            $renderArray['ajaxValidation'] = true;
             $renderArray['formAction'] = Url::to(['/user/registration']);
             $renderArray['button'] = \Yii::t('base', 'Send');
             
