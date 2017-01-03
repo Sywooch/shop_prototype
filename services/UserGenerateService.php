@@ -9,7 +9,11 @@ use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     FrontendTrait};
 use app\forms\RecoveryPasswordForm;
-use app\finders\RecoverySessionFinder;
+use app\finders\{UserEmailFinder,
+    RecoverySessionFinder};
+use app\helpers\HashHelper;
+use app\savers\{ModelSaver,
+    SessionSaver};
 
 /**
  * Формирует массив данных для рендеринга страницы формы восстановления пароля,
@@ -35,6 +39,10 @@ class UserGenerateService extends AbstractBaseService
      * @var RecoveryPasswordForm
      */
     private $form = null;
+    /**
+     * @var string сгенерированный пароль
+     */
+    private $tempPassword = null;
     
     /**
      * Обрабатывает запрос на поиск и обработку данных для 
@@ -55,8 +63,20 @@ class UserGenerateService extends AbstractBaseService
                     'key'=>$key
                 ]);
                 $recoveryModel = $finder->find();
-                if (empty($recoveryModel) || $recoveryModel->key !== $key) {
+                if (empty($recoveryModel)) {
                     $dataArray['emptyConfig'] = $this->getPasswordGenerateEmptyArray();
+                } else {
+                    if ($recoveryModel->validate() === false) {
+                        throw new ErrorException($this->modelError($recoveryModel->errors));
+                    }
+                    $key = HashHelper::createHash([$recoveryModel->email]);
+                    
+                    $saver = new SessionSaver([
+                        'key'=>$key,
+                        'models'=>[$recoveryModel],
+                        'flash'=>true
+                    ]);
+                    $saver->save();
                 }
             }
             
@@ -70,7 +90,39 @@ class UserGenerateService extends AbstractBaseService
             if ($request->isPost === true) {
                 if ($this->form->load($request->post()) === true) {
                     if ($this->form->validate() === true) {
+                        $key = HashHelper::createHash([$this->form->email]);
+                        $finder = new RecoverySessionFinder([
+                            'key'=>$key
+                        ]);
+                        $recoveryModel = $finder->find();
                         
+                        if (empty($recoveryModel) || $recoveryModel->email !== $this->form->email) {
+                            $dataArray['emptyConfig'] = $this->getPasswordGenerateEmptyArray();
+                        } else {
+                            $transaction = \Yii::$app->db->beginTransaction();
+                            try {
+                                $finder = new UserEmailFinder([
+                                    'email'=>$this->form->email
+                                ]);
+                                $usersModel = $finder->find();
+                                
+                                $this->tempPassword = HashHelper::randomString();
+                                
+                                $usersModel->password = password_hash($this->tempPassword, PASSWORD_DEFAULT);
+                                
+                                $saver = new ModelSaver([
+                                    'model'=>$usersModel,
+                                ]);
+                                $saver->save();
+                                
+                                $dataArray['successConfig'] = $this->getPasswordGenerateSuccessArray();
+                                
+                                $transaction->commit();
+                            } catch (\Throwable $t) {
+                                $transaction->rollBack();
+                                throw $t;
+                            }
+                        }
                     }
                 }
             }
@@ -140,13 +192,13 @@ class UserGenerateService extends AbstractBaseService
      * Возвращает массив конфигурации для виджета PasswordGenerateSuccessWidget
      * @return array
      */
-    /*private function getPasswordGenerateSuccessArray(): array
+    private function getPasswordGenerateSuccessArray(): array
     {
         try {
             if (empty($this->passwordGenerateSuccessArray)) {
                 $dataArray = [];
                 
-                $dataArray['email'] = $this->form->email;
+                $dataArray['tempPassword'] = $this->tempPassword;
                 $dataArray['view'] = 'generate-success.twig';
                 
                 $this->passwordGenerateSuccessArray = $dataArray;
@@ -156,5 +208,5 @@ class UserGenerateService extends AbstractBaseService
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }*/
+    }
 }

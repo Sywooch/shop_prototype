@@ -19,7 +19,7 @@ class RecoveryModelTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('SET'));
         
-        $this->assertTrue($reflection->hasProperty('key'));
+        $this->assertTrue($reflection->hasProperty('email'));
     }
     
     /**
@@ -28,12 +28,13 @@ class RecoveryModelTests extends TestCase
     public function testScenarios()
     {
         $form = new RecoveryModel(['scenario'=>RecoveryModel::SET]);
-        $form->attributes = ['key'=>'key'];
+        $form->attributes = [
+            'email'=>'mail@some.com'
+        ];
         
-        $reflection = new \ReflectionProperty($form, 'key');
+        $reflection = new \ReflectionProperty($form, 'email');
         $result = $reflection->getValue($form);
-        
-        $this->assertSame('key', $result);
+        $this->assertSame('mail@some.com', $result);
     }
     
     
@@ -47,10 +48,12 @@ class RecoveryModelTests extends TestCase
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
-        $this->assertArrayHasKey('key', $form->errors);
+        $this->assertArrayHasKey('email', $form->errors);
         
         $form = new RecoveryModel(['scenario'=>RecoveryModel::SET]);
-        $form->attributes = ['key'=>'key'];
+        $form->attributes = [
+            'email'=>'mail@some.com'
+        ];
         $form->validate();
         
         $this->assertEmpty($form->errors);

@@ -39,7 +39,7 @@ class PasswordGenerateWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['header'] = \Yii::t('base', 'Password recovery');
-            $renderArray['text'] = \Yii::t('base', 'Enter your email');
+            $renderArray['text'] = \Yii::t('base', 'To continue with password recovery, enter your email');
             
             $renderArray['formModel'] = $this->form;
             $renderArray['formId'] = 'generate-password-form';

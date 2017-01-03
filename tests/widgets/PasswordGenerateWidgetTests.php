@@ -104,7 +104,7 @@ class PasswordGenerateWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<p><strong>Восстановление пароля</strong></p>#', $result);
-        $this->assertRegExp('#<p><strong>Введите ваш email</strong></p>#', $result);
+        $this->assertRegExp('#<p>Чтобы продолжить восстановление пароля, введите ваш email</p>#', $result);
         $this->assertRegExp('#<form id="generate-password-form"#', $result);
         $this->assertRegExp('#<input type="text"#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить">#', $result);

@@ -3,6 +3,7 @@
 {{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
 {{ use('app/widgets/PasswordGenerateWidget') }}
 {{ use('app/widgets/PasswordGenerateEmptyWidget') }}
+{{ use('app/widgets/PasswordGenerateSuccessWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
@@ -11,7 +12,7 @@
 {% if emptyConfig %}
     {{ password_generate_empty_widget_widget(emptyConfig) }}
 {% elseif successConfig %}
-    
+    {{ password_generate_success_widget_widget(successConfig) }}
 {% else %}
     {{ password_generate_widget_widget(formConfig) }}
 {% endif %}

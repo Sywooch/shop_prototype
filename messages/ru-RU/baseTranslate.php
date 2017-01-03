@@ -97,7 +97,8 @@ $translate = [
     'Order successfully sent!'=>'Заказ успешно отправлен!',
     'Order confirmation on shop.com'=>'Подтверждение заказа на shop.com',
     'Hello! This is information about your order!'=>'Привет! Это информация о вашем заказе!',
-    'Your new password: {password}'=>'Ваш новый пароль: {password}',
+    'Your new password:'=>'Ваш новый пароль:',
+    'For safety, be sure to replace it as soon as possible!'=>'В целях безопасности, рекомендуем сменить его как можно скорее!',
     'We recommend to replace the password on your own as soon as possible!'=>'Рекомендуем заменить этот пароль на собственный как можно скорее!',
     'Subscribe'=>'Подписаться',
     'Hello! This is information about your subscriptions!'=>'Привет! Это информация о ваших подписках!',
@@ -114,7 +115,7 @@ $translate = [
     'Hello! This guide for the recovery of your password!'=>'Привет! Это руководство для восстановления вашего пароля!',
     'To ensure that we have generated the new password for you, just go to this link'=>'Для того, чтобы мы сгенерировали для вас новый пароль, просто перейдите по это ссылке',
     'link to recovery'=>'ссылка для восстановления',
-    'Enter your email'=>'Введите ваш email',
+    'To continue with password recovery, enter your email'=>'Чтобы продолжить восстановление пароля, введите ваш email',
 ];
 
 return $translate;

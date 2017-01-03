@@ -2,8 +2,7 @@
 
 namespace app\models;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\Model;
 use app\exceptions\ExceptionsTrait;
 
 class RecoveryModel extends Model
@@ -16,21 +15,21 @@ class RecoveryModel extends Model
     const SET = 'set';
     
     /**
-     * @var string ключ для ссылки, по которой произойдет смена пароля
+     * @var string email пользователя, для которого будет изменен пароль
      */
-    public $key;
+    public $email;
     
     public function scenarios()
     {
         return [
-            self::SET=>['key'],
+            self::SET=>['email'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['key'], 'required'],
+            [['email'], 'required'],
         ];
     }
 }

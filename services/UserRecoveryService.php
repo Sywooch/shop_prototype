@@ -57,7 +57,7 @@ class UserRecoveryService extends AbstractBaseService
                         $key = HashHelper::randomString(40);
                         
                         $recoveryModel = new RecoveryModel(['scenario'=>RecoveryModel::SET]);
-                        $recoveryModel->key = $key;
+                        $recoveryModel->email = $this->form->email;
                         if ($recoveryModel->validate() === false) {
                             throw new ErrorException($this->modelError($recoveryModel->errors));
                         }
