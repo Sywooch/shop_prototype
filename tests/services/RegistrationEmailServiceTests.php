@@ -46,23 +46,16 @@ class RegistrationEmailServiceTests extends TestCase
     
     /**
      * Тестирует метод RegistrationEmailService::handle
-     * если пуст email
+     * если пуст RegistrationEmailService::email
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: email
      */
     public function testHandleEmptyEmail()
     {
-        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
-        $files = glob($saveDir . '/*.eml');
-        
-        $this->assertEmpty($files);
-        
         $request = [];
         
         $service = new RegistrationEmailService();
         $service->handle($request);
-        
-        $this->assertNotEmpty($files);
     }
     
     /**
@@ -70,10 +63,20 @@ class RegistrationEmailServiceTests extends TestCase
      */
     public function testHandle()
     {
+        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
+        $files = glob($saveDir . '/*.eml');
+        
+        $this->assertEmpty($files);
+        
         $request = ['email'=>'some@some.com'];
         
         $service = new RegistrationEmailService();
         $service->handle($request);
+        
+        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
+        $files = glob($saveDir . '/*.eml');
+        
+        $this->assertNotEmpty($files);
     }
     
     public static function tearDownAfterClass()

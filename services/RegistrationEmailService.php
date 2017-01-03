@@ -35,9 +35,10 @@ class RegistrationEmailService extends AbstractBaseService
             
             $mailHelper = new MailHelper([
                 [
-                    'from'=>['admin@shop.com'=>'Shop'], 
-                    'to'=>['timofey@localhost'=>'Timofey'], 
-                    'subject'=>\Yii::t('base', 'Registration on shop.com'), 
+                    'from'=>['admin@shop.com'=>'Shop.com'], 
+                    //'to'=>$this->email,
+                    'to'=>'timofey@localhost',
+                    'subject'=>\Yii::t('base', 'Registration on shop.com'),
                     'template'=>'@theme/mail/registration-mail.twig',
                     'templateData'=>['letterConfig'=>$this->getEmailRegistrationArray()],
                 ]

@@ -3,21 +3,19 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\UserRegistrationService;
-use app\forms\UserRegistrationForm;
-use app\controllers\UserController;
+use app\services\UserRecoveryService;
+use app\forms\RecoveryPasswordForm;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture,
     EmailsFixture,
     UsersFixture};
-use yii\helpers\Url;
-use app\models\EmailsModel;
+use app\controllers\UserController;
 
 /**
- * Тестирует класс UserRegistrationService
+ * Тестирует класс UserRecoveryService
  */
-class UserRegistrationServiceTests extends TestCase
+class UserRecoveryServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -35,30 +33,29 @@ class UserRegistrationServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства UserRegistrationService
+     * Тестирует свойства UserRecoveryService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(UserRegistrationService::class);
+        $reflection = new \ReflectionClass(UserRecoveryService::class);
         
-        $this->assertTrue($reflection->hasProperty('userRegistrationArray'));
-        $this->assertTrue($reflection->hasProperty('userRegistrationSuccessArray'));
+        $this->assertTrue($reflection->hasProperty('userRecoveryArray'));
+        $this->assertTrue($reflection->hasProperty('userRecoverySuccessArray'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('email'));
     }
     
     /**
-     * Тестирует метод UserRegistrationService::getUserRegistrationArray
+     * Тестирует метод UserRecoveryService::getUserRecoveryArray
      */
-    public function testGetUserRegistrationArray()
+    public function testGetUserRecoveryArray()
     {
-        $service = new UserRegistrationService();
+        $service = new UserRecoveryService();
         
         $reflection = new \ReflectionProperty($service, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, new class() extends UserRegistrationForm {});
+        $reflection->setValue($service, new class() extends RecoveryPasswordForm {});
         
-        $reflection = new \ReflectionMethod($service, 'getUserRegistrationArray');
+        $reflection = new \ReflectionMethod($service, 'getUserRecoveryArray');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($service);
         
@@ -66,70 +63,58 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(UserRegistrationForm::class, $result['form']);
+        $this->assertInstanceOf(RecoveryPasswordForm::class, $result['form']);
         $this->assertInternalType('string', $result['view']);
     }
     
     /**
-     * Тестирует метод UserRegistrationService::getUserRegistrationSuccessArray
+     * Тестирует метод UserRecoveryService::getUserRecoverySuccessArray
      */
-    public function testGetUserRegistrationSuccessArray()
+    public function testGetUserRecoverySuccessArray()
     {
-        $service = new UserRegistrationService();
+        $form = new class() extends RecoveryPasswordForm {
+            public $email = 'some@some.com';
+        };
         
-        $reflection = new \ReflectionMethod($service, 'getUserRegistrationSuccessArray');
+        $service = new UserRecoveryService();
+        
+        $reflection = new \ReflectionProperty($service, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, $form);
+        
+        $reflection = new \ReflectionMethod($service, 'getUserRecoverySuccessArray');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($service);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('email', $result);
         $this->assertArrayHasKey('view', $result);
+        $this->assertInternalType('string', $result['email']);
         $this->assertInternalType('string', $result['view']);
     }
     
     /**
-     * Тестирует метод UserRegistrationService::getEmail
-     */
-    public function testGetEmail()
-    {
-        $emailFixture = self::$dbClass->emails['email_1'];
-        
-        $service = new UserRegistrationService();
-        
-        $reflection = new \ReflectionProperty($service, 'email');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, $emailFixture['email']);
-        
-        $reflection = new \ReflectionMethod($service, 'getEmail');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInstanceOf(EmailsModel::class, $result);
-    }
-    
-    /**
-     * Тестирует метод UserRegistrationService::handle
+     * Тестирует метод UserRecoveryService::handle
      * если AJAX
      */
     public function testHandleAjax()
     {
         \Yii::$app->controller = new UserController('user', \Yii::$app);
-
+        
         $request = new class() {
             public $isAjax = true;
             public function post()
             {
                 return [
-                    'UserRegistrationForm'=>[
-                        'email'=>'some@gmail.com',
-                        'password'=>'password',
-                        'password2'=>'password2',
+                    'RecoveryPasswordForm'=>[
+                        'email'=>'some@gmail',
                     ],
                 ];
             }
         };
         
-        $service = new UserRegistrationService();
+        $service = new UserRecoveryService();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
@@ -137,7 +122,7 @@ class UserRegistrationServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод UserRegistrationService::handle
+     * Тестирует метод UserRecoveryService::handle
      * если GET
      */
     public function testHandleGet()
@@ -149,7 +134,7 @@ class UserRegistrationServiceTests extends TestCase
             public $isAjax = false;
         };
 
-        $service = new UserRegistrationService();
+        $service = new UserRecoveryService();
         
         $result = $service->handle($request);
 
@@ -176,30 +161,34 @@ class UserRegistrationServiceTests extends TestCase
         
         $this->assertEmpty($files);
     }
-
+    
     /**
-     * Тестирует метод UserRegistrationService::handle
+     * Тестирует метод UserRecoveryService::handle
      * если POST
      */
     public function testHandlePost()
     {
         \Yii::$app->controller = new UserController('user', \Yii::$app);
-
+        
+        $emailFixture = self::$dbClass->emails['email_1'];
+        
         $request = new class() {
             public $isPost = true;
             public $isAjax = false;
+            public $email;
             public function post()
             {
                 return [
-                    'UserRegistrationForm'=>[
-                        'email'=>'some@gmail.com',
-                        'password'=>'password',
-                        'password2'=>'password',
+                    'RecoveryPasswordForm'=>[
+                        'email'=>$this->email,
                     ],
                 ];
             }
         };
-        $service = new UserRegistrationService();
+        $reflection = new \ReflectionProperty($request, 'email');
+        $reflection->setValue($request, $emailFixture['email']);
+        
+        $service = new UserRecoveryService();
         
         $result = $service->handle($request);
         
@@ -221,17 +210,12 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertInternalType('array', $result['menuConfig']);
         $this->assertInternalType('array', $result['successConfig']);
         
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}} INNER JOIN {{emails}} ON [[users.id_email]]=[[emails.id]] WHERE [[emails.email]]=:email')->bindValue(':email', 'some@gmail.com')->queryOne();
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');
         
         $this->assertNotEmpty($files);
     }
-
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();

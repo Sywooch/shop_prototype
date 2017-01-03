@@ -73,28 +73,15 @@ class HashHelper
     }
     
     /**
-     * Конструирует ключ для ссылки, по которой произойдет смена пароля
-     * @param array $inputArray массив данных для конструирования ключа
-     * @return string
-     */
-    public static function createKeyTempPass(array $inputArray): string
-    {
-        try {
-            return self::createHash(array_merge($inputArray, [time(), random_bytes(10)]));
-        } catch (\Throwable $t) {
-            ExceptionsTrait::throwStaticException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Конструирует временный пароль при восстановлении
+     * Конструирует случайную строку заданной длины
      * @param int $length длина возвращаемого пароля
      * @return string
      */
-    public static function createTempPass(int $length=10): string
+    public static function randomString(int $length=10): string
     {
         try {
             $password = self::createHash([time(), random_bytes(10)]);
+            $length = $length > 40 ? 40 : $length;
             return substr($password, 0, $length);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);

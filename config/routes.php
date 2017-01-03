@@ -24,6 +24,7 @@ $routes = [
     'logout'=>'user/logout',
     'registration'=>'user/registration',
     'recovery'=>'user/recovery',
+    'generate'=>'user/generate',
     
     # Валюта
     'set-currency'=>'currency/set',

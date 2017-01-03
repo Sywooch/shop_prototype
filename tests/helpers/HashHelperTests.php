@@ -18,11 +18,9 @@ class HashHelperTests extends TestCase
     public function testCreateHash()
     {
         $hash = HashHelper::createHash(['some', 23, 0.234]);
-        
         $this->assertEquals(40, strlen($hash));
         
         $expectedHash = HashHelper::createHash(['some', 23, 0.234]);
-        
         $this->assertEquals($expectedHash, $hash);
     }
     
@@ -34,11 +32,9 @@ class HashHelperTests extends TestCase
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
         $hash = HashHelper::createFiltersKey(Url::current());
-        
         $this->assertEquals(40, strlen($hash));
         
         $expectedHash = HashHelper::createFiltersKey(Url::current());
-        
         $this->assertEquals($expectedHash, $hash);
     }
     
@@ -48,11 +44,9 @@ class HashHelperTests extends TestCase
     public function testCreateCurrencyKey()
     {
         $hash = HashHelper::createCurrencyKey();
-        
         $this->assertEquals(40, strlen($hash));
         
         $expectedHash = HashHelper::createCurrencyKey();
-        
         $this->assertEquals($expectedHash, $hash);
     }
     
@@ -62,43 +56,27 @@ class HashHelperTests extends TestCase
     public function testCreateCartKey()
     {
         $hash = HashHelper::createCartKey();
-        
         $this->assertEquals(40, strlen($hash));
         
         $expectedHash = HashHelper::createCartKey();
-        
         $this->assertEquals($expectedHash, $hash);
     }
     
     /**
-     * Тестирует метод HashHelper::createTempPass
+     * Тестирует метод HashHelper::randomString
      */
-    public function testCreateTempPass()
+    public function testRandomString()
     {
-        $pass = HashHelper::createTempPass();
+        $string = HashHelper::randomString();
+        $this->assertEquals(10, strlen($string));
         
-        $this->assertEquals(10, strlen($pass));
+        $expectedPass = HashHelper::randomString();
+        $this->assertNotEquals($expectedPass, $string);
         
-        $pass = HashHelper::createTempPass(14);
+        $string = HashHelper::randomString(20);
+        $this->assertEquals(20, strlen($string));
         
-        $this->assertEquals(14, strlen($pass));
-        
-        $expectedPass = HashHelper::createTempPass();
-        
-        $this->assertNotEquals($expectedPass, $pass);
-    }
-    
-    /**
-     * Тестирует метод HashHelper::createKeyTempPass
-     */
-    public function testCreateKeyTempPass()
-    {
-        $pass = HashHelper::createKeyTempPass(['some@some.com']);
-        
-        $this->assertEquals(40, strlen($pass));
-        
-        $expectedPass = HashHelper::createKeyTempPass(['some@some.com']);
-        
-        $this->assertNotEquals($expectedPass, $pass);
+        $string = HashHelper::randomString(50);
+        $this->assertEquals(40, strlen($string));
     }
 }

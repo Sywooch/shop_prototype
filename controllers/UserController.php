@@ -6,6 +6,7 @@ use yii\web\Controller;
 use app\actions\{FormAction,
     PostRedirectAction};
 use app\services\{UserLoginService,
+    UserGenerateService,
     UserLogoutService,
     UserRecoveryService,
     UserRegistrationService};
@@ -36,6 +37,11 @@ class UserController extends Controller
                 'class'=>FormAction::class,
                 'service'=>new UserRecoveryService(),
                 'view'=>'recovery-form.twig',
+            ],
+            'generate'=>[
+                'class'=>FormAction::class,
+                'service'=>new UserGenerateService(),
+                'view'=>'generate-form.twig',
             ],
         ];
     }

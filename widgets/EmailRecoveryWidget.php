@@ -39,7 +39,7 @@ class EmailRecoveryWidget extends AbstractBaseWidget
             
             $renderArray['header'] = \Yii::t('base', 'Hello! This guide for the recovery of your password!');
             $renderArray['text'] = \Yii::t('base', 'To ensure that we have generated the new password for you, just go to this link');
-            $renderArray['href'] = Url::to(['/user/generate', \Yii::$app->params['recoveryKey']=>$this->key]);
+            $renderArray['href'] = Url::to(['/user/generate', \Yii::$app->params['recoveryKey']=>$this->key], true);
             $renderArray['hrefText'] = \Yii::t('base', 'link to recovery');
             
             return $this->render($this->view, $renderArray);

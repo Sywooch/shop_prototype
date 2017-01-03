@@ -26,6 +26,10 @@ class UserRecoveryService extends AbstractBaseService
      */
     private $userRecoveryArray = [];
     /**
+     * @var array данные для UserRecoverySuccessWidget
+     */
+    private $userRecoverySuccessArray = [];
+    /**
      * @var RecoveryPasswordForm
      */
     private $form = null;
@@ -50,9 +54,9 @@ class UserRecoveryService extends AbstractBaseService
             if ($request->isPost === true) {
                 if ($this->form->load($request->post()) === true) {
                     if ($this->form->validate() === true) {
-                        $key = HashHelper::createKeyTempPass([$this->form->email]);
+                        $key = HashHelper::randomString(40);
                         
-                        $recoveryModel = new RecoveryModel();
+                        $recoveryModel = new RecoveryModel(['scenario'=>RecoveryModel::SET]);
                         $recoveryModel->key = $key;
                         if ($recoveryModel->validate() === false) {
                             throw new ErrorException($this->modelError($recoveryModel->errors));
@@ -66,7 +70,12 @@ class UserRecoveryService extends AbstractBaseService
                         $saver->save();
                         
                         $mailService = new RecoveryEmailService();
-                        $mailService->handle(['key'=>$key]);
+                        $mailService->handle([
+                            'key'=>$key,
+                            'email'=>$this->form->email
+                        ]);
+                        
+                        $dataArray['successConfig'] = $this->getUserRecoverySuccessArray();
                     }
                 }
             }
@@ -104,6 +113,28 @@ class UserRecoveryService extends AbstractBaseService
             }
             
             return $this->userRecoveryArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета UserRecoverySuccessWidget
+     * @return array
+     */
+    private function getUserRecoverySuccessArray(): array
+    {
+        try {
+            if (empty($this->userRecoverySuccessArray)) {
+                $dataArray = [];
+                
+                $dataArray['email'] = $this->form->email;
+                $dataArray['view'] = 'recovery-success.twig';
+                
+                $this->userRecoverySuccessArray = $dataArray;
+            }
+            
+            return $this->userRecoverySuccessArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

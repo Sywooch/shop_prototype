@@ -1,0 +1,18 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
+{{ use('app/widgets/PasswordGenerateWidget') }}
+{{ use('app/widgets/PasswordGenerateEmptyWidget') }}
+
+{{ include('@theme/common/frontend-common.twig') }}
+
+{{ recovery_breadcrumbs_widget_widget() }}
+
+{% if emptyConfig %}
+    {{ password_generate_empty_widget_widget(emptyConfig) }}
+{% elseif successConfig %}
+    
+{% else %}
+    {{ password_generate_widget_widget(formConfig) }}
+{% endif %}
+

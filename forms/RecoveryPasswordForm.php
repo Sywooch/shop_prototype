@@ -14,7 +14,7 @@ class RecoveryPasswordForm extends AbstractBaseForm
     /**
      * Сценарий получения данных для восстановления
      */
-    const GET = 'login';
+    const GET = 'get';
     
     /**
      * @var string email для которого нужно восстановить пароль

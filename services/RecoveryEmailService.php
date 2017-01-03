@@ -16,7 +16,7 @@ class RecoveryEmailService extends AbstractBaseService
      */
     private $emailRecoveryArray = [];
     /**
-     * @var string email пользователя
+     * @var string ключ
      */
     private $key = null;
     
@@ -30,13 +30,17 @@ class RecoveryEmailService extends AbstractBaseService
             if (empty($request['key'])) {
                 throw new ErrorException($this->emptyError('key'));
             }
+            if (empty($request['email'])) {
+                throw new ErrorException($this->emptyError('email'));
+            }
             
             $this->key = $request['key'];
             
             $mailHelper = new MailHelper([
                 [
-                    'from'=>['admin@shop.com'=>'Shop'], 
-                    'to'=>['timofey@localhost'=>'Timofey'], 
+                    'from'=>['admin@shop.com'=>'Shop.com'], 
+                    //'to'=>$request['email'],
+                    'to'=>'timofey@localhost',
                     'subject'=>\Yii::t('base', 'Password recovery from shop.com'), 
                     'template'=>'@theme/mail/recovery-mail.twig',
                     'templateData'=>['letterConfig'=>$this->getEmailRecoveryArray()],

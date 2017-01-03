@@ -1,0 +1,10 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<p>{{ text }}</p>
+
+{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'action':formAction, 'method':'POST'}) %}
+    {{ form.field(formModel, 'email') | raw }}
+    <input type="submit" value="{{ button }}">
+{{ active_form_end() }}

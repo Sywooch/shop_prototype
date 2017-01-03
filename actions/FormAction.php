@@ -3,6 +3,7 @@
 namespace app\actions;
 
 use yii\base\ErrorException;
+use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
 use app\services\ServiceInterface;
 
@@ -48,6 +49,9 @@ class FormAction extends AbstractBaseAction
                 default:
                     throw new ErrorException($this->invalidError('result'));
             }
+        } catch (NotFoundHttpException $e) {
+            $this->writeErrorInLogs($e, __METHOD__);
+            throw $e;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwServerError($t, __METHOD__);
