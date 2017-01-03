@@ -29,7 +29,7 @@ $translate = [
     'Every week you\'ll get reviews of new products, discounts and special offers for subscribers!'=>'Еженедельно вы будете получать обзоры новых товаров, скидки и специальные предложения для подписчиков!',
     'If you wish to unsubscribe, click here'=>'Если вы хотите отписаться от рассылки, перейдите по этой ссылке',
     'Registration on shop.com'=>'Регистрация на shop.com',
-    'Password restore'=>'Восстановление пароля',
+    'Password recovery'=>'Восстановление пароля',
     'Send'=>'Отправить',
     'New password'=>'Новый пароль',
     'Confirm password'=>'Повторите пароль',
@@ -108,7 +108,12 @@ $translate = [
     'Search returned no results'=>'Поиск не дал результатов',
     'Search by this parameters returned no results'=>'Поиск по этим параметрам не дал результатов',
     'Comments'=>'Комментарии',
-    'You have successfully signed up! Now you can log in using your E-mail and password'=>'Вы успешно зарегистрировались! Теперь вы можете войти в систему с помощью логина и пароля'
+    'You have successfully signed up! Now you can log in using your E-mail and password'=>'Вы успешно зарегистрировались! Теперь вы можете войти в систему с помощью логина и пароля',
+    'Forgot password?'=>'Забыли пароль?',
+    'Password recovery from shop.com'=>'Восстановление пароля от shop.com',
+    'Hello! This guide for the recovery of your password!'=>'Привет! Это руководство для восстановления вашего пароля!',
+    'To ensure that we have generated the new password for you, just go to this link'=>'Для того, чтобы мы сгенерировали для вас новый пароль, просто перейдите по это ссылке',
+    'link to recovery'=>'ссылка для восстановления'
 ];
 
 return $translate;

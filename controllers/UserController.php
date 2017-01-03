@@ -7,6 +7,7 @@ use app\actions\{FormAction,
     PostRedirectAction};
 use app\services\{UserLoginService,
     UserLogoutService,
+    UserRecoveryService,
     UserRegistrationService};
 
 /**
@@ -30,6 +31,11 @@ class UserController extends Controller
                 'class'=>FormAction::class,
                 'service'=>new UserRegistrationService(),
                 'view'=>'registration-form.twig',
+            ],
+            'recovery'=>[
+                'class'=>FormAction::class,
+                'service'=>new UserRecoveryService(),
+                'view'=>'recovery-form.twig',
             ],
         ];
     }

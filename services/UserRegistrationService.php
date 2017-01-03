@@ -17,7 +17,8 @@ use app\models\{EmailsModel,
     UsersModel};
 
 /**
- * Формирует массив данных для рендеринга страницы формы регистрации
+ * Формирует массив данных для рендеринга страницы формы регистрации,
+ * обрабатывает переданные в форму данные
  */
 class UserRegistrationService extends AbstractBaseService
 {

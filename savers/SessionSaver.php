@@ -20,6 +20,10 @@ class SessionSaver extends AbstractBaseSaver implements SaverArrayInterface
      * @var array объектов Model
      */
     private $models = [];
+    /**
+     * @var bool флаг, указывающий сохранить данные во флеш-сесии
+     */
+    public $flash = false;
     
     /**
      * Сохраняет данные в сессионном хранилище
@@ -44,7 +48,11 @@ class SessionSaver extends AbstractBaseSaver implements SaverArrayInterface
                 $toRecord = $this->models[0]->toArray();
             }
             
-            SessionHelper::write($this->key, $toRecord);
+            if ($this->flash === true) {
+                SessionHelper::writeFlash($this->key, $toRecord);
+            } else {
+                SessionHelper::write($this->key, $toRecord);
+            }
             
             return true;
         } catch (\Throwable $t) {

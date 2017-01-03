@@ -6,15 +6,15 @@ use yii\base\{ErrorException,
     Widget};
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
-use app\forms\UserLoginForm;
+use app\forms\RecoveryPasswordForm;
 
 /**
- * Формирует HTML строку с формой аутентификации
+ * Формирует HTML строку с формой регистрации
  */
-class UserLoginWidget extends AbstractBaseWidget
+class UserRecoveryWidget extends AbstractBaseWidget
 {
     /**
-     * @var object UserLoginForm
+     * @var object RecoveryPasswordForm
      */
     private $form;
     /**
@@ -23,7 +23,7 @@ class UserLoginWidget extends AbstractBaseWidget
     public $view;
     
     /**
-     * Конструирует HTML строку с формой аутентификации
+     * Конструирует HTML строку с формой регистрации
      * @return string
      */
     public function run()
@@ -38,15 +38,13 @@ class UserLoginWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['header'] = \Yii::t('base', 'Login');
-            $renderArray['formModel'] = $this->form;
-            $renderArray['formId'] = 'login-form';
-            $renderArray['ajaxValidation'] = true;
-            $renderArray['formAction'] = Url::to(['/user/login']);
-            $renderArray['button'] = \Yii::t('base', 'Send');
+            $renderArray['header'] = \Yii::t('base', 'Password recovery');
             
-            $renderArray['recoveryText'] = \Yii::t('base', 'Forgot password?');
-            $renderArray['recoveryHref'] = Url::to(['/user/recovery']);
+            $renderArray['formModel'] = $this->form;
+            $renderArray['formId'] = 'recovery-password-form';
+            $renderArray['ajaxValidation'] = true;
+            $renderArray['formAction'] = Url::to(['/user/recovery']);
+            $renderArray['button'] = \Yii::t('base', 'Send');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
@@ -55,10 +53,10 @@ class UserLoginWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает UserLoginForm свойству UserLoginWidget::form
-     * @param UserLoginForm $form
+     * Присваивает RecoveryPasswordForm свойству UserRecoveryWidget::form
+     * @param RecoveryPasswordForm $form
      */
-    public function setForm(UserLoginForm $form)
+    public function setForm(RecoveryPasswordForm $form)
     {
         try {
             $this->form = $form;

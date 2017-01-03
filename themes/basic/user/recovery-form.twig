@@ -1,0 +1,15 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
+{{ use('app/widgets/UserRecoveryWidget') }}
+
+{{ include('@theme/common/frontend-common.twig') }}
+
+{{ recovery_breadcrumbs_widget_widget() }}
+
+{% if successConfig %}
+    
+{% else %}
+    {{ user_recovery_widget_widget(formConfig) }}
+{% endif %}
+

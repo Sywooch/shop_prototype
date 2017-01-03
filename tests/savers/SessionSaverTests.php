@@ -20,6 +20,7 @@ class SessionSaverTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('models'));
+        $this->assertTrue($reflection->hasProperty('flash'));
     }
     
     /**
@@ -122,6 +123,53 @@ class SessionSaverTests extends TestCase
     
     /**
      * Тестирует метод SessionSaver::save
+     * если количество элементов > 1
+     * и сохраняю flash
+     */
+    public function testSaveFlash()
+    {
+        $model_1 = new class() extends Model {
+            public $id = 1;
+        };
+        
+        $model_2 = new class() extends Model {
+            public $id = 2;
+        };
+        
+        $saver = new SessionSaver();
+        
+        $reflection = new \ReflectionProperty($saver, 'key');
+        $reflection->setValue($saver, 'key_test_flash');
+        
+        $reflection = new \ReflectionProperty($saver, 'models');
+        $reflection->setAccessible(true);
+        $reflection->setValue($saver, [$model_1, $model_2]);
+        
+        $reflection = new \ReflectionProperty($saver, 'flash');
+        $reflection->setValue($saver, true);
+        
+        $saver->save();
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $result = $session->getFlash('key_test_flash', null, true);
+        
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+        $this->assertCount(2, $result);
+        foreach ($result as $item) {
+            $this->assertInternalType('array', $item);
+        }
+        
+        $result = $session->hasFlash('key_test_flash');
+        
+        $this->assertFalse($result);
+        
+        $session->close();
+    }
+    
+    /**
+     * Тестирует метод SessionSaver::save
      * если количество элементов === 1
      */
     public function testSaveOne()
@@ -151,6 +199,47 @@ class SessionSaverTests extends TestCase
         $this->assertArrayHasKey('id', $result);
         
         $session->remove('key_test');
+        $session->close();
+    }
+    
+    /**
+     * Тестирует метод SessionSaver::save
+     * если количество элементов === 1
+     * и сохраняю flash
+     */
+    public function testSaveOneFlash()
+    {
+        $model_1 = new class() extends Model {
+            public $id = 1;
+        };
+        
+        $saver = new SessionSaver();
+        
+        $reflection = new \ReflectionProperty($saver, 'key');
+        $reflection->setValue($saver, 'key_test_flash');
+        
+        $reflection = new \ReflectionProperty($saver, 'models');
+        $reflection->setAccessible(true);
+        $reflection->setValue($saver, [$model_1]);
+        
+        $reflection = new \ReflectionProperty($saver, 'flash');
+        $reflection->setValue($saver, true);
+        
+        $saver->save();
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $result = $session->getFlash('key_test_flash', null, true);
+        
+        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+        $this->assertCount(1, $result);
+        $this->assertArrayHasKey('id', $result);
+        
+        $result = $session->hasFlash('key_test_flash');
+        
+        $this->assertFalse($result);
+        
         $session->close();
     }
 }

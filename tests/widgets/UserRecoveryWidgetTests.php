@@ -3,27 +3,27 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\UserLoginWidget;
-use app\forms\UserLoginForm;
+use app\widgets\UserRecoveryWidget;
+use app\forms\RecoveryPasswordForm;
 
 /**
- * Тестирует класс UserLoginWidget
+ * Тестирует класс UserRecoveryWidget
  */
-class UserLoginWidgetTests extends TestCase
+class UserRecoveryWidgetTests extends TestCase
 {
     /**
-     * Тестирует свойства UserLoginWidget
+     * Тестирует свойства UserRecoveryWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(UserLoginWidget::class);
+        $reflection = new \ReflectionClass(UserRecoveryWidget::class);
         
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('view'));
     }
     
     /**
-     * Тестирует метод UserLoginWidget::setForm
+     * Тестирует метод UserRecoveryWidget::setForm
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
@@ -31,50 +31,50 @@ class UserLoginWidgetTests extends TestCase
     {
         $form = new class() {};
         
-        $widget = new UserLoginWidget();
+        $widget = new UserRecoveryWidget();
         $widget->setForm($form);
     }
     
     /**
-     * Тестирует метод UserLoginWidget::setForm
+     * Тестирует метод UserRecoveryWidget::setForm
      */
     public function testSetForm()
     {
-        $form = new class() extends UserLoginForm {};
+        $form = new class() extends RecoveryPasswordForm {};
         
-        $widget = new UserLoginWidget();
+        $widget = new UserRecoveryWidget();
         $widget->setForm($form);
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(UserLoginForm::class, $result);
+        $this->assertInstanceOf(RecoveryPasswordForm::class, $result);
     }
     
     /**
-     * Тестирует метод UserLoginWidget::run
-     * если пуст UserLoginWidget::form
+     * Тестирует метод UserRecoveryWidget::run
+     * если пуст UserRecoveryWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: form
      */
     public function testRunEmptyForm()
     {
-        $widget = new UserLoginWidget();
+        $widget = new UserRecoveryWidget();
         $result = $widget->run();
     }
     
     /**
-     * Тестирует метод UserLoginWidget::run
-     * если пуст UserLoginWidget::view
+     * Тестирует метод UserRecoveryWidget::run
+     * если пуст UserRecoveryWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: view
      */
     public function testRunEmptyView()
     {
-        $form = new class() extends UserLoginForm {};
+        $form = new class() extends RecoveryPasswordForm {};
         
-        $widget = new UserLoginWidget();
+        $widget = new UserRecoveryWidget();
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
@@ -84,14 +84,14 @@ class UserLoginWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод UserLoginWidget::run
+     * Тестирует метод UserRecoveryWidget::run
      * если добавлены комментарии
      */
     public function testRun()
     {
-        $form = new class() extends UserLoginForm {};
+        $form = new class() extends RecoveryPasswordForm {};
         
-        $widget = new UserLoginWidget();
+        $widget = new UserRecoveryWidget();
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
@@ -99,17 +99,12 @@ class UserLoginWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, 'login-form.twig');
+        $result = $reflection->setValue($widget, 'recovery-form.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Войти</strong></p>#', $result);
-        $this->assertRegExp('#<form id="login-form" action="#', $result);
-        $this->assertRegExp('#<label.+>Email</label>#', $result);
-        $this->assertRegExp('#<input type="text"#', $result);
-        $this->assertRegExp('#<label.+>Password</label>#', $result);
-        $this->assertRegExp('#<input type="password"#', $result);
+        $this->assertRegExp('#<p><strong>Восстановление пароля</strong></p>#', $result);
+        $this->assertRegExp('#<form id="recovery-password-form"#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить">#', $result);
-        $this->assertRegExp('#<a href=".+">Забыли пароль\?</a>#', $result);
     }
 }

@@ -69,4 +69,36 @@ class HashHelperTests extends TestCase
         
         $this->assertEquals($expectedHash, $hash);
     }
+    
+    /**
+     * Тестирует метод HashHelper::createTempPass
+     */
+    public function testCreateTempPass()
+    {
+        $pass = HashHelper::createTempPass();
+        
+        $this->assertEquals(10, strlen($pass));
+        
+        $pass = HashHelper::createTempPass(14);
+        
+        $this->assertEquals(14, strlen($pass));
+        
+        $expectedPass = HashHelper::createTempPass();
+        
+        $this->assertNotEquals($expectedPass, $pass);
+    }
+    
+    /**
+     * Тестирует метод HashHelper::createKeyTempPass
+     */
+    public function testCreateKeyTempPass()
+    {
+        $pass = HashHelper::createKeyTempPass(['some@some.com']);
+        
+        $this->assertEquals(40, strlen($pass));
+        
+        $expectedPass = HashHelper::createKeyTempPass(['some@some.com']);
+        
+        $this->assertNotEquals($expectedPass, $pass);
+    }
 }
