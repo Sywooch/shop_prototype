@@ -8,9 +8,11 @@ use app\services\{CurrentCurrencyService,
 use app\tests\DbManager;
 use app\helpers\HashHelper;
 use app\models\{CategoriesModel,
-    CurrencyModel};
+    CurrencyModel,
+    ProductsModel};
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture,
+    ProductsFixture,
     SubcategoryFixture};
 use yii\web\User;
 use app\collections\{ProductsCollection,
@@ -19,6 +21,7 @@ use app\forms\ChangeCurrencyForm;
 use app\exceptions\ExceptionsTrait;
 use app\controllers\ProductsListController;
 use app\filters\ProductsFilters;
+use yii\web\Request;
 
 /**
  * Тестирует класс FrontendTrait
@@ -35,6 +38,7 @@ class FrontendTraitTests extends TestCase
                 'categories'=>CategoriesFixture::class,
                 'subcategory'=>SubcategoryFixture::class,
                 'currency'=>CurrencyFixture::class,
+                'products'=>ProductsFixture::class,
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -58,6 +62,7 @@ class FrontendTraitTests extends TestCase
         $reflection = new \ReflectionClass(FrontendTrait::class);
         
         $this->assertTrue($reflection->hasProperty('currencyModel'));
+        $this->assertTrue($reflection->hasProperty('productsModel'));
         $this->assertTrue($reflection->hasProperty('userArray'));
         $this->assertTrue($reflection->hasProperty('cartArray'));
         $this->assertTrue($reflection->hasProperty('currencyArray'));
@@ -167,6 +172,59 @@ class FrontendTraitTests extends TestCase
         foreach ($result['categories'] as $item) {
             $this->assertInstanceOf(CategoriesModel::class, $item);
         }
+    }
+    
+    /**
+     * Тестирует метод FrontendTrait::getProductsModel
+     * если отсутствует параметр $request
+     * @expectedException TypeError
+     */
+    public function testGetProductsModelEmptyRequest()
+    {
+        $reflection = new \ReflectionMethod($this->trait, 'getProductsModel');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->trait);
+    }
+    
+    /**
+     * Тестирует метод FrontendTrait::getProductsModel
+     * если данные отсутствуют
+     * @expectedException \yii\web\NotFoundHttpException
+     */
+    public function testGetProductsModel404()
+    {
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                return 'nothing';
+            }
+        };
+        
+        $reflection = new \ReflectionMethod($this->trait, 'getProductsModel');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->trait, $request);
+    }
+    
+    /**
+     * Тестирует метод FrontendTrait::getProductsModel
+     */
+    public function testGetProductsModel()
+    {
+        $request = new class() extends Request {
+            public $seocode;
+            public function get($name = null, $defaultValue = null)
+            {
+                return $this->seocode;
+            }
+        };
+        $reflection = new \ReflectionProperty($request, 'seocode');
+        $reflection->setValue($request, self::$dbClass->products['product_1']['seocode']);
+        
+        $reflection = new \ReflectionMethod($this->trait, 'getProductsModel');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->trait, $request);
+        
+        $this->assertInstanceOf(ProductsModel::class, $result);
     }
     
     public static function tearDownAfterClass()

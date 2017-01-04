@@ -13,7 +13,7 @@ class CommentForm extends AbstractBaseForm
     /**
      * Сценарий добавления коментария
      */
-    const GET = 'get';
+    const SAVE = 'save';
     
     /**
      * @var string текст комментария
@@ -28,22 +28,26 @@ class CommentForm extends AbstractBaseForm
      */
     public $email;
     /**
-     * @var int ID товара, которому предназначен
+     * @var int ID товара, которому предназначен комментарий
      */
     public $id_product;
+    /**
+     * @var string seocode товара, которому предназначен комментарий
+     */
+    public $seocode;
     
     public function scenarios()
     {
         return [
-            self::GET=>['text', 'name', 'email', 'id_product']
+            self::SAVE=>['text', 'name', 'email', 'id_product', 'seocode'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['text', 'name', 'email', 'id_product'], 'required', 'on'=>self::GET],
-            [['email'], 'email', 'on'=>self::GET]
+            [['text', 'name', 'email', 'id_product', 'seocode'], 'required', 'on'=>self::SAVE],
+            [['email'], 'email', 'on'=>self::SAVE]
         ];
     }
 }

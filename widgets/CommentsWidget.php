@@ -44,12 +44,14 @@ class CommentsWidget extends AbstractBaseWidget
             $renderArray['formAction'] = Url::to(['']);
             $renderArray['button'] = \Yii::t('base', 'Send');
             
-            foreach ($this->comments as $comment) {
-                $set = [];
-                $set['date'] = \Yii::$app->formatter->asDate($comment->date);
-                $set['name'] = $comment->name;
-                $set['text'] = $comment->text;
-                $renderArray['comments'][] = $set;
+            if (!empty($this->comments)) {
+                foreach ($this->comments as $comment) {
+                    $set = [];
+                    $set['date'] = \Yii::$app->formatter->asDate($comment->date);
+                    $set['name'] = $comment->name;
+                    $set['text'] = $comment->text;
+                    $renderArray['comments'][] = $set;
+                }
             }
             
             return $this->render($this->view, $renderArray);

@@ -3,6 +3,8 @@
 namespace app\services;
 
 use yii\base\ErrorException;
+use yii\web\{NotFoundHttpException,
+    Request};
 use yii\helpers\{ArrayHelper,
     Url};
 use app\finders\{CategoriesFinder,
@@ -10,11 +12,13 @@ use app\finders\{CategoriesFinder,
     CurrencyFinder,
     FiltersSessionFinder,
     MainCurrencyFinder,
+    ProductDetailFinder,
     PurchasesSessionFinder};
 use app\helpers\HashHelper;
 use app\forms\ChangeCurrencyForm;
 use app\savers\SessionSaver;
-use app\models\CurrencyModel;
+use app\models\{CurrencyModel,
+    ProductsModel};
 use app\filters\ProductsFilters;
 use app\services\CurrentCurrencyService;
 
@@ -27,6 +31,10 @@ trait FrontendTrait
      * @var CurrencyModel текущая валюта
      */
     private $currencyModel = null;
+    /**
+     * @var ProductsModel текущий товар
+     */
+    private $productsModel = null;
     /**
      * @var array данные для UserInfoWidget
      */
@@ -66,6 +74,32 @@ trait FrontendTrait
             }
             
             return $this->currencyModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает данные выбранного товара
+     * @param Request $request данные запроса
+     * @return ProductsModel
+     */
+    private function getProductsModel(Request $request): ProductsModel
+    {
+        try {
+            if (empty($this->productsModel)) {
+                $finder = \Yii::$app->registry->get(ProductDetailFinder::class, ['seocode'=>$request->get(\Yii::$app->params['productKey'])]);
+                $productsModel = $finder->find();
+                if (empty($productsModel)) {
+                    throw new NotFoundHttpException($this->error404());
+                }
+                
+                $this->productsModel = $productsModel;
+            }
+            
+            return $this->productsModel;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

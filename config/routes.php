@@ -48,6 +48,9 @@ $routes = [
     
     # Подписки
     'mailing'=>'mailing/index',
+    
+    # Комментарии
+    'comments-save'=>'comments/save',
 ];
 
 return $routes;

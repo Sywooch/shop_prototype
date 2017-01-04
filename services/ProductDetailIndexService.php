@@ -3,9 +3,11 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\web\NotFoundHttpException;
+use yii\web\{NotFoundHttpException,
+    Request};
 use yii\helpers\ArrayHelper;
 use app\services\{AbstractBaseService,
+    CommentsSaveService,
     FrontendTrait};
 use app\finders\{CommentsProductFinder,
     ProductDetailFinder,
@@ -22,10 +24,6 @@ class ProductDetailIndexService extends AbstractBaseService
 {
     use FrontendTrait;
     
-    /**
-     * @var ProductsModel текущий товар
-     */
-    private $productsModel = null;
     /**
      * @var array данные для ProductDetailWidget
      */
@@ -54,9 +52,9 @@ class ProductDetailIndexService extends AbstractBaseService
     /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
-     * @param array $request
+     * @param Request $request данные запроса
      */
-    public function handle($request): array
+    public function handle(Request $request): array
     {
         try {
             $dataArray = [];
@@ -83,39 +81,11 @@ class ProductDetailIndexService extends AbstractBaseService
     }
     
     /**
-     * Возвращает данные выбранного товара
-     * @param array $request массив данных запроса
-     * @return ProductsModel
-     */
-    private function getProductsModel(array $request): ProductsModel
-    {
-        try {
-            if (empty($this->productsModel)) {
-                $finder = new ProductDetailFinder([
-                    'seocode'=>$request[\Yii::$app->params['productKey']]
-                ]);
-                $productsModel = $finder->find();
-                if (empty($productsModel)) {
-                    throw new NotFoundHttpException($this->error404());
-                }
-                
-                $this->productsModel = $productsModel;
-            }
-            
-            return $this->productsModel;
-        } catch (NotFoundHttpException $e) {
-            throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Возвращает массив конфигурации для виджета ProductDetailWidget
      * @param array $request массив данных запроса
      * @return array
      */
-    private function getProductArray(array $request): array
+    private function getProductArray($request): array
     {
         try {
             if (empty($this->productArray)) {
@@ -129,6 +99,8 @@ class ProductDetailIndexService extends AbstractBaseService
             }
             
             return $this->productArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -139,7 +111,7 @@ class ProductDetailIndexService extends AbstractBaseService
      * @param array $request массив данных запроса
      * @return array
      */
-    private function getPurchaseFormArray(array $request): array
+    private function getPurchaseFormArray($request): array
     {
         try {
             if (empty($this->purchaseFormArray)) {
@@ -153,6 +125,8 @@ class ProductDetailIndexService extends AbstractBaseService
             }
             
             return $this->purchaseFormArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -163,7 +137,7 @@ class ProductDetailIndexService extends AbstractBaseService
      * @param array $request массив данных запроса
      * @return array
      */
-    private function getBreadcrumbsArray(array $request): array
+    private function getBreadcrumbsArray($request): array
     {
         try {
             if (empty($this->breadcrumbsArray)) {
@@ -175,6 +149,8 @@ class ProductDetailIndexService extends AbstractBaseService
             }
             
             return $this->breadcrumbsArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -186,7 +162,7 @@ class ProductDetailIndexService extends AbstractBaseService
      * @param array $request массив данных запроса
      * @return array
      */
-    private function getSimilarArray(array $request): array
+    private function getSimilarArray($request): array
     {
         try {
             if (empty($this->similarArray)) {
@@ -206,6 +182,8 @@ class ProductDetailIndexService extends AbstractBaseService
             }
             
             return $this->similarArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -217,7 +195,7 @@ class ProductDetailIndexService extends AbstractBaseService
      * @param array $request массив данных запроса
      * @return array
      */
-    private function getRelatedArray(array $request): array
+    private function getRelatedArray($request): array
     {
         try {
             if (empty($this->relatedArray)) {
@@ -237,6 +215,8 @@ class ProductDetailIndexService extends AbstractBaseService
             }
             
             return $this->relatedArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -247,28 +227,17 @@ class ProductDetailIndexService extends AbstractBaseService
      * @param array $request массив данных запроса
      * @return array
      */
-    private function getCommentsArray(array $request): array
+    private function getCommentsArray($request): array
     {
         try {
             if (empty($this->commentsArray)) {
-                $dataArray = [];
-                
-                $productsModel = $this->getProductsModel($request);
-                
-                $finder = new CommentsProductFinder([
-                    'product'=>$productsModel
-                ]);
-                $commentsArray = $finder->find();
-                
-                ArrayHelper::multisort($commentsArray, 'date', SORT_DESC);
-                $dataArray['comments'] = $commentsArray;
-                $dataArray['form'] = new CommentForm(['scenario'=>CommentForm::GET]);;
-                $dataArray['view'] = 'comments.twig';
-                
-                $this->commentsArray = $dataArray;
+                $service = new CommentsSaveService();
+                $this->commentsArray = $service->handle($request);
             }
             
             return $this->commentsArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

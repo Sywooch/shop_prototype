@@ -38,59 +38,12 @@ class ProductDetailIndexServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(ProductDetailIndexService::class);
         
-        $this->assertTrue($reflection->hasProperty('productsModel'));
         $this->assertTrue($reflection->hasProperty('productArray'));
         $this->assertTrue($reflection->hasProperty('purchaseFormArray'));
         $this->assertTrue($reflection->hasProperty('breadcrumbsArray'));
         $this->assertTrue($reflection->hasProperty('similarArray'));
         $this->assertTrue($reflection->hasProperty('relatedArray'));
         $this->assertTrue($reflection->hasProperty('commentsArray'));
-    }
-    
-    /**
-     * Тестирует метод ProductDetailIndexService::getProductsModel
-     * если отсутствует параметр $request
-     * @expectedException TypeError
-     */
-    public function testGetProductsModelEmptyRequest()
-    {
-        $service = new ProductDetailIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getProductsModel');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-    }
-    
-    /**
-     * Тестирует метод ProductDetailIndexService::getProductsModel
-     * если данные отсутствуют
-     * @expectedException \yii\web\NotFoundHttpException
-     */
-    public function testGetProductsModel404()
-    {
-        $request = ['seocode'=>'nothing'];
-        
-        $service = new ProductDetailIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getProductsModel');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-    }
-    
-    /**
-     * Тестирует метод ProductDetailIndexService::getProductsModel
-     */
-    public function testGetProductsModel()
-    {
-        $request = ['seocode'=>self::$dbClass->products['product_1']['seocode']];
-        
-        $service = new ProductDetailIndexService();
-        
-        $reflection = new \ReflectionMethod($service, 'getProductsModel');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInstanceOf(ProductsModel::class, $result);
     }
     
     /**

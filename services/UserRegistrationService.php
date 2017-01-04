@@ -55,14 +55,14 @@ class UserRegistrationService extends AbstractBaseService
         try {
             $this->form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
             
-            $dataArray = [];
-            
             if ($request->isAjax === true) {
                 if ($this->form->load($request->post()) === true) {
                     \Yii::$app->response->format = Response::FORMAT_JSON;
                     return ActiveForm::validate($this->form);
                 }
             }
+            
+            $dataArray = [];
             
             if ($request->isPost === true) {
                 if ($this->form->load($request->post()) === true) {

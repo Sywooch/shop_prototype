@@ -31,7 +31,7 @@ class SearchAction extends AbstractBaseAction
                 throw new ErrorException($this->emptyError('view'));
             }
             
-            $dataArray = $this->service->handle(\Yii::$app->request->get());
+            $dataArray = $this->service->handle(\Yii::$app->request);
             
             if (empty($dataArray)) {
                 throw new ErrorException($this->emptyError('dataArray'));
