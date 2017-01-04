@@ -3,8 +3,8 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\actions\{FormAction,
-    PostRedirectAction};
+use app\actions\{BaseAction,
+    RedirectAction};
 use app\services\{UserLoginService,
     UserGenerateService,
     UserLogoutService,
@@ -20,26 +20,26 @@ class UserController extends Controller
     {
         return [
             'login'=>[
-                'class'=>FormAction::class,
+                'class'=>BaseAction::class,
                 'service'=>new UserLoginService(),
                 'view'=>'login-form.twig',
             ],
             'logout'=>[
-                'class'=>PostRedirectAction::class,
+                'class'=>RedirectAction::class,
                 'service'=>new UserLogoutService(),
             ],
             'registration'=>[
-                'class'=>FormAction::class,
+                'class'=>BaseAction::class,
                 'service'=>new UserRegistrationService(),
                 'view'=>'registration-form.twig',
             ],
             'recovery'=>[
-                'class'=>FormAction::class,
+                'class'=>BaseAction::class,
                 'service'=>new UserRecoveryService(),
                 'view'=>'recovery-form.twig',
             ],
             'generate'=>[
-                'class'=>FormAction::class,
+                'class'=>BaseAction::class,
                 'service'=>new UserGenerateService(),
                 'view'=>'generate-form.twig',
             ],

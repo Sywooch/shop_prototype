@@ -4,7 +4,8 @@ namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
 use app\services\UserLogoutService;
-use yii\web\IdentityInterface;
+use yii\web\{IdentityInterface,
+    Request};
 use yii\helpers\Url;
 
 /**
@@ -42,7 +43,7 @@ class UserLogoutServiceTests extends TestCase
     {
         $this->assertFalse(\Yii::$app->user->isGuest);
         
-        $request = [];
+        $request = new class() extends Request {};
         
         $service = new UserLogoutService();
         $result = $service->handle($request);
@@ -55,11 +56,16 @@ class UserLogoutServiceTests extends TestCase
     {
         $this->assertFalse(\Yii::$app->user->isGuest);
         
-        $request = [
-            'UserLoginForm'=>[
-                'id'=>17
-            ],
-        ];
+        $request = new class() extends Request {
+            public function post($name = null, $defaultValue = null)
+            {
+                return [
+                    'UserLoginForm'=>[
+                        'id'=>17
+                    ]
+                ];
+            }
+        };
         
         $service = new UserLogoutService();
         $result = $service->handle($request);

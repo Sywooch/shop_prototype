@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\actions\PostRedirectAction;
+use app\actions\RedirectAction;
 use app\services\CommentsSaveService;
 
 /**
@@ -15,8 +15,8 @@ class CommentsController extends Controller
     {
         return [
             'save'=>[
-                'class'=>PostRedirectAction::class,
-                'service'=>new CommentsSaveService()
+                'class'=>RedirectAction::class,
+                'service'=>new CommentsSaveService(),
             ],
         ];
     }

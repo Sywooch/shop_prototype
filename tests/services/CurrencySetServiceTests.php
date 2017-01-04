@@ -10,6 +10,7 @@ use app\models\CurrencyModel;
 use app\controllers\ProductsListController;
 use yii\helpers\Url;
 use app\helpers\HashHelper;
+use yii\web\Request;
 
 /**
  * Тестирует класс CurrencySetService
@@ -37,11 +38,17 @@ class CurrencySetServiceTests extends TestCase
         
         $url = Url::current();
         
-        $request = [
-            'ChangeCurrencyForm'=>[
-                'id'=>1, 'url'=>$url
-            ],
-        ];
+        $request = new class() extends Request {
+            public function post($name = null, $defaultValue = null)
+            {
+                return [
+                    'ChangeCurrencyForm'=>[
+                        'id'=>1, 
+                        'url'=>Url::current()
+                    ],
+                ];
+            }
+        };
         
         $service = new CurrencySetService();
         $result = $service->handle($request);

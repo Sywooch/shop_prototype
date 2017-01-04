@@ -24,7 +24,7 @@ class CurrencySetService extends AbstractBaseService
         try {
             $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::GET]);
             
-            if ($form->load($request) === false) {
+            if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('request'));
             }
             

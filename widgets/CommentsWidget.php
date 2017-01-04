@@ -41,7 +41,8 @@ class CommentsWidget extends AbstractBaseWidget
             
             $renderArray['modelForm'] = $this->form;
             $renderArray['formId'] = 'add-comment-form';
-            $renderArray['formAction'] = Url::to(['']);
+            $renderArray['ajaxValidation'] = true;
+            $renderArray['formAction'] = Url::to(['/comments/save']);
             $renderArray['button'] = \Yii::t('base', 'Send');
             
             if (!empty($this->comments)) {

@@ -7,6 +7,7 @@ use app\services\FiltersSetService;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
 use app\controllers\ProductsListController;
+use yii\web\Request;
 
 /**
  * Тестирует класс FiltersSetService
@@ -22,16 +23,21 @@ class FiltersSetServiceTests extends TestCase
         
         $url = Url::current();
         
-        $request = [
-            'FiltersForm'=>[
-                'sortingField'=>'price',
-                'sortingType'=>SORT_ASC,
-                'colors'=>[12, 4],
-                'sizes'=>[3, 7],
-                'brands'=>[2],
-                'url'=>$url,
-            ]
-        ];
+        $request = new class() extends Request {
+            public function post($name = null, $defaultValue = null)
+            {
+                return [
+                    'FiltersForm'=>[
+                        'sortingField'=>'price',
+                        'sortingType'=>SORT_ASC,
+                        'colors'=>[12, 4],
+                        'sizes'=>[3, 7],
+                        'brands'=>[2],
+                        'url'=>Url::current(),
+                    ]
+                ];
+            }
+        };
         
         $filter = new FiltersSetService();
         $result = $filter->handle($request);

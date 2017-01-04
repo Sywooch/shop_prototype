@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\actions\SearchAction;
+use app\actions\BaseAction;
 use app\services\{ProductsListIndexService,
     ProductsListSearchService};
 
@@ -17,12 +17,12 @@ class ProductsListController extends Controller
     {
         return [
             'index'=>[
-                'class'=>SearchAction::class,
+                'class'=>BaseAction::class,
                 'service'=>new ProductsListIndexService(),
                 'view'=>'products-list.twig'
             ],
             'search'=>[
-                'class'=>SearchAction::class,
+                'class'=>BaseAction::class,
                 'service'=>new ProductsListSearchService(),
                 'view'=>'products-search.twig'
             ],

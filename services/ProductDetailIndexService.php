@@ -52,9 +52,9 @@ class ProductDetailIndexService extends AbstractBaseService
     /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
-     * @param Request $request данные запроса
+     * @param $request данные запроса
      */
-    public function handle(Request $request): array
+    public function handle($request): array
     {
         try {
             $dataArray = [];
@@ -82,10 +82,10 @@ class ProductDetailIndexService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета ProductDetailWidget
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getProductArray($request): array
+    private function getProductArray(Request $request): array
     {
         try {
             if (empty($this->productArray)) {
@@ -108,10 +108,10 @@ class ProductDetailIndexService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета ToCartWidget
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getPurchaseFormArray($request): array
+    private function getPurchaseFormArray(Request $request): array
     {
         try {
             if (empty($this->purchaseFormArray)) {
@@ -134,10 +134,10 @@ class ProductDetailIndexService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета ProductBreadcrumbsWidget
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getBreadcrumbsArray($request): array
+    private function getBreadcrumbsArray(Request $request): array
     {
         try {
             if (empty($this->breadcrumbsArray)) {
@@ -159,10 +159,10 @@ class ProductDetailIndexService extends AbstractBaseService
     /**
      * Возвращает массив конфигурации для виджета SeeAlsoWidget, 
      * с информацией о похожих товарах
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getSimilarArray($request): array
+    private function getSimilarArray(Request $request): array
     {
         try {
             if (empty($this->similarArray)) {
@@ -192,10 +192,10 @@ class ProductDetailIndexService extends AbstractBaseService
     /**
      * Возвращает массив конфигурации для виджета SeeAlsoWidget, 
      * с информацией о связанных товарах
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getRelatedArray($request): array
+    private function getRelatedArray(Request $request): array
     {
         try {
             if (empty($this->relatedArray)) {
@@ -224,10 +224,10 @@ class ProductDetailIndexService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета CommentsWidget
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getCommentsArray($request): array
+    private function getCommentsArray(Request $request): array
     {
         try {
             if (empty($this->commentsArray)) {

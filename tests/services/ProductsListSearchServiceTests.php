@@ -19,6 +19,7 @@ use app\models\CurrencyModel;
 use app\forms\FiltersForm;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
+use yii\web\Request;
 
 /**
  * Тестирует класс ProductsListSearchService
@@ -76,7 +77,12 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testGetBreadcrumbsArray()
     {
-        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                return 'пиджак';
+            }
+        };
         
         $service = new ProductsListSearchService();
         
@@ -108,7 +114,12 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testGetSphinxArray()
     {
-        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                return 'пиджак';
+            }
+        };
         
         $service = new ProductsListSearchService();
         
@@ -157,7 +168,12 @@ class ProductsListSearchServiceTests extends TestCase
     {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                return 'пиджак';
+            }
+        };
         
         $service = new ProductsListSearchService();
         
@@ -187,7 +203,12 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testGetFiltersArray()
     {
-        $request = [\Yii::$app->params['searchKey']=>'пиджак'];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                return 'пиджак';
+            }
+        };
         
         $service = new ProductsListSearchService();
         
@@ -232,7 +253,12 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testHandleEmptySphinx()
     {
-        $request = [\Yii::$app->params['searchKey']=>'abrakadabra'];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                return 'abrakadabra';
+            }
+        };
         
         $service = new ProductsListSearchService();
         
@@ -263,10 +289,17 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testHandle404()
     {
-        $request = [
-            \Yii::$app->params['searchKey']=>'пиджак',
-            \Yii::$app->params['pagePointer']=>14,
-        ];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                if ($name === 'search') {
+                    return 'пиджак';
+                }
+                if ($name === 'page') {
+                    return 14;
+                }
+            }
+        };
         
         $service = new ProductsListSearchService();
         
@@ -291,10 +324,17 @@ class ProductsListSearchServiceTests extends TestCase
             'brands'=>[9],
         ]);
         
-        $request = [
-            \Yii::$app->params['searchKey']=>'пиджак',
-            \Yii::$app->params['pagePointer']=>14,
-        ];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                if ($name === 'search') {
+                    return 'пиджак';
+                }
+                if ($name === 'page') {
+                    return 14;
+                }
+            }
+        };
         
         $service = new ProductsListSearchService();
         
@@ -335,9 +375,14 @@ class ProductsListSearchServiceTests extends TestCase
             'brands'=>[1, 2, 3, 4, 5],
         ]);
         
-        $request = [
-            \Yii::$app->params['searchKey']=>'пиджак',
-        ];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                if ($name === 'search') {
+                    return 'пиджак';
+                }
+            }
+        };
         
         $service = new ProductsListSearchService();
         

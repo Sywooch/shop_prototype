@@ -3,7 +3,8 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\web\NotFoundHttpException;
+use yii\web\{NotFoundHttpException,
+    Request};
 use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
@@ -83,17 +84,17 @@ class ProductsListIndexService extends AbstractBaseService
     
     /**
      * Возвращает коллекцию товаров
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return ProductsCollection
      */
-    private function getProductsCollection(array $request): ProductsCollection
+    private function getProductsCollection(Request $request): ProductsCollection
     {
         try {
             if (empty($this->productsCollection)) {
                 $finder = new ProductsFinder([
-                    'category'=>$request[\Yii::$app->params['categoryKey']] ?? null,
-                    'subcategory'=>$request[\Yii::$app->params['subcategoryKey']] ?? null,
-                    'page'=>$request[\Yii::$app->params['pagePointer']] ?? 0,
+                    'category'=>$request->get(\Yii::$app->params['categoryKey']) ?? null,
+                    'subcategory'=>$request->get(\Yii::$app->params['subcategoryKey']) ?? null,
+                    'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
                     'filters'=>$this->getFiltersModel()
                 ]);
                 $this->productsCollection = $finder->find();
@@ -107,17 +108,17 @@ class ProductsListIndexService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета CategoriesBreadcrumbsWidget
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getBreadcrumbsArray(array $request): array
+    private function getBreadcrumbsArray(Request $request): array
     {
         try {
             if (empty($this->breadcrumbsArray)) {
                 $dataArray = [];
                 
-                $category = $request[\Yii::$app->params['categoryKey']] ?? null;
-                $subcategory = $request[\Yii::$app->params['subcategoryKey']] ?? null;
+                $category = $request->get(\Yii::$app->params['categoryKey']) ?? null;
+                $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? null;
                 
                 if (!empty($category)) {
                     $finder = new CategorySeocodeFinder([
@@ -152,17 +153,17 @@ class ProductsListIndexService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета FiltersWidget
-     * @param array $request массив данных запроса 
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getFiltersArray(array $request): array
+    private function getFiltersArray(Request $request): array
     {
         try {
             if (empty($this->filtersArray)) {
                 $dataArray = [];
                 
-                $category = $request[\Yii::$app->params['categoryKey']] ?? null;
-                $subcategory = $request[\Yii::$app->params['subcategoryKey']] ?? null;
+                $category = $request->get(\Yii::$app->params['categoryKey']) ?? null;
+                $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? null;
                 
                 $finder = new ColorsFilterFinder([
                     'category'=>$category,

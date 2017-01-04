@@ -4,6 +4,7 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
+use yii\web\Request;
 use app\finders\FiltersSessionFinder;
 use app\helpers\HashHelper;
 use app\filters\ProductsFilters;
@@ -79,10 +80,10 @@ trait ProductsListTrait
     
     /**
      * Возвращает массив конфигурации для виджета ProductsWidget
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getProductsArray(array $request): array
+    private function getProductsArray(Request $request): array
     {
         try {
             if (empty($this->productsArray)) {
@@ -103,10 +104,10 @@ trait ProductsListTrait
     
     /**
      * Возвращает массив конфигурации для виджета PaginationWidget
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getPaginationArray(array $request): array
+    private function getPaginationArray(Request $request): array
     {
         try {
             if (empty($this->paginationArray)) {

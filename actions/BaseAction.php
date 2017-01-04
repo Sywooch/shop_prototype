@@ -8,9 +8,9 @@ use app\actions\AbstractBaseAction;
 use app\services\ServiceInterface;
 
 /**
- * Обрабатывает запрос на вывод каталога товаров
+ * Обрабатывает запрос на обработку формы
  */
-class SearchAction extends AbstractBaseAction
+class BaseAction extends AbstractBaseAction
 {
     /**
      * @var object ServiceInterface, обрабатывающий запрос
@@ -31,13 +31,24 @@ class SearchAction extends AbstractBaseAction
                 throw new ErrorException($this->emptyError('view'));
             }
             
-            $dataArray = $this->service->handle(\Yii::$app->request);
+            $result = $this->service->handle(\Yii::$app->request);
             
-            if (empty($dataArray)) {
-                throw new ErrorException($this->emptyError('dataArray'));
+            if (\Yii::$app->request->isAjax) {
+                return $result;
             }
             
-            return $this->controller->render($this->view, $dataArray);
+            if (empty($result)) {
+                throw new ErrorException($this->emptyError('result'));
+            }
+            
+            switch (gettype($result)) {
+                case 'array':
+                    return $this->controller->render($this->view, $result);
+                case 'string':
+                       return $this->controller->redirect($result);
+                default:
+                    throw new ErrorException($this->invalidError('result'));
+            }
         } catch (NotFoundHttpException $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             throw $e;
@@ -48,7 +59,7 @@ class SearchAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает ServiceInterface свойству SearchAction::service
+     * Присваивает ServiceInterface свойству SaveAction::service
      * @param object $service ServiceInterface
      */
     public function setService(ServiceInterface $service)

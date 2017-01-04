@@ -24,7 +24,7 @@ class FiltersCleanService extends AbstractBaseService
         try {
             $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
             
-            if ($form->load($request) === false) {
+            if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('request'));
             }
             

@@ -3,7 +3,8 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\web\NotFoundHttpException;
+use yii\web\{NotFoundHttpException,
+    Request};
 use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
@@ -55,7 +56,7 @@ class ProductsListSearchService extends AbstractBaseService
     public function handle($request): array
     {
         try {
-            if (empty($request[\Yii::$app->params['searchKey']])) {
+            if (empty($request->get(\Yii::$app->params['searchKey']))) {
                 throw new ErrorException($this->emptyError('searchKey'));
             }
             
@@ -95,16 +96,16 @@ class ProductsListSearchService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета CategoriesBreadcrumbsWidget
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getBreadcrumbsArray(array $request): array
+    private function getBreadcrumbsArray(Request $request): array
     {
         try {
             if (empty($this->breadcrumbsArray)) {
                 $dataArray = [];
                 
-                $dataArray['text'] = $request[\Yii::$app->params['searchKey']] ?? null;
+                $dataArray['text'] = $request->get(\Yii::$app->params['searchKey']) ?? null;
                 
                 $this->breadcrumbsArray = $dataArray;
             }
@@ -117,15 +118,15 @@ class ProductsListSearchService extends AbstractBaseService
     
     /**
      * Возвращает массив ID товаров, найденных sphinx в ответ на поисковый запрос
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getSphinxArray(array $request): array
+    private function getSphinxArray(Request $request): array
     {
         try {
             if (empty($this->sphinxArray)) {
                 $finder = new SphinxFinder([
-                    'search'=>$request[\Yii::$app->params['searchKey']] ?? null,
+                    'search'=>$request->get(\Yii::$app->params['searchKey']) ?? null,
                 ]);
                 $sphinxArray = $finder->find();
                 
@@ -161,16 +162,16 @@ class ProductsListSearchService extends AbstractBaseService
     
     /**
      * Возвращает коллекцию товаров
-     * @param array $request массив данных запроса
+     * @param Request $request данные запроса
      * @return ProductsCollection
      */
-    private function getProductsCollection(array $request): ProductsCollection
+    private function getProductsCollection(Request $request): ProductsCollection
     {
         try {
             if (empty($this->productsCollection)) {
                 $finder = new ProductsSphinxFinder([
                     'sphinx'=>ArrayHelper::getColumn($this->getSphinxArray($request), 'id'),
-                    'page'=>$request[\Yii::$app->params['pagePointer']] ?? 0,
+                    'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
                     'filters'=>$this->getFiltersModel()
                 ]);
                 $this->productsCollection = $finder->find();
@@ -184,10 +185,10 @@ class ProductsListSearchService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета FiltersWidget
-     * @param array $request массив данных запроса 
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getFiltersArray(array $request): array
+    private function getFiltersArray(Request $request): array
     {
         try {
             if (empty($this->filtersArray)) {

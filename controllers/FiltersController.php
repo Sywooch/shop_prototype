@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\actions\PostRedirectAction;
+use app\actions\RedirectAction;
 use app\services\{FiltersCleanService,
     FiltersSetService};
 
@@ -16,11 +16,11 @@ class FiltersController extends Controller
     {
         return [
             'set'=>[
-                'class'=>PostRedirectAction::class,
+                'class'=>RedirectAction::class,
                 'service'=>new FiltersSetService()
             ],
             'unset'=>[
-                'class'=>PostRedirectAction::class,
+                'class'=>RedirectAction::class,
                 'service'=>new FiltersCleanService()
             ],
         ];

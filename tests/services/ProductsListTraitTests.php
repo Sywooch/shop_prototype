@@ -15,6 +15,7 @@ use app\collections\{LightPagination,
 use app\exceptions\ExceptionsTrait;
 use app\controllers\ProductsListController;
 use app\filters\ProductsFilters;
+use yii\web\Request;
 
 /**
  * Тестирует класс ProductsListTrait
@@ -114,7 +115,7 @@ class ProductsListTraitTests extends TestCase
      */
     public function testGetProductsArray()
     {
-        $request = [];
+        $request = new class() extends Request {};
         
         $reflection = new \ReflectionMethod($this->trait, 'getProductsArray');
         $reflection->setAccessible(true);
@@ -146,9 +147,12 @@ class ProductsListTraitTests extends TestCase
      */
     public function testGetPaginationArray()
     {
-        $request = [
-            \Yii::$app->params['pagePointer']=>2,
-        ];
+        $request = new class() extends Request {
+            public function get($name = null, $defaultValue = null)
+            {
+                return $name === \Yii::$app->params['pagePointer'] ? 2 : 0;
+            }
+        };
         
         $reflection = new \ReflectionMethod($this->trait, 'getPaginationArray');
         $reflection->setAccessible(true);

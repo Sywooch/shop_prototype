@@ -23,6 +23,7 @@ use app\forms\FiltersForm;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
 use app\filters\ProductsFilters;
+use yii\web\Request;
 
 /**
  * Тестирует класс ProductsListIndexService
@@ -86,7 +87,7 @@ class ProductsListIndexServiceTests extends TestCase
     {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $request = [];
+        $request = new class() extends Request {};
         
         $service = new ProductsListIndexService();
         
@@ -107,11 +108,29 @@ class ProductsListIndexServiceTests extends TestCase
      */
     public function testGetProductsCategory()
     {
-        $request = [
-            \Yii::$app->params['categoryKey']=>self::$dbClass->categories['category_1'],
-            \Yii::$app->params['subcategoryKey']=>self::$dbClass->subcategory['subcategory_1'],
-            \Yii::$app->params['pagePointer']=>2,
-        ];
+        $request = new class() extends Request {
+            public $category;
+            public $subcategory;
+            public $page;
+            public function get($name = null, $defaultValue = null)
+            {
+                if ($name === 'category') {
+                    return $this->category;
+                }
+                if ($name === 'subcategory') {
+                    return $this->subcategory;
+                }
+                if ($name === 'page') {
+                    return $this->page;
+                }
+            }
+        };
+        $reflection = new \ReflectionProperty($request, 'category');
+        $reflection->setValue($request, self::$dbClass->categories['category_1']['seocode']);
+        $reflection = new \ReflectionProperty($request, 'subcategory');
+        $reflection->setValue($request, self::$dbClass->subcategory['subcategory_1']['seocode']);
+        $reflection = new \ReflectionProperty($request, 'page');
+        $reflection->setValue($request, 2);
         
         $service = new ProductsListIndexService();
         
@@ -142,7 +161,7 @@ class ProductsListIndexServiceTests extends TestCase
             'brands'=>[1, 2, 3, 4, 5],
         ]);
 
-        $request = [];
+        $request = new class() extends Request {};
         
         $service = new ProductsListIndexService();
         
@@ -176,10 +195,23 @@ class ProductsListIndexServiceTests extends TestCase
      */
     public function testGetBreadcrumbsArray()
     {
-        $request = [
-            \Yii::$app->params['categoryKey']=>self::$dbClass->categories['category_1'],
-            \Yii::$app->params['subcategoryKey']=>self::$dbClass->subcategory['subcategory_1'],
-        ];
+        $request = new class() extends Request {
+            public $category;
+            public $subcategory;
+            public function get($name = null, $defaultValue = null)
+            {
+                if ($name === 'category') {
+                    return $this->category;
+                }
+                if ($name === 'subcategory') {
+                    return $this->subcategory;
+                }
+            }
+        };
+        $reflection = new \ReflectionProperty($request, 'category');
+        $reflection->setValue($request, self::$dbClass->categories['category_1']['seocode']);
+        $reflection = new \ReflectionProperty($request, 'subcategory');
+        $reflection->setValue($request, self::$dbClass->subcategory['subcategory_1']['seocode']);
         
         $service = new ProductsListIndexService();
         
@@ -213,7 +245,7 @@ class ProductsListIndexServiceTests extends TestCase
      */
     public function testGetFiltersArray()
     {
-        $request = [];
+        $request = new class() extends Request {};
         
         $service = new ProductsListIndexService();
         

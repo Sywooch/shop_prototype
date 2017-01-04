@@ -22,7 +22,7 @@ class UserLogoutService extends AbstractBaseService
         try {
             $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGOUT]);
             
-            if ($form->load($request) === false) {
+            if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('request'));
             }
             

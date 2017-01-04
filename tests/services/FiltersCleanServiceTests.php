@@ -7,6 +7,7 @@ use app\services\FiltersCleanService;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
 use app\controllers\ProductsListController;
+use yii\web\Request;
 
 /**
  * Тестирует класс FiltersCleanService
@@ -32,11 +33,16 @@ class FiltersCleanServiceTests extends TestCase
         
         $this->assertSame(['a'=>1, 'b'=>'cdef', 'c'=>23], $result);
         
-        $request = [
-            'FiltersForm'=>[
-                'url'=>$url,
-            ]
-        ];
+        $request = new class() extends Request {
+            public function post($name = null, $defaultValue = null)
+            {
+                return [
+                    'FiltersForm'=>[
+                        'url'=>Url::current()
+                    ],
+                ];
+            }
+        };
         
         $filter = new FiltersCleanService();
         $result = $filter->handle($request);
