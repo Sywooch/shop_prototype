@@ -17,6 +17,10 @@ class EmailRecoveryWidget extends AbstractBaseWidget
      */
     public $key;
     /**
+     * @var string email, который будет добавлен к ссылке
+     */
+    public $email;
+    /**
      * @var string имя шаблона
      */
     public $view;
@@ -31,6 +35,9 @@ class EmailRecoveryWidget extends AbstractBaseWidget
             if (empty($this->key)) {
                 throw new ErrorException($this->emptyError('key'));
             }
+            if (empty($this->email)) {
+                throw new ErrorException($this->emptyError('email'));
+            }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
             }
@@ -39,8 +46,7 @@ class EmailRecoveryWidget extends AbstractBaseWidget
             
             $renderArray['header'] = \Yii::t('base', 'Hello! This guide for the recovery of your password!');
             $renderArray['text'] = \Yii::t('base', 'To ensure that we have generated the new password for you, just go to this link');
-            $renderArray['href'] = Url::to(['/user/generate', \Yii::$app->params['recoveryKey']=>$this->key], true);
-            $renderArray['hrefText'] = \Yii::t('base', 'link to recovery');
+            $renderArray['href'] = Url::to(['/user/generate', \Yii::$app->params['recoveryKey']=>$this->key, \Yii::$app->params['emailKey']=>$this->email], true);
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

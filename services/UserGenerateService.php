@@ -4,29 +4,21 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     FrontendTrait};
-use app\forms\RecoveryPasswordForm;
 use app\finders\{UserEmailFinder,
     RecoverySessionFinder};
 use app\helpers\HashHelper;
-use app\savers\{ModelSaver,
-    SessionSaver};
+use app\savers\ModelSaver;
 
 /**
  * Формирует массив данных для рендеринга страницы формы восстановления пароля,
- * обрабатывает переданные в форму данные
+ * обрабатывает переданные данные
  */
 class UserGenerateService extends AbstractBaseService
 {
     use FrontendTrait;
     
-    /**
-     * @var array данные для PasswordGenerateWidget
-     */
-    private $passwordGenerateArray = [];
     /**
      * @var array данные для PasswordGenerateSuccessWidget
      */
@@ -52,78 +44,47 @@ class UserGenerateService extends AbstractBaseService
     public function handle($request)
     {
         try {
-            $this->form = new RecoveryPasswordForm(['scenario'=>RecoveryPasswordForm::GET]);
+            $key = $request->get(\Yii::$app->params['recoveryKey']);
+            $email = $request->get(\Yii::$app->params['emailKey']);
+            if (empty($key) || empty($email)) {
+                throw new NotFoundHttpException($this->error404());
+            }
             
-            if ($request->isGet === true) {
-                $key = $request->get(\Yii::$app->params['recoveryKey']);
-                if (empty($key)) {
-                    throw new NotFoundHttpException($this->error404());
-                }
-                $finder = new RecoverySessionFinder([
-                    'key'=>$key
-                ]);
-                $recoveryModel = $finder->find();
-                if (empty($recoveryModel)) {
-                    $dataArray['emptyConfig'] = $this->getPasswordGenerateEmptyArray();
-                } else {
-                    if ($recoveryModel->validate() === false) {
-                        throw new ErrorException($this->modelError($recoveryModel->errors));
+            $finder = new RecoverySessionFinder([
+                'key'=>$key
+            ]);
+            $recoveryModel = $finder->find();
+            
+            $dataArray = [];
+            
+            if (empty($recoveryModel) || $recoveryModel->email !== $email) {
+                $dataArray['emptyConfig'] = $this->getPasswordGenerateEmptyArray();
+            } else {
+                $transaction = \Yii::$app->db->beginTransaction();
+                try {
+                    $finder = new UserEmailFinder([
+                        'email'=>$email
+                    ]);
+                    $usersModel = $finder->find();
+                    if (empty($usersModel)) {
+                        throw new ErrorException($this->emptyError('usersModel'));
                     }
-                    $key = HashHelper::createHash([$recoveryModel->email]);
                     
-                    $saver = new SessionSaver([
-                        'key'=>$key,
-                        'models'=>[$recoveryModel],
-                        'flash'=>true
+                    $this->tempPassword = HashHelper::randomString();
+                    
+                    $usersModel->password = password_hash($this->tempPassword, PASSWORD_DEFAULT);
+                    
+                    $saver = new ModelSaver([
+                        'model'=>$usersModel,
                     ]);
                     $saver->save();
-                }
-            }
-            
-            if ($request->isAjax === true) {
-                if ($this->form->load($request->post()) === true) {
-                    \Yii::$app->response->format = Response::FORMAT_JSON;
-                    return ActiveForm::validate($this->form);
-                }
-            }
-            
-            if ($request->isPost === true) {
-                if ($this->form->load($request->post()) === true) {
-                    if ($this->form->validate() === true) {
-                        $key = HashHelper::createHash([$this->form->email]);
-                        $finder = new RecoverySessionFinder([
-                            'key'=>$key
-                        ]);
-                        $recoveryModel = $finder->find();
-                        
-                        if (empty($recoveryModel) || $recoveryModel->email !== $this->form->email) {
-                            $dataArray['emptyConfig'] = $this->getPasswordGenerateEmptyArray();
-                        } else {
-                            $transaction = \Yii::$app->db->beginTransaction();
-                            try {
-                                $finder = new UserEmailFinder([
-                                    'email'=>$this->form->email
-                                ]);
-                                $usersModel = $finder->find();
-                                
-                                $this->tempPassword = HashHelper::randomString();
-                                
-                                $usersModel->password = password_hash($this->tempPassword, PASSWORD_DEFAULT);
-                                
-                                $saver = new ModelSaver([
-                                    'model'=>$usersModel,
-                                ]);
-                                $saver->save();
-                                
-                                $dataArray['successConfig'] = $this->getPasswordGenerateSuccessArray();
-                                
-                                $transaction->commit();
-                            } catch (\Throwable $t) {
-                                $transaction->rollBack();
-                                throw $t;
-                            }
-                        }
-                    }
+                    
+                    $dataArray['successConfig'] = $this->getPasswordGenerateSuccessArray();
+                    
+                    $transaction->commit();
+                } catch (\Throwable $t) {
+                    $transaction->rollBack();
+                    throw $t;
                 }
             }
             
@@ -133,35 +94,9 @@ class UserGenerateService extends AbstractBaseService
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             
-            if (!isset($dataArray['emptyConfig']) && !isset($dataArray['successConfig'])) {
-                $dataArray['formConfig'] = $this->getPasswordGenerateArray();
-            }
-            
             return $dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета PasswordGenerateWidget
-     * @return array
-     */
-    private function getPasswordGenerateArray(): array
-    {
-        try {
-            if (empty($this->passwordGenerateArray)) {
-                $dataArray = [];
-                
-                $dataArray['form'] = $this->form;
-                $dataArray['view'] = 'generate-form.twig';
-                
-                $this->passwordGenerateArray = $dataArray;
-            }
-            
-            return $this->passwordGenerateArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

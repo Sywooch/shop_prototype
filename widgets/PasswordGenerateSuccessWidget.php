@@ -31,6 +31,8 @@ class PasswordGenerateSuccessWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
+            $renderArray['header'] = \Yii::t('base', 'Password recovery');
+            
             $renderArray['text'] = \Yii::t('base', 'Your new password:');
             $renderArray['password'] = $this->tempPassword;
             $renderArray['explanation'] = \Yii::t('base', 'For safety, be sure to replace it as soon as possible!');

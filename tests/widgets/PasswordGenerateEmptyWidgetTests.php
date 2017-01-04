@@ -46,6 +46,6 @@ class PasswordGenerateEmptyWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<p><strong>Восстановление пароля</strong></p>#', $result);
-        $this->assertRegExp('#<p><strong>К сожалению, ссылка по которой вы перешли недействительна. Для решения этой проблемы вы можете обратиться к администратору</strong></p>#', $result);
+        $this->assertRegExp('#<p>К сожалению, ссылка по которой вы перешли недействительна. Для решения этой проблемы вы можете обратиться к администратору</p>#', $result);
     }
 }

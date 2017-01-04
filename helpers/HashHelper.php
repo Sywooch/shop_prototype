@@ -74,15 +74,15 @@ class HashHelper
     
     /**
      * Конструирует случайную строку заданной длины
-     * @param int $length длина возвращаемого пароля
+     * @param int $length длина возвращаемой строки
      * @return string
      */
     public static function randomString(int $length=10): string
     {
         try {
-            $password = self::createHash([time(), random_bytes(10)]);
+            $string = self::createHash([time(), random_bytes(20)]);
             $length = $length > 40 ? 40 : $length;
-            return substr($password, 0, $length);
+            return substr($string, 0, $length);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

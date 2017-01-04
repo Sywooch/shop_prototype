@@ -64,6 +64,7 @@ class PasswordGenerateSuccessWidgetTests extends TestCase
         
         $result = $widget->run();
         
+        $this->assertRegExp('#<p><strong>Восстановление пароля</strong></p>#', $result);
         $this->assertRegExp('#<p>Ваш новый пароль: <strong>tempPassword</strong></p>#', $result);
         $this->assertRegExp('#<p>В целях безопасности, рекомендуем сменить его как можно скорее!</p>#', $result);
     }

@@ -39,11 +39,11 @@ class RecoverySessionFinderTests extends TestCase
      */
     public function testFind()
     {
-        $key = sha1('some staring');
+        $email = 'some@some.com';
         
         $session = \Yii::$app->session;
         $session->open();
-        $session->setFlash('key_test_flash', ['key'=>$key]);
+        $session->setFlash('key_test_flash', ['email'=>$email]);
         
         $finder = new RecoverySessionFinder();
         
@@ -53,6 +53,5 @@ class RecoverySessionFinderTests extends TestCase
         $recoveryModel = $finder->find();
         
         $this->assertInstanceOf(RecoveryModel::class, $recoveryModel);
-        $this->assertSame($key, $recoveryModel->key);
     }
 }

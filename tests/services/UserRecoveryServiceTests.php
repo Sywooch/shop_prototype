@@ -135,7 +135,6 @@ class UserRecoveryServiceTests extends TestCase
         };
 
         $service = new UserRecoveryService();
-        
         $result = $service->handle($request);
 
         $this->assertInternalType('array', $result);

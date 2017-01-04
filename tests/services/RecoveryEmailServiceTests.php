@@ -19,6 +19,7 @@ class RecoveryEmailServiceTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('emailRecoveryArray'));
         $this->assertTrue($reflection->hasProperty('key'));
+        $this->assertTrue($reflection->hasProperty('email'));
     }
     
     /**
