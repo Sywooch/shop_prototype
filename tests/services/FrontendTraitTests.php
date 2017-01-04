@@ -9,6 +9,7 @@ use app\tests\DbManager;
 use app\helpers\HashHelper;
 use app\models\{CategoriesModel,
     CurrencyModel,
+    EmailsModel,
     ProductsModel};
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture,

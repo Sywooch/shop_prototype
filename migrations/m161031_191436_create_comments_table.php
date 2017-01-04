@@ -5,7 +5,7 @@ use yii\db\Migration;
 /**
  * Handles the creation for table `comments`.
  */
-class m160913_130551_create_comments_table extends Migration
+class m161031_191436_create_comments_table extends Migration
 {
     /**
      * @inheritdoc
@@ -16,11 +16,13 @@ class m160913_130551_create_comments_table extends Migration
             'id' => $this->primaryKey(5)->unsigned()->notNull(),
             'date'=>$this->integer(10)->unsigned()->notNull(),
             'text'=>$this->string(2000)->notNull(),
-            'name'=>$this->string(255)->notNull(),
+            'id_name'=>$this->integer(5)->unsigned()->notNull(),
             'id_email'=>$this->integer(5)->unsigned()->notNull(),
             'id_product'=>$this->integer(5)->unsigned()->notNull(),
             'active'=>$this->boolean()->notNull()->defaultValue(false)
         ], 'ENGINE=InnoDB');
+        
+        $this->addForeignKey('comments_id_name', 'comments', 'id_name', 'names', 'id', 'RESTRICT', 'CASCADE');
         
         $this->addForeignKey('comments_id_email', 'comments', 'id_email', 'emails', 'id', 'RESTRICT', 'CASCADE');
         
@@ -35,6 +37,8 @@ class m160913_130551_create_comments_table extends Migration
         $this->dropForeignKey('comments_id_product', 'comments');
         
         $this->dropForeignKey('comments_id_email', 'comments');
+        
+        $this->dropForeignKey('comments_id_name', 'comments');
         
         $this->dropTable('comments');
     }

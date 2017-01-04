@@ -3,7 +3,8 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\helpers\ArrayHelper;
+use yii\helpers\{ArrayHelper,
+    Url};
 use yii\web\{NotFoundHttpException,
     Request,
     Response};
@@ -12,6 +13,10 @@ use app\services\{AbstractBaseService,
     FrontendTrait};
 use app\forms\CommentForm;
 use app\finders\CommentsProductFinder;
+use app\models\CommentsModel;
+use app\services\{EmailGetSaveEmailService,
+    NameGetSaveNameService};
+use app\savers\ModelSaver;
 
 /**
  * Сохраняет новый комментарий
@@ -49,10 +54,26 @@ class CommentsSaveService extends AbstractBaseService
             if ($request->isPost === true) {
                 if ($this->form->load($request->post()) === true) {
                     if ($this->form->validate() === true) {
-                        /*$transaction  = \Yii::$app->db->beginTransaction();
+                        $transaction  = \Yii::$app->db->beginTransaction();
                         
                         try {
+                            $service = new EmailGetSaveEmailService();
+                            $emailsModel = $service->handle(['email'=>$this->form->email]);
                             
+                            $service = new NameGetSaveNameService();
+                            $namesModel = $service->handle(['name'=>$this->form->name]);
+                            
+                            $rawCommentsModel = new CommentsModel();
+                            $rawCommentsModel->date = time();
+                            $rawCommentsModel->text = $this->form->text;
+                            $rawCommentsModel->id_name = $namesModel->id;
+                            $rawCommentsModel->id_email = $emailsModel->id;
+                            $rawCommentsModel->id_product = $this->form->id_product;
+                            
+                            $saver = new ModelSaver([
+                                'model'=>$rawCommentsModel
+                            ]);
+                            $saver->save();
                             
                             $transaction->commit();
                             
@@ -60,7 +81,7 @@ class CommentsSaveService extends AbstractBaseService
                         } catch (\Throwable $t) {
                             $transaction->rollBack();
                             throw $t;
-                        }*/
+                        }
                     }
                 }
             }

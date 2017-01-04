@@ -18,6 +18,7 @@ use app\helpers\HashHelper;
 use app\forms\ChangeCurrencyForm;
 use app\savers\SessionSaver;
 use app\models\{CurrencyModel,
+    EmailsModel,
     ProductsModel};
 use app\filters\ProductsFilters;
 use app\services\CurrentCurrencyService;

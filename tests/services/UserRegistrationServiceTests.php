@@ -9,7 +9,6 @@ use app\controllers\UserController;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture,
-    EmailsFixture,
     UsersFixture};
 use yii\helpers\Url;
 use app\models\EmailsModel;
@@ -27,7 +26,6 @@ class UserRegistrationServiceTests extends TestCase
             'fixtures'=>[
                 'currency'=>CurrencyFixture::class,
                 'categories'=>CategoriesFixture::class,
-                'emails'=>EmailsFixture::class,
                 'users'=>UsersFixture::class,
             ]
         ]);
@@ -44,7 +42,7 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertTrue($reflection->hasProperty('userRegistrationArray'));
         $this->assertTrue($reflection->hasProperty('userRegistrationSuccessArray'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('email'));
+        $this->assertTrue($reflection->hasProperty('userLoginArray'));
     }
     
     /**
@@ -85,26 +83,6 @@ class UserRegistrationServiceTests extends TestCase
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('view', $result);
         $this->assertInternalType('string', $result['view']);
-    }
-    
-    /**
-     * Тестирует метод UserRegistrationService::getEmail
-     */
-    public function testGetEmail()
-    {
-        $emailFixture = self::$dbClass->emails['email_1'];
-        
-        $service = new UserRegistrationService();
-        
-        $reflection = new \ReflectionProperty($service, 'email');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, $emailFixture['email']);
-        
-        $reflection = new \ReflectionMethod($service, 'getEmail');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInstanceOf(EmailsModel::class, $result);
     }
     
     /**

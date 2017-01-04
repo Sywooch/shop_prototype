@@ -45,7 +45,7 @@ class BaseAction extends AbstractBaseAction
                 case 'array':
                     return $this->controller->render($this->view, $result);
                 case 'string':
-                       return $this->controller->redirect($result);
+                    return $this->controller->redirect($result);
                 default:
                     throw new ErrorException($this->invalidError('result'));
             }

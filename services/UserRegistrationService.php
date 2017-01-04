@@ -7,6 +7,7 @@ use yii\helpers\Url;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
+    EmailGetSaveEmailService,
     FrontendTrait,
     RegistrationEmailService};
 use app\forms\{UserLoginForm,
@@ -37,10 +38,6 @@ class UserRegistrationService extends AbstractBaseService
      */
     private $form = null;
     /**
-     * @var string email регистрируемого пользователя
-     */
-    private $email = null;
-    /**
      * @var array данные для UserLoginWidget
      */
     private $userLoginArray = [];
@@ -70,24 +67,8 @@ class UserRegistrationService extends AbstractBaseService
                         $transaction  = \Yii::$app->db->beginTransaction();
                         
                         try {
-                            $this->email = $this->form->email;
-                            
-                            $emailsModel = $this->getEmail();
-                            
-                            if ($emailsModel === null) {
-                                $rawEmailsModel = new EmailsModel();
-                                $rawEmailsModel->email = $this->email;
-                                $saver = new ModelSaver([
-                                    'model'=>$rawEmailsModel
-                                ]);
-                                $saver->save();
-                                
-                                $emailsModel = $this->getEmail();
-                                
-                                if ($emailsModel === null) {
-                                    throw new ErrorException($this->emptyError('emailsModel'));
-                                }
-                            }
+                            $service = new EmailGetSaveEmailService();
+                            $emailsModel = $service->handle(['email'=>$this->form->email]);
                             
                             $rawUsersModel = new UsersModel(['scenario'=>UsersModel::SAVE]);
                             $rawUsersModel->id_email = $emailsModel->id;
@@ -99,7 +80,7 @@ class UserRegistrationService extends AbstractBaseService
                             $saver->save();
                             
                             $mailService = new RegistrationEmailService();
-                            $mailService->handle(['email'=>$this->email]);
+                            $mailService->handle(['email'=>$this->form->email]);
                             
                             $transaction->commit();
                             
@@ -167,24 +148,6 @@ class UserRegistrationService extends AbstractBaseService
             }
             
             return $this->userRegistrationSuccessArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает EmailsModel из СУБД
-     * @return mixed
-     */
-    private function getEmail()
-    {
-        try {
-            $finder = new EmailEmailFinder([
-                'email'=>$this->email,
-            ]);
-            $emailsModel = $finder->find();
-            
-            return $emailsModel;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
