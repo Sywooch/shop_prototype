@@ -10,7 +10,7 @@ use app\services\{AbstractBaseService,
     RecoveryEmailService};
 use app\forms\RecoveryPasswordForm;
 use app\helpers\HashHelper;
-use app\savers\SessionSaver;
+use app\savers\SessionModelSaver;
 use app\models\RecoveryModel;
 
 /**
@@ -62,9 +62,9 @@ class UserRecoveryService extends AbstractBaseService
                             throw new ErrorException($this->modelError($recoveryModel->errors));
                         }
                         
-                        $saver = new SessionSaver([
+                        $saver = new SessionModelSaver([
                             'key'=>$key,
-                            'models'=>[$recoveryModel],
+                            'model'=>$recoveryModel,
                             'flash'=>true
                         ]);
                         $saver->save();

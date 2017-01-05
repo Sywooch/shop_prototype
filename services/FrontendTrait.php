@@ -16,7 +16,6 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\helpers\HashHelper;
 use app\forms\ChangeCurrencyForm;
-use app\savers\SessionSaver;
 use app\models\{CurrencyModel,
     EmailsModel,
     ProductsModel};

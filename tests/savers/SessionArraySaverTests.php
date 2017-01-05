@@ -3,20 +3,20 @@
 namespace app\tests\savers;
 
 use PHPUnit\Framework\TestCase;
-use app\savers\SessionSaver;
+use app\savers\SessionArraySaver;
 use yii\base\Model;
 
 /**
- * Тестирует класс SessionSaver
+ * Тестирует класс SessionArraySaver
  */
-class SessionSaverTests extends TestCase
+class SessionArraySaverTests extends TestCase
 {
     /**
-     * Тестирует свойства SessionSaver
+     * Тестирует свойства SessionArraySaver
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(SessionSaver::class);
+        $reflection = new \ReflectionClass(SessionArraySaver::class);
         
         $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('models'));
@@ -24,24 +24,24 @@ class SessionSaverTests extends TestCase
     }
     
     /**
-     * Тестирует метод SessionSaver::setModels
+     * Тестирует метод SessionArraySaver::setModels
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
     public function testSetModelsError()
     {
-        $saver = new SessionSaver();
+        $saver = new SessionArraySaver();
         $saver->setModels('string');
     }
     
     /**
-     * Тестирует метод SessionSaver::setModels
+     * Тестирует метод SessionArraySaver::setModels
      */
     public function testSetModels()
     {
         $model = new class() extends Model {};
         
-        $saver = new SessionSaver();
+        $saver = new SessionArraySaver();
         $saver->setModels([$model]);
         
         $reflection = new \ReflectionProperty($saver, 'models');
@@ -54,26 +54,26 @@ class SessionSaverTests extends TestCase
     }
     
     /**
-     * Тестирует метод SessionSaver::save
-     * если пуст SessionSaver::key
+     * Тестирует метод SessionArraySaver::save
+     * если пуст SessionArraySaver::key
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: key
      */
     public function testSaveEmptyKey()
     {
-        $saver = new SessionSaver();
+        $saver = new SessionArraySaver();
         $saver->save();
     }
     
     /**
-     * Тестирует метод SessionSaver::save
-     * если пуст SessionSaver::models
+     * Тестирует метод SessionArraySaver::save
+     * если пуст SessionArraySaver::models
      * @expectedException ErrorException
      * @expectedExceptionMessage Missing required data: models
      */
     public function testSaveEmptyModels()
     {
-        $saver = new SessionSaver();
+        $saver = new SessionArraySaver();
         
         $reflection = new \ReflectionProperty($saver, 'key');
         $reflection->setValue($saver, 'key_test');
@@ -82,8 +82,7 @@ class SessionSaverTests extends TestCase
     }
     
     /**
-     * Тестирует метод SessionSaver::save
-     * если количество элементов > 1
+     * Тестирует метод SessionArraySaver::save
      */
     public function testSave()
     {
@@ -95,7 +94,7 @@ class SessionSaverTests extends TestCase
             public $id = 2;
         };
         
-        $saver = new SessionSaver();
+        $saver = new SessionArraySaver();
         
         $reflection = new \ReflectionProperty($saver, 'key');
         $reflection->setValue($saver, 'key_test');
@@ -122,9 +121,8 @@ class SessionSaverTests extends TestCase
     }
     
     /**
-     * Тестирует метод SessionSaver::save
-     * если количество элементов > 1
-     * и сохраняю flash
+     * Тестирует метод SessionArraySaver::save
+     * сохраняю flash
      */
     public function testSaveFlash()
     {
@@ -136,7 +134,7 @@ class SessionSaverTests extends TestCase
             public $id = 2;
         };
         
-        $saver = new SessionSaver();
+        $saver = new SessionArraySaver();
         
         $reflection = new \ReflectionProperty($saver, 'key');
         $reflection->setValue($saver, 'key_test_flash');
@@ -160,81 +158,6 @@ class SessionSaverTests extends TestCase
         foreach ($result as $item) {
             $this->assertInternalType('array', $item);
         }
-        
-        $result = $session->hasFlash('key_test_flash');
-        
-        $this->assertFalse($result);
-        
-        $session->close();
-    }
-    
-    /**
-     * Тестирует метод SessionSaver::save
-     * если количество элементов === 1
-     */
-    public function testSaveOne()
-    {
-        $model_1 = new class() extends Model {
-            public $id = 1;
-        };
-        
-        $saver = new SessionSaver();
-        
-        $reflection = new \ReflectionProperty($saver, 'key');
-        $reflection->setValue($saver, 'key_test');
-        
-        $reflection = new \ReflectionProperty($saver, 'models');
-        $reflection->setAccessible(true);
-        $reflection->setValue($saver, [$model_1]);
-        
-        $saver->save();
-        
-        $session = \Yii::$app->session;
-        $session->open();
-        $result = $session->get('key_test');
-        
-        $this->assertNotEmpty($result);
-        $this->assertInternalType('array', $result);
-        $this->assertCount(1, $result);
-        $this->assertArrayHasKey('id', $result);
-        
-        $session->remove('key_test');
-        $session->close();
-    }
-    
-    /**
-     * Тестирует метод SessionSaver::save
-     * если количество элементов === 1
-     * и сохраняю flash
-     */
-    public function testSaveOneFlash()
-    {
-        $model_1 = new class() extends Model {
-            public $id = 1;
-        };
-        
-        $saver = new SessionSaver();
-        
-        $reflection = new \ReflectionProperty($saver, 'key');
-        $reflection->setValue($saver, 'key_test_flash');
-        
-        $reflection = new \ReflectionProperty($saver, 'models');
-        $reflection->setAccessible(true);
-        $reflection->setValue($saver, [$model_1]);
-        
-        $reflection = new \ReflectionProperty($saver, 'flash');
-        $reflection->setValue($saver, true);
-        
-        $saver->save();
-        
-        $session = \Yii::$app->session;
-        $session->open();
-        $result = $session->getFlash('key_test_flash', null, true);
-        
-        $this->assertNotEmpty($result);
-        $this->assertInternalType('array', $result);
-        $this->assertCount(1, $result);
-        $this->assertArrayHasKey('id', $result);
         
         $result = $session->hasFlash('key_test_flash');
         

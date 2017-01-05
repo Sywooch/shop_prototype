@@ -9,7 +9,7 @@ use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     FrontendTrait};
 use app\forms\PurchaseForm;
-use app\savers\SessionSaver;
+use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
 use app\finders\PurchasesSessionFinder;
 use app\widgets\{CartWidget,
@@ -50,41 +50,32 @@ class PurchaseSaveService extends AbstractBaseService
                         return $errors;
                     }
                     
-                    $transaction  = \Yii::$app->db->beginTransaction();
+                    $key = HashHelper::createCartKey();
                     
-                    try {
-                        $key = HashHelper::createCartKey();
-                        
-                        $finder = new PurchasesSessionFinder([
-                            'key'=>$key
-                        ]);
-                        $purchasesCollection = $finder->find();
-                        
-                        $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
-                        $rawPurchasesModel->quantity = $this->form->quantity;
-                        $rawPurchasesModel->id_color = $this->form->id_color;
-                        $rawPurchasesModel->id_size = $this->form->id_size;
-                        $rawPurchasesModel->id_product = $this->form->id_product;
-                        $rawPurchasesModel->price = $this->form->price;
-                        if ($rawPurchasesModel->validate() === false) {
-                            throw new ErrorException($this->modelError($rawPurchasesModel->errors));
-                        }
-                        
-                        $purchasesCollection->add($rawPurchasesModel);
-                        
-                        $saver = new SessionSaver([
-                            'key'=>$key,
-                            'models'=>$purchasesCollection->asArray()
-                        ]);
-                        $saver->save();
-                        
-                        $transaction->commit();
-                        
-                        return $this->getCartInfo();
-                    } catch (\Throwable $t) {
-                        $transaction->rollBack();
-                        throw $t;
+                    $finder = new PurchasesSessionFinder([
+                        'key'=>$key
+                    ]);
+                    $purchasesCollection = $finder->find();
+                    
+                    $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+                    $rawPurchasesModel->quantity = $this->form->quantity;
+                    $rawPurchasesModel->id_color = $this->form->id_color;
+                    $rawPurchasesModel->id_size = $this->form->id_size;
+                    $rawPurchasesModel->id_product = $this->form->id_product;
+                    $rawPurchasesModel->price = $this->form->price;
+                    if ($rawPurchasesModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawPurchasesModel->errors));
                     }
+                    
+                    $purchasesCollection->add($rawPurchasesModel);
+                    
+                    $saver = new SessionArraySaver([
+                        'key'=>$key,
+                        'models'=>$purchasesCollection->asArray()
+                    ]);
+                    $saver->save();
+                    
+                    return $this->getCartInfo();
                 }
             }
             
@@ -108,7 +99,7 @@ class PurchaseSaveService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['product'] = $this->getProductsModel($request);
-                $dataArray['form'] = $this->form;
+                $dataArray['form'] = \Yii::configure($this->form, ['quantity'=>1]);
                 $dataArray['view'] = 'to-cart-form.twig';
                 
                 $this->toCartWidgetArray = $dataArray;
@@ -130,7 +121,10 @@ class PurchaseSaveService extends AbstractBaseService
             $dataArray = [];
             
             $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);
-            $dataArray['cartInfo'] = CartWidget::widget($this->getCartArray());
+            
+            $cartInfoWidget = $this->getCartArray();
+            $cartInfoWidget['view'] = 'short-cart-ajax.twig';
+            $dataArray['cartInfo'] = CartWidget::widget($cartInfoWidget);
             
             return $dataArray;
         } catch (\Throwable $t) {

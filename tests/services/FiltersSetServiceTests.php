@@ -57,7 +57,7 @@ class FiltersSetServiceTests extends TestCase
         $this->assertArrayHasKey('sizes', $result);
         $this->assertArrayHasKey('brands', $result);
         $this->assertSame('price', $result['sortingField']);
-        $this->assertSame(SORT_ASC, $result['sortingType']);
+        $this->assertSame(SORT_ASC, (int) $result['sortingType']);
         $this->assertSame([12, 4], $result['colors']);
         $this->assertSame([3, 7], $result['sizes']);
         $this->assertSame([2], $result['brands']);

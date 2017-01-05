@@ -10,14 +10,14 @@ use app\helpers\SessionHelper;
 /**
  * Сохранаяет данные в сессионном хранилище
  */
-class SessionSaver extends AbstractBaseSaver implements SaverArrayInterface
+class SessionArraySaver extends AbstractBaseSaver implements SaverArrayInterface
 {
     /**
      * @var staring ключ, под которым будут сохранены данные в сессии
      */
     public $key;
     /**
-     * @var array объектов Model
+     * @var array объекты Model
      */
     private $models = [];
     /**
@@ -39,13 +39,10 @@ class SessionSaver extends AbstractBaseSaver implements SaverArrayInterface
                 throw new ErrorException($this->emptyError('models'));
             }
             
-            if (count($this->models) > 1) {
-                $toRecord = [];
-                foreach ($this->models as $model) {
-                    $toRecord[] = $model->toArray();
-                }
-            } else {
-                $toRecord = $this->models[0]->toArray();
+            $toRecord = [];
+            
+            foreach ($this->models as $model) {
+                $toRecord[] = $model->toArray();
             }
             
             if ($this->flash === true) {
@@ -61,7 +58,7 @@ class SessionSaver extends AbstractBaseSaver implements SaverArrayInterface
     }
     
     /**
-     * Присваивает array Model SessionSaver::models
+     * Присваивает array SessionArraySaver::models
      */
     public function setModels(array $models)
     {

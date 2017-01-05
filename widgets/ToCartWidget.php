@@ -52,11 +52,11 @@ class ToCartWidget extends AbstractBaseWidget
             
             $colors = $this->product->colors;
             ArrayHelper::multisort($colors, 'color');
-            $renderArray['colors'] = ArrayHelper::getColumn($colors, 'color');
+            $renderArray['colors'] = ArrayHelper::map($colors, 'id', 'color');
             
             $sizes = $this->product->sizes;
             ArrayHelper::multisort($sizes, 'size');
-            $renderArray['sizes'] = ArrayHelper::getColumn($sizes, 'size');
+            $renderArray['sizes'] = ArrayHelper::map($sizes, 'id', 'size');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

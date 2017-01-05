@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use app\services\AbstractBaseService;
 use app\forms\ChangeCurrencyForm;
 use app\helpers\HashHelper;
-use app\savers\SessionSaver;
+use app\savers\SessionModelSaver;
 use app\finders\CurrencyIdFinder;
 
 /**
@@ -43,9 +43,9 @@ class CurrencySetService extends AbstractBaseService
             $key = HashHelper::createCurrencyKey();
             
             if (!empty($key)) {
-                $saver = new SessionSaver([
+                $saver = new SessionModelSaver([
                     'key'=>$key,
-                    'models'=>[$currencyModel]
+                    'model'=>$currencyModel
                 ]);
                 $saver->save();
             }

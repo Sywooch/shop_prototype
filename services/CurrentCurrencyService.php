@@ -5,7 +5,7 @@ namespace app\services;
 use yii\base\ErrorException;
 use app\services\AbstractBaseService;
 use app\helpers\HashHelper;
-use app\savers\SessionSaver;
+use app\savers\SessionModelSaver;
 use app\finders\{CurrencySessionFinder,
     MainCurrencyFinder};
 use app\models\CurrencyModel;
@@ -36,9 +36,9 @@ class CurrentCurrencyService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('currencyModel'));
                 }
                 
-                $saver = new SessionSaver([
+                $saver = new SessionModelSaver([
                     'key'=>$key,
-                    'models'=>[$currencyModel]
+                    'model'=>$currencyModel
                 ]);
                 $saver->save();
             }

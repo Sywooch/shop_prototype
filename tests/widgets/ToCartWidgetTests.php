@@ -188,7 +188,7 @@ class ToCartWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'add-to-cart-form.twig');
+        $reflection->setValue($widget, 'to-cart-form.twig');
         
         $result = $widget->run();
         
@@ -196,11 +196,11 @@ class ToCartWidgetTests extends TestCase
         $this->assertRegExp('#<input type="number"#', $result);
         $this->assertRegExp('#step="1" min="1">#', $result);
         $this->assertRegExp('#<label class="control-label" for=".+">Id Color</label>#', $result);
-        $this->assertRegExp('#<option value="0">black</option>#', $result);
-        $this->assertRegExp('#<option value="1">red</option>#', $result);
+        $this->assertRegExp('#<option value="1">black</option>#', $result);
+        $this->assertRegExp('#<option value="2">red</option>#', $result);
         $this->assertRegExp('#<label class="control-label" for=".+">Id Size</label>#', $result);
-        $this->assertRegExp('#<option value="0">45</option>#', $result);
-        $this->assertRegExp('#<option value="1">52.5</option>#', $result);
+        $this->assertRegExp('#<option value="1">45</option>#', $result);
+        $this->assertRegExp('#<option value="2">52.5</option>#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+" value="23">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+" value="56">#', $result);
         $this->assertRegExp('#<input type="submit" value="Добавить в корзину">#', $result);

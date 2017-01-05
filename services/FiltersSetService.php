@@ -7,7 +7,8 @@ use app\services\AbstractBaseService;
 use app\forms\FiltersForm;
 use app\helpers\{HashHelper,
     StringHelper};
-use app\savers\SessionSaver;
+use app\savers\SessionModelSaver;
+use app\filters\ProductsFilters;
 
 /**
  * Сохраняет фильтры каталога товаров
@@ -34,10 +35,20 @@ class FiltersSetService extends AbstractBaseService
             
             $key = HashHelper::createFiltersKey($form->url);
             
+            $model = new ProductsFilters(['scenario'=>ProductsFilters::SESSION]);
+            $model->sortingField = $form->sortingField;
+            $model->sortingType = $form->sortingType;
+            $model->colors = $form->colors;
+            $model->sizes = $form->sizes;
+            $model->brands = $form->brands;
+            if ($model->validate() === false) {
+                throw new ErrorException($this->modelError($model->errors));
+            }
+            
             if (!empty($key)) {
-                $saver = new SessionSaver([
+                $saver = new SessionModelSaver([
                     'key'=>$key,
-                    'models'=>[$form]
+                    'model'=>$model
                 ]);
                 $saver->save();
             }
