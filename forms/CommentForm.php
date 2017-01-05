@@ -31,22 +31,18 @@ class CommentForm extends AbstractBaseForm
      * @var int ID товара, которому предназначен комментарий
      */
     public $id_product;
-    /**
-     * @var string seocode товара, которому предназначен комментарий
-     */
-    public $seocode;
     
     public function scenarios()
     {
         return [
-            self::SAVE=>['text', 'name', 'email', 'id_product', 'seocode'],
+            self::SAVE=>['text', 'name', 'email', 'id_product'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['text', 'name', 'email', 'id_product', 'seocode'], 'required', 'on'=>self::SAVE],
+            [['text', 'name', 'email', 'id_product'], 'required', 'on'=>self::SAVE],
             [['email'], 'email', 'on'=>self::SAVE]
         ];
     }

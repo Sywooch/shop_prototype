@@ -23,7 +23,6 @@ class CommentFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('name'));
         $this->assertTrue($reflection->hasProperty('email'));
         $this->assertTrue($reflection->hasProperty('id_product'));
-        $this->assertTrue($reflection->hasProperty('seocode'));
     }
     
     /**
@@ -37,7 +36,6 @@ class CommentFormTests extends TestCase
             'name'=>'Name',
             'email'=>'mail@mail.com',
             'id_product'=>4,
-            'seocode'=>'seocode',
         ];
         
         $reflection = new \ReflectionProperty($form, 'text');
@@ -55,10 +53,6 @@ class CommentFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'id_product');
         $result = $reflection->getValue($form);
         $this->assertSame(4, $result);
-        
-        $reflection = new \ReflectionProperty($form, 'seocode');
-        $result = $reflection->getValue($form);
-        $this->assertSame('seocode', $result);
     }
     
     /**
@@ -70,12 +64,11 @@ class CommentFormTests extends TestCase
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
-        $this->assertCount(5, $form->errors);
+        $this->assertCount(4, $form->errors);
         $this->assertArrayHasKey('text', $form->errors);
         $this->assertArrayHasKey('name', $form->errors);
         $this->assertArrayHasKey('email', $form->errors);
         $this->assertArrayHasKey('id_product', $form->errors);
-        $this->assertArrayHasKey('seocode', $form->errors);
         
         $form = new CommentForm(['scenario'=>CommentForm::SAVE]);
         $form->attributes = [
@@ -83,7 +76,6 @@ class CommentFormTests extends TestCase
             'name'=>'Name',
             'email'=>'mail@mail',
             'id_product'=>4,
-            'seocode'=>'seocode',
         ];
         $form->validate();
         
@@ -97,7 +89,6 @@ class CommentFormTests extends TestCase
             'name'=>'Name',
             'email'=>'mail@mail.com',
             'id_product'=>4,
-            'seocode'=>'seocode',
         ];
         $form->validate();
         

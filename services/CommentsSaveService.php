@@ -3,8 +3,7 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Url};
+use yii\helpers\ArrayHelper;
 use yii\web\{NotFoundHttpException,
     Request,
     Response};
@@ -119,7 +118,6 @@ class CommentsSaveService extends AbstractBaseService
                 
                 $dataArray['form'] = \Yii::configure($this->form, [
                     'id_product'=>$productsModel->id,
-                    'seocode'=>$productsModel->seocode,
                 ]);
                 $dataArray['view'] = 'comments.twig';
                 

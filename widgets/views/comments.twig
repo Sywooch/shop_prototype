@@ -19,6 +19,5 @@
     {{ form.field(modelForm, 'email') | raw }}
     {{ form.field(modelForm, 'text').textarea() | raw }}
     {{ form.field(modelForm, 'id_product').hiddenInput().label(false) | raw }}
-    {{ form.field(modelForm, 'seocode').hiddenInput().label(false) | raw }}
     <input type="submit" value="{{ button }}">
 {{ active_form_end() }}
