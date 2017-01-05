@@ -42,7 +42,7 @@ class PurchasesSessionFinderTests extends TestCase
     {
         $session = \Yii::$app->session;
         $session->open();
-        $session->set('key_test', [['id'=>1, 'quantity'=>4, 'price'=>129.8]]);
+        $session->set('key_test', [['id_product'=>1, 'quantity'=>4, 'price'=>129.8]]);
         
         $finder = new PurchasesSessionFinder();
         
@@ -56,7 +56,7 @@ class PurchasesSessionFinderTests extends TestCase
         foreach($collection as $item) {
             $this->assertInstanceOf(PurchasesModel::class, $item);
             $this->assertNotEmpty($item->toArray());
-            $this->assertSame(['id'=>1, 'quantity'=>4, 'price'=>129.8], $item->toArray());
+            $this->assertSame(['id_product'=>1, 'quantity'=>4, 'price'=>129.8], $item->toArray());
         }
         
         $session->remove('key_test');

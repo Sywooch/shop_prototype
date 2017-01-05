@@ -39,7 +39,7 @@ class PurchasesSessionFinder extends AbstractBaseFinder
                 $array = SessionHelper::read($this->key);
                 if (!empty($array)) {
                     foreach ($array as $data) {
-                        $model = new PurchasesModel(['scenario'=>PurchasesModel::DBMS]);
+                        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
                         $model->attributes = $data;
                         $this->storage->add($model);
                     }

@@ -36,7 +36,8 @@ $routes = [
     'ajax/subcategory'=>'ajax/subcategory',
     
     # Корзина
-    'cart'=>'cart/index',
+    'cart-add'=>'cart/add',
+    /*'cart'=>'cart/index',
     'cart-set'=>'cart/set',
     'cart-customer'=>'cart/customer',
     'cart-check'=>'cart/check',
@@ -44,7 +45,7 @@ $routes = [
     'cart-update'=>'cart/update',
     'cart-delete'=>'cart/delete',
     'cart-send'=>'cart/send',
-    'cart-complete'=>'cart/complete',
+    'cart-complete'=>'cart/complete',*/
     
     # Подписки
     'mailing'=>'mailing/index',

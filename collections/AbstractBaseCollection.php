@@ -92,4 +92,17 @@ abstract class AbstractBaseCollection extends AbstractIterator implements Collec
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает данные коллекции в виде массива объектов
+     * @return array
+     */
+    public function asArray(): array
+    {
+        try {
+            return $this->items;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

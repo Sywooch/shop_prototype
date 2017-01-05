@@ -42,7 +42,7 @@ class ToCartWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['formAction'] = Url::to(['/cart/set']);
+            $renderArray['formAction'] = Url::to(['/cart/add']);
             $renderArray['formId'] = 'add-to-cart-form';
             $renderArray['button'] = \Yii::t('base', 'Add to cart');
             

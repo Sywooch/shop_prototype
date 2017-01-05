@@ -8,7 +8,8 @@ use yii\web\{NotFoundHttpException,
 use yii\helpers\ArrayHelper;
 use app\services\{AbstractBaseService,
     CommentsSaveService,
-    FrontendTrait};
+    FrontendTrait,
+    PurchaseSaveService};
 use app\finders\{CommentsProductFinder,
     ProductDetailFinder,
     SimilarFinder,
@@ -115,13 +116,8 @@ class ProductDetailIndexService extends AbstractBaseService
     {
         try {
             if (empty($this->purchaseFormArray)) {
-                $dataArray = [];
-                
-                $dataArray['product'] = $this->getProductsModel($request);
-                $dataArray['form'] = new PurchaseForm(['quantity'=>1]);
-                $dataArray['view'] = 'add-to-cart-form.twig';
-                
-                $this->purchaseFormArray = $dataArray;
+                $service = new PurchaseSaveService();
+                $this->purchaseFormArray = $service->handle($request);
             }
             
             return $this->purchaseFormArray;

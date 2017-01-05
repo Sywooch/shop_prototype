@@ -38,7 +38,7 @@ class PurchasesModelTests extends TestCase
     {
         $reflection = new \ReflectionClass(PurchasesModel::class);
         
-        $this->assertTrue($reflection->hasConstant('DBMS'));
+        $this->assertTrue($reflection->hasConstant('SESSION_GET'));
         
         $model = new PurchasesModel();
         
@@ -81,7 +81,32 @@ class PurchasesModelTests extends TestCase
      */
     public function testScenarios()
     {
-        $model = new PurchasesModel(['scenario'=>PurchasesModel::DBMS]);
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+        $model->attributes = [
+            'id_product'=>34, 
+            'quantity'=>2, 
+            'id_color'=>4, 
+            'id_size'=>2,
+            'price'=>245.98, 
+        ];
+        
+        $result = $model->toArray();
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        
+        $this->assertArrayHasKey('id_product', $result);
+        $this->assertSame(34, $result['id_product']);
+        $this->assertArrayHasKey('quantity', $result);
+        $this->assertSame(2, $result['quantity']);
+        $this->assertArrayHasKey('id_color', $result);
+        $this->assertSame(4, $result['id_color']);
+        $this->assertArrayHasKey('id_size', $result);
+        $this->assertSame(2, $result['id_size']);
+        $this->assertArrayHasKey('price', $result);
+        $this->assertSame(245.98, $result['price']);
+        
+        /*$model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
         $model->attributes = [
             'id'=>1,
             'id_user'=>2,
@@ -155,7 +180,37 @@ class PurchasesModelTests extends TestCase
         $this->assertArrayHasKey('canceled', $result);
         $this->assertSame(0, $result['canceled']);
         $this->assertArrayHasKey('shipped', $result);
-        $this->assertSame(0, $result['shipped']);
+        $this->assertSame(0, $result['shipped']);*/
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::rules
+     */
+    public function testRules()
+    {
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(5, $model->errors);
+        $this->assertArrayHasKey('id_product', $model->errors);
+        $this->assertArrayHasKey('quantity', $model->errors);
+        $this->assertArrayHasKey('id_color', $model->errors);
+        $this->assertArrayHasKey('id_size', $model->errors);
+        $this->assertArrayHasKey('price', $model->errors);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+        $model->attributes = [
+            'id_product'=>34, 
+            'quantity'=>2, 
+            'id_color'=>4, 
+            'id_size'=>2,
+            'price'=>245.98, 
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
     
     /**

@@ -11,9 +11,9 @@ use app\forms\AbstractBaseForm;
 class PurchaseForm extends AbstractBaseForm
 {
     /**
-     * Сценарий добавления товара в корзину
+     * Сценарий сохпвнения товара в корзину
      */
-    const GET = 'get';
+    const SAVE = 'save';
     
     /**
      * @var int количество единиц товара
@@ -39,14 +39,14 @@ class PurchaseForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::GET=>['quantity', 'id_color', 'id_size', 'id_product', 'price']
+            self::SAVE=>['quantity', 'id_color', 'id_size', 'id_product', 'price']
         ];
     }
     
     public function rules()
     {
         return [
-            [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::GET]
+            [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::SAVE]
         ];
     }
 }

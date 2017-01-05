@@ -4,19 +4,19 @@ namespace app\controllers;
 
 use yii\web\Controller;
 use app\actions\AjaxAction;
-use app\services\CommentsSaveService;
+use app\services\PurchaseSaveService;
 
 /**
  * Обрабатывает запросы, касающиеся комментариев к товарам
  */
-class CommentsController extends Controller
+class CartController extends Controller
 {
     public function actions()
     {
         return [
-            'save'=>[
+            'add'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CommentsSaveService(),
+                'service'=>new PurchaseSaveService(),
             ],
         ];
     }

@@ -116,7 +116,8 @@ $translate = [
     'To ensure that we have generated the new password for you, just go to this link'=>'Для того, чтобы мы сгенерировали для вас новый пароль, просто перейдите по это ссылке',
     'link to recovery'=>'ссылка для восстановления',
     'To continue with password recovery, enter your email'=>'Чтобы продолжить восстановление пароля, введите ваш email',
-    'Comment saved and will be available after being moderated. Thanks!'=>'Комментарий сохранен и будет доступен после проверки модератором. Спасибо!'
+    'Comment saved and will be available after being moderated. Thanks!'=>'Комментарий сохранен и будет доступен после проверки модератором. Спасибо!',
+    'This product was successfully added to cart!'=>'Товар успешно добавлен в корзину!'
 ];
 
 return $translate;

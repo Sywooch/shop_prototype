@@ -14,9 +14,9 @@ use app\models\{ColorsModel,
 class PurchasesModel extends AbstractBaseModel
 {
     /**
-     * Сценарий загрузки данных из СУБД
+     * Сценарий загрузки данных из сесии
      */
-    const DBMS = 'dbms';
+    const SESSION_GET = 'session-get';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -34,7 +34,15 @@ class PurchasesModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::DBMS=>['id', 'id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'price', 'id_delivery', 'id_payment', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
+            self::SESSION_GET=>['id_product', 'quantity', 'id_color', 'id_size', 'price'],
+            //self::GET=>['id', 'id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'price', 'id_delivery', 'id_payment', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['id_product', 'quantity', 'id_color', 'id_size', 'price'], 'required', 'on'=>self::SESSION_GET],
         ];
     }
     

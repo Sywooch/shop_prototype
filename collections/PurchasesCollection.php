@@ -2,7 +2,8 @@
 
 namespace app\collections;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use app\collections\{AbstractBaseCollection,
     PurchasesCollectionInterface};
 
@@ -52,6 +53,54 @@ class PurchasesCollection extends AbstractBaseCollection implements PurchasesCol
             }
             
             return $result;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Добавляет объект в коллекцию
+     * @param $object Model 
+     */
+    /*public function add(Model $object)
+    {
+        try {
+            if ($this->isEmpty() === false) {
+                $rawObject = clone $object;
+                unset($rawObject['quantity']);
+                
+                foreach ($this->items as $item) {
+                    $rawItem = clone $item;
+                    unset($rawItem['quantity']);
+                    
+                    if (empty(array_diff_assoc($rawObject->toArray(), $rawItem->toArray()))) {
+                        $item->quantity += $object->quantity;
+                        return;
+                    }
+                }
+            }
+            $this->items[] = $object;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }*/
+    
+    /**
+     * Добавляет объект в коллекцию
+     * @param $object Model 
+     */
+    public function add(Model $object)
+    {
+        try {
+            if ($this->isEmpty() === false) {
+                foreach ($this->items as $item) {
+                    if ((int) $item->id_product === (int) $object->id_product) {
+                        $item->quantity += $object->quantity;
+                        return;
+                    }
+                }
+            }
+            $this->items[] = $object;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -14,4 +14,5 @@ interface CollectionInterface
     public function isEmpty();
     public function multisort(string $key, $type);
     public function map(string $key, string $value);
+    public function asArray();
 }

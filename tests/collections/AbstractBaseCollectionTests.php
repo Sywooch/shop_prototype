@@ -173,10 +173,35 @@ class AbstractBaseCollectionTests extends TestCase
         
         $result = $this->collection->map('one', 'two');
         
-        $this->assertTrue(is_array($result));
+        $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('one', $result);
         $this->assertArrayHasKey('three', $result);
         $this->assertContains('two', $result);
         $this->assertContains('four', $result);
+    }
+    
+    /**
+     * Тестирует метод AbstractBaseCollection::asArray
+     */
+    public function testAsArray()
+    {
+        $model_1 = new class() {
+            public $one = 'one';
+            public $two = 'two';
+        };
+        
+        $model_2 = new class() {
+            public $one = 'three';
+            public $two = 'four';
+        };
+        
+        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->collection, [$model_1, $model_2]);
+        
+        $result = $this->collection->asArray();
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
     }
 }

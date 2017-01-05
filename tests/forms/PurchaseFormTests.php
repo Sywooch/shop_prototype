@@ -17,7 +17,7 @@ class PurchaseFormTests extends TestCase
     {
         $reflection = new \ReflectionClass(PurchaseForm::class);
         
-        $this->assertTrue($reflection->hasConstant('GET'));
+        $this->assertTrue($reflection->hasConstant('SAVE'));
         
         $this->assertTrue($reflection->hasProperty('quantity'));
         $this->assertTrue($reflection->hasProperty('id_color'));
@@ -31,7 +31,7 @@ class PurchaseFormTests extends TestCase
      */
     public function testScenarios()
     {
-        $form = new PurchaseForm(['scenario'=>PurchaseForm::GET]);
+        $form = new PurchaseForm(['scenario'=>PurchaseForm::SAVE]);
         $form->attributes = [
             'quantity'=>1, 
             'id_color'=>3,
@@ -66,7 +66,7 @@ class PurchaseFormTests extends TestCase
      */
     public function testRules()
     {
-        $form = new PurchaseForm(['scenario'=>PurchaseForm::GET]);
+        $form = new PurchaseForm(['scenario'=>PurchaseForm::SAVE]);
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
@@ -77,7 +77,7 @@ class PurchaseFormTests extends TestCase
         $this->assertArrayHasKey('id_product', $form->errors);
         $this->assertArrayHasKey('price', $form->errors);
         
-        $form = new PurchaseForm(['scenario'=>PurchaseForm::GET]);
+        $form = new PurchaseForm(['scenario'=>PurchaseForm::SAVE]);
         $form->attributes = [
             'quantity'=>1, 
             'id_color'=>3,
