@@ -2,7 +2,9 @@
 
 namespace app\assets;
 
-use app\assets\AbstractAsset;
+use app\assets\{AbstractAsset,
+    AbstractSendFormAsset,
+    MainAsset};
 
 /**
  * Задает основной пакет ресурсов
@@ -10,16 +12,23 @@ use app\assets\AbstractAsset;
 class ProductDetailAsset extends AbstractAsset
 {
     /**
+     * @var array массив js параметров
+     */
+    public $jsOptions = [
+        'defer'=>true,
+    ];
+    /**
      * @var array массив, перечисляющий JavaScript файлы, 
      * содержащиеся в данном комплекте
      */
     public $js = [
-        //'js/setCart.js',
+        'js/sendComment.js',
     ];
     /**
      * @var array зависимости пакета
      */
     public $depends = [
-        'app\assets\MainAsset',
+        MainAsset::class,
+        AbstractSendFormAsset::class,
     ];
 }

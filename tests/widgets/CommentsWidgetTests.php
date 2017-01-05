@@ -159,18 +159,27 @@ class CommentsWidgetTests extends TestCase
     {
         \Yii::$app->controller = new ProductDetailController('product-detail', \Yii::$app);
         
-        $comments = [
-            new class() {
-                public $date = 1477487902;
-                public $name = 'Name';
-                public $text = 'Text';
-            },
-            new class() {
-                public $date = 1460581200;
-                public $name = 'Name';
-                public $text = 'Text';
-            },
-        ];
+        $comment1 = new class() {
+            public $date = 1477487902;
+            public $name;
+            public $text = 'Text';
+        };
+        $reflection = new \ReflectionProperty($comment1, 'name');
+        $reflection->setValue($comment1, new class() {
+            public $name = 'John';
+        });
+        
+        $comment2 = new class() {
+            public $date = 1460581200;
+            public $name;
+            public $text = 'Text';
+        };
+        $reflection = new \ReflectionProperty($comment2, 'name');
+        $reflection->setValue($comment2, new class() {
+            public $name = 'Mary';
+        });
+        
+        $comments = [$comment1, $comment2];
         
         $form = new class() extends CommentForm {};
         

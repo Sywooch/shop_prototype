@@ -17,6 +17,7 @@ use app\models\CommentsModel;
 use app\services\{EmailGetSaveEmailService,
     NameGetSaveNameService};
 use app\savers\ModelSaver;
+use app\widgets\CommentSaveInfoWidget;
 
 /**
  * Сохраняет новый комментарий
@@ -47,41 +48,38 @@ class CommentsSaveService extends AbstractBaseService
             if ($request->isAjax === true) {
                 if ($this->form->load($request->post()) === true) {
                     \Yii::$app->response->format = Response::FORMAT_JSON;
-                    return ActiveForm::validate($this->form);
-                }
-            }
-            
-            if ($request->isPost === true) {
-                if ($this->form->load($request->post()) === true) {
-                    if ($this->form->validate() === true) {
-                        $transaction  = \Yii::$app->db->beginTransaction();
+                    $errors = ActiveForm::validate($this->form);
+                    if (!empty($errors)) {
+                        return $errors;
+                    }
+                    
+                    $transaction  = \Yii::$app->db->beginTransaction();
+                    
+                    try {
+                        $service = new EmailGetSaveEmailService();
+                        $emailsModel = $service->handle(['email'=>$this->form->email]);
                         
-                        try {
-                            $service = new EmailGetSaveEmailService();
-                            $emailsModel = $service->handle(['email'=>$this->form->email]);
-                            
-                            $service = new NameGetSaveNameService();
-                            $namesModel = $service->handle(['name'=>$this->form->name]);
-                            
-                            $rawCommentsModel = new CommentsModel();
-                            $rawCommentsModel->date = time();
-                            $rawCommentsModel->text = $this->form->text;
-                            $rawCommentsModel->id_name = $namesModel->id;
-                            $rawCommentsModel->id_email = $emailsModel->id;
-                            $rawCommentsModel->id_product = $this->form->id_product;
-                            
-                            $saver = new ModelSaver([
-                                'model'=>$rawCommentsModel
-                            ]);
-                            $saver->save();
-                            
-                            $transaction->commit();
-                            
-                            return Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$this->form->seocode]);
-                        } catch (\Throwable $t) {
-                            $transaction->rollBack();
-                            throw $t;
-                        }
+                        $service = new NameGetSaveNameService();
+                        $namesModel = $service->handle(['name'=>$this->form->name]);
+                        
+                        $rawCommentsModel = new CommentsModel();
+                        $rawCommentsModel->date = time();
+                        $rawCommentsModel->text = $this->form->text;
+                        $rawCommentsModel->id_name = $namesModel->id;
+                        $rawCommentsModel->id_email = $emailsModel->id;
+                        $rawCommentsModel->id_product = $this->form->id_product;
+                        
+                        $saver = new ModelSaver([
+                            'model'=>$rawCommentsModel
+                        ]);
+                        $saver->save();
+                        
+                        $transaction->commit();
+                        
+                        return $this->getCommentSaveInfo();
+                    } catch (\Throwable $t) {
+                        $transaction->rollBack();
+                        throw $t;
                     }
                 }
             }
@@ -131,6 +129,19 @@ class CommentsSaveService extends AbstractBaseService
             return $this->commentsWidgetArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает строку с информацией об успешном сохранении комментария
+     * @return string
+     */
+    private function getCommentSaveInfo(): string
+    {
+        try {
+            return CommentSaveInfoWidget::widget(['view'=>'save-comment-info.twig']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

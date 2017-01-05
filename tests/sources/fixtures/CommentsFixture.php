@@ -4,6 +4,7 @@ namespace app\tests\sources\fixtures;
 
 use app\tests\sources\fixtures\{AbstractFixture,
     EmailsFixture,
+    NamesFixture,
     ProductsFixture};
 use app\models\CommentsModel;
 
@@ -20,6 +21,7 @@ class CommentsFixture extends AbstractFixture
      * @var array массив имен классов-фикстур, представляющих данные, от которых зависит comments
      */
     public $depends = [
+        NamesFixture::class,
         ProductsFixture::class,
         EmailsFixture::class
     ];

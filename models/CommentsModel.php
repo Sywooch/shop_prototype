@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\models\AbstractBaseModel;
 use app\exceptions\ExceptionsTrait;
+use app\models\NamesModel;
 
 /**
  * Представляет данные таблицы comments
@@ -18,6 +19,19 @@ class CommentsModel extends AbstractBaseModel
     {
         try {
             return 'comments';
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект NamesModel
+     * @return ActiveQueryInterface
+     */
+    public function getName()
+    {
+        try {
+            return $this->hasOne(NamesModel::class, ['id'=>'id_name']);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

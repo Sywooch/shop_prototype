@@ -7,7 +7,7 @@ use app\assets\AbstractAsset;
 /**
  * Задает основной пакет ресурсов
  */
-class AbstractGetSubcategory extends AbstractAsset
+class AbstractSendFormAsset extends AbstractAsset
 {
     /**
      * @var array массив js параметров
@@ -16,9 +16,10 @@ class AbstractGetSubcategory extends AbstractAsset
         'defer'=>true,
     ];
     /**
-     * @var array массив, перечисляющий JavaScript файлы, содержащиеся в данном комплекте
+     * @var array массив, перечисляющий JavaScript файлы, 
+     * содержащиеся в данном комплекте
      */
     public $js = [
-        'js/abstractGetSubcategory.js',
+        'js/abstractSendForm.js',
     ];
 }

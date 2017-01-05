@@ -41,7 +41,7 @@ class CommentsWidget extends AbstractBaseWidget
             
             $renderArray['modelForm'] = $this->form;
             $renderArray['formId'] = 'add-comment-form';
-            $renderArray['ajaxValidation'] = true;
+            $renderArray['ajaxValidation'] = false;
             $renderArray['formAction'] = Url::to(['/comments/save']);
             $renderArray['button'] = \Yii::t('base', 'Send');
             
@@ -49,7 +49,7 @@ class CommentsWidget extends AbstractBaseWidget
                 foreach ($this->comments as $comment) {
                     $set = [];
                     $set['date'] = \Yii::$app->formatter->asDate($comment->date);
-                    $set['name'] = $comment->name;
+                    $set['name'] = $comment->name->name;
                     $set['text'] = $comment->text;
                     $renderArray['comments'][] = $set;
                 }
