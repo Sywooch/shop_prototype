@@ -7,8 +7,13 @@ use yii\web\{NotFoundHttpException,
     Request};
 use yii\helpers\ArrayHelper;
 use app\services\{AbstractBaseService,
+    ChangeCurrencyFormService,
     CommentsSaveService,
     FrontendTrait,
+    GetCartWidgetConfigService,
+    GetCurrentCurrencyService,
+    GetProductDetailService,
+    GetUserInfoWidgetConfigService,
     PurchaseSaveService};
 use app\finders\{CommentsProductFinder,
     ProductDetailFinder,
@@ -60,9 +65,15 @@ class ProductDetailIndexService extends AbstractBaseService
         try {
             $dataArray = [];
             
-            $dataArray['userConfig'] = $this->getUserArray();
-            $dataArray['cartConfig'] = $this->getCartArray();
-            $dataArray['currencyConfig'] = $this->getCurrencyArray($request);
+            $service = new GetUserInfoWidgetConfigService();
+            $dataArray['userConfig'] = $service->handle();
+            
+            $service = new GetCartWidgetConfigService();
+            $dataArray['cartConfig'] = $service->handle();
+            
+            $service = new ChangeCurrencyFormService();
+            $dataArray['currencyConfig'] = $service->handle();
+            
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             
@@ -92,8 +103,12 @@ class ProductDetailIndexService extends AbstractBaseService
             if (empty($this->productArray)) {
                 $dataArray = [];
                 
-                $dataArray['product'] = $this->getProductsModel($request);
-                $dataArray['currency'] = $this->getCurrencyModel();
+                $service = new GetProductDetailService();
+                $dataArray['product'] = $service->handle($request);
+                
+                $service = new GetCurrentCurrencyService();
+                $dataArray['currency'] = $service->handle();
+                
                 $dataArray['view'] = 'product-detail.twig';
                 
                 $this->productArray = $dataArray;
@@ -139,7 +154,8 @@ class ProductDetailIndexService extends AbstractBaseService
             if (empty($this->breadcrumbsArray)) {
                 $dataArray = [];
                 
-                $dataArray['product'] = $this->getProductsModel($request);
+                $service = new GetProductDetailService();
+                $dataArray['product'] = $service->handle($request);
                 
                 $this->breadcrumbsArray = $dataArray;
             }
@@ -164,13 +180,19 @@ class ProductDetailIndexService extends AbstractBaseService
             if (empty($this->similarArray)) {
                 $dataArray = [];
                 
+                $service = new GetProductDetailService();
+                $productsModel = $service->handle($request);
+                
                 $finder = new SimilarFinder([
-                    'product'=>$this->getProductsModel($request)
+                    'product'=>$productsModel
                 ]);
                 $similarArray = $finder->find();
                 
                 $dataArray['products'] = $similarArray;
-                $dataArray['currency'] = $this->getCurrencyModel();
+                
+                $service = new GetCurrentCurrencyService();
+                $dataArray['currency'] = $service->handle();
+                
                 $dataArray['header'] = \Yii::t('base', 'Similar products');
                 $dataArray['view'] = 'see-also.twig';
                 
@@ -197,13 +219,19 @@ class ProductDetailIndexService extends AbstractBaseService
             if (empty($this->relatedArray)) {
                 $dataArray = [];
                 
+                $service = new GetProductDetailService();
+                $productsModel = $service->handle($request);
+                
                 $finder = new RelatedFinder([
-                    'product'=>$this->getProductsModel($request)
+                    'product'=>$productsModel
                 ]);
                 $relatedArray = $finder->find();
                 
                 $dataArray['products'] = $relatedArray;
-                $dataArray['currency'] = $this->getCurrencyModel();
+                
+                $service = new GetCurrentCurrencyService();
+                $dataArray['currency'] = $service->handle();
+                
                 $dataArray['header'] = \Yii::t('base', 'Related products');
                 $dataArray['view'] = 'see-also.twig';
                 

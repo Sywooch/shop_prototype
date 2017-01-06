@@ -12,6 +12,7 @@ use app\tests\sources\fixtures\{CategoriesFixture,
 use app\forms\UserLoginForm;
 use app\controllers\ProductsListController;
 use yii\helpers\Url;
+use yii\web\Request;
 
 /**
  * Тестирует класс UserLoginService
@@ -113,7 +114,7 @@ class UserLoginServiceTests extends TestCase
     {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $request = new class() {
+        $request = new class() extends Request {
             public $isPost = false;
             public $isAjax = false;
         };

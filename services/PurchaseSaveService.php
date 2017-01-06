@@ -8,7 +8,8 @@ use yii\web\{NotFoundHttpException,
     Response};
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    FrontendTrait};
+    FrontendTrait,
+    GetProductDetailService};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
@@ -101,7 +102,9 @@ class PurchaseSaveService extends AbstractBaseService
             if (empty($this->toCartWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['product'] = $this->getProductsModel($request);
+                $service = new GetProductDetailService();
+                $dataArray['product'] = $service->handle($request);
+                
                 $dataArray['form'] = \Yii::configure($this->form, ['quantity'=>1]);
                 $dataArray['view'] = 'to-cart-form.twig';
                 

@@ -11,6 +11,7 @@ use app\tests\sources\fixtures\{CategoriesFixture,
     EmailsFixture,
     UsersFixture};
 use app\controllers\UserController;
+use yii\web\Request;
 
 /**
  * Тестирует класс UserRecoveryService
@@ -102,9 +103,9 @@ class UserRecoveryServiceTests extends TestCase
     {
         \Yii::$app->controller = new UserController('user', \Yii::$app);
         
-        $request = new class() {
+        $request = new class() extends Request {
             public $isAjax = true;
-            public function post()
+            public function post($name = null, $defaultValue = null)
             {
                 return [
                     'RecoveryPasswordForm'=>[
@@ -129,7 +130,7 @@ class UserRecoveryServiceTests extends TestCase
     {
         \Yii::$app->controller = new UserController('user', \Yii::$app);
 
-        $request = new class() {
+        $request = new class() extends Request {
             public $isPost = false;
             public $isAjax = false;
         };
@@ -171,11 +172,11 @@ class UserRecoveryServiceTests extends TestCase
         
         $emailFixture = self::$dbClass->emails['email_1'];
         
-        $request = new class() {
+        $request = new class() extends Request {
             public $isPost = true;
             public $isAjax = false;
             public $email;
-            public function post()
+            public function post($name = null, $defaultValue = null)
             {
                 return [
                     'RecoveryPasswordForm'=>[

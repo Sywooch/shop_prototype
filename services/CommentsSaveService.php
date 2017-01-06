@@ -9,7 +9,8 @@ use yii\web\{NotFoundHttpException,
     Response};
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    FrontendTrait};
+    FrontendTrait,
+    GetProductDetailService};
 use app\forms\CommentForm;
 use app\finders\CommentsProductFinder;
 use app\models\CommentsModel;
@@ -104,7 +105,8 @@ class CommentsSaveService extends AbstractBaseService
             if (empty($this->commentsWidgetArray)) {
                 $dataArray = [];
                 
-                $productsModel = $this->getProductsModel($request);
+                $service = new GetProductDetailService();
+                $productsModel = $service->handle($request);
                 
                 $finder = new CommentsProductFinder([
                     'product'=>$productsModel,

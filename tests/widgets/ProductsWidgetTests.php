@@ -150,6 +150,7 @@ class ProductsWidgetTests extends TestCase
         
         $products = [
             new class() {
+                public $id = 1;
                 public $name = 'Black mood shoes';
                 public $seocode = 'black-mood-shoes';
                 public $short_description = 'This Black mood shoes for crazy bunchers';
@@ -157,6 +158,7 @@ class ProductsWidgetTests extends TestCase
                 public $images = 'test';
             },
             new class() {
+                public $id = 2;
                 public $name = 'Purple woman shirt';
                 public $seocode = 'purple-woman-shirt';
                 public $short_description = 'Nice shirt for nice women';
@@ -187,13 +189,14 @@ class ProductsWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<ol>#', $result);
-        $this->assertRegExp('#<li>#', $result);
+        $this->assertRegExp('#<li class="product-id-1">#', $result);
+        $this->assertRegExp('#<li class="product-id-2">#', $result);
         $this->assertRegExp('#<a href=".+">Black mood shoes</a>#', $result);
         $this->assertRegExp('#This Black mood shoes for crazy bunchers#', $result);
-        $this->assertRegExp('#Цена: 1591,07 MONEY#', $result);
+        $this->assertRegExp('#Цена: <span class="price">1591,07 MONEY</span>#', $result);
         $this->assertRegExp('#<img src=".+" alt="">#', $result);
         $this->assertRegExp('#<a href=".+">Purple woman shirt</a>#', $result);
         $this->assertRegExp('#Nice shirt for nice women#', $result);
-        $this->assertRegExp('#Цена: 413,49 MONEY#', $result);
+        $this->assertRegExp('#Цена: <span class="price">413,49 MONEY</span>#', $result);
     }
 }

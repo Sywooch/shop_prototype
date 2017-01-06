@@ -6,7 +6,10 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
+    ChangeCurrencyFormService,
     FrontendTrait,
+    GetCartWidgetConfigService,
+    GetUserInfoWidgetConfigService,
     RecoveryEmailService};
 use app\forms\RecoveryPasswordForm;
 use app\helpers\HashHelper;
@@ -80,9 +83,15 @@ class UserRecoveryService extends AbstractBaseService
                 }
             }
             
-            $dataArray['userConfig'] = $this->getUserArray();
-            $dataArray['cartConfig'] = $this->getCartArray();
-            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $service = new GetUserInfoWidgetConfigService();
+            $dataArray['userConfig'] = $service->handle();
+            
+            $service = new GetCartWidgetConfigService();
+            $dataArray['cartConfig'] = $service->handle();
+            
+            $service = new ChangeCurrencyFormService();
+            $dataArray['currencyConfig'] = $service->handle();
+            
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             

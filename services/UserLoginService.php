@@ -7,7 +7,10 @@ use yii\helpers\Url;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    FrontendTrait};
+    ChangeCurrencyFormService,
+    FrontendTrait,
+    GetCartWidgetConfigService,
+    GetUserInfoWidgetConfigService};
 use app\forms\UserLoginForm;
 use app\finders\UserEmailFinder;
 
@@ -60,9 +63,15 @@ class UserLoginService extends AbstractBaseService
             
             $dataArray = [];
             
-            $dataArray['userConfig'] = $this->getUserArray();
-            $dataArray['cartConfig'] = $this->getCartArray();
-            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $service = new GetUserInfoWidgetConfigService();
+            $dataArray['userConfig'] = $service->handle();
+            
+            $service = new GetCartWidgetConfigService();
+            $dataArray['cartConfig'] = $service->handle();
+            
+            $service = new ChangeCurrencyFormService();
+            $dataArray['currencyConfig'] = $service->handle();
+            
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             

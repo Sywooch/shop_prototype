@@ -7,8 +7,11 @@ use yii\helpers\Url;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
+    ChangeCurrencyFormService,
     EmailGetSaveEmailService,
     FrontendTrait,
+    GetCartWidgetConfigService,
+    GetUserInfoWidgetConfigService,
     RegistrationEmailService};
 use app\forms\{UserLoginForm,
     UserRegistrationForm};
@@ -94,9 +97,15 @@ class UserRegistrationService extends AbstractBaseService
                 }
             }
             
-            $dataArray['userConfig'] = $this->getUserArray();
-            $dataArray['cartConfig'] = $this->getCartArray();
-            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $service = new GetUserInfoWidgetConfigService();
+            $dataArray['userConfig'] = $service->handle();
+            
+            $service = new GetCartWidgetConfigService();
+            $dataArray['cartConfig'] = $service->handle();
+            
+            $service = new ChangeCurrencyFormService();
+            $dataArray['currencyConfig'] = $service->handle();
+            
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             

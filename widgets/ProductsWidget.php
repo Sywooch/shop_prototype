@@ -47,7 +47,8 @@ class ProductsWidget extends AbstractBaseWidget
             
             foreach ($this->products as $product) {
                 $set = [];
-                $set['link'] = Html::a($product->name, ['product-detail/index', 'seocode'=>$product->seocode]);
+                $set['id'] = $product->id;
+                $set['link'] = Html::a(Html::encode($product->name), ['/product-detail/index', 'seocode'=>$product->seocode]);
                 $set['short_description'] = $product->short_description;
                 $set['price'] = \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
                 

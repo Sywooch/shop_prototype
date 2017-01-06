@@ -8,7 +8,10 @@ use yii\web\{NotFoundHttpException,
 use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
+    ChangeCurrencyFormService,
     FrontendTrait,
+    GetCartWidgetConfigService,
+    GetUserInfoWidgetConfigService,
     ProductsListTrait};
 use app\finders\{BrandsFilterSphinxFinder,
     ColorsFilterSphinxFinder,
@@ -62,9 +65,15 @@ class ProductsListSearchService extends AbstractBaseService
             
             $dataArray = [];
             
-            $dataArray['userConfig'] = $this->getUserArray();
-            $dataArray['cartConfig'] = $this->getCartArray();
-            $dataArray['currencyConfig'] = $this->getCurrencyArray($request);
+            $service = new GetUserInfoWidgetConfigService();
+            $dataArray['userConfig'] = $service->handle();
+            
+            $service = new GetCartWidgetConfigService();
+            $dataArray['cartConfig'] = $service->handle();
+            
+            $service = new ChangeCurrencyFormService();
+            $dataArray['currencyConfig'] = $service->handle();
+            
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             

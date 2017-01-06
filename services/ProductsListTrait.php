@@ -8,6 +8,7 @@ use yii\web\Request;
 use app\finders\FiltersSessionFinder;
 use app\helpers\HashHelper;
 use app\filters\ProductsFilters;
+use app\services\GetCurrentCurrencyService;
 
 /**
  * Коллекция свойств и методов для рендеринга страниц какталога товаров
@@ -90,7 +91,10 @@ trait ProductsListTrait
                 $dataArray = [];
                 
                 $dataArray['products'] = $this->getProductsCollection($request);
-                $dataArray['currency'] = $this->getCurrencyModel();
+                
+                $service = new GetCurrentCurrencyService();
+                $dataArray['currency'] = $service->handle();
+                
                 $dataArray['view'] = 'products-list.twig';
                 
                 $this->productsArray = $dataArray;

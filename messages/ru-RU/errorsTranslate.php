@@ -12,7 +12,7 @@ $translate = [
     'Page temporarily unavailable'=>'Страница временно недоступна',
     'Creating product error'=>'Ошибка при создании товара',
     'Error in password recovery'=>'Ошибка при восстановлении пароля',
-    'Missing required data: {placeholder}', 'Отсутствуют необходимые данные: {placeholder}',
+    'Missing required data: {placeholder}'=>'Отсутствуют необходимые данные: {placeholder}',
     'This page does not exist'=>'Такой страницы не существует',
     'Array {placeholder} is empty'=>'Массив {placeholder} пуст',
     'Array {placeholder} must contain objects'=>'Массив {placeholder} должен содержать объекты'

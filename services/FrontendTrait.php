@@ -20,8 +20,7 @@ use app\models\{CurrencyModel,
     EmailsModel,
     ProductsModel};
 use app\filters\ProductsFilters;
-use app\services\{CurrentCurrencyService,
-    CurrencySetService};
+use app\services\GetCurrentCurrencyService;
 use app\widgets\CartWidget;
 
 /**
@@ -62,11 +61,11 @@ trait FrontendTrait
      * Возвращает данные текущей валюты
      * @return CurrencyModel
      */
-    private function getCurrencyModel(): CurrencyModel
+    /*private function getCurrencyModel(): CurrencyModel
     {
         try {
             if (empty($this->currencyModel)) {
-                $service = new CurrentCurrencyService();
+                $service = new GetCurrentCurrencyService();
                 $currencyModel = $service->handle();
                 if (!$currencyModel instanceof CurrencyModel) {
                     throw new ErrorException($this->invalidError('currencyModel'));
@@ -79,14 +78,14 @@ trait FrontendTrait
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Возвращает данные выбранного товара
      * @param Request $request данные запроса
      * @return ProductsModel
      */
-    private function getProductsModel(Request $request): ProductsModel
+    /*private function getProductsModel(Request $request): ProductsModel
     {
         try {
             if (empty($this->productsModel)) {
@@ -105,13 +104,13 @@ trait FrontendTrait
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Возвращает массив конфигурации для виджета UserInfoWidget
      * @return array
      */
-    private function getUserArray(): array
+    /*private function getUserArray(): array
     {
         try {
             if (empty($this->userArray)) {
@@ -127,13 +126,13 @@ trait FrontendTrait
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Возвращает массив конфигурации для виджета CartWidget
      * @return array
      */
-    private function getCartArray(): array
+    /*private function getCartArray(): array
     {
         try {
             if (empty($this->cartArray)) {
@@ -145,7 +144,10 @@ trait FrontendTrait
                 $purchasesCollection = $finder->find();
                 
                 $dataArray['purchases'] = $purchasesCollection;
-                $dataArray['currency'] = $this->getCurrencyModel();
+                
+                $service = new GetCurrentCurrencyService();
+                $dataArray['currency'] = $service->handle();
+                
                 $dataArray['view'] = 'short-cart.twig';
                 
                 $this->cartArray = $dataArray;
@@ -155,31 +157,7 @@ trait FrontendTrait
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета CurrencyWidget
-     * @param Request $request данные запроса
-     * @return array
-     */
-    private function getCurrencyArray(Request $request): array
-    {
-        try {
-            if (empty($this->currencyArray)) {
-                $service = new CurrencySetService();
-                $currencyArray = $service->handle($request);
-                if (empty($currencyArray)) {
-                    throw new ErrorException($this->invalidError('currencyArray'));
-                }
-                
-                $this->currencyArray = $currencyArray;
-            }
-            
-            return $this->currencyArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
+    }*/
     
     /**
      * Возвращает массив конфигурации для виджета SearchWidget

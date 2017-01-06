@@ -10,6 +10,7 @@ use app\tests\sources\fixtures\{CategoriesFixture,
     EmailsFixture,
     UsersFixture};
 use app\controllers\UserController;
+use yii\web\Request;
 
 /**
  * Тестирует класс UserGenerateService
@@ -91,13 +92,11 @@ class UserGenerateServiceTests extends TestCase
      */
     public function testHandleEmptyGet()
     {
-        $request = new class() {
+        $request = new class() extends Request {
             private $items = [];
-            public function get($key)
+            public function get($name = null, $defaultValue = null)
             {
-                if (array_key_exists($key, $this->items)) {
-                    return $this->items[$key];
-                }
+                return null;
             }
         };
         
@@ -112,14 +111,14 @@ class UserGenerateServiceTests extends TestCase
      */
     public function testHandleEmptyRecoveryKey()
     {
-        $request = new class() {
+        $request = new class() extends Request {
             private $items = [
                 'email'=>'some@some.com'
             ];
-            public function get($key)
+            public function get($name = null, $defaultValue = null)
             {
-                if (array_key_exists($key, $this->items)) {
-                    return $this->items[$key];
+                if (array_key_exists($name, $this->items)) {
+                    return $this->items[$name];
                 }
             }
         };
@@ -135,14 +134,14 @@ class UserGenerateServiceTests extends TestCase
      */
     public function testHandleEmptyEmailKey()
     {
-        $request = new class() {
+        $request = new class() extends Request {
             private $items = [
                 'recovery'=>'recoveryKey'
             ];
-            public function get($key)
+            public function get($name = null, $defaultValue = null)
             {
-                if (array_key_exists($key, $this->items)) {
-                    return $this->items[$key];
+                if (array_key_exists($name, $this->items)) {
+                    return $this->items[$name];
                 }
             }
         };
@@ -163,15 +162,15 @@ class UserGenerateServiceTests extends TestCase
         $session->open();
         $session->setFlash('flash_key', ['email'=>'some@some.com']);
         
-        $request = new class() {
+        $request = new class() extends Request {
             private $items = [
                 'email'=>'email@some.com',
                 'recovery'=>'recoveryKey'
             ];
-            public function get($key)
+            public function get($name = null, $defaultValue = null)
             {
-                if (array_key_exists($key, $this->items)) {
-                    return $this->items[$key];
+                if (array_key_exists($name, $this->items)) {
+                    return $this->items[$name];
                 }
             }
         };
@@ -218,12 +217,12 @@ class UserGenerateServiceTests extends TestCase
         $session->open();
         $session->setFlash($key, ['email'=>$emailFixture['email']]);
         
-        $request = new class() {
+        $request = new class() extends Request {
             public $email;
             public $key;
-            public function get($key)
+            public function get($name = null, $defaultValue = null)
             {
-                return $key === 'email' ? $this->email : $this->key;
+                return $name === 'email' ? $this->email : $this->key;
             }
         };
         $reflection = new \ReflectionProperty($request, 'email');
