@@ -1,9 +1,13 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<p><strong>{{ header }}</strong></p>
-
-{% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'POST'}) %}
-    {{ form.field(formModel, 'id').dropDownList(currency) | raw }}
-    {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
-    <input type="submit" value="{{ button }}">
-{{ active_form_end() }}
+<div id="currency">
+    <p><strong>{{ header }}</strong></p>
+    
+    <div  id="currency-form">
+        {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'action':formAction, 'method':'POST'}) %}
+            {{ form.field(formModel, 'id').dropDownList(currency) | raw }}
+            {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+            <input type="submit" value="{{ button }}">
+        {{ active_form_end() }}
+    </div>
+</div>

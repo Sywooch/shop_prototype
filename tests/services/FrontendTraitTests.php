@@ -127,9 +127,13 @@ class FrontendTraitTests extends TestCase
     {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
+        $request = new class() extends Request {
+            public $isAjax = false;
+        };
+        
         $reflection = new \ReflectionMethod($this->trait, 'getCurrencyArray');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->trait);
+        $result = $reflection->invoke($this->trait, $request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty('array', $result);
@@ -226,6 +230,37 @@ class FrontendTraitTests extends TestCase
         $result = $reflection->invoke($this->trait, $request);
         
         $this->assertInstanceOf(ProductsModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод FrontendTrait::getCartInfoAjax
+     */
+    public function testGetCartInfoAjax()
+    {
+        $key = HashHelper::createCartKey();
+        
+        $paurchases = [['id_product'=>1, 'quantity'=>2, 'price'=>1238.09]];
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set($key, $paurchases);
+        
+        $reflection = new \ReflectionMethod($this->trait, 'getCartInfoAjax');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->trait);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('cartInfo', $result);
+        $this->assertInternalType('string', $result['cartInfo']);
+        
+        $this->assertRegExp('#<p>Товаров в корзине: 2, Общая стоимость: 2476,18 UAH</p>#', $result['cartInfo']);
+        $this->assertRegExp('#<p><a href=".+">В корзину</a></p>#', $result['cartInfo']);
+        $this->assertRegExp('#<form id="clean-cart-form"#', $result['cartInfo']);
+        $this->assertRegExp('#<input type="submit" value="Очистить">#', $result['cartInfo']);
+        
+        $session->remove($key);
+        $session->close();
     }
     
     public static function tearDownAfterClass()

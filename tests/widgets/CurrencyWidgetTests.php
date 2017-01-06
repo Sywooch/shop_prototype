@@ -177,6 +177,7 @@ class CurrencyWidgetTests extends TestCase
         $this->assertRegExp('#<form id="set-currency-form"#', $result);
         $this->assertRegExp('#<option value="1">ONE</option>#', $result);
         $this->assertRegExp('#<option value="2">TWO</option>#', $result);
+        $this->assertRegExp('#<input type="hidden"#', $result);
         $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
     }
 }

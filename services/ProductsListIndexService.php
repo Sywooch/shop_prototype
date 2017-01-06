@@ -55,7 +55,7 @@ class ProductsListIndexService extends AbstractBaseService
             
             $dataArray['userConfig'] = $this->getUserArray();
             $dataArray['cartConfig'] = $this->getCartArray();
-            $dataArray['currencyConfig'] = $this->getCurrencyArray();
+            $dataArray['currencyConfig'] = $this->getCurrencyArray($request);
             $dataArray['searchConfig'] = $this->getSearchArray();
             $dataArray['menuConfig'] = $this->getCategoriesArray();
             

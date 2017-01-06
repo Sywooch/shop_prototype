@@ -3,7 +3,6 @@
 namespace app\actions;
 
 use yii\base\ErrorException;
-use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
 use app\services\ServiceInterface;
 
@@ -26,18 +25,11 @@ class RedirectAction extends AbstractBaseAction
             
             $result = $this->service->handle(\Yii::$app->request);
             
-            if (\Yii::$app->request->isAjax) {
-                return $result;
-            }
-            
-            if (empty($result)) {
+            if (empty($result) || is_string($result) === false) {
                 throw new ErrorException($this->emptyError('result'));
             }
             
             return $this->controller->redirect($result);
-        } catch (NotFoundHttpException $e) {
-            $this->writeErrorInLogs($e, __METHOD__);
-            throw $e;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwServerError($t, __METHOD__);

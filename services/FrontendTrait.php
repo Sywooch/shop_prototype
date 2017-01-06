@@ -20,7 +20,9 @@ use app\models\{CurrencyModel,
     EmailsModel,
     ProductsModel};
 use app\filters\ProductsFilters;
-use app\services\CurrentCurrencyService;
+use app\services\{CurrentCurrencyService,
+    CurrencySetService};
+use app\widgets\CartWidget;
 
 /**
  * Коллекция свойств и методов для рендеринга страниц пользовательского интерфейса
@@ -157,30 +159,20 @@ trait FrontendTrait
     
     /**
      * Возвращает массив конфигурации для виджета CurrencyWidget
+     * @param Request $request данные запроса
      * @return array
      */
-    private function getCurrencyArray(): array
+    private function getCurrencyArray(Request $request): array
     {
         try {
             if (empty($this->currencyArray)) {
-                $dataArray = [];
-                
-                $finder = new CurrencyFinder();
-                $currencyArray = $finder->find();
+                $service = new CurrencySetService();
+                $currencyArray = $service->handle($request);
                 if (empty($currencyArray)) {
-                    throw new ErrorException($this->emptyError('currencyArray'));
+                    throw new ErrorException($this->invalidError('currencyArray'));
                 }
                 
-                ArrayHelper::multisort($currencyArray, 'code');
-                $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
-                $dataArray['form'] = new ChangeCurrencyForm([
-                    'scenario'=>ChangeCurrencyForm::GET,
-                    'url'=>Url::current(),
-                    'id'=>$this->getCurrencyModel()->id
-                ]);
-                $dataArray['view'] = 'currency-form.twig';
-                
-                $this->currencyArray = $dataArray;
+                $this->currencyArray = $currencyArray;
             }
             
             return $this->currencyArray;
@@ -233,6 +225,25 @@ trait FrontendTrait
             }
             
             return $this->categoriesArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает HTML строку с обновленными данными корзины
+     * @return array
+     */
+    private function getCartInfoAjax(): array
+    {
+        try {
+            $dataArray = [];
+            
+            $cartInfoWidget = $this->getCartArray();
+            $cartInfoWidget['view'] = 'short-cart-ajax.twig';
+            $dataArray['cartInfo'] = CartWidget::widget($cartInfoWidget);
+            
+            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

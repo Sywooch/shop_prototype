@@ -13,7 +13,7 @@ class ChangeCurrencyForm extends AbstractBaseForm
     /**
      * Сценарий изменения текущей валюты
     */
-    const GET = 'get';
+    const SET = 'set';
     
     /**
      * @var int ID валюты, которая будет установлена как текущая
@@ -27,15 +27,14 @@ class ChangeCurrencyForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::GET=>['id', 'url'],
+            self::SET=>['id', 'url'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['id', 'url'], 'app\validators\StripTagsValidator'],
-            [['id', 'url'], 'required', 'on'=>self::GET],
+            [['id', 'url'], 'required', 'on'=>self::SET],
         ];
     }
 }

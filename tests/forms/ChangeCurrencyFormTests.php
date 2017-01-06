@@ -17,7 +17,7 @@ class ChangeCurrencyFormTests extends TestCase
     {
         $reflection = new \ReflectionClass(ChangeCurrencyForm::class);
         
-        $this->assertTrue($reflection->hasConstant('GET'));
+        $this->assertTrue($reflection->hasConstant('SET'));
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('url'));
     }
@@ -27,8 +27,11 @@ class ChangeCurrencyFormTests extends TestCase
      */
     public function testScenarios()
     {
-        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::GET]);
-        $form->attributes = ['id'=>1, 'url'=>'https://shop.com'];
+        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::SET]);
+        $form->attributes = [
+            'id'=>1,
+            'url'=>'some@some.com'
+        ];
         
         $reflection = new \ReflectionProperty($form, 'id');
         $result = $reflection->getValue($form);
@@ -36,7 +39,7 @@ class ChangeCurrencyFormTests extends TestCase
         
         $reflection = new \ReflectionProperty($form, 'url');
         $result = $reflection->getValue($form);
-        $this->assertSame('https://shop.com', $result);
+        $this->assertSame('some@some.com', $result);
     }
     
     /**
@@ -44,7 +47,7 @@ class ChangeCurrencyFormTests extends TestCase
      */
     public function testRules()
     {
-        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::GET]);
+        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::SET]);
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
@@ -52,8 +55,11 @@ class ChangeCurrencyFormTests extends TestCase
         $this->assertArrayHasKey('id', $form->errors);
         $this->assertArrayHasKey('url', $form->errors);
         
-        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::GET]);
-        $form->attributes = ['id'=>1, 'url'=>'https://shop.com'];
+        $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::SET]);
+        $form->attributes = [
+            'id'=>1,
+            'url'=>'some@some.com'
+        ];
         
         $this->assertEmpty($form->errors);
     }

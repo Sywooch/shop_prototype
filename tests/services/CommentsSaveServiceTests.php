@@ -166,10 +166,6 @@ class CommentsSaveServiceTests extends TestCase
         
         $service = new CommentsSaveService();
         
-        $reflection = new \ReflectionProperty($service, 'form');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, new CommentForm(['scenario'=>CommentForm::SAVE]));
-        
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
@@ -212,13 +208,7 @@ class CommentsSaveServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
-        $form = new class() extends CommentForm {};
-        
         $service = new CommentsSaveService();
-        
-        $reflection = new \ReflectionProperty($service, 'form');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, $form);
         
         $result = $service->handle($request);
         
@@ -260,13 +250,7 @@ class CommentsSaveServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
-        $form = new class() extends CommentForm {};
-        
         $service = new CommentsSaveService();
-        
-        $reflection = new \ReflectionProperty($service, 'form');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, $form);
         
         $result = $service->handle($request);
         

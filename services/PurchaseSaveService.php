@@ -3,7 +3,8 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\web\{Request,
+use yii\web\{NotFoundHttpException,
+    Request,
     Response};
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
@@ -82,6 +83,8 @@ class PurchaseSaveService extends AbstractBaseService
             $dataArray = $this->getToCartWidgetArray($request);
             
             return $dataArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -106,25 +109,24 @@ class PurchaseSaveService extends AbstractBaseService
             }
             
             return $this->toCartWidgetArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Возвращает HTML строку с обновленными данными корзины
+     * Возвращает HTML строку с обновленными данными корзины 
+     * и сообщением об удачном сохранении товара в корзину
      * @return array
      */
     private function getCartInfo(): array
     {
         try {
-            $dataArray = [];
+            $dataArray = $this->getCartInfoAjax();
             
             $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);
-            
-            $cartInfoWidget = $this->getCartArray();
-            $cartInfoWidget['view'] = 'short-cart-ajax.twig';
-            $dataArray['cartInfo'] = CartWidget::widget($cartInfoWidget);
             
             return $dataArray;
         } catch (\Throwable $t) {
