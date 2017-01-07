@@ -7,8 +7,9 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     ChangeCurrencyFormService,
-    FrontendTrait,
     GetCartWidgetConfigService,
+    GetCategoriesMenuWidgetConfigService,
+    GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
     RecoveryEmailService};
 use app\forms\RecoveryPasswordForm;
@@ -22,8 +23,6 @@ use app\models\RecoveryModel;
  */
 class UserRecoveryService extends AbstractBaseService
 {
-    use FrontendTrait;
-    
     /**
      * @var array данные для UserRecoveryWidget
      */
@@ -92,8 +91,11 @@ class UserRecoveryService extends AbstractBaseService
             $service = new ChangeCurrencyFormService();
             $dataArray['currencyConfig'] = $service->handle();
             
-            $dataArray['searchConfig'] = $this->getSearchArray();
-            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            $service = new GetSearchWidgetConfigService();
+            $dataArray['searchConfig'] = $service->handle($request);
+            
+            $service = new GetCategoriesMenuWidgetConfigService();
+            $dataArray['menuConfig'] = $service->handle();
             
             if (!isset($dataArray['successConfig'])) {
                 $dataArray['formConfig'] = $this->getUserRecoveryArray();

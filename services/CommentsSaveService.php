@@ -9,8 +9,7 @@ use yii\web\{NotFoundHttpException,
     Response};
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    FrontendTrait,
-    GetProductDetailService};
+    GetProductDetailModelService};
 use app\forms\CommentForm;
 use app\finders\CommentsProductFinder;
 use app\models\CommentsModel;
@@ -24,8 +23,6 @@ use app\widgets\CommentSaveInfoWidget;
  */
 class CommentsSaveService extends AbstractBaseService
 {
-    use FrontendTrait;
-    
     /**
      * @var array данные для CommentsWidget
      */
@@ -105,7 +102,7 @@ class CommentsSaveService extends AbstractBaseService
             if (empty($this->commentsWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductDetailService();
+                $service = new GetProductDetailModelService();
                 $productsModel = $service->handle($request);
                 
                 $finder = new CommentsProductFinder([

@@ -56,7 +56,7 @@ class PasswordGenerateWidgetTests extends TestCase
      * Тестирует метод PasswordGenerateWidget::run
      * если пуст PasswordGenerateWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
     public function testRunEmptyForm()
     {
@@ -68,7 +68,7 @@ class PasswordGenerateWidgetTests extends TestCase
      * Тестирует метод PasswordGenerateWidget::run
      * если пуст PasswordGenerateWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

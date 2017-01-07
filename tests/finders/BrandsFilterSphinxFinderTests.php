@@ -75,7 +75,7 @@ class BrandsFilterSphinxFinderTests extends TestCase
      * Тестирует метод BrandsFilterSphinxFinder::run
      * если пуст BrandsFilterSphinxFinder::sphinx
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: sphinx
+     * @expectedExceptionMessage Отсутствуют необходимые данные: sphinx
      */
     public function testRunEmptySphinx()
     {

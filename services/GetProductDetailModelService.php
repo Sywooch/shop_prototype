@@ -11,7 +11,7 @@ use app\models\ProductsModel;
 /**
  * Возвращает объект текущей валюты
  */
-class GetProductDetailService extends AbstractBaseService
+class GetProductDetailModelService extends AbstractBaseService
 {
     /**
      * @var ProductsModel

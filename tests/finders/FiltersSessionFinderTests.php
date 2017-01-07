@@ -26,7 +26,7 @@ class FiltersSessionFinderTests extends TestCase
      * Тестирует метод FiltersSessionFinder::find
      * если пуст FiltersSessionFinder::key
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: key
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testFindEmptyKey()
     {

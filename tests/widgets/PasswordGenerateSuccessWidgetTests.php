@@ -25,7 +25,7 @@ class PasswordGenerateSuccessWidgetTests extends TestCase
      * Тестирует метод PasswordGenerateSuccessWidget::run
      * если пуст PasswordGenerateSuccessWidget::tempPassword
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: tempPassword
+     * @expectedExceptionMessage Отсутствуют необходимые данные: tempPassword
      */
     public function testRunEmptyTempPassword()
     {
@@ -37,7 +37,7 @@ class PasswordGenerateSuccessWidgetTests extends TestCase
      * Тестирует метод PasswordGenerateSuccessWidget::run
      * если пуст PasswordGenerateSuccessWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

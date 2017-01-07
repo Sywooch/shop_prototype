@@ -26,7 +26,7 @@ class EmailRegistrationWidgetTests extends TestCase
      * Тестирует метод EmailRegistrationWidget::run
      * если пуст EmailRegistrationWidget::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: email
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testRunEmailEmpty()
     {
@@ -38,7 +38,7 @@ class EmailRegistrationWidgetTests extends TestCase
      * Тестирует метод EmailRegistrationWidget::run
      * если пуст EmailRegistrationWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunViewEmpty()
     {

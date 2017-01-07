@@ -56,7 +56,7 @@ class UserRegistrationWidgetTests extends TestCase
      * Тестирует метод UserRegistrationWidget::run
      * если пуст UserRegistrationWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
     public function testRunEmptyForm()
     {
@@ -68,7 +68,7 @@ class UserRegistrationWidgetTests extends TestCase
      * Тестирует метод UserRegistrationWidget::run
      * если пуст UserRegistrationWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

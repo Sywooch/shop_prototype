@@ -56,7 +56,7 @@ class UserLoginWidgetTests extends TestCase
      * Тестирует метод UserLoginWidget::run
      * если пуст UserLoginWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
     public function testRunEmptyForm()
     {
@@ -68,7 +68,7 @@ class UserLoginWidgetTests extends TestCase
      * Тестирует метод UserLoginWidget::run
      * если пуст UserLoginWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

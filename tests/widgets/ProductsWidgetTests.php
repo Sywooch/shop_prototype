@@ -90,7 +90,7 @@ class ProductsWidgetTests extends TestCase
      * Тестирует метод ProductsWidget::run
      * если пуст ProductsWidget::products
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: products
+     * @expectedExceptionMessage Отсутствуют необходимые данные: products
      */
     public function testRunEmptyProducts()
     {
@@ -102,7 +102,7 @@ class ProductsWidgetTests extends TestCase
      * Тестирует метод ProductsWidget::run
      * если пуст ProductsWidget::currency
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: currency
+     * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
@@ -121,7 +121,7 @@ class ProductsWidgetTests extends TestCase
      * Тестирует метод ProductsWidget::run
      * если пуст ProductsWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

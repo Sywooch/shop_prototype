@@ -26,7 +26,7 @@ class SearchWidgetTests extends TestCase
      * Тестирует метод SearchWidget::run
      * при отсутствии SearchWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

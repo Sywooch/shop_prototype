@@ -77,7 +77,7 @@ class SizesFilterSphinxFinderTests extends TestCase
      * Тестирует метод SizesFilterSphinxFinder::run
      * если пуст SizesFilterSphinxFinder::sphinx
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: sphinx
+     * @expectedExceptionMessage Отсутствуют необходимые данные: sphinx
      */
     public function testRunEmptySphinx()
     {

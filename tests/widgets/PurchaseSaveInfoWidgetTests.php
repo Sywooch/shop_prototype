@@ -24,7 +24,7 @@ class PurchaseSaveInfoWidgetTests extends TestCase
      * Тестирует метод PurchaseSaveInfoWidget::run
      * если пуст PurchaseSaveInfoWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

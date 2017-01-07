@@ -25,7 +25,7 @@ class SphinxFinderTests extends TestCase
      * Тестирует метод SphinxFinder::find
      * если пуст SphinxFinder::search
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: search
+     * @expectedExceptionMessage Отсутствуют необходимые данные: search
      */
     public function testFindEmptySearch()
     {

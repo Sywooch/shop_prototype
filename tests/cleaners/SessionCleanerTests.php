@@ -55,7 +55,7 @@ class SessionCleanerTests extends TestCase
      * Тестирует метод SessionCleaner::clean
      * если пуст SessionCleaner::keys
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: keys
+     * @expectedExceptionMessage Отсутствуют необходимые данные: keys
      */
     public function testCleanEmptyKeys()
     {

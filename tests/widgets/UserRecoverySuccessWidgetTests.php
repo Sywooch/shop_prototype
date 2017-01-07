@@ -25,7 +25,7 @@ class UserRecoverySuccessWidgetTests extends TestCase
      * Тестирует метод UserRecoverySuccessWidget::run
      * если пуст UserRecoverySuccessWidget::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: email
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testRunEmptyEmail()
     {
@@ -37,7 +37,7 @@ class UserRecoverySuccessWidgetTests extends TestCase
      * Тестирует метод UserRecoverySuccessWidget::run
      * если пуст UserRecoverySuccessWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

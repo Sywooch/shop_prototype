@@ -5,7 +5,11 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    FrontendTrait};
+    ChangeCurrencyFormService,
+    GetCartWidgetConfigService,
+    GetCategoriesMenuWidgetConfigService,
+    GetSearchWidgetConfigService,
+    GetUserInfoWidgetConfigService};
 use app\finders\{UserEmailFinder,
     RecoverySessionFinder};
 use app\helpers\HashHelper;
@@ -17,8 +21,6 @@ use app\savers\ModelSaver;
  */
 class UserGenerateService extends AbstractBaseService
 {
-    use FrontendTrait;
-    
     /**
      * @var array данные для PasswordGenerateSuccessWidget
      */
@@ -62,9 +64,7 @@ class UserGenerateService extends AbstractBaseService
             } else {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
-                    $finder = new UserEmailFinder([
-                        'email'=>$email
-                    ]);
+                    $finder = \Yii::$app->registry->get(UserEmailFinder::class, ['email'=>$email]);
                     $usersModel = $finder->find();
                     if (empty($usersModel)) {
                         throw new ErrorException($this->emptyError('usersModel'));
@@ -88,11 +88,20 @@ class UserGenerateService extends AbstractBaseService
                 }
             }
             
-            $dataArray['userConfig'] = $this->getUserArray();
-            $dataArray['cartConfig'] = $this->getCartArray();
-            $dataArray['currencyConfig'] = $this->getCurrencyArray($request);
-            $dataArray['searchConfig'] = $this->getSearchArray();
-            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            $service = new GetUserInfoWidgetConfigService();
+            $dataArray['userConfig'] = $service->handle();
+            
+            $service = new GetCartWidgetConfigService();
+            $dataArray['cartConfig'] = $service->handle();
+            
+            $service = new ChangeCurrencyFormService();
+            $dataArray['currencyConfig'] = $service->handle();
+            
+            $service = new GetSearchWidgetConfigService();
+            $dataArray['searchConfig'] = $service->handle($request);
+            
+            $service = new GetCategoriesMenuWidgetConfigService();
+            $dataArray['menuConfig'] = $service->handle();
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {

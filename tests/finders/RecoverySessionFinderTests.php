@@ -26,7 +26,7 @@ class RecoverySessionFinderTests extends TestCase
      * Тестирует метод RecoverySessionFinder::find
      * если пуст RecoverySessionFinder::key
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: key
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testFindEmptyKey()
     {

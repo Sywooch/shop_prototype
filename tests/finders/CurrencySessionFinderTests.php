@@ -26,7 +26,7 @@ class CurrencySessionFinderTests extends TestCase
      * Тестирует метод CurrencySessionFinder::find
      * если пуст CurrencySessionFinder::key
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: key
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testFindEmptyKey()
     {

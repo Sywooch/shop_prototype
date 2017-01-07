@@ -317,7 +317,7 @@ class PaginationWidgetTests extends TestCase
      * Тестирует метод PaginationWidget::run
      * если пуст PaginationWidget::pagination
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: pagination
+     * @expectedExceptionMessage Отсутствуют необходимые данные: pagination
      */
     public function testRunEmptyPagination()
     {
@@ -329,7 +329,7 @@ class PaginationWidgetTests extends TestCase
      * Тестирует метод PaginationWidget::run
      * если пуст PaginationWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

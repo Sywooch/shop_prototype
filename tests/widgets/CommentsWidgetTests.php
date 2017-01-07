@@ -89,7 +89,7 @@ class CommentsWidgetTests extends TestCase
      * Тестирует метод CommentsWidget::run
      * если пуст CommentsWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
     public function testRunEmptyForm()
     {
@@ -101,7 +101,7 @@ class CommentsWidgetTests extends TestCase
      * Тестирует метод CommentsWidget::run
      * если пуст CommentsWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

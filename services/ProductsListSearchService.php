@@ -9,8 +9,9 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
     ChangeCurrencyFormService,
-    FrontendTrait,
     GetCartWidgetConfigService,
+    GetCategoriesMenuWidgetConfigService,
+    GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
     ProductsListTrait};
 use app\finders\{BrandsFilterSphinxFinder,
@@ -28,7 +29,7 @@ use app\collections\ProductsCollection;
  */
 class ProductsListSearchService extends AbstractBaseService
 {
-    use FrontendTrait, ProductsListTrait;
+    use ProductsListTrait;
     
     /**
      * @var array данные для SearchBreadcrumbsWidget
@@ -74,8 +75,11 @@ class ProductsListSearchService extends AbstractBaseService
             $service = new ChangeCurrencyFormService();
             $dataArray['currencyConfig'] = $service->handle();
             
-            $dataArray['searchConfig'] = $this->getSearchArray();
-            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            $service = new GetSearchWidgetConfigService();
+            $dataArray['searchConfig'] = $service->handle($request);
+            
+            $service = new GetCategoriesMenuWidgetConfigService();
+            $dataArray['menuConfig'] = $service->handle();
             
             if (empty($this->getSphinxArray($request))) {
                 $dataArray['emptySphinxConfig'] = $this->getEmptySphinxArray();

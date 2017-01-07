@@ -40,7 +40,7 @@ class CurrencyIdFinderTests extends TestCase
      * Тестирует метод CurrencyIdFinder::find
      * если пуст CurrencyIdFinder::id
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: id
+     * @expectedExceptionMessage Отсутствуют необходимые данные: id
      */
     public function testFindEmptyId()
     {

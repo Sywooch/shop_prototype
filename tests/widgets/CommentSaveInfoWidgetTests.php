@@ -24,7 +24,7 @@ class CommentSaveInfoWidgetTests extends TestCase
      * Тестирует метод CommentSaveInfoWidget::run
      * если пуст CommentSaveInfoWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

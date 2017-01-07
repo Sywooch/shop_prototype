@@ -39,7 +39,7 @@ class RegistryTests extends TestCase
      * Тестирует метод Registry::getKey
      * если передан пустой массив
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: params
+     * @expectedExceptionMessage Отсутствуют необходимые данные: params
      */
     public function testGetKeyEmptyParam()
     {
@@ -94,7 +94,7 @@ class RegistryTests extends TestCase
      * Тестирует метод Registry::get
      * если передан пустой класс
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: class
+     * @expectedExceptionMessage Отсутствуют необходимые данные: class
      */
     public function testGetEmptyClass()
     {

@@ -9,8 +9,9 @@ use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     ChangeCurrencyFormService,
     EmailGetSaveEmailService,
-    FrontendTrait,
     GetCartWidgetConfigService,
+    GetCategoriesMenuWidgetConfigService,
+    GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
     RegistrationEmailService};
 use app\forms\{UserLoginForm,
@@ -26,8 +27,6 @@ use app\models\{EmailsModel,
  */
 class UserRegistrationService extends AbstractBaseService
 {
-    use FrontendTrait;
-    
     /**
      * @var array данные для UserRegistrationWidget
      */
@@ -106,8 +105,11 @@ class UserRegistrationService extends AbstractBaseService
             $service = new ChangeCurrencyFormService();
             $dataArray['currencyConfig'] = $service->handle();
             
-            $dataArray['searchConfig'] = $this->getSearchArray();
-            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            $service = new GetSearchWidgetConfigService();
+            $dataArray['searchConfig'] = $service->handle($request);
+            
+            $service = new GetCategoriesMenuWidgetConfigService();
+            $dataArray['menuConfig'] = $service->handle();
             
             if (!isset($dataArray['successConfig'])) {
                 $dataArray['formConfig'] = $this->getUserRegistrationArray();

@@ -51,7 +51,7 @@ class RecoveryEmailServiceTests extends TestCase
      * Тестирует метод RecoveryEmailService::handle
      * если пуст RecoveryEmailService::key
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: key
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testHandleEmptyKey()
     {
@@ -65,7 +65,7 @@ class RecoveryEmailServiceTests extends TestCase
      * Тестирует метод RecoveryEmailService::handle
      * если пуст RecoveryEmailService::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: email
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testHandleEmptyEmail()
     {

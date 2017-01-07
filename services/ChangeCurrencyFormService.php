@@ -6,18 +6,15 @@ use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
-    FrontendTrait,
-    GetCurrentCurrencyService};
+    GetCurrentCurrencyModelService};
 use app\finders\CurrencyFinder;
 use app\forms\ChangeCurrencyForm;
 
 /**
- * Сохраняет изменения текущей валюты
+ * Возвращает массив данных для CurrencyWidget
  */
 class ChangeCurrencyFormService extends AbstractBaseService
 {
-    use FrontendTrait;
-    
     /**
      * @var array данные для CurrencyWidget
      */
@@ -43,7 +40,7 @@ class ChangeCurrencyFormService extends AbstractBaseService
                 ArrayHelper::multisort($currencyArray, 'code');
                 $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
                 
-                $service = new GetCurrentCurrencyService();
+                $service = new GetCurrentCurrencyModelService();
                 $currentCurrencyModel = $service->handle();
                 
                 $dataArray['form'] = new ChangeCurrencyForm([

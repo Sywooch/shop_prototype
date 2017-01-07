@@ -14,7 +14,7 @@ class EmptySphinxWidgetTests extends TestCase
      * Тестирует метод EmptySphinxWidget::run
      * при отсутствии EmptySphinxWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

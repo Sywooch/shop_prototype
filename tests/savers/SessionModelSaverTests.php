@@ -57,7 +57,7 @@ class SessionModelSaverTests extends TestCase
      * Тестирует метод SessionModelSaver::save
      * если пуст SessionModelSaver::key
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: key
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testSaveEmptyKey()
     {
@@ -69,7 +69,7 @@ class SessionModelSaverTests extends TestCase
      * Тестирует метод SessionModelSaver::save
      * если пуст SessionModelSaver::model
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: model
+     * @expectedExceptionMessage Отсутствуют необходимые данные: model
      */
     public function testSaveEmptyModels()
     {

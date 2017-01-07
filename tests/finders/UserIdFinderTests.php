@@ -40,7 +40,7 @@ class UserIdFinderTests extends TestCase
      * Тестирует метод UserIdFinder::find
      * если пуст UserIdFinder::id
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: id
+     * @expectedExceptionMessage Отсутствуют необходимые данные: id
      */
     public function testFindEmptyId()
     {

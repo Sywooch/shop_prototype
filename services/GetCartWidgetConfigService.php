@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use app\services\AbstractBaseService;
 use app\finders\PurchasesSessionFinder;
 use app\helpers\HashHelper;
-use app\services\GetCurrentCurrencyService;
+use app\services\GetCurrentCurrencyModelService;
 
 /**
  * Возвращает массив конфигурации для виджета CartWidget
@@ -34,7 +34,7 @@ class GetCartWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['purchases'] = $purchasesCollection;
                 
-                $service = new GetCurrentCurrencyService();
+                $service = new GetCurrentCurrencyModelService();
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['view'] = 'short-cart.twig';

@@ -24,7 +24,7 @@ class UserRegistrationSuccessWidgetTests extends TestCase
      * Тестирует метод UserRegistrationSuccessWidget::run
      * если пуст UserRegistrationSuccessWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

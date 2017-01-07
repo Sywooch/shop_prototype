@@ -77,7 +77,7 @@ class ColorsFilterSphinxFinderTests extends TestCase
      * Тестирует метод ColorsFilterSphinxFinder::run
      * если пуст ColorsFilterSphinxFinder::sphinx
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: sphinx
+     * @expectedExceptionMessage Отсутствуют необходимые данные: sphinx
      */
     public function testRunEmptySphinx()
     {

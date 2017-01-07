@@ -100,7 +100,7 @@ class SeeAlsoWidgetTests extends TestCase
      * Тестирует метод SeeAlsoWidget::run
      * если пуст SeeAlsoWidget::currency
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: currency
+     * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
@@ -119,7 +119,7 @@ class SeeAlsoWidgetTests extends TestCase
      * Тестирует метод SeeAlsoWidget::run
      * если пуст SeeAlsoWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: header
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
     public function testRunEmptyHeader()
     {
@@ -143,7 +143,7 @@ class SeeAlsoWidgetTests extends TestCase
      * Тестирует метод SeeAlsoWidget::run
      * если пуст SeeAlsoWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

@@ -55,7 +55,7 @@ class UserInfoWidgetTests extends TestCase
      * Тестирует метод PaginationWidget::run
      * если пуст PaginationWidget::user
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: user
+     * @expectedExceptionMessage Отсутствуют необходимые данные: user
      */
     public function testRunEmptyUser()
     {
@@ -67,7 +67,7 @@ class UserInfoWidgetTests extends TestCase
      * Тестирует метод PaginationWidget::run
      * если пуст PaginationWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

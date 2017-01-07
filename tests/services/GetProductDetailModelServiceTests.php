@@ -3,15 +3,15 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetProductDetailService;
+use app\services\GetProductDetailModelService;
 use app\tests\sources\fixtures\ProductsFixture;
 use app\tests\DbManager;
 use app\models\ProductsModel;
 
 /**
- * Тестирует класс GetProductDetailService
+ * Тестирует класс GetProductDetailModelService
  */
-class GetProductDetailServiceTests extends TestCase
+class GetProductDetailModelServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -26,28 +26,28 @@ class GetProductDetailServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetProductDetailService
+     * Тестирует свойства GetProductDetailModelService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetProductDetailService::class);
+        $reflection = new \ReflectionClass(GetProductDetailModelService::class);
         
         $this->assertTrue($reflection->hasProperty('productsModel'));
     }
     
     /**
-     * Тестирует метод GetProductDetailService::handle
+     * Тестирует метод GetProductDetailModelService::handle
      * если не передан $request
      * @expectedException ErrorException
      */
     public function testHandleNotRequest()
     {
-        $service = new GetProductDetailService();
+        $service = new GetProductDetailModelService();
         $service->handle();
     }
     
     /**
-     * Тестирует метод GetProductDetailService::handle
+     * Тестирует метод GetProductDetailModelService::handle
      * если $request пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: seocode
@@ -61,12 +61,12 @@ class GetProductDetailServiceTests extends TestCase
             }
         };
         
-        $service = new GetProductDetailService();
+        $service = new GetProductDetailModelService();
         $service->handle($request);
     }
     
     /**
-     * Тестирует метод GetProductDetailService::handle
+     * Тестирует метод GetProductDetailModelService::handle
      */
     public function testHandle()
     {
@@ -80,7 +80,7 @@ class GetProductDetailServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'seocode');
         $reflection->setValue($request, self::$dbClass->products['product_1']['seocode']);
         
-        $service = new GetProductDetailService();
+        $service = new GetProductDetailModelService();
         $result = $service->handle($request);
         
         $this->assertInstanceOf(ProductsModel::class, $result);

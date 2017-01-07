@@ -56,7 +56,7 @@ class ModelSaverTests extends TestCase
      * Тестирует свойства ModelSaver::save
      * если пуст ModelSaver::model
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: model
+     * @expectedExceptionMessage Отсутствуют необходимые данные: model
      */
     public function testSaveEmptyModel()
     {

@@ -58,7 +58,7 @@ class NameGetSaveNameServiceTests extends TestCase
      * Тестирует метод NameGetSaveNameService::handle
      * если пуст NameGetSaveNameService::name
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: request
+     * @expectedExceptionMessage Отсутствуют необходимые данные: request
      */
     public function testHandleEmptyName()
     {

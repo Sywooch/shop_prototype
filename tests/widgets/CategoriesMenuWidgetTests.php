@@ -56,7 +56,7 @@ class CategoriesMenuWidgetTests extends TestCase
      * Тестирует метод CategoriesMenuWidget::setItems
      * если пуст CategoriesMenuWidget::categories
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: categories
+     * @expectedExceptionMessage Отсутствуют необходимые данные: categories
      */
     public function testSetItemsEmptyCategories()
     {

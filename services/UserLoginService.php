@@ -8,8 +8,9 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     ChangeCurrencyFormService,
-    FrontendTrait,
     GetCartWidgetConfigService,
+    GetCategoriesMenuWidgetConfigService,
+    GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService};
 use app\forms\UserLoginForm;
 use app\finders\UserEmailFinder;
@@ -19,8 +20,6 @@ use app\finders\UserEmailFinder;
  */
 class UserLoginService extends AbstractBaseService
 {
-    use FrontendTrait;
-    
     /**
      * @var array данные для UserLoginWidget
      */
@@ -72,8 +71,11 @@ class UserLoginService extends AbstractBaseService
             $service = new ChangeCurrencyFormService();
             $dataArray['currencyConfig'] = $service->handle();
             
-            $dataArray['searchConfig'] = $this->getSearchArray();
-            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            $service = new GetSearchWidgetConfigService();
+            $dataArray['searchConfig'] = $service->handle($request);
+            
+            $service = new GetCategoriesMenuWidgetConfigService();
+            $dataArray['menuConfig'] = $service->handle();
             
             $dataArray['formConfig'] = $this->getUserLoginArray();
             

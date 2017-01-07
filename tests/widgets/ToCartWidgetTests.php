@@ -91,7 +91,7 @@ class ToCartWidgetTests extends TestCase
      * Тестирует метод ToCartWidget::run
      * если отсутствует ToCartWidget::product
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: product
+     * @expectedExceptionMessage Отсутствуют необходимые данные: product
      */
     public function testRunEmptyProduct()
     {
@@ -103,7 +103,7 @@ class ToCartWidgetTests extends TestCase
      * Тестирует метод ToCartWidget::run
      * если отсутствует ToCartWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
     public function testRunEmptyForm()
     {
@@ -122,7 +122,7 @@ class ToCartWidgetTests extends TestCase
      * Тестирует метод ToCartWidget::run
      * если отсутствует ToCartWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

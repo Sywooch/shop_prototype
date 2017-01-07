@@ -90,7 +90,7 @@ class CartWidgetTests extends TestCase
      * Тестирует метод CartWidget::run
      * при отсутствии CartWidget::purchases
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: purchases
+     * @expectedExceptionMessage Отсутствуют необходимые данные: purchases
      */
     public function testRunEmptyPurchases()
     {
@@ -102,7 +102,7 @@ class CartWidgetTests extends TestCase
      * Тестирует метод CartWidget::run
      * при отсутствии CartWidget::currency
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: currency
+     * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
@@ -121,7 +121,7 @@ class CartWidgetTests extends TestCase
      * Тестирует метод CartWidget::run
      * при отсутствии CartWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

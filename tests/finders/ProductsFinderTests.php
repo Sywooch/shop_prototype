@@ -86,7 +86,7 @@ class ProductsFinderTests extends TestCase
      * Тестирует метод ProductsFinder::find
      * усли пуст ProductsFinder::filters
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: filters
+     * @expectedExceptionMessage Отсутствуют необходимые данные: filters
      */
     public function testFindEmptyFilters()
     {

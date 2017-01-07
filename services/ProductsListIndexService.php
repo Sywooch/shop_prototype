@@ -9,8 +9,9 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
     ChangeCurrencyFormService,
-    FrontendTrait,
     GetCartWidgetConfigService,
+    GetCategoriesMenuWidgetConfigService,
+    GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
     ProductsListTrait};
 use app\finders\{BrandsFilterFinder,
@@ -31,7 +32,7 @@ use app\collections\ProductsCollection;
  */
 class ProductsListIndexService extends AbstractBaseService
 {
-    use FrontendTrait, ProductsListTrait;
+    use ProductsListTrait;
     
     /**
      * @var ProductsCollection коллекция товаров
@@ -65,8 +66,11 @@ class ProductsListIndexService extends AbstractBaseService
             $service = new ChangeCurrencyFormService();
             $dataArray['currencyConfig'] = $service->handle();
             
-            $dataArray['searchConfig'] = $this->getSearchArray();
-            $dataArray['menuConfig'] = $this->getCategoriesArray();
+            $service = new GetSearchWidgetConfigService();
+            $dataArray['searchConfig'] = $service->handle($request);
+            
+            $service = new GetCategoriesMenuWidgetConfigService();
+            $dataArray['menuConfig'] = $service->handle();
             
             $productsCollection = $this->getProductsCollection($request);
             

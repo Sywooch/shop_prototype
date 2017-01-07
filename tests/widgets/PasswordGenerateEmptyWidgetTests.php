@@ -24,7 +24,7 @@ class PasswordGenerateEmptyWidgetTests extends TestCase
      * Тестирует метод PasswordGenerateEmptyWidget::run
      * если пуст PasswordGenerateEmptyWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

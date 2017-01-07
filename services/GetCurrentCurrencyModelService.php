@@ -13,7 +13,7 @@ use app\models\CurrencyModel;
 /**
  * Возвращает объект текущей валюты
  */
-class GetCurrentCurrencyService extends AbstractBaseService
+class GetCurrentCurrencyModelService extends AbstractBaseService
 {
     /**
      * @var CurrencyModel

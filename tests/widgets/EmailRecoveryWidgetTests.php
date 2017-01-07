@@ -27,7 +27,7 @@ class EmailRecoveryWidgetTests extends TestCase
      * Тестирует метод EmailRecoveryWidget::run
      * если пуст EmailRecoveryWidget::key
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: key
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testRunKeyEmpty()
     {
@@ -39,7 +39,7 @@ class EmailRecoveryWidgetTests extends TestCase
      * Тестирует метод EmailRecoveryWidget::run
      * если пуст EmailRecoveryWidget::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: email
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testRunEmailEmpty()
     {
@@ -57,7 +57,7 @@ class EmailRecoveryWidgetTests extends TestCase
      * Тестирует метод EmailRecoveryWidget::run
      * если пуст EmailRecoveryWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunViewEmpty()
     {

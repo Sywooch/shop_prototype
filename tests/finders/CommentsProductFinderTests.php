@@ -71,7 +71,7 @@ class CommentsProductFinderTests extends TestCase
      * Тестирует метод CommentsProductFinder::find
      * если пуст CommentsProductFinder::product
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: product
+     * @expectedExceptionMessage Отсутствуют необходимые данные: product
      */
     public function testFindEmptyProduct()
     {

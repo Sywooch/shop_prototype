@@ -58,7 +58,7 @@ class EmailGetSaveEmailServiceTests extends TestCase
      * Тестирует метод EmailGetSaveEmailService::handle
      * если пуст EmailGetSaveEmailService::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: request
+     * @expectedExceptionMessage Отсутствуют необходимые данные: request
      */
     public function testHandleEmptyEmail()
     {

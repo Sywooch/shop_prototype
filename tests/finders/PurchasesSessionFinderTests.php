@@ -27,7 +27,7 @@ class PurchasesSessionFinderTests extends TestCase
      * Тестирует метод PurchasesSessionFinder::find
      * если пуст PurchasesSessionFinder::key
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: key
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testFindEmptyKey()
     {

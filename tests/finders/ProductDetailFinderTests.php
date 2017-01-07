@@ -40,7 +40,7 @@ class ProductDetailFinderTests extends TestCase
      * Тестирует метод ProductDetailFinder::find
      * если пуст ProductDetailFinder::seocode
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: seocode
+     * @expectedExceptionMessage Отсутствуют необходимые данные: seocode
      */
     public function testFindEmptySeocode()
     {

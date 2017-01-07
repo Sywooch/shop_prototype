@@ -94,7 +94,7 @@ class CurrencyWidgetTests extends TestCase
      * Тестирует метод CurrencyWidget::run
      * если пуст CurrencyWidget::currency
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: currency
+     * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
@@ -106,7 +106,7 @@ class CurrencyWidgetTests extends TestCase
      * Тестирует метод CurrencyWidget::run
      * если пуст CurrencyWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
     public function testRunEmptyService()
     {
@@ -125,7 +125,7 @@ class CurrencyWidgetTests extends TestCase
      * Тестирует метод CurrencyWidget::run
      * если пуст CurrencyWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

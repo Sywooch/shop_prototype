@@ -118,7 +118,7 @@ class ProductsSphinxFinderTests extends TestCase
      * Тестирует метод ProductsSphinxFinder::find
      * если пуст ProductsSphinxFinder::sphinx
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: sphinx
+     * @expectedExceptionMessage Отсутствуют необходимые данные: sphinx
      */
     public function testFindEmptySphinx()
     {
@@ -130,7 +130,7 @@ class ProductsSphinxFinderTests extends TestCase
      * Тестирует метод ProductsSphinxFinder::find
      * если пуст ProductsSphinxFinder::filters
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: filters
+     * @expectedExceptionMessage Отсутствуют необходимые данные: filters
      */
     public function testFindEmptyFilters()
     {

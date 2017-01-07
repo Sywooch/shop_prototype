@@ -40,7 +40,7 @@ class SubcategorySeocodeFinderTests extends TestCase
      * Тестирует метод SubcategorySeocodeFinder::find
      * если пуст SubcategorySeocodeFinder::seocode
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: seocode
+     * @expectedExceptionMessage Отсутствуют необходимые данные: seocode
      */
     public function testFindEmptySeocode()
     {

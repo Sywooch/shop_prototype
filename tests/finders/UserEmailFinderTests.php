@@ -42,7 +42,7 @@ class UserEmailFinderTests extends TestCase
      * Тестирует метод UserEmailFinder::find
      * если пуст UserEmailFinder::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: email
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testFindEmptyId()
     {

@@ -78,7 +78,7 @@ class SimilarFinderTests extends TestCase
      * Тестирует метод SimilarFinder::find
      * если пуст SimilarFinder::product
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: product
+     * @expectedExceptionMessage Отсутствуют необходимые данные: product
      */
     public function testFindEmptyProduct()
     {

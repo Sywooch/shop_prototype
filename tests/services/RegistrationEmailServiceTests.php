@@ -48,7 +48,7 @@ class RegistrationEmailServiceTests extends TestCase
      * Тестирует метод RegistrationEmailService::handle
      * если пуст RegistrationEmailService::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: email
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testHandleEmptyEmail()
     {

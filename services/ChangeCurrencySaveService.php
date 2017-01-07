@@ -3,8 +3,7 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use app\services\{AbstractBaseService,
-    FrontendTrait};
+use app\services\AbstractBaseService;
 use app\forms\ChangeCurrencyForm;
 use app\helpers\HashHelper;
 use app\savers\SessionModelSaver;
@@ -15,8 +14,6 @@ use app\finders\CurrencyIdFinder;
  */
 class ChangeCurrencySaveService extends AbstractBaseService
 {
-    use FrontendTrait;
-    
     /**
      * Обрабатывает запрос на изменение текущей валюты
      * @param array $request
@@ -37,9 +34,7 @@ class ChangeCurrencySaveService extends AbstractBaseService
                 throw new ErrorException($this->modelError($form->errors));
             }
             
-            $finder = new CurrencyIdFinder([
-                'id'=>$form->id
-            ]);
+            $finder = \Yii::$app->registry->get(CurrencyIdFinder::class, ['id'=>$form->id]);
             $currencyModel = $finder->find();
             if (empty($currencyModel)) {
                 throw new ErrorException($this->emptyError('currencyModel'));

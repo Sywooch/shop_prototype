@@ -37,7 +37,7 @@ class UserLogoutServiceTests extends TestCase
      * Тестирует метод UserLogoutService::handle
      * если пуст UserLogoutService::request
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: request
+     * @expectedExceptionMessage Отсутствуют необходимые данные: request
      */
     public function testHandleEmptyRequest()
     {

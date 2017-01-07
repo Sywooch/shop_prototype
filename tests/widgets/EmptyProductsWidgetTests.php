@@ -24,7 +24,7 @@ class EmptyProductsWidgetTests extends TestCase
      * Тестирует метод EmptyProductsWidget::run
      * если пуст EmptyProductsWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

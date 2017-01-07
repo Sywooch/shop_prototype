@@ -218,7 +218,7 @@ class FiltersWidgetTests extends TestCase
      * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::colors
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: colors
+     * @expectedExceptionMessage Отсутствуют необходимые данные: colors
      */
     public function testRunEmptyColors()
     {
@@ -230,7 +230,7 @@ class FiltersWidgetTests extends TestCase
      * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::sizes
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: sizes
+     * @expectedExceptionMessage Отсутствуют необходимые данные: sizes
      */
     public function testRunEmptySizes()
     {
@@ -249,7 +249,7 @@ class FiltersWidgetTests extends TestCase
      * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::brands
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: brands
+     * @expectedExceptionMessage Отсутствуют необходимые данные: brands
      */
     public function testRunEmptyBrands()
     {
@@ -272,7 +272,7 @@ class FiltersWidgetTests extends TestCase
      * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::sortingFields
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: sortingFields
+     * @expectedExceptionMessage Отсутствуют необходимые данные: sortingFields
      */
     public function testRunEmptySortingFields()
     {
@@ -299,7 +299,7 @@ class FiltersWidgetTests extends TestCase
      * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::sortingTypes
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: sortingTypes
+     * @expectedExceptionMessage Отсутствуют необходимые данные: sortingTypes
      */
     public function testRunEmptySortingTypes()
     {
@@ -330,7 +330,7 @@ class FiltersWidgetTests extends TestCase
      * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
     public function testRunEmptyForm()
     {
@@ -365,7 +365,7 @@ class FiltersWidgetTests extends TestCase
      * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {

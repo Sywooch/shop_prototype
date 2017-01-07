@@ -40,7 +40,7 @@ class NameNameFinderTests extends TestCase
      * Тестирует метод NameNameFinder::find
      * если пуст NameNameFinder::name
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: name
+     * @expectedExceptionMessage Отсутствуют необходимые данные: name
      */
     public function testFindEmptySeocode()
     {

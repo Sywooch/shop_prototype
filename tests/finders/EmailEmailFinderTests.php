@@ -40,7 +40,7 @@ class EmailEmailFinderTests extends TestCase
      * Тестирует метод EmailEmailFinder::find
      * если пуст EmailEmailFinder::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: email
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testFindEmptySeocode()
     {

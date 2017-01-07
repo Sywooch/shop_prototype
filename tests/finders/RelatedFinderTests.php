@@ -72,7 +72,7 @@ class RelatedFinderTests extends TestCase
      * Тестирует метод RelatedFinder::find
      * если пуст RelatedFinder::product
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: product
+     * @expectedExceptionMessage Отсутствуют необходимые данные: product
      */
     public function testFindEmptyProduct()
     {

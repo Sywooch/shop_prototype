@@ -56,7 +56,7 @@ class UserRecoveryWidgetTests extends TestCase
      * Тестирует метод UserRecoveryWidget::run
      * если пуст UserRecoveryWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: form
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
     public function testRunEmptyForm()
     {
@@ -68,7 +68,7 @@ class UserRecoveryWidgetTests extends TestCase
      * Тестирует метод UserRecoveryWidget::run
      * если пуст UserRecoveryWidget::view
      * @expectedException ErrorException
-     * @expectedExceptionMessage Missing required data: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {
