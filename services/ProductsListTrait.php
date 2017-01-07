@@ -36,7 +36,7 @@ trait ProductsListTrait
      * Возвращает модель товарных фильтров
      * @return ProductsFilters
      */
-    private function getFiltersModel(): ProductsFilters
+    /*private function getFiltersModel(): ProductsFilters
     {
         try {
             if (empty($this->filtersModel)) {
@@ -56,13 +56,13 @@ trait ProductsListTrait
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Возвращает массив конфигурации для виджета EmptyProductsWidget
      * @return array
      */
-    private function getEmptyProductsArray(): array
+    /*private function getEmptyProductsArray(): array
     {
         try {
             if (empty($this->emptyProductsArray)) {
@@ -77,7 +77,7 @@ trait ProductsListTrait
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Возвращает массив конфигурации для виджета ProductsWidget

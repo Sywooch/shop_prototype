@@ -11,6 +11,8 @@ use app\services\{AbstractBaseService,
     ChangeCurrencyFormService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
+    GetEmptyProductsWidgetConfigService,
+    GetProductsFiltersModelService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
     ProductsListTrait};
@@ -89,7 +91,9 @@ class ProductsListSearchService extends AbstractBaseService
                     if ($productsCollection->pagination->totalCount > 0) {
                         throw new NotFoundHttpException($this->error404());
                     }
-                    $dataArray['emptyConfig'] = $this->getEmptyProductsArray();
+                    
+                    $service = new GetEmptyProductsWidgetConfigService();
+                    $dataArray['emptyConfig'] = $service->handle();
                 } else {
                     $dataArray['productsConfig'] = $this->getProductsArray($request);
                     $dataArray['paginationConfig'] = $this->getPaginationArray($request);
@@ -182,10 +186,13 @@ class ProductsListSearchService extends AbstractBaseService
     {
         try {
             if (empty($this->productsCollection)) {
+                $service = new GetProductsFiltersModelService();
+                $filtersModel = $service->handle();
+                
                 $finder = new ProductsSphinxFinder([
                     'sphinx'=>ArrayHelper::getColumn($this->getSphinxArray($request), 'id'),
                     'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
-                    'filters'=>$this->getFiltersModel()
+                    'filters'=>$filtersModel
                 ]);
                 $this->productsCollection = $finder->find();
             }
@@ -255,7 +262,10 @@ class ProductsListSearchService extends AbstractBaseService
                 ArrayHelper::multisort($sortingTypesArray, 'value');
                 $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
                 
-                $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($this->getFiltersModel()->toArray())));
+                $service = new GetProductsFiltersModelService();
+                $filtersModel = $service->handle();
+                
+                $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel ->toArray())));
                 if (empty($form->sortingField)) {
                     foreach ($sortingFieldsArray as $item) {
                         if ($item['name'] === \Yii::$app->params['sortingField']) {
