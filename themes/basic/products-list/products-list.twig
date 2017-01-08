@@ -8,16 +8,16 @@
 
 {{ include('@theme/common/frontend-common.twig') }}
 
-{{ categories_breadcrumbs_widget_widget(breadcrumbsConfig) }}
+{{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}
 
-{{ filters_widget_widget(filtersConfig) }}
+{{ filters_widget_widget(filtersWidgetConfig) }}
 
 {% if emptyConfig %}
-    {{ empty_products_widget_widget(emptyConfig) }}
+    {{ empty_products_widget_widget(emptyProductsWidgetConfig) }}
 {% else %}
-    {{ products_widget_widget(productsConfig) }}
+    {{ products_widget_widget(productsWidgetConfig) }}
     
-    {{ pagination_widget_widget(paginationConfig) }}
+    {{ pagination_widget_widget(paginationWidgetConfig) }}
 {% endif %}
 
 

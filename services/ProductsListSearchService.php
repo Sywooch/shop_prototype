@@ -14,8 +14,7 @@ use app\services\{AbstractBaseService,
     GetEmptyProductsWidgetConfigService,
     GetProductsFiltersModelService,
     GetSearchWidgetConfigService,
-    GetUserInfoWidgetConfigService,
-    ProductsListTrait};
+    GetUserInfoWidgetConfigService};
 use app\finders\{BrandsFilterSphinxFinder,
     ColorsFilterSphinxFinder,
     ProductsSphinxFinder,
@@ -31,8 +30,6 @@ use app\collections\ProductsCollection;
  */
 class ProductsListSearchService extends AbstractBaseService
 {
-    use ProductsListTrait;
-    
     /**
      * @var array данные для SearchBreadcrumbsWidget
      */
@@ -69,19 +66,19 @@ class ProductsListSearchService extends AbstractBaseService
             $dataArray = [];
             
             $service = new GetUserInfoWidgetConfigService();
-            $dataArray['userConfig'] = $service->handle();
+            $dataArray['userInfoWidgetConfig'] = $service->handle();
             
             $service = new GetCartWidgetConfigService();
-            $dataArray['cartConfig'] = $service->handle();
+            $dataArray['cartWidgetConfig'] = $service->handle();
             
             $service = new GetCurrencyWidgetConfigService();
-            $dataArray['currencyConfig'] = $service->handle();
+            $dataArray['currencyWidgetConfig'] = $service->handle();
             
             $service = new GetSearchWidgetConfigService();
-            $dataArray['searchConfig'] = $service->handle($request);
+            $dataArray['searchWidgetConfig'] = $service->handle($request);
             
             $service = new GetCategoriesMenuWidgetConfigService();
-            $dataArray['menuConfig'] = $service->handle();
+            $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
             
             if (empty($this->getSphinxArray($request))) {
                 $dataArray['emptySphinxConfig'] = $this->getEmptySphinxArray();

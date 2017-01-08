@@ -3,6 +3,7 @@
 namespace app\services;
 
 use yii\base\ErrorException;
+use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
     GetProductDetailModelService};
 
@@ -34,6 +35,8 @@ class GetProductBreadcrumbsWidgetConfigService extends AbstractBaseService
             }
             
             return $this->productBreadcrumbsWidgetArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

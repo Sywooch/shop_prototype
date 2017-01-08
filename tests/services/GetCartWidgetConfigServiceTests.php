@@ -3,15 +3,16 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetProductBreadcrumbsWidgetConfigService;
+use app\services\GetCartWidgetConfigService;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\ProductsFixture;
-use app\models\ProductsModel;
+use app\tests\sources\fixtures\CurrencyFixture;
+use app\collections\PurchasesCollectionInterface;
+use app\models\CurrencyModel;
 
 /**
- * Тестирует класс GetProductBreadcrumbsWidgetConfigService
+ * Тестирует класс GetCartWidgetConfigService
  */
-class GetProductBreadcrumbsWidgetConfigServiceTests extends TestCase
+class GetCartWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -19,44 +20,28 @@ class GetProductBreadcrumbsWidgetConfigServiceTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'products'=>ProductsFixture::class,
+                'currency'=>CurrencyFixture::class,
             ]
         ]);
         self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует свойства GetProductBreadcrumbsWidgetConfigService
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(GetProductBreadcrumbsWidgetConfigService::class);
-        
-        $this->assertTrue($reflection->hasProperty('productBreadcrumbsWidgetArray'));
-    }
-    
-    /**
-     * Тестирует свойства GetProductBreadcrumbsWidgetConfigService::handle
+     * Тестирует свойства GetCartWidgetConfigService::handle
      */
     public function testHandle()
     {
-        $request = new class() {
-            public $seocode;
-            public function get($name)
-            {
-                return $this->seocode;
-            }
-        };
-        $reflection = new \ReflectionProperty($request, 'seocode');
-        $reflection->setValue($request, self::$dbClass->products['product_1']['seocode']);
-        
-        $service = new GetProductBreadcrumbsWidgetConfigService();
-        $result = $service->handle($request);
+        $service = new GetCartWidgetConfigService();
+        $result = $service->handle();
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('product', $result);
-        $this->assertInstanceOf(ProductsModel::class, $result['product']);
+        $this->assertArrayHasKey('purchases', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInternalType('string', $result['view']);
     }
     
     public static function tearDownAfterClass()
