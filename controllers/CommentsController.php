@@ -4,7 +4,7 @@ namespace app\controllers;
 
 use yii\web\Controller;
 use app\actions\AjaxAction;
-use app\services\CommentsSaveService;
+use app\services\CommentSaveService;
 
 /**
  * Обрабатывает запросы, касающиеся комментариев к товарам
@@ -16,7 +16,7 @@ class CommentsController extends Controller
         return [
             'save'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CommentsSaveService(),
+                'service'=>new CommentSaveService(),
             ],
         ];
     }

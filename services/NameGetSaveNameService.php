@@ -36,9 +36,9 @@ class NameGetSaveNameService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('request'));
             }
             
-            $this->name = $request['name'];
-            
             if (empty($this->namesModel)) {
+                $this->name = $request['name'];
+                
                 $namesModel = $this->getName();
                 
                 if ($namesModel === null) {
@@ -72,9 +72,7 @@ class NameGetSaveNameService extends AbstractBaseService
     private function getName()
     {
         try {
-            $finder = new NameNameFinder([
-                'name'=>$this->name,
-            ]);
+            $finder = \Yii::$app->registry->get(NameNameFinder::class, ['name'=>$this->name]);
             $namesModel = $finder->find();
             
             return $namesModel;

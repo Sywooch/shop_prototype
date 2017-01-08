@@ -3,14 +3,14 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetCartWidgetAjaxHtmlService;
+use app\services\GetCartWidgetAjaxService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
 
 /**
- * Тестирует класс GetCartWidgetAjaxHtmlService
+ * Тестирует класс GetCartWidgetAjaxService
  */
-class GetCartWidgetAjaxHtmlServiceTests extends TestCase
+class GetCartWidgetAjaxServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -25,21 +25,21 @@ class GetCartWidgetAjaxHtmlServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetCartWidgetAjaxHtmlService
+     * Тестирует свойства GetCartWidgetAjaxService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetCartWidgetAjaxHtmlService::class);
+        $reflection = new \ReflectionClass(GetCartWidgetAjaxService::class);
         
         $this->assertTrue($reflection->hasProperty('cartWidgetAjaxArray'));
     }
     
     /**
-     * Тестирует метод  GetCartWidgetAjaxHtmlService::handle
+     * Тестирует метод  GetCartWidgetAjaxService::handle
      */
     public function testHandle()
     {
-        $service = new GetCartWidgetAjaxHtmlService();
+        $service = new GetCartWidgetAjaxService();
         $result = $service->handle();
         
         $this->assertInternalType('array', $result);

@@ -19,7 +19,6 @@ use app\services\{AbstractBaseService,
 use app\finders\{BrandsFilterFinder,
     CategorySeocodeFinder,
     ColorsFilterFinder,
-    FiltersSessionFinder,
     ProductsFinder,
     SizesFilterFinder,
     SortingFieldsFinder,
@@ -111,7 +110,7 @@ class ProductsListIndexService extends AbstractBaseService
                 $service = new GetProductsFiltersModelService();
                 $filtersModel = $service->handle();
                 
-                $finder = new ProductsFinder([
+                $finder = \Yii::$app->registry->get(ProductsFinder::class, [
                     'category'=>$request->get(\Yii::$app->params['categoryKey']) ?? null,
                     'subcategory'=>$request->get(\Yii::$app->params['subcategoryKey']) ?? null,
                     'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
@@ -141,9 +140,7 @@ class ProductsListIndexService extends AbstractBaseService
                 $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? null;
                 
                 if (!empty($category)) {
-                    $finder = new CategorySeocodeFinder([
-                        'seocode'=>$category
-                    ]);
+                    $finder = \Yii::$app->registry->get(CategorySeocodeFinder::class, ['seocode'=>$category]);
                     $categoryModel = $finder->find();
                     if (empty($categoryModel)) {
                         throw new ErrorException($this->emptyError('categoryModel'));
@@ -151,9 +148,7 @@ class ProductsListIndexService extends AbstractBaseService
                     $dataArray['category'] = $categoryModel;
                     
                     if (!empty($subcategory)) {
-                        $finder = new SubcategorySeocodeFinder([
-                            'seocode'=>$subcategory
-                        ]);
+                        $finder = \Yii::$app->registry->get(SubcategorySeocodeFinder::class, ['seocode'=>$subcategory]);
                         $subcategoryModel = $finder->find();
                         if (empty($subcategoryModel)) {
                             throw new ErrorException($this->emptyError('subcategoryModel'));
@@ -185,10 +180,7 @@ class ProductsListIndexService extends AbstractBaseService
                 $category = $request->get(\Yii::$app->params['categoryKey']) ?? null;
                 $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? null;
                 
-                $finder = new ColorsFilterFinder([
-                    'category'=>$category,
-                    'subcategory'=>$subcategory,
-                ]);
+                $finder = \Yii::$app->registry->get(ColorsFilterFinder::class, ['category'=>$category, 'subcategory'=>$subcategory]);
                 $colorsArray = $finder->find();
                 if (empty($colorsArray)) {
                     throw new ErrorException($this->emptyError('colorsArray'));
@@ -196,10 +188,7 @@ class ProductsListIndexService extends AbstractBaseService
                 ArrayHelper::multisort($colorsArray, 'color');
                 $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
                 
-                $finder = new SizesFilterFinder([
-                    'category'=>$category,
-                    'subcategory'=>$subcategory,
-                ]);
+                $finder = \Yii::$app->registry->get(SizesFilterFinder::class, ['category'=>$category, 'subcategory'=>$subcategory]);
                 $sizesArray = $finder->find();
                 if (empty($sizesArray)) {
                     throw new ErrorException($this->emptyError('sizesArray'));
@@ -207,10 +196,7 @@ class ProductsListIndexService extends AbstractBaseService
                 ArrayHelper::multisort($sizesArray, 'size');
                 $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
                 
-                $finder = new BrandsFilterFinder([
-                    'category'=>$category,
-                    'subcategory'=>$subcategory,
-                ]);
+                $finder = \Yii::$app->registry->get(BrandsFilterFinder::class, ['category'=>$category, 'subcategory'=>$subcategory]);
                 $brandsArray = $finder->find();
                 if (empty($brandsArray)) {
                     throw new ErrorException($this->emptyError('brandsArray'));
@@ -218,7 +204,7 @@ class ProductsListIndexService extends AbstractBaseService
                 ArrayHelper::multisort($brandsArray, 'brand');
                 $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
                 
-                $finder = new SortingFieldsFinder();
+                $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
                 $sortingFieldsArray = $finder->find();
                 if (empty($sortingFieldsArray)) {
                     throw new ErrorException($this->emptyError('sortingFieldsArray'));
@@ -226,7 +212,7 @@ class ProductsListIndexService extends AbstractBaseService
                 ArrayHelper::multisort($sortingFieldsArray, 'value');
                 $dataArray['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
                 
-                $finder = new SortingTypesFinder();
+                $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
                 $sortingTypesArray = $finder->find();
                 if (empty($sortingTypesArray)) {
                     throw new ErrorException($this->emptyError('sortingTypesArray'));

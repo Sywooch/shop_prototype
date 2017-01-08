@@ -2,9 +2,10 @@
 
 {{ use('app/widgets/ProductBreadcrumbsWidget') }}
 {{ use('app/widgets/ProductDetailWidget') }}
-{{ use('app/widgets/ToCartWidget') }}
+{{ use('app/widgets/PurchaseFormWidget') }}
 {{ use('app/widgets/SeeAlsoWidget') }}
 {{ use('app/widgets/CommentsWidget') }}
+{{ use('app/widgets/CommentFormWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
@@ -12,10 +13,14 @@
 
 {{ product_detail_widget_widget(productConfig) }}
 
-{{ to_cart_widget_widget(toCartConfig) }}
+{{ purchase_form_widget_widget(purchaseFormWidgetConfig) }}
 
 {{ see_also_widget_widget(similarConfig) }}
 
 {{ see_also_widget_widget(relatedConfig) }}
 
+<p><strong>Комментарии</strong></p>
+
 {{ comments_widget_widget(commentsConfig) }}
+
+{{ comment_form_widget_widget(commentFormConfig) }}

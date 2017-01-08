@@ -3,7 +3,6 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\Html;
 use app\widgets\AbstractBaseWidget;
 
 /**

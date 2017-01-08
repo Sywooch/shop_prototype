@@ -9,7 +9,7 @@ use app\finders\ProductDetailFinder;
 use app\models\ProductsModel;
 
 /**
- * Возвращает объект текущей валюты
+ * Возвращает объект ProductsModel
  */
 class GetProductDetailModelService extends AbstractBaseService
 {

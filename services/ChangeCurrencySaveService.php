@@ -10,7 +10,7 @@ use app\savers\SessionModelSaver;
 use app\finders\CurrencyIdFinder;
 
 /**
- * Сохраняет изменения текущей валюты
+ * Обновляет текущую валюту
  */
 class ChangeCurrencySaveService extends AbstractBaseService
 {

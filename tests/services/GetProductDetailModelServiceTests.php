@@ -67,6 +67,24 @@ class GetProductDetailModelServiceTests extends TestCase
     
     /**
      * Тестирует метод GetProductDetailModelService::handle
+     * если товар не найден
+     * @expectedException yii\web\NotFoundHttpException
+     */
+    public function testHandleEmptyProduct()
+    {
+        $request = new class() {
+            public function get($name)
+            {
+                return 'nothing';
+            }
+        };
+        
+        $service = new GetProductDetailModelService();
+        $service->handle($request);
+    }
+    
+    /**
+     * Тестирует метод GetProductDetailModelService::handle
      */
     public function testHandle()
     {

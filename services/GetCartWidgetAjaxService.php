@@ -10,7 +10,7 @@ use app\widgets\CartWidget;
 /**
  * Возвращает массив с HTML строкой данных корзины для ответа в формате JSON
  */
-class GetCartWidgetAjaxHtmlService extends AbstractBaseService
+class GetCartWidgetAjaxService extends AbstractBaseService
 {
     /**
      * @var array
@@ -30,6 +30,7 @@ class GetCartWidgetAjaxHtmlService extends AbstractBaseService
                 
                 $service = new GetCartWidgetConfigService();
                 $cartInfoWidget = $service->handle();
+                
                 $cartInfoWidget['view'] = 'short-cart-ajax.twig';
                 
                 $dataArray['cartInfo'] = CartWidget::widget($cartInfoWidget);

@@ -314,6 +314,8 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testHandleTooMuchFilters()
     {
+        $finder = \Yii::$app->registry->clean();
+        
         $key = HashHelper::createFiltersKey(Url::current());
         
         $session = \Yii::$app->session;
@@ -331,16 +333,14 @@ class ProductsListSearchServiceTests extends TestCase
                     return 'пиджак';
                 }
                 if ($name === 'page') {
-                    return 14;
+                    return 1;
                 }
             }
         };
         
         $service = new ProductsListSearchService();
         
-        $reflection = new \ReflectionMethod($service, 'handle');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
+        $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('userConfig', $result);
@@ -365,6 +365,8 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testHandle()
     {
+        $finder = \Yii::$app->registry->clean();
+        
         $key = HashHelper::createFiltersKey(Url::current());
         
         $session = \Yii::$app->session;

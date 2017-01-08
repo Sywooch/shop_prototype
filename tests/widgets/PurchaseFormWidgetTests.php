@@ -3,7 +3,7 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\ToCartWidget;
+use app\widgets\PurchaseFormWidget;
 use yii\base\Model;
 use app\forms\PurchaseForm;
 use app\collections\{BaseCollection,
@@ -11,16 +11,16 @@ use app\collections\{BaseCollection,
 use app\models\ProductsModel;
 
 /**
- * Тестирует класс ToCartWidget
+ * Тестирует класс PurchaseFormWidget
  */
-class ToCartWidgetTests extends TestCase
+class PurchaseFormWidgetTests extends TestCase
 {
     /**
-     * Тестирует свойства ToCartWidget
+     * Тестирует свойства PurchaseFormWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(ToCartWidget::class);
+        $reflection = new \ReflectionClass(PurchaseFormWidget::class);
         
         $this->assertTrue($reflection->hasProperty('product'));
         $this->assertTrue($reflection->hasProperty('form'));
@@ -28,7 +28,7 @@ class ToCartWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ToCartWidget::setProduct
+     * Тестирует метод PurchaseFormWidget::setProduct
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
@@ -36,18 +36,18 @@ class ToCartWidgetTests extends TestCase
     {
         $product = new class() {};
         
-        $widget = new ToCartWidget();
+        $widget = new PurchaseFormWidget();
         $widget->setProduct($product);
     }
     
     /**
-     * Тестирует метод ToCartWidget::setProduct
+     * Тестирует метод PurchaseFormWidget::setProduct
      */
     public function testSetProduct()
     {
         $product = new class() extends ProductsModel {};
         
-        $widget = new ToCartWidget();
+        $widget = new PurchaseFormWidget();
         $widget->setProduct($product);
         
         $reflection = new \ReflectionProperty($widget, 'product');
@@ -58,7 +58,7 @@ class ToCartWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ToCartWidget::setForm
+     * Тестирует метод PurchaseFormWidget::setForm
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
@@ -66,18 +66,18 @@ class ToCartWidgetTests extends TestCase
     {
         $form = new class() {};
         
-        $widget = new ToCartWidget();
+        $widget = new PurchaseFormWidget();
         $widget->setForm($form);
     }
     
     /**
-     * Тестирует метод ToCartWidget::setForm
+     * Тестирует метод PurchaseFormWidget::setForm
      */
     public function testSetForm()
     {
         $form = new class() extends PurchaseForm {};
         
-        $widget = new ToCartWidget();
+        $widget = new PurchaseFormWidget();
         $widget->setForm($form);
         
         $reflection = new \ReflectionProperty($widget, 'form');
@@ -88,20 +88,20 @@ class ToCartWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ToCartWidget::run
-     * если отсутствует ToCartWidget::product
+     * Тестирует метод PurchaseFormWidget::run
+     * если отсутствует PurchaseFormWidget::product
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: product
      */
     public function testRunEmptyProduct()
     {
-        $widget = new ToCartWidget();
+        $widget = new PurchaseFormWidget();
         $widget->run();
     }
     
     /**
-     * Тестирует метод ToCartWidget::run
-     * если отсутствует ToCartWidget::form
+     * Тестирует метод PurchaseFormWidget::run
+     * если отсутствует PurchaseFormWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
@@ -109,7 +109,7 @@ class ToCartWidgetTests extends TestCase
     {
         $product = new class() extends ProductsModel {};
         
-        $widget = new ToCartWidget();
+        $widget = new PurchaseFormWidget();
         
         $reflection = new \ReflectionProperty($widget, 'product');
         $reflection->setAccessible(true);
@@ -119,8 +119,8 @@ class ToCartWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ToCartWidget::run
-     * если отсутствует ToCartWidget::view
+     * Тестирует метод PurchaseFormWidget::run
+     * если отсутствует PurchaseFormWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
@@ -129,7 +129,7 @@ class ToCartWidgetTests extends TestCase
         $product = new class() extends ProductsModel {};
         $form = new class() extends PurchaseForm {};
         
-        $widget = new ToCartWidget();
+        $widget = new PurchaseFormWidget();
         
         $reflection = new \ReflectionProperty($widget, 'product');
         $reflection->setAccessible(true);
@@ -143,7 +143,7 @@ class ToCartWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ToCartWidget::run
+     * Тестирует метод PurchaseFormWidget::run
      */
     public function testRun()
     {
@@ -176,7 +176,7 @@ class ToCartWidgetTests extends TestCase
         
         $form = new class() extends PurchaseForm {};
         
-        $widget = new ToCartWidget();
+        $widget = new PurchaseFormWidget();
         
         $reflection = new \ReflectionProperty($widget, 'product');
         $reflection->setAccessible(true);
@@ -188,11 +188,11 @@ class ToCartWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'to-cart-form.twig');
+        $reflection->setValue($widget, 'purchase-form.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<form id="add-to-cart-form"#', $result);
+        $this->assertRegExp('#<form id="purchase-form"#', $result);
         $this->assertRegExp('#<input type="number"#', $result);
         $this->assertRegExp('#step="1" min="1">#', $result);
         $this->assertRegExp('#<label class="control-label" for=".+">Id Color</label>#', $result);

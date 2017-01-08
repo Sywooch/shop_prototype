@@ -52,9 +52,7 @@ class UserGenerateService extends AbstractBaseService
                 throw new NotFoundHttpException($this->error404());
             }
             
-            $finder = new RecoverySessionFinder([
-                'key'=>$key
-            ]);
+            $finder = \Yii::$app->registry->get(RecoverySessionFinder::class, ['key'=>$key]);
             $recoveryModel = $finder->find();
             
             $dataArray = [];

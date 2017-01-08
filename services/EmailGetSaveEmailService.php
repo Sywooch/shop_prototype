@@ -9,7 +9,8 @@ use app\finders\EmailEmailFinder;
 use app\savers\ModelSaver;
 
 /**
- * Возвращает объект EmailsModel
+ * Возвращает объект EmailsModel, 
+ * при необходимости создает  и сохраняет новый
  */
 class EmailGetSaveEmailService extends AbstractBaseService
 {
@@ -23,7 +24,7 @@ class EmailGetSaveEmailService extends AbstractBaseService
     private $email = null;
     
     /**
-     * Возвращает EmailsModel по Email
+     * Возвращает EmailsModel по email
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
      * @param array $request
@@ -36,9 +37,9 @@ class EmailGetSaveEmailService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('request'));
             }
             
-            $this->email = $request['email'];
-            
             if (empty($this->emailsModel)) {
+                $this->email = $request['email'];
+                
                 $emailsModel = $this->getEmail();
                 
                 if ($emailsModel === null) {
@@ -72,9 +73,7 @@ class EmailGetSaveEmailService extends AbstractBaseService
     private function getEmail()
     {
         try {
-            $finder = new EmailEmailFinder([
-                'email'=>$this->email,
-            ]);
+            $finder = \Yii::$app->registry->get(EmailEmailFinder::class, ['email'=>$this->email]);
             $emailsModel = $finder->find();
             
             return $emailsModel;

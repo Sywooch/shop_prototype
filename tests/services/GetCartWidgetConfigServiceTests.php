@@ -3,33 +3,59 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetEmptyProductsWidgetConfigService;
+use app\services\GetCartWidgetConfigService;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\CurrencyFixture;
+use app\collections\PurchasesCollection;
+use app\models\CurrencyModel;
 
 /**
- * Тестирует класс GetEmptyProductsWidgetConfigService
+ * Тестирует класс GetCartWidgetConfigService
  */
-class GetEmptyProductsWidgetConfigServiceTests extends TestCase
+class GetCartWidgetConfigServiceTests extends TestCase
 {
-    /**
-     * Тестирует свойства GetEmptyProductsWidgetConfigService
-     */
-    public function testProperties()
+    private static $dbClass;
+    
+    public static function setUpBeforeClass()
     {
-        $reflection = new \ReflectionClass(GetEmptyProductsWidgetConfigService::class);
-        
-        $this->assertTrue($reflection->hasProperty('emptyProductsWidgetArray'));
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'currency'=>CurrencyFixture::class,
+            ]
+        ]);
+        self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует свойства GetEmptyProductsWidgetConfigService::handle
+     * Тестирует свойства GetCartWidgetConfigService
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(GetCartWidgetConfigService::class);
+        
+        $this->assertTrue($reflection->hasProperty('cartWidgetArray'));
+    }
+    
+    /**
+     * Тестирует свойства GetCartWidgetConfigService::handle
      */
     public function testHandle()
     {
-        $service = new GetEmptyProductsWidgetConfigService();
+        $service = new GetCartWidgetConfigService();
         $result = $service->handle();
         
         $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('purchases', $result);
+        $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('view', $result);
+        $this->assertInstanceOf(PurchasesCollection::class, $result['purchases']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInternalType('string', $result['view']);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$dbClass->unloadFixtures();
     }
 }

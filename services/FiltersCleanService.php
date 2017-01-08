@@ -32,14 +32,10 @@ class FiltersCleanService extends AbstractBaseService
                 throw new ErrorException($this->modelError($form->errors));
             }
             
-            $key = HashHelper::createFiltersKey($form->url);
-            
-            if (!empty($key)) {
-                $cleaner = new SessionCleaner([
-                    'keys'=>[$key],
-                ]);
-                $cleaner->clean();
-            }
+            $cleaner = new SessionCleaner([
+                'keys'=>[HashHelper::createFiltersKey($form->url)],
+            ]);
+            $cleaner->clean();
             
             return StringHelper::cutPage($form->url);
         } catch (\Throwable $t) {

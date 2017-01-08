@@ -8,17 +8,17 @@ use yii\web\{NotFoundHttpException,
 use yii\helpers\ArrayHelper;
 use app\services\{AbstractBaseService,
     ChangeCurrencyFormService,
+    CommentFormService,
     CommentsSaveService,
     GetCartWidgetConfigService,
     GetCurrentCurrencyModelService,
     GetProductDetailModelService,
+    GetProductDetailWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
-    PurchaseSaveService};
-use app\finders\{CommentsProductFinder,
-    ProductDetailFinder,
-    SimilarFinder,
+    PurchaseFormService};
+use app\finders\{SimilarFinder,
     RelatedFinder};
 use app\forms\{CommentForm,
     PurchaseForm};
@@ -34,7 +34,7 @@ class ProductDetailIndexService extends AbstractBaseService
      */
     private $productArray = [];
     /**
-     * @var array данные для ToCartWidget
+     * @var array данные для PurchaseFormWidget
      */
     private $purchaseFormArray = [];
     /**
@@ -79,12 +79,19 @@ class ProductDetailIndexService extends AbstractBaseService
             $service = new GetCategoriesMenuWidgetConfigService();
             $dataArray['menuConfig'] = $service->handle();
             
-            $dataArray['productConfig'] = $this->getProductArray($request);
-            $dataArray['toCartConfig'] = $this->getPurchaseFormArray($request);
+            $service = new GetProductDetailWidgetConfigService();
+            $dataArray['productConfig'] = $service->handle($request);
+            
+            $dataArray['purchaseFormWidgetConfig'] = $this->getPurchaseFormArray($request);
             $dataArray['breadcrumbsConfig'] = $this->getBreadcrumbsArray($request);
             $dataArray['similarConfig'] = $this->getSimilarArray($request);
             $dataArray['relatedConfig'] = $this->getRelatedArray($request);
-            $dataArray['commentsConfig'] = $this->getCommentsArray($request);
+            
+            $service = new CommentsService();
+            $dataArray['commentsConfig'] = $service->handle($request);
+            
+            $service = new CommentFormService();
+            $dataArray['commentFormConfig'] = $service->handle($request);
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {
@@ -99,7 +106,7 @@ class ProductDetailIndexService extends AbstractBaseService
      * @param Request $request данные запроса
      * @return array
      */
-    private function getProductArray(Request $request): array
+    /*private function getProductArray(Request $request): array
     {
         try {
             if (empty($this->productArray)) {
@@ -122,10 +129,10 @@ class ProductDetailIndexService extends AbstractBaseService
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
-     * Возвращает массив конфигурации для виджета ToCartWidget
+     * Возвращает массив конфигурации для виджета PurchaseFormWidget
      * @param Request $request данные запроса
      * @return array
      */
@@ -133,7 +140,7 @@ class ProductDetailIndexService extends AbstractBaseService
     {
         try {
             if (empty($this->purchaseFormArray)) {
-                $service = new PurchaseSaveService();
+                $service = new PurchaseFormService();
                 $this->purchaseFormArray = $service->handle($request);
             }
             
@@ -185,9 +192,7 @@ class ProductDetailIndexService extends AbstractBaseService
                 $service = new GetProductDetailModelService();
                 $productsModel = $service->handle($request);
                 
-                $finder = new SimilarFinder([
-                    'product'=>$productsModel
-                ]);
+                $finder = \Yii::$app->registry->get(SimilarFinder::class, ['product'=>$productsModel]);
                 $similarArray = $finder->find();
                 
                 $dataArray['products'] = $similarArray;
@@ -224,9 +229,7 @@ class ProductDetailIndexService extends AbstractBaseService
                 $service = new GetProductDetailModelService();
                 $productsModel = $service->handle($request);
                 
-                $finder = new RelatedFinder([
-                    'product'=>$productsModel
-                ]);
+                $finder = \Yii::$app->registry->get(RelatedFinder::class, ['product'=>$productsModel]);
                 $relatedArray = $finder->find();
                 
                 $dataArray['products'] = $relatedArray;

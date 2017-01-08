@@ -21,7 +21,7 @@ class ChangeCurrencyFormService extends AbstractBaseService
     private $currencyWidgetArray = [];
     
     /**
-     * Возвращает форму для смены валюты приложения
+     * Возвращает массив данных для CurrencyWidget
      * @param array $request
      * @return array
      */
@@ -31,7 +31,7 @@ class ChangeCurrencyFormService extends AbstractBaseService
             if (empty($this->currencyWidgetArray)) {
                 $dataArray = [];
                 
-                $finder = new CurrencyFinder();
+                $finder = \Yii::$app->registry->get(CurrencyFinder::class);
                 $currencyArray = $finder->find();
                 if (empty($currencyArray)) {
                     throw new ErrorException($this->emptyError('currencyArray'));

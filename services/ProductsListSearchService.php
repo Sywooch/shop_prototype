@@ -142,9 +142,7 @@ class ProductsListSearchService extends AbstractBaseService
     {
         try {
             if (empty($this->sphinxArray)) {
-                $finder = new SphinxFinder([
-                    'search'=>$request->get(\Yii::$app->params['searchKey']) ?? null,
-                ]);
+                $finder = \Yii::$app->registry->get(SphinxFinder::class, ['search'=>$request->get(\Yii::$app->params['searchKey']) ?? null]);
                 $sphinxArray = $finder->find();
                 
                 $this->sphinxArray = $sphinxArray;
@@ -189,7 +187,7 @@ class ProductsListSearchService extends AbstractBaseService
                 $service = new GetProductsFiltersModelService();
                 $filtersModel = $service->handle();
                 
-                $finder = new ProductsSphinxFinder([
+                $finder = \Yii::$app->registry->get(ProductsSphinxFinder::class, [
                     'sphinx'=>ArrayHelper::getColumn($this->getSphinxArray($request), 'id'),
                     'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
                     'filters'=>$filtersModel
@@ -216,9 +214,7 @@ class ProductsListSearchService extends AbstractBaseService
                 
                 $sphinxArray = $this->getSphinxArray($request);
                 
-                $finder = new ColorsFilterSphinxFinder([
-                    'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
-                ]);
+                $finder = \Yii::$app->registry->get(ColorsFilterSphinxFinder::class, ['sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
                 $colorsArray = $finder->find();
                 if (empty($colorsArray)) {
                     throw new ErrorException($this->emptyError('colorsArray'));
@@ -226,9 +222,7 @@ class ProductsListSearchService extends AbstractBaseService
                 ArrayHelper::multisort($colorsArray, 'color');
                 $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
                 
-                $finder = new SizesFilterSphinxFinder([
-                    'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
-                ]);
+                $finder = \Yii::$app->registry->get(SizesFilterSphinxFinder::class, ['sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
                 $sizesArray = $finder->find();
                 if (empty($sizesArray)) {
                     throw new ErrorException($this->emptyError('sizesArray'));
@@ -236,9 +230,7 @@ class ProductsListSearchService extends AbstractBaseService
                 ArrayHelper::multisort($sizesArray, 'size');
                 $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
                 
-                $finder = new BrandsFilterSphinxFinder([
-                    'sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id'),
-                ]);
+                $finder = \Yii::$app->registry->get(BrandsFilterSphinxFinder::class, ['sphinx'=>ArrayHelper::getColumn($sphinxArray, 'id')]);
                 $brandsArray = $finder->find();
                 if (empty($brandsArray)) {
                     throw new ErrorException($this->emptyError('brandsArray'));
@@ -246,7 +238,7 @@ class ProductsListSearchService extends AbstractBaseService
                 ArrayHelper::multisort($brandsArray, 'brand');
                 $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
                 
-                $finder = new SortingFieldsFinder();
+                $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
                 $sortingFieldsArray = $finder->find();
                 if (empty($sortingFieldsArray)) {
                     throw new ErrorException($this->emptyError('sortingFieldsArray'));
@@ -254,7 +246,7 @@ class ProductsListSearchService extends AbstractBaseService
                 ArrayHelper::multisort($sortingFieldsArray, 'value');
                 $dataArray['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
                 
-                $finder = new SortingTypesFinder();
+                $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
                 $sortingTypesArray = $finder->find();
                 if (empty($sortingTypesArray)) {
                     throw new ErrorException($this->emptyError('sortingTypesArray'));

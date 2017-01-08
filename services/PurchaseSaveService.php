@@ -9,7 +9,7 @@ use yii\web\{NotFoundHttpException,
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
     GetProductDetailModelService,
-    GetCartWidgetAjaxHtmlService};
+    GetCartWidgetAjaxService};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
@@ -52,9 +52,7 @@ class PurchaseSaveService extends AbstractBaseService
                     
                     $key = HashHelper::createCartKey();
                     
-                    $finder = new PurchasesSessionFinder([
-                        'key'=>$key
-                    ]);
+                    $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, ['key'=>$key]);
                     $purchasesCollection = $finder->find();
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
@@ -94,7 +92,7 @@ class PurchaseSaveService extends AbstractBaseService
      * @param Request $request данные запроса
      * @return array
      */
-    private function getToCartWidgetArray(Request $request): array
+    /*private function getToCartWidgetArray(Request $request): array
     {
         try {
             if (empty($this->toCartWidgetArray)) {
@@ -115,7 +113,7 @@ class PurchaseSaveService extends AbstractBaseService
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Возвращает HTML строку с обновленными данными корзины 
@@ -125,7 +123,7 @@ class PurchaseSaveService extends AbstractBaseService
     private function getCartInfo(): array
     {
         try {
-            $service = new GetCartWidgetAjaxHtmlService();
+            $service = new GetCartWidgetAjaxService();
             $dataArray = $service->handle();
             
             $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);

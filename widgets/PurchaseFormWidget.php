@@ -12,7 +12,7 @@ use app\forms\PurchaseForm;
 /**
  * Формирует HTML строку с тегами img
  */
-class ToCartWidget extends AbstractBaseWidget
+class PurchaseFormWidget extends AbstractBaseWidget
 {
     /**
      * @var ProductsModel
@@ -43,7 +43,7 @@ class ToCartWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['formAction'] = Url::to(['/cart/add']);
-            $renderArray['formId'] = 'add-to-cart-form';
+            $renderArray['formId'] = 'purchase-form';
             $renderArray['button'] = \Yii::t('base', 'Add to cart');
             
             $renderArray['formModel'] = $this->form;
@@ -65,7 +65,7 @@ class ToCartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает ProductsModel свойству ToCartWidget::model
+     * Присваивает ProductsModel свойству PurchaseFormWidget::model
      * @param ProductsModel $model
      */
     public function setProduct(ProductsModel $product)
@@ -78,7 +78,7 @@ class ToCartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает PurchaseForm свойству ToCartWidget::form
+     * Присваивает PurchaseForm свойству PurchaseFormWidget::form
      * @param PurchaseForm $model
      */
     public function setForm(PurchaseForm $form)

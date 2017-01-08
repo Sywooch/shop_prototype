@@ -33,8 +33,6 @@ class FiltersSetService extends AbstractBaseService
                 throw new ErrorException($this->modelError($form->errors));
             }
             
-            $key = HashHelper::createFiltersKey($form->url);
-            
             $model = new ProductsFilters(['scenario'=>ProductsFilters::SESSION]);
             $model->sortingField = $form->sortingField;
             $model->sortingType = $form->sortingType;
@@ -45,13 +43,11 @@ class FiltersSetService extends AbstractBaseService
                 throw new ErrorException($this->modelError($model->errors));
             }
             
-            if (!empty($key)) {
-                $saver = new SessionModelSaver([
-                    'key'=>$key,
-                    'model'=>$model
-                ]);
-                $saver->save();
-            }
+            $saver = new SessionModelSaver([
+                'key'=>HashHelper::createFiltersKey($form->url),
+                'model'=>$model
+            ]);
+            $saver->save();
             
             return StringHelper::cutPage($form->url);
         } catch (\Throwable $t) {

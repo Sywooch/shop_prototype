@@ -16,7 +16,6 @@ use app\services\{AbstractBaseService,
     RegistrationEmailService};
 use app\forms\{UserLoginForm,
     UserRegistrationForm};
-use app\finders\EmailEmailFinder;
 use app\savers\ModelSaver;
 use app\models\{EmailsModel,
     UsersModel};

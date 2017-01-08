@@ -36,7 +36,7 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
                 $currencyModel = $finder->find();
                 
                 if (empty($currencyModel)) {
-                    $finder = new MainCurrencyFinder();
+                    $finder = \Yii::$app->registry->get(MainCurrencyFinder::class);
                     $currencyModel = $finder->find();
                     if (empty($currencyModel)) {
                         throw new ErrorException($this->emptyError('currencyModel'));
