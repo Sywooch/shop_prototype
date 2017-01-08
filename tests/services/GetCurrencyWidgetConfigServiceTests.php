@@ -3,16 +3,16 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\ChangeCurrencyFormService;
+use app\services\GetCurrencyWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
 use app\controllers\ProductsListController;
 use app\forms\ChangeCurrencyForm;
 
 /**
- * Тестирует класс ChangeCurrencyFormService
+ * Тестирует класс GetCurrencyWidgetConfigService
  */
-class ChangeCurrencyFormServiceTests extends TestCase
+class GetCurrencyWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,23 +27,23 @@ class ChangeCurrencyFormServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства ChangeCurrencyFormService
+     * Тестирует свойства GetCurrencyWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(ChangeCurrencyFormService::class);
+        $reflection = new \ReflectionClass(GetCurrencyWidgetConfigService::class);
         
         $this->assertTrue($reflection->hasProperty('currencyWidgetArray'));
     }
     
     /**
-     * Тестирует метод ChangeCurrencyFormService::handle
+     * Тестирует метод GetCurrencyWidgetConfigService::handle
      */
     public function testHandle()
     {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $service = new ChangeCurrencyFormService();
+        $service = new GetCurrencyWidgetConfigService();
         
         $result = $service->handle();
         

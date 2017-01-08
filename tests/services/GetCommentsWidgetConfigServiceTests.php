@@ -3,15 +3,15 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CommentsService;
+use app\services\GetCommentsWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CommentsFixture,
     ProductsFixture};
 
 /**
- * Тестирует класс CommentsService
+ * Тестирует класс GetCommentsWidgetConfigService
  */
-class CommentsServiceTests extends TestCase
+class GetCommentsWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,17 +27,17 @@ class CommentsServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства CommentsService
+     * Тестирует свойства GetCommentsWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(CommentsService::class);
+        $reflection = new \ReflectionClass(GetCommentsWidgetConfigService::class);
         
         $this->assertTrue($reflection->hasProperty('commentsWidgetArray'));
     }
     
     /**
-     * Тестирует метод CommentsService::handle
+     * Тестирует метод GetCommentsWidgetConfigService::handle
      * если не найден товар
      * @expectedException yii\web\NotFoundHttpException
      */
@@ -50,12 +50,12 @@ class CommentsServiceTests extends TestCase
             }
         };
         
-        $service = new CommentsService();
+        $service = new GetCommentsWidgetConfigService();
         $service->handle($request);
     }
     
     /**
-     * Тестирует метод CommentsService::handle
+     * Тестирует метод GetCommentsWidgetConfigService::handle
      * если комментарии не найдены
      */
     public function testHandleEmptyComments()
@@ -70,7 +70,7 @@ class CommentsServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'seocode');
         $result = $reflection->setValue($request, self::$dbClass->products['product_3']['seocode']);
         
-        $service = new CommentsService();
+        $service = new GetCommentsWidgetConfigService();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
@@ -81,7 +81,7 @@ class CommentsServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CommentsService::handle
+     * Тестирует метод GetCommentsWidgetConfigService::handle
      */
     public function testHandle()
     {
@@ -95,7 +95,7 @@ class CommentsServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'seocode');
         $reflection->setValue($request, self::$dbClass->products['product_1']['seocode']);
         
-        $service = new CommentsService();
+        $service = new GetCommentsWidgetConfigService();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);

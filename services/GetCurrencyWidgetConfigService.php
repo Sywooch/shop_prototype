@@ -13,7 +13,7 @@ use app\forms\ChangeCurrencyForm;
 /**
  * Возвращает массив данных для CurrencyWidget
  */
-class ChangeCurrencyFormService extends AbstractBaseService
+class GetCurrencyWidgetConfigService extends AbstractBaseService
 {
     /**
      * @var array данные для CurrencyWidget

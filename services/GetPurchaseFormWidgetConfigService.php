@@ -11,7 +11,7 @@ use app\forms\PurchaseForm;
 /**
  * Возвращает массив данных для PurchaseFormWidget
  */
-class PurchaseFormService extends AbstractBaseService
+class GetPurchaseFormWidgetConfigService extends AbstractBaseService
 {
     /**
      * @var array данные для PurchaseFormWidget

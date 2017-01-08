@@ -7,10 +7,10 @@ use yii\helpers\Url;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    ChangeCurrencyFormService,
     EmailGetSaveEmailService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
+    GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
     RegistrationEmailService};
@@ -101,7 +101,7 @@ class UserRegistrationService extends AbstractBaseService
             $service = new GetCartWidgetConfigService();
             $dataArray['cartConfig'] = $service->handle();
             
-            $service = new ChangeCurrencyFormService();
+            $service = new GetCurrencyWidgetConfigService();
             $dataArray['currencyConfig'] = $service->handle();
             
             $service = new GetSearchWidgetConfigService();

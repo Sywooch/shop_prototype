@@ -3,49 +3,36 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\web\{NotFoundHttpException,
-    Request,
-    Response};
+use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    GetProductDetailModelService,
     GetCartWidgetAjaxService};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
 use app\finders\PurchasesSessionFinder;
-use app\widgets\{CartWidget,
-    PurchaseSaveInfoWidget};
+use app\widgets\PurchaseSaveInfoWidget;
 use app\models\PurchasesModel;
 
 /**
- * Сохраняет новую покупку в корзину
+ * Сохраняет новую покупку в корзине
  */
 class PurchaseSaveService extends AbstractBaseService
 {
     /**
-     * @var array данные для ToCartWidget
-     */
-    private $toCartWidgetArray = [];
-    /**
-     * @var CommentForm
-     */
-    private $form = null;
-    
-    /**
-     * Обрабатывает запрос на сохранение новой покупки в корзину
+     * Обрабатывает запрос на сохранение новой покупки в корзине
      * @param $request
      * @return mixed
      */
     public function handle($request)
     {
         try {
-            $this->form = new PurchaseForm(['scenario'=>PurchaseForm::SAVE]);
+            $form = new PurchaseForm(['scenario'=>PurchaseForm::SAVE]);
             
             if ($request->isAjax === true) {
-                if ($this->form->load($request->post()) === true) {
+                if ($form->load($request->post()) === true) {
                     \Yii::$app->response->format = Response::FORMAT_JSON;
-                    $errors = ActiveForm::validate($this->form);
+                    $errors = ActiveForm::validate($form);
                     if (!empty($errors)) {
                         return $errors;
                     }
@@ -56,11 +43,11 @@ class PurchaseSaveService extends AbstractBaseService
                     $purchasesCollection = $finder->find();
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
-                    $rawPurchasesModel->quantity = $this->form->quantity;
-                    $rawPurchasesModel->id_color = $this->form->id_color;
-                    $rawPurchasesModel->id_size = $this->form->id_size;
-                    $rawPurchasesModel->id_product = $this->form->id_product;
-                    $rawPurchasesModel->price = $this->form->price;
+                    $rawPurchasesModel->quantity = $form->quantity;
+                    $rawPurchasesModel->id_color = $form->id_color;
+                    $rawPurchasesModel->id_size = $form->id_size;
+                    $rawPurchasesModel->id_product = $form->id_product;
+                    $rawPurchasesModel->price = $form->price;
                     if ($rawPurchasesModel->validate() === false) {
                         throw new ErrorException($this->modelError($rawPurchasesModel->errors));
                     }
@@ -73,62 +60,13 @@ class PurchaseSaveService extends AbstractBaseService
                     ]);
                     $saver->save();
                     
-                    return $this->getCartInfo();
+                    $service = new GetCartWidgetAjaxService();
+                    $dataArray = $service->handle();
+            
+                    $dataArray = array_merge($dataArray, ['successInfo'=>PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig'])]);
+                    return $dataArray;
                 }
             }
-            
-            $dataArray = $this->getToCartWidgetArray($request);
-            
-            return $dataArray;
-        } catch (NotFoundHttpException $e) {
-            throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета ToCartWidget
-     * @param Request $request данные запроса
-     * @return array
-     */
-    /*private function getToCartWidgetArray(Request $request): array
-    {
-        try {
-            if (empty($this->toCartWidgetArray)) {
-                $dataArray = [];
-                
-                $service = new GetProductDetailModelService();
-                $dataArray['product'] = $service->handle($request);
-                
-                $dataArray['form'] = \Yii::configure($this->form, ['quantity'=>1]);
-                $dataArray['view'] = 'to-cart-form.twig';
-                
-                $this->toCartWidgetArray = $dataArray;
-            }
-            
-            return $this->toCartWidgetArray;
-        } catch (NotFoundHttpException $e) {
-            throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }*/
-    
-    /**
-     * Возвращает HTML строку с обновленными данными корзины 
-     * и сообщением об удачном сохранении товара в корзину
-     * @return array
-     */
-    private function getCartInfo(): array
-    {
-        try {
-            $service = new GetCartWidgetAjaxService();
-            $dataArray = $service->handle();
-            
-            $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);
-            
-            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

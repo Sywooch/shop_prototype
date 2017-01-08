@@ -8,9 +8,9 @@ use yii\web\{NotFoundHttpException,
 use yii\helpers\{ArrayHelper,
     Url};
 use app\services\{AbstractBaseService,
-    ChangeCurrencyFormService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
+    GetCurrencyWidgetConfigService,
     GetEmptyProductsWidgetConfigService,
     GetSearchWidgetConfigService,
     GetProductsFiltersModelService,
@@ -64,7 +64,7 @@ class ProductsListIndexService extends AbstractBaseService
             $service = new GetCartWidgetConfigService();
             $dataArray['cartConfig'] = $service->handle();
             
-            $service = new ChangeCurrencyFormService();
+            $service = new GetCurrencyWidgetConfigService();
             $dataArray['currencyConfig'] = $service->handle();
             
             $service = new GetSearchWidgetConfigService();

@@ -12,7 +12,7 @@ use app\finders\CommentsProductFinder;
 /**
  * Возвращает массив данных для CommentsWidget
  */
-class CommentsService extends AbstractBaseService
+class GetCommentsWidgetConfigService extends AbstractBaseService
 {
     /**
      * @var array данные для CommentsWidget

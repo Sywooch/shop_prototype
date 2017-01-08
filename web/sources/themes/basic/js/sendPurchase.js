@@ -11,7 +11,7 @@ $(function() {
         };
     };
     
-    $('#add-to-cart-form').find('input[type="submit"]').click(function(event) {
+    $('#purchase-form').find('input[type="submit"]').click(function(event) {
         (new SendPurchase()).send(event);
         event.preventDefault();
     });

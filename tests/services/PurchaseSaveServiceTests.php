@@ -31,141 +31,10 @@ class PurchaseSaveServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства PurchaseSaveService
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(PurchaseSaveService::class);
-        
-        $this->assertTrue($reflection->hasProperty('toCartWidgetArray'));
-        $this->assertTrue($reflection->hasProperty('form'));
-    }
-    
-    /**
-     * Тестирует метод PurchaseSaveService::getToCartWidgetArray
-     * если не найден товар по запросу
-     * @expectedException yii\web\NotFoundHttpException
-     */
-    public function testGetToCartWidgetArray404()
-    {
-        $request = new class() extends Request {
-            public function get($name = null, $defaultValue = null)
-            {
-                return 'nothing';
-            }
-        };
-        
-        $service = new PurchaseSaveService();
-        
-        $reflection = new \ReflectionMethod($service, 'getToCartWidgetArray');
-        $reflection->setAccessible(true);
-        $reflection->invoke($service, $request);
-    }
-    
-    /**
-     * Тестирует метод PurchaseSaveService::getToCartWidgetArray
-     */
-    public function testGetToCartWidgetArray()
-    {
-        $request = new class() extends Request {
-            public $seocode;
-            public function get($name = null, $defaultValue = null)
-            {
-                return $this->seocode;
-            }
-        };
-        $reflection = new \ReflectionProperty($request, 'seocode');
-        $result = $reflection->setValue($request, self::$dbClass->products['product_1']['seocode']);
-        
-        $service = new PurchaseSaveService();
-        
-        $reflection = new \ReflectionProperty($service, 'form');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, new PurchaseForm(['scenario'=>PurchaseForm::SAVE]));
-        
-        $reflection = new \ReflectionMethod($service, 'getToCartWidgetArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('product', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(ProductsModel::class, $result['product']);
-        $this->assertInstanceOf(PurchaseForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
-    }
-    
-    /**
-     * Тестирует метод PurchaseSaveService::getCartInfo
-     */
-    public function testGetCartInfo()
-    {
-        $key = HashHelper::createCartKey();
-        
-        $paurchases = [['id_product'=>1, 'quantity'=>2, 'price'=>1238.09]];
-        
-        $session = \Yii::$app->session;
-        $session->open();
-        $session->set($key, $paurchases);
-        
-        $service = new PurchaseSaveService();
-        
-        $reflection = new \ReflectionMethod($service, 'getCartInfo');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('successInfo', $result);
-        $this->assertArrayHasKey('cartInfo', $result);
-        $this->assertInternalType('string', $result['successInfo']);
-        $this->assertInternalType('string', $result['cartInfo']);
-        
-        $this->assertRegExp('#<p>Товар успешно добавлен в корзину!</p>#', $result['successInfo']);
-        $this->assertRegExp('#<p>Товаров в корзине: 2, Общая стоимость: 2476,18 UAH</p>#', $result['cartInfo']);
-        $this->assertRegExp('#<p><a href=".+">В корзину</a></p>#', $result['cartInfo']);
-        $this->assertRegExp('#<form id="clean-cart-form"#', $result['cartInfo']);
-        $this->assertRegExp('#<input type="submit" value="Очистить">#', $result['cartInfo']);
-        
-        $session->remove($key);
-        $session->close();
-    }
-    
-    /**
      * Тестирует метод PurchaseSaveService::handle
-     * если запрос GET
+     * если запрос с ошибками
      */
-    public function testHandleGet()
-    {
-        $request = new class() extends Request {
-            public $seocode;
-            public $isAjax = false;
-            public function get($name = null, $defaultValue = null)
-            {
-                return $this->seocode;
-            }
-        };
-        $reflection = new \ReflectionProperty($request, 'seocode');
-        $reflection->setValue($request, self::$dbClass->products['product_1']['seocode']);
-        
-        $service = new PurchaseSaveService();
-        
-        $result = $service->handle($request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('product', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
-    }
-    
-    /**
-     * Тестирует метод PurchaseSaveService::handle
-     * если запрос AJAX с ошибками
-     */
-    public function testHandleAjaxErrors()
+    public function testHandleErrors()
     {
         $request = new class() extends Request {
             public $isAjax = true;
@@ -194,9 +63,8 @@ class PurchaseSaveServiceTests extends TestCase
     
     /**
      * Тестирует метод PurchaseSaveService::handle
-     * если запрос AJAX
      */
-    public function testHandleAjax()
+    public function testHandle()
     {
         $request = new class() extends Request {
             public $isAjax = true;
@@ -224,6 +92,12 @@ class PurchaseSaveServiceTests extends TestCase
         $this->assertArrayHasKey('cartInfo', $result);
         $this->assertInternalType('string', $result['successInfo']);
         $this->assertInternalType('string', $result['cartInfo']);
+        
+        $this->assertRegExp('#<p>Товар успешно добавлен в корзину!</p>#', $result['successInfo']);
+        $this->assertRegExp('#<p>Товаров в корзине: 2, Общая стоимость: 537,56 UAH</p>#', $result['cartInfo']);
+        $this->assertRegExp('#<p><a href=".+">В корзину</a></p>#', $result['cartInfo']);
+        $this->assertRegExp('#<form id="clean-cart-form"#', $result['cartInfo']);
+        $this->assertRegExp('#<input type="submit" value="Очистить">#', $result['cartInfo']);
     }
     
     public static function tearDownAfterClass()

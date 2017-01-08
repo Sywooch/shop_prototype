@@ -7,9 +7,9 @@ use yii\helpers\Url;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    ChangeCurrencyFormService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
+    GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService};
 use app\forms\UserLoginForm;
@@ -68,7 +68,7 @@ class UserLoginService extends AbstractBaseService
             $service = new GetCartWidgetConfigService();
             $dataArray['cartConfig'] = $service->handle();
             
-            $service = new ChangeCurrencyFormService();
+            $service = new GetCurrencyWidgetConfigService();
             $dataArray['currencyConfig'] = $service->handle();
             
             $service = new GetSearchWidgetConfigService();

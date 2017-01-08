@@ -3,16 +3,15 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\PurchaseFormService;
+use app\services\GetCommentFormWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\ProductsFixture;
-use app\forms\PurchaseForm;
-use app\models\ProductsModel;
+use app\forms\CommentForm;
 
 /**
- * Тестирует класс PurchaseFormService
+ * Тестирует класс GetCommentFormWidgetConfigService
  */
-class PurchaseFormServiceTests extends TestCase
+class GetCommentFormWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,17 +26,17 @@ class PurchaseFormServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства PurchaseFormService
+     * Тестирует свойства GetCommentFormWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(PurchaseFormService::class);
+        $reflection = new \ReflectionClass(GetCommentFormWidgetConfigService::class);
         
-        $this->assertTrue($reflection->hasProperty('purchaseFormWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('commentFormWidgetArray'));
     }
     
     /**
-     * Тестирует метод PurchaseFormService::handle
+     * Тестирует метод GetCommentFormWidgetConfigService::handle
      * если не найден товар
      * @expectedException yii\web\NotFoundHttpException
      */
@@ -50,12 +49,12 @@ class PurchaseFormServiceTests extends TestCase
             }
         };
         
-        $service = new PurchaseFormService();
+        $service = new GetCommentFormWidgetConfigService();
         $service->handle($request);
     }
     
     /**
-     * Тестирует метод PurchaseFormService::handle
+     * Тестирует метод GetCommentFormWidgetConfigService::handle
      */
     public function testHandle()
     {
@@ -69,16 +68,14 @@ class PurchaseFormServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'seocode');
         $reflection->setValue($request, self::$dbClass->products['product_1']['seocode']);
         
-        $service = new PurchaseFormService();
+        $service = new GetCommentFormWidgetConfigService();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('product', $result);
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(ProductsModel::class, $result['product']);
-        $this->assertInstanceOf(PurchaseForm::class, $result['form']);
+        $this->assertInstanceOf(CommentForm::class, $result['form']);
         $this->assertInternalType('string', $result['view']);
     }
     

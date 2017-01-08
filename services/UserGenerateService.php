@@ -5,9 +5,9 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    ChangeCurrencyFormService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
+    GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService};
 use app\finders\{UserEmailFinder,
@@ -92,7 +92,7 @@ class UserGenerateService extends AbstractBaseService
             $service = new GetCartWidgetConfigService();
             $dataArray['cartConfig'] = $service->handle();
             
-            $service = new ChangeCurrencyFormService();
+            $service = new GetCurrencyWidgetConfigService();
             $dataArray['currencyConfig'] = $service->handle();
             
             $service = new GetSearchWidgetConfigService();

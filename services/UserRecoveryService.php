@@ -6,9 +6,9 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    ChangeCurrencyFormService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
+    GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
     RecoveryEmailService};
@@ -88,7 +88,7 @@ class UserRecoveryService extends AbstractBaseService
             $service = new GetCartWidgetConfigService();
             $dataArray['cartConfig'] = $service->handle();
             
-            $service = new ChangeCurrencyFormService();
+            $service = new GetCurrencyWidgetConfigService();
             $dataArray['currencyConfig'] = $service->handle();
             
             $service = new GetSearchWidgetConfigService();

@@ -11,7 +11,7 @@ use app\forms\CommentForm;
 /**
  * Возвращает массив данных для CommentFormWidget
  */
-class CommentFormService extends AbstractBaseService
+class GetCommentFormWidgetConfigService extends AbstractBaseService
 {
     /**
      * @var array данные для CommentFormWidget
