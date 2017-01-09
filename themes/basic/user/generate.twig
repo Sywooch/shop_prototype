@@ -1,7 +1,6 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
-{{ use('app/widgets/PasswordGenerateWidget') }}
 {{ use('app/widgets/PasswordGenerateEmptyWidget') }}
 {{ use('app/widgets/PasswordGenerateSuccessWidget') }}
 
@@ -9,11 +8,9 @@
 
 {{ recovery_breadcrumbs_widget_widget() }}
 
-{% if emptyConfig %}
-    {{ password_generate_empty_widget_widget(emptyConfig) }}
-{% elseif successConfig %}
-    {{ password_generate_success_widget_widget(successConfig) }}
+{% if passwordGenerateEmptyWidgetConfig %}
+    {{ password_generate_empty_widget_widget(passwordGenerateEmptyWidgetConfig) }}
 {% else %}
-    {{ password_generate_widget_widget(formConfig) }}
+    {{ password_generate_success_widget_widget(passwordGenerateSuccessWidgetConfig) }}
 {% endif %}
 

@@ -6,102 +6,47 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\{AbstractBaseService,
-    GetCartWidgetConfigService,
-    GetCategoriesMenuWidgetConfigService,
-    GetCurrencyWidgetConfigService,
-    GetSearchWidgetConfigService,
-    GetUserInfoWidgetConfigService};
+use app\services\AbstractBaseService;
 use app\forms\UserLoginForm;
 use app\finders\UserEmailFinder;
 
 /**
- * Формирует массив данных для рендеринга страницы формы аутентификации
+ * Аутентифицирует пользователя
  */
 class UserLoginService extends AbstractBaseService
 {
     /**
-     * @var array данные для UserLoginWidget
-     */
-    private $userLoginArray = [];
-    /**
-     * @var UserLoginForm
-     */
-    private $form = null;
-    
-    /**
-     * Обрабатывает запрос на поиск и обработку данных для 
-     * формирования HTML формы аутентификации
+     * Обрабатывает запрос на обработку данных для аутентификации
      * @param array $request
      */
     public function handle($request)
     {
         try {
-            $this->form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
+            $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
             
             if ($request->isAjax === true) {
-                if ($this->form->load($request->post()) === true) {
+                if ($form->load($request->post()) === true) {
                     \Yii::$app->response->format = Response::FORMAT_JSON;
-                    return ActiveForm::validate($this->form);
+                    return ActiveForm::validate($form);
                 }
             }
             
-            if ($request->isPost) {
-                if ($this->form->load($request->post()) === true) {
-                    if ($this->form->validate() === true) {
-                        $finder = \Yii::$app->registry->get(UserEmailFinder::class, ['email'=>$this->form->email]);
+            if ($request->isPost === true) {
+                if ($form->load($request->post()) === true) {
+                    if ($form->validate() === true) {
+                        $finder = \Yii::$app->registry->get(UserEmailFinder::class, ['email'=>$form->email]);
                         $usersModel = $finder->find();
+                        
                         if (empty($usersModel)) {
                             throw new ErrorException($this->emptyError('usersModel'));
                         }
+                        
                         \Yii::$app->user->login($usersModel);
+                        
                         return Url::to(['/products-list/index']);
                     }
                 }
             }
-            
-            $dataArray = [];
-            
-            $service = new GetUserInfoWidgetConfigService();
-            $dataArray['userConfig'] = $service->handle();
-            
-            $service = new GetCartWidgetConfigService();
-            $dataArray['cartConfig'] = $service->handle();
-            
-            $service = new GetCurrencyWidgetConfigService();
-            $dataArray['currencyConfig'] = $service->handle();
-            
-            $service = new GetSearchWidgetConfigService();
-            $dataArray['searchConfig'] = $service->handle($request);
-            
-            $service = new GetCategoriesMenuWidgetConfigService();
-            $dataArray['menuConfig'] = $service->handle();
-            
-            $dataArray['formConfig'] = $this->getUserLoginArray();
-            
-            return $dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета UserLoginWidget
-     * @return array
-     */
-    private function getUserLoginArray(): array
-    {
-        try {
-            if (empty($this->userLoginArray)) {
-                $dataArray = [];
-                
-                $dataArray['form'] = $this->form;
-                $dataArray['view'] = 'login-form.twig';
-                
-                $this->userLoginArray = $dataArray;
-            }
-            
-            return $this->userLoginArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

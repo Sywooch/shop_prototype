@@ -3,7 +3,8 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use app\services\AbstractBaseService;
+use app\services\{AbstractBaseService,
+    GetEmailRegistrationWidgetConfigService};
 use app\helpers\MailHelper;
 
 /**
@@ -15,10 +16,6 @@ class RegistrationEmailService extends AbstractBaseService
      * @var array данные для EmailRegistrationWidget
      */
     private $emailRegistrationArray = [];
-    /**
-     * @var string email регистрируемого пользователя
-     */
-    private $email = null;
     
     /**
      * Обрабатывает запрос на отправку сообщения
@@ -27,20 +24,25 @@ class RegistrationEmailService extends AbstractBaseService
     public function handle($request)
     {
         try {
-            if (empty($request['email'])) {
+            $email = $request['email'] ?? null;
+            
+            if (empty($email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
             
-            $this->email = $request['email'];
+            $service = new GetEmailRegistrationWidgetConfigService();
+            $emailRegistrationWidgetArray = $service->handle([
+                'email'=>$email
+            ]);
             
             $mailHelper = new MailHelper([
                 [
                     'from'=>['admin@shop.com'=>'Shop.com'], 
-                    //'to'=>$this->email,
+                    //'to'=>$email,
                     'to'=>'timofey@localhost',
                     'subject'=>\Yii::t('base', 'Registration on shop.com'),
                     'template'=>'@theme/mail/registration-mail.twig',
-                    'templateData'=>['letterConfig'=>$this->getEmailRegistrationArray()],
+                    'templateData'=>['letterConfig'=>$emailRegistrationWidgetArray],
                 ]
             ]);
             $sent = $mailHelper->send();
@@ -49,28 +51,6 @@ class RegistrationEmailService extends AbstractBaseService
                 throw new ErrorException($this->methodError('sendEmail'));
             }
             
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета EmailRegistrationWidget
-     * @return array
-     */
-    private function getEmailRegistrationArray(): array
-    {
-        try {
-            if (empty($this->emailRegistrationArray)) {
-                $dataArray = [];
-                
-                $dataArray['email'] = $this->email;
-                $dataArray['view'] = 'registration-mail.twig';
-                
-                $this->emailRegistrationArray = $dataArray;
-            }
-            
-            return $this->emailRegistrationArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

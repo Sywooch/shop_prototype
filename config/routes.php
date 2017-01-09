@@ -21,6 +21,7 @@ $routes = [
     
     # Пользователь
     'login'=>'user/login',
+    'login-post'=>'user/login-post',
     'logout'=>'user/logout',
     'registration'=>'user/registration',
     'recovery'=>'user/recovery',

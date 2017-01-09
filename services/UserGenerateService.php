@@ -8,6 +8,8 @@ use app\services\{AbstractBaseService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
+    GetPasswordGenerateEmptyWidgetConfigService,
+    GetPasswordGenerateSuccessWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService};
 use app\finders\{UserEmailFinder,
@@ -16,28 +18,10 @@ use app\helpers\HashHelper;
 use app\savers\ModelSaver;
 
 /**
- * Формирует массив данных для рендеринга страницы формы восстановления пароля,
- * обрабатывает переданные данные
+ * Генерирует новый пароль пользователя
  */
 class UserGenerateService extends AbstractBaseService
 {
-    /**
-     * @var array данные для PasswordGenerateSuccessWidget
-     */
-    private $passwordGenerateSuccessArray = [];
-    /**
-     * @var array данные для PasswordGenerateEmptyWidget
-     */
-    private $passwordGenerateEmptyArray = [];
-    /**
-     * @var RecoveryPasswordForm
-     */
-    private $form = null;
-    /**
-     * @var string сгенерированный пароль
-     */
-    private $tempPassword = null;
-    
     /**
      * Обрабатывает запрос на поиск и обработку данных для 
      * формирования HTML формы восстановления пароля
@@ -48,6 +32,7 @@ class UserGenerateService extends AbstractBaseService
         try {
             $key = $request->get(\Yii::$app->params['recoveryKey']);
             $email = $request->get(\Yii::$app->params['emailKey']);
+            
             if (empty($key) || empty($email)) {
                 throw new NotFoundHttpException($this->error404());
             }
@@ -58,7 +43,8 @@ class UserGenerateService extends AbstractBaseService
             $dataArray = [];
             
             if (empty($recoveryModel) || $recoveryModel->email !== $email) {
-                $dataArray['emptyConfig'] = $this->getPasswordGenerateEmptyArray();
+                $service = new GetPasswordGenerateEmptyWidgetConfigService();
+                $dataArray['passwordGenerateEmptyWidgetConfig'] = $service->handle();
             } else {
                 $transaction = \Yii::$app->db->beginTransaction();
                 try {
@@ -68,16 +54,17 @@ class UserGenerateService extends AbstractBaseService
                         throw new ErrorException($this->emptyError('usersModel'));
                     }
                     
-                    $this->tempPassword = HashHelper::randomString();
+                    $tempPassword = HashHelper::randomString();
                     
-                    $usersModel->password = password_hash($this->tempPassword, PASSWORD_DEFAULT);
+                    $usersModel->password = password_hash($tempPassword, PASSWORD_DEFAULT);
                     
                     $saver = new ModelSaver([
                         'model'=>$usersModel,
                     ]);
                     $saver->save();
                     
-                    $dataArray['successConfig'] = $this->getPasswordGenerateSuccessArray();
+                    $service = new GetPasswordGenerateSuccessWidgetConfigService();
+                    $dataArray['passwordGenerateSuccessWidgetConfig'] = $service->handle(['tempPassword'=>$tempPassword]);
                     
                     $transaction->commit();
                 } catch (\Throwable $t) {
@@ -87,66 +74,23 @@ class UserGenerateService extends AbstractBaseService
             }
             
             $service = new GetUserInfoWidgetConfigService();
-            $dataArray['userConfig'] = $service->handle();
+            $dataArray['userInfoWidgetConfig'] = $service->handle();
             
             $service = new GetCartWidgetConfigService();
-            $dataArray['cartConfig'] = $service->handle();
+            $dataArray['cartWidgetConfig'] = $service->handle();
             
             $service = new GetCurrencyWidgetConfigService();
-            $dataArray['currencyConfig'] = $service->handle();
+            $dataArray['currencyWidgetConfig'] = $service->handle();
             
             $service = new GetSearchWidgetConfigService();
-            $dataArray['searchConfig'] = $service->handle($request);
+            $dataArray['searchWidgetConfig'] = $service->handle($request);
             
             $service = new GetCategoriesMenuWidgetConfigService();
-            $dataArray['menuConfig'] = $service->handle();
+            $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
             
             return $dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета PasswordGenerateEmptyWidget
-     * @return array
-     */
-    private function getPasswordGenerateEmptyArray(): array
-    {
-        try {
-            if (empty($this->passwordGenerateEmptyArray)) {
-                $dataArray = [];
-                
-                $dataArray['view'] = 'generate-empty.twig';
-                
-                $this->passwordGenerateEmptyArray = $dataArray;
-            }
-            
-            return $this->passwordGenerateEmptyArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета PasswordGenerateSuccessWidget
-     * @return array
-     */
-    private function getPasswordGenerateSuccessArray(): array
-    {
-        try {
-            if (empty($this->passwordGenerateSuccessArray)) {
-                $dataArray = [];
-                
-                $dataArray['tempPassword'] = $this->tempPassword;
-                $dataArray['view'] = 'generate-success.twig';
-                
-                $this->passwordGenerateSuccessArray = $dataArray;
-            }
-            
-            return $this->passwordGenerateSuccessArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

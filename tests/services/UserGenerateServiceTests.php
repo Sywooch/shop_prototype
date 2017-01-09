@@ -33,67 +33,13 @@ class UserGenerateServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства UserGenerateService
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(UserGenerateService::class);
-        
-        $this->assertTrue($reflection->hasProperty('passwordGenerateSuccessArray'));
-        $this->assertTrue($reflection->hasProperty('passwordGenerateEmptyArray'));
-        $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('tempPassword'));
-    }
-    
-    /**
-     * Тестирует метод UserGenerateService::getPasswordGenerateEmptyArray
-     */
-    public function testGetPasswordGenerateEmptyArray()
-    {
-        $service = new UserGenerateService();
-        
-        $reflection = new \ReflectionMethod($service, 'getPasswordGenerateEmptyArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty('array', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('string', $result['view']);
-    }
-    
-    /**
-     * Тестирует метод UserGenerateService::getPasswordGenerateSuccessArray
-     */
-    public function testGetPasswordGenerateSuccessArray()
-    {
-        $service = new UserGenerateService();
-        
-        $reflection = new \ReflectionProperty($service, 'tempPassword');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, 'tempPassword');
-        
-        $reflection = new \ReflectionMethod($service, 'getPasswordGenerateSuccessArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty('array', $result);
-        $this->assertArrayHasKey('tempPassword', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('string', $result['tempPassword']);
-        $this->assertInternalType('string', $result['view']);
-    }
-    
-    /**
      * Тестирует метод UserGenerateService::handle
      * если пуст $request
      * @expectedException yii\web\NotFoundHttpException
      */
     public function testHandleEmptyGet()
     {
-        $request = new class() extends Request {
-            private $items = [];
+        $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
                 return null;
@@ -180,21 +126,21 @@ class UserGenerateServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('userConfig', $result);
-        $this->assertArrayHasKey('cartConfig', $result);
-        $this->assertArrayHasKey('currencyConfig', $result);
-        $this->assertArrayHasKey('searchConfig', $result);
-        $this->assertArrayHasKey('menuConfig', $result);
-        $this->assertArrayHasKey('emptyConfig', $result);
+        $this->assertArrayHasKey('userInfoWidgetConfig', $result);
+        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('currencyWidgetConfig', $result);
+        $this->assertArrayHasKey('searchWidgetConfig', $result);
+        $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
+        $this->assertArrayHasKey('passwordGenerateEmptyWidgetConfig', $result);
         
-        $this->assertArrayNotHasKey('successConfig', $result);
+        $this->assertArrayNotHasKey('passwordGenerateSuccessWidgetConfig', $result);
 
-        $this->assertInternalType('array', $result['userConfig']);
-        $this->assertInternalType('array', $result['cartConfig']);
-        $this->assertInternalType('array', $result['currencyConfig']);
-        $this->assertInternalType('array', $result['searchConfig']);
-        $this->assertInternalType('array', $result['menuConfig']);
-        $this->assertInternalType('array', $result['emptyConfig']);
+        $this->assertInternalType('array', $result['userInfoWidgetConfig']);
+        $this->assertInternalType('array', $result['cartWidgetConfig']);
+        $this->assertInternalType('array', $result['currencyWidgetConfig']);
+        $this->assertInternalType('array', $result['searchWidgetConfig']);
+        $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);
+        $this->assertInternalType('array', $result['passwordGenerateEmptyWidgetConfig']);
         
         $session->removeFlash('flash_key');
         $session->close();
@@ -235,21 +181,21 @@ class UserGenerateServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('userConfig', $result);
-        $this->assertArrayHasKey('cartConfig', $result);
-        $this->assertArrayHasKey('currencyConfig', $result);
-        $this->assertArrayHasKey('searchConfig', $result);
-        $this->assertArrayHasKey('menuConfig', $result);
-        $this->assertArrayHasKey('successConfig', $result);
+        $this->assertArrayHasKey('userInfoWidgetConfig', $result);
+        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('currencyWidgetConfig', $result);
+        $this->assertArrayHasKey('searchWidgetConfig', $result);
+        $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
+        $this->assertArrayHasKey('passwordGenerateSuccessWidgetConfig', $result);
         
-        $this->assertArrayNotHasKey('emptyConfig', $result);
+        $this->assertArrayNotHasKey('passwordGenerateEmptyWidgetConfig', $result);
 
-        $this->assertInternalType('array', $result['userConfig']);
-        $this->assertInternalType('array', $result['cartConfig']);
-        $this->assertInternalType('array', $result['currencyConfig']);
-        $this->assertInternalType('array', $result['searchConfig']);
-        $this->assertInternalType('array', $result['menuConfig']);
-        $this->assertInternalType('array', $result['successConfig']);
+        $this->assertInternalType('array', $result['userInfoWidgetConfig']);
+        $this->assertInternalType('array', $result['cartWidgetConfig']);
+        $this->assertInternalType('array', $result['currencyWidgetConfig']);
+        $this->assertInternalType('array', $result['searchWidgetConfig']);
+        $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);
+        $this->assertInternalType('array', $result['passwordGenerateSuccessWidgetConfig']);
         
         $session->removeFlash($key);
         $session->close();

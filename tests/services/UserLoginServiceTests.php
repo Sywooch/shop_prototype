@@ -5,14 +5,10 @@ namespace app\tests\services;
 use PHPUnit\Framework\TestCase;
 use app\services\UserLoginService;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{CategoriesFixture,
-    CurrencyFixture,
-    EmailsFixture,
+use app\tests\sources\fixtures\{EmailsFixture,
     UsersFixture};
-use app\forms\UserLoginForm;
 use app\controllers\ProductsListController;
 use yii\helpers\Url;
-use yii\web\Request;
 
 /**
  * Тестирует класс UserLoginService
@@ -27,46 +23,9 @@ class UserLoginServiceTests extends TestCase
             'fixtures'=>[
                 'users'=>UsersFixture::class,
                 'emails'=>EmailsFixture::class,
-                'currency'=>CurrencyFixture::class,
-                'categories'=>CategoriesFixture::class,
             ]
         ]);
         self::$dbClass->loadFixtures();
-    }
-    
-    /**
-     * Тестирует свойства UserLoginService
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(UserLoginService::class);
-        
-        $this->assertTrue($reflection->hasProperty('userLoginArray'));
-        $this->assertTrue($reflection->hasProperty('form'));
-    }
-    
-    /**
-     * Тестирует метод UserLoginService::getUserLoginArray
-     */
-    public function testGetUserLoginArray()
-    {
-        $form = new class() extends UserLoginForm {};
-        
-        $service = new UserLoginService();
-        
-        $reflection = new \ReflectionProperty($service, 'form');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, $form);
-        
-        $reflection = new \ReflectionMethod($service, 'getUserLoginArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(UserLoginForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
     }
     
     /**
@@ -79,8 +38,6 @@ class UserLoginServiceTests extends TestCase
         
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $fixtureEmail = self::$dbClass->emails['email_1'];
-        
         $request = new class() {
             public $isAjax = true;
             public $email;
@@ -90,54 +47,19 @@ class UserLoginServiceTests extends TestCase
                 return [
                     'UserLoginForm'=>[
                         'email'=>$this->email,
-                        'password'=>'somepassword',
+                        'password'=>'wrongpassword',
                     ],
                 ];
             }
         };
         $reflection = new \ReflectionProperty($request, 'email');
-        $reflection->setValue($request, $fixtureEmail['email']);
+        $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
         $service = new UserLoginService();
-        
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод UserLoginService::handle
-     * если GET
-     */
-    public function testHandleGet()
-    {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        $request = new class() extends Request {
-            public $isPost = false;
-            public $isAjax = false;
-        };
-        
-        $service = new UserLoginService();
-        
-        $result = $service->handle($request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('userConfig', $result);
-        $this->assertArrayHasKey('cartConfig', $result);
-        $this->assertArrayHasKey('currencyConfig', $result);
-        $this->assertArrayHasKey('searchConfig', $result);
-        $this->assertArrayHasKey('menuConfig', $result);
-        $this->assertArrayHasKey('formConfig', $result);
-        
-        $this->assertInternalType('array', $result['userConfig']);
-        $this->assertInternalType('array', $result['cartConfig']);
-        $this->assertInternalType('array', $result['currencyConfig']);
-        $this->assertInternalType('array', $result['searchConfig']);
-        $this->assertInternalType('array', $result['menuConfig']);
-        $this->assertInternalType('array', $result['formConfig']);
     }
     
     /**
@@ -150,10 +72,7 @@ class UserLoginServiceTests extends TestCase
         
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $fixtureEmail = self::$dbClass->emails['email_1'];
-        $fixtureUser = self::$dbClass->users['user_1'];
-        
-        \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password WHERE [[id]]=:id')->bindValues([':password'=>password_hash($fixtureUser['password'], PASSWORD_DEFAULT), ':id'=>$fixtureUser['id']])->execute();
+        \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password WHERE [[id]]=:id')->bindValues([':password'=>password_hash(self::$dbClass->users['user_1']['password'], PASSWORD_DEFAULT), ':id'=>self::$dbClass->users['user_1']['id']])->execute();
         
         $request = new class() {
             public $isPost = true;
@@ -171,12 +90,11 @@ class UserLoginServiceTests extends TestCase
             }
         };
         $reflection = new \ReflectionProperty($request, 'email');
-        $reflection->setValue($request, $fixtureEmail['email']);
+        $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         $reflection = new \ReflectionProperty($request, 'password');
-        $reflection->setValue($request, $fixtureUser['password']);
+        $reflection->setValue($request, self::$dbClass->users['user_1']['password']);
         
         $service = new UserLoginService();
-        
         $result = $service->handle($request);
         
         $this->assertInternalType('string', $result);

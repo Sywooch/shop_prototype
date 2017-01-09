@@ -25,6 +25,10 @@ class RedirectAction extends AbstractBaseAction
             
             $result = $this->service->handle(\Yii::$app->request);
             
+            if (\Yii::$app->request->isAjax) {
+                return $result;
+            }
+            
             if (empty($result) || is_string($result) === false) {
                 throw new ErrorException($this->emptyError('result'));
             }

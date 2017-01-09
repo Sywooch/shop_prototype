@@ -42,7 +42,7 @@ class UserLoginWidget extends AbstractBaseWidget
             $renderArray['formModel'] = $this->form;
             $renderArray['formId'] = 'login-form';
             $renderArray['ajaxValidation'] = true;
-            $renderArray['formAction'] = Url::to(['/user/login']);
+            $renderArray['formAction'] = Url::to(['/user/login-post']);
             $renderArray['button'] = \Yii::t('base', 'Send');
             
             $renderArray['recoveryText'] = \Yii::t('base', 'Forgot password?');

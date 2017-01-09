@@ -18,30 +18,6 @@ class RegistrationEmailServiceTests extends TestCase
         $reflection = new \ReflectionClass(RegistrationEmailService::class);
         
         $this->assertTrue($reflection->hasProperty('emailRegistrationArray'));
-        $this->assertTrue($reflection->hasProperty('email'));
-    }
-    
-    /**
-     * Тестирует метод RegistrationEmailService::getEmailRegistrationArray
-     */
-    public function testGetEmailRegistrationArray()
-    {
-        $service = new RegistrationEmailService();
-        
-        $reflection = new \ReflectionProperty($service, 'email');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, 'some@some.com');
-        
-        $reflection = new \ReflectionMethod($service, 'getEmailRegistrationArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('email', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('string', $result['email']);
-        $this->assertInternalType('string', $result['view']);
     }
     
     /**
