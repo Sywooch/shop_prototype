@@ -26,7 +26,7 @@ class GetCartWidgetAjaxService extends AbstractBaseService
     {
         try {
             if (empty($this->cartWidgetAjaxArray)) {
-                $service = new GetCartWidgetConfigService();
+                $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
                 $cartInfoWidget = $service->handle();
                 
                 $cartInfoWidget['view'] = 'short-cart-ajax.twig';

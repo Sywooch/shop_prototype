@@ -27,7 +27,7 @@ class GetPaginationWidgetConfigSphinxService extends AbstractBaseService
             if (empty($this->paginationWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductsCollectionSphinxService();
+                $service = \Yii::$app->registry->get(GetProductsCollectionSphinxService::class);
                 $productsCollection = $service->handle($request);
             
                 $pagination = $productsCollection->pagination;

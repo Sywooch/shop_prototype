@@ -27,7 +27,7 @@ class GetPaginationWidgetConfigService extends AbstractBaseService
             if (empty($this->paginationWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductsCollectionService();
+                $service = \Yii::$app->registry->get(GetProductsCollectionService::class);
                 $productsCollection = $service->handle($request);
             
                 $pagination = $productsCollection->pagination;

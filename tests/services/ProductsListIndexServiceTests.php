@@ -44,6 +44,16 @@ class ProductsListIndexServiceTests extends TestCase
     }
     
     /**
+     * Тестирует свойства ProductsListIndexService
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(ProductsListIndexService::class);
+        
+        $this->assertTrue($reflection->hasProperty('dataArray'));
+    }
+    
+    /**
      * Тестирует метод ProductsListIndexService::handle
      * если запрошена несуществующая страница
      * @expectedException yii\web\NotFoundHttpException

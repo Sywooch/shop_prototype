@@ -24,6 +24,11 @@ use app\services\{AbstractBaseService,
 class ProductsListSearchService extends AbstractBaseService
 {
     /**
+     * @var array массив данных для рендеринга
+     */
+    private $dataArray = [];
+    
+    /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
      * @param array $request
@@ -35,56 +40,60 @@ class ProductsListSearchService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('searchKey'));
             }
             
-            $dataArray = [];
-            
-            $service = new GetUserInfoWidgetConfigService();
-            $dataArray['userInfoWidgetConfig'] = $service->handle();
-            
-            $service = new GetCartWidgetConfigService();
-            $dataArray['cartWidgetConfig'] = $service->handle();
-            
-            $service = new GetCurrencyWidgetConfigService();
-            $dataArray['currencyWidgetConfig'] = $service->handle();
-            
-            $service = new GetSearchWidgetConfigService();
-            $dataArray['searchWidgetConfig'] = $service->handle($request);
-            
-            $service = new GetCategoriesMenuWidgetConfigService();
-            $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
-            
-            $service = new GetSphinxArrayService();
-            $sphinxArray = $service->handle($request);
-            
-            if (empty($sphinxArray)) {
-                $service = new GetEmptySphinxWidgetConfigService();
-                $dataArray['emptySphinxWidgetConfig'] = $service->handle();
-            } else {
-                $service = new GetProductsCollectionSphinxService();
-                $productsCollection = $service->handle($request);
+            if (empty($this->dataArray)) {
+                $dataArray = [];
                 
-                if ($productsCollection->isEmpty() === true) {
-                    if ($productsCollection->pagination->totalCount > 0) {
-                        throw new NotFoundHttpException($this->error404());
+                $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
+                $dataArray['userInfoWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
+                $dataArray['cartWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
+                $dataArray['currencyWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetSearchWidgetConfigService::class);
+                $dataArray['searchWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
+                $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetSphinxArrayService::class);
+                $sphinxArray = $service->handle($request);
+                
+                if (empty($sphinxArray)) {
+                    $service = \Yii::$app->registry->get(GetEmptySphinxWidgetConfigService::class);
+                    $dataArray['emptySphinxWidgetConfig'] = $service->handle();
+                } else {
+                    $service = \Yii::$app->registry->get(GetProductsCollectionSphinxService::class);
+                    $productsCollection = $service->handle($request);
+                    
+                    if ($productsCollection->isEmpty() === true) {
+                        if ($productsCollection->pagination->totalCount > 0) {
+                            throw new NotFoundHttpException($this->error404());
+                        }
+                        
+                        $service = \Yii::$app->registry->get(GetEmptyProductsWidgetConfigService::class);
+                        $dataArray['emptyProductsWidgetConfig'] = $service->handle();
+                    } else {
+                        $service = \Yii::$app->registry->get(GetProductsWidgetSphinxConfigService::class);
+                        $dataArray['productsWidgetConfig'] = $service->handle($request);
+                        
+                        $service = \Yii::$app->registry->get(GetPaginationWidgetConfigSphinxService::class);
+                        $dataArray['paginationWidgetConfig'] = $service->handle($request);
                     }
                     
-                    $service = new GetEmptyProductsWidgetConfigService();
-                    $dataArray['emptyProductsWidgetConfig'] = $service->handle();
-                } else {
-                    $service = new GetProductsWidgetSphinxConfigService();
-                    $dataArray['productsWidgetConfig'] = $service->handle($request);
-                    
-                    $service = new GetPaginationWidgetConfigSphinxService();
-                    $dataArray['paginationWidgetConfig'] = $service->handle($request);
+                    $service = \Yii::$app->registry->get(GetFiltersWidgetConfigSphinxService::class);
+                    $dataArray['filtersWidgetConfig'] = $service->handle($request);
                 }
                 
-                $service = new GetFiltersWidgetConfigSphinxService();
-                $dataArray['filtersWidgetConfig'] = $service->handle($request);
-            }
-            
-            $service = new GetSearchBreadcrumbsWidgetConfigService();
-            $dataArray['searchBreadcrumbsWidgetConfig'] = $service->handle($request);
+                $service = \Yii::$app->registry->get(GetSearchBreadcrumbsWidgetConfigService::class);
+                $dataArray['searchBreadcrumbsWidgetConfig'] = $service->handle($request);
                 
-            return $dataArray;
+                $this->dataArray = $dataArray;
+            }
+                
+            return $this->dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
         } catch (\Throwable $t) {

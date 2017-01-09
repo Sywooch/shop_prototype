@@ -28,7 +28,7 @@ class GetProductBreadcrumbsWidgetConfigService extends AbstractBaseService
             if (empty($this->productBreadcrumbsWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductDetailModelService();
+                $service = \Yii::$app->registry->get(GetProductDetailModelService::class);
                 $dataArray['product'] = $service->handle($request);
                 
                 $this->productBreadcrumbsWidgetArray = $dataArray;

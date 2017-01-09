@@ -9,6 +9,7 @@ use app\services\{UserLoginService,
     UserLoginFormService,
     UserGenerateService,
     UserLogoutService,
+    UserRecoveryFormService,
     UserRecoveryService,
     UserRegistrationService};
 
@@ -39,6 +40,11 @@ class UserController extends Controller
                 'view'=>'registration-form.twig',
             ],
             'recovery'=>[
+                'class'=>BaseAction::class,
+                'service'=>new UserRecoveryFormService(),
+                'view'=>'recovery-form.twig',
+            ],
+            'recovery-post'=>[
                 'class'=>BaseAction::class,
                 'service'=>new UserRecoveryService(),
                 'view'=>'recovery-form.twig',

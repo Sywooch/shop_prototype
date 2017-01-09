@@ -78,7 +78,7 @@ class GetFiltersWidgetConfigService extends AbstractBaseService
                 ArrayHelper::multisort($sortingTypesArray, 'value');
                 $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
                 
-                $service = new GetProductsFiltersModelService();
+                $service = \Yii::$app->registry->get(GetProductsFiltersModelService::class);
                 $filtersModel = $service->handle();
                 
                 $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel->toArray())));

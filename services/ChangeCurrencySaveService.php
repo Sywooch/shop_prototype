@@ -36,6 +36,7 @@ class ChangeCurrencySaveService extends AbstractBaseService
             
             $finder = \Yii::$app->registry->get(CurrencyIdFinder::class, ['id'=>$form->id]);
             $currencyModel = $finder->find();
+            
             if (empty($currencyModel)) {
                 throw new ErrorException($this->emptyError('currencyModel'));
             }

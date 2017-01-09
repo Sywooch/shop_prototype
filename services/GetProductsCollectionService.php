@@ -27,7 +27,7 @@ class GetProductsCollectionService extends AbstractBaseService
     {
         try {
             if (empty($this->productsCollection)) {
-                $service = new GetProductsFiltersModelService();
+                $service = \Yii::$app->registry->get(GetProductsFiltersModelService::class);
                 $filtersModel = $service->handle();
                 
                 $finder = \Yii::$app->registry->get(ProductsFinder::class, [

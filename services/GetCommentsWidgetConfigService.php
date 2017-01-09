@@ -30,7 +30,7 @@ class GetCommentsWidgetConfigService extends AbstractBaseService
             if (empty($this->commentsWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductDetailModelService();
+                $service = \Yii::$app->registry->get(GetProductDetailModelService::class);
                 $productsModel = $service->handle($request);
                 
                 $finder = \Yii::$app->registry->get(CommentsProductFinder::class, ['product'=>$productsModel]);

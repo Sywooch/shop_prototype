@@ -24,19 +24,6 @@ use app\models\RecoveryModel;
 class UserRecoveryService extends AbstractBaseService
 {
     /**
-     * @var array данные для UserRecoveryWidget
-     */
-    private $userRecoveryArray = [];
-    /**
-     * @var array данные для UserRecoverySuccessWidget
-     */
-    private $userRecoverySuccessArray = [];
-    /**
-     * @var RecoveryPasswordForm
-     */
-    private $form = null;
-    
-    /**
      * Обрабатывает запрос на поиск и обработку данных для 
      * формирования HTML формы восстановления пароля
      * @param array $request
@@ -44,86 +31,40 @@ class UserRecoveryService extends AbstractBaseService
     public function handle($request)
     {
         try {
-            $this->form = new RecoveryPasswordForm(['scenario'=>RecoveryPasswordForm::GET]);
+            $form = new RecoveryPasswordForm(['scenario'=>RecoveryPasswordForm::GET]);
             
             if ($request->isAjax === true) {
-                if ($this->form->load($request->post()) === true) {
+                if ($form->load($request->post()) === true) {
                     \Yii::$app->response->format = Response::FORMAT_JSON;
-                    return ActiveForm::validate($this->form);
-                }
-            }
-            
-            if ($request->isPost === true) {
-                if ($this->form->load($request->post()) === true) {
-                    if ($this->form->validate() === true) {
-                        $key = HashHelper::randomString(40);
-                        
-                        $recoveryModel = new RecoveryModel(['scenario'=>RecoveryModel::SET]);
-                        $recoveryModel->email = $this->form->email;
-                        if ($recoveryModel->validate() === false) {
-                            throw new ErrorException($this->modelError($recoveryModel->errors));
-                        }
-                        
-                        $saver = new SessionModelSaver([
-                            'key'=>$key,
-                            'model'=>$recoveryModel,
-                            'flash'=>true
-                        ]);
-                        $saver->save();
-                        
-                        $mailService = new RecoveryEmailService();
-                        $mailService->handle([
-                            'key'=>$key,
-                            'email'=>$this->form->email
-                        ]);
-                        
-                        $dataArray['successConfig'] = $this->getUserRecoverySuccessArray();
+                    $errors = ActiveForm::validate($form);
+                    if (!empty($errors)) {
+                        return $errors;
                     }
+                    
+                    $key = HashHelper::randomString(40);
+                    
+                    $recoveryModel = new RecoveryModel(['scenario'=>RecoveryModel::SET]);
+                    $recoveryModel->email = $form->email;
+                    if ($recoveryModel->validate() === false) {
+                        throw new ErrorException($this->modelError($recoveryModel->errors));
+                    }
+                    
+                    $saver = new SessionModelSaver([
+                        'key'=>$key,
+                        'model'=>$recoveryModel,
+                        'flash'=>true
+                    ]);
+                    $saver->save();
+                    
+                    $mailService = new RecoveryEmailService();
+                    $mailService->handle([
+                        'key'=>$key,
+                        'email'=>$form->email
+                    ]);
+                    
+                    $dataArray['successConfig'] = $this->getUserRecoverySuccessArray();
                 }
             }
-            
-            $service = new GetUserInfoWidgetConfigService();
-            $dataArray['userConfig'] = $service->handle();
-            
-            $service = new GetCartWidgetConfigService();
-            $dataArray['cartConfig'] = $service->handle();
-            
-            $service = new GetCurrencyWidgetConfigService();
-            $dataArray['currencyConfig'] = $service->handle();
-            
-            $service = new GetSearchWidgetConfigService();
-            $dataArray['searchConfig'] = $service->handle($request);
-            
-            $service = new GetCategoriesMenuWidgetConfigService();
-            $dataArray['menuConfig'] = $service->handle();
-            
-            if (!isset($dataArray['successConfig'])) {
-                $dataArray['formConfig'] = $this->getUserRecoveryArray();
-            }
-            
-            return $dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета UserRecoveryWidget
-     * @return array
-     */
-    private function getUserRecoveryArray(): array
-    {
-        try {
-            if (empty($this->userRecoveryArray)) {
-                $dataArray = [];
-                
-                $dataArray['form'] = $this->form;
-                $dataArray['view'] = 'recovery-form.twig';
-                
-                $this->userRecoveryArray = $dataArray;
-            }
-            
-            return $this->userRecoveryArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -139,7 +80,7 @@ class UserRecoveryService extends AbstractBaseService
             if (empty($this->userRecoverySuccessArray)) {
                 $dataArray = [];
                 
-                $dataArray['email'] = $this->form->email;
+                $dataArray['email'] = $form->email;
                 $dataArray['view'] = 'recovery-success.twig';
                 
                 $this->userRecoverySuccessArray = $dataArray;

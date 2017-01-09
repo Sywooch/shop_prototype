@@ -62,7 +62,7 @@ class PurchaseSaveService extends AbstractBaseService
                     
                     $dataArray = [];
                     
-                    $service = new GetCartWidgetAjaxService();
+                    $service = \Yii::$app->registry->get(GetCartWidgetAjaxService::class);
                     $dataArray['cartInfo'] = $service->handle();
             
                     $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);

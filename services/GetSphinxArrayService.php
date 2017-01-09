@@ -25,12 +25,13 @@ class GetSphinxArrayService extends AbstractBaseService
     public function handle($request): array
     {
         try {
+            $search = $request->get(\Yii::$app->params['searchKey']);
+            
+            if (empty($search)) {
+                throw new ErrorException($this->emptyError(\Yii::$app->params['searchKey']));
+            }
+            
             if (empty($this->sphinxArray)) {
-                $search = $request->get(\Yii::$app->params['searchKey']);
-                if (empty($search)) {
-                    throw new ErrorException($this->emptyError(\Yii::$app->params['searchKey']));
-                }
-                
                 $finder = \Yii::$app->registry->get(SphinxFinder::class, ['search'=>$search]);
                 $sphinxArray = $finder->find();
                 

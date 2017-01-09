@@ -5,7 +5,9 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\AbstractBaseService;
+use app\services\{AbstractBaseService,
+    EmailGetSaveEmailService,
+    NameGetSaveNameService};
 use app\forms\CommentForm;
 use app\services\{EmailGetSaveEmailService,
     NameGetSaveNameService};
@@ -39,10 +41,10 @@ class CommentSaveService extends AbstractBaseService
                     $transaction  = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $service = new EmailGetSaveEmailService();
+                        $service = \Yii::$app->registry->get(EmailGetSaveEmailService::class);
                         $emailsModel = $service->handle(['email'=>$form->email]);
                         
-                        $service = new NameGetSaveNameService();
+                        $service = \Yii::$app->registry->get(NameGetSaveNameService::class);
                         $namesModel = $service->handle(['name'=>$form->name]);
                         
                         $rawCommentsModel = new CommentsModel();

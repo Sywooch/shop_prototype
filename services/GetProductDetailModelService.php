@@ -26,12 +26,13 @@ class GetProductDetailModelService extends AbstractBaseService
     public function handle($request): ProductsModel
     {
         try {
+            $seocode = $request->get(\Yii::$app->params['productKey']);
+            
+            if (empty($seocode)) {
+                throw new ErrorException($this->emptyError('seocode'));
+            }
+            
             if (empty($this->productsModel)) {
-                $seocode = $request->get(\Yii::$app->params['productKey']);
-                if (empty($seocode)) {
-                    throw new ErrorException($this->emptyError('seocode'));
-                }
-                
                 $finder = \Yii::$app->registry->get(ProductDetailFinder::class, ['seocode'=>$seocode]);
                 $productsModel = $finder->find();
                 if (empty($productsModel)) {

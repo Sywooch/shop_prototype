@@ -3,16 +3,16 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\UserLoginFormService;
+use app\services\UserRecoveryFormService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture};
 use app\controllers\ProductsListController;
 
 /**
- * Тестирует класс UserLoginFormService
+ * Тестирует класс UserRecoveryFormService
  */
-class UserLoginFormServiceTests extends TestCase
+class UserRecoveryFormServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -28,17 +28,17 @@ class UserLoginFormServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства UserLoginFormService
+     * Тестирует свойства UserRecoveryFormService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(UserLoginFormService::class);
+        $reflection = new \ReflectionClass(UserRecoveryFormService::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод UserLoginFormService::handle
+     * Тестирует метод UserRecoveryFormService::handle
      */
     public function testHandle()
     {
@@ -51,19 +51,19 @@ class UserLoginFormServiceTests extends TestCase
             }
         };
         
-        $service = new UserLoginFormService();
+        $service = new UserRecoveryFormService();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('userLoginWidgetConfig', $result);
+        $this->assertArrayHasKey('userRecoveryWidgetConfig', $result);
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
         $this->assertArrayHasKey('cartWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
         
-        $this->assertInternalType('array', $result['userLoginWidgetConfig']);
+        $this->assertInternalType('array', $result['userRecoveryWidgetConfig']);
         $this->assertInternalType('array', $result['userInfoWidgetConfig']);
         $this->assertInternalType('array', $result['cartWidgetConfig']);
         $this->assertInternalType('array', $result['currencyWidgetConfig']);

@@ -24,6 +24,11 @@ use app\services\{AbstractBaseService,
 class ProductDetailIndexService extends AbstractBaseService
 {
     /**
+     * @var array массив данных для рендеринга
+     */
+    private $dataArray = [];
+    
+    /**
      * Обрабатывает запрос на поиск данных для 
      * формирования HTML страницы каталога товаров
      * @param $request данные запроса
@@ -31,45 +36,49 @@ class ProductDetailIndexService extends AbstractBaseService
     public function handle($request): array
     {
         try {
-            $dataArray = [];
+            if (empty($this->dataArray)) {
+                $dataArray = [];
+                
+                $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
+                $dataArray['userInfoWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
+                $dataArray['cartWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
+                $dataArray['currencyWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetSearchWidgetConfigService::class);
+                $dataArray['searchWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
+                $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetProductDetailWidgetConfigService::class);
+                $dataArray['productDetailWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetPurchaseFormWidgetConfigService::class);
+                $dataArray['purchaseFormWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetProductBreadcrumbsWidgetConfigService::class);
+                $dataArray['productBreadcrumbsWidget'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetSeeAlsoWidgetSimilarConfigService::class);
+                $dataArray['seeAlsoWidgetSimilarConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetSeeAlsoWidgetRelatedConfigService::class);
+                $dataArray['seeAlsoWidgetRelatedConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetCommentsWidgetConfigService::class);
+                $dataArray['commentsWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetCommentFormWidgetConfigService::class);
+                $dataArray['сommentFormWidgetConfig'] = $service->handle($request);
+                
+                $this->dataArray = $dataArray;
+            }
             
-            $service = new GetUserInfoWidgetConfigService();
-            $dataArray['userInfoWidgetConfig'] = $service->handle();
-            
-            $service = new GetCartWidgetConfigService();
-            $dataArray['cartWidgetConfig'] = $service->handle();
-            
-            $service = new GetCurrencyWidgetConfigService();
-            $dataArray['currencyWidgetConfig'] = $service->handle();
-            
-            $service = new GetSearchWidgetConfigService();
-            $dataArray['searchWidgetConfig'] = $service->handle($request);
-            
-            $service = new GetCategoriesMenuWidgetConfigService();
-            $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
-            
-            $service = new GetProductDetailWidgetConfigService();
-            $dataArray['productDetailWidgetConfig'] = $service->handle($request);
-            
-            $service = new GetPurchaseFormWidgetConfigService();
-            $dataArray['purchaseFormWidgetConfig'] = $service->handle($request);
-            
-            $service = new GetProductBreadcrumbsWidgetConfigService();
-            $dataArray['productBreadcrumbsWidget'] = $service->handle($request);
-            
-            $service = new GetSeeAlsoWidgetSimilarConfigService();
-            $dataArray['seeAlsoWidgetSimilarConfig'] = $service->handle($request);
-            
-            $service = new GetSeeAlsoWidgetRelatedConfigService();
-            $dataArray['seeAlsoWidgetRelatedConfig'] = $service->handle($request);
-            
-            $service = new GetCommentsWidgetConfigService();
-            $dataArray['commentsWidgetConfig'] = $service->handle($request);
-            
-            $service = new GetCommentFormWidgetConfigService();
-            $dataArray['сommentFormWidgetConfig'] = $service->handle($request);
-            
-            return $dataArray;
+            return $this->dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
         } catch (\Throwable $t) {

@@ -29,7 +29,7 @@ class GetPurchaseFormWidgetConfigService extends AbstractBaseService
             if (empty($this->purchaseFormWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductDetailModelService();
+                $service = \Yii::$app->registry->get(GetProductDetailModelService::class);
                 $dataArray['product'] = $service->handle($request);
                 
                 $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::SAVE, 'quantity'=>1]);

@@ -43,7 +43,7 @@ class UserGenerateService extends AbstractBaseService
             $dataArray = [];
             
             if (empty($recoveryModel) || $recoveryModel->email !== $email) {
-                $service = new GetPasswordGenerateEmptyWidgetConfigService();
+                $service = \Yii::$app->registry->get(GetPasswordGenerateEmptyWidgetConfigService::class);
                 $dataArray['passwordGenerateEmptyWidgetConfig'] = $service->handle();
             } else {
                 $transaction = \Yii::$app->db->beginTransaction();
@@ -63,7 +63,7 @@ class UserGenerateService extends AbstractBaseService
                     ]);
                     $saver->save();
                     
-                    $service = new GetPasswordGenerateSuccessWidgetConfigService();
+                    $service = \Yii::$app->registry->get(GetPasswordGenerateSuccessWidgetConfigService::class);
                     $dataArray['passwordGenerateSuccessWidgetConfig'] = $service->handle(['tempPassword'=>$tempPassword]);
                     
                     $transaction->commit();
@@ -73,19 +73,19 @@ class UserGenerateService extends AbstractBaseService
                 }
             }
             
-            $service = new GetUserInfoWidgetConfigService();
+            $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
             $dataArray['userInfoWidgetConfig'] = $service->handle();
             
-            $service = new GetCartWidgetConfigService();
+            $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
             $dataArray['cartWidgetConfig'] = $service->handle();
             
-            $service = new GetCurrencyWidgetConfigService();
+            $service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
             $dataArray['currencyWidgetConfig'] = $service->handle();
             
-            $service = new GetSearchWidgetConfigService();
+            $service = \Yii::$app->registry->get(GetSearchWidgetConfigService::class);
             $dataArray['searchWidgetConfig'] = $service->handle($request);
             
-            $service = new GetCategoriesMenuWidgetConfigService();
+            $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
             $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
             
             return $dataArray;

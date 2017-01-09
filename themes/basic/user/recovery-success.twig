@@ -1,11 +1,11 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
-{{ use('app/widgets/UserRecoveryWidget') }}
+{{ use('app/widgets/UserRecoverySuccessWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
 {{ recovery_breadcrumbs_widget_widget() }}
 
-{{ user_recovery_widget_widget(userRecoveryWidgetConfig) }}
+{{ user_recovery_success_widget_widget(successConfig) }}
 

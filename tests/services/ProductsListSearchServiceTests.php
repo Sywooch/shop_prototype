@@ -40,6 +40,16 @@ class ProductsListSearchServiceTests extends TestCase
     }
     
     /**
+     * Тестирует свойства ProductsListSearchService
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(ProductsListSearchService::class);
+        
+        $this->assertTrue($reflection->hasProperty('dataArray'));
+    }
+    
+    /**
      * Тестирует метод ProductsListSearchService::handle
      * если отсутствует параметр $request
      * @expectedException ErrorException

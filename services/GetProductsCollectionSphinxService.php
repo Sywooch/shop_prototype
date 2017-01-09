@@ -28,10 +28,10 @@ class GetProductsCollectionSphinxService extends AbstractBaseService
     {
         try {
             if (empty($this->productsCollection)) {
-                $service = new GetProductsFiltersModelService();
+                $service = \Yii::$app->registry->get(GetProductsFiltersModelService::class);
                 $filtersModel = $service->handle();
                 
-                $service = new GetSphinxArrayService();
+                $service = \Yii::$app->registry->get(GetSphinxArrayService::class);
                 $sphinxArray = $service->handle($request);
                 
                 $finder = \Yii::$app->registry->get(ProductsSphinxFinder::class, [

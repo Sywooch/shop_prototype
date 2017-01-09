@@ -30,6 +30,16 @@ class ProductDetailIndexServiceTests extends TestCase
     }
     
     /**
+     * Тестирует свойства ProductDetailIndexService
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(ProductDetailIndexService::class);
+        
+        $this->assertTrue($reflection->hasProperty('dataArray'));
+    }
+    
+    /**
      * Тестирует метод ProductDetailIndexService::handle
      * если отсутствует параметр $request
      * @expectedException ErrorException

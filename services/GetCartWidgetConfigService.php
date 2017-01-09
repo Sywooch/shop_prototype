@@ -34,7 +34,7 @@ class GetCartWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['purchases'] = $purchasesCollection;
                 
-                $service = new GetCurrentCurrencyModelService();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['view'] = 'short-cart.twig';

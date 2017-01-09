@@ -38,7 +38,7 @@ class RecoveryEmailService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('email'));
             }
             
-            $service = new GetEmailRecoveryWidgetConfigService();
+            $service = \Yii::$app->registry->get(GetEmailRecoveryWidgetConfigService::class);
             $emailRecoveryWidgetConfig = $service->handle([
                 'key'=>$key,
                 'email'=>$email

@@ -29,7 +29,7 @@ class GetSeeAlsoWidgetRelatedConfigService extends AbstractBaseService
             if (empty($this->seeAlsoWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductDetailModelService();
+                $service = \Yii::$app->registry->get(GetProductDetailModelService::class);
                 $productsModel = $service->handle($request);
                 
                 $finder = \Yii::$app->registry->get(RelatedFinder::class, ['product'=>$productsModel]);
@@ -37,7 +37,7 @@ class GetSeeAlsoWidgetRelatedConfigService extends AbstractBaseService
                 
                 $dataArray['products'] = $similarArray;
                 
-                $service = new GetCurrentCurrencyModelService();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['header'] = \Yii::t('base', 'Related products');

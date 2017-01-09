@@ -30,7 +30,7 @@ class RegistrationEmailService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('email'));
             }
             
-            $service = new GetEmailRegistrationWidgetConfigService();
+            $service = \Yii::$app->registry->get(GetEmailRegistrationWidgetConfigService::class);
             $emailRegistrationWidgetArray = $service->handle([
                 'email'=>$email
             ]);

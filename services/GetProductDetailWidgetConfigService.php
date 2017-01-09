@@ -28,10 +28,10 @@ class GetProductDetailWidgetConfigService extends AbstractBaseService
             if (empty($this->productDetailWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductDetailModelService();
+                $service = \Yii::$app->registry->get(GetProductDetailModelService::class);
                 $dataArray['product'] = $service->handle($request);
                 
-                $service = new GetCurrentCurrencyModelService();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['view'] = 'product-detail.twig';

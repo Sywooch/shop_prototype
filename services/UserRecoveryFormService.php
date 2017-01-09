@@ -9,12 +9,12 @@ use app\services\{AbstractBaseService,
     GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
-    GetUserLoginWidgetConfigService};
+    GetUserRecoveryWidgetConfigService};
 
 /**
- * Формирует массив данных для рендеринга страницы с формой аутентификации
+ * Формирует массив данных для рендеринга страницы формы восстановления пароля
  */
-class UserLoginFormService extends AbstractBaseService
+class UserRecoveryFormService extends AbstractBaseService
 {
     /**
      * @var array массив данных для рендеринга
@@ -23,7 +23,7 @@ class UserLoginFormService extends AbstractBaseService
     
     /**
      * Обрабатывает запрос на поиск данных для 
-     * формирования HTML формы аутентификации
+     * формирования HTML формы восстановления пароля
      * @param array $request
      */
     public function handle($request)
@@ -32,8 +32,8 @@ class UserLoginFormService extends AbstractBaseService
             if (empty($this->dataArray)) {
                 $dataArray = [];
                 
-                $service = \Yii::$app->registry->get(GetUserLoginWidgetConfigService::class);
-                $dataArray['userLoginWidgetConfig'] = $service->handle();
+                $service = \Yii::$app->registry->get(GetUserRecoveryWidgetConfigService::class);
+                $dataArray['userRecoveryWidgetConfig'] = $service->handle();
                 
                 $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
                 $dataArray['userInfoWidgetConfig'] = $service->handle();

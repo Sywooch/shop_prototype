@@ -28,10 +28,10 @@ class GetProductsWidgetConfigService extends AbstractBaseService
             if (empty($this->productsWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductsCollectionService();
+                $service = \Yii::$app->registry->get(GetProductsCollectionService::class);
                 $dataArray['products'] = $service->handle($request);
                 
-                $service = new GetCurrentCurrencyModelService();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['view'] = 'products-list.twig';

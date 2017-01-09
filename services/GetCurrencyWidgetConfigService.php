@@ -40,7 +40,7 @@ class GetCurrencyWidgetConfigService extends AbstractBaseService
                 ArrayHelper::multisort($currencyArray, 'code');
                 $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
                 
-                $service = new GetCurrentCurrencyModelService();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $currentCurrencyModel = $service->handle();
                 
                 $dataArray['form'] = new ChangeCurrencyForm([

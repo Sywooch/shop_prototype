@@ -29,7 +29,7 @@ class GetCommentFormWidgetConfigService extends AbstractBaseService
             if (empty($this->commentFormWidgetArray)) {
                 $dataArray = [];
                 
-                $service = new GetProductDetailModelService();
+                $service = \Yii::$app->registry->get(GetProductDetailModelService::class);
                 $productsModel = $service->handle($request);
                 
                 $dataArray['form'] = new CommentForm([
