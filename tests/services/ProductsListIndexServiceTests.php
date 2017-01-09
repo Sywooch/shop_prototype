@@ -15,15 +15,8 @@ use app\tests\sources\fixtures\{BrandsFixture,
     SizesFixture,
     SubcategoryFixture};
 use app\controllers\ProductsListController;
-use app\collections\ProductsCollection;
-use app\models\{CategoriesModel,
-    CurrencyModel,
-    SubcategoryModel};
-use app\forms\FiltersForm;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
-use app\filters\ProductsFilters;
-use yii\web\Request;
 
 /**
  * Тестирует класс ProductsListIndexService

@@ -27,7 +27,7 @@ class GetCartWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetCartWidgetConfigService::handle
+     * Тестирует метод GetCartWidgetConfigService::handle
      */
     public function testHandle()
     {

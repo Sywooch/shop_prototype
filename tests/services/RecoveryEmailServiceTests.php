@@ -17,34 +17,8 @@ class RecoveryEmailServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(RecoveryEmailService::class);
         
-        $this->assertTrue($reflection->hasProperty('emailRecoveryArray'));
         $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('email'));
-    }
-    
-    /**
-     * Тестирует метод RecoveryEmailService::getEmailRecoveryArray
-     */
-    public function testGetEmailRecoveryArray()
-    {
-        $key = sha1('some key');
-        
-        $service = new RecoveryEmailService();
-        
-        $reflection = new \ReflectionProperty($service, 'key');
-        $reflection->setAccessible(true);
-        $reflection->setValue($service, $key);
-        
-        $reflection = new \ReflectionMethod($service, 'getEmailRecoveryArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('key', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('string', $result['key']);
-        $this->assertInternalType('string', $result['view']);
     }
     
     /**

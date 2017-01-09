@@ -28,7 +28,6 @@ class FiltersSetService extends AbstractBaseService
             if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('request'));
             }
-            
             if ($form->validate() === false) {
                 throw new ErrorException($this->modelError($form->errors));
             }

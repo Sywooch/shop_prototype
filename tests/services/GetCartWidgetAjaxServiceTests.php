@@ -42,10 +42,9 @@ class GetCartWidgetAjaxServiceTests extends TestCase
         $service = new GetCartWidgetAjaxService();
         $result = $service->handle();
         
-        $this->assertInternalType('array', $result);
+        $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('cartInfo', $result);
-        $this->assertInternalType('string', $result['cartInfo']);
+        $this->assertRegExp('#<p>Товаров в корзине: 0, Общая стоимость: 0,00 UAH</p>#', $result);
     }
     
     public static function tearDownAfterClass()

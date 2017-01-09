@@ -60,10 +60,13 @@ class PurchaseSaveService extends AbstractBaseService
                     ]);
                     $saver->save();
                     
+                    $dataArray = [];
+                    
                     $service = new GetCartWidgetAjaxService();
-                    $dataArray = $service->handle();
+                    $dataArray['cartInfo'] = $service->handle();
             
-                    $dataArray = array_merge($dataArray, ['successInfo'=>PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig'])]);
+                    $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);
+                    
                     return $dataArray;
                 }
             }

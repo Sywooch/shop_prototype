@@ -13,13 +13,8 @@ use app\tests\sources\fixtures\{BrandsFixture,
     ProductsSizesFixture,
     SizesFixture};
 use app\controllers\ProductsListController;
-use app\collections\{LightPagination,
-    ProductsCollection};
-use app\models\CurrencyModel;
-use app\forms\FiltersForm;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
-use yii\web\Request;
 
 /**
  * Тестирует класс ProductsListSearchService
@@ -45,206 +40,32 @@ class ProductsListSearchServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства ProductsListSearchService
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(ProductsListSearchService::class);
-        
-        $this->assertTrue($reflection->hasProperty('breadcrumbsArray'));
-        $this->assertTrue($reflection->hasProperty('sphinxArray'));
-        $this->assertTrue($reflection->hasProperty('emptySphinxArray'));
-        $this->assertTrue($reflection->hasProperty('productsCollection'));
-        $this->assertTrue($reflection->hasProperty('filtersArray'));
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getBreadcrumbsArray
-     * если отсутствует параметр $request
-     * @expectedException TypeError
-     */
-    public function testGetBreadcrumbsArrayEmptyRequest()
-    {
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getBreadcrumbsArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getBreadcrumbsArray
-     */
-    public function testGetBreadcrumbsArray()
-    {
-        $request = new class() extends Request {
-            public function get($name = null, $defaultValue = null)
-            {
-                return 'пиджак';
-            }
-        };
-        
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getBreadcrumbsArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('text', $result);
-        $this->assertInternalType('string', $result['text']);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getSphinxArray
-     * если отсутствует параметр $request
-     * @expectedException TypeError
-     */
-    public function testGetSphinxArrayEmptyRequest()
-    {
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getSphinxArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getSphinxArray
-     */
-    public function testGetSphinxArray()
-    {
-        $request = new class() extends Request {
-            public function get($name = null, $defaultValue = null)
-            {
-                return 'пиджак';
-            }
-        };
-        
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getSphinxArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getEmptySphinxArray
-     */
-    public function testGetEmptySphinxArray()
-    {
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getEmptySphinxArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('string', $result['view']);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getProductsCollection
-     * если отсутствует параметр $request
-     * @expectedException TypeError
-     */
-    public function testGetProductsCollectionEmptyRequest()
-    {
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getProductsCollection');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getProductsCollection
-     */
-    public function testGetProductsCollection()
-    {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        $request = new class() extends Request {
-            public function get($name = null, $defaultValue = null)
-            {
-                return 'пиджак';
-            }
-        };
-        
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getProductsCollection');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInstanceOf(ProductsCollection::class, $result);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getFiltersArray
-     * если отсутствует параметр $request
-     * @expectedException TypeError
-     */
-    public function testGetFiltersArrayEmptyRequest()
-    {
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getFiltersArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
-    }
-    
-    /**
-     * Тестирует метод ProductsListSearchService::getFiltersArray
-     */
-    public function testGetFiltersArray()
-    {
-        $request = new class() extends Request {
-            public function get($name = null, $defaultValue = null)
-            {
-                return 'пиджак';
-            }
-        };
-        
-        $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'getFiltersArray');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('colors', $result);
-        $this->assertArrayHasKey('sizes', $result);
-        $this->assertArrayHasKey('brands', $result);
-        $this->assertArrayHasKey('sortingFields', $result);
-        $this->assertArrayHasKey('sortingTypes', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('array', $result['colors']);
-        $this->assertInternalType('array', $result['sizes']);
-        $this->assertInternalType('array', $result['brands']);
-        $this->assertInternalType('array', $result['sortingFields']);
-        $this->assertInternalType('array', $result['sortingTypes']);
-        $this->assertInstanceOf(FiltersForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
-    }
-    
-    /**
      * Тестирует метод ProductsListSearchService::handle
      * если отсутствует параметр $request
      * @expectedException ErrorException
      */
-    public function testHandleEmptyRequest()
+    public function testHandleErrorRequest()
     {
         $service = new ProductsListSearchService();
+        $service->handle();
+    }
+    
+    /**
+     * Тестирует метод ProductsListSearchService::handle
+     * если $request пуст
+     * @expectedException ErrorException
+     */
+    public function testHandleEmptyRequest()
+    {
+        $request = new class() {
+            public function get($name = null, $defaultValue = null)
+            {
+                return null;
+            }
+        };
         
-        $reflection = new \ReflectionMethod($service, 'handle');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
+        $service = new ProductsListSearchService();
+        $service->handle($request);
     }
     
     /**
@@ -253,7 +74,9 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testHandleEmptySphinx()
     {
-        $request = new class() extends Request {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        
+        $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
                 return 'abrakadabra';
@@ -261,24 +84,21 @@ class ProductsListSearchServiceTests extends TestCase
         };
         
         $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'handle');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
+        $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('userConfig', $result);
-        $this->assertArrayHasKey('cartConfig', $result);
-        $this->assertArrayHasKey('currencyConfig', $result);
-        $this->assertArrayHasKey('searchConfig', $result);
-        $this->assertArrayHasKey('menuConfig', $result);
-        $this->assertArrayHasKey('emptySphinxConfig', $result);
-        $this->assertArrayHasKey('breadcrumbsConfig', $result);
+        $this->assertArrayHasKey('userInfoWidgetConfig', $result);
+        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('currencyWidgetConfig', $result);
+        $this->assertArrayHasKey('searchWidgetConfig', $result);
+        $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
+        $this->assertArrayHasKey('emptySphinxWidgetConfig', $result);
+        $this->assertArrayHasKey('searchBreadcrumbsWidgetConfig', $result);
         
-        $this->assertArrayNotHasKey('emptyConfig', $result);
-        $this->assertArrayNotHasKey('productsConfig', $result);
-        $this->assertArrayNotHasKey('paginationConfig', $result);
-        $this->assertArrayNotHasKey('filtersConfig', $result);
+        $this->assertArrayNotHasKey('emptyProductsWidgetConfig', $result);
+        $this->assertArrayNotHasKey('productsWidgetConfig', $result);
+        $this->assertArrayNotHasKey('paginationWidgetConfig', $result);
+        $this->assertArrayNotHasKey('filtersWidgetConfig', $result);
     }
     
     /**
@@ -289,7 +109,7 @@ class ProductsListSearchServiceTests extends TestCase
      */
     public function testHandle404()
     {
-        $request = new class() extends Request {
+        $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
                 if ($name === 'search') {
@@ -302,10 +122,7 @@ class ProductsListSearchServiceTests extends TestCase
         };
         
         $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'handle');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
+        $result = $service->handle($request);
     }
     
     /**
@@ -326,7 +143,7 @@ class ProductsListSearchServiceTests extends TestCase
             'brands'=>[9],
         ]);
         
-        $request = new class() extends Request {
+        $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
                 if ($name === 'search') {
@@ -339,22 +156,21 @@ class ProductsListSearchServiceTests extends TestCase
         };
         
         $service = new ProductsListSearchService();
-        
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('userConfig', $result);
-        $this->assertArrayHasKey('cartConfig', $result);
-        $this->assertArrayHasKey('currencyConfig', $result);
-        $this->assertArrayHasKey('searchConfig', $result);
-        $this->assertArrayHasKey('menuConfig', $result);
-        $this->assertArrayHasKey('emptyConfig', $result);
-        $this->assertArrayHasKey('filtersConfig', $result);
-        $this->assertArrayHasKey('breadcrumbsConfig', $result);
+        $this->assertArrayHasKey('userInfoWidgetConfig', $result);
+        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('currencyWidgetConfig', $result);
+        $this->assertArrayHasKey('searchWidgetConfig', $result);
+        $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
+        $this->assertArrayHasKey('emptyProductsWidgetConfig', $result);
+        $this->assertArrayHasKey('filtersWidgetConfig', $result);
+        $this->assertArrayHasKey('searchBreadcrumbsWidgetConfig', $result);
         
-        $this->assertArrayNotHasKey('emptySphinxConfig', $result);
-        $this->assertArrayNotHasKey('productsConfig', $result);
-        $this->assertArrayNotHasKey('paginationConfig', $result);
+        $this->assertArrayNotHasKey('emptySphinxWidgetConfig', $result);
+        $this->assertArrayNotHasKey('productsWidgetConfig', $result);
+        $this->assertArrayNotHasKey('paginationWidgetConfig', $result);
         
         $session->remove($key);
         $session->close();
@@ -377,7 +193,7 @@ class ProductsListSearchServiceTests extends TestCase
             'brands'=>[1, 2, 3, 4, 5],
         ]);
         
-        $request = new class() extends Request {
+        $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
                 if ($name === 'search') {
@@ -387,24 +203,21 @@ class ProductsListSearchServiceTests extends TestCase
         };
         
         $service = new ProductsListSearchService();
-        
-        $reflection = new \ReflectionMethod($service, 'handle');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $request);
+        $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('userConfig', $result);
-        $this->assertArrayHasKey('cartConfig', $result);
-        $this->assertArrayHasKey('currencyConfig', $result);
-        $this->assertArrayHasKey('searchConfig', $result);
-        $this->assertArrayHasKey('menuConfig', $result);
-        $this->assertArrayHasKey('productsConfig', $result);
-        $this->assertArrayHasKey('paginationConfig', $result);
-        $this->assertArrayHasKey('filtersConfig', $result);
-        $this->assertArrayHasKey('breadcrumbsConfig', $result);
+        $this->assertArrayHasKey('userInfoWidgetConfig', $result);
+        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('currencyWidgetConfig', $result);
+        $this->assertArrayHasKey('searchWidgetConfig', $result);
+        $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
+        $this->assertArrayHasKey('productsWidgetConfig', $result);
+        $this->assertArrayHasKey('paginationWidgetConfig', $result);
+        $this->assertArrayHasKey('filtersWidgetConfig', $result);
+        $this->assertArrayHasKey('searchBreadcrumbsWidgetConfig', $result);
         
-        $this->assertArrayNotHasKey('emptySphinxConfig', $result);
-        $this->assertArrayNotHasKey('emptyConfig', $result);
+        $this->assertArrayNotHasKey('emptySphinxWidgetConfig', $result);
+        $this->assertArrayNotHasKey('emptyProductsWidgetConfig', $result);
         
         $session->remove($key);
         $session->close();
