@@ -29,6 +29,11 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
         self::$session = \Yii::$app->session;
     }
     
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+    }
+    
     /**
      * Тестирует свойства GetCurrentCurrencyModelService
      */

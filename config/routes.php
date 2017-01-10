@@ -24,7 +24,9 @@ $routes = [
     'login-post'=>'user/login-post',
     'logout'=>'user/logout',
     'registration'=>'user/registration',
+    'registration-post'=>'user/registration-post',
     'recovery'=>'user/recovery',
+    'recovery-post'=>'user/recovery-post',
     'generate'=>'user/generate',
     
     # Валюта

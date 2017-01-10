@@ -3,8 +3,7 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\{Html,
-    Url};
+use yii\helpers\Html;
 use app\widgets\AbstractBaseWidget;
 
 /**
@@ -36,7 +35,7 @@ class UserRecoverySuccessWidget extends AbstractBaseWidget
             
             $renderArray['header'] = \Yii::t('base', 'Password recovery');
             $renderArray['text'] = \Yii::t('base', 'Instructions for restoring the password sent to');
-            $renderArray['email'] = $this->email;
+            $renderArray['email'] = Html::encode($this->email);
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

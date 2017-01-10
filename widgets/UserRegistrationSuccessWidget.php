@@ -3,8 +3,7 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\{Html,
-    Url};
+use yii\helpers\Html;
 use app\widgets\AbstractBaseWidget;
 
 /**
@@ -26,7 +25,10 @@ class UserRegistrationSuccessWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
+            $renderArray['header'] = \Yii::t('base', 'Registration');
+            
             $renderArray['text'] = \Yii::t('base', 'You have successfully signed up! Now you can log in using your E-mail and password');
+            $renderArray['href'] = Html::a(\Yii::t('base', 'Login'), ['/user/login']);
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

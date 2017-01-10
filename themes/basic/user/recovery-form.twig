@@ -1,4 +1,4 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/PasswordRecoveryAsset') }}
 
 {{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
 {{ use('app/widgets/UserRecoveryWidget') }}
@@ -7,5 +7,5 @@
 
 {{ recovery_breadcrumbs_widget_widget() }}
 
-{{ user_recovery_widget_widget(userRecoveryWidgetConfig) }}
+<div class="recovery">{{ user_recovery_widget_widget(userRecoveryWidgetConfig) }}</div>
 

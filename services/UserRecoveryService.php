@@ -11,21 +11,21 @@ use app\services\{AbstractBaseService,
     GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
+    GetUserRecoverySuccessWidgetConfigService,
     RecoveryEmailService};
 use app\forms\RecoveryPasswordForm;
 use app\helpers\HashHelper;
 use app\savers\SessionModelSaver;
 use app\models\RecoveryModel;
+use app\widgets\UserRecoverySuccessWidget;
 
 /**
- * Формирует массив данных для рендеринга страницы формы восстановления пароля,
- * обрабатывает переданные в форму данные
+ * Обрабатывает запрос на генерацию нового пароля
  */
 class UserRecoveryService extends AbstractBaseService
 {
     /**
-     * Обрабатывает запрос на поиск и обработку данных для 
-     * формирования HTML формы восстановления пароля
+     * Обрабатывает запрос на генерацию нового пароля
      * @param array $request
      */
     public function handle($request)
@@ -62,31 +62,12 @@ class UserRecoveryService extends AbstractBaseService
                         'email'=>$form->email
                     ]);
                     
-                    $dataArray['successConfig'] = $this->getUserRecoverySuccessArray();
+                    $service = \Yii::$app->registry->get(GetUserRecoverySuccessWidgetConfigService::class);
+                    $userRecoverySuccessWidgetConfig = $service->handle(['email'=>$form->email]);
+                    
+                    return UserRecoverySuccessWidget::widget($userRecoverySuccessWidgetConfig);
                 }
             }
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета UserRecoverySuccessWidget
-     * @return array
-     */
-    private function getUserRecoverySuccessArray(): array
-    {
-        try {
-            if (empty($this->userRecoverySuccessArray)) {
-                $dataArray = [];
-                
-                $dataArray['email'] = $form->email;
-                $dataArray['view'] = 'recovery-success.twig';
-                
-                $this->userRecoverySuccessArray = $dataArray;
-            }
-            
-            return $this->userRecoverySuccessArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

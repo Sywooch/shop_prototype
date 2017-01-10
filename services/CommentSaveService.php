@@ -9,8 +9,6 @@ use app\services\{AbstractBaseService,
     EmailGetSaveEmailService,
     NameGetSaveNameService};
 use app\forms\CommentForm;
-use app\services\{EmailGetSaveEmailService,
-    NameGetSaveNameService};
 use app\savers\ModelSaver;
 use app\widgets\CommentSaveInfoWidget;
 use app\models\CommentsModel;

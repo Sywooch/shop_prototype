@@ -1,19 +1,11 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/UserRegistrationAsset') }}
 
 {{ use('app/widgets/RegistrationBreadcrumbsWidget') }}
 {{ use('app/widgets/UserRegistrationWidget') }}
-{{ use('app/widgets/UserRegistrationSuccessWidget') }}
-{{ use('app/widgets/UserLoginWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
 {{ registration_breadcrumbs_widget_widget() }}
 
-{% if successConfig %}
-    {{ user_registration_success_widget_widget(successConfig) }}
-    
-    {{ user_login_widget_widget(loginFormConfig) }}
-{% else %}
-    {{ user_registration_widget_widget(formConfig) }}
-{% endif %}
+<div class="registration">{{ user_registration_widget_widget(userRegistrationWidgetConfig) }}</div>
 

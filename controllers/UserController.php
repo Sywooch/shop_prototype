@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\actions\{BaseAction,
+use app\actions\{AjaxAction,
+    BaseAction,
     RedirectAction};
 use app\services\{UserLoginService,
     UserLoginFormService,
@@ -11,6 +12,7 @@ use app\services\{UserLoginService,
     UserLogoutService,
     UserRecoveryFormService,
     UserRecoveryService,
+    UserRegistrationFormService,
     UserRegistrationService};
 
 /**
@@ -36,8 +38,12 @@ class UserController extends Controller
             ],
             'registration'=>[
                 'class'=>BaseAction::class,
-                'service'=>new UserRegistrationService(),
+                'service'=>new UserRegistrationFormService(),
                 'view'=>'registration-form.twig',
+            ],
+            'registration-post'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new UserRegistrationService(),
             ],
             'recovery'=>[
                 'class'=>BaseAction::class,
@@ -45,9 +51,8 @@ class UserController extends Controller
                 'view'=>'recovery-form.twig',
             ],
             'recovery-post'=>[
-                'class'=>BaseAction::class,
+                'class'=>AjaxAction::class,
                 'service'=>new UserRecoveryService(),
-                'view'=>'recovery-form.twig',
             ],
             'generate'=>[
                 'class'=>BaseAction::class,
