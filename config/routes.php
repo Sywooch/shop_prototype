@@ -40,6 +40,7 @@ $routes = [
     
     # Корзина
     'cart-add'=>'cart/add',
+    'cart-clean'=>'cart/clean',
     /*'cart'=>'cart/index',
     'cart-set'=>'cart/set',
     'cart-customer'=>'cart/customer',

@@ -22,6 +22,9 @@ class RedirectAction extends AbstractBaseAction
             if (empty($this->service)) {
                 throw new ErrorException($this->emptyError('service'));
             }
+            if (\Yii::$app->request->isGet === true) {
+                throw new ErrorException($this->invalidError('POST'));
+            }
             
             $result = $this->service->handle(\Yii::$app->request);
             
@@ -29,7 +32,10 @@ class RedirectAction extends AbstractBaseAction
                 return $result;
             }
             
-            if (empty($result) || is_string($result) === false) {
+            if (is_string($result) === false) {
+                throw new ErrorException($this->invalidError('result'));
+            }
+            if (empty($result)) {
                 throw new ErrorException($this->emptyError('result'));
             }
             
@@ -41,8 +47,8 @@ class RedirectAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает ServiceInterface свойству SaveAction::service
-     * @param object $service ServiceInterface
+     * Присваивает ServiceInterface свойству RedirectAction::service
+     * @param ServiceInterface $service 
      */
     public function setService(ServiceInterface $service)
     {

@@ -4,7 +4,8 @@ namespace app\controllers;
 
 use yii\web\Controller;
 use app\actions\AjaxAction;
-use app\services\PurchaseSaveService;
+use app\services\{PurchaseCleanService,
+    PurchaseSaveService};
 
 /**
  * Обрабатывает запросы, касающиеся комментариев к товарам
@@ -17,6 +18,10 @@ class CartController extends Controller
             'add'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new PurchaseSaveService(),
+            ],
+            'clean'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new PurchaseCleanService(),
             ],
         ];
     }

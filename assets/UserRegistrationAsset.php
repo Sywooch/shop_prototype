@@ -12,17 +12,12 @@ use app\assets\{AbstractAsset,
 class UserRegistrationAsset extends AbstractAsset
 {
     /**
-     * @var array массив js параметров
-     */
-    public $jsOptions = [
-        'defer'=>true,
-    ];
-    /**
      * @var array массив, перечисляющий JavaScript файлы, 
      * содержащиеся в данном комплекте
      */
     public $js = [
         'js/sendUserRegistration.js',
+        'js/sendCleanCart.js',
     ];
     /**
      * @var array зависимости пакета

@@ -67,6 +67,7 @@ class CartWidget extends AbstractBaseWidget
             $renderArray['toCartText'] = \Yii::t('base', 'To cart');
             
             $renderArray['formId'] = 'clean-cart-form';
+            $renderArray['ajaxValidation'] = false;
             $renderArray['formAction'] = Url::to(['/cart/clean']);
             $renderArray['button'] = \Yii::t('base', 'Clean');
             

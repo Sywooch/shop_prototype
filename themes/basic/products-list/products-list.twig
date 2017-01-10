@@ -1,4 +1,4 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/ProductsListAsset') }}
 
 {{ use('app/widgets/CategoriesBreadcrumbsWidget') }}
 {{ use('app/widgets/FiltersWidget') }}
@@ -12,7 +12,7 @@
 
 {{ filters_widget_widget(filtersWidgetConfig) }}
 
-{% if emptyConfig %}
+{% if emptyProductsWidgetConfig %}
     {{ empty_products_widget_widget(emptyProductsWidgetConfig) }}
 {% else %}
     {{ products_widget_widget(productsWidgetConfig) }}

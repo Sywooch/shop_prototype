@@ -9,15 +9,13 @@ use app\assets\{AbstractAsset,
 /**
  * Задает основной пакет ресурсов
  */
-class ProductDetailAsset extends AbstractAsset
+class UserAsset extends AbstractAsset
 {
     /**
      * @var array массив, перечисляющий JavaScript файлы, 
      * содержащиеся в данном комплекте
      */
     public $js = [
-        'js/sendComment.js',
-        'js/sendPurchase.js',
         'js/sendCleanCart.js',
     ];
     /**

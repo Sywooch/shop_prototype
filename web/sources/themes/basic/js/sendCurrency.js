@@ -3,7 +3,8 @@ $(function() {
     function SendCurrency() {
         var self = this;
         AbstractSendForm.apply(this, arguments);
-        self.success = function(data, status, jqXHR) {
+        self.success = function(data, status, jqXHR)
+        {
             if (data.length != 0) {
                 $('#cart').html(data['cartInfo']);
             }

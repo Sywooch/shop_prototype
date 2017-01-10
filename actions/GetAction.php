@@ -10,7 +10,7 @@ use app\services\ServiceInterface;
 /**
  * Обрабатывает запрос на обработку формы
  */
-class BaseAction extends AbstractBaseAction
+class GetAction extends AbstractBaseAction
 {
     /**
      * @var object ServiceInterface, обрабатывающий запрос
@@ -30,25 +30,20 @@ class BaseAction extends AbstractBaseAction
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
             }
+            if (\Yii::$app->request->isGet !== true) {
+                throw new ErrorException($this->invalidError('GET'));
+            }
             
             $result = $this->service->handle(\Yii::$app->request);
             
-            if (\Yii::$app->request->isAjax) {
-                return $result;
+            if (is_array($result) === false) {
+                throw new ErrorException($this->invalidError('result'));
             }
-            
             if (empty($result)) {
                 throw new ErrorException($this->emptyError('result'));
             }
             
-            switch (gettype($result)) {
-                case 'array':
-                    return $this->controller->render($this->view, $result);
-                case 'string':
-                    return $this->controller->redirect($result);
-                default:
-                    throw new ErrorException($this->invalidError('result'));
-            }
+            return $this->controller->render($this->view, $result);
         } catch (NotFoundHttpException $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             throw $e;
@@ -59,8 +54,8 @@ class BaseAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает ServiceInterface свойству SaveAction::service
-     * @param object $service ServiceInterface
+     * Присваивает ServiceInterface свойству GetAction::service
+     * @param $service ServiceInterface
      */
     public function setService(ServiceInterface $service)
     {

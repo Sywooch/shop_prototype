@@ -3,7 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\actions\BaseAction;
+use app\actions\GetAction;
 use app\services\ProductDetailIndexService;
 
 /**
@@ -15,7 +15,7 @@ class ProductDetailController extends Controller
     {
         return [
             'index'=>[
-                'class'=>BaseAction::class,
+                'class'=>GetAction::class,
                 'service'=>new ProductDetailIndexService(),
                 'view'=>'product-detail.twig',
             ],

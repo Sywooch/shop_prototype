@@ -22,6 +22,9 @@ class AjaxAction extends AbstractBaseAction
             if (empty($this->service)) {
                 throw new ErrorException($this->emptyError('service'));
             }
+            if (\Yii::$app->request->isAjax !== true) {
+                throw new ErrorException($this->invalidError('AJAX'));
+            }
             
             return $this->service->handle(\Yii::$app->request);
         } catch (\Throwable $t) {
@@ -31,8 +34,8 @@ class AjaxAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает ServiceInterface свойству SaveAction::service
-     * @param object $service ServiceInterface
+     * Присваивает ServiceInterface свойству AjaxAction::service
+     * @param $service ServiceInterface
      */
     public function setService(ServiceInterface $service)
     {
