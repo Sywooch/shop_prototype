@@ -19,7 +19,7 @@ class PurchasesCollection extends AbstractBaseCollection implements PurchasesCol
     public function totalQuantity(): int
     {
         try {
-            if (empty($this->items)) {
+            if ($this->isEmpty() === true) {
                 throw new ErrorException($this->emptyError('items'));
             }
             
@@ -42,7 +42,7 @@ class PurchasesCollection extends AbstractBaseCollection implements PurchasesCol
     public function totalPrice(): float
     {
         try {
-            if (empty($this->items)) {
+            if ($this->isEmpty() === true) {
                 throw new ErrorException($this->emptyError('items'));
             }
             
@@ -58,32 +58,6 @@ class PurchasesCollection extends AbstractBaseCollection implements PurchasesCol
         }
     }
     
-    /**
-     * Добавляет объект в коллекцию
-     * @param $object Model 
-     */
-    /*public function add(Model $object)
-    {
-        try {
-            if ($this->isEmpty() === false) {
-                $rawObject = clone $object;
-                unset($rawObject['quantity']);
-                
-                foreach ($this->items as $item) {
-                    $rawItem = clone $item;
-                    unset($rawItem['quantity']);
-                    
-                    if (empty(array_diff_assoc($rawObject->toArray(), $rawItem->toArray()))) {
-                        $item->quantity += $object->quantity;
-                        return;
-                    }
-                }
-            }
-            $this->items[] = $object;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }*/
     
     /**
      * Добавляет объект в коллекцию
@@ -101,6 +75,31 @@ class PurchasesCollection extends AbstractBaseCollection implements PurchasesCol
                 }
             }
             $this->items[] = $object;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет объект в коллекции
+     * @param $object Model 
+     */
+    public function update(Model $object)
+    {
+        try {
+            if ($this->isEmpty() === true) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            
+            foreach ($this->items as $key=>$item) {
+                if ((int) $item->id_product === (int) $object->id_product) {
+                    $item->quantity = $object->quantity;
+                    $item->id_color = $object->id_color;
+                    $item->id_size = $object->id_size;
+                    return true;
+                }
+            }
+            return false;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

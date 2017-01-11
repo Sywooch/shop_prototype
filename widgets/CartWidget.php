@@ -28,14 +28,6 @@ class CartWidget extends AbstractBaseWidget
      * @var string имя шаблона
      */
     public $view;
-    /**
-     * @var int общее количество товаров в корзине
-     */
-    private $goods = 0;
-    /**
-     * @var int общая стоимость товаров в корзине
-     */
-    private $cost = 0;
     
     /**
      * Конструирует HTML строку с информацией о текущем статусе корзины заказов
@@ -103,13 +95,6 @@ class CartWidget extends AbstractBaseWidget
             
             $renderArray['formActionDelete'] = Url::to(['/cart/delete']);
             $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
-            
-            $this->goods = $this->purchases->totalQuantity();
-            $this->cost = $this->purchases->totalPrice();
-            
-            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
-            
-            $renderArray['summaryText'] = \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>$this->goods, 'cost'=>$this->cost]);
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

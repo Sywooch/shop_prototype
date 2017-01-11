@@ -4,10 +4,13 @@ namespace app\controllers;
 
 use yii\web\Controller;
 use app\actions\{AjaxAction,
-    GetAction};
+    GetAction,
+    RedirectAction};
 use app\services\{CartAddService,
+    CartCleanRedirectService,
     CartCleanService,
-    CartIndexService};
+    CartIndexService,
+    CartUpdateService};
 
 /**
  * Обрабатывает запросы, касающиеся комментариев к товарам
@@ -30,10 +33,14 @@ class CartController extends Controller
                 'class'=>AjaxAction::class,
                 'service'=>new CartCleanService(),
             ],
-            /*'update'=>[
-                'class'=>AjaxAction::class,
-                'service'=>new CartCleanService(),
-            ],*/
+            'clean-redirect'=>[
+                'class'=>RedirectAction::class,
+                'service'=>new CartCleanRedirectService(),
+            ],
+            'update'=>[
+                'class'=>RedirectAction::class,
+                'service'=>new CartUpdateService(),
+            ],
         ];
     }
 }

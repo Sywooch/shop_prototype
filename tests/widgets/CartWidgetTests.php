@@ -22,8 +22,6 @@ class CartWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
         $this->assertTrue($reflection->hasProperty('view'));
-        $this->assertTrue($reflection->hasProperty('goods'));
-        $this->assertTrue($reflection->hasProperty('cost'));
     }
     
     /**
@@ -175,14 +173,18 @@ class CartWidgetTests extends TestCase
                 public $id_product = 1;
                 public $quantity = 1;
                 public $price = 123.67;
+                public $id_color = 1;
+                public $id_size = 3;
                 public $product;
                 public function __construct()
                 {
                     $this->product = new class() {
                         public $name = 'Product 1';
                         public $seocode = 'product_1';
-                        public $short_description = 'Short description';
+                        public $short_description = 'Short description 1';
                         public $images = 'test';
+                        public $colors = [['id'=>1, 'color'=>'gray'], ['id'=>4, 'color'=>'yellow']];
+                        public $sizes = [['id'=>1, 'size'=>45], ['id'=>3, 'size'=>35.5]];
                     };
                 }
             },
@@ -190,14 +192,18 @@ class CartWidgetTests extends TestCase
                 public $id_product = 2;
                 public $quantity = 1;
                 public $price = 85.00;
+                public $id_color = 3;
+                public $id_size = 2;
                 public $product;
                 public function __construct()
                 {
                     $this->product = new class() {
                         public $name = 'Product 2';
                         public $seocode = 'product_2';
-                        public $short_description = 'Short description';
+                        public $short_description = 'Short description 2';
                         public $images = 'test';
+                        public $colors = [['id'=>2, 'color'=>'black'], ['id'=>3, 'color'=>'red']];
+                        public $sizes = [['id'=>1, 'size'=>45], ['id'=>2, 'size'=>50]];
                     };
                 }
             },
@@ -233,12 +239,30 @@ class CartWidgetTests extends TestCase
         
         $this->assertRegExp('#<li class="product-id-1">#', $result);
         $this->assertRegExp('#<a href=".+">Product 1</a>#', $result);
-        $this->assertRegExp('#Short description#', $result);
+        $this->assertRegExp('#Short description 1#', $result);
         $this->assertRegExp('#<span class="price">258,47 MONEY</span>#', $result);
-        $this->assertRegExp('#<img src=".+" alt="">#', $result);
+        $this->assertRegExp('#<form id="form-id-1"#', $result);
+        $this->assertRegExp('#<label .+>Quantity</label>#', $result);
+        $this->assertRegExp('#<input type="number"#', $result);
+        $this->assertRegExp('#<label .+>Id Color</label>#', $result);
+        $this->assertRegExp('#<option value="1" selected>gray</option>#', $result);
+        $this->assertRegExp('#<option value="4">yellow</option>#', $result);
+        $this->assertRegExp('#<label .+>Id Size</label>#', $result);
+        $this->assertRegExp('#<option value="3" selected>35.5</option>#', $result);
+        $this->assertRegExp('#<option value="1">45</option>#', $result);
+        $this->assertRegExp('#<input type="submit" value="Обновить">#', $result);
+        $this->assertRegExp('#<form id="form-id-delete-1"#', $result);
+        $this->assertRegExp('#<input type="submit" value="Удалить">#', $result);
+        
         $this->assertRegExp('#<li class="product-id-2">#', $result);
         $this->assertRegExp('#<a href=".+">Product 2</a>#', $result);
+        $this->assertRegExp('#Short description 2#', $result);
         $this->assertRegExp('#<span class="price">177,65 MONEY</span>#', $result);
-        $this->assertRegExp('#<p>Товаров в корзине: 2, Общая стоимость: 436,12 MONEY</p>#', $result);
+        $this->assertRegExp('#<img src=".+" alt="">#', $result);
+        $this->assertRegExp('#<form id="form-id-2"#', $result);
+        $this->assertRegExp('#<option value="2">black</option>#', $result);
+        $this->assertRegExp('#<option value="3" selected>red</option>#', $result);
+        $this->assertRegExp('#<option value="1">45</option>#', $result);
+        $this->assertRegExp('#<option value="2" selected>50</option>#', $result);
     }
 }

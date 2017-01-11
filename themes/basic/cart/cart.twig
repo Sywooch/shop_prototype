@@ -3,10 +3,10 @@
 {{ use('app/widgets/CartBreadcrumbsWidget') }}
 {{ use('app/widgets/CartWidget') }}
 
-{{ include('@theme/common/frontend-common.twig') }}
+{{ include('@theme/common/frontend-cart-common.twig') }}
 
 {{ cart_breadcrumbs_widget_widget() }}
 
 {{ cart_widget_widget(cartWidgetConfig) }}
 
-
+{{ short_cart_redirect_widget_widget(shortCartRedirectWidgetConfig) }}

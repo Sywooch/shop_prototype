@@ -178,4 +178,31 @@ class PurchasesCollectionTests extends TestCase
         $this->assertCount(1, $result);
         $this->assertEquals(20, $result[0]->quantity);
     }
+    
+    /**
+    * Тестирует метод PurchasesCollection::update
+    */
+    public function testUpdate()
+    {
+        $model1 = new class() extends Model {
+            public $quantity = 2;
+            public $id_color = 5;
+            public $id_size = 4;
+            public $id_product = 236;
+            public $price = 24.78;
+        };
+        
+        $model2 = new class() extends Model {
+            public $quantity = 18;
+            public $id_color = 1;
+            public $id_size = 15;
+            public $id_product = 236;
+        };
+        
+        $collection = new PurchasesCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model1]);
+    }
 }

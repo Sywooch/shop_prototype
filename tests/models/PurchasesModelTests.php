@@ -39,6 +39,7 @@ class PurchasesModelTests extends TestCase
         $reflection = new \ReflectionClass(PurchasesModel::class);
         
         $this->assertTrue($reflection->hasConstant('SESSION'));
+        $this->assertTrue($reflection->hasConstant('UPDATE'));
         
         $model = new PurchasesModel();
         
@@ -105,6 +106,28 @@ class PurchasesModelTests extends TestCase
         $this->assertSame(2, $result['id_size']);
         $this->assertArrayHasKey('price', $result);
         $this->assertSame(245.98, $result['price']);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE]);
+        $model->attributes = [
+            'id_product'=>34, 
+            'quantity'=>2, 
+            'id_color'=>4, 
+            'id_size'=>2,
+        ];
+        
+        $result = $model->toArray();
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        
+        $this->assertArrayHasKey('id_product', $result);
+        $this->assertSame(34, $result['id_product']);
+        $this->assertArrayHasKey('quantity', $result);
+        $this->assertSame(2, $result['quantity']);
+        $this->assertArrayHasKey('id_color', $result);
+        $this->assertSame(4, $result['id_color']);
+        $this->assertArrayHasKey('id_size', $result);
+        $this->assertSame(2, $result['id_size']);
         
         /*$model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
         $model->attributes = [
@@ -207,6 +230,28 @@ class PurchasesModelTests extends TestCase
             'id_color'=>4, 
             'id_size'=>2,
             'price'=>245.98, 
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(4, $model->errors);
+        $this->assertArrayHasKey('id_product', $model->errors);
+        $this->assertArrayHasKey('quantity', $model->errors);
+        $this->assertArrayHasKey('id_color', $model->errors);
+        $this->assertArrayHasKey('id_size', $model->errors);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE]);
+        $model->attributes = [
+            'id_product'=>34, 
+            'quantity'=>2, 
+            'id_color'=>4, 
+            'id_size'=>2,
         ];
         $model->validate();
         
