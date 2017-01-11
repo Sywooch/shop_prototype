@@ -127,7 +127,7 @@ class UserGenerateServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
-        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('shortCartWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
@@ -136,7 +136,7 @@ class UserGenerateServiceTests extends TestCase
         $this->assertArrayNotHasKey('passwordGenerateSuccessWidgetConfig', $result);
 
         $this->assertInternalType('array', $result['userInfoWidgetConfig']);
-        $this->assertInternalType('array', $result['cartWidgetConfig']);
+        $this->assertInternalType('array', $result['shortCartWidgetConfig']);
         $this->assertInternalType('array', $result['currencyWidgetConfig']);
         $this->assertInternalType('array', $result['searchWidgetConfig']);
         $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);
@@ -182,7 +182,7 @@ class UserGenerateServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
-        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('shortCartWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
@@ -191,7 +191,7 @@ class UserGenerateServiceTests extends TestCase
         $this->assertArrayNotHasKey('passwordGenerateEmptyWidgetConfig', $result);
 
         $this->assertInternalType('array', $result['userInfoWidgetConfig']);
-        $this->assertInternalType('array', $result['cartWidgetConfig']);
+        $this->assertInternalType('array', $result['shortCartWidgetConfig']);
         $this->assertInternalType('array', $result['currencyWidgetConfig']);
         $this->assertInternalType('array', $result['searchWidgetConfig']);
         $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);

@@ -3,19 +3,19 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FiltersCleanService;
+use app\services\FiltersUnsetService;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
 use app\controllers\ProductsListController;
 use yii\web\Request;
 
 /**
- * Тестирует класс FiltersCleanService
+ * Тестирует класс FiltersUnsetService
  */
-class FiltersCleanServiceTests extends TestCase
+class FiltersUnsetServiceTests extends TestCase
 {
     /**
-     * Тестирует метод FiltersCleanService::handle
+     * Тестирует метод FiltersUnsetService::handle
      */
     public function testHandle()
     {
@@ -44,7 +44,7 @@ class FiltersCleanServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersCleanService();
+        $filter = new FiltersUnsetService();
         $result = $filter->handle($request);
         
         $this->assertSame($url, $result);

@@ -11,12 +11,12 @@ use app\services\GetCurrentCurrencyModelService;
 /**
  * Возвращает массив конфигурации для виджета ShortCartWidget
  */
-class GetCartWidgetConfigService extends AbstractBaseService
+class GetShortCartWidgetConfigService extends AbstractBaseService
 {
     /**
      * @var array конфигурации для виджета ShortCartWidget
      */
-    private $cartWidgetArray = [];
+    private $shortCartWidgetArray = [];
     
     /**
      * Возвращает массив конфигурации для виджета ShortCartWidget
@@ -26,7 +26,7 @@ class GetCartWidgetConfigService extends AbstractBaseService
     public function handle($request=null): array
     {
         try {
-            if (empty($this->cartWidgetArray)) {
+            if (empty($this->shortCartWidgetArray)) {
                 $dataArray = [];
                 
                 $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, ['key'=>HashHelper::createCartKey()]);
@@ -37,12 +37,12 @@ class GetCartWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['view'] = 'cart.twig';
+                $dataArray['view'] = 'short-cart.twig';
                 
-                $this->cartWidgetArray = $dataArray;
+                $this->shortCartWidgetArray = $dataArray;
             }
             
-            return $this->cartWidgetArray;
+            return $this->shortCartWidgetArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

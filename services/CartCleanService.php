@@ -5,14 +5,14 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\Response;
 use app\services\{AbstractBaseService,
-    GetCartWidgetAjaxService};
+    GetShortCartWidgetAjaxConfigService};
 use app\helpers\HashHelper;
 use app\cleaners\SessionCleaner;
 
 /**
  * Сохраняет новую покупку в корзине
  */
-class PurchaseCleanService extends AbstractBaseService
+class CartCleanService extends AbstractBaseService
 {
     /**
      * Обрабатывает запрос на сохранение новой покупки в корзине
@@ -30,7 +30,7 @@ class PurchaseCleanService extends AbstractBaseService
                 ]);
                 $cleaner->clean();
                 
-                $service = \Yii::$app->registry->get(GetCartWidgetAjaxService::class);
+                $service = \Yii::$app->registry->get(GetShortCartWidgetAjaxConfigService::class);
                 $cartInfo = $service->handle();
             
                 return $cartInfo;

@@ -4,13 +4,13 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetCartWidgetConfigService};
-use app\widgets\CartWidget;
+    GetShortCartWidgetConfigService};
+use app\widgets\ShortCartWidget;
 
 /**
  * Возвращает массив с HTML строкой данных корзины для ответа в формате JSON
  */
-class GetCartWidgetAjaxService extends AbstractBaseService
+class GetShortCartWidgetAjaxConfigService extends AbstractBaseService
 {
     /**
      * @var array
@@ -26,12 +26,12 @@ class GetCartWidgetAjaxService extends AbstractBaseService
     {
         try {
             if (empty($this->cartWidgetAjaxArray)) {
-                $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
+                $service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
                 $cartInfoWidget = $service->handle();
                 
                 $cartInfoWidget['view'] = 'short-cart-ajax.twig';
                 
-                $this->cartWidgetAjaxArray = CartWidget::widget($cartInfoWidget);
+                $this->cartWidgetAjaxArray = ShortCartWidget::widget($cartInfoWidget);
             }
             
             return $this->cartWidgetAjaxArray;

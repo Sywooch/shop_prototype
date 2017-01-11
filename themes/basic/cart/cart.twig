@@ -1,0 +1,12 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('app/widgets/CartBreadcrumbsWidget') }}
+{{ use('app/widgets/CartWidget') }}
+
+{{ include('@theme/common/frontend-common.twig') }}
+
+{{ cart_breadcrumbs_widget_widget() }}
+
+{{ cart_widget_widget(cartWidgetConfig) }}
+
+

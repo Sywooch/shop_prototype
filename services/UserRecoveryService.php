@@ -3,71 +3,57 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    GetCartWidgetConfigService,
+    GetShortCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService,
-    GetUserRecoverySuccessWidgetConfigService,
-    RecoveryEmailService};
-use app\forms\RecoveryPasswordForm;
-use app\helpers\HashHelper;
-use app\savers\SessionModelSaver;
-use app\models\RecoveryModel;
-use app\widgets\UserRecoverySuccessWidget;
+    GetUserRecoveryWidgetConfigService};
 
 /**
- * Обрабатывает запрос на генерацию нового пароля
+ * Формирует массив данных для рендеринга страницы формы восстановления пароля
  */
 class UserRecoveryService extends AbstractBaseService
 {
     /**
-     * Обрабатывает запрос на генерацию нового пароля
+     * @var array массив данных для рендеринга
+     */
+    private $dataArray = [];
+    
+    /**
+     * Обрабатывает запрос на поиск данных для 
+     * формирования HTML формы восстановления пароля
      * @param array $request
      */
     public function handle($request)
     {
         try {
-            $form = new RecoveryPasswordForm(['scenario'=>RecoveryPasswordForm::GET]);
-            
-            if ($request->isAjax === true) {
-                if ($form->load($request->post()) === true) {
-                    \Yii::$app->response->format = Response::FORMAT_JSON;
-                    $errors = ActiveForm::validate($form);
-                    if (!empty($errors)) {
-                        return $errors;
-                    }
-                    
-                    $key = HashHelper::randomString(40);
-                    
-                    $recoveryModel = new RecoveryModel(['scenario'=>RecoveryModel::SET]);
-                    $recoveryModel->email = $form->email;
-                    if ($recoveryModel->validate() === false) {
-                        throw new ErrorException($this->modelError($recoveryModel->errors));
-                    }
-                    
-                    $saver = new SessionModelSaver([
-                        'key'=>$key,
-                        'model'=>$recoveryModel,
-                        'flash'=>true
-                    ]);
-                    $saver->save();
-                    
-                    $mailService = new RecoveryEmailService();
-                    $mailService->handle([
-                        'key'=>$key,
-                        'email'=>$form->email
-                    ]);
-                    
-                    $service = \Yii::$app->registry->get(GetUserRecoverySuccessWidgetConfigService::class);
-                    $userRecoverySuccessWidgetConfig = $service->handle(['email'=>$form->email]);
-                    
-                    return UserRecoverySuccessWidget::widget($userRecoverySuccessWidgetConfig);
-                }
+            if (empty($this->dataArray)) {
+                $dataArray = [];
+                
+                $service = \Yii::$app->registry->get(GetUserRecoveryWidgetConfigService::class);
+                $dataArray['userRecoveryWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
+                $dataArray['userInfoWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
+                $dataArray['shortCartWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
+                $dataArray['currencyWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetSearchWidgetConfigService::class);
+                $dataArray['searchWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
+                $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
+                
+                $this->dataArray = $dataArray;
             }
+            
+            return $this->dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

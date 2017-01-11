@@ -6,14 +6,14 @@ use yii\web\Controller;
 use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
-use app\services\{UserLoginService,
-    UserLoginFormService,
+use app\services\{UserLoginPostService,
+    UserLoginService,
     UserGenerateService,
     UserLogoutService,
-    UserRecoveryFormService,
     UserRecoveryService,
-    UserRegistrationFormService,
-    UserRegistrationService};
+    UserRecoveryPostService,
+    UserRegistrationService,
+    UserRegistrationPostService};
 
 /**
  * Обрабатывает запросы на аутентификацию пользователя
@@ -25,12 +25,12 @@ class UserController extends Controller
         return [
             'login'=>[
                 'class'=>GetAction::class,
-                'service'=>new UserLoginFormService(),
+                'service'=>new UserLoginService(),
                 'view'=>'login-form.twig',
             ],
             'login-post'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new UserLoginService(),
+                'service'=>new UserLoginPostService(),
             ],
             'logout'=>[
                 'class'=>RedirectAction::class,
@@ -38,21 +38,21 @@ class UserController extends Controller
             ],
             'registration'=>[
                 'class'=>GetAction::class,
-                'service'=>new UserRegistrationFormService(),
+                'service'=>new UserRegistrationService(),
                 'view'=>'registration-form.twig',
             ],
             'registration-post'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new UserRegistrationService(),
+                'service'=>new UserRegistrationPostService(),
             ],
             'recovery'=>[
                 'class'=>GetAction::class,
-                'service'=>new UserRecoveryFormService(),
+                'service'=>new UserRecoveryService(),
                 'view'=>'recovery-form.twig',
             ],
             'recovery-post'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new UserRecoveryService(),
+                'service'=>new UserRecoveryPostService(),
             ],
             'generate'=>[
                 'class'=>GetAction::class,

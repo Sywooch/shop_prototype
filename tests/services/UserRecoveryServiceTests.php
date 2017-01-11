@@ -5,9 +5,9 @@ namespace app\tests\services;
 use PHPUnit\Framework\TestCase;
 use app\services\UserRecoveryService;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{EmailsFixture,
-    UsersFixture};
-use app\controllers\UserController;
+use app\tests\sources\fixtures\{CategoriesFixture,
+    CurrencyFixture};
+use app\controllers\ProductsListController;
 
 /**
  * Тестирует класс UserRecoveryService
@@ -20,30 +20,34 @@ class UserRecoveryServiceTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'emails'=>EmailsFixture::class,
-                'users'=>UsersFixture::class,
+                'currency'=>CurrencyFixture::class,
+                'categories'=>CategoriesFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует метод UserRecoveryService::handle
-     * если ошибки валидации
+     * Тестирует свойства UserRecoveryService
      */
-    public function testHandleErrors()
+    public function testProperties()
     {
-        \Yii::$app->controller = new UserController('user', \Yii::$app);
+        $reflection = new \ReflectionClass(UserRecoveryService::class);
+        
+        $this->assertTrue($reflection->hasProperty('dataArray'));
+    }
+    
+    /**
+     * Тестирует метод UserRecoveryService::handle
+     */
+    public function testHandle()
+    {
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
         $request = new class() {
-            public $isAjax = true;
-            public function post($name = null, $defaultValue = null)
+            public function get($name)
             {
-                return [
-                    'RecoveryPasswordForm'=>[
-                        'email'=>'some@gmail',
-                    ],
-                ];
+                return null;
             }
         };
         
@@ -52,52 +56,23 @@ class UserRecoveryServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод UserRecoveryService::handle
-     */
-    public function testHandle()
-    {
-        \Yii::$app->controller = new UserController('user', \Yii::$app);
+        $this->assertArrayHasKey('userRecoveryWidgetConfig', $result);
+        $this->assertArrayHasKey('userInfoWidgetConfig', $result);
+        $this->assertArrayHasKey('shortCartWidgetConfig', $result);
+        $this->assertArrayHasKey('currencyWidgetConfig', $result);
+        $this->assertArrayHasKey('searchWidgetConfig', $result);
+        $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
         
-        $request = new class() {
-            public $isAjax = true;
-            public $email;
-            public function post($name = null, $defaultValue = null)
-            {
-                return [
-                    'RecoveryPasswordForm'=>[
-                        'email'=>$this->email,
-                    ],
-                ];
-            }
-        };
-        $reflection = new \ReflectionProperty($request, 'email');
-        $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
-        
-        $service = new UserRecoveryService();
-        $result = $service->handle($request);
-        
-        $this->assertInternalType('string', $result);
-        $this->assertNotEmpty($result);
-        
-        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
-        $files = glob($saveDir . '/*.eml');
-        
-        $this->assertNotEmpty($files);
+        $this->assertInternalType('array', $result['userRecoveryWidgetConfig']);
+        $this->assertInternalType('array', $result['userInfoWidgetConfig']);
+        $this->assertInternalType('array', $result['shortCartWidgetConfig']);
+        $this->assertInternalType('array', $result['currencyWidgetConfig']);
+        $this->assertInternalType('array', $result['searchWidgetConfig']);
+        $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);
     }
     
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
-        
-        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
-        if (file_exists($saveDir) && is_dir($saveDir)) {
-            $files = glob($saveDir . '/*.eml');
-            foreach ($files as $file) {
-                unlink($file);
-            }
-        }
     }
 }

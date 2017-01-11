@@ -3,14 +3,14 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\ChangeCurrencySaveService;
+use app\services\CurrencySetService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
 
 /**
- * Тестирует класс ChangeCurrencySaveService
+ * Тестирует класс CurrencySetService
  */
-class ChangeCurrencySaveServiceTests extends TestCase
+class CurrencySetServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -25,7 +25,7 @@ class ChangeCurrencySaveServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод ChangeCurrencySaveService::handle
+     * Тестирует метод CurrencySetService::handle
      * если не POST
      * @expectedException ErrorException
      * @expectedExceptionMessage Получен неверный тип данных вместо: POST
@@ -36,12 +36,12 @@ class ChangeCurrencySaveServiceTests extends TestCase
             public $isPost = false;
         };
         
-        $service = new ChangeCurrencySaveService();
+        $service = new CurrencySetService();
         $service->handle($request);
     }
     
     /**
-     * Тестирует метод ChangeCurrencySaveService::handle
+     * Тестирует метод CurrencySetService::handle
      * если POST пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: POST
@@ -56,12 +56,12 @@ class ChangeCurrencySaveServiceTests extends TestCase
             }
         };
         
-        $service = new ChangeCurrencySaveService();
+        $service = new CurrencySetService();
         $service->handle($request);
     }
     
     /**
-     * Тестирует метод ChangeCurrencySaveService::handle
+     * Тестирует метод CurrencySetService::handle
      * если данные не валидны
      * @expectedException ErrorException
      * @expectedExceptionMessage Необходимо заполнить «Url»
@@ -81,12 +81,12 @@ class ChangeCurrencySaveServiceTests extends TestCase
             }
         };
         
-        $service = new ChangeCurrencySaveService();
+        $service = new CurrencySetService();
         $service->handle($request);
     }
     
     /**
-     * Тестирует метод ChangeCurrencySaveService::handle
+     * Тестирует метод CurrencySetService::handle
      */
     public function testHandle()
     {
@@ -103,7 +103,7 @@ class ChangeCurrencySaveServiceTests extends TestCase
             }
         };
         
-        $service = new ChangeCurrencySaveService();
+        $service = new CurrencySetService();
         $result = $service->handle($request);
         
         $this->assertInternalType('string', $result);

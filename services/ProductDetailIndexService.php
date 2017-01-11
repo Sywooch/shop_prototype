@@ -5,7 +5,7 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    GetCartWidgetConfigService,
+    GetShortCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
     GetCommentFormWidgetConfigService,
     GetCommentsWidgetConfigService,
@@ -42,8 +42,8 @@ class ProductDetailIndexService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
                 $dataArray['userInfoWidgetConfig'] = $service->handle();
                 
-                $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
-                $dataArray['cartWidgetConfig'] = $service->handle();
+                $service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
+                $dataArray['shortCartWidgetConfig'] = $service->handle();
                 
                 $service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
                 $dataArray['currencyWidgetConfig'] = $service->handle();

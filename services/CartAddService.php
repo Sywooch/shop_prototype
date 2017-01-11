@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    GetCartWidgetAjaxService};
+    GetShortCartWidgetAjaxConfigService};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
@@ -17,7 +17,7 @@ use app\models\PurchasesModel;
 /**
  * Сохраняет новую покупку в корзине
  */
-class PurchaseSaveService extends AbstractBaseService
+class CartAddService extends AbstractBaseService
 {
     /**
      * Обрабатывает запрос на сохранение новой покупки в корзине
@@ -42,7 +42,7 @@ class PurchaseSaveService extends AbstractBaseService
                     $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, ['key'=>$key]);
                     $purchasesCollection = $finder->find();
                     
-                    $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+                    $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
                     $rawPurchasesModel->quantity = $form->quantity;
                     $rawPurchasesModel->id_color = $form->id_color;
                     $rawPurchasesModel->id_size = $form->id_size;
@@ -62,7 +62,7 @@ class PurchaseSaveService extends AbstractBaseService
                     
                     $dataArray = [];
                     
-                    $service = \Yii::$app->registry->get(GetCartWidgetAjaxService::class);
+                    $service = \Yii::$app->registry->get(GetShortCartWidgetAjaxConfigService::class);
                     $dataArray['cartInfo'] = $service->handle();
             
                     $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);

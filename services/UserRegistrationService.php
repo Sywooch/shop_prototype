@@ -3,73 +3,56 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\web\Response;
-use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    EmailGetSaveEmailService,
-    GetUserRegistrationSuccessWidgetConfigService,
-    RegistrationEmailService};
-use app\forms\UserRegistrationForm;
-use app\savers\ModelSaver;
-use app\models\UsersModel;
-use app\widgets\UserRegistrationSuccessWidget;
+    GetShortCartWidgetConfigService,
+    GetCategoriesMenuWidgetConfigService,
+    GetCurrencyWidgetConfigService,
+    GetSearchWidgetConfigService,
+    GetUserInfoWidgetConfigService,
+    GetUserRegistrationWidgetConfigService};
 
 /**
- * Обрабатывает запрос на регистрацию нового пользователя
+ * Формирует массив данных для рендеринга страницы формы регистрации
  */
 class UserRegistrationService extends AbstractBaseService
 {
     /**
-     * Обрабатывает запрос на регистрацию нового пользователя
+     * @var array массив данных для рендеринга
+     */
+    private $dataArray = [];
+    
+    /**
+     * Обрабатывает запрос на поиск данных для формирования формы регистрации
      * @param array $request
      */
     public function handle($request)
     {
         try {
-            $form = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
-            
-            if ($request->isAjax === true) {
-                if ($form->load($request->post()) === true) {
-                    \Yii::$app->response->format = Response::FORMAT_JSON;
-                    $errors = ActiveForm::validate($form);
-                    if (!empty($errors)) {
-                        return $errors;
-                    }
-                    
-                    $transaction = \Yii::$app->db->beginTransaction();
-                    
-                    try {
-                        $service = \Yii::$app->registry->get(EmailGetSaveEmailService::class);
-                        $emailsModel = $service->handle(['email'=>$form->email]);
-                        
-                        $rawUsersModel = new UsersModel(['scenario'=>UsersModel::SAVE]);
-                        $rawUsersModel->id_email = $emailsModel->id;
-                        $rawUsersModel->password = password_hash($form->password, PASSWORD_DEFAULT);
-                        if ($rawUsersModel->validate() === false) {
-                            throw new ErrorException($this->modelError($rawUsersModel->errors));
-                        }
-                        
-                        $saver = new ModelSaver([
-                            'model'=>$rawUsersModel
-                        ]);
-                        $saver->save();
-                        
-                        $mailService = new RegistrationEmailService();
-                        $mailService->handle(['email'=>$form->email]);
-                        
-                        $transaction->commit();
-                        
-                        $service = \Yii::$app->registry->get(GetUserRegistrationSuccessWidgetConfigService::class);
-                        $userRegistrationSuccessWidgetConfig = $service->handle();
-                        
-                        return UserRegistrationSuccessWidget::widget($userRegistrationSuccessWidgetConfig);
-                        
-                    } catch (\Throwable $t) {
-                        $transaction->rollBack();
-                        throw $t;
-                    }
-                }
+            if (empty($this->dataArray)) {
+                $dataArray = [];
+                
+                $service = \Yii::$app->registry->get(GetUserRegistrationWidgetConfigService::class);
+                $dataArray['userRegistrationWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
+                $dataArray['userInfoWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
+                $dataArray['shortCartWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
+                $dataArray['currencyWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetSearchWidgetConfigService::class);
+                $dataArray['searchWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
+                $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
+                
+                $this->dataArray = $dataArray;
             }
+            
+            return $this->dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

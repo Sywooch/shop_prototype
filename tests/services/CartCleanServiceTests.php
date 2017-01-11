@@ -3,16 +3,16 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\PurchaseCleanService;
+use app\services\CartCleanService;
 use app\helpers\HashHelper;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     ProductsFixture};
 
 /**
- * Тестирует класс PurchaseCleanService
+ * Тестирует класс CartCleanService
  */
-class PurchaseCleanServiceTests extends TestCase
+class CartCleanServiceTests extends TestCase
 {
      private static $dbClass;
     
@@ -27,19 +27,24 @@ class PurchaseCleanServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+    }
+    
     /**
-     * Тестирует метод PurchaseCleanService::handle
+     * Тестирует метод CartCleanService::handle
      * если не переад $request
      * @expectedException ErrorException
      */
     public function testHandleRequestError()
     {
-        $service = new PurchaseCleanService();
+        $service = new CartCleanService();
         $service->handle();
     }
     
     /**
-     * Тестирует метод PurchaseCleanService::handle
+     * Тестирует метод CartCleanService::handle
      */
     public function testHandle()
     {
@@ -53,7 +58,7 @@ class PurchaseCleanServiceTests extends TestCase
             public $isAjax = true;
         };
         
-        $service = new PurchaseCleanService();
+        $service = new CartCleanService();
         $result = $service->handle($request);
         
         $this->assertInternalType('string', $result);

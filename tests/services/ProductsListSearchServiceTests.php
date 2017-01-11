@@ -98,7 +98,7 @@ class ProductsListSearchServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
-        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('shortCartWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
@@ -170,7 +170,7 @@ class ProductsListSearchServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
-        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('shortCartWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
@@ -217,7 +217,7 @@ class ProductsListSearchServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
-        $this->assertArrayHasKey('cartWidgetConfig', $result);
+        $this->assertArrayHasKey('shortCartWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);

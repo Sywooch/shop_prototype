@@ -5,10 +5,9 @@ namespace app\tests\services;
 use PHPUnit\Framework\TestCase;
 use app\services\UserLoginService;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{EmailsFixture,
-    UsersFixture};
+use app\tests\sources\fixtures\{CategoriesFixture,
+    CurrencyFixture};
 use app\controllers\ProductsListController;
-use yii\helpers\Url;
 
 /**
  * Тестирует класс UserLoginService
@@ -21,90 +20,59 @@ class UserLoginServiceTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'users'=>UsersFixture::class,
-                'emails'=>EmailsFixture::class,
+                'currency'=>CurrencyFixture::class,
+                'categories'=>CategoriesFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует метод UserLoginService::handle
-     * если AJAX
+     * Тестирует свойства UserLoginService
      */
-    public function testHandleAjax()
+    public function testProperties()
     {
-        \Yii::$app->registry->clean();
+        $reflection = new \ReflectionClass(UserLoginService::class);
         
+        $this->assertTrue($reflection->hasProperty('dataArray'));
+    }
+    
+    /**
+     * Тестирует метод UserLoginService::handle
+     */
+    public function testHandle()
+    {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
         $request = new class() {
-            public $isAjax = true;
-            public $email;
-            public $password;
-            public function post()
+            public function get($name)
             {
-                return [
-                    'UserLoginForm'=>[
-                        'email'=>$this->email,
-                        'password'=>'wrongpassword',
-                    ],
-                ];
+                return null;
             }
         };
-        $reflection = new \ReflectionProperty($request, 'email');
-        $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
         $service = new UserLoginService();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод UserLoginService::handle
-     * если POST
-     */
-    public function testHandlePost()
-    {
-        \Yii::$app->registry->clean();
+        $this->assertArrayHasKey('userLoginWidgetConfig', $result);
+        $this->assertArrayHasKey('userInfoWidgetConfig', $result);
+        $this->assertArrayHasKey('shortCartWidgetConfig', $result);
+        $this->assertArrayHasKey('currencyWidgetConfig', $result);
+        $this->assertArrayHasKey('searchWidgetConfig', $result);
+        $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
         
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
-        \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password WHERE [[id]]=:id')->bindValues([':password'=>password_hash(self::$dbClass->users['user_1']['password'], PASSWORD_DEFAULT), ':id'=>self::$dbClass->users['user_1']['id']])->execute();
-        
-        $request = new class() {
-            public $isPost = true;
-            public $isAjax = false;
-            public $email;
-            public $password;
-            public function post()
-            {
-                return [
-                    'UserLoginForm'=>[
-                        'email'=>$this->email,
-                        'password'=>$this->password,
-                    ],
-                ];
-            }
-        };
-        $reflection = new \ReflectionProperty($request, 'email');
-        $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
-        $reflection = new \ReflectionProperty($request, 'password');
-        $reflection->setValue($request, self::$dbClass->users['user_1']['password']);
-        
-        $service = new UserLoginService();
-        $result = $service->handle($request);
-        
-        $this->assertInternalType('string', $result);
-        $this->assertNotEmpty($result);
-        $this->assertSame(Url::to(['/products-list/index']), $result);
+        $this->assertInternalType('array', $result['userLoginWidgetConfig']);
+        $this->assertInternalType('array', $result['userInfoWidgetConfig']);
+        $this->assertInternalType('array', $result['shortCartWidgetConfig']);
+        $this->assertInternalType('array', $result['currencyWidgetConfig']);
+        $this->assertInternalType('array', $result['searchWidgetConfig']);
+        $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);
     }
     
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
-        \Yii::$app->registry->clean();
     }
 }

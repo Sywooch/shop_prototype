@@ -5,9 +5,9 @@ namespace app\tests\services;
 use PHPUnit\Framework\TestCase;
 use app\services\UserRegistrationService;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{EmailsFixture,
-    UsersFixture};
-use app\controllers\UserController;
+use app\tests\sources\fixtures\{CategoriesFixture,
+    CurrencyFixture};
+use app\controllers\ProductsListController;
 
 /**
  * Тестирует класс UserRegistrationService
@@ -20,40 +20,21 @@ class UserRegistrationServiceTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'emails'=>EmailsFixture::class,
-                'users'=>UsersFixture::class,
+                'currency'=>CurrencyFixture::class,
+                'categories'=>CategoriesFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
     }
     
     /**
-     * Тестирует метод UserRegistrationService::handle
-     * если ошибки валидации
+     * Тестирует свойства UserRegistrationService
      */
-    public function testHandleErrors()
+    public function testProperties()
     {
-        \Yii::$app->controller = new UserController('user', \Yii::$app);
+        $reflection = new \ReflectionClass(UserRegistrationService::class);
         
-        $request = new class() {
-            public $isAjax = true;
-            public function post($name = null, $defaultValue = null)
-            {
-                return [
-                    'UserRegistrationForm'=>[
-                        'email'=>'some@gmail',
-                        'password'=>'password',
-                        'password2'=>'password2'
-                    ],
-                ];
-            }
-        };
-        
-        $service = new UserRegistrationService();
-        $result = $service->handle($request);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
+        $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
@@ -61,53 +42,37 @@ class UserRegistrationServiceTests extends TestCase
      */
     public function testHandle()
     {
-        \Yii::$app->controller = new UserController('user', \Yii::$app);
-        
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}} INNER JOIN {{emails}} ON [[users.id_email]]=[[emails.id]] WHERE [[emails.email]]=:email')->bindValue(':email', 'new@email.com')->queryOne();
-        
-        $this->assertFalse($result);
+        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
         $request = new class() {
-            public $isAjax = true;
-            public function post($name = null, $defaultValue = null)
+            public function get($name)
             {
-                return [
-                    'UserRegistrationForm'=>[
-                        'email'=>'new@email.com',
-                        'password'=>'password',
-                        'password2'=>'password'
-                    ],
-                ];
+                return null;
             }
         };
         
         $service = new UserRegistrationService();
         $result = $service->handle($request);
         
-        $this->assertInternalType('string', $result);
-        $this->assertNotEmpty($result);
-        
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{users}} INNER JOIN {{emails}} ON [[users.id_email]]=[[emails.id]] WHERE [[emails.email]]=:email')->bindValue(':email', 'new@email.com')->queryOne();
-        
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('userRegistrationWidgetConfig', $result);
+        $this->assertArrayHasKey('userInfoWidgetConfig', $result);
+        $this->assertArrayHasKey('shortCartWidgetConfig', $result);
+        $this->assertArrayHasKey('currencyWidgetConfig', $result);
+        $this->assertArrayHasKey('searchWidgetConfig', $result);
+        $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
         
-        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
-        $files = glob($saveDir . '/*.eml');
-        
-        $this->assertNotEmpty($files);
+        $this->assertInternalType('array', $result['userRegistrationWidgetConfig']);
+        $this->assertInternalType('array', $result['userInfoWidgetConfig']);
+        $this->assertInternalType('array', $result['shortCartWidgetConfig']);
+        $this->assertInternalType('array', $result['currencyWidgetConfig']);
+        $this->assertInternalType('array', $result['searchWidgetConfig']);
+        $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);
     }
     
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
-        
-        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
-        if (file_exists($saveDir) && is_dir($saveDir)) {
-            $files = glob($saveDir . '/*.eml');
-            foreach ($files as $file) {
-                unlink($file);
-            }
-        }
     }
 }

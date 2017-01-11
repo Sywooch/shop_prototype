@@ -3,7 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\PurchaseSaveService;
+use app\services\CartAddService;
 use yii\web\Request;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
@@ -13,9 +13,9 @@ use app\models\ProductsModel;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс PurchaseSaveService
+ * Тестирует класс CartAddService
  */
-class PurchaseSaveServiceTests extends TestCase
+class CartAddServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -36,7 +36,7 @@ class PurchaseSaveServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchaseSaveService::handle
+     * Тестирует метод CartAddService::handle
      * если запрос с ошибками
      */
     public function testHandleErrors()
@@ -57,7 +57,7 @@ class PurchaseSaveServiceTests extends TestCase
             }
         };
         
-        $service = new PurchaseSaveService();
+        $service = new CartAddService();
         
         $result = $service->handle($request);
         
@@ -67,7 +67,7 @@ class PurchaseSaveServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод PurchaseSaveService::handle
+     * Тестирует метод CartAddService::handle
      */
     public function testHandle()
     {
@@ -87,7 +87,7 @@ class PurchaseSaveServiceTests extends TestCase
             }
         };
         
-        $service = new PurchaseSaveService();
+        $service = new CartAddService();
         
         $result = $service->handle($request);
         

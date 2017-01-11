@@ -12,7 +12,7 @@ use app\finders\CurrencyIdFinder;
 /**
  * Обновляет текущую валюту
  */
-class ChangeCurrencySaveService extends AbstractBaseService
+class CurrencySetService extends AbstractBaseService
 {
     /**
      * Обрабатывает запрос на изменение текущей валюты

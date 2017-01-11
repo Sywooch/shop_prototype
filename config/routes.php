@@ -39,8 +39,11 @@ $routes = [
     'ajax/subcategory'=>'ajax/subcategory',
     
     # Корзина
+    'cart'=>'cart/index',
     'cart-add'=>'cart/add',
     'cart-clean'=>'cart/clean',
+    'cart-update'=>'cart/update',
+    'cart-delete'=>'cart/delete',
     /*'cart'=>'cart/index',
     'cart-set'=>'cart/set',
     'cart-customer'=>'cart/customer',

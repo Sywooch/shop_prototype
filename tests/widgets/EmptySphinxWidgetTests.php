@@ -23,7 +23,7 @@ class EmptySphinxWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CartWidget::run
+     * Тестирует метод EmptySphinxWidget::run
      */
     public function testRun()
     {

@@ -38,7 +38,7 @@ class PurchasesModelTests extends TestCase
     {
         $reflection = new \ReflectionClass(PurchasesModel::class);
         
-        $this->assertTrue($reflection->hasConstant('SESSION_GET'));
+        $this->assertTrue($reflection->hasConstant('SESSION'));
         
         $model = new PurchasesModel();
         
@@ -81,7 +81,7 @@ class PurchasesModelTests extends TestCase
      */
     public function testScenarios()
     {
-        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
         $model->attributes = [
             'id_product'=>34, 
             'quantity'=>2, 
@@ -106,7 +106,7 @@ class PurchasesModelTests extends TestCase
         $this->assertArrayHasKey('price', $result);
         $this->assertSame(245.98, $result['price']);
         
-        /*$model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+        /*$model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
         $model->attributes = [
             'id'=>1,
             'id_user'=>2,
@@ -188,7 +188,7 @@ class PurchasesModelTests extends TestCase
      */
     public function testRules()
     {
-        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
         $model->attributes = [];
         $model->validate();
         
@@ -200,7 +200,7 @@ class PurchasesModelTests extends TestCase
         $this->assertArrayHasKey('id_size', $model->errors);
         $this->assertArrayHasKey('price', $model->errors);
         
-        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION_GET]);
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
         $model->attributes = [
             'id_product'=>34, 
             'quantity'=>2, 

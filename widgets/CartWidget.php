@@ -3,10 +3,13 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
+use yii\helpers\{ArrayHelper,
+    Html,
+    Url};
 use app\widgets\AbstractBaseWidget;
 use app\collections\PurchasesCollection;
 use app\models\CurrencyModel;
+use app\forms\PurchaseForm;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -41,7 +44,7 @@ class CartWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->purchases)) {
+            if (empty($this->purchases) || $this->purchases->isEmpty() === true) {
                 throw new ErrorException($this->emptyError('purchases'));
             }
             if (empty($this->currency)) {
@@ -51,22 +54,43 @@ class CartWidget extends AbstractBaseWidget
                 throw new ErrorException($this->emptyError('view'));
             }
             
-            if ($this->purchases->isEmpty() === false) {
-                $this->goods = $this->purchases->totalQuantity();
-                $this->cost = $this->purchases->totalPrice();
-            }
-            
             $renderArray = [];
             
-            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
-            
-            $renderArray['extended'] = $this->goods > 0 ? true : false;
-            
-            $renderArray['goodsText'] = \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>$this->goods, 'cost'=>$this->cost]);
-            $renderArray['toCartHref'] = Url::to(['/cart/index']);
-            $renderArray['toCartText'] = \Yii::t('base', 'To cart');
-            
-            $renderArray['formId'] = 'clean-cart-form';
+            foreach ($this->purchases as $purchase) {
+                $set = [];
+                $set['id_product'] = $purchase->id_product;
+                $set['link'] = Html::a(Html::encode($purchase->product->name), ['/product-detail/index', 'seocode'=>$purchase->product->seocode]);
+                $set['short_description'] = $purchase->product->short_description;
+                $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+                
+                $set['formModel'] = new PurchaseForm([
+                    'scenario'=>PurchaseForm::UPDATE,
+                    'id_color'=>$purchase->id_color,
+                    'id_size'=>$purchase->id_size,
+                    'quantity'=>$purchase->quantity,
+                ]);
+                $set['idForm'] = sprintf('form-id-%d', $purchase->id_product);
+                
+                $set['formModelDelete'] = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
+                $set['idFormDelete'] = sprintf('form-id-delete-%d', $purchase->id_product);
+                
+                $colors = $purchase->product->colors;
+                ArrayHelper::multisort($colors, 'color');
+                $set['colors'] = ArrayHelper::map($colors, 'id', 'color');
+                
+                $sizes = $purchase->product->sizes;
+                ArrayHelper::multisort($sizes, 'size');
+                $set['sizes'] = ArrayHelper::map($sizes, 'id', 'size');
+                
+                if (!empty($purchase->product->images)) {
+                    $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $purchase->product->images) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
+                    if (!empty($imagesArray)) {
+                        $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $purchase->product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]));
+                    }
+                }
+                
+                $renderArray['collection'][] = $set;
+            }
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -74,8 +98,18 @@ class CartWidget extends AbstractBaseWidget
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
             
-            $renderArray['formAction'] = Url::to(['/cart/clean']);
-            $renderArray['button'] = \Yii::t('base', 'Clean');
+            $renderArray['formAction'] = Url::to(['/cart/update']);
+            $renderArray['button'] = \Yii::t('base', 'Update');
+            
+            $renderArray['formActionDelete'] = Url::to(['/cart/delete']);
+            $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
+            
+            $this->goods = $this->purchases->totalQuantity();
+            $this->cost = $this->purchases->totalPrice();
+            
+            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+            
+            $renderArray['summaryText'] = \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>$this->goods, 'cost'=>$this->cost]);
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
@@ -97,7 +131,7 @@ class CartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству ProductsListWidget::currency
+     * Присваивает CurrencyModel свойству CartWidget::currency
      * @param CurrencyModel $model
      */
     public function setCurrency(CurrencyModel $model)

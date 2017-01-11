@@ -4,17 +4,17 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
+    GetShortCartWidgetConfigService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
-    GetUserInfoWidgetConfigService,
-    GetUserRegistrationWidgetConfigService};
+    GetUserInfoWidgetConfigService};
 
 /**
- * Формирует массив данных для рендеринга страницы формы регистрации
+ * Формирует массив данных для рендеринга страницы корзины покупок
  */
-class UserRegistrationFormService extends AbstractBaseService
+class CartIndexService extends AbstractBaseService
 {
     /**
      * @var array массив данных для рендеринга
@@ -22,7 +22,8 @@ class UserRegistrationFormService extends AbstractBaseService
     private $dataArray = [];
     
     /**
-     * Обрабатывает запрос на поиск данных для формирования формы регистрации
+     * Обрабатывает запрос на поиск данных для 
+     * формирования HTML корзины покупок
      * @param array $request
      */
     public function handle($request)
@@ -31,14 +32,14 @@ class UserRegistrationFormService extends AbstractBaseService
             if (empty($this->dataArray)) {
                 $dataArray = [];
                 
-                $service = \Yii::$app->registry->get(GetUserRegistrationWidgetConfigService::class);
-                $dataArray['userRegistrationWidgetConfig'] = $service->handle();
+                $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
+                $dataArray['cartWidgetConfig'] = $service->handle();
                 
                 $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
                 $dataArray['userInfoWidgetConfig'] = $service->handle();
                 
-                $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
-                $dataArray['cartWidgetConfig'] = $service->handle();
+                $service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
+                $dataArray['shortCartWidgetConfig'] = $service->handle();
                 
                 $service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
                 $dataArray['currencyWidgetConfig'] = $service->handle();

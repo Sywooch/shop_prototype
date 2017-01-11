@@ -12,7 +12,7 @@ use app\cleaners\SessionCleaner;
 /**
  * Очищает фильтры каталога товаров
  */
-class FiltersCleanService extends AbstractBaseService
+class FiltersUnsetService extends AbstractBaseService
 {
     /**
      * Обрабатывает запрос на обнуление товарных фильтров
