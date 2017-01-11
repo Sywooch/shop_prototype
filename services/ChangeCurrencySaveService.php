@@ -25,10 +25,10 @@ class ChangeCurrencySaveService extends AbstractBaseService
             $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::SET]);
             
             if ($request->isPost === false) {
-                throw new ErrorException($this->invalidError('request'));
+                throw new ErrorException($this->invalidError('POST'));
             }
             if ($form->load($request->post()) === false) {
-                throw new ErrorException($this->emptyError('post'));
+                throw new ErrorException($this->emptyError('POST'));
             }
             if ($form->validate() === false) {
                 throw new ErrorException($this->modelError($form->errors));

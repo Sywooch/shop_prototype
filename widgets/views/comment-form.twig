@@ -2,7 +2,7 @@
 
 <div class="comment-success"></div>
 
-{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'action':formAction, 'method':'POST'}) %}
+{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
     {{ form.field(modelForm, 'name') | raw }}
     {{ form.field(modelForm, 'email') | raw }}
     {{ form.field(modelForm, 'text').textarea() | raw }}

@@ -42,8 +42,8 @@ class CommentForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['text', 'name', 'email', 'id_product'], 'required', 'on'=>self::SAVE],
-            [['email'], 'email', 'on'=>self::SAVE]
+            [['text', 'name', 'email', 'id_product'], 'required', 'enableClientValidation'=>true, 'on'=>self::SAVE],
+            [['email'], 'email', 'enableClientValidation'=>true, 'on'=>self::SAVE]
         ];
     }
 }

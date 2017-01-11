@@ -46,7 +46,7 @@ class PurchaseForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::SAVE]
+            [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'enableClientValidation'=>true, 'on'=>self::SAVE]
         ];
     }
 }

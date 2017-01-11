@@ -10,6 +10,12 @@ use app\assets\AbstractAsset;
 class AbstractSendFormAsset extends AbstractAsset
 {
     /**
+     * @var array массив js параметров
+     */
+    public $jsOptions = [
+        'defer'=>true,
+    ];
+    /**
      * @var array массив, перечисляющий JavaScript файлы, 
      * содержащиеся в данном комплекте
      */

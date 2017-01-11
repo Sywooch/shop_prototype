@@ -4,7 +4,7 @@
     <p><strong>{{ header }}</strong></p>
     
     <div  id="currency-form">
-        {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'action':formAction, 'method':'POST'}) %}
+        {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
             {{ form.field(formModel, 'id').dropDownList(currency) | raw }}
             {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
             <input type="submit" value="{{ button }}">

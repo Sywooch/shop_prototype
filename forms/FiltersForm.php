@@ -55,7 +55,7 @@ class FiltersForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['url'], 'required'],
+            [['url'], 'required', 'enableClientValidation'=>true],
         ];
     }
 }

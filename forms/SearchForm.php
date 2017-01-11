@@ -34,7 +34,7 @@ class SearchForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['search', 'url'], 'required', 'on'=>self::GET],
+            [['search', 'url'], 'required', 'enableClientValidation'=>true, 'on'=>self::GET],
         ];
     }
 }

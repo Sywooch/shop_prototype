@@ -2,6 +2,7 @@
 
 namespace app\assets;
 
+use yii\web\JqueryAsset;
 use app\assets\AbstractAsset;
 
 /**
@@ -19,6 +20,6 @@ class MainAsset extends AbstractAsset
      * @var array зависимости пакета
      */
     public $depends = [
-        'yii\web\JqueryAsset',
+        JqueryAsset::class,
     ];
 }

@@ -42,8 +42,15 @@ class PurchaseFormWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['formAction'] = Url::to(['/cart/add']);
             $renderArray['formId'] = 'purchase-form';
+            
+            $renderArray['ajaxValidation'] = false;
+            $renderArray['validateOnSubmit'] = false;
+            $renderArray['validateOnChange'] = false;
+            $renderArray['validateOnBlur'] = false;
+            $renderArray['validateOnType'] = false;
+            
+            $renderArray['formAction'] = Url::to(['/cart/add']);
             $renderArray['button'] = \Yii::t('base', 'Add to cart');
             
             $renderArray['formModel'] = $this->form;

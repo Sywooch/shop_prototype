@@ -5,7 +5,7 @@ $(function() {
         AbstractSendForm.apply(this, arguments);
         self.success = function(data, status, jqXHR)
         {
-            if (data.length != 0) {
+            if (typeof data == 'object' && data.length != 0) {
                 $('#cart').html(data['cartInfo']);
             }
         };

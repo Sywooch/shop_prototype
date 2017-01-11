@@ -6,13 +6,14 @@ $(function() {
         AbstractSendForm.apply(this, arguments);
         self.success = function(data, status, jqXHR)
         {
+            self.form.find('div.help-block').html('');
             if (typeof data == 'string') {
                 self.form.find('input[type="text"], textarea').val('');
                 self.infoDiv.html(data);
                 setTimeout(timeoutRemove, 5000);
             } else if (typeof data == 'object') {
                 for (var key in data) {
-                    $('#' + key).closest('.form-group').find('.help-block').text(data[key]);
+                    $('#' + key).closest('div.form-group').find('div.help-block').text(data[key]);
                 }
             }
         };
@@ -22,7 +23,7 @@ $(function() {
         }
     };
     
-    $('#comment-form').find('input[type="submit"]').click(function(event) {
+    $('#comment-form').find('input[type="submit"]').on('click', function(event) {
         (new SendComment()).send(event);
         event.preventDefault();
     });

@@ -76,6 +76,12 @@ class FiltersWidget extends AbstractBaseWidget
             $renderArray['sizes'] = $this->sizes;
             $renderArray['brands'] = $this->brands;
             
+            $renderArray['ajaxValidation'] = false;
+            $renderArray['validateOnSubmit'] = false;
+            $renderArray['validateOnChange'] = false;
+            $renderArray['validateOnBlur'] = false;
+            $renderArray['validateOnType'] = false;
+            
             $renderArray['formIdApply'] = 'products-filters-form';
             $renderArray['formActionApply'] = Url::to(['/filters/set']);
             $renderArray['buttonApply'] = \Yii::t('base', 'Apply');

@@ -28,7 +28,7 @@ class ChangeCurrencySaveServiceTests extends TestCase
      * Тестирует метод ChangeCurrencySaveService::handle
      * если не POST
      * @expectedException ErrorException
-     * @expectedExceptionMessage Получен неверный тип данных вместо: request
+     * @expectedExceptionMessage Получен неверный тип данных вместо: POST
      */
     public function testHandleNotPost()
     {
@@ -44,7 +44,7 @@ class ChangeCurrencySaveServiceTests extends TestCase
      * Тестирует метод ChangeCurrencySaveService::handle
      * если POST пуст
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: post
+     * @expectedExceptionMessage Отсутствуют необходимые данные: POST
      */
     public function testHandleEmptyPost()
     {

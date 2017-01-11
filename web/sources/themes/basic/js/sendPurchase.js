@@ -5,6 +5,7 @@ $(function() {
         AbstractSendForm.apply(this, arguments);
         self.success = function(data, status, jqXHR)
         {
+            self.form.find('div.help-block').html('');
             if (typeof data == 'object' && data.length != 0) {
                 $('#cart').html(data['cartInfo']);
                 alert(data['successInfo']);
@@ -12,7 +13,7 @@ $(function() {
         };
     };
     
-    $('#purchase-form').on('click', 'input[type="submit"]', function(event) {
+    $('#purchase-form').find('input[type="submit"]').on('click', function(event) {
         (new SendPurchase()).send(event);
         event.preventDefault();
     });

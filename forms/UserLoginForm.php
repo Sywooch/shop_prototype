@@ -45,13 +45,13 @@ class UserLoginForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['email', 'password'], 'required', 'on'=>self::LOGIN],
-            [['email'], 'email', 'on'=>self::LOGIN],
+            [['email', 'password'], 'required', 'enableClientValidation'=>true, 'on'=>self::LOGIN],
+            [['email'], 'email', 'enableClientValidation'=>true, 'on'=>self::LOGIN],
             [['email'], UserEmailExistsAuthValidator::class, 'on'=>self::LOGIN],
             [['password'], PasswordCorrectAuthValidator::class, 'on'=>self::LOGIN, 'when'=>function($model, $attribute) {
                 return empty($this->errors);
             }],
-            [['id'], 'required', 'on'=>self::LOGOUT],
+            [['id'], 'required', 'enableClientValidation'=>true, 'on'=>self::LOGOUT],
         ];
     }
 }

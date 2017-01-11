@@ -43,7 +43,13 @@ class UserRecoveryWidget extends AbstractBaseWidget
             
             $renderArray['formModel'] = $this->form;
             $renderArray['formId'] = 'recovery-password-form';
+            
             $renderArray['ajaxValidation'] = false;
+            $renderArray['validateOnSubmit'] = true;
+            $renderArray['validateOnChange'] = false;
+            $renderArray['validateOnBlur'] = false;
+            $renderArray['validateOnType'] = false;
+            
             $renderArray['formAction'] = Url::to(['/user/recovery-post']);
             $renderArray['button'] = \Yii::t('base', 'Send');
             

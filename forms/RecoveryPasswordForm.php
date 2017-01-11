@@ -31,8 +31,8 @@ class RecoveryPasswordForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['email'], 'required', 'on'=>self::GET],
-            [['email'], 'email'],
+            [['email'], 'required', 'enableClientValidation'=>true, 'on'=>self::GET],
+            [['email'], 'email', 'enableClientValidation'=>true],
             [['email'], UserEmailExistsAuthValidator::class, 'on'=>self::GET],
         ];
     }

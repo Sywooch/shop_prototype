@@ -40,8 +40,8 @@ class UserRegistrationForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['email', 'password', 'password2'], 'required', 'on'=>self::REGISTRATION],
-            [['email'], 'email', 'on'=>self::REGISTRATION],
+            [['email', 'password', 'password2'], 'required', 'enableClientValidation'=>true, 'on'=>self::REGISTRATION],
+            [['email'], 'email', 'enableClientValidation'=>true, 'on'=>self::REGISTRATION],
             [['email'], UserEmailExistsRegValidator::class, 'on'=>self::REGISTRATION],
             [['password2'], PasswordIdenticRegValidator::class, 'on'=>self::REGISTRATION],
         ];

@@ -3,7 +3,9 @@ $(function() {
     function SendUserRegistration() {
         var self = this;
         AbstractSendForm.apply(this, arguments);
-        self.success = function(data, status, jqXHR) {
+        self.success = function(data, status, jqXHR)
+        {
+            self.form.find('div.help-block').html('');
             if (typeof data == 'string') {
                 $('div.registration').html(data);
             } else if (typeof data == 'object') {
@@ -14,7 +16,7 @@ $(function() {
         };
     };
     
-    $('#registration-form').find('input[type="submit"]').click(function(event) {
+    $('#registration-form').find('input[type="submit"]').on('click', function(event) {
         (new SendUserRegistration()).send(event);
         event.preventDefault();
     });

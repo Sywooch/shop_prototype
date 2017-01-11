@@ -1,6 +1,6 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-{% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'POST'}) %}
+{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
     {{ form.field(formModel, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
     {{ form.field(formModel, 'id_color').dropDownList(colors) | raw }}
     {{ form.field(formModel, 'id_size').dropDownList(sizes) | raw }}

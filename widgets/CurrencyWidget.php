@@ -46,7 +46,13 @@ class CurrencyWidget extends AbstractBaseWidget
             
             $renderArray['formModel'] = $this->form;
             $renderArray['formId'] = 'set-currency-form';
+            
             $renderArray['ajaxValidation'] = false;
+            $renderArray['validateOnSubmit'] = false;
+            $renderArray['validateOnChange'] = false;
+            $renderArray['validateOnBlur'] = false;
+            $renderArray['validateOnType'] = false;
+            
             $renderArray['formAction'] = Url::to(['/currency/set']);
             $renderArray['button'] = \Yii::t('base', 'Change');
             

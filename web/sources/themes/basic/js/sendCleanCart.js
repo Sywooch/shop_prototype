@@ -5,6 +5,7 @@ $(function() {
         AbstractSendForm.apply(this, arguments);
         self.success = function(data, status, jqXHR)
         {
+            self.form.find('div.help-block').html('');
             if (typeof data == 'string') {
                 $('#cart').html(data);
             }
