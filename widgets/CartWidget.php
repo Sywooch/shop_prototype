@@ -25,6 +25,14 @@ class CartWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
+     * @var object PurchaseForm
+     */
+    private $updateForm;
+    /**
+     * @var object PurchaseForm
+     */
+    private $deleteForm;
+    /**
      * @var string имя шаблона
      */
     public $view;
@@ -42,6 +50,12 @@ class CartWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
+            if (empty($this->updateForm)) {
+                throw new ErrorException($this->emptyError('updateForm'));
+            }
+            if (empty($this->deleteForm)) {
+                throw new ErrorException($this->emptyError('deleteForm'));
+            }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
             }
@@ -55,15 +69,16 @@ class CartWidget extends AbstractBaseWidget
                 $set['short_description'] = $purchase->product->short_description;
                 $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
                 
-                $set['formModel'] = new PurchaseForm([
-                    'scenario'=>PurchaseForm::UPDATE,
+                $updateForm = clone $this->updateForm;
+                
+                $set['formModel'] = \Yii::configure($updateForm, [
                     'id_color'=>$purchase->id_color,
                     'id_size'=>$purchase->id_size,
                     'quantity'=>$purchase->quantity,
                 ]);
                 $set['idForm'] = sprintf('update-product-form-%d', $purchase->id_product);
                 
-                $set['formModelDelete'] = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
+                $set['formModelDelete'] = clone $this->deleteForm;
                 $set['idFormDelete'] = sprintf('delete-product-form-%d', $purchase->id_product);
                 
                 $colors = $purchase->product->colors;
@@ -123,6 +138,32 @@ class CartWidget extends AbstractBaseWidget
     {
         try {
             $this->currency = $model;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает PurchaseForm свойству CartWidget::updateForm
+     * @param CommentForm $form
+     */
+    public function setUpdateForm(PurchaseForm $updateForm)
+    {
+        try {
+            $this->updateForm = $updateForm;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает PurchaseForm свойству CartWidget::deleteForm
+     * @param CommentForm $form
+     */
+    public function setDeleteForm(PurchaseForm $deleteForm)
+    {
+        try {
+            $this->deleteForm = $deleteForm;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

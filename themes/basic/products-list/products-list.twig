@@ -10,14 +10,14 @@
 
 {{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}
 
-{{ filters_widget_widget(filtersWidgetConfig) }}
+<div class="products-filters">{{ filters_widget_widget(filtersWidgetConfig) }}</div>
 
 {% if emptyProductsWidgetConfig %}
-    {{ empty_products_widget_widget(emptyProductsWidgetConfig) }}
+    <div class="products-items">{{ empty_products_widget_widget(emptyProductsWidgetConfig) }}</div>
 {% else %}
-    {{ products_widget_widget(productsWidgetConfig) }}
+    <div class="products-items">{{ products_widget_widget(productsWidgetConfig) }}</div>
     
-    {{ pagination_widget_widget(paginationWidgetConfig) }}
+    <div class="products-pagination">{{ pagination_widget_widget(paginationWidgetConfig) }}</div>
 {% endif %}
 
 

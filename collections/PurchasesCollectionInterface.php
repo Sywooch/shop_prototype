@@ -12,4 +12,5 @@ interface PurchasesCollectionInterface
     public function totalQuantity();
     public function totalPrice();
     public function update(Model $object);
+    public function delete(Model $object);
 }

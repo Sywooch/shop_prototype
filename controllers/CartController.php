@@ -9,6 +9,7 @@ use app\actions\{AjaxAction,
 use app\services\{CartAddService,
     CartCleanRedirectService,
     CartCleanService,
+    CartDeleteService,
     CartIndexService,
     CartUpdateService};
 
@@ -40,6 +41,10 @@ class CartController extends Controller
             'update'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new CartUpdateService(),
+            ],
+            'delete'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new CartDeleteService(),
             ],
         ];
     }

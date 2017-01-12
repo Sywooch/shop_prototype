@@ -8,6 +8,7 @@ use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
 use app\collections\PurchasesCollectionInterface;
 use app\models\CurrencyModel;
+use app\forms\PurchaseForm;
 
 /**
  * Тестирует класс GetCartWidgetConfigService
@@ -48,9 +49,13 @@ class GetCartWidgetConfigServiceTests extends TestCase
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('purchases', $result);
         $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('updateForm', $result);
+        $this->assertArrayHasKey('deleteForm', $result);
         $this->assertArrayHasKey('view', $result);
         $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInstanceOf(PurchaseForm::class, $result['updateForm']);
+        $this->assertInstanceOf(PurchaseForm::class, $result['deleteForm']);
         $this->assertInternalType('string', $result['view']);
     }
     

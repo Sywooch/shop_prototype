@@ -7,6 +7,7 @@ use app\services\AbstractBaseService;
 use app\finders\PurchasesSessionFinder;
 use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
+use app\forms\PurchaseForm;
 
 /**
  * Возвращает массив конфигурации для виджета ShortCartWidget
@@ -36,6 +37,9 @@ class GetCartWidgetConfigService extends AbstractBaseService
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
+                
+                $dataArray['updateForm'] = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]);
+                $dataArray['deleteForm'] = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
                 
                 $dataArray['view'] = 'cart.twig';
                 

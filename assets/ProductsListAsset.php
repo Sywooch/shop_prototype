@@ -17,6 +17,7 @@ class ProductsListAsset extends AbstractAsset
      */
     public $js = [
         'js/sendCleanCart.js',
+        'js/sendProductsItems.js',
     ];
     /**
      * @var array зависимости пакета

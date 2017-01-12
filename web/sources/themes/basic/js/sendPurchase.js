@@ -7,7 +7,7 @@ $(function() {
         {
             self.form.find('div.help-block').html('');
             if (typeof data == 'object' && data.length != 0) {
-                $('div.shortCart').html(data['cartInfo']);
+                $('div.shortCart').html(data['shortCart']);
                 alert(data['successInfo']);
             }
         };

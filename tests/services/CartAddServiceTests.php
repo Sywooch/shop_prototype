@@ -94,15 +94,15 @@ class CartAddServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('successInfo', $result);
-        $this->assertArrayHasKey('cartInfo', $result);
+        $this->assertArrayHasKey('shortCart', $result);
         $this->assertInternalType('string', $result['successInfo']);
-        $this->assertInternalType('string', $result['cartInfo']);
+        $this->assertInternalType('string', $result['shortCart']);
         
         $this->assertRegExp('#<p>Товар успешно добавлен в корзину!</p>#', $result['successInfo']);
-        $this->assertRegExp('#<p>Товаров в корзине: 2, Общая стоимость: 537,56 UAH</p>#', $result['cartInfo']);
-        $this->assertRegExp('#<p><a href=".+">В корзину</a></p>#', $result['cartInfo']);
-        $this->assertRegExp('#<form id="clean-cart-form"#', $result['cartInfo']);
-        $this->assertRegExp('#<input type="submit" value="Очистить">#', $result['cartInfo']);
+        $this->assertRegExp('#<p>Товаров в корзине: 2, Общая стоимость: 537,56 UAH</p>#', $result['shortCart']);
+        $this->assertRegExp('#<p><a href=".+">В корзину</a></p>#', $result['shortCart']);
+        $this->assertRegExp('#<form id="clean-cart-form"#', $result['shortCart']);
+        $this->assertRegExp('#<input type="submit" value="Очистить">#', $result['shortCart']);
     }
     
     public static function tearDownAfterClass()

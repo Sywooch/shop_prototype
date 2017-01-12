@@ -229,4 +229,42 @@ class PurchasesCollectionTests extends TestCase
         $this->assertEquals(236, $result[0]->id_product);
         $this->assertEquals(24.78, $result[0]->price);
     }
+    
+    /**
+    * Тестирует метод PurchasesCollection::delete
+    */
+    public function testDelete()
+    {
+        $model1 = new class() extends Model {
+            public $quantity = 2;
+            public $id_color = 5;
+            public $id_size = 4;
+            public $id_product = 236;
+            public $price = 24.78;
+        };
+        
+        $model2 = new class() extends Model {
+            public $id_product = 236;
+        };
+        
+        $collection = new PurchasesCollection();
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($collection, [$model1]);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        $this->assertNotEmpty($result);
+        
+        $collection->delete($model2);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        $this->assertEmpty($result);
+    }
 }

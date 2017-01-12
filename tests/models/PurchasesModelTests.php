@@ -40,6 +40,7 @@ class PurchasesModelTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('SESSION'));
         $this->assertTrue($reflection->hasConstant('UPDATE'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
         
         $model = new PurchasesModel();
         
@@ -95,7 +96,6 @@ class PurchasesModelTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        
         $this->assertArrayHasKey('id_product', $result);
         $this->assertSame(34, $result['id_product']);
         $this->assertArrayHasKey('quantity', $result);
@@ -119,7 +119,6 @@ class PurchasesModelTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        
         $this->assertArrayHasKey('id_product', $result);
         $this->assertSame(34, $result['id_product']);
         $this->assertArrayHasKey('quantity', $result);
@@ -128,6 +127,18 @@ class PurchasesModelTests extends TestCase
         $this->assertSame(4, $result['id_color']);
         $this->assertArrayHasKey('id_size', $result);
         $this->assertSame(2, $result['id_size']);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::DELETE]);
+        $model->attributes = [
+            'id_product'=>2, 
+        ];
+        
+        $result = $model->toArray();
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        $this->assertArrayHasKey('id_product', $result);
+        $this->assertSame(2, $result['id_product']);
         
         /*$model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
         $model->attributes = [
@@ -252,6 +263,22 @@ class PurchasesModelTests extends TestCase
             'quantity'=>2, 
             'id_color'=>4, 
             'id_size'=>2,
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(1, $model->errors);
+        $this->assertArrayHasKey('id_product', $model->errors);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::DELETE]);
+        $model->attributes = [
+            'id_product'=>34, 
         ];
         $model->validate();
         

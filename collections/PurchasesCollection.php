@@ -104,4 +104,28 @@ class PurchasesCollection extends AbstractBaseCollection implements PurchasesCol
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Удаляет объект из коллекции
+     * @param $object Model 
+     */
+    public function delete(Model $object)
+    {
+        try {
+            if ($this->isEmpty() === true) {
+                throw new ErrorException($this->emptyError('items'));
+            }
+            
+            foreach ($this->items as $key=>$item) {
+                if ((int) $item->id_product === (int) $object->id_product) {
+                    unset($this->items[$key]);
+                    $this->items = array_values($this->items);
+                    return true;
+                }
+            }
+            return false;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

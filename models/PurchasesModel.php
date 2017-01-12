@@ -21,6 +21,10 @@ class PurchasesModel extends AbstractBaseModel
      * Сценарий обновления покупки
      */
     const UPDATE = 'update';
+    /**
+     * Сценарий удаления покупки из корзины
+     */
+    const DELETE = 'delete';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -40,6 +44,7 @@ class PurchasesModel extends AbstractBaseModel
         return [
             self::SESSION=>['id_product', 'quantity', 'id_color', 'id_size', 'price'],
             self::UPDATE=>['id_product', 'quantity', 'id_color', 'id_size'],
+            self::DELETE=>['id_product'],
             //self::GET=>['id', 'id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'price', 'id_delivery', 'id_payment', 'received', 'received_date', 'processed', 'canceled', 'shipped'],
         ];
     }
@@ -49,6 +54,7 @@ class PurchasesModel extends AbstractBaseModel
         return [
             [['id_product', 'quantity', 'id_color', 'id_size', 'price'], 'required', 'on'=>self::SESSION],
             [['id_product', 'quantity', 'id_color', 'id_size'], 'required', 'on'=>self::UPDATE],
+            [['id_product'], 'required', 'on'=>self::DELETE],
         ];
     }
     

@@ -3,8 +3,10 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\actions\RedirectAction;
+use app\actions\{AjaxAction,
+    RedirectAction};
 use app\services\{FiltersSetService,
+    FiltersSetAjaxService,
     FiltersUnsetService};
 
 /**
@@ -16,8 +18,8 @@ class FiltersController extends Controller
     {
         return [
             'set'=>[
-                'class'=>RedirectAction::class,
-                'service'=>new FiltersSetService()
+                'class'=>AjaxAction::class,
+                'service'=>new FiltersSetAjaxService()
             ],
             'unset'=>[
                 'class'=>RedirectAction::class,

@@ -83,7 +83,7 @@ class FiltersWidget extends AbstractBaseWidget
             $renderArray['validateOnType'] = false;
             
             $renderArray['formIdApply'] = 'products-filters-form';
-            $renderArray['formActionApply'] = Url::to(['/filters/set']);
+            $renderArray['formActionApply'] = Url::to(['/filters/set', \Yii::$app->params['categoryKey']=>\Yii::$app->request->get(\Yii::$app->params['categoryKey']), \Yii::$app->params['subcategoryKey']=>\Yii::$app->request->get(\Yii::$app->params['subcategoryKey'])]);
             $renderArray['buttonApply'] = \Yii::t('base', 'Apply');
             
             $renderArray['formIdClean'] = 'products-filters-clean';

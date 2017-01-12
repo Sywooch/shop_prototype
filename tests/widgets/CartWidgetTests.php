@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use app\widgets\CartWidget;
 use app\collections\PurchasesCollection;
 use app\models\CurrencyModel;
+use app\forms\PurchaseForm;
 
 /**
  * Тестирует класс CartWidget
@@ -85,6 +86,66 @@ class CartWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод CartWidget::setUpdateForm
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetUpdateFormError()
+    {
+        $form = new class() {};
+        
+        $widget = new CartWidget();
+        $widget->setUpdateForm($form);
+    }
+    
+    /**
+     * Тестирует метод CartWidget::setUpdateForm
+     */
+    public function testSetUpdateForm()
+    {
+        $form = new class() extends PurchaseForm {};
+        
+        $widget = new CartWidget();
+        $widget->setUpdateForm($form);
+        
+        $reflection = new \ReflectionProperty($widget, 'updateForm');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInstanceOf(PurchaseForm::class, $result);
+    }
+    
+    /**
+     * Тестирует метод CartWidget::setDeleteForm
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetDeleteFormError()
+    {
+        $form = new class() {};
+        
+        $widget = new CartWidget();
+        $widget->setDeleteForm($form);
+    }
+    
+    /**
+     * Тестирует метод CartWidget::setDeleteForm
+     */
+    public function testSetDeleteForm()
+    {
+        $form = new class() extends PurchaseForm {};
+        
+        $widget = new CartWidget();
+        $widget->setDeleteForm($form);
+        
+        $reflection = new \ReflectionProperty($widget, 'deleteForm');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInstanceOf(PurchaseForm::class, $result);
+    }
+    
+    /**
      * Тестирует метод CartWidget::run
      * при отсутствии CartWidget::purchases
      * @expectedException ErrorException
@@ -138,11 +199,11 @@ class CartWidgetTests extends TestCase
     
     /**
      * Тестирует метод CartWidget::run
-     * при отсутствии CartWidget::view
+     * при отсутствии CartWidget::updateForm
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: updateForm
      */
-    public function testRunEmptyView()
+    public function testRunEmptyUpdateForm()
     {
         $purchases = new class() extends PurchasesCollection {
             protected $items = [1];
@@ -159,6 +220,76 @@ class CartWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод CartWidget::run
+     * при отсутствии CartWidget::deleteForm
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: deleteForm
+     */
+    public function testRunEmptyDeleteForm()
+    {
+        $purchases = new class() extends PurchasesCollection {
+            protected $items = [1];
+        };
+        
+        $currency = new class() extends CurrencyModel {};
+        
+        $form = new class() extends PurchaseForm {};
+        
+        $widget = new CartWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $purchases);
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'updateForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод CartWidget::run
+     * при отсутствии CartWidget::view
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     */
+    public function testRunEmptyView()
+    {
+        $purchases = new class() extends PurchasesCollection {
+            protected $items = [1];
+        };
+        
+        $currency = new class() extends CurrencyModel {};
+        
+        $form = new class() extends PurchaseForm {};
+        
+        $widget = new CartWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $purchases);
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'updateForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'deleteForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
         
         $widget->run();
     }
@@ -221,6 +352,8 @@ class CartWidgetTests extends TestCase
             public $code = 'MONEY';
         };
         
+        $form = new class() extends PurchaseForm {};
+        
         $widget = new CartWidget();
         
         $reflection = new \ReflectionProperty($widget, 'purchases');
@@ -230,6 +363,14 @@ class CartWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'updateForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'deleteForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
