@@ -38,7 +38,7 @@ class CartController extends Controller
                 'service'=>new CartCleanRedirectService(),
             ],
             'update'=>[
-                'class'=>RedirectAction::class,
+                'class'=>AjaxAction::class,
                 'service'=>new CartUpdateService(),
             ],
         ];

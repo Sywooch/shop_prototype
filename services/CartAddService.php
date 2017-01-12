@@ -11,7 +11,8 @@ use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
 use app\finders\PurchasesSessionFinder;
-use app\widgets\PurchaseSaveInfoWidget;
+use app\widgets\{PurchaseSaveInfoWidget,
+    ShortCartWidget};
 use app\models\PurchasesModel;
 
 /**
@@ -63,8 +64,9 @@ class CartAddService extends AbstractBaseService
                     $dataArray = [];
                     
                     $service = \Yii::$app->registry->get(GetShortCartWidgetAjaxConfigService::class);
-                    $dataArray['cartInfo'] = $service->handle();
-            
+                    $shortCartWidgetAjaxConfig = $service->handle();
+                    
+                    $dataArray['cartInfo'] = ShortCartWidget::widget($shortCartWidgetAjaxConfig);
                     $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);
                     
                     return $dataArray;

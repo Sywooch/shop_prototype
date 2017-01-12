@@ -7,12 +7,12 @@ $(function() {
         {
             self.form.find('div.help-block').html('');
             if (typeof data == 'string') {
-                $('#cart').html(data);
+                $('div.shortCart').html(data);
             }
         };
     };
     
-    $('#cart').on('click', '#clean-cart-form > input[type="submit"]', function(event) {
+    $('div.shortCart').on('click', '#clean-cart-form > input[type="submit"]', function(event) {
         (new SendCleanCart()).send(event);
         event.preventDefault();
     });

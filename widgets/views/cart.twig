@@ -8,7 +8,7 @@
         <br>{{ priceText }} <span class="price">{{ product.price }}</span>
         <br>{{ product.image | raw }}
         
-        <br>{% set form=active_form_begin({'id':product.idForm, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+        <br>{% set form=active_form_begin({'id':product.idForm, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST', 'options':{'name':product.idForm}}) %}
             {{ form.field(product.formModel, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
             {{ form.field(product.formModel, 'id_color').dropDownList(product.colors) | raw }}
             {{ form.field(product.formModel, 'id_size').dropDownList(product.sizes) | raw }}
@@ -16,7 +16,7 @@
             <input type="submit" value="{{ button }}">
         {{ active_form_end() }}
         
-        {% set form=active_form_begin({'id':product.idFormDelete, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionDelete, 'method':'POST'}) %}
+        {% set form=active_form_begin({'id':product.idFormDelete, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionDelete, 'method':'POST', 'options':{'name':product.idFormDelete}}) %}
             {{ form.field(product.formModelDelete, 'id_product').hiddenInput({'value':product.id_product}).label(false) | raw }}
             <input type="submit" value="{{ buttonDelete }}">
         {{ active_form_end() }}

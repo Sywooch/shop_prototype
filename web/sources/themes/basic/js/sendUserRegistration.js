@@ -8,7 +8,7 @@ $(function() {
             self.form.find('div.help-block').html('');
             if (typeof data == 'string') {
                 $('div.registration').html(data);
-            } else if (typeof data == 'object') {
+            } else if (typeof data == 'object' && data.length != 0) {
                 for (var key in data) {
                     $('#' + key).closest('.form-group').find('.help-block').text(data[key]);
                 }

@@ -241,7 +241,10 @@ class CartWidgetTests extends TestCase
         $this->assertRegExp('#<a href=".+">Product 1</a>#', $result);
         $this->assertRegExp('#Short description 1#', $result);
         $this->assertRegExp('#<span class="price">258,47 MONEY</span>#', $result);
-        $this->assertRegExp('#<form id="form-id-1"#', $result);
+        $this->assertRegExp('#<form id="update-product-form-1"#', $result);
+        $this->assertRegExp('#<form id="delete-product-form-1"#', $result);
+        $this->assertRegExp('#<form id="update-product-form-2"#', $result);
+        $this->assertRegExp('#<form id="delete-product-form-2"#', $result);
         $this->assertRegExp('#<label .+>Quantity</label>#', $result);
         $this->assertRegExp('#<input type="number"#', $result);
         $this->assertRegExp('#<label .+>Id Color</label>#', $result);
@@ -251,15 +254,12 @@ class CartWidgetTests extends TestCase
         $this->assertRegExp('#<option value="3" selected>35.5</option>#', $result);
         $this->assertRegExp('#<option value="1">45</option>#', $result);
         $this->assertRegExp('#<input type="submit" value="Обновить">#', $result);
-        $this->assertRegExp('#<form id="form-id-delete-1"#', $result);
         $this->assertRegExp('#<input type="submit" value="Удалить">#', $result);
-        
         $this->assertRegExp('#<li class="product-id-2">#', $result);
         $this->assertRegExp('#<a href=".+">Product 2</a>#', $result);
         $this->assertRegExp('#Short description 2#', $result);
         $this->assertRegExp('#<span class="price">177,65 MONEY</span>#', $result);
         $this->assertRegExp('#<img src=".+" alt="">#', $result);
-        $this->assertRegExp('#<form id="form-id-2"#', $result);
         $this->assertRegExp('#<option value="2">black</option>#', $result);
         $this->assertRegExp('#<option value="3" selected>red</option>#', $result);
         $this->assertRegExp('#<option value="1">45</option>#', $result);

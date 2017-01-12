@@ -20,9 +20,9 @@ class GetShortCartWidgetAjaxConfigService extends AbstractBaseService
     /**
      * Возвращает массив с HTML строкой данных
      * @param $request
-     * @return string
+     * @return array
      */
-    public function handle($request=null): string
+    public function handle($request=null): array
     {
         try {
             if (empty($this->cartWidgetAjaxArray)) {
@@ -31,7 +31,7 @@ class GetShortCartWidgetAjaxConfigService extends AbstractBaseService
                 
                 $cartInfoWidget['view'] = 'short-cart-ajax.twig';
                 
-                $this->cartWidgetAjaxArray = ShortCartWidget::widget($cartInfoWidget);
+                $this->cartWidgetAjaxArray = $cartInfoWidget;
             }
             
             return $this->cartWidgetAjaxArray;

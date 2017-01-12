@@ -8,6 +8,7 @@ use app\services\{AbstractBaseService,
     GetShortCartWidgetAjaxConfigService};
 use app\helpers\HashHelper;
 use app\cleaners\SessionCleaner;
+use app\widgets\ShortCartWidget;
 
 /**
  * Сохраняет новую покупку в корзине
@@ -30,8 +31,11 @@ class CartCleanService extends AbstractBaseService
                 ]);
                 $cleaner->clean();
                 
+                
                 $service = \Yii::$app->registry->get(GetShortCartWidgetAjaxConfigService::class);
-                $cartInfo = $service->handle();
+                $shortCartWidgetAjaxConfig = $service->handle();
+                    
+                $cartInfo = ShortCartWidget::widget($shortCartWidgetAjaxConfig);
             
                 return $cartInfo;
             }

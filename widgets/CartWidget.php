@@ -61,10 +61,10 @@ class CartWidget extends AbstractBaseWidget
                     'id_size'=>$purchase->id_size,
                     'quantity'=>$purchase->quantity,
                 ]);
-                $set['idForm'] = sprintf('form-id-%d', $purchase->id_product);
+                $set['idForm'] = sprintf('update-product-form-%d', $purchase->id_product);
                 
                 $set['formModelDelete'] = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
-                $set['idFormDelete'] = sprintf('form-id-delete-%d', $purchase->id_product);
+                $set['idFormDelete'] = sprintf('delete-product-form-%d', $purchase->id_product);
                 
                 $colors = $purchase->product->colors;
                 ArrayHelper::multisort($colors, 'color');
@@ -77,7 +77,7 @@ class CartWidget extends AbstractBaseWidget
                 if (!empty($purchase->product->images)) {
                     $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $purchase->product->images) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
                     if (!empty($imagesArray)) {
-                        $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $purchase->product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]));
+                        $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $purchase->product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]), ['height'=>200]);
                     }
                 }
                 

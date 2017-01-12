@@ -11,7 +11,7 @@ $(function() {
                 self.form.find('input[type="text"], textarea').val('');
                 self.infoDiv.html(data);
                 setTimeout(timeoutRemove, 5000);
-            } else if (typeof data == 'object') {
+            } else if (typeof data == 'object' && data.length != 0) {
                 for (var key in data) {
                     $('#' + key).closest('div.form-group').find('div.help-block').text(data[key]);
                 }

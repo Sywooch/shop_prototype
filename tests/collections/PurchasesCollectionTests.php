@@ -204,5 +204,29 @@ class PurchasesCollectionTests extends TestCase
         $reflection = new \ReflectionProperty($collection, 'items');
         $reflection->setAccessible(true);
         $reflection->setValue($collection, [$model1]);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        $this->assertCount(1, $result);
+        $this->assertEquals(2, $result[0]->quantity);
+        $this->assertEquals(5, $result[0]->id_color);
+        $this->assertEquals(4, $result[0]->id_size);
+        $this->assertEquals(236, $result[0]->id_product);
+        $this->assertEquals(24.78, $result[0]->price);
+        
+        $collection->update($model2);
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        $this->assertCount(1, $result);
+        $this->assertEquals(18, $result[0]->quantity);
+        $this->assertEquals(1, $result[0]->id_color);
+        $this->assertEquals(15, $result[0]->id_size);
+        $this->assertEquals(236, $result[0]->id_product);
+        $this->assertEquals(24.78, $result[0]->price);
     }
 }

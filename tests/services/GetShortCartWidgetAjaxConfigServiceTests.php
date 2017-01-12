@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase;
 use app\services\GetShortCartWidgetAjaxConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
+use app\collections\PurchasesCollection;
+use app\models\CurrencyModel;
 
 /**
  * Тестирует класс GetShortCartWidgetAjaxConfigService
@@ -42,9 +44,14 @@ class GetShortCartWidgetAjaxConfigServiceTests extends TestCase
         $service = new GetShortCartWidgetAjaxConfigService();
         $result = $service->handle();
         
-        $this->assertInternalType('string', $result);
+        $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertRegExp('#<p>Товаров в корзине: 0, Общая стоимость: 0,00 UAH</p>#', $result);
+        $this->assertArrayHasKey('purchases', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('view', $result);
+        $this->assertInstanceOf(PurchasesCollection::class, $result['purchases']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInternalType('string', $result['view']);
     }
     
     public static function tearDownAfterClass()

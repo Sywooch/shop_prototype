@@ -180,7 +180,7 @@ class ShortCartRedirectWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<div id="cart">#', $result);
+        $this->assertRegExp('#<div class="shortCart">#', $result);
         $this->assertRegExp('#<p>Товаров в корзине: 14, Общая стоимость: 14411,43 MONEY#', $result);
         $this->assertRegExp('#<form id="clean-cart-form"#', $result);
         $this->assertRegExp('#<input type="submit" value="Очистить">#', $result);

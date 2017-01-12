@@ -1,4 +1,4 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/CartItemsAsset') }}
 
 {{ use('app/widgets/CartBreadcrumbsWidget') }}
 {{ use('app/widgets/CartWidget') }}
@@ -7,6 +7,8 @@
 
 {{ cart_breadcrumbs_widget_widget() }}
 
-{{ cart_widget_widget(cartWidgetConfig) }}
+<div class="cart-items">
+    {{ cart_widget_widget(cartWidgetConfig) }}
+</div>
 
 {{ short_cart_redirect_widget_widget(shortCartRedirectWidgetConfig) }}

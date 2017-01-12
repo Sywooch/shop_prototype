@@ -6,7 +6,7 @@ $(function() {
         self.success = function(data, status, jqXHR)
         {
             if (typeof data == 'object' && data.length != 0) {
-                $('#cart').html(data['cartInfo']);
+                $('div.shortCart').html(data['cartInfo']);
             }
         };
     };
