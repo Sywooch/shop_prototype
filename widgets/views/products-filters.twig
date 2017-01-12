@@ -9,6 +9,8 @@
     {{ form.field(formModel, 'sizes').checkboxList(sizes) | raw }}
     {{ form.field(formModel, 'brands').checkboxList(brands) | raw }}
     {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    {{ form.field(formModel, 'category').hiddenInput().label(false) | raw }}
+    {{ form.field(formModel, 'subcategory').hiddenInput().label(false) | raw }}
     <input type="submit" value="{{ buttonApply }}">
 {{ active_form_end() }}
 

@@ -26,6 +26,8 @@ class FiltersFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('sizes'));
         $this->assertTrue($reflection->hasProperty('brands'));
         $this->assertTrue($reflection->hasProperty('url'));
+        $this->assertTrue($reflection->hasProperty('category'));
+        $this->assertTrue($reflection->hasProperty('subcategory'));
     }
     
     /**
@@ -41,6 +43,8 @@ class FiltersFormTests extends TestCase
             'sizes'=>[2, 3],
             'brands'=>[1],
             'url'=>'https://shop.com',
+            'category'=>'man',
+            'subcategory'=>'shoes',
         ];
         
         $reflection = new \ReflectionProperty($form, 'sortingField');
@@ -60,6 +64,12 @@ class FiltersFormTests extends TestCase
         
         $reflection = new \ReflectionProperty($form, 'url');
         $this->assertSame('https://shop.com', $reflection->getValue($form));
+        
+        $reflection = new \ReflectionProperty($form, 'category');
+        $this->assertSame('man', $reflection->getValue($form));
+        
+        $reflection = new \ReflectionProperty($form, 'subcategory');
+        $this->assertSame('shoes', $reflection->getValue($form));
         
         $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
         $form->attributes = [

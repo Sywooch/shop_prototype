@@ -6,9 +6,9 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\services\{AbstractBaseService,
-    GetFiltersWidgetConfigService,
+    GetFiltersWidgetConfigAjaxService,
     GetPaginationWidgetConfigService,
-    GetProductsCollectionService,
+    GetProductsCollectionAjaxService,
     GetProductsWidgetConfigService};
 use app\forms\FiltersForm;
 use app\helpers\{HashHelper,
@@ -59,12 +59,16 @@ class FiltersSetAjaxService extends AbstractBaseService
                     ]);
                     $saver->save();
                     
-                    $service = \Yii::$app->registry->get(GetProductsCollectionService::class);
-                    $productsCollection = $service->handle($request);
+                    $service = \Yii::$app->registry->get(GetProductsCollectionAjaxService::class);
+                    $productsCollection = $service->handle([
+                        'key'=>$form->url,
+                        \Yii::$app->params['categoryKey']=>$form->category, 
+                        \Yii::$app->params['subcategoryKey']=>$form->subcategory
+                    ]);
                     
                     $dataArray = [];
                     
-                    if ($productsCollection->isEmpty() === true) {
+                    /*if ($productsCollection->isEmpty() === true) {
                         $service = \Yii::$app->registry->get(GetEmptyProductsWidgetConfigService::class);
                         $emptyProductsWidgetConfig = $service->handle();
                         $dataArray['items'] = EmptyProductsWidget::widget($emptyProductsWidgetConfig);
@@ -76,40 +80,19 @@ class FiltersSetAjaxService extends AbstractBaseService
                         $service = \Yii::$app->registry->get(GetPaginationWidgetConfigService::class);
                         $paginationWidgetConfig = $service->handle($request);
                         $dataArray['pagination'] = PaginationWidget::widget($paginationWidgetConfig);
-                    }
+                    }*/
                     
-                    $service = \Yii::$app->registry->get(GetFiltersWidgetConfigService::class);
-                    $filtersWidgetConfig = $service->handle($request);
-                    $dataArray['filters'] = FiltersWidget::widget($filtersWidgetConfig);
+                    $service = \Yii::$app->registry->get(GetFiltersWidgetConfigAjaxService::class);
+                    $filtersWidgetConfigAjax = $service->handle([
+                        'url'=>$form->url, 
+                        \Yii::$app->params['categoryKey']=>$form->category, 
+                        \Yii::$app->params['subcategoryKey']=>$form->subcategory
+                    ]);
+                    $dataArray['filters'] = FiltersWidget::widget($filtersWidgetConfigAjax);
                     
                     return $dataArray;
                 }
             }
-            
-            /*if ($form->load($request->post()) === false) {
-                throw new ErrorException($this->emptyError('request'));
-            }
-            if ($form->validate() === false) {
-                throw new ErrorException($this->modelError($form->errors));
-            }
-            
-            $model = new ProductsFilters(['scenario'=>ProductsFilters::SESSION]);
-            $model->sortingField = $form->sortingField;
-            $model->sortingType = $form->sortingType;
-            $model->colors = $form->colors;
-            $model->sizes = $form->sizes;
-            $model->brands = $form->brands;
-            if ($model->validate() === false) {
-                throw new ErrorException($this->modelError($model->errors));
-            }
-            
-            $saver = new SessionModelSaver([
-                'key'=>HashHelper::createFiltersKey($form->url),
-                'model'=>$model
-            ]);
-            $saver->save();
-            
-            return StringHelper::cutPage($form->url);*/
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

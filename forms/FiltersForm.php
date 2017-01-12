@@ -43,11 +43,19 @@ class FiltersForm extends AbstractBaseForm
      * @var string URL, с которого была запрошена сортировка
      */
     public $url;
+    /**
+     * @var string seocode категории
+     */
+    public $category;
+    /**
+     * @var string seocode подкатегории
+     */
+    public $subcategory;
     
     public function scenarios()
     {
         return [
-            self::SAVE=>['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'url'],
+            self::SAVE=>['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'url', 'category', 'subcategory'],
             self::CLEAN=>['url'],
         ];
     }

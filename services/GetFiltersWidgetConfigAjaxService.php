@@ -3,10 +3,9 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Url};
+use yii\helpers\ArrayHelper;
 use app\services\{AbstractBaseService,
-    GetProductsFiltersModelService};
+    GetProductsFiltersModelServiceAjax};
 use app\finders\{BrandsFilterFinder,
     ColorsFilterFinder,
     SizesFilterFinder,
@@ -17,7 +16,7 @@ use app\forms\FiltersForm;
 /**
  * Возвращает массив конфигурации для виджета FiltersWidget
  */
-class GetFiltersWidgetConfigService extends AbstractBaseService
+class GetFiltersWidgetConfigAjaxService extends AbstractBaseService
 {
     /**
      * @var array конфигурации для виджета FiltersWidget
@@ -35,8 +34,14 @@ class GetFiltersWidgetConfigService extends AbstractBaseService
             if (empty($this->filtersWidgetArray)) {
                 $dataArray = [];
                 
-                $category = $request->get(\Yii::$app->params['categoryKey']) ?? null;
-                $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? null;
+                $url = $request['url'] ?? null;
+                
+                if (empty($url)) {
+                    throw new ErrorException($this->emptyError('url'));
+                }
+                
+                $category = $request[\Yii::$app->params['categoryKey']] ?? null;
+                $subcategory = $request[\Yii::$app->params['subcategoryKey']] ?? null;
                 
                 $finder = \Yii::$app->registry->get(ColorsFilterFinder::class, ['category'=>$category, 'subcategory'=>$subcategory]);
                 $colorsArray = $finder->find();
@@ -78,12 +83,12 @@ class GetFiltersWidgetConfigService extends AbstractBaseService
                 ArrayHelper::multisort($sortingTypesArray, 'value');
                 $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
                 
-                $service = \Yii::$app->registry->get(GetProductsFiltersModelService::class);
-                $filtersModel = $service->handle();
+                $service = \Yii::$app->registry->get(GetProductsFiltersModelServiceAjax::class);
+                $filtersModel = $service->handle(['key'=>$url]);
                 
                 $filtersFormConfig = [
                     'scenario'=>FiltersForm::SAVE, 
-                    'url'=>Url::current(),
+                    'url'=>$url,
                     'category'=>$category,
                     'subcategory'=>$subcategory
                 ];

@@ -6,8 +6,8 @@ $(function() {
         self.success = function(data, status, jqXHR)
         {
             if (typeof data == 'object' && data.length != 0) {
-                $('div.products-items').html(data['items']);
-                $('div.products-pagination').html(data['pagination']);
+                //$('div.products-items').html(data['items']);
+                //$('div.products-pagination').html(data['pagination']);
                 $('div.products-filters').html(data['filters']);
             }
         };
