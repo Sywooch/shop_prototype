@@ -51,9 +51,6 @@ class CartCheckoutService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
                 $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
                 
-                /*$service = \Yii::$app->registry->get(GetCartCheckoutLinkWidgetConfigService::class);
-                $dataArray['cartCheckoutLinkWidgetConfig'] = $service->handle();*/
-                
                 $this->dataArray = $dataArray;
             }
             

@@ -82,6 +82,10 @@ class CartCheckoutWidget extends AbstractBaseWidget
             $renderArray['formAction'] = Url::to(['/cart/сheckout-post']);
             $renderArray['button'] = \Yii::t('base', 'Checkout');
             
+            $renderArray['formIdBack'] = 'back-to-cart';
+            $renderArray['formActionBack'] = Url::to(['/cart/index']);
+            $renderArray['buttonBack'] = \Yii::t('base', 'To cart');
+            
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
