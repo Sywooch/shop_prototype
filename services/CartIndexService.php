@@ -5,6 +5,7 @@ namespace app\services;
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetShortCartWidgetConfigRedirectService,
+    GetCartCheckoutLinkWidgetConfigService,
     GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
@@ -49,6 +50,9 @@ class CartIndexService extends AbstractBaseService
                 
                 $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
                 $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetCartCheckoutLinkWidgetConfigService::class);
+                $dataArray['cartCheckoutLinkWidgetConfig'] = $service->handle();
                 
                 $this->dataArray = $dataArray;
             }

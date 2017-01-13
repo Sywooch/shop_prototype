@@ -2,6 +2,7 @@
 
 {{ use('app/widgets/CartBreadcrumbsWidget') }}
 {{ use('app/widgets/CartWidget') }}
+{{ use('app/widgets/CartCheckoutLinkWidget') }}
 
 {{ include('@theme/common/frontend-cart-common.twig') }}
 
@@ -12,3 +13,5 @@
 </div>
 
 {{ short_cart_redirect_widget_widget(shortCartRedirectWidgetConfig) }}
+
+{{ cart_checkout_link_widget_widget(cartCheckoutLinkWidgetConfig) }}

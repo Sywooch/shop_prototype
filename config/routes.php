@@ -45,6 +45,7 @@ $routes = [
     'cart-clean-redirect'=>'cart/clean-redirect',
     'cart-update'=>'cart/update',
     'cart-delete'=>'cart/delete',
+    'cart-сheckout'=>'cart/сheckout',
     /*'cart'=>'cart/index',
     'cart-set'=>'cart/set',
     'cart-customer'=>'cart/customer',
