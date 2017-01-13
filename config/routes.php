@@ -46,6 +46,7 @@ $routes = [
     'cart-update'=>'cart/update',
     'cart-delete'=>'cart/delete',
     'cart-сheckout'=>'cart/сheckout',
+    'cart-сheckout-post'=>'cart/сheckout-post',
     /*'cart'=>'cart/index',
     'cart-set'=>'cart/set',
     'cart-customer'=>'cart/customer',

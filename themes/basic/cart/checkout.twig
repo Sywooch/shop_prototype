@@ -1,0 +1,10 @@
+{{ register_asset_bundle('app/assets/CartItemsAsset') }}
+
+{{ use('app/widgets/CartBreadcrumbsWidget') }}
+{{ use('app/widgets/CartCheckoutWidget') }}
+
+{{ include('@theme/common/frontend-cart-common.twig') }}
+
+{{ cart_breadcrumbs_widget_widget() }}
+
+{{ cart_checkout_widget_widget(cartCheckoutWidgetConfig) }}

@@ -1,0 +1,21 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+    {{ form.field(modelForm, 'name') | raw }}
+    {{ form.field(modelForm, 'surname') | raw }}
+    <br/>
+    {{ form.field(modelForm, 'email') | raw }}
+    {{ form.field(modelForm, 'phone') | raw }}
+    <br/>
+    {{ form.field(modelForm, 'address') | raw }}
+    {{ form.field(modelForm, 'city') | raw }}
+    {{ form.field(modelForm, 'country') | raw }}
+    {{ form.field(modelForm, 'postcode') | raw }}
+    <br/>
+    {{ form.field(modelForm, 'delivery').radioList(deliveries) | raw }}
+    {{ form.field(modelForm, 'payment').radioList(payments) | raw }}
+    <br/>
+    <input type="submit" value="{{ button }}">
+{{ active_form_end() }}

@@ -7,6 +7,7 @@ use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
 use app\services\{CartAddService,
+    CartCheckoutService,
     CartCleanRedirectService,
     CartCleanService,
     CartDeleteService,
@@ -45,6 +46,11 @@ class CartController extends Controller
             'delete'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new CartDeleteService(),
+            ],
+            'сheckout'=>[
+                'class'=>GetAction::class,
+                'service'=>new CartCheckoutService(),
+                'view'=>'checkout.twig'
             ],
         ];
     }
