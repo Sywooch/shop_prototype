@@ -1,5 +1,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 
+<p><strong>{{ header }}</strong></p>
+
 <ol>
 {% for product in collection %}
     <li class="product-id-{{ product.id_product }}">

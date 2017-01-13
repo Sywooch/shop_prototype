@@ -23,7 +23,7 @@ class CartCleanRedirectService extends AbstractBaseService
         try {
             if ($request->isPost === true) {
                 $cleaner = new SessionCleaner([
-                    'keys'=>[HashHelper::createCartKey()],
+                    'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],
                 ]);
                 $cleaner->clean();
                 

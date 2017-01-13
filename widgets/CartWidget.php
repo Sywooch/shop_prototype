@@ -99,6 +99,8 @@ class CartWidget extends AbstractBaseWidget
                 $renderArray['collection'][] = $set;
             }
             
+            $renderArray['header'] = \Yii::t('base', 'Selected products');
+            
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
             $renderArray['validateOnChange'] = false;

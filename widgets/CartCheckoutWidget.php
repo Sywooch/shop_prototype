@@ -65,7 +65,7 @@ class CartCheckoutWidget extends AbstractBaseWidget
             $renderArray['formId'] = 'cart-checkout-form';
             
             $renderArray['ajaxValidation'] = true;
-            $renderArray['validateOnSubmit'] = false;
+            $renderArray['validateOnSubmit'] = true;
             $renderArray['validateOnChange'] = false;
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
@@ -81,10 +81,6 @@ class CartCheckoutWidget extends AbstractBaseWidget
             
             $renderArray['formAction'] = Url::to(['/cart/сheckout-post']);
             $renderArray['button'] = \Yii::t('base', 'Checkout');
-            
-            $renderArray['formIdBack'] = 'back-to-cart';
-            $renderArray['formActionBack'] = Url::to(['/cart/index']);
-            $renderArray['buttonBack'] = \Yii::t('base', 'To cart');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

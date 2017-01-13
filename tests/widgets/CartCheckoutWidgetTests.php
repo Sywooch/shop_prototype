@@ -331,7 +331,5 @@ class CartCheckoutWidgetTests extends TestCase
         $this->assertRegExp('#<label .+>Delivery</label>#', $result);
         $this->assertRegExp('#<label .+>Payment</label>#', $result);
         $this->assertRegExp('#<input type="submit" value="Оформить заказ">#', $result);
-        $this->assertRegExp('#<form id="back-to-cart"#', $result);
-        $this->assertRegExp('#<input type="submit" value="В корзину">#', $result);
     }
 }

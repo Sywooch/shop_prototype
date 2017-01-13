@@ -1,13 +1,10 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/CartBreadcrumbsWidget') }}
-{{ use('app/widgets/CartCheckoutWidget') }}
 {{ use('app/widgets/CartBackToCartLinkWidget') }}
 
 {{ include('@theme/common/frontend-cart-common.twig') }}
 
 {{ cart_breadcrumbs_widget_widget() }}
-
-{{ cart_checkout_widget_widget(cartCheckoutWidgetConfig) }}
 
 {{ cart_back_to_cart_link_widget_widget(cartBackToCartLinkWidgetConfig) }}

@@ -6,8 +6,10 @@ use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetCurrentCurrencyModelService};
 use app\forms\CustomerInfoForm;
-use app\finders\{DeliveriesFinder,
+use app\finders\{CustomerInfoSessionFinder,
+    DeliveriesFinder,
     PaymentsFinder};
+use app\helpers\HashHelper;
 
 /**
  * Возвращает массив данных для CartCheckoutWidget
@@ -47,7 +49,10 @@ class GetCartCheckoutWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['form'] = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+                $finder = \Yii::$app->registry->get(CustomerInfoSessionFinder::class, ['key'=>HashHelper::createCartCustomerKey()]);
+                $form = $finder->find();
+                $dataArray['form'] = $form ?? new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+                
                 $dataArray['view'] = 'cart-checkout-form.twig';
                 
                 $this->cartCheckoutWidgetArray = $dataArray;

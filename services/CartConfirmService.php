@@ -4,19 +4,18 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetCartBackToCartLinkWidgetConfigService,
     GetShortCartWidgetConfigRedirectService,
     GetCartCheckoutLinkWidgetConfigService,
-    GetCartCheckoutWidgetConfigService,
+    GetCartWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetUserInfoWidgetConfigService};
 
 /**
- * Формирует массив данных для рендеринга страницы оформления заказа
+ * Формирует массив данных для рендеринга страницы корзины покупок
  */
-class CartCheckoutService extends AbstractBaseService
+class CartConfirmService extends AbstractBaseService
 {
     /**
      * @var array массив данных для рендеринга
@@ -25,7 +24,7 @@ class CartCheckoutService extends AbstractBaseService
     
     /**
      * Обрабатывает запрос на поиск данных для 
-     * формирования HTML страницы оформления заказа
+     * формирования HTML корзины покупок
      * @param array $request
      */
     public function handle($request)
@@ -34,8 +33,8 @@ class CartCheckoutService extends AbstractBaseService
             if (empty($this->dataArray)) {
                 $dataArray = [];
                 
-                $service = \Yii::$app->registry->get(GetCartCheckoutWidgetConfigService::class);
-                $dataArray['cartCheckoutWidgetConfig'] = $service->handle();
+                /*$service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
+                $dataArray['cartWidgetConfig'] = $service->handle();*/
                 
                 $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
                 $dataArray['userInfoWidgetConfig'] = $service->handle();
@@ -54,6 +53,9 @@ class CartCheckoutService extends AbstractBaseService
                 
                 $service = \Yii::$app->registry->get(GetCartBackToCartLinkWidgetConfigService::class);
                 $dataArray['cartBackToCartLinkWidgetConfig'] = $service->handle();
+                
+                /*$service = \Yii::$app->registry->get(GetCartCheckoutLinkWidgetConfigService::class);
+                $dataArray['cartCheckoutLinkWidgetConfig'] = $service->handle();*/
                 
                 $this->dataArray = $dataArray;
             }

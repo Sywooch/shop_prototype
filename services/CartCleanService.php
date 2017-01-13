@@ -27,7 +27,7 @@ class CartCleanService extends AbstractBaseService
                 \Yii::$app->response->format = Response::FORMAT_JSON;
                 
                 $cleaner = new SessionCleaner([
-                    'keys'=>[HashHelper::createCartKey()],
+                    'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],
                 ]);
                 $cleaner->clean();
                 

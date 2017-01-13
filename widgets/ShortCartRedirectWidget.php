@@ -71,7 +71,7 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
             $renderArray['validateOnType'] = false;
             
             $renderArray['formAction'] = Url::to(['/cart/clean-redirect']);
-            $renderArray['button'] = \Yii::t('base', 'Clean');
+            $renderArray['button'] = \Yii::t('base', 'To clean cart');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

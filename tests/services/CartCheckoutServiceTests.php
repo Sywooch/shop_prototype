@@ -62,6 +62,7 @@ class CartCheckoutServiceTests extends TestCase
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
+        $this->assertArrayHasKey('cartBackToCartLinkWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['cartCheckoutWidgetConfig']);
         $this->assertInternalType('array', $result['userInfoWidgetConfig']);
@@ -69,6 +70,7 @@ class CartCheckoutServiceTests extends TestCase
         $this->assertInternalType('array', $result['currencyWidgetConfig']);
         $this->assertInternalType('array', $result['searchWidgetConfig']);
         $this->assertInternalType('array', $result['categoriesMenuWidgetConfig']);
+        $this->assertInternalType('array', $result['cartBackToCartLinkWidgetConfig']);
     }
     
     public static function tearDownAfterClass()

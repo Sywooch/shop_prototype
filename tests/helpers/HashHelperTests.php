@@ -63,6 +63,18 @@ class HashHelperTests extends TestCase
     }
     
     /**
+     * Тестирует метод HashHelper::createCartCustomerKey
+     */
+    public function testCreateCartCustomerKey()
+    {
+        $hash = HashHelper::createCartCustomerKey();
+        $this->assertEquals(40, strlen($hash));
+        
+        $expectedHash = HashHelper::createCartCustomerKey();
+        $this->assertEquals($expectedHash, $hash);
+    }
+    
+    /**
      * Тестирует метод HashHelper::randomString
      */
     public function testRandomString()

@@ -73,6 +73,19 @@ class HashHelper
     }
     
     /**
+     * Конструирует ключ для сохранения данных покупателя
+     * @return string
+     */
+    public static function createCartCustomerKey(): string
+    {
+        try {
+            return self::createHash([\Yii::$app->params['customerKey'], \Yii::$app->user->id ?? '']);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Конструирует случайную строку заданной длины
      * @param int $length длина возвращаемой строки
      * @return string
