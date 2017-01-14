@@ -19,7 +19,8 @@ use app\forms\CustomerInfoForm;
 use app\models\PurchasesModel;
 use app\finders\PurchasesSessionFinder;
 use app\helpers\HashHelper;
-use app\savers\PurchasesArraySaver;
+use app\savers\{PurchasesArraySaver,
+    SessionModelSaver};
 use app\cleaners\SessionCleaner;
 use app\widgets\SuccessSendPurchaseWidget;
 
@@ -44,6 +45,12 @@ class CartCheckoutAjaxService extends AbstractBaseService
                     if (!empty($errors)) {
                         return $errors;
                     }
+                    
+                    $saver = new SessionModelSaver([
+                        'key'=>HashHelper::createCartCustomerKey(),
+                        'model'=>$form
+                    ]);
+                    $saver->save();
                     
                     $transaction = \Yii::$app->db->beginTransaction();
                     

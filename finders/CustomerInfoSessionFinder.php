@@ -28,11 +28,11 @@ class CustomerInfoSessionFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->key)) {
+                throw new ErrorException($this->emptyError('key'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->key)) {
-                    throw new ErrorException($this->emptyError('key'));
-                }
-                
                 $this->storage = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
                 
                 $array = SessionHelper::read($this->key);

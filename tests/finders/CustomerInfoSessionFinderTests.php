@@ -40,7 +40,7 @@ class CustomerInfoSessionFinderTests extends TestCase
      */
     public function testFind()
     {
-        $key = HashHelper::createCartKey();
+        $key = HashHelper::createCartCustomerKey();
         
         $session = \Yii::$app->session;
         $session->open();
@@ -53,8 +53,8 @@ class CustomerInfoSessionFinderTests extends TestCase
             'city'=>'Каркоза',
             'country'=>'Гиады',
             'postcode'=>'08789',
-            'delivery'=>1,
-            'payment'=>1,
+            'id_delivery'=>1,
+            'id_payment'=>1,
         ]);
         
         $finder = new CustomerInfoSessionFinder();
@@ -98,11 +98,11 @@ class CustomerInfoSessionFinderTests extends TestCase
         $result = $reflection->getValue($form);
         $this->assertSame('08789', $result);
         
-        $reflection = new \ReflectionProperty($form, 'delivery');
+        $reflection = new \ReflectionProperty($form, 'id_delivery');
         $result = $reflection->getValue($form);
         $this->assertSame(1, $result);
         
-        $reflection = new \ReflectionProperty($form, 'payment');
+        $reflection = new \ReflectionProperty($form, 'id_payment');
         $result = $reflection->getValue($form);
         $this->assertSame(1, $result);
         

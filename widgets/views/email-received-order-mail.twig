@@ -1,0 +1,26 @@
+<h1>{{ header }}</h1>
+
+{% for product in collection %}
+    <p>
+        <a href="{{ product.link }}">{{ product.linkText }}</a>
+        <br>{{ product.short_description }}
+        <br>{{ product.color }}
+        <br>{{ product.size }}
+        <br>{{ product.price }}
+    </p>
+{% endfor %}
+
+<p><strong>{{ headerDelivery }}</strong></p>
+
+<p>
+    {{ name }}
+    <br>{{ surname }}
+    <br>{{ email }}
+    <br>{{ phone }}
+    <br>{{ address }}
+    <br>{{ city }}
+    <br>{{ country }}
+    <br>{{ postcode }}
+    <br>{{ delivery }}
+    <br>{{ payment }}
+</p>
