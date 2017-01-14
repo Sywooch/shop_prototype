@@ -60,6 +60,7 @@ class PurchasesModel extends AbstractBaseModel
             [['id_product', 'quantity', 'id_color', 'id_size'], 'required', 'on'=>self::UPDATE],
             [['id_product'], 'required', 'on'=>self::DELETE],
             [['id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'price', 'id_delivery', 'id_payment', 'received', 'received_date'], 'required', 'on'=>self::SAVE],
+            [['id_user'], 'default', 'value'=>0, 'on'=>self::SAVE],
         ];
     }
     

@@ -40,8 +40,8 @@ class CartCheckoutPostServiceTests extends TestCase
                         'city'=>'Каркоза',
                         'country'=>'Гиады',
                         'postcode'=>'08789',
-                        'delivery'=>1,
-                        'payment'=>1,
+                        'id_delivery'=>1,
+                        'id_payment'=>1,
                     ],
                 ];
             }
@@ -84,8 +84,8 @@ class CartCheckoutPostServiceTests extends TestCase
                         'city'=>'Каркоза',
                         'country'=>'Гиады',
                         'postcode'=>'08789',
-                        'delivery'=>1,
-                        'payment'=>1,
+                        'id_delivery'=>1,
+                        'id_payment'=>1,
                     ],
                 ];
             }

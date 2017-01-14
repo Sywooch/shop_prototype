@@ -27,8 +27,8 @@ class CustomerInfoFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('city'));
         $this->assertTrue($reflection->hasProperty('country'));
         $this->assertTrue($reflection->hasProperty('postcode'));
-        $this->assertTrue($reflection->hasProperty('delivery'));
-        $this->assertTrue($reflection->hasProperty('payment'));
+        $this->assertTrue($reflection->hasProperty('id_delivery'));
+        $this->assertTrue($reflection->hasProperty('id_payment'));
     }
     
     /**
@@ -46,8 +46,8 @@ class CustomerInfoFormTests extends TestCase
             'city'=>'Каркоза',
             'country'=>'Гиады',
             'postcode'=>'08789',
-            'delivery'=>1,
-            'payment'=>1,
+            'id_delivery'=>1,
+            'id_payment'=>1,
         ];
         
         $reflection = new \ReflectionProperty($form, 'name');
@@ -82,11 +82,11 @@ class CustomerInfoFormTests extends TestCase
         $result = $reflection->getValue($form);
         $this->assertSame('08789', $result);
         
-        $reflection = new \ReflectionProperty($form, 'delivery');
+        $reflection = new \ReflectionProperty($form, 'id_delivery');
         $result = $reflection->getValue($form);
         $this->assertSame(1, $result);
         
-        $reflection = new \ReflectionProperty($form, 'payment');
+        $reflection = new \ReflectionProperty($form, 'id_payment');
         $result = $reflection->getValue($form);
         $this->assertSame(1, $result);
     }
@@ -109,8 +109,8 @@ class CustomerInfoFormTests extends TestCase
         $this->assertArrayHasKey('city', $form->errors);
         $this->assertArrayHasKey('country', $form->errors);
         $this->assertArrayHasKey('postcode', $form->errors);
-        $this->assertArrayHasKey('delivery', $form->errors);
-        $this->assertArrayHasKey('payment', $form->errors);
+        $this->assertArrayHasKey('id_delivery', $form->errors);
+        $this->assertArrayHasKey('id_payment', $form->errors);
         
         $form = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
         $form->attributes = [
@@ -122,8 +122,8 @@ class CustomerInfoFormTests extends TestCase
             'city'=>'Каркоза',
             'country'=>'Гиады',
             'postcode'=>'08789',
-            'delivery'=>1,
-            'payment'=>1,
+            'id_delivery'=>1,
+            'id_payment'=>1,
         ];
         $form->validate();
         

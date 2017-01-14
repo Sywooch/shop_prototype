@@ -125,7 +125,8 @@ $translate = [
     'link to recovery'=>'ссылка для восстановления',
     'To continue with password recovery, enter your email'=>'Чтобы продолжить восстановление пароля, введите ваш email',
     'Comment saved and will be available after being moderated. Thanks!'=>'Комментарий сохранен и будет доступен после проверки модератором. Спасибо!',
-    'This product was successfully added to cart!'=>'Товар успешно добавлен в корзину!'
+    'This product was successfully added to cart!'=>'Товар успешно добавлен в корзину!',
+    'Your order has been successfully sent'=>'Ваш заказ был успешно отправлен'
 ];
 
 return $translate;

@@ -16,10 +16,10 @@
     {{ form.field(modelForm, 'postcode') | raw }}
     
     <p><strong>{{ headerDeliveryTypeInfo }}</strong></p>
-    {{ form.field(modelForm, 'delivery').radioList(deliveries) | raw }}
+    {{ form.field(modelForm, 'id_delivery').radioList(deliveries) | raw }}
     
     <p><strong>{{ headerPurchaseTypeInfo }}</strong></p>
-    {{ form.field(modelForm, 'payment').radioList(payments) | raw }}
+    {{ form.field(modelForm, 'id_payment').radioList(payments) | raw }}
     <br/>
     
     <input type="submit" value="{{ button }}">

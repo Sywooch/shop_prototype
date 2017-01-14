@@ -5,6 +5,7 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
+use yii\helpers\Url;
 use app\services\{AbstractBaseService,
     AddressGetSaveAddressService,
     CityGetSaveCityService,
@@ -18,14 +19,17 @@ use app\forms\CustomerInfoForm;
 use app\models\PurchasesModel;
 use app\finders\PurchasesSessionFinder;
 use app\helpers\HashHelper;
+use app\savers\PurchasesArraySaver;
+use app\cleaners\SessionCleaner;
+use app\widgets\SuccessSendPurchaseWidget;
 
 /**
- * Сохраняет данные покупателя
+ * Сохраняет оформленные покупки
  */
 class CartCheckoutAjaxService extends AbstractBaseService
 {
     /**
-     * Обрабатывает запрос на сохранение данных покупателя
+     * Обрабатывает запрос на сохранение данных о покупках
      * @param array $request
      */
     public function handle($request)
@@ -100,7 +104,27 @@ class CartCheckoutAjaxService extends AbstractBaseService
                             $rawPurchasesModelArray[] = $cloneRawPurchasesModel;
                         }
                         
+                        $saver = new PurchasesArraySaver([
+                            'models'=>$rawPurchasesModelArray
+                        ]);
+                        $saver->save();
+                        
+                        $cleaner = new SessionCleaner([
+                            'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],
+                        ]);
+                        $cleaner->clean();
+                        
+                        /*$dataArray = [];
+                        
+                        $service = new GetSuccessSendPurchaseWidgetConfigService();
+                        $successSendPurchaseWidgetConfig = $service->handle();
+                        $dataArray['successInfo'] = SuccessSendPurchaseWidget::widget($successSendPurchaseWidgetConfig);
+                        
+                        $dataArray['redirectUrl'] = Url::to(['/products-list/index']);*/
+                        
                         $transaction->commit();
+                        
+                        return Url::to(['/products-list/index']);
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

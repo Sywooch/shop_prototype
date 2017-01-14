@@ -50,23 +50,23 @@ class CustomerInfoForm extends AbstractBaseForm
     /**
      * @var int ID способа доставки
      */
-    public $delivery;
+    public $id_delivery;
     /**
      * @var int ID способа оплаты
      */
-    public $payment;
+    public $id_payment;
     
     public function scenarios()
     {
         return [
-            self::CHECKOUT=>['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'delivery', 'payment']
+            self::CHECKOUT=>['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment']
         ];
     }
     
     public function rules()
     {
         return [
-            [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'delivery', 'payment'], 'required', 'on'=>self::CHECKOUT]
+            [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment'], 'required', 'on'=>self::CHECKOUT]
         ];
     }
 }

@@ -6,9 +6,13 @@ $(function() {
         self.success = function(data, status, jqXHR)
         {
             self.form.find('div.help-block').html('');
-            if (typeof data == 'object' && data.length != 0) {
+            /*if (typeof data == 'object' && data.length != 0) {
                 $('div.shortCart').html(data['shortCart']);
                 alert(data['successInfo']);
+            }*/
+            if (typeof data == 'string') {
+                alert('Товар успешно добавлен в корзину!');
+                $('div.shortCart').html(data);
             }
         };
     };

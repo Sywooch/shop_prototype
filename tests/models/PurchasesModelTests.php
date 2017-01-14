@@ -375,7 +375,6 @@ class PurchasesModelTests extends TestCase
         
         $model = new PurchasesModel(['scenario'=>PurchasesModel::SAVE]);
         $model->attributes = [
-            'id_user'=>2,
             'id_name'=>3,
             'id_surname'=>1,
             'id_email'=>12,
@@ -397,6 +396,7 @@ class PurchasesModelTests extends TestCase
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        $this->assertEquals(0, $model['id_user']);
     }
     
     /**
