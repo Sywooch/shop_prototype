@@ -38,7 +38,7 @@ class CartBackToCartLinkWidget extends AbstractBaseWidget
             $renderArray['validateOnType'] = false;
             
             $renderArray['formAction'] = Url::to(['/cart/index']);
-            $renderArray['button'] = \Yii::t('base', 'To cart');
+            $renderArray['button'] = \Yii::t('base', 'Back to shopping');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

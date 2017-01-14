@@ -318,8 +318,11 @@ class CartCheckoutWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Оформить заказ</strong></p>#', $result);
-        $this->assertRegExp('#<form id="cart-checkout-form"#', $result);
+        $this->assertRegExp('#<p><strong>Контактная информация</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Адрес доставки</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Тип доставки</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Форма оплаты</strong></p>#', $result);
+        $this->assertRegExp('#<form id="cart-сheckout-ajax-form"#', $result);
         $this->assertRegExp('#<label .+>Name</label>#', $result);
         $this->assertRegExp('#<label .+>Surname</label>#', $result);
         $this->assertRegExp('#<label .+>Email</label>#', $result);
@@ -330,6 +333,6 @@ class CartCheckoutWidgetTests extends TestCase
         $this->assertRegExp('#<label .+>Postcode</label>#', $result);
         $this->assertRegExp('#<label .+>Delivery</label>#', $result);
         $this->assertRegExp('#<label .+>Payment</label>#', $result);
-        $this->assertRegExp('#<input type="submit" value="Оформить заказ">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Отправить заказ">#', $result);
     }
 }

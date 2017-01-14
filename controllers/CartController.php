@@ -7,6 +7,8 @@ use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
 use app\services\{CartAddService,
+    CartCheckoutAjaxFormService,
+    CartCheckoutAjaxService,
     CartCheckoutPostService,
     CartCheckoutService,
     CartCleanRedirectService,
@@ -24,11 +26,6 @@ class CartController extends Controller
     public function actions()
     {
         return [
-            'index'=>[
-                'class'=>GetAction::class,
-                'service'=>new CartIndexService(),
-                'view'=>'cart.twig'
-            ],
             'add'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new CartAddService(),
@@ -49,20 +46,35 @@ class CartController extends Controller
                 'class'=>AjaxAction::class,
                 'service'=>new CartDeleteService(),
             ],
-            'сheckout'=>[
+            'index'=>[
+                'class'=>GetAction::class,
+                'service'=>new CartIndexService(),
+                'view'=>'cart.twig'
+            ],
+            'сheckout-ajax-form'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new CartCheckoutAjaxFormService(),
+            ],
+            'сheckout-ajax'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new CartCheckoutAjaxService(),
+            ],
+            # !!!
+            /*'сheckout'=>[
                 'class'=>GetAction::class,
                 'service'=>new CartCheckoutService(),
                 'view'=>'checkout.twig'
-            ],
-            'сheckout-post'=>[
+            ],*/
+            /*'сheckout-post'=>[
                 'class'=>RedirectAction::class,
                 'service'=>new CartCheckoutPostService(),
-            ],
-            'confirm'=>[
+            ],*/
+            # !!!
+            /*'confirm'=>[
                 'class'=>GetAction::class,
                 'service'=>new CartConfirmService(),
                 'view'=>'confirm.twig'
-            ],
+            ],*/
         ];
     }
 }

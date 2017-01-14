@@ -59,10 +59,13 @@ class CartCheckoutWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['header'] = \Yii::t('base', 'Checkout');
+            $renderArray['headerCustomerInfo'] = \Yii::t('base', 'Contact Information');
+            $renderArray['headerDeliveryInfo'] = \Yii::t('base', 'Delivery address');
+            $renderArray['headerDeliveryTypeInfo'] = \Yii::t('base', 'Delivery type');
+            $renderArray['headerPurchaseTypeInfo'] = \Yii::t('base', 'Method of payment');
             
             $renderArray['modelForm'] = $this->form;
-            $renderArray['formId'] = 'cart-checkout-form';
+            $renderArray['formId'] = 'cart-сheckout-ajax-form';
             
             $renderArray['ajaxValidation'] = true;
             $renderArray['validateOnSubmit'] = true;
@@ -79,8 +82,8 @@ class CartCheckoutWidget extends AbstractBaseWidget
             ArrayHelper::multisort($this->payments, 'description');
             $renderArray['payments'] = ArrayHelper::map($this->payments, 'id', 'description');
             
-            $renderArray['formAction'] = Url::to(['/cart/сheckout-post']);
-            $renderArray['button'] = \Yii::t('base', 'Checkout');
+            $renderArray['formAction'] = Url::to(['/cart/сheckout-ajax']);
+            $renderArray['button'] = \Yii::t('base', 'Send an order');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

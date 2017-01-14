@@ -29,7 +29,7 @@ class CartCheckoutLinkWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['formId'] = 'cart-checkout-link';
+            $renderArray['formId'] = 'cart-сheckout-ajax-link';
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -37,7 +37,7 @@ class CartCheckoutLinkWidget extends AbstractBaseWidget
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
             
-            $renderArray['formAction'] = Url::to(['/cart/сheckout']);
+            $renderArray['formAction'] = Url::to(['/cart/сheckout-ajax-form']);
             $renderArray['button'] = \Yii::t('base', 'Checkout');
             
             return $this->render($this->view, $renderArray);

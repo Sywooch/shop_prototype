@@ -39,15 +39,17 @@ $routes = [
     'ajax/subcategory'=>'ajax/subcategory',
     
     # Корзина
-    'cart'=>'cart/index',
     'cart-add'=>'cart/add',
     'cart-clean'=>'cart/clean',
     'cart-clean-redirect'=>'cart/clean-redirect',
     'cart-update'=>'cart/update',
     'cart-delete'=>'cart/delete',
-    'cart-сheckout'=>'cart/сheckout',
+    'cart'=>'cart/index',
+    'cart-сheckout-ajax-form'=>'cart/сheckout-ajax-form',
+    'cart-сheckout-ajax'=>'cart/сheckout-ajax',
+    /*'cart-сheckout'=>'cart/сheckout',
     'cart-сheckout-post'=>'cart/сheckout-post',
-    'cart-confirm'=>'cart/confirm',
+    'cart-confirm'=>'cart/confirm',*/
     
     # Подписки
     'mailing'=>'mailing/index',

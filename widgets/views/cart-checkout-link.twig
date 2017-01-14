@@ -1,7 +1,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 <p class="checkout-link">
-    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'GET'}) %}
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
         <input type="submit" value="{{ button }}">
     {{ active_form_end() }}
 </p>

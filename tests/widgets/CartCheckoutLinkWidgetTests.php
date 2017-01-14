@@ -46,7 +46,7 @@ class CartCheckoutLinkWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<p class="checkout-link">#', $result);
-        $this->assertRegExp('#<form id="cart-checkout-link" action=".+" method="GET">#', $result);
+        $this->assertRegExp('#<form id="cart-сheckout-ajax-link" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="submit" value="Оформить заказ">#', $result);
     }
 }

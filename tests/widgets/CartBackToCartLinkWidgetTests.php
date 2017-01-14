@@ -47,6 +47,6 @@ class CartBackToCartLinkWidgetTests extends TestCase
         
         $this->assertRegExp('#<p class="back-to-cart">#', $result);
         $this->assertRegExp('#<form id="back-to-cart" action=".+" method="GET">#', $result);
-        $this->assertRegExp('#<input type="submit" value="В корзину">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Вернуться в покупкам">#', $result);
     }
 }
