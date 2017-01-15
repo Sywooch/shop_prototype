@@ -350,7 +350,13 @@ class CartCheckoutWidgetTests extends TestCase
         $this->assertRegExp('#<label .+>Id Delivery</label>#', $result);
         $this->assertRegExp('#<label .+>Id Payment</label>#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить заказ">#', $result);
+        $this->assertRegExp('#<label><input type="checkbox".+> Create</label>#', $result);
+        $this->assertRegExp('#<div class="cart-create-user disable">#', $result);
+        $this->assertRegExp('#<label.+>Password</label>#', $result);
+        $this->assertRegExp('#<label.+>Password2</label>#', $result);
+        
         $this->assertNotRegExp('#<input .+ readonly>#', $result);
+        
     }
     
     /**
@@ -434,6 +440,11 @@ class CartCheckoutWidgetTests extends TestCase
         $this->assertRegExp('#<label .+>Id Payment</label>#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить заказ">#', $result);
         $this->assertRegExp('#<input .+ readonly>#', $result);
+        
+        $this->assertNotRegExp('#<label><input type="checkbox".+> Create</label>#', $result);
+        $this->assertNotRegExp('#<div class="cart-create-user disable">#', $result);
+        $this->assertNotRegExp('#<label.+>Password</label>#', $result);
+        $this->assertNotRegExp('#<label.+>Password2</label>#', $result);
     }
     
     public static function tearDownAfterClass()

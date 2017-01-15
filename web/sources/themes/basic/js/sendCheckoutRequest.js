@@ -38,10 +38,8 @@ $(function() {
         event.preventDefault();
     });
     
-    $('#customerinfoform-create').on('click', function(event) {
-        alert('FFFFF');
-        $('div.cart-checkout').toggleClass('disable');
-        event.preventDefault();
+     $('div.cart-checkout').on('change', 'input[name="CustomerInfoForm[create]"]', function(event) {
+        $('div.cart-create-user').toggleClass('disable');
     });
     
 });

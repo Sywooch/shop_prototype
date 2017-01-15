@@ -30,9 +30,17 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
         }
     }
     
+    public function scenarios()
+    {
+        return [
+            self::SAVE=>['id_email', 'password', 'id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode'],
+        ];
+    }
+    
     public function rules()
     {
         return [
+            [['id_email', 'password'], 'required', 'on'=>self::SAVE],
             [['id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode'], 'default', 'value'=>0, 'on'=>self::SAVE],
         ];
     }

@@ -56,10 +56,47 @@ class UsersModelTests extends TestCase
     }
     
     /**
+     * Тестирует метод UsersModel::scenarios
+     */
+    public function testScenarios()
+    {
+        $model = new UsersModel(['scenario'=>UsersModel::SAVE]);
+        $model->attributes = [
+            'id_email'=>1,
+            'password'=>'password',
+            'id_name'=>1,
+            'id_surname'=>1,
+            'id_phone'=>1,
+            'id_address'=>1,
+            'id_city'=>1,
+            'id_country'=>1,
+            'id_postcode'=>1
+        ];
+        
+        $this->assertSame(1, $model->id_email);
+        $this->assertSame('password', $model->password);
+        $this->assertSame(1, $model->id_name);
+        $this->assertSame(1, $model->id_surname);
+        $this->assertSame(1, $model->id_phone);
+        $this->assertSame(1, $model->id_address);
+        $this->assertSame(1, $model->id_city);
+        $this->assertSame(1, $model->id_country);
+        $this->assertSame(1, $model->id_postcode);
+    }
+    
+    /**
      * Тестирует метод UsersModel::rules
      */
     public function testRules()
     {
+        $model = new UsersModel(['scenario'=>UsersModel::SAVE]);
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(2, $model->errors);
+        $this->assertArrayHasKey('id_email', $model->errors);
+        $this->assertArrayHasKey('password', $model->errors);
+        
         $model = new UsersModel();
         
         $this->assertSame(null, $model->id_name);
@@ -71,8 +108,13 @@ class UsersModelTests extends TestCase
         $this->assertSame(null, $model->id_postcode);
         
         $model = new UsersModel(['scenario'=>UsersModel::SAVE]);
+        $model->attributes = [
+            'id_email'=>1,
+            'password'=>'password',
+        ];
         $model->validate();
         
+        $this->assertEmpty($model->errors);
         $this->assertSame(0, $model->id_name);
         $this->assertSame(0, $model->id_surname);
         $this->assertSame(0, $model->id_phone);

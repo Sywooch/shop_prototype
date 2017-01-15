@@ -15,12 +15,16 @@ use app\services\{AbstractBaseService,
     PhoneGetSavePhoneService,
     PostcodeGetSavePostcodeService,
     ReceivedOrderEmailService,
+    RegistrationEmailService,
     SurnameGetSaveSurnameService};
 use app\forms\CustomerInfoForm;
-use app\models\PurchasesModel;
-use app\finders\PurchasesSessionFinder;
+use app\models\{PurchasesModel,
+    UsersModel};
+use app\finders\{PurchasesSessionFinder,
+    UserEmailFinder};
 use app\helpers\HashHelper;
-use app\savers\{PurchasesArraySaver,
+use app\savers\{ModelSaver,
+    PurchasesArraySaver,
     SessionModelSaver};
 use app\cleaners\SessionCleaner;
 
@@ -79,6 +83,33 @@ class CartCheckoutAjaxService extends AbstractBaseService
                         $service = \Yii::$app->registry->get(PostcodeGetSavePostcodeService::class);
                         $postcodesModel = $service->handle(['postcode'=>$form->postcode]);
                         
+                        if ((bool) $form->create === true) {
+                            $rawUsersModel = new UsersModel(['scenario'=>UsersModel::SAVE]);
+                            $rawUsersModel->id_email = $emailsModel->id;
+                            $rawUsersModel->password = password_hash($form->password, PASSWORD_DEFAULT);
+                            $rawUsersModel->id_name = $namesModel->id;
+                            $rawUsersModel->id_surname = $surnamesModel->id;
+                            $rawUsersModel->id_phone = $phonesModel->id;
+                            $rawUsersModel->id_address = $addressModel->id;
+                            $rawUsersModel->id_city = $citiesModel->id;
+                            $rawUsersModel->id_country = $countriesModel->id;
+                            $rawUsersModel->id_postcode = $postcodesModel->id;
+                            if ($rawUsersModel->validate() === false) {
+                                throw new ErrorException($this->modelError($rawUsersModel->errors));
+                            }
+                            
+                            $saver = new ModelSaver([
+                                'model'=>$rawUsersModel
+                            ]);
+                            $saver->save();
+                            
+                            $mailService = new RegistrationEmailService();
+                            $mailService->handle(['email'=>$form->email]);
+                            
+                            $finder = \Yii::$app->registry->get(UserEmailFinder::class, ['email'=>$form->email]);
+                            $user = $finder->find();
+                        }
+                        
                         $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, ['key'=>HashHelper::createCartKey()]);
                         $purchasesCollection = $finder->find();
                         
@@ -88,7 +119,7 @@ class CartCheckoutAjaxService extends AbstractBaseService
                         
                         foreach ($purchasesCollection as $purchases) {
                             $cloneRawPurchasesModel = clone $rawPurchasesModel;
-                            $cloneRawPurchasesModel->id_user = \Yii::$app->user->id ?? 0;
+                            $cloneRawPurchasesModel->id_user = \Yii::$app->user->id ?? $user->id ?? 0;
                             $cloneRawPurchasesModel->id_name = $namesModel->id;
                             $cloneRawPurchasesModel->id_surname = $surnamesModel->id;
                             $cloneRawPurchasesModel->id_email = $emailsModel->id;

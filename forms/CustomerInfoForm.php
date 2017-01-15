@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\PasswordIdenticRegValidator;
+use app\validators\{PasswordIdenticRegValidator,
+    UserEmailExistsRegValidator};
 
 /**
  * Представляет данные покупателя при оформлении заказа
@@ -80,6 +81,9 @@ class CustomerInfoForm extends AbstractBaseForm
     {
         return [
             [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment'], 'required', 'on'=>self::CHECKOUT],
+            [['email'], UserEmailExistsRegValidator::class, 'on'=>self::CHECKOUT, 'when'=>function($model) {
+                return !empty($model->create);
+            }],
             [['password', 'password2'], 'required', 'on'=>self::CHECKOUT, 'when'=>function($model) {
                 return !empty($model->create);
             }],

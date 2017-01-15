@@ -4,12 +4,28 @@ namespace app\tests\forms;
 
 use PHPUnit\Framework\TestCase;
 use app\forms\CustomerInfoForm;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\{EmailsFixture,
+    UsersFixture};
 
 /**
  * Тестирует класс CustomerInfoForm
  */
 class CustomerInfoFormTests extends TestCase
 {
+    private static $dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'emails'=>EmailsFixture::class,
+                'users'=>UsersFixture::class
+            ],
+        ]);
+        self::$dbClass->loadFixtures();
+    }
+    
     /**
      * Тестирует свойства CustomerInfoForm
      */
@@ -29,6 +45,9 @@ class CustomerInfoFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('postcode'));
         $this->assertTrue($reflection->hasProperty('id_delivery'));
         $this->assertTrue($reflection->hasProperty('id_payment'));
+        $this->assertTrue($reflection->hasProperty('create'));
+        $this->assertTrue($reflection->hasProperty('password'));
+        $this->assertTrue($reflection->hasProperty('password2'));
     }
     
     /**
@@ -48,6 +67,9 @@ class CustomerInfoFormTests extends TestCase
             'postcode'=>'08789',
             'id_delivery'=>1,
             'id_payment'=>1,
+            'create'=>true,
+            'password'=>'pass',
+            'password2'=>'pass',
         ];
         
         $reflection = new \ReflectionProperty($form, 'name');
@@ -89,6 +111,18 @@ class CustomerInfoFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'id_payment');
         $result = $reflection->getValue($form);
         $this->assertSame(1, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'create');
+        $result = $reflection->getValue($form);
+        $this->assertSame(true, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'password');
+        $result = $reflection->getValue($form);
+        $this->assertSame('pass', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'password2');
+        $result = $reflection->getValue($form);
+        $this->assertSame('pass', $result);
     }
     
     /**
@@ -128,5 +162,95 @@ class CustomerInfoFormTests extends TestCase
         $form->validate();
         
         $this->assertEmpty($form->errors);
+        
+        $form = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+        $form->attributes = [
+            'name'=>'John',
+            'surname'=>'Doe',
+            'email'=>'jahn@com.com',
+            'phone'=>'+387968965',
+            'address'=>'ул. Черноозерная, 1',
+            'city'=>'Каркоза',
+            'country'=>'Гиады',
+            'postcode'=>'08789',
+            'id_delivery'=>1,
+            'id_payment'=>1,
+            'create'=>true,
+        ];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(2, $form->errors);
+        $this->assertArrayHasKey('password', $form->errors);
+        $this->assertArrayHasKey('password2', $form->errors);
+        
+        $form = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+        $form->attributes = [
+            'name'=>'John',
+            'surname'=>'Doe',
+            'email'=>'jahn@com.com',
+            'phone'=>'+387968965',
+            'address'=>'ул. Черноозерная, 1',
+            'city'=>'Каркоза',
+            'country'=>'Гиады',
+            'postcode'=>'08789',
+            'id_delivery'=>1,
+            'id_payment'=>1,
+            'create'=>true,
+            'password'=>'pass',
+            'password2'=>'pass2',
+        ];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('password2', $form->errors);
+        
+        $form = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+        $form->attributes = [
+            'name'=>'John',
+            'surname'=>'Doe',
+            'email'=>self::$dbClass->emails['email_1']['email'],
+            'phone'=>'+387968965',
+            'address'=>'ул. Черноозерная, 1',
+            'city'=>'Каркоза',
+            'country'=>'Гиады',
+            'postcode'=>'08789',
+            'id_delivery'=>1,
+            'id_payment'=>1,
+            'create'=>true,
+            'password'=>'pass',
+            'password2'=>'pass',
+        ];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('email', $form->errors);
+        
+        $form = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+        $form->attributes = [
+            'name'=>'John',
+            'surname'=>'Doe',
+            'email'=>'jahn@com.com',
+            'phone'=>'+387968965',
+            'address'=>'ул. Черноозерная, 1',
+            'city'=>'Каркоза',
+            'country'=>'Гиады',
+            'postcode'=>'08789',
+            'id_delivery'=>1,
+            'id_payment'=>1,
+            'create'=>true,
+            'password'=>'pass',
+            'password2'=>'pass',
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$dbClass->unloadFixtures();
     }
 }

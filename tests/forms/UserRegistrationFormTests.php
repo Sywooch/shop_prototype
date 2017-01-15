@@ -26,7 +26,6 @@ class UserRegistrationFormTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
-    
     /**
      * Тестирует свойства UserRegistrationForm
      */

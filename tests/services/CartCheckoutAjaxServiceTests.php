@@ -21,7 +21,8 @@ use app\tests\sources\fixtures\{AddressFixture,
     ProductsSizesFixture,
     PurchasesFixture,
     SizesFixture,
-    SurnamesFixture};
+    SurnamesFixture,
+    UsersFixture};
 use app\helpers\HashHelper;
 
 /**
@@ -52,6 +53,7 @@ class CartCheckoutAjaxServiceTests extends TestCase
                 'products_colors'=>ProductsColorsFixture::class,
                 'products_sizes'=>ProductsSizesFixture::class,
                 'purchases'=>PurchasesFixture::class,
+                'users'=>UsersFixture::class,
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -230,6 +232,67 @@ class CartCheckoutAjaxServiceTests extends TestCase
         $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
         
         $this->assertCount(6, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
+        
+        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
+        $files = glob($saveDir . '/*.eml');
+        
+        $this->assertNotEmpty($files);
+        
+        $this->assertFalse($session->has(HashHelper::createCartKey()));
+        $this->assertFalse($session->has(HashHelper::createCartCustomerKey()));
+        
+        $session->close();
+    }
+    
+    /**
+     * Тестирует метод CartCheckoutAjaxService::handle
+     * если одновременно создаю пользователя
+     */
+    public function testHandleWithUser()
+    {
+        $session = \Yii::$app->session;
+        $session->open();
+        
+        $session->set(HashHelper::createCartKey(), [
+            ['quantity'=>1, 'id_color'=>1, 'id_size'=>2, 'id_product'=>2, 'price'=>25985.78]
+        ]);
+        
+        $this->assertCount(6, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
+        $this->assertCount(2, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
+        
+        $request = new class() {
+            public $isAjax = true;
+            public function post($name = null, $defaultValue = null)
+            {
+                return [
+                    'CustomerInfoForm'=>[
+                        'name'=>'New Name',
+                        'surname'=>'New Surname',
+                        'email'=>'new@new.com',
+                        'phone'=>'+968-989-01-56',
+                        'address'=>'New Street, 2',
+                        'city'=>'New City',
+                        'country'=>'New Country',
+                        'postcode'=>'NEW9344',
+                        'id_delivery'=>1,
+                        'id_payment'=>2,
+                        'create'=>true,
+                        'password'=>'pass',
+                        'password2'=>'pass',
+                    ]
+                ];
+            }
+        };
+        
+        $service = new CartCheckoutAjaxService();
+        $result = $service->handle($request);
+        
+        $this->assertInternalType('string', $result);
+        $this->assertNotEmpty($result);
+        $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
+        
+        $this->assertCount(7, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
+        $this->assertCount(3, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
         
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');
