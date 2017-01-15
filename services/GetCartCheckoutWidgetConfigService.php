@@ -6,10 +6,8 @@ use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetCurrentCurrencyModelService};
 use app\forms\CustomerInfoForm;
-use app\finders\{CustomerInfoSessionFinder,
-    DeliveriesFinder,
+use app\finders\{DeliveriesFinder,
     PaymentsFinder};
-use app\helpers\HashHelper;
 
 /**
  * Возвращает массив данных для CartCheckoutWidget
@@ -49,9 +47,19 @@ class GetCartCheckoutWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $finder = \Yii::$app->registry->get(CustomerInfoSessionFinder::class, ['key'=>HashHelper::createCartCustomerKey()]);
-                $form = $finder->find();
-                $dataArray['form'] = $form ?? new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+                $form = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+                if (\Yii::$app->user->isGuest === false) {
+                    $user = \Yii::$app->user->identity;
+                    $form->name = $user->name->name;
+                    $form->surname = $user->surname->surname;
+                    $form->email = $user->email->email;
+                    $form->phone = $user->phone->phone;
+                    $form->address = $user->address->address;
+                    $form->city = $user->city->city;
+                    $form->country = $user->country->country;
+                    $form->postcode = $user->postcode->postcode;
+                }
+                $dataArray['form'] = $form;
                 
                 $dataArray['view'] = 'cart-checkout-form.twig';
                 

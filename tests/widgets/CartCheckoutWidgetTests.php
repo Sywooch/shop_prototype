@@ -5,13 +5,28 @@ namespace app\tests\widgets;
 use PHPUnit\Framework\TestCase;
 use app\widgets\CartCheckoutWidget;
 use app\forms\CustomerInfoForm;
-use app\models\CurrencyModel;
+use app\models\{CurrencyModel,
+    UsersModel};
+use app\tests\DbManager;
+use app\tests\sources\fixtures\UsersFixture;
 
 /**
  * Тестирует класс CartCheckoutWidget
  */
 class CartCheckoutWidgetTests extends TestCase
 {
+    private static $dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'users'=>UsersFixture::class,
+            ]
+        ]);
+        self::$dbClass->loadFixtures();
+    }
+    
     /**
      * Тестирует наличие свойств
      */
@@ -260,8 +275,9 @@ class CartCheckoutWidgetTests extends TestCase
     
     /**
      * Тестирует метод CartCheckoutWidget::run
+     * если isGuest is true
      */
-    public function testRun()
+    public function testRunGuest()
     {
         $form = new class() extends CustomerInfoForm {};
         
@@ -334,5 +350,94 @@ class CartCheckoutWidgetTests extends TestCase
         $this->assertRegExp('#<label .+>Id Delivery</label>#', $result);
         $this->assertRegExp('#<label .+>Id Payment</label>#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить заказ">#', $result);
+        $this->assertNotRegExp('#<input .+ readonly>#', $result);
+    }
+    
+    /**
+     * Тестирует метод CartCheckoutWidget::run
+     * если isGuest is false
+     */
+    public function testRunNotGuest()
+    {
+        $user = UsersModel::findOne(1);
+        \Yii::$app->user->login($user);
+        
+        $form = new class() extends CustomerInfoForm {};
+        
+        $deliveries = [
+            new class() {
+                public $id = 1;
+                public $description = 'Some description';
+                public $price = 58.00;
+            },
+            new class() {
+                public $id = 2;
+                public $description = 'Another some description';
+                public $price = 654.04;
+            },
+        ];
+        
+        $payments = [
+            new class() {
+                public $id = 1;
+                public $description = 'Some description';
+            },
+            new class() {
+                public $id = 2;
+                public $description = 'Another some description';
+            },
+        ];
+        
+        $currency = new class() {
+            public $exchange_rate = 12.865412;
+            public $code = 'MONEY';
+        };
+        
+        $widget = new CartCheckoutWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'deliveries');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $deliveries);
+        
+        $reflection = new \ReflectionProperty($widget, 'payments');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $payments);
+        
+        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'cart-checkout-form.twig');
+        
+        $result = $widget->run();
+        
+        $this->assertRegExp('#<p><strong>Контактная информация</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Адрес доставки</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Тип доставки</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Форма оплаты</strong></p>#', $result);
+        $this->assertRegExp('#<form id="cart-сheckout-ajax-form"#', $result);
+        $this->assertRegExp('#<label .+>Name</label>#', $result);
+        $this->assertRegExp('#<label .+>Surname</label>#', $result);
+        $this->assertRegExp('#<label .+>Email</label>#', $result);
+        $this->assertRegExp('#<label .+>Phone</label>#', $result);
+        $this->assertRegExp('#<label .+>Address</label>#', $result);
+        $this->assertRegExp('#<label .+>City</label>#', $result);
+        $this->assertRegExp('#<label .+>Country</label>#', $result);
+        $this->assertRegExp('#<label .+>Postcode</label>#', $result);
+        $this->assertRegExp('#<label .+>Id Delivery</label>#', $result);
+        $this->assertRegExp('#<label .+>Id Payment</label>#', $result);
+        $this->assertRegExp('#<input type="submit" value="Отправить заказ">#', $result);
+        $this->assertRegExp('#<input .+ readonly>#', $result);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$dbClass->unloadFixtures();
     }
 }

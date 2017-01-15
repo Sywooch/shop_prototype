@@ -82,6 +82,9 @@ class CartCheckoutWidget extends AbstractBaseWidget
             ArrayHelper::multisort($this->payments, 'description');
             $renderArray['payments'] = ArrayHelper::map($this->payments, 'id', 'description');
             
+            $renderArray['readonly'] = \Yii::$app->user->isGuest === true ? false : true;
+            $renderArray['isGuest'] = \Yii::$app->user->isGuest;
+            
             $renderArray['formAction'] = Url::to(['/cart/сheckout-ajax']);
             $renderArray['button'] = \Yii::t('base', 'Send an order');
             

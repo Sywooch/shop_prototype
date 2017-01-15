@@ -38,4 +38,10 @@ $(function() {
         event.preventDefault();
     });
     
+    $('#customerinfoform-create').on('click', function(event) {
+        alert('FFFFF');
+        $('div.cart-checkout').toggleClass('disable');
+        event.preventDefault();
+    });
+    
 });

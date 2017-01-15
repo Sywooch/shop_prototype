@@ -88,6 +88,7 @@ class CartCheckoutAjaxService extends AbstractBaseService
                         
                         foreach ($purchasesCollection as $purchases) {
                             $cloneRawPurchasesModel = clone $rawPurchasesModel;
+                            $cloneRawPurchasesModel->id_user = \Yii::$app->user->id ?? 0;
                             $cloneRawPurchasesModel->id_name = $namesModel->id;
                             $cloneRawPurchasesModel->id_surname = $surnamesModel->id;
                             $cloneRawPurchasesModel->id_email = $emailsModel->id;

@@ -33,10 +33,9 @@ class CustomerInfoSessionFinder extends AbstractBaseFinder
             }
             
             if (empty($this->storage)) {
-                $this->storage = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
-                
                 $array = SessionHelper::read($this->key);
                 if (!empty($array)) {
+                    $this->storage = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
                     $this->storage->attributes = $array;
                 }
             }
