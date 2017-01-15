@@ -165,17 +165,12 @@ class CartCheckoutAjaxServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'id_payment');
         $reflection->setValue($request, self::$dbClass->payments['payment_1']['id']);
         
-        
         $service = new CartCheckoutAjaxService();
         $result = $service->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
-        
-        /*$this->assertRegExp('#<p>Товаров в корзине: 2, Общая стоимость: 537,56 UAH</p>#', $result);
-        $this->assertRegExp('#<p><a href=".+">В корзину</a></p>#', $result);
-        $this->assertRegExp('#<form id="clean-cart-form"#', $result);
-        $this->assertRegExp('#<input type="submit" value="Очистить корзину">#', $result);*/
+        $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
         
         $this->assertCount(4, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
         
@@ -183,6 +178,66 @@ class CartCheckoutAjaxServiceTests extends TestCase
         $files = glob($saveDir . '/*.eml');
         
         $this->assertNotEmpty($files);
+        
+        $this->assertFalse($session->has(HashHelper::createCartKey()));
+        $this->assertFalse($session->has(HashHelper::createCartCustomerKey()));
+        
+        $session->close();
+    }
+    
+    /**
+     * Тестирует метод CartCheckoutAjaxService::handle
+     * если входящие данные новые
+     */
+    public function testHandleNotExists()
+    {
+        $session = \Yii::$app->session;
+        $session->open();
+        
+        $session->set(HashHelper::createCartKey(), [
+            ['quantity'=>1, 'id_color'=>1, 'id_size'=>1, 'id_product'=>2, 'price'=>258.45],
+            ['quantity'=>3, 'id_color'=>2, 'id_size'=>1, 'id_product'=>1, 'price'=>21.00]
+        ]);
+        
+        $this->assertCount(4, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
+        
+        $request = new class() {
+            public $isAjax = true;
+            public function post($name = null, $defaultValue = null)
+            {
+                return [
+                    'CustomerInfoForm'=>[
+                        'name'=>'New Name',
+                        'surname'=>'New Surname',
+                        'email'=>'new@new.com',
+                        'phone'=>'+968-989-01-56',
+                        'address'=>'New Street, 2',
+                        'city'=>'New City',
+                        'country'=>'New Country',
+                        'postcode'=>'NEW9344',
+                        'id_delivery'=>1,
+                        'id_payment'=>2,
+                    ]
+                ];
+            }
+        };
+        
+        $service = new CartCheckoutAjaxService();
+        $result = $service->handle($request);
+        
+        $this->assertInternalType('string', $result);
+        $this->assertNotEmpty($result);
+        $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
+        
+        $this->assertCount(6, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
+        
+        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
+        $files = glob($saveDir . '/*.eml');
+        
+        $this->assertNotEmpty($files);
+        
+        $this->assertFalse($session->has(HashHelper::createCartKey()));
+        $this->assertFalse($session->has(HashHelper::createCartCustomerKey()));
         
         $session->close();
     }
