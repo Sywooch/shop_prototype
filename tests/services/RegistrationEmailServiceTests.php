@@ -11,16 +11,6 @@ use app\services\RegistrationEmailService;
 class RegistrationEmailServiceTests extends TestCase
 {
     /**
-     * Тестирует свойства RegistrationEmailService
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(RegistrationEmailService::class);
-        
-        $this->assertTrue($reflection->hasProperty('emailRegistrationArray'));
-    }
-    
-    /**
      * Тестирует метод RegistrationEmailService::handle
      * если пуст RegistrationEmailService::email
      * @expectedException ErrorException

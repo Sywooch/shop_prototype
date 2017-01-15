@@ -16,9 +16,15 @@ class ReceivedOrderEmailService extends AbstractBaseService
      * Обрабатывает запрос на отправку сообщения
      * @param array $request
      */
-    public function handle($request=null)
+    public function handle($request)
     {
         try {
+            $email = $request['email'] ?? null;
+            
+            if (empty($email)) {
+                throw new ErrorException($this->emptyError('email'));
+            }
+            
             $service = \Yii::$app->registry->get(GetEmailReceivedOrderWidgetConfigService::class);
             $emailReceivedOrderWidgetArray = $service->handle();
             

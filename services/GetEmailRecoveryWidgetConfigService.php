@@ -23,17 +23,17 @@ class GetEmailRecoveryWidgetConfigService extends AbstractBaseService
     public function handle($request): array
     {
         try {
+            $key = $request['key'] ?? null;
+            $email = $request['email'] ?? null;
+            
+            if (empty($key)) {
+                throw new ErrorException($this->emptyError('key'));
+            }
+            if (empty($email)) {
+                throw new ErrorException($this->emptyError('email'));
+            }
+            
             if (empty($this->emailRecoveryWidgetArray)) {
-                $key = $request['key'] ?? null;
-                $email = $request['email'] ?? null;
-                
-                if (empty($key)) {
-                    throw new ErrorException($this->emptyError('key'));
-                }
-                if (empty($email)) {
-                    throw new ErrorException($this->emptyError('email'));
-                }
-                
                 $dataArray = [];
                 
                 $dataArray['key'] = $key;

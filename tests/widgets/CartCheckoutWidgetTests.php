@@ -331,8 +331,8 @@ class CartCheckoutWidgetTests extends TestCase
         $this->assertRegExp('#<label .+>City</label>#', $result);
         $this->assertRegExp('#<label .+>Country</label>#', $result);
         $this->assertRegExp('#<label .+>Postcode</label>#', $result);
-        $this->assertRegExp('#<label .+>Delivery</label>#', $result);
-        $this->assertRegExp('#<label .+>Payment</label>#', $result);
+        $this->assertRegExp('#<label .+>Id Delivery</label>#', $result);
+        $this->assertRegExp('#<label .+>Id Payment</label>#', $result);
         $this->assertRegExp('#<input type="submit" value="Отправить заказ">#', $result);
     }
 }

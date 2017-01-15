@@ -14,6 +14,7 @@ use app\services\{AbstractBaseService,
     NameGetSaveNameService,
     PhoneGetSavePhoneService,
     PostcodeGetSavePostcodeService,
+    ReceivedOrderEmailService,
     SurnameGetSaveSurnameService};
 use app\forms\CustomerInfoForm;
 use app\models\PurchasesModel;
@@ -22,7 +23,6 @@ use app\helpers\HashHelper;
 use app\savers\{PurchasesArraySaver,
     SessionModelSaver};
 use app\cleaners\SessionCleaner;
-use app\widgets\SuccessSendPurchaseWidget;
 
 /**
  * Сохраняет оформленные покупки
@@ -116,18 +116,13 @@ class CartCheckoutAjaxService extends AbstractBaseService
                         ]);
                         $saver->save();
                         
+                        $mailService = new ReceivedOrderEmailService();
+                        $mailService->handle(['email'=>$form->email]);
+                        
                         $cleaner = new SessionCleaner([
                             'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],
                         ]);
                         $cleaner->clean();
-                        
-                        /*$dataArray = [];
-                        
-                        $service = new GetSuccessSendPurchaseWidgetConfigService();
-                        $successSendPurchaseWidgetConfig = $service->handle();
-                        $dataArray['successInfo'] = SuccessSendPurchaseWidget::widget($successSendPurchaseWidgetConfig);
-                        
-                        $dataArray['redirectUrl'] = Url::to(['/products-list/index']);*/
                         
                         $transaction->commit();
                         

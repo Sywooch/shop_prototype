@@ -13,11 +13,6 @@ use app\helpers\MailHelper;
 class RegistrationEmailService extends AbstractBaseService
 {
     /**
-     * @var array данные для EmailRegistrationWidget
-     */
-    private $emailRegistrationArray = [];
-    
-    /**
      * Обрабатывает запрос на отправку сообщения
      * @param array $request
      */

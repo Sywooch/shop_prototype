@@ -5,7 +5,13 @@ namespace app\tests\services;
 use PHPUnit\Framework\TestCase;
 use app\services\ReceivedOrderEmailService;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\CurrencyFixture;
+use app\tests\sources\fixtures\{ColorsFixture,
+    CurrencyFixture,
+    DeliveriesFixture,
+    PaymentsFixture,
+    ProductsColorsFixture,
+    ProductsFixture,
+    ProductsSizesFixture};
 use app\helpers\HashHelper;
 
 /**
@@ -20,9 +26,28 @@ class ReceivedOrderEmailServiceTests extends TestCase
         self::$dbClass = new DbManager([
             'fixtures'=>[
                 'currency'=>CurrencyFixture::class,
+                'products'=>ProductsFixture::class,
+                'deliveries'=>DeliveriesFixture::class,
+                'payments'=>PaymentsFixture::class,
+                'products_colors'=>ProductsColorsFixture::class,
+                'products_sizes'=>ProductsSizesFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
+    }
+    
+    /**
+     * Тестирует метод ReceivedOrderEmailService::handle
+     * если пуст ReceivedOrderEmailService::email
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
+     */
+    public function testHandleEmptyEmail()
+    {
+        $request = [];
+        
+        $service = new ReceivedOrderEmailService();
+        $service->handle($request);
     }
     
     /**
@@ -52,8 +77,10 @@ class ReceivedOrderEmailServiceTests extends TestCase
         
         $this->assertEmpty($files);
         
+        $request = ['email'=>'some@some.com'];
+        
         $service = new ReceivedOrderEmailService();
-        $service->handle();
+        $service->handle($request);
         
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');

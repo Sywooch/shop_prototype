@@ -9,11 +9,8 @@ use app\actions\{AjaxAction,
 use app\services\{CartAddService,
     CartCheckoutAjaxFormService,
     CartCheckoutAjaxService,
-    CartCheckoutPostService,
-    CartCheckoutService,
     CartCleanRedirectService,
     CartCleanService,
-    CartConfirmService,
     CartDeleteService,
     CartIndexService,
     CartUpdateService};
@@ -59,22 +56,6 @@ class CartController extends Controller
                 'class'=>AjaxAction::class,
                 'service'=>new CartCheckoutAjaxService(),
             ],
-            # !!!
-            /*'сheckout'=>[
-                'class'=>GetAction::class,
-                'service'=>new CartCheckoutService(),
-                'view'=>'checkout.twig'
-            ],*/
-            /*'сheckout-post'=>[
-                'class'=>RedirectAction::class,
-                'service'=>new CartCheckoutPostService(),
-            ],*/
-            # !!!
-            /*'confirm'=>[
-                'class'=>GetAction::class,
-                'service'=>new CartConfirmService(),
-                'view'=>'confirm.twig'
-            ],*/
         ];
     }
 }
