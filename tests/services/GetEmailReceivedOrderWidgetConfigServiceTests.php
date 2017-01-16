@@ -9,6 +9,7 @@ use app\forms\CustomerInfoForm;
 use app\models\CurrencyModel;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
+use app\helpers\HashHelper;
 
 /**
  * Тестирует класс GetEmailReceivedOrderWidgetConfigService
@@ -42,6 +43,23 @@ class GetEmailReceivedOrderWidgetConfigServiceTests extends TestCase
      */
     public function testHandle()
     {
+        $key = HashHelper::createCartCustomerKey();
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $session->set($key, [
+            'name'=>'John',
+            'surname'=>'Doe',
+            'email'=>'jahn@com.com',
+            'phone'=>'+387968965',
+            'address'=>'ул. Черноозерная, 1',
+            'city'=>'Каркоза',
+            'country'=>'Гиады',
+            'postcode'=>'08789',
+            'id_delivery'=>1,
+            'id_payment'=>1,
+        ]);
+        
         $service = new GetEmailReceivedOrderWidgetConfigService();
         $result = $service->handle();
         
@@ -57,6 +75,9 @@ class GetEmailReceivedOrderWidgetConfigServiceTests extends TestCase
         $this->assertInstanceOf(CustomerInfoForm::class, $result['form']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInternalType('string', $result['view']);
+        
+        $session->remove($key);
+        $session->close();
     }
     
     public static function tearDownAfterClass()

@@ -194,16 +194,16 @@ class ProductDetailWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('/<h1>Name<\/h1>/', $result);
-        $this->assertRegExp('/<p>Description<\/p>/', $result);
-        $this->assertRegExp('/<img src=".+" alt=""><br\/>/', $result);
-        $this->assertRegExp('/<p><strong>Цвета:<\/strong><\/p>/', $result);
-        $this->assertRegExp('/<li>black<\/li>/', $result);
-        $this->assertRegExp('/<li>yellow<\/li>/', $result);
-        $this->assertRegExp('/<p><strong>Размеры:<\/strong><\/p>/', $result);
-        $this->assertRegExp('/<li>23<\/li>/', $result);
-        $this->assertRegExp('/<li>45.5<\/li>/', $result);
-        $this->assertRegExp('/<p><strong>Цена:<\/strong> 1067,96 MONEY<\/p>/', $result);
-        $this->assertRegExp('/<p><strong>Код:<\/strong> TEST<\/p>/', $result);
+        $this->assertRegExp('#<h1>Name</h1>#', $result);
+        $this->assertRegExp('#<p>Description</p>#', $result);
+        $this->assertRegExp('#<img src="/sources/images/products/test/17_horse_ankle_boot-11.jpg" alt=""><br/><img src="/sources/images/products/test/17_horse_ankle_boot-12.jpg" alt=""><br/><img src="/sources/images/products/test/17_horse_ankle_boot-13.jpg" alt=""><br/><img src="/sources/images/products/test/17_horse_ankle_boot-14.jpg" alt="">#', $result);
+        $this->assertRegExp('#<p><strong>Цвета</strong></p>#', $result);
+        $this->assertRegExp('#<li>black</li>#', $result);
+        $this->assertRegExp('#<li>yellow</li>#', $result);
+        $this->assertRegExp('#<p><strong>Размеры</strong></p>#', $result);
+        $this->assertRegExp('#<li>23</li>#', $result);
+        $this->assertRegExp('#<li>45.5</li>#', $result);
+        $this->assertRegExp('#<p><strong>Цена</strong> 1067,96 MONEY</p>#', $result);
+        $this->assertRegExp('#<p><strong>Код</strong> TEST</p>#', $result);
     }
 }

@@ -49,7 +49,7 @@ class SeeAlsoWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['header'] = $this->header;
-            $renderArray['priceText'] = \Yii::t('base', 'Price:');
+            $renderArray['priceText'] = \Yii::t('base', 'Price');
             
             foreach ($this->products as $product) {
                 $set = [];

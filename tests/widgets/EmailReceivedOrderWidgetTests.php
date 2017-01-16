@@ -4,7 +4,8 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\EmailReceivedOrderWidget;
-use app\collections\PurchasesCollection;
+use app\collections\{AbstractBaseCollection,
+    PurchasesCollection};
 use app\forms\CustomerInfoForm;
 use app\models\CurrencyModel;
 use app\tests\DbManager;
@@ -218,11 +219,12 @@ class EmailReceivedOrderWidgetTests extends TestCase
      */
     public function testRun()
     {
-        $purchases = [
+        $items = [
             new class() {
                 public $product;
                 public $color;
                 public $size;
+                public $quantity = 1;
                 public $price = 23.78;
                 public function __construct()
                 {
@@ -243,6 +245,7 @@ class EmailReceivedOrderWidgetTests extends TestCase
                 public $product;
                 public $color;
                 public $size;
+                public $quantity = 2;
                 public $price = 59.00;
                 public function __construct()
                 {
@@ -260,6 +263,13 @@ class EmailReceivedOrderWidgetTests extends TestCase
                 }
             }
         ];
+        
+        $purchases = new class() extends PurchasesCollection {
+            protected $items = [];
+        };
+        $reflection = new \ReflectionProperty($purchases, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($purchases, $items);
         
         $currency = new class() {
             public $exchange_rate = 1.00;
@@ -302,25 +312,27 @@ class EmailReceivedOrderWidgetTests extends TestCase
         $this->assertRegExp('#<h1>Привет! Это информация о вашем заказе!</h1>#', $result);
         $this->assertRegExp('#<a href=".+/seocode_1">Name 1</a>#', $result);
         $this->assertRegExp('#short_description 1#', $result);
-        $this->assertRegExp('#Color: black#', $result);
-        $this->assertRegExp('#Size: 45#', $result);
-        $this->assertRegExp('#23,78 MONEY#', $result);
+        $this->assertRegExp('#Цвет: black#', $result);
+        $this->assertRegExp('#Размер: 45#', $result);
+        $this->assertRegExp('#Цена: 23,78 MONEY#', $result);
         $this->assertRegExp('#<a href=".+/seocode_2">Name 2</a>#', $result);
         $this->assertRegExp('#short_description 2#', $result);
-        $this->assertRegExp('#Color: gray#', $result);
-        $this->assertRegExp('#Size: 42.5#', $result);
-        $this->assertRegExp('#59,00 MONEY#', $result);
+        $this->assertRegExp('#Цвет: gray#', $result);
+        $this->assertRegExp('#Размер: 42.5#', $result);
+        $this->assertRegExp('#Количество: 1#', $result);
+        $this->assertRegExp('#Цена: 59,00 MONEY#', $result);
+        $this->assertRegExp('#<p><strong>Всего товаров: 3, Общая стоимость: 141,78 MONEY</strong></p>#', $result);
         $this->assertRegExp('#<p><strong>Адрес доставки</strong></p>#', $result);
-        $this->assertRegExp('#Name: John#', $result);
-        $this->assertRegExp('#<br>Surname: Doe#', $result);
+        $this->assertRegExp('#Имя: John#', $result);
+        $this->assertRegExp('#<br>Фамилия: Doe#', $result);
         $this->assertRegExp('#Email: some@some.com#', $result);
-        $this->assertRegExp('#Phone: 789654#', $result);
-        $this->assertRegExp('#Address: some str. 1#', $result);
-        $this->assertRegExp('#City: New York#', $result);
-        $this->assertRegExp('#Country: Ukraine#', $result);
-        $this->assertRegExp('#Postcode: 569877J#', $result);
-        $this->assertRegExp('#Delivery: Доставка по указанному адресу в течение 3-х дней.#', $result);
-        $this->assertRegExp('#Payment: Оплата наличными при получении товара#', $result);
+        $this->assertRegExp('#Телефон: 789654#', $result);
+        $this->assertRegExp('#Адрес: some str. 1#', $result);
+        $this->assertRegExp('#Город: New York#', $result);
+        $this->assertRegExp('#Страна: Ukraine#', $result);
+        $this->assertRegExp('#Почтовый код: 569877J#', $result);
+        $this->assertRegExp('#Доставка: Доставка по указанному адресу в течение 3-х дней.#', $result);
+        $this->assertRegExp('#Оплата: Оплата наличными при получении товара#', $result);
     }
     
     public static function tearDownAfterClass()

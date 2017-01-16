@@ -16,6 +16,7 @@ use app\finders\{UserEmailFinder,
     RecoverySessionFinder};
 use app\helpers\HashHelper;
 use app\savers\ModelSaver;
+use app\models\UsersModel;
 
 /**
  * Генерирует новый пароль пользователя
@@ -56,7 +57,11 @@ class UserGenerateService extends AbstractBaseService
                     
                     $tempPassword = HashHelper::randomString();
                     
+                    $usersModel->scenario = UsersModel::UPDATE_PASSW;
                     $usersModel->password = password_hash($tempPassword, PASSWORD_DEFAULT);
+                    if ($usersModel->validate() === false) {
+                        throw new ErrorException($this->modelError($usersModel->errors));
+                    }
                     
                     $saver = new ModelSaver([
                         'model'=>$usersModel,

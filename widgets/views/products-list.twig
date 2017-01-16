@@ -3,7 +3,7 @@
     <li class="product-id-{{ product.id }}">
         {{ product.link | raw }}
         <br>{{ product.short_description }}
-        <br>{{ priceText }} <span class="price">{{ product.price }}</span>
+        <br>{{ priceText }}: <span class="price">{{ product.price }}</span>
         <br>{{ product.image | raw }}
     </li>
 {% endfor %}

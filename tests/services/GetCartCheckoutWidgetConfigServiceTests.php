@@ -33,6 +33,11 @@ class GetCartCheckoutWidgetConfigServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+    }
+    
     /**
      * Тестирует свойства GetCartCheckoutWidgetConfigService
      */
@@ -49,6 +54,8 @@ class GetCartCheckoutWidgetConfigServiceTests extends TestCase
      */
     public function testHandleGuest()
     {
+        \Yii::$app->user->logout();
+        
         $service = new GetCartCheckoutWidgetConfigService();
         $result = $service->handle();
         

@@ -62,7 +62,7 @@ class ProductsWidget extends AbstractBaseWidget
                 $renderArray['collection'][] = $set;
             }
             
-            $renderArray['priceText'] = \Yii::t('base', 'Price:');
+            $renderArray['priceText'] = \Yii::t('base', 'Price');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

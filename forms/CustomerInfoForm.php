@@ -69,11 +69,15 @@ class CustomerInfoForm extends AbstractBaseForm
      * @var string подтверждение пароля
      */
     public $password2;
+    /**
+     * @var bool нужно ли обновить данные
+     */
+    public $change;
     
     public function scenarios()
     {
         return [
-            self::CHECKOUT=>['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment', 'create', 'password', 'password2']
+            self::CHECKOUT=>['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment', 'create', 'password', 'password2', 'change']
         ];
     }
     

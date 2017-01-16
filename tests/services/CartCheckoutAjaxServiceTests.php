@@ -24,6 +24,7 @@ use app\tests\sources\fixtures\{AddressFixture,
     SurnamesFixture,
     UsersFixture};
 use app\helpers\HashHelper;
+use app\models\UsersModel;
 
 /**
  * Тестирует класс CartCheckoutAjaxService
@@ -293,6 +294,91 @@ class CartCheckoutAjaxServiceTests extends TestCase
         
         $this->assertCount(7, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
         $this->assertCount(3, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
+        
+        $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
+        $files = glob($saveDir . '/*.eml');
+        
+        $this->assertNotEmpty($files);
+        
+        $this->assertFalse($session->has(HashHelper::createCartKey()));
+        $this->assertFalse($session->has(HashHelper::createCartCustomerKey()));
+        
+        $session->close();
+    }
+    
+    /**
+     * Тестирует метод CartCheckoutAjaxService::handle
+     * если одновременно обновляю данные пользователя
+     * @depends testHandleWithUser
+     */
+    public function testHandleWithUpdateUser()
+    {
+        $email = \Yii::$app->db->createCommand('SELECT * FROM {{emails}} WHERE [[emails.email]]=:email')->bindValue(':email', 'new@new.com')->queryOne();
+        $user = \Yii::$app->db->createCommand('SELECT * FROM {{users}} WHERE [[users.id_email]]=:id_email')->bindValue(':id_email', $email['id'])->queryOne();
+        
+        $user = UsersModel::findOne($user['id']);
+        \Yii::$app->user->login($user);
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        
+        $session->set(HashHelper::createCartKey(), [
+            ['quantity'=>4, 'id_color'=>2, 'id_size'=>1, 'id_product'=>1, 'price'=>12.00]
+        ]);
+        
+        $this->assertCount(7, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
+        $this->assertCount(3, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
+        
+        $this->assertEquals(3, $user['id_name']);
+        $this->assertEquals(3, $user['id_surname']);
+        $this->assertEquals(3, $user['id_phone']);
+        $this->assertEquals(3, $user['id_address']);
+        $this->assertEquals(3, $user['id_city']);
+        $this->assertEquals(3, $user['id_country']);
+        $this->assertEquals(3, $user['id_postcode']);
+        
+        $request = new class() {
+            public $isAjax = true;
+            public function post($name = null, $defaultValue = null)
+            {
+                return [
+                    'CustomerInfoForm'=>[
+                        'name'=>'Update Name',
+                        'surname'=>'Update Surname',
+                        'email'=>'new@new.com',
+                        'phone'=>'+0111 222-22-22',
+                        'address'=>'Update Street, 2',
+                        'city'=>'Update City',
+                        'country'=>'Update Country',
+                        'postcode'=>'UPDATE9344',
+                        'id_delivery'=>2,
+                        'id_payment'=>2,
+                        'change'=>true,
+                    ]
+                ];
+            }
+        };
+        
+        $service = new CartCheckoutAjaxService();
+        $result = $service->handle($request);
+        
+        $this->assertInternalType('string', $result);
+        $this->assertNotEmpty($result);
+        $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
+        
+        $this->assertCount(8, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
+        $this->assertCount(3, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
+        
+        $email = \Yii::$app->db->createCommand('SELECT * FROM {{emails}} WHERE [[emails.email]]=:email')->bindValue(':email', 'new@new.com')->queryOne();
+        $user = \Yii::$app->db->createCommand('SELECT * FROM {{users}} WHERE [[users.id_email]]=:id_email')->bindValue(':id_email', $email['id'])->queryOne();
+        
+        $this->assertEquals(4, $user['id_name']);
+        $this->assertEquals(4, $user['id_surname']);
+        $this->assertEquals(4, $user['id_phone']);
+        $this->assertEquals(4, $user['id_address']);
+        $this->assertEquals(4, $user['id_city']);
+        $this->assertEquals(4, $user['id_country']);
+        $this->assertEquals(4, $user['id_postcode']);
         
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');

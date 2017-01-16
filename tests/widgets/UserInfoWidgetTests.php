@@ -90,6 +90,8 @@ class UserInfoWidgetTests extends TestCase
      */
     public function testRunGuest()
     {
+        \Yii::$app->user->logout();
+        
         $user = new class() extends User {
             public $identityClass = 'SomeClass';
         };

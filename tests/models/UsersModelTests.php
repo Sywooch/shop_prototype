@@ -40,6 +40,8 @@ class UsersModelTests extends TestCase
         $reflection = new \ReflectionClass(UsersModel::class);
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('UPDATE'));
+        $this->assertTrue($reflection->hasConstant('UPDATE_PASSW'));
         
         $model = new UsersModel();
         
@@ -82,6 +84,32 @@ class UsersModelTests extends TestCase
         $this->assertSame(1, $model->id_city);
         $this->assertSame(1, $model->id_country);
         $this->assertSame(1, $model->id_postcode);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::UPDATE]);
+        $model->attributes = [
+            'id_name'=>1,
+            'id_surname'=>1,
+            'id_phone'=>1,
+            'id_address'=>1,
+            'id_city'=>1,
+            'id_country'=>1,
+            'id_postcode'=>1
+        ];
+        
+        $this->assertSame(1, $model->id_name);
+        $this->assertSame(1, $model->id_surname);
+        $this->assertSame(1, $model->id_phone);
+        $this->assertSame(1, $model->id_address);
+        $this->assertSame(1, $model->id_city);
+        $this->assertSame(1, $model->id_country);
+        $this->assertSame(1, $model->id_postcode);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::UPDATE_PASSW]);
+        $model->attributes = [
+            'password'=>'password',
+        ];
+        
+        $this->assertSame('password', $model->password);
     }
     
     /**
@@ -122,6 +150,48 @@ class UsersModelTests extends TestCase
         $this->assertSame(0, $model->id_city);
         $this->assertSame(0, $model->id_country);
         $this->assertSame(0, $model->id_postcode);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::UPDATE]);
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(7, $model->errors);
+        $this->assertArrayHasKey('id_name', $model->errors);
+        $this->assertArrayHasKey('id_surname', $model->errors);
+        $this->assertArrayHasKey('id_phone', $model->errors);
+        $this->assertArrayHasKey('id_address', $model->errors);
+        $this->assertArrayHasKey('id_city', $model->errors);
+        $this->assertArrayHasKey('id_country', $model->errors);
+        $this->assertArrayHasKey('id_postcode', $model->errors);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::UPDATE]);
+        $model->attributes = [
+            'id_name'=>1,
+            'id_surname'=>1,
+            'id_phone'=>1,
+            'id_address'=>1,
+            'id_city'=>1,
+            'id_country'=>1,
+            'id_postcode'=>1
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::UPDATE_PASSW]);
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(1, $model->errors);
+        $this->assertArrayHasKey('password', $model->errors);
+        
+        $model = new UsersModel(['scenario'=>UsersModel::UPDATE_PASSW]);
+        $model->attributes = [
+            'password'=>'password',
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
     
     /**

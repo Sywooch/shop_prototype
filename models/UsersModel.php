@@ -16,6 +16,14 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
      * Сценарий сохранения нового пользователя
      */
     const SAVE = 'save';
+    /**
+     * Сценарий обновления данных
+     */
+    const UPDATE = 'update';
+    /**
+     * Сценарий обновления пароля
+     */
+    const UPDATE_PASSW = 'update_passw';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -34,6 +42,8 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     {
         return [
             self::SAVE=>['id_email', 'password', 'id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode'],
+            self::UPDATE=>['id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode'],
+            self::UPDATE_PASSW=>['password'],
         ];
     }
     
@@ -42,6 +52,8 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
         return [
             [['id_email', 'password'], 'required', 'on'=>self::SAVE],
             [['id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode'], 'default', 'value'=>0, 'on'=>self::SAVE],
+            [['id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode'], 'required', 'on'=>self::UPDATE],
+            [['password'], 'required', 'on'=>self::UPDATE_PASSW],
         ];
     }
     

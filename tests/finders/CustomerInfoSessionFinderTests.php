@@ -106,7 +106,7 @@ class CustomerInfoSessionFinderTests extends TestCase
         $result = $reflection->getValue($form);
         $this->assertSame(1, $result);
         
-        $session->remove('key_test');
+        $session->remove($key);
         $session->close();
     }
 }

@@ -26,8 +26,14 @@
         <p>{{ form.field(modelForm, 'create').checkbox() | raw }}</p>
         <div class="cart-create-user disable">
             <p>
-            {{ form.field(modelForm, 'password').passwordInput() | raw }}
-            {{ form.field(modelForm, 'password2').passwordInput() | raw }}
+                {{ form.field(modelForm, 'password').passwordInput() | raw }}
+                {{ form.field(modelForm, 'password2').passwordInput() | raw }}
+            </p>
+        </div>
+    {% else %}
+        <div class="cart-change-user disable">
+            <p>
+                {{ form.field(modelForm, 'change').checkbox() | raw }}
             </p>
         </div>
     {% endif %}

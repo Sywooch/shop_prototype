@@ -36,6 +36,11 @@ class ReceivedOrderEmailServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+    }
+    
     /**
      * Тестирует метод ReceivedOrderEmailService::handle
      * если пуст ReceivedOrderEmailService::email

@@ -63,11 +63,14 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
                 $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
                 $set['linkText'] = Html::encode($purchase->product->name);
                 $set['short_description'] = $purchase->product->short_description;
-                $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+                $set['quantity'] = sprintf('%s: %s', \Yii::t('base', 'Quantity'), $purchase->quantity);
+                $set['price'] = sprintf('%s: %s', \Yii::t('base', 'Price'), \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code);
                 $set['color'] = sprintf('%s: %s', \Yii::t('base', 'Color'), $purchase->color->color);
                 $set['size'] = sprintf('%s: %s', \Yii::t('base', 'Size'), $purchase->size->size);
                 $renderArray['collection'][] = $set;
             }
+            
+            $renderArray['summary'] = \Yii::t('base', 'Total number of items: {goods}, Total cost: {cost}', ['goods'=>$this->purchases->totalQuantity(), 'cost'=>\Yii::$app->formatter->asDecimal($this->purchases->totalPrice() * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code]);
             
             $renderArray['headerDelivery'] = \Yii::t('base', 'Delivery address');
             

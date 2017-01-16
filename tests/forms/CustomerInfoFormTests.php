@@ -48,6 +48,7 @@ class CustomerInfoFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('create'));
         $this->assertTrue($reflection->hasProperty('password'));
         $this->assertTrue($reflection->hasProperty('password2'));
+        $this->assertTrue($reflection->hasProperty('change'));
     }
     
     /**
@@ -70,6 +71,7 @@ class CustomerInfoFormTests extends TestCase
             'create'=>true,
             'password'=>'pass',
             'password2'=>'pass',
+            'change'=>true,
         ];
         
         $reflection = new \ReflectionProperty($form, 'name');
@@ -123,6 +125,10 @@ class CustomerInfoFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'password2');
         $result = $reflection->getValue($form);
         $this->assertSame('pass', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'change');
+        $result = $reflection->getValue($form);
+        $this->assertSame(true, $result);
     }
     
     /**

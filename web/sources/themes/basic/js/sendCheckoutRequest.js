@@ -42,4 +42,8 @@ $(function() {
         $('div.cart-create-user').toggleClass('disable');
     });
     
+    $('div.cart-checkout').on('focusin', 'input[type="text"]', function(event) {
+        $('div.cart-change-user').removeClass('disable');
+    });
+    
 });

@@ -68,10 +68,10 @@ class ProductDetailWidget extends AbstractBaseWidget
             
             $renderArray['price'] = \Yii::$app->formatter->asDecimal($this->product->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
             $renderArray['code'] = $this->product->code;
-            $renderArray['colorsText'] = \Yii::t('base', 'Colors:');
-            $renderArray['sizesText'] = \Yii::t('base', 'Sizes:');
-            $renderArray['priceText'] = \Yii::t('base', 'Price:');
-            $renderArray['codeText'] = \Yii::t('base', 'Code:');
+            $renderArray['colorsText'] = \Yii::t('base', 'Colors');
+            $renderArray['sizesText'] = \Yii::t('base', 'Sizes');
+            $renderArray['priceText'] = \Yii::t('base', 'Price');
+            $renderArray['codeText'] = \Yii::t('base', 'Code');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

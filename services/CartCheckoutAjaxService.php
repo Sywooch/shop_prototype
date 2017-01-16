@@ -110,6 +110,28 @@ class CartCheckoutAjaxService extends AbstractBaseService
                             $user = $finder->find();
                         }
                         
+                        if ((bool) $form->change === true) {
+                            if (\Yii::$app->user->isGuest === false) {
+                                $user = \Yii::$app->user->identity;
+                                $user->scenario = UsersModel::UPDATE;
+                                $user->id_name = $namesModel->id;
+                                $user->id_surname = $surnamesModel->id;
+                                $user->id_phone = $phonesModel->id;
+                                $user->id_address = $addressModel->id;
+                                $user->id_city = $citiesModel->id;
+                                $user->id_country = $countriesModel->id;
+                                $user->id_postcode = $postcodesModel->id;
+                                if ($user->validate() === false) {
+                                    throw new ErrorException($this->modelError($user->errors));
+                                }
+                                
+                                $saver = new ModelSaver([
+                                    'model'=>$user
+                                ]);
+                                $saver->save();
+                            }
+                        }
+                        
                         $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, ['key'=>HashHelper::createCartKey()]);
                         $purchasesCollection = $finder->find();
                         
