@@ -85,6 +85,7 @@ class CustomerInfoForm extends AbstractBaseForm
     {
         return [
             [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment'], 'required', 'on'=>self::CHECKOUT],
+            [['email'], 'email', 'on'=>self::CHECKOUT],
             [['email'], UserEmailExistsRegValidator::class, 'on'=>self::CHECKOUT, 'when'=>function($model) {
                 return !empty($model->create);
             }],

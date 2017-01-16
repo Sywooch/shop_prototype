@@ -156,6 +156,24 @@ class CustomerInfoFormTests extends TestCase
         $form->attributes = [
             'name'=>'John',
             'surname'=>'Doe',
+            'email'=>'jahn@com',
+            'phone'=>'+387968965',
+            'address'=>'ул. Черноозерная, 1',
+            'city'=>'Каркоза',
+            'country'=>'Гиады',
+            'postcode'=>'08789',
+            'id_delivery'=>1,
+            'id_payment'=>1,
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('email', $form->errors);
+        
+        $form = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+        $form->attributes = [
+            'name'=>'John',
+            'surname'=>'Doe',
             'email'=>'jahn@com.com',
             'phone'=>'+387968965',
             'address'=>'ул. Черноозерная, 1',
