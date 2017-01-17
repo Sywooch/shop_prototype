@@ -142,7 +142,10 @@ $translate = [
     'Current contact details'=>'Текущие контактные данные',
     'Current orders'=>'Текущие заказы',
     'Status'=>'Статус',
-    'Processed'=>'Выполняется'
+    'Processed'=>'Выполняется',
+    'Mailings'=>'Рассылки',
+    'Available mailings'=>'Доступные рассылки',
+    'Sign up now!'=>'Подпишитесь сейчас!'
 ];
 
 return $translate;

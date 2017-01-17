@@ -51,6 +51,9 @@ $routes = [
     
     # Комментарии
     'comment-save'=>'comments/save',
+    
+    # Расслыки
+    'mailings'=>'mailings/index',
 ];
 
 return $routes;

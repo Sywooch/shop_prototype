@@ -1,0 +1,9 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use('app/widgets/MailingsWidget') }}
+
+{{ include('@theme/common/frontend-common.twig') }}
+
+{{ mailings_widget_widget(mailingsWidgetConfig) }}
+
+{{ include('@theme/common/frontend-bottom-common.twig') }}

@@ -2,16 +2,16 @@
 
 namespace app\finders;
 
-use app\models\CurrencyModel;
+use app\models\MailingsModel;
 use app\finders\AbstractBaseFinder;
 
 /**
- * Возвращает доступные валюты из СУБД
+ * Возвращает доступные подписки из СУБД
  */
-class CurrencyFinder extends AbstractBaseFinder
+class MailingsFinder extends AbstractBaseFinder
 {
     /**
-     * @var массив загруженных CurrencyModel
+     * @var массив загруженных MailingsModel
      */
     private $storage = null;
     
@@ -23,8 +23,8 @@ class CurrencyFinder extends AbstractBaseFinder
     {
         try {
             if (empty($this->storage)) {
-                $query = CurrencyModel::find();
-                $query->select(['[[currency.id]]', '[[currency.code]]']);
+                $query = MailingsModel::find();
+                $query->select(['[[mailings.id]]', '[[mailings.name]]', '[[mailings.description]]']);
                 
                 $this->storage = $query->all();
             }
