@@ -45,7 +45,7 @@ class AccountMenuWidget extends Menu
                         'url'=>['/account/orders']
                     ],
                     [
-                        'label'=>\Yii::t('base', 'Contact details'),
+                        'label'=>\Yii::t('base', 'Change data'),
                         'url'=>['/account/contact-details']
                     ],
                     [

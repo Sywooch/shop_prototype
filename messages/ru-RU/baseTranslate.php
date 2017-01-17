@@ -135,6 +135,7 @@ $translate = [
     'General data'=>'Основные данные',
     'Orders'=>'Заказы',
     'Contact details'=>'Контактная информация',
+    'Change data'=>'Изменить данные',
     'Change password'=>'Изменить пароль',
     'Subscriptions'=>'Подписки',
     'Exit settings'=>'Закрыть настройки',

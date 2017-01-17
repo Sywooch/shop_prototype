@@ -38,6 +38,8 @@ class CartCheckoutAjaxFormServiceTests extends TestCase
      */
     public function testHandle()
     {
+        \Yii::$app->user->logout();
+        
         $request = new class() {
             public $isAjax = true;
         };

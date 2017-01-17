@@ -21,7 +21,7 @@ class AccountIndexService extends AbstractBaseService
      * формирования HTML страницы с настройками аккаунта
      * @param array $request
      */
-    public function handle($request)
+    public function handle($request=null)
     {
         try {
             if (empty($this->dataArray)) {

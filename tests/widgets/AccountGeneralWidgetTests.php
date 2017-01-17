@@ -6,12 +6,26 @@ use PHPUnit\Framework\TestCase;
 use app\widgets\AccountGeneralWidget;
 use app\models\{CurrencyModel,
     UsersModel};
+use app\tests\DbManager;
+use app\tests\sources\fixtures\UsersFixture;
 
 /**
  * Тестирует класс AccountGeneralWidget
  */
 class AccountGeneralWidgetTests extends TestCase
 {
+    private static $dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'users'=>UsersFixture::class,
+            ]
+        ]);
+        self::$dbClass->loadFixtures();
+    }
+    
     /**
      * Тестирует свойства AccountGeneralWidget
      */
@@ -167,5 +181,166 @@ class AccountGeneralWidgetTests extends TestCase
         $reflection->setValue($widget, $mock);
         
         $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AccountGeneralWidget::run
+     * если нет неотправленных покупок
+     */
+    public function testRunNotProcessedPurchases()
+    {
+        $user = UsersModel::findOne(1);
+        
+        $currency = new class() extends CurrencyModel {
+            public $exchange_rate = 2.09;
+            public $code = 'MONEY';
+        };
+        
+        $widget = new AccountGeneralWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'user');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $user);
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'account-general.twig');
+        
+        $result = $widget->run();
+        
+        $this->assertRegExp('#<p><strong>Текущие контактные данные</strong></p>#', $result);
+        $this->assertRegExp('#<div class="account-user-info">#', $result);
+        $this->assertRegExp('#Email:</strong> light@mail.some<br>#', $result);
+        $this->assertRegExp('#<strong>Имя:</strong> John<br>#', $result);
+        $this->assertRegExp('#<strong>Фамилия:</strong> Doe<br>#', $result);
+        $this->assertRegExp('#<strong>Телефон:</strong> \+290865687812<br>#', $result);
+        $this->assertRegExp('#<strong>Адрес:</strong> Main Street Kangaroo Point<br>#', $result);
+        $this->assertRegExp('#<strong>Город:</strong> New York<br>#', $result);
+        $this->assertRegExp('#<strong>Страна:</strong> USA<br>#', $result);
+        $this->assertRegExp('#<strong>Почтовый код:</strong> 09100<br>#', $result);
+    }
+    
+    /**
+     * Тестирует метод AccountGeneralWidget::run
+     * если есть неотправленные покупки
+     */
+    public function testRunExistProcessedPurchases()
+    {
+        $user = UsersModel::findOne(1);
+        
+        $currency = new class() extends CurrencyModel {
+            public $exchange_rate = 2.09;
+            public $code = 'MONEY';
+        };
+        
+        $purchases = [
+            new class() {
+                public $product;
+                public $color;
+                public $size;
+                public $quantity = 1;
+                public $price = 12.89;
+                public $canceled = 0;
+                public $shipped = 0;
+                public function __construct()
+                {
+                    $this->product = new class() {
+                        public $seocode = 'prod_1';
+                        public $name = 'Name 1';
+                        public $short_description = 'Description 1';
+                        public $images = 'test';
+                    };
+                    $this->color = new class() {
+                        public $color = 'gray';
+                    };
+                    $this->size = new class() {
+                        public $size = 45;
+                    };
+                }
+            },
+            new class() {
+                public $product;
+                public $color;
+                public $size;
+                public $quantity = 1;
+                public $price = 56.00;
+                public $canceled = 0;
+                public $shipped = 0;
+                public function __construct()
+                {
+                    $this->product = new class() {
+                        public $seocode = 'prod_2';
+                        public $name = 'Name 2';
+                        public $short_description = 'Description 2';
+                        public $images = 'test';
+                    };
+                    $this->color = new class() {
+                        public $color = 'green';
+                    };
+                    $this->size = new class() {
+                        public $size = 15.5;
+                    };
+                }
+            },
+        ];
+        
+        $widget = new AccountGeneralWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'user');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $user);
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $purchases);
+        
+        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'account-general.twig');
+        
+        $result = $widget->run();
+        
+        $this->assertRegExp('#<p><strong>Текущие контактные данные</strong></p>#', $result);
+        $this->assertRegExp('#<div class="account-user-info">#', $result);
+        $this->assertRegExp('#Email:</strong> light@mail.some<br>#', $result);
+        $this->assertRegExp('#<strong>Имя:</strong> John<br>#', $result);
+        $this->assertRegExp('#<strong>Фамилия:</strong> Doe<br>#', $result);
+        $this->assertRegExp('#<strong>Телефон:</strong> \+290865687812<br>#', $result);
+        $this->assertRegExp('#<strong>Адрес:</strong> Main Street Kangaroo Point<br>#', $result);
+        $this->assertRegExp('#<strong>Город:</strong> New York<br>#', $result);
+        $this->assertRegExp('#<strong>Страна:</strong> USA<br>#', $result);
+        $this->assertRegExp('#<strong>Почтовый код:</strong> 09100<br>#', $result);
+        
+        $this->assertRegExp('#<p><strong>Текущие заказы</strong></p>#', $result);
+        $this->assertRegExp('#<div class="account-last-orders">#', $result);
+        $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_1">Name 1</a>#', $result);
+        $this->assertRegExp('#<br>Description 1#', $result);
+        $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);
+        $this->assertRegExp('#<br>Цвет: gray#', $result);
+        $this->assertRegExp('#<br>Размер: 45#', $result);
+        $this->assertRegExp('#<br>Количество: 1#', $result);
+        $this->assertRegExp('#<br>Цена: 26,94 MONEY#', $result);
+        $this->assertRegExp('#<br>Статус: Выполняется#', $result);
+        $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_2">Name 2</a>#', $result);
+        $this->assertRegExp('#<br>Description 2#', $result);
+        $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);
+        $this->assertRegExp('#<br>Цвет: green#', $result);
+        $this->assertRegExp('#<br>Размер: 15.5#', $result);
+        $this->assertRegExp('#<br>Количество: 1#', $result);
+        $this->assertRegExp('#<br>Цена: 117,04 MONEY#', $result);
+        $this->assertRegExp('#<br>Статус: Выполняется#', $result);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+         self::$dbClass->unloadFixtures();
     }
 }

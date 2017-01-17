@@ -48,6 +48,8 @@ class GetAccountGeneralWidgetConfigServiceTests extends TestCase
      */
     public function testHandleIsGuest()
     {
+        \Yii::$app->user->logout();
+        
         $service = new GetAccountGeneralWidgetConfigService();
         $service->handle();
     }
@@ -79,6 +81,6 @@ class GetAccountGeneralWidgetConfigServiceTests extends TestCase
     
     public static function tearDownAfterClass()
     {
-         self::$dbClass->unloadFixtures();
+        self::$dbClass->unloadFixtures();
     }
 }
