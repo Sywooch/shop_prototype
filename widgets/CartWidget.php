@@ -134,12 +134,12 @@ class CartWidget extends AbstractBaseWidget
     
     /**
      * Присваивает CurrencyModel свойству CartWidget::currency
-     * @param CurrencyModel $model
+     * @param CurrencyModel $currency
      */
-    public function setCurrency(CurrencyModel $model)
+    public function setCurrency(CurrencyModel $currency)
     {
         try {
-            $this->currency = $model;
+            $this->currency = $currency;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

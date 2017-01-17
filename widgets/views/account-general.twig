@@ -1,0 +1,56 @@
+<p><strong>{{ userHeader }}</strong></p>
+
+<div class="account-user-info">
+<p>
+    {% if user.email %}
+        <strong>{{ user.emailHeader }}:</strong> {{ user.email }}<br>
+    {% endif %}
+    
+    {% if user.name %}
+        <strong>{{ user.nameHeader }}:</strong> {{ user.name }}<br>
+    {% endif %}
+    
+    {% if user.surname %}
+        <strong>{{ user.surnameHeader }}:</strong> {{ user.surname }}<br>
+    {% endif %}
+    
+    {% if user.phone %}
+        <strong>{{ user.phoneHeader }}:</strong> {{ user.phone }}<br>
+    {% endif %}
+    
+    {% if user.address %}
+        <strong>{{ user.addressHeader }}:</strong> {{ user.address }}<br>
+    {% endif %}
+    
+    {% if user.city %}
+        <strong>{{ user.cityHeader }}:</strong> {{ user.city }}<br>
+    {% endif %}
+    
+    {% if user.country %}
+        <strong>{{ user.countryHeader }}:</strong> {{ user.country }}<br>
+    {% endif %}
+    
+    {% if user.postcode %}
+        <strong>{{ user.postcodeHeader }}:</strong> {{ user.postcode }}<br>
+    {% endif %}
+</p>
+</div>
+
+{% if purchases %}
+    <p><strong>{{ userOrders }}</strong></p>
+    
+    <div class="account-last-orders">
+        {% for purchase in purchases %}
+            <p>
+                <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
+                <br>{{ purchase.short_description }}
+                <br>{{ purchase.image | raw }}
+                <br>{{ purchase.color }}
+                <br>{{ purchase.size }}
+                <br>{{ purchase.quantity }}
+                <br>{{ purchase.price }}
+                <br>{{ purchase.status }}
+            </p>
+        {% endfor %}
+    </div>
+{% endif %}

@@ -153,5 +153,7 @@ class UserInfoWidgetTests extends TestCase
         $this->assertRegExp('#<form id="user-logout-form"#', $result);
         $this->assertRegExp('#<input type="hidden" id="userloginform-id"#', $result);
         $this->assertRegExp('#<input type="submit" value="Выйти">#', $result);
+        $this->assertRegExp('#<form id="account-settings-form" action=".+" method="GET">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Настройки аккаунта">#', $result);
     }
 }

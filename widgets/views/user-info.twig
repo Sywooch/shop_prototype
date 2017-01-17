@@ -2,12 +2,17 @@
 
 <div class="user-info">
     <p>{{ header }}</p>
-    {% if not authenticated %}
+    
+    {% if isGuest %}
         <p><a href="{{ loginHref }}">{{ loginText }}</a> <a href="{{registrationHref }}">{{ registrationText }}</a></p>
     {% else %}
         {% set form=active_form_begin({'id':formId, 'action':formAction, 'method':'POST'}) %}
             {{ form.field(formModel, 'id').hiddenInput().label(false) | raw }}
             <input type="submit" value="{{ button }}">
+        {{ active_form_end() }}
+        
+        {% set form=active_form_begin({'id':formIdSettings, 'action':formActionSettings, 'method':'GET'}) %}
+            <input type="submit" value="{{ buttonSettings }}">
         {{ active_form_end() }}
     {% endif %}
 </div>

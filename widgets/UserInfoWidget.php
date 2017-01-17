@@ -2,11 +2,9 @@
 
 namespace app\widgets;
 
-use yii\base\{ErrorException,
-    Widget};
+use yii\base\ErrorException;
 use yii\web\User;
-use yii\helpers\{Html,
-    Url};
+use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
 use app\forms\UserLoginForm;
 
@@ -38,24 +36,31 @@ class UserInfoWidget extends AbstractBaseWidget
                 throw new ErrorException($this->emptyError('view'));
             }
             
-            if ($this->user->isGuest === false) {
-                $user = $this->user->identity;
-            }
+            $isGuest = $this->user->isGuest;
             
             $renderArray = [];
             
-            $renderArray['header'] = \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>isset($user) ? $user->email->email : \Yii::t('base', 'Guest')]);
-            $renderArray['authenticated'] = isset($user) ? true : false;
+            if ($isGuest === true) {
+                $placeholder = \Yii::t('base', 'Guest');
+                $renderArray['loginHref'] = Url::to(['/user/login']);
+                $renderArray['loginText'] = \Yii::t('base', 'Login');
+                $renderArray['registrationHref'] = Url::to(['/user/registration']);
+                $renderArray['registrationText'] = \Yii::t('base', 'Registration');
+            } else {
+                $user = $this->user->identity;
+                $placeholder = $user->email->email;
+                $renderArray['formModel'] = new UserLoginForm(['id'=>$user->id]);
+                $renderArray['formId'] = 'user-logout-form';
+                $renderArray['formAction'] = Url::to(['/user/logout']);
+                $renderArray['button'] = \Yii::t('base', 'Logout');
+                
+                $renderArray['formIdSettings'] = 'account-settings-form';
+                $renderArray['formActionSettings'] = Url::to(['/account/index']);
+                $renderArray['buttonSettings'] = \Yii::t('base', 'Account settings');
+            }
             
-            $renderArray['loginHref'] = Url::to(['/user/login']);
-            $renderArray['loginText'] = \Yii::t('base', 'Login');
-            $renderArray['registrationHref'] = Url::to(['/user/registration']);
-            $renderArray['registrationText'] = \Yii::t('base', 'Registration');
-            
-            $renderArray['formModel'] = new UserLoginForm(['id'=>isset($user) ? $user->id : '']);
-            $renderArray['formId'] = 'user-logout-form';
-            $renderArray['formAction'] = Url::to(['/user/logout']);
-            $renderArray['button'] = \Yii::t('base', 'Logout');
+            $renderArray['isGuest'] = $isGuest;
+            $renderArray['header'] = \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>$placeholder]);
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

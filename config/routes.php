@@ -29,14 +29,15 @@ $routes = [
     'recovery-post'=>'user/recovery-post',
     'generate'=>'user/generate',
     
+    # Аккаунт
+    'account'=>'account/index',
+    'account-orders'=>'account/orders',
+    'account-contact-details'=>'account/contact-details',
+    'account-change-password'=>'account/change-password',
+    'account-subscriptions'=>'account/subscriptions',
+    
     # Валюта
     'set-currency'=>'currency/set',
-    
-    # Управление товарами
-    'admin/add-product'=>'products-manager/add-one',
-    
-    # Ajax
-    'ajax/subcategory'=>'ajax/subcategory',
     
     # Корзина
     'cart-add'=>'cart/add',
@@ -47,12 +48,6 @@ $routes = [
     'cart'=>'cart/index',
     'cart-сheckout-ajax-form'=>'cart/сheckout-ajax-form',
     'cart-сheckout-ajax'=>'cart/сheckout-ajax',
-    /*'cart-сheckout'=>'cart/сheckout',
-    'cart-сheckout-post'=>'cart/сheckout-post',
-    'cart-confirm'=>'cart/confirm',*/
-    
-    # Подписки
-    'mailing'=>'mailing/index',
     
     # Комментарии
     'comment-save'=>'comments/save',

@@ -1,0 +1,7 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use ('app/widgets/AccountGeneralWidget') }}
+
+{{ include('@theme/common/account-common.twig') }}
+
+{{ account_general_widget_widget(accountGeneralWidgetConfig) }}
