@@ -7,12 +7,14 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\services\{AbstractBaseService,
-    EmailGetSaveEmailService};
+    EmailGetSaveEmailService,
+    GetMailingsSuccessWidgetConfigService};
 use app\forms\MailingForm;
 use app\savers\EmailsMailingsArraySaver;
 use app\finders\{EmailsMailingsEmailFinder,
     MailingsIdFinder};
 use app\models\EmailsMailingsModel;
+use app\widgets\MailingsSuccessWidget;
 
 /**
  * Сохраняет новый комментарий
@@ -65,12 +67,12 @@ class MailingsSaveService extends AbstractBaseService
                         ]);
                         $saver->save();
                         
-                        $finder = \Yii::$app->registry->get(MailingsIdFinder::class, ['id'=>$diffIdArray]);
-                        $mailingsModelArray = $finder->find();
+                        $service = \Yii::$app->registry->get(GetMailingsSuccessWidgetConfigService::class);
+                        $mailingsSuccessWidgetArray = $service->handle(['diffIdArray'=>$diffIdArray]);
                         
                         $transaction->commit();
                         
-                        return true;
+                        return MailingsSuccessWidget::widget($mailingsSuccessWidgetArray);
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;
