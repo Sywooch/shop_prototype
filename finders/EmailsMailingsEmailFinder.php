@@ -3,20 +3,20 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\models\EmailsModel;
+use app\models\EmailsMailingsModel;
 use app\finders\AbstractBaseFinder;
 
 /**
- * Возвращает доступные категории товаров из СУБД
+ * Возвращает EmailsMailingsModel из СУБД
  */
-class EmailEmailFinder extends AbstractBaseFinder
+class EmailsMailingsEmailFinder extends AbstractBaseFinder
 {
     /**
      * @var string email
      */
     public $email;
     /**
-     * @var EmailsModel
+     * @var array EmailsMailingsModel
      */
     private $storage = null;
     
@@ -32,11 +32,12 @@ class EmailEmailFinder extends AbstractBaseFinder
             }
             
             if (empty($this->storage)) {
-                $query = EmailsModel::find();
-                $query->select(['[[emails.id]]', '[[emails.email]]']);
+                $query = EmailsMailingsModel::find();
+                $query->select(['[[emails_mailings.id_email]]', '[[emails_mailings.id_mailing]]']);
+                $query->innerJoin('{{emails}}', '[[emails_mailings.id_email]]=[[emails.id]]');
                 $query->where(['[[emails.email]]'=>$this->email]);
                 
-                $this->storage = $query->one();
+                $this->storage = $query->all();
             }
             
             return $this->storage;

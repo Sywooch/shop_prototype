@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\MailingsUserExistsValidator;
 
 /**
  * Представляет данные формы добавления подписки
@@ -36,6 +37,9 @@ class MailingForm extends AbstractBaseForm
         return [
             [['id', 'email'], 'required', 'on'=>self::SAVE],
             [['email'], 'email', 'on'=>self::SAVE],
+            [['id'], MailingsUserExistsValidator::class, 'on'=>self::SAVE, 'when'=>function($model) {
+                return empty($model->errors);
+            }],
         ];
     }
 }

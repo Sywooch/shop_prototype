@@ -4,12 +4,30 @@ namespace app\tests\forms;
 
 use PHPUnit\Framework\TestCase;
 use app\forms\MailingForm;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\{EmailsFixture,
+    EmailsMailingsFixture,
+    MailingsFixture};
 
 /**
  * Тестирует класс MailingForm
  */
 class MailingFormTests extends TestCase
 {
+    private static $_dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$_dbClass = new DbManager([
+            'fixtures'=>[
+                'emails'=>EmailsFixture::class,
+                'emails_mailings'=>EmailsMailingsFixture::class,
+                'mailings'=>MailingsFixture::class,
+            ],
+        ]);
+        self::$_dbClass->loadFixtures();
+    }
+    
     /**
      * Тестирует свойства MailingForm
      */
@@ -59,7 +77,7 @@ class MailingFormTests extends TestCase
         
         $form = new MailingForm(['scenario'=>MailingForm::SAVE]);
         $form->attributes = [
-            'id'=>1,
+            'id'=>[1],
             'email'=>'some@some'
         ];
         $form->validate();
@@ -70,11 +88,45 @@ class MailingFormTests extends TestCase
         
         $form = new MailingForm(['scenario'=>MailingForm::SAVE]);
         $form->attributes = [
-            'id'=>1,
+            'id'=>[1],
             'email'=>'some@some.com'
         ];
         $form->validate();
         
         $this->assertEmpty($form->errors);
+        
+        $form = new MailingForm(['scenario'=>MailingForm::SAVE]);
+        $form->attributes = [
+            'id'=>[1],
+            'email'=>self::$_dbClass->emails['email_1']['email'],
+        ];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('id', $form->errors);
+        
+        $form = new MailingForm(['scenario'=>MailingForm::SAVE]);
+        $form->attributes = [
+            'id'=>[1, 3],
+            'email'=>self::$_dbClass->emails['email_1']['email'],
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new MailingForm(['scenario'=>MailingForm::SAVE]);
+        $form->attributes = [
+            'id'=>[3],
+            'email'=>self::$_dbClass->emails['email_1']['email'],
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$_dbClass->unloadFixtures();
     }
 }

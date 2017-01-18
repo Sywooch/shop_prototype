@@ -174,6 +174,18 @@ class MailingsWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        print_r($result);
+        $this->assertRegExp('#<p><strong>Доступные рассылки</strong></p>#', $result);
+        $this->assertRegExp('#<strong>One</strong>#', $result);
+        $this->assertRegExp('#<br/>One description#', $result);
+        $this->assertRegExp('#<strong>Two</strong>#', $result);
+        $this->assertRegExp('#<br/>Two description#', $result);
+        $this->assertRegExp('#<p><strong>Подпишитесь сейчас!</strong></p>#', $result);
+        $this->assertRegExp('#<form id="mailings-form" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="text"\s.+\sname=".+\[email\]">#', $result);
+        $this->assertRegExp('#<input type="checkbox" name=".+\[id\]\[\]" value="1">\sOne</label>#', $result);
+        $this->assertRegExp('#<label><input type="checkbox" name=".+\[id\]\[\]" value="2">\sTwo</label>#', $result);
+        $this->assertRegExp('#<input type="submit" value="Подписаться">#', $result);
+        $this->assertRegExp('#<div class="mailings-success"></div>#', $result);
+        $this->assertRegExp('#<div class="mailings-form">#', $result);
     }
 }

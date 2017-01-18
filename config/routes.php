@@ -54,6 +54,7 @@ $routes = [
     
     # Расслыки
     'mailings'=>'mailings/index',
+    'mailings-save'=>'mailings/save',
 ];
 
 return $routes;

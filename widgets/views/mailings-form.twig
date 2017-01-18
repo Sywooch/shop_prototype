@@ -13,8 +13,12 @@
 
 <p><strong>{{ headerForm }}</strong></p>
 
-{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
-    {{ form.field(formModel, 'email') | raw }}
-    {{ form.field(formModel, 'id').checkboxList(mailings, {'multiple':multiple}).label(false) | raw }}
-    <input type="submit" value="{{ button }}">
-{{ active_form_end() }}
+<div class="mailings-success"></div>
+
+<div class="mailings-form">
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(formModel, 'email') | raw }}
+        {{ form.field(formModel, 'id').checkboxList(mailings, {'multiple':multiple}).label(false) | raw }}
+        <input type="submit" value="{{ button }}">
+    {{ active_form_end() }}
+</div>

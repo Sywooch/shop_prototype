@@ -8,7 +8,7 @@ use app\savers\{AbstractBaseSaver,
 use app\helpers\SessionHelper;
 
 /**
- * Сохранаяет данные в сессионном хранилище
+ * Сохранаяет данные в СУБД
  */
 class PurchasesArraySaver extends AbstractBaseSaver implements SaverArrayInterface
 {
@@ -18,7 +18,7 @@ class PurchasesArraySaver extends AbstractBaseSaver implements SaverArrayInterfa
     private $models = [];
     
     /**
-     * Сохраняет данные в сессионном хранилище
+     * Сохраняет данные
      * @return int
      */
     public function save()
