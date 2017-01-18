@@ -8,11 +8,11 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\services\{AbstractBaseService,
     EmailGetSaveEmailService,
-    GetMailingsSuccessWidgetConfigService};
+    GetMailingsSuccessWidgetConfigService,
+    MailingsEmailService};
 use app\forms\MailingForm;
 use app\savers\EmailsMailingsArraySaver;
-use app\finders\{EmailsMailingsEmailFinder,
-    MailingsIdFinder};
+use app\finders\EmailsMailingsEmailFinder;
 use app\models\EmailsMailingsModel;
 use app\widgets\MailingsSuccessWidget;
 
@@ -66,6 +66,12 @@ class MailingsSaveService extends AbstractBaseService
                             'models'=>$rawEmailsMailingsModelArray
                         ]);
                         $saver->save();
+                        
+                        $mailService = new MailingsEmailService();
+                        $mailService->handle([
+                            'email'=>$form->email,
+                            'diffIdArray'=>$diffIdArray
+                        ]);
                         
                         $service = \Yii::$app->registry->get(GetMailingsSuccessWidgetConfigService::class);
                         $mailingsSuccessWidgetArray = $service->handle(['diffIdArray'=>$diffIdArray]);

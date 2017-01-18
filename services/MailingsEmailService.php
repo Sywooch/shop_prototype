@@ -4,14 +4,14 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetEmailRegistrationWidgetConfigService};
+    GetEmailMailingWidgetConfigService};
 use app\helpers\MailHelper;
-use app\widgets\EmailRegistrationWidget;
+use app\widgets\EmailMailingWidget;
 
 /**
- * Отправляет Email сообщение об удачной регистрации
+ * Отправляет Email сообщение об удачной подписке
  */
-class RegistrationEmailService extends AbstractBaseService
+class MailingsEmailService extends AbstractBaseService
 {
     /**
      * Обрабатывает запрос на отправку сообщения
@@ -21,14 +21,18 @@ class RegistrationEmailService extends AbstractBaseService
     {
         try {
             $email = $request['email'] ?? null;
+            $diffIdArray = $request['diffIdArray'] ?? null;
             
             if (empty($email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
+            if (empty($diffIdArray)) {
+                throw new ErrorException($this->emptyError('diffIdArray'));
+            }
             
-            $service = \Yii::$app->registry->get(GetEmailRegistrationWidgetConfigService::class);
-            $emailRegistrationWidgetArray = $service->handle([
-                'email'=>$email
+            $service = \Yii::$app->registry->get(GetEmailMailingWidgetConfigService::class);
+            $emailMailingWidgetArray = $service->handle([
+                'diffIdArray'=>$diffIdArray
             ]);
             
             $mailHelper = new MailHelper([
@@ -36,8 +40,8 @@ class RegistrationEmailService extends AbstractBaseService
                     'from'=>['admin@shop.com'=>'Shop.com'], 
                     //'to'=>$email,
                     'to'=>'timofey@localhost',
-                    'subject'=>\Yii::t('base', 'Registration on shop.com'),
-                    'html'=>EmailRegistrationWidget::widget($emailRegistrationWidgetArray)
+                    'subject'=>\Yii::t('base', 'Your subscription to shop.com'),
+                    'html'=>EmailMailingWidget::widget($emailMailingWidgetArray)
                 ]
             ]);
             $sent = $mailHelper->send();

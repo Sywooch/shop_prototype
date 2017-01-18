@@ -6,6 +6,7 @@ use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetEmailRecoveryWidgetConfigService};
 use app\helpers\MailHelper;
+use app\widgets\EmailRecoveryWidget;
 
 /**
  * Отправляет Email сообщение содержащее ссылку для смены пароля
@@ -50,8 +51,7 @@ class RecoveryEmailService extends AbstractBaseService
                     //'to'=>$email,
                     'to'=>'timofey@localhost',
                     'subject'=>\Yii::t('base', 'Password recovery from shop.com'), 
-                    'template'=>'@theme/mail/recovery-mail.twig',
-                    'templateData'=>['letterConfig'=>$emailRecoveryWidgetConfig],
+                    'html'=>EmailRecoveryWidget::widget($emailRecoveryWidgetConfig)
                 ]
             ]);
             $sent = $mailHelper->send();

@@ -9,6 +9,7 @@ $(function() {
             self.form.find('div.help-block').html('');
             if (typeof data == 'string') {
                 self.form.find('input[type="text"]').val('');
+                self.form.find('input[type="checkbox"]').prop("checked", false);
                 self.infoDiv.html(data);
                 setTimeout(timeoutRemove, 5000);
             } else if (typeof data == 'object' && data.length != 0) {

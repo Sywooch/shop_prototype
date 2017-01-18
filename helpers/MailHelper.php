@@ -26,13 +26,12 @@ class MailHelper
      * @param array $rawMessagesArray массив данных для создания сообщений
      * Каждая группа данных, представляющая письмо, является массивом 
      * Элементы массива, представляющего письмо: 
-     * - template - string путь к шаблону
+     * - html - string с телом сообщения
      * - from - array адрес отправителя array('email@address.com' => 'Real Name')
      * - to - array адрес получателя array('email@address.com' => 'Real Name')
      * - bcc - array адрес получателя скрытой копии array('email@address.com' => 'Real Name')
      * - subject - string тема письма
-     * - templateData - array данные для генерации шаблона
-     * - template, from, to, subject являются обязательными
+     * - html, from, to, subject являются обязательными
      */
     public function __construct(array $rawMessagesArray)
     {
@@ -75,7 +74,7 @@ class MailHelper
     {
         try {
             $message = \Yii::$app->mailer->compose();
-            $message->setHtmlBody(\Yii::$app->view->renderFile($messageArray['template'], $messageArray['templateData'] ?? []));
+            $message->setHtmlBody($messageArray['html']);
             $message->setFrom($messageArray['from']);
             $message->setTo($messageArray['to']);
             if (!empty($messageArray['bcc'])) {

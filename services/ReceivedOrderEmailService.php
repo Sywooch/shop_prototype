@@ -6,6 +6,7 @@ use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetEmailReceivedOrderWidgetConfigService};
 use app\helpers\MailHelper;
+use app\widgets\EmailReceivedOrderWidget;
 
 /**
  * Отправляет Email сообщение об удачной регистрации
@@ -34,8 +35,7 @@ class ReceivedOrderEmailService extends AbstractBaseService
                     //'to'=>$email,
                     'to'=>'timofey@localhost',
                     'subject'=>\Yii::t('base', 'Information about your order'),
-                    'template'=>'@theme/mail/received-order-mail.twig',
-                    'templateData'=>['letterConfig'=>$emailReceivedOrderWidgetArray],
+                    'html'=>EmailReceivedOrderWidget::widget($emailReceivedOrderWidgetArray)
                 ]
             ]);
             $sent = $mailHelper->send();
