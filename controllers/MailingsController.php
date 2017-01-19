@@ -6,7 +6,8 @@ use yii\web\Controller;
 use app\actions\{AjaxAction,
     GetAction};
 use app\services\{MailingsIndexService,
-    MailingsSaveService};
+    MailingsSaveService,
+    MailingsUnsubscribeService};
 
 /**
  * Обрабатывает запросы к настройкам аккаунта
@@ -24,6 +25,11 @@ class MailingsController extends Controller
             'save'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new MailingsSaveService(),
+            ],
+            'unsubscribe'=>[
+                'class'=>GetAction::class,
+                'service'=>new MailingsUnsubscribeService(),
+                'view'=>'unsubscribe.twig',
             ],
         ];
     }

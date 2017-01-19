@@ -4,6 +4,7 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\EmailMailingWidget;
+use app\helpers\HashHelper;
 
 /**
  * Тестирует класс EmailMailingWidget
@@ -18,6 +19,8 @@ class EmailMailingWidgetTests extends TestCase
         $reflection = new \ReflectionClass(EmailMailingWidget::class);
         
         $this->assertTrue($reflection->hasProperty('mailings'));
+        $this->assertTrue($reflection->hasProperty('key'));
+        $this->assertTrue($reflection->hasProperty('email'));
         $this->assertTrue($reflection->hasProperty('view'));
     }
     
@@ -66,6 +69,48 @@ class EmailMailingWidgetTests extends TestCase
     
     /**
      * Тестирует метод EmailMailingWidget::run
+     * если пуст EmailMailingWidget::key
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
+     */
+    public function testRunEmptyKey()
+    {
+        $mock = new class() {};
+        
+        $widget = new EmailMailingWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$mock]);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод EmailMailingWidget::run
+     * если пуст EmailMailingWidget::email
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
+     */
+    public function testRunEmptyEmail()
+    {
+        $mock = new class() {};
+        
+        $widget = new EmailMailingWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$mock]);
+        
+        $reflection = new \ReflectionProperty($widget, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'key');
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод EmailMailingWidget::run
      * если пуст EmailMailingWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: view
@@ -79,6 +124,14 @@ class EmailMailingWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'mailings');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
+        
+        $reflection = new \ReflectionProperty($widget, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'key');
+        
+        $reflection = new \ReflectionProperty($widget, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'email');
         
         $widget->run();
     }
@@ -105,6 +158,14 @@ class EmailMailingWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mailings);
         
+        $reflection = new \ReflectionProperty($widget, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, HashHelper::createHash(['some@some.com']));
+        
+        $reflection = new \ReflectionProperty($widget, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'some@some.com');
+        
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'email-mailings-subscribe-success.twig');
@@ -119,5 +180,7 @@ class EmailMailingWidgetTests extends TestCase
         $this->assertRegExp('#<br>One description#', $result);
         $this->assertRegExp('#<strong>Two</strong>#', $result);
         $this->assertRegExp('#<br>Two description#', $result);
+        $this->assertRegExp('#Если вы хотите отписаться от рассылки, перейдите по этой ссылке#', $result);
+        $this->assertRegExp('#<a href=".+\?unsubscribe=6aa4f165141cd439c3fd1dbb640b186c6714a30f&amp;email=some%40some.com">.+\?unsubscribe=6aa4f165141cd439c3fd1dbb640b186c6714a30f&amp;email=some%40some.com</a>#', $result);
     }
 }

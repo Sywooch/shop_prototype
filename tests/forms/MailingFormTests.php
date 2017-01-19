@@ -36,6 +36,7 @@ class MailingFormTests extends TestCase
         $reflection = new \ReflectionClass(MailingForm::class);
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('UNSUBSCRIBE'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('email'));
@@ -47,6 +48,20 @@ class MailingFormTests extends TestCase
     public function testScenarios()
     {
         $form = new MailingForm(['scenario'=>MailingForm::SAVE]);
+        $form->attributes = [
+            'id'=>1,
+            'email'=>'some@some.com'
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertEquals(1, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'email');
+        $result = $reflection->getValue($form);
+        $this->assertEquals('some@some.com', $result);
+        
+        $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
         $form->attributes = [
             'id'=>1,
             'email'=>'some@some.com'
@@ -119,6 +134,35 @@ class MailingFormTests extends TestCase
         $form->attributes = [
             'id'=>[3],
             'email'=>self::$_dbClass->emails['email_1']['email'],
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
+        $form->attributes = [];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(2, $form->errors);
+        $this->assertArrayHasKey('id', $form->errors);
+        $this->assertArrayHasKey('email', $form->errors);
+        
+        $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
+        $form->attributes = [
+            'id'=>[1],
+            'email'=>'some@some'
+        ];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        $this->assertArrayHasKey('email', $form->errors);
+        
+        $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
+        $form->attributes = [
+            'id'=>[1],
+            'email'=>'some@some.com'
         ];
         $form->validate();
         

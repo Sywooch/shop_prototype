@@ -12,6 +12,17 @@ use yii\helpers\Url;
  */
 class HashHelperTests extends TestCase
 {
+     /**
+     * Тестирует метод HashHelper::createHash
+     * если пуст входящий массив
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: inputArray
+     */
+    public function testCreateHashEmpty()
+    {
+        $hash = HashHelper::createHash([]);
+    }
+    
     /**
      * Тестирует метод HashHelper::createHash
      */

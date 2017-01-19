@@ -32,7 +32,8 @@ class MailingsEmailService extends AbstractBaseService
             
             $service = \Yii::$app->registry->get(GetEmailMailingWidgetConfigService::class);
             $emailMailingWidgetArray = $service->handle([
-                'diffIdArray'=>$diffIdArray
+                'diffIdArray'=>$diffIdArray,
+                'email'=>$email
             ]);
             
             $mailHelper = new MailHelper([

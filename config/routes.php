@@ -52,9 +52,10 @@ $routes = [
     # Комментарии
     'comment-save'=>'comments/save',
     
-    # Расслыки
+    # Рассылки
     'mailings'=>'mailings/index',
     'mailings-save'=>'mailings/save',
+    'unsubscribe'=>'mailings/unsubscribe',
 ];
 
 return $routes;

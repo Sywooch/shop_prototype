@@ -3,6 +3,7 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
+use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
 
 /**
@@ -14,6 +15,14 @@ class EmailMailingWidget extends AbstractBaseWidget
      * @var array MailingsModel
      */
     private $mailings;
+    /**
+     * @var string уникальный ключ, который будет добавлен к ссылке
+     */
+    public $key;
+    /**
+     * @var string email, который будет добавлен к ссылке
+     */
+    public $email;
     /**
      * @var string имя шаблона
      */
@@ -28,6 +37,12 @@ class EmailMailingWidget extends AbstractBaseWidget
         try {
             if (empty($this->mailings)) {
                 throw new ErrorException($this->emptyError('mailings'));
+            }
+            if (empty($this->key)) {
+                throw new ErrorException($this->emptyError('key'));
+            }
+            if (empty($this->email)) {
+                throw new ErrorException($this->emptyError('email'));
             }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
@@ -44,6 +59,9 @@ class EmailMailingWidget extends AbstractBaseWidget
                 $set['description'] = $mailing->description;
                 $renderArray['mailings'][] = $set;
             }
+            
+            $renderArray['unsubscribeText'] = \Yii::t('base', 'If you wish to unsubscribe, click here');
+            $renderArray['unsubscribeHref'] =Url::to(['/mailings/unsubscribe', \Yii::$app->params['unsubscribeKey']=>$this->key, 'email'=>$this->email], true);
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

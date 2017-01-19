@@ -21,13 +21,13 @@ class HashHelper
     public static function createHash(array $inputArray): string
     {
         try {
-            if (!empty($inputArray)) {
-                if (!empty(\Yii::$app->params['hashSalt'])) {
-                    $inputArray[] = \Yii::$app->params['hashSalt'];
-                }
+            if (empty($inputArray)) {
+                throw new ErrorException(ExceptionsTrait::staticEmptyError('inputArray'));
             }
             
-            return !empty($inputArray) ? sha1(implode('', $inputArray)) : '';
+            $inputArray[] = \Yii::$app->params['hashSalt'];
+            
+            return sha1(implode('', $inputArray));
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

@@ -15,6 +15,10 @@ class MailingForm extends AbstractBaseForm
      * Сценарий добавления подписки пользователю
      */
     const SAVE = 'save';
+    /**
+     * Сценарий удаление связи пользователя с рассылками
+     */
+    const UNSUBSCRIBE = 'unsubscribe';
     
     /**
      * @var string email
@@ -29,6 +33,7 @@ class MailingForm extends AbstractBaseForm
     {
         return [
             self::SAVE=>['id', 'email'],
+            self::UNSUBSCRIBE=>['id', 'email'],
         ];
     }
     
@@ -40,6 +45,8 @@ class MailingForm extends AbstractBaseForm
             [['id'], MailingsUserExistsValidator::class, 'on'=>self::SAVE, 'when'=>function($model) {
                 return empty($model->errors);
             }],
+            [['id', 'email'], 'required', 'on'=>self::UNSUBSCRIBE],
+            [['email'], 'email', 'on'=>self::UNSUBSCRIBE],
         ];
     }
 }

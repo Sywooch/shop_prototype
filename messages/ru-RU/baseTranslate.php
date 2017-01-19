@@ -145,7 +145,9 @@ $translate = [
     'Processed'=>'Выполняется',
     'Mailings'=>'Рассылки',
     'Available mailings'=>'Доступные рассылки',
-    'Sign up now!'=>'Подпишитесь сейчас!'
+    'Sign up now!'=>'Подпишитесь сейчас!',
+    'Unsubscribe'=>'Отписаться',
+    'Email {placeholder} not associated with any mailings!'=>'Email {placeholder} не связан ни с одной рассылкой!',
 ];
 
 return $translate;

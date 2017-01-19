@@ -83,6 +83,15 @@ trait ExceptionsTrait
     }
     
     /**
+     * Конструирует строку сообщения об ошибке "Отсутствуют необходимые данные"
+     * @return string
+     */
+    public static function staticEmptyError(string $placeholder): string
+    {
+        return \Yii::t('base/errors', 'Missing required data: {placeholder}', ['placeholder'=>$placeholder]);
+    }
+    
+    /**
      * Конструирует строку сообщения об ошибке "Получен неверный тип данных"
      * @return string
      */

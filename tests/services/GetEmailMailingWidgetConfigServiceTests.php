@@ -36,13 +36,27 @@ class GetEmailMailingWidgetConfigServiceTests extends TestCase
     
     /**
      * Тестирует метод  GetEmailMailingWidgetConfigService::handle
-     * если пуст $request
+     * если пуст $request[email]
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: request
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
-    public function testHandleEmptyRequest()
+    public function testHandleEmptyEmail()
     {
         $request = [];
+        
+        $service = new GetEmailMailingWidgetConfigService();
+        $result = $service->handle($request);
+    }
+    
+    /**
+     * Тестирует метод  GetEmailMailingWidgetConfigService::handle
+     * если пуст $request[diffIdArray]
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: diffIdArray
+     */
+    public function testHandleEmptyDiffIdArray()
+    {
+        $request = ['email'=>'some@some.com'];
         
         $service = new GetEmailMailingWidgetConfigService();
         $result = $service->handle($request);
@@ -53,7 +67,7 @@ class GetEmailMailingWidgetConfigServiceTests extends TestCase
      */
     public function testHandle()
     {
-        $request = ['diffIdArray'=>[1, 2, 3, 4]];
+        $request = ['email'=>'some@some.com', 'diffIdArray'=>[1, 2, 3, 4]];
         
         $service = new GetEmailMailingWidgetConfigService();
         $result = $service->handle($request);
@@ -62,9 +76,13 @@ class GetEmailMailingWidgetConfigServiceTests extends TestCase
         $this->assertNotEmpty($result);
         
         $this->assertArrayHasKey('mailings', $result);
+        $this->assertArrayHasKey('email', $result);
+        $this->assertArrayHasKey('key', $result);
         $this->assertArrayHasKey('view', $result);
         
         $this->assertInternalType('array', $result['mailings']);
+        $this->assertInternalType('string', $result['email']);
+        $this->assertInternalType('string', $result['key']);
         $this->assertInternalType('string', $result['view']);
     }
     
