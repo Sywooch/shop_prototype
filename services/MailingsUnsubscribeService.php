@@ -7,10 +7,13 @@ use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
+    GetMailingsUnsubscribeEmptyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetShortCartWidgetConfigService,
+    GetUnsubscribeFormWidgetConfigService,
     GetUserInfoWidgetConfigService};
 use app\helpers\HashHelper;
+use app\finders\MailingsEmailFinder;
 
 /**
  * Формирует форму для удаления связи пользователя с рассылками
@@ -28,16 +31,24 @@ class MailingsUnsubscribeService extends AbstractBaseService
             $inboxKey = $request->get(\Yii::$app->params['unsubscribeKey']);
             $email = $request->get(\Yii::$app->params['emailKey']);
             
-            if (empty($key) || empty($email)) {
+            if (empty($inboxKey) || empty($email)) {
                 throw new NotFoundHttpException($this->error404());
             }
             
             $key = HashHelper::createHash([$email]);
             
             if ($inboxKey !== $key) {
-                
+                throw new NotFoundHttpException($this->error404());
             } else {
-                
+                $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, ['email'=>$email]);
+                $mailingsModelArray = $finder->find();
+                if (empty($mailingsModelArray)) {
+                    $service = \Yii::$app->registry->get(GetMailingsUnsubscribeEmptyWidgetConfigService::class);
+                    $dataArray['mailingsUnsubscribeEmptyWidgetConfig'] = $service->handle($request);
+                } else {
+                    $service = \Yii::$app->registry->get(GetUnsubscribeFormWidgetConfigService::class);
+                    $dataArray['unsubscribeFormWidgetConfig'] = $service->handle($request);
+                }
             }
             
             $service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);

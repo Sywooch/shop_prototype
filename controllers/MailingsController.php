@@ -31,6 +31,10 @@ class MailingsController extends Controller
                 'service'=>new MailingsUnsubscribeService(),
                 'view'=>'unsubscribe.twig',
             ],
+            /*'unsubscribe-post'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new MailingsUnsubscribePostService(),
+            ],*/
         ];
     }
 }

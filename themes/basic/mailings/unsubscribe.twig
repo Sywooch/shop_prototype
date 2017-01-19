@@ -1,5 +1,17 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
+{{ use('app/widgets/MailingsBreadcrumbsWidget') }}
+{{ use('app/widgets/MailingsUnsubscribeEmptyWidget') }}
+{{ use('app/widgets/UnsubscribeFormWidget') }}
+
 {{ include('@theme/common/frontend-common.twig') }}
+
+{{ mailings_breadcrumbs_widget_widget() }}
+
+{% if mailingsUnsubscribeEmptyWidgetConfig %}
+    {{ mailings_unsubscribe_empty_widget_widget(mailingsUnsubscribeEmptyWidgetConfig) }}
+{% else %}
+    {{ unsubscribe_form_widget_widget(unsubscribeFormWidgetConfig) }}
+{% endif %}
 
 {{ include('@theme/common/frontend-bottom-common.twig') }}

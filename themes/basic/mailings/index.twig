@@ -1,8 +1,11 @@
 {{ register_asset_bundle('app/assets/MailingsAsset') }}
 
+{{ use('app/widgets/MailingsBreadcrumbsWidget') }}
 {{ use('app/widgets/MailingsWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
+
+{{ mailings_breadcrumbs_widget_widget() }}
 
 {{ mailings_widget_widget(mailingsWidgetConfig) }}
 

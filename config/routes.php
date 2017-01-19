@@ -56,6 +56,7 @@ $routes = [
     'mailings'=>'mailings/index',
     'mailings-save'=>'mailings/save',
     'unsubscribe'=>'mailings/unsubscribe',
+    'unsubscribe-post'=>'mailings/unsubscribe-post',
 ];
 
 return $routes;
