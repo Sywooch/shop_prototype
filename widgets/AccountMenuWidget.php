@@ -53,7 +53,7 @@ class AccountMenuWidget extends Menu
                         'url'=>['/account/change-password']
                     ],
                     [
-                        'label'=>\Yii::t('base', 'Subscriptions'),
+                        'label'=>\Yii::t('base', 'Manage subscriptions'),
                         'url'=>['/account/subscriptions']
                     ],
                     [

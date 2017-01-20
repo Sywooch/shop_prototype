@@ -1,0 +1,12 @@
+{% if mailings %}
+    <p><strong>{{ userMailings }}</strong></p>
+    
+    <ol>
+        {% for mailing in mailings %}
+            <li>
+                {{ mailing.name }}
+                <br>{{ mailing.description }}
+            </li>
+    {% endfor %}
+    </ol>
+{% endif %}

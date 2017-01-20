@@ -3,16 +3,16 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\AccountGeneralWidget;
+use app\widgets\AccountPurchasesWidget;
 use app\models\{CurrencyModel,
     UsersModel};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\UsersFixture;
 
 /**
- * Тестирует класс AccountGeneralWidget
+ * Тестирует класс AccountPurchasesWidget
  */
-class AccountGeneralWidgetTests extends TestCase
+class AccountPurchasesWidgetTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,50 +27,19 @@ class AccountGeneralWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует свойства AccountGeneralWidget
+     * Тестирует свойства AccountPurchasesWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AccountGeneralWidget::class);
+        $reflection = new \ReflectionClass(AccountPurchasesWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('user'));
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
         $this->assertTrue($reflection->hasProperty('view'));
     }
     
     /**
-     * Тестирует метод AccountGeneralWidget::setUser
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetUserError()
-    {
-        $user = new class() {};
-        
-        $widget = new AccountGeneralWidget();
-        $widget->setUser($user);
-    }
-    
-    /**
-     * Тестирует метод AccountGeneralWidget::setUser
-     */
-    public function testSetUser()
-    {
-        $user = new class() extends UsersModel {};
-        
-        $widget = new AccountGeneralWidget();
-        $widget->setUser($user);
-        
-        $reflection = new \ReflectionProperty($widget, 'user');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
-        
-        $this->assertInstanceOf(UsersModel::class, $result);
-    }
-    
-    /**
-     * Тестирует метод AccountGeneralWidget::setPurchases
+     * Тестирует метод AccountPurchasesWidget::setPurchases
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -78,18 +47,18 @@ class AccountGeneralWidgetTests extends TestCase
     {
         $purchases = new class() {};
         
-        $widget = new AccountGeneralWidget();
+        $widget = new AccountPurchasesWidget();
         $widget->setPurchases($purchases);
     }
     
     /**
-     * Тестирует метод AccountGeneralWidget::setPurchases
+     * Тестирует метод AccountPurchasesWidget::setPurchases
      */
     public function testSetPurchases()
     {
         $purchases = [new class() {}];
         
-        $widget = new AccountGeneralWidget();
+        $widget = new AccountPurchasesWidget();
         $widget->setPurchases($purchases);
         
         $reflection = new \ReflectionProperty($widget, 'purchases');
@@ -100,7 +69,7 @@ class AccountGeneralWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountGeneralWidget::setCurrency
+     * Тестирует метод AccountPurchasesWidget::setCurrency
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -108,18 +77,18 @@ class AccountGeneralWidgetTests extends TestCase
     {
         $currency = new class() {};
         
-        $widget = new AccountGeneralWidget();
+        $widget = new AccountPurchasesWidget();
         $widget->setCurrency($currency);
     }
     
     /**
-     * Тестирует метод AccountGeneralWidget::setCurrency
+     * Тестирует метод AccountPurchasesWidget::setCurrency
      */
     public function testSetCurrency()
     {
         $currency = new class() extends CurrencyModel {};
         
-        $widget = new AccountGeneralWidget();
+        $widget = new AccountPurchasesWidget();
         $widget->setCurrency($currency);
         
         $reflection = new \ReflectionProperty($widget, 'currency');
@@ -130,39 +99,20 @@ class AccountGeneralWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountGeneralWidget::run
-     * если пуст AccountGeneralWidget::user
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: user
-     */
-    public function testRunEmptyUser()
-    {
-        $widget = new AccountGeneralWidget();
-        $widget->run();
-    }
-    
-    /**
-     * Тестирует метод AccountGeneralWidget::run
-     * если пуст AccountGeneralWidget::currency
+     * Тестирует метод AccountPurchasesWidget::run
+     * если пуст AccountPurchasesWidget::currency
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
-        $mock = new class() {};
-        
-        $widget = new AccountGeneralWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'user');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
-        
+        $widget = new AccountPurchasesWidget();
         $widget->run();
     }
     
     /**
-     * Тестирует метод AccountGeneralWidget::run
-     * если пуст AccountGeneralWidget::view
+     * Тестирует метод AccountPurchasesWidget::run
+     * если пуст AccountPurchasesWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
@@ -170,11 +120,7 @@ class AccountGeneralWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AccountGeneralWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'user');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $widget = new AccountPurchasesWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -184,23 +130,17 @@ class AccountGeneralWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountGeneralWidget::run
+     * Тестирует метод AccountPurchasesWidget::run
      * если нет неотправленных покупок
      */
     public function testRunNotProcessedPurchases()
     {
-        $user = UsersModel::findOne(1);
-        
         $currency = new class() extends CurrencyModel {
             public $exchange_rate = 2.09;
             public $code = 'MONEY';
         };
         
-        $widget = new AccountGeneralWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'user');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $user);
+        $widget = new AccountPurchasesWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -208,24 +148,15 @@ class AccountGeneralWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-general.twig');
+        $reflection->setValue($widget, 'account-purchases.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Текущие контактные данные</strong></p>#', $result);
-        $this->assertRegExp('#<div class="account-user-info">#', $result);
-        $this->assertRegExp('#Email:</strong> light@mail.some<br>#', $result);
-        $this->assertRegExp('#<strong>Имя:</strong> John<br>#', $result);
-        $this->assertRegExp('#<strong>Фамилия:</strong> Doe<br>#', $result);
-        $this->assertRegExp('#<strong>Телефон:</strong> \+290865687812<br>#', $result);
-        $this->assertRegExp('#<strong>Адрес:</strong> Main Street Kangaroo Point<br>#', $result);
-        $this->assertRegExp('#<strong>Город:</strong> New York<br>#', $result);
-        $this->assertRegExp('#<strong>Страна:</strong> USA<br>#', $result);
-        $this->assertRegExp('#<strong>Почтовый код:</strong> 09100<br>#', $result);
+        $this->assertEmpty($result);
     }
     
     /**
-     * Тестирует метод AccountGeneralWidget::run
+     * Тестирует метод AccountPurchasesWidget::run
      * если есть неотправленные покупки
      */
     public function testRunExistProcessedPurchases()
@@ -288,11 +219,7 @@ class AccountGeneralWidgetTests extends TestCase
             },
         ];
         
-        $widget = new AccountGeneralWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'user');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $user);
+        $widget = new AccountPurchasesWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -304,23 +231,12 @@ class AccountGeneralWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-general.twig');
+        $reflection->setValue($widget, 'account-purchases.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Текущие контактные данные</strong></p>#', $result);
-        $this->assertRegExp('#<div class="account-user-info">#', $result);
-        $this->assertRegExp('#Email:</strong> light@mail.some<br>#', $result);
-        $this->assertRegExp('#<strong>Имя:</strong> John<br>#', $result);
-        $this->assertRegExp('#<strong>Фамилия:</strong> Doe<br>#', $result);
-        $this->assertRegExp('#<strong>Телефон:</strong> \+290865687812<br>#', $result);
-        $this->assertRegExp('#<strong>Адрес:</strong> Main Street Kangaroo Point<br>#', $result);
-        $this->assertRegExp('#<strong>Город:</strong> New York<br>#', $result);
-        $this->assertRegExp('#<strong>Страна:</strong> USA<br>#', $result);
-        $this->assertRegExp('#<strong>Почтовый код:</strong> 09100<br>#', $result);
-        
         $this->assertRegExp('#<p><strong>Текущие заказы</strong></p>#', $result);
-        $this->assertRegExp('#<div class="account-last-orders">#', $result);
+        $this->assertRegExp('#<ol class="account-last-orders">#', $result);
         $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_1">Name 1</a>#', $result);
         $this->assertRegExp('#<br>Description 1#', $result);
         $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);

@@ -8,14 +8,14 @@ use app\services\{AbstractBaseService,
 use app\finders\PurchasesIdUserFinder;
 
 /**
- * Возвращает массив конфигурации для виджета AccountGeneralWidget
+ * Возвращает массив конфигурации для виджета AccountPurchasesWidget
  */
-class GetAccountGeneralWidgetConfigService extends AbstractBaseService
+class GetAccountPurchasesWidgetConfigService extends AbstractBaseService
 {
     /**
-     * @var array конфигурации для виджета AccountGeneralWidget
+     * @var array конфигурации для виджета AccountPurchasesWidget
      */
-    private $accountGeneralWidgetArray = [];
+    private $accountPurchasesWidgetArray = [];
     
     /**
      * Возвращает массив конфигурации
@@ -29,23 +29,23 @@ class GetAccountGeneralWidgetConfigService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('user'));
             }
             
-            if (empty($this->accountGeneralWidgetArray)) {
+            if (empty($this->accountPurchasesWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['user'] = \Yii::$app->user->identity;
+                $user = \Yii::$app->user->identity;
                 
-                $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, ['id_user'=>\Yii::$app->user->id]);
+                $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, ['id_user'=>$user->id]);
                 $dataArray['purchases'] = $finder->find();
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['view'] = 'account-general.twig';
+                $dataArray['view'] = 'account-purchases.twig';
                 
-                $this->accountGeneralWidgetArray = $dataArray;
+                $this->accountPurchasesWidgetArray = $dataArray;
             }
             
-            return $this->accountGeneralWidgetArray;
+            return $this->accountPurchasesWidgetArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

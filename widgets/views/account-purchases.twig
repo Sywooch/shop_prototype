@@ -1,0 +1,18 @@
+{% if purchases %}
+    <p><strong>{{ userOrders }}</strong></p>
+    
+    <ol class="account-last-orders">
+        {% for purchase in purchases %}
+            <li>
+                <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
+                <br>{{ purchase.short_description }}
+                <br>{{ purchase.image | raw }}
+                <br>{{ colorHeader }}: {{ purchase.color }}
+                <br>{{ sizeHeader }}: {{ purchase.size }}
+                <br>{{ quantityHeader }}: {{ purchase.quantity }}
+                <br>{{ priceHeader }}: {{ purchase.price }}
+                <br>{{ statusHeader }}: {{ purchase.status }}
+            </li>
+        {% endfor %}
+    </ol>
+{% endif %}

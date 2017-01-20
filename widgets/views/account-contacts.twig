@@ -1,0 +1,37 @@
+<p><strong>{{ userHeader }}</strong></p>
+
+<div class="account-user-info">
+    <p>
+        {% if user.email %}
+            {{ user.emailHeader }}: {{ user.email }}<br>
+        {% endif %}
+        
+        {% if user.name %}
+            {{ user.nameHeader }}: {{ user.name }}<br>
+        {% endif %}
+        
+        {% if user.surname %}
+            {{ user.surnameHeader }}: {{ user.surname }}<br>
+        {% endif %}
+        
+        {% if user.phone %}
+            {{ user.phoneHeader }}: {{ user.phone }}<br>
+        {% endif %}
+        
+        {% if user.address %}
+            {{ user.addressHeader }}: {{ user.address }}<br>
+        {% endif %}
+        
+        {% if user.city %}
+            {{ user.cityHeader }}: {{ user.city }}<br>
+        {% endif %}
+        
+        {% if user.country %}
+            {{ user.countryHeader }}: {{ user.country }}<br>
+        {% endif %}
+        
+        {% if user.postcode %}
+            {{ user.postcodeHeader }}: {{ user.postcode }}<br>
+        {% endif %}
+    </p>
+</div>

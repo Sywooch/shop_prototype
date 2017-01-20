@@ -48,10 +48,18 @@ class AccountIndexServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         
-        $this->assertArrayHasKey('accountGeneralWidgetConfig', $result);
+        $this->assertArrayHasKey('accountContactsWidgetConfig', $result);
+        $this->assertArrayHasKey('accountPurchasesWidgetConfig', $result);
+        $this->assertArrayHasKey('accountMailingsWidgetConfig', $result);
         
-        $this->assertInternalType('array', $result['accountGeneralWidgetConfig']);
-        $this->assertNotEmpty($result['accountGeneralWidgetConfig']);
+        $this->assertInternalType('array', $result['accountContactsWidgetConfig']);
+        $this->assertNotEmpty($result['accountContactsWidgetConfig']);
+        
+        $this->assertInternalType('array', $result['accountPurchasesWidgetConfig']);
+        $this->assertNotEmpty($result['accountPurchasesWidgetConfig']);
+        
+        $this->assertInternalType('array', $result['accountMailingsWidgetConfig']);
+        $this->assertNotEmpty($result['accountMailingsWidgetConfig']);
     }
     
     public static function tearDownAfterClass()

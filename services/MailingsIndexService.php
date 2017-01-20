@@ -4,7 +4,6 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetAccountGeneralWidgetConfigService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
     GetMailingsWidgetConfigService,

@@ -149,7 +149,10 @@ $translate = [
     'Unsubscribe'=>'Отписаться',
     'Email {placeholder} not associated with any mailings!'=>'Email {placeholder} не связан ни с одной рассылкой!',
     'Select the subscription you want to cancel'=>'Выберите подписки, которые вы хотите отменить',
-    'You successfully unsubscribed from mailings:'=>'Вы успешно отписаны от рассылок:'
+    'You successfully unsubscribed from mailings:'=>'Вы успешно отписаны от рассылок:',
+    'Basic account data'=>'Основные данные аккаунта',
+    'Current subscriptions'=>'Текущие подписки',
+    'Manage subscriptions'=>'Управление подписками'
 ];
 
 return $translate;

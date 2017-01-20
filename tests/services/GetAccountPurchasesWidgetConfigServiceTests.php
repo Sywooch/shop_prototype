@@ -3,7 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetAccountGeneralWidgetConfigService;
+use app\services\GetAccountPurchasesWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture,
@@ -12,9 +12,9 @@ use app\models\{CurrencyModel,
     UsersModel};
 
 /**
- * Тестирует класс GetAccountGeneralWidgetConfigService
+ * Тестирует класс GetAccountPurchasesWidgetConfigService
  */
-class GetAccountGeneralWidgetConfigServiceTests extends TestCase
+class GetAccountPurchasesWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -31,17 +31,17 @@ class GetAccountGeneralWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetAccountGeneralWidgetConfigService
+     * Тестирует свойства GetAccountPurchasesWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetAccountGeneralWidgetConfigService::class);
+        $reflection = new \ReflectionClass(GetAccountPurchasesWidgetConfigService::class);
         
-        $this->assertTrue($reflection->hasProperty('accountGeneralWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('accountPurchasesWidgetArray'));
     }
     
     /**
-     * Тестирует метод  GetAccountGeneralWidgetConfigService::handle
+     * Тестирует метод  GetAccountPurchasesWidgetConfigService::handle
      * если пользователь не аутентифицирован
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: user
@@ -50,30 +50,28 @@ class GetAccountGeneralWidgetConfigServiceTests extends TestCase
     {
         \Yii::$app->user->logout();
         
-        $service = new GetAccountGeneralWidgetConfigService();
+        $service = new GetAccountPurchasesWidgetConfigService();
         $service->handle();
     }
     
     /**
-     * Тестирует метод  GetAccountGeneralWidgetConfigService::handle
+     * Тестирует метод  GetAccountPurchasesWidgetConfigService::handle
      */
     public function testHandle()
     {
         $user = UsersModel::findOne(1);
         \Yii::$app->user->login($user);
         
-        $service = new GetAccountGeneralWidgetConfigService();
+        $service = new GetAccountPurchasesWidgetConfigService();
         $result = $service->handle();
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         
-        $this->assertArrayHasKey('user', $result);
         $this->assertArrayHasKey('purchases', $result);
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('view', $result);
         
-        $this->assertInstanceOf(UsersModel::class, $result['user']);
         $this->assertInternalType('array', $result['purchases']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInternalType('string', $result['view']);

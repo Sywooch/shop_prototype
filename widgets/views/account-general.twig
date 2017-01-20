@@ -3,35 +3,35 @@
 <div class="account-user-info">
 <p>
     {% if user.email %}
-        <strong>{{ user.emailHeader }}:</strong> {{ user.email }}<br>
+        {{ user.emailHeader }}: {{ user.email }}<br>
     {% endif %}
     
     {% if user.name %}
-        <strong>{{ user.nameHeader }}:</strong> {{ user.name }}<br>
+        {{ user.nameHeader }}: {{ user.name }}<br>
     {% endif %}
     
     {% if user.surname %}
-        <strong>{{ user.surnameHeader }}:</strong> {{ user.surname }}<br>
+        {{ user.surnameHeader }}: {{ user.surname }}<br>
     {% endif %}
     
     {% if user.phone %}
-        <strong>{{ user.phoneHeader }}:</strong> {{ user.phone }}<br>
+        {{ user.phoneHeader }}: {{ user.phone }}<br>
     {% endif %}
     
     {% if user.address %}
-        <strong>{{ user.addressHeader }}:</strong> {{ user.address }}<br>
+        {{ user.addressHeader }}: {{ user.address }}<br>
     {% endif %}
     
     {% if user.city %}
-        <strong>{{ user.cityHeader }}:</strong> {{ user.city }}<br>
+        {{ user.cityHeader }}: {{ user.city }}<br>
     {% endif %}
     
     {% if user.country %}
-        <strong>{{ user.countryHeader }}:</strong> {{ user.country }}<br>
+        {{ user.countryHeader }}: {{ user.country }}<br>
     {% endif %}
     
     {% if user.postcode %}
-        <strong>{{ user.postcodeHeader }}:</strong> {{ user.postcode }}<br>
+        {{ user.postcodeHeader }}: {{ user.postcode }}<br>
     {% endif %}
 </p>
 </div>
@@ -39,18 +39,31 @@
 {% if purchases %}
     <p><strong>{{ userOrders }}</strong></p>
     
-    <div class="account-last-orders">
+    <ol class="account-last-orders">
         {% for purchase in purchases %}
-            <p>
+            <li>
                 <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
                 <br>{{ purchase.short_description }}
                 <br>{{ purchase.image | raw }}
-                <br>{{ purchase.color }}
-                <br>{{ purchase.size }}
-                <br>{{ purchase.quantity }}
-                <br>{{ purchase.price }}
-                <br>{{ purchase.status }}
-            </p>
+                <br>{{ colorHeader }}: {{ purchase.color }}
+                <br>{{ sizeHeader }}: {{ purchase.size }}
+                <br>{{ quantityHeader }}: {{ purchase.quantity }}
+                <br>{{ priceHeader }}: {{ purchase.price }}
+                <br>{{ statusHeader }}: {{ purchase.status }}
+            </li>
         {% endfor %}
-    </div>
+    </ol>
+{% endif %}
+
+{% if mailings %}
+    <p><strong>{{ userMailings }}</strong></p>
+    
+    <ol>
+        {% for mailing in mailings %}
+            <li>
+                {{ mailing.name }}
+                <br>{{ mailing.description }}
+            </li>
+    {% endfor %}
+    </ol>
 {% endif %}
