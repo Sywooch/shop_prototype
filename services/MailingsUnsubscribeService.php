@@ -40,9 +40,7 @@ class MailingsUnsubscribeService extends AbstractBaseService
             if ($inboxKey !== $key) {
                 throw new NotFoundHttpException($this->error404());
             } else {
-                $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, ['email'=>$email]);
-                $mailingsModelArray = $finder->find();
-                if (empty($mailingsModelArray)) {
+                if (empty((\Yii::$app->registry->get(MailingsEmailFinder::class, ['email'=>$email]))->find())) {
                     $service = \Yii::$app->registry->get(GetMailingsUnsubscribeEmptyWidgetConfigService::class);
                     $dataArray['mailingsUnsubscribeEmptyWidgetConfig'] = $service->handle($request);
                 } else {

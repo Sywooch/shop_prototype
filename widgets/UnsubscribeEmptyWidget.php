@@ -8,7 +8,7 @@ use app\widgets\AbstractBaseWidget;
 /**
  * Формирует HTML строку с сообщением об отсутствии подписок для переданного email
  */
-class MailingsUnsubscribeEmptyWidget extends AbstractBaseWidget
+class UnsubscribeEmptyWidget extends AbstractBaseWidget
 {
     /**
      * @var string email

@@ -25,8 +25,12 @@ class GetUnsubscribeFormWidgetConfigService extends AbstractBaseService
     public function handle($request)
     {
         try {
+            $unsubscribeKey = $request->get(\Yii::$app->params['unsubscribeKey']);
             $email = $request->get(\Yii::$app->params['emailKey']);
             
+            if (empty($unsubscribeKey)) {
+                throw new ErrorException($this->emptyError('unsubscribeKey'));
+            }
             if (empty($email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
@@ -37,6 +41,7 @@ class GetUnsubscribeFormWidgetConfigService extends AbstractBaseService
                 $dataArray['form'] = new MailingForm([
                     'scenario'=>MailingForm::UNSUBSCRIBE,
                     'email'=>$email,
+                    'key'=>$unsubscribeKey
                 ]);
                 
                 $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, ['email'=>$email]);

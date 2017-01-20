@@ -28,12 +28,16 @@ class MailingForm extends AbstractBaseForm
      * @var int ID выбранных подписок
      */
     public $id = [];
+    /**
+     * @var string ключ идентификации
+     */
+    public $key;
     
     public function scenarios()
     {
         return [
             self::SAVE=>['id', 'email'],
-            self::UNSUBSCRIBE=>['id', 'email'],
+            self::UNSUBSCRIBE=>['id', 'email', 'key'],
         ];
     }
     
@@ -45,7 +49,7 @@ class MailingForm extends AbstractBaseForm
             [['id'], MailingsUserExistsValidator::class, 'on'=>self::SAVE, 'when'=>function($model) {
                 return empty($model->errors);
             }],
-            [['id', 'email'], 'required', 'on'=>self::UNSUBSCRIBE],
+            [['id', 'email', 'key'], 'required', 'on'=>self::UNSUBSCRIBE],
             [['email'], 'email', 'on'=>self::UNSUBSCRIBE],
         ];
     }

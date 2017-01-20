@@ -17,7 +17,7 @@ class GetMailingsUnsubscribeEmptyWidgetConfigServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(GetMailingsUnsubscribeEmptyWidgetConfigService::class);
         
-        $this->assertTrue($reflection->hasProperty('mailingsUnsubscribeEmptyWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('unsubscribeEmptyWidgetArray'));
     }
     
     /**

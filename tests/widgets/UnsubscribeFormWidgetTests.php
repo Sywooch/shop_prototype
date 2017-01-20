@@ -148,6 +148,7 @@ class UnsubscribeFormWidgetTests extends TestCase
         
         $form = new class() extends MailingForm {
             public $email = 'some@some.com';
+            public $key = 'someKey';
         };
         
         $mailings = [
@@ -185,6 +186,7 @@ class UnsubscribeFormWidgetTests extends TestCase
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[id\]\[\]" value="1"> One</label>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[id\]\[\]" value="2"> Two</label>#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[email\]" value="some@some.com">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[key\]" value="someKey">#', $result);
         $this->assertRegExp('#<input type="submit" value="Отписаться">#', $result);
     }
 }

@@ -22,6 +22,7 @@
             <directory suffix="Tests.php">helpers</directory>
             <directory suffix="Tests.php">models</directory>
             <directory suffix="Tests.php">registry</directory>
+            <directory suffix="Tests.php">removers</directory>
             <directory suffix="Tests.php">services</directory>
             <directory suffix="Tests.php">savers</directory>
             <directory suffix="Tests.php">validators</directory>

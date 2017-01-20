@@ -7,7 +7,8 @@ use app\actions\{AjaxAction,
     GetAction};
 use app\services\{MailingsIndexService,
     MailingsSaveService,
-    MailingsUnsubscribeService};
+    MailingsUnsubscribeService,
+    MailingsUnsubscribePostService};
 
 /**
  * Обрабатывает запросы к настройкам аккаунта
@@ -31,10 +32,10 @@ class MailingsController extends Controller
                 'service'=>new MailingsUnsubscribeService(),
                 'view'=>'unsubscribe.twig',
             ],
-            /*'unsubscribe-post'=>[
+            'unsubscribe-post'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new MailingsUnsubscribePostService(),
-            ],*/
+            ],
         ];
     }
 }

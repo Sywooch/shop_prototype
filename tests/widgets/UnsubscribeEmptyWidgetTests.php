@@ -3,45 +3,45 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\MailingsUnsubscribeEmptyWidget;
+use app\widgets\UnsubscribeEmptyWidget;
 
 /**
- * Тестирует класс MailingsUnsubscribeEmptyWidget
+ * Тестирует класс UnsubscribeEmptyWidget
  */
-class MailingsUnsubscribeEmptyWidgetTests extends TestCase
+class UnsubscribeEmptyWidgetTests extends TestCase
 {
     /**
-     * Тестирует свойства MailingsUnsubscribeEmptyWidget
+     * Тестирует свойства UnsubscribeEmptyWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(MailingsUnsubscribeEmptyWidget::class);
+        $reflection = new \ReflectionClass(UnsubscribeEmptyWidget::class);
         
         $this->assertTrue($reflection->hasProperty('email'));
         $this->assertTrue($reflection->hasProperty('view'));
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeEmptyWidget::run
-     * если пуст MailingsUnsubscribeEmptyWidget::email
+     * Тестирует метод UnsubscribeEmptyWidget::run
+     * если пуст UnsubscribeEmptyWidget::email
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testRunEmptyEmail()
     {
-        $widget = new MailingsUnsubscribeEmptyWidget();
+        $widget = new UnsubscribeEmptyWidget();
         $widget->run();
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeEmptyWidget::run
-     * если пуст MailingsUnsubscribeEmptyWidget::view
+     * Тестирует метод UnsubscribeEmptyWidget::run
+     * если пуст UnsubscribeEmptyWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {
-        $widget = new MailingsUnsubscribeEmptyWidget();
+        $widget = new UnsubscribeEmptyWidget();
         
         $reflection = new \ReflectionProperty($widget, 'email');
         $reflection->setAccessible(true);
@@ -51,11 +51,11 @@ class MailingsUnsubscribeEmptyWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeEmptyWidget::run
+     * Тестирует метод UnsubscribeEmptyWidget::run
      */
     public function testRun()
     {
-        $widget = new MailingsUnsubscribeEmptyWidget();
+        $widget = new UnsubscribeEmptyWidget();
         
         $reflection = new \ReflectionProperty($widget, 'email');
         $reflection->setAccessible(true);

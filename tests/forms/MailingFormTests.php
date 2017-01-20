@@ -40,6 +40,7 @@ class MailingFormTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('email'));
+        $this->assertTrue($reflection->hasProperty('key'));
     }
     
     /**
@@ -64,7 +65,8 @@ class MailingFormTests extends TestCase
         $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
         $form->attributes = [
             'id'=>1,
-            'email'=>'some@some.com'
+            'email'=>'some@some.com',
+            'key'=>'key'
         ];
         
         $reflection = new \ReflectionProperty($form, 'id');
@@ -74,6 +76,10 @@ class MailingFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'email');
         $result = $reflection->getValue($form);
         $this->assertEquals('some@some.com', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'key');
+        $result = $reflection->getValue($form);
+        $this->assertEquals('key', $result);
     }
     
     /**
@@ -144,14 +150,16 @@ class MailingFormTests extends TestCase
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
-        $this->assertCount(2, $form->errors);
+        $this->assertCount(3, $form->errors);
         $this->assertArrayHasKey('id', $form->errors);
         $this->assertArrayHasKey('email', $form->errors);
+        $this->assertArrayHasKey('key', $form->errors);
         
         $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
         $form->attributes = [
             'id'=>[1],
-            'email'=>'some@some'
+            'email'=>'some@some',
+            'key'=>'key'
         ];
         $form->validate();
         
@@ -162,7 +170,8 @@ class MailingFormTests extends TestCase
         $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
         $form->attributes = [
             'id'=>[1],
-            'email'=>'some@some.com'
+            'email'=>'some@some.com',
+            'key'=>'key'
         ];
         $form->validate();
         

@@ -41,6 +41,25 @@ class GetUnsubscribeFormWidgetConfigServiceTests extends TestCase
     
     /**
      * Тестирует метод GetUnsubscribeFormWidgetConfigService::handle
+     * если пуст request[unsubscribeKey]
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: unsubscribeKey
+     */
+    public function testHandleEmptyUnsubscribeKey()
+    {
+        $request = new class() {
+            public function get($name = null, $defaultValue = null)
+            {
+                return null;
+            }
+        };
+        
+        $service = new GetUnsubscribeFormWidgetConfigService();
+        $service->handle($request);
+    }
+    
+    /**
+     * Тестирует метод GetUnsubscribeFormWidgetConfigService::handle
      * если пуст request[email]
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: email
@@ -50,7 +69,11 @@ class GetUnsubscribeFormWidgetConfigServiceTests extends TestCase
         $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
-                return null;
+                if ($name == \Yii::$app->params['unsubscribeKey']) {
+                    return 'unsubscribeKey';
+                } else {
+                    return null;
+                }
             }
         };
         

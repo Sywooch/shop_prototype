@@ -14,6 +14,10 @@ class EmailsMailingsModel extends AbstractBaseModel
      * Сценарий сохранения новой подписки для пользователя
      */
     const SAVE = 'save';
+    /**
+     * Сценарий удаления подписки
+     */
+    const DELETE = 'delete';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -32,6 +36,7 @@ class EmailsMailingsModel extends AbstractBaseModel
     {
         return [
             self::SAVE=>['id_email', 'id_mailing'],
+            self::DELETE=>['id_email', 'id_mailing'],
         ];
     }
     
@@ -39,6 +44,7 @@ class EmailsMailingsModel extends AbstractBaseModel
     {
         return [
             [['id_email', 'id_mailing'], 'required', 'on'=>self::SAVE],
+            [['id_email', 'id_mailing'], 'required', 'on'=>self::DELETE],
         ];
     }
 }

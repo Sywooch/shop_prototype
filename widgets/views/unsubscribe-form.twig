@@ -6,5 +6,6 @@
 {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
     {{ form.field(modelForm, 'id').checkboxList(mailings, {'multiple':multiple}).label(false) | raw }}
     {{ form.field(modelForm, 'email').hiddenInput().label(false) | raw }}
+    {{ form.field(modelForm, 'key').hiddenInput().label(false) | raw }}
     <input type="submit" value="{{ button }}">
 {{ active_form_end() }}

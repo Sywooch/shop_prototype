@@ -18,6 +18,7 @@ class EmailsMailingsModelTests extends TestCase
         $reflection = new \ReflectionClass(EmailsMailingsModel::class);
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
         
         $model = new EmailsMailingsModel();
         
@@ -48,6 +49,15 @@ class EmailsMailingsModelTests extends TestCase
         
         $this->assertEquals(1, $model->id_email);
         $this->assertEquals(2, $model->id_mailing);
+        
+        $model = new EmailsMailingsModel(['scenario'=>EmailsMailingsModel::DELETE]);
+        $model->attributes = [
+            'id_email'=>1,
+            'id_mailing'=>2
+        ];
+        
+        $this->assertEquals(1, $model->id_email);
+        $this->assertEquals(2, $model->id_mailing);
     }
     
     /**
@@ -65,6 +75,23 @@ class EmailsMailingsModelTests extends TestCase
         $this->assertArrayHasKey('id_mailing', $model->errors);
         
         $model = new EmailsMailingsModel(['scenario'=>EmailsMailingsModel::SAVE]);
+        $model->attributes = [
+            'id_email'=>1,
+            'id_mailing'=>2
+        ];
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new EmailsMailingsModel(['scenario'=>EmailsMailingsModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(2, $model->errors);
+        $this->assertArrayHasKey('id_email', $model->errors);
+        $this->assertArrayHasKey('id_mailing', $model->errors);
+        
+        $model = new EmailsMailingsModel(['scenario'=>EmailsMailingsModel::DELETE]);
         $model->attributes = [
             'id_email'=>1,
             'id_mailing'=>2
