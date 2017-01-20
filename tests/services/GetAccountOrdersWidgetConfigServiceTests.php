@@ -3,7 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetAccountPurchasesWidgetConfigService;
+use app\services\GetAccountOrdersWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture,
@@ -12,9 +12,9 @@ use app\models\{CurrencyModel,
     UsersModel};
 
 /**
- * Тестирует класс GetAccountPurchasesWidgetConfigService
+ * Тестирует класс GetAccountOrdersWidgetConfigService
  */
-class GetAccountPurchasesWidgetConfigServiceTests extends TestCase
+class GetAccountOrdersWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -31,17 +31,17 @@ class GetAccountPurchasesWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetAccountPurchasesWidgetConfigService
+     * Тестирует свойства GetAccountOrdersWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetAccountPurchasesWidgetConfigService::class);
+        $reflection = new \ReflectionClass(GetAccountOrdersWidgetConfigService::class);
         
         $this->assertTrue($reflection->hasProperty('accountPurchasesWidgetArray'));
     }
     
     /**
-     * Тестирует метод  GetAccountPurchasesWidgetConfigService::handle
+     * Тестирует метод  GetAccountOrdersWidgetConfigService::handle
      * если пользователь не аутентифицирован
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: user
@@ -50,19 +50,19 @@ class GetAccountPurchasesWidgetConfigServiceTests extends TestCase
     {
         \Yii::$app->user->logout();
         
-        $service = new GetAccountPurchasesWidgetConfigService();
+        $service = new GetAccountOrdersWidgetConfigService();
         $service->handle();
     }
     
     /**
-     * Тестирует метод  GetAccountPurchasesWidgetConfigService::handle
+     * Тестирует метод  GetAccountOrdersWidgetConfigService::handle
      */
     public function testHandle()
     {
         $user = UsersModel::findOne(1);
         \Yii::$app->user->login($user);
         
-        $service = new GetAccountPurchasesWidgetConfigService();
+        $service = new GetAccountOrdersWidgetConfigService();
         $result = $service->handle();
         
         $this->assertInternalType('array', $result);

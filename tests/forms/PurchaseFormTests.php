@@ -20,12 +20,14 @@ class PurchaseFormTests extends TestCase
         $this->assertTrue($reflection->hasConstant('SAVE'));
         $this->assertTrue($reflection->hasConstant('UPDATE'));
         $this->assertTrue($reflection->hasConstant('DELETE'));
+        $this->assertTrue($reflection->hasConstant('CANCEL'));
         
         $this->assertTrue($reflection->hasProperty('quantity'));
         $this->assertTrue($reflection->hasProperty('id_color'));
         $this->assertTrue($reflection->hasProperty('id_size'));
         $this->assertTrue($reflection->hasProperty('id_product'));
         $this->assertTrue($reflection->hasProperty('price'));
+        $this->assertTrue($reflection->hasProperty('cancel'));
     }
     
     /**
@@ -94,6 +96,15 @@ class PurchaseFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'id_product');
         $result = $reflection->getValue($form);
         $this->assertSame(4, $result);
+        
+        $form = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
+        $form->attributes = [
+            'cancel'=>true,
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'cancel');
+        $result = $reflection->getValue($form);
+        $this->assertTrue($result);
     }
     
     /**
@@ -156,5 +167,12 @@ class PurchaseFormTests extends TestCase
         ];
         
         $this->assertEmpty($form->errors);
+        
+        $form = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
+        $form->attributes = [];
+        
+        $form->validate();
+        
+        $this->assertEquals(0, $form->cancel);
     }
 }

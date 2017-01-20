@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetAccountContactsWidgetConfigService,
     GetAccountMailingsWidgetConfigService,
-    GetAccountPurchasesWidgetConfigService};
+    GetAccountOrdersWidgetConfigService};
 
 /**
  * Формирует массив данных для рендеринга страницы с настройками аккаунта
@@ -32,8 +32,8 @@ class AccountIndexService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetAccountContactsWidgetConfigService::class);
                 $dataArray['accountContactsWidgetConfig'] = $service->handle();
                 
-                $service = \Yii::$app->registry->get(GetAccountPurchasesWidgetConfigService::class);
-                $dataArray['accountPurchasesWidgetConfig'] = $service->handle();
+                $service = \Yii::$app->registry->get(GetAccountOrdersWidgetConfigService::class);
+                $dataArray['accountOrdersWidgetConfig'] = $service->handle();
                 
                 $service = \Yii::$app->registry->get(GetAccountMailingsWidgetConfigService::class);
                 $dataArray['accountMailingsWidgetConfig'] = $service->handle();

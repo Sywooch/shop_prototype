@@ -22,6 +22,10 @@ class PurchaseForm extends AbstractBaseForm
      * Сценарий удаления товара из корзины
      */
     const DELETE = 'delete';
+    /**
+     * Сценарий отмены заказа
+     */
+    const CANCEL = 'cancel';
     
     /**
      * @var int количество единиц товара
@@ -43,22 +47,28 @@ class PurchaseForm extends AbstractBaseForm
      * @var float стоимость товара
      */
     public $price;
+    /**
+     * @var bool отмена заказа
+     */
+    public $cancel;
     
     public function scenarios()
     {
         return [
             self::SAVE=>['quantity', 'id_color', 'id_size', 'id_product', 'price'],
             self::UPDATE=>['quantity', 'id_color', 'id_size', 'id_product'],
-            self::DELETE=>['id_product']
+            self::DELETE=>['id_product'],
+            self::CANCEL=>['cancel']
         ];
     }
     
     public function rules()
     {
         return [
-            [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'enableClientValidation'=>true, 'on'=>self::SAVE],
-            [['quantity', 'id_color', 'id_size', 'id_product'], 'required', 'enableClientValidation'=>true, 'on'=>self::UPDATE],
-            [['id_product'], 'required', 'enableClientValidation'=>true, 'on'=>self::DELETE]
+            [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::SAVE],
+            [['quantity', 'id_color', 'id_size', 'id_product'], 'required', 'on'=>self::UPDATE],
+            [['id_product'], 'required', 'on'=>self::DELETE],
+            [['cancel'], 'default', 'value'=>0, 'on'=>self::CANCEL]
         ];
     }
 }

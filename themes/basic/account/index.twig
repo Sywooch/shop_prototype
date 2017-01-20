@@ -2,7 +2,7 @@
 
 {{ use ('app/widgets/AccountBreadcrumbsWidget') }}
 {{ use ('app/widgets/AccountContactsWidget') }}
-{{ use ('app/widgets/AccountPurchasesWidget') }}
+{{ use ('app/widgets/AccountOrdersWidget') }}
 {{ use ('app/widgets/AccountMailingsWidget') }}
 
 {{ include('@theme/common/account-common.twig') }}
@@ -11,6 +11,6 @@
 
 {{ account_contacts_widget_widget(accountContactsWidgetConfig) }}
 
-{{ account_purchases_widget_widget(accountPurchasesWidgetConfig) }}
+{{ account_orders_widget_widget(accountOrdersWidgetConfig) }}
 
 {{ account_mailings_widget_widget(accountMailingsWidgetConfig) }}

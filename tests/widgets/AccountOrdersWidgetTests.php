@@ -3,16 +3,16 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\AccountPurchasesWidget;
+use app\widgets\AccountOrdersWidget;
 use app\models\{CurrencyModel,
     UsersModel};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\UsersFixture;
 
 /**
- * Тестирует класс AccountPurchasesWidget
+ * Тестирует класс AccountOrdersWidget
  */
-class AccountPurchasesWidgetTests extends TestCase
+class AccountOrdersWidgetTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,11 +27,11 @@ class AccountPurchasesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует свойства AccountPurchasesWidget
+     * Тестирует свойства AccountOrdersWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AccountPurchasesWidget::class);
+        $reflection = new \ReflectionClass(AccountOrdersWidget::class);
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
@@ -39,7 +39,7 @@ class AccountPurchasesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountPurchasesWidget::setPurchases
+     * Тестирует метод AccountOrdersWidget::setPurchases
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -47,18 +47,18 @@ class AccountPurchasesWidgetTests extends TestCase
     {
         $purchases = new class() {};
         
-        $widget = new AccountPurchasesWidget();
+        $widget = new AccountOrdersWidget();
         $widget->setPurchases($purchases);
     }
     
     /**
-     * Тестирует метод AccountPurchasesWidget::setPurchases
+     * Тестирует метод AccountOrdersWidget::setPurchases
      */
     public function testSetPurchases()
     {
         $purchases = [new class() {}];
         
-        $widget = new AccountPurchasesWidget();
+        $widget = new AccountOrdersWidget();
         $widget->setPurchases($purchases);
         
         $reflection = new \ReflectionProperty($widget, 'purchases');
@@ -69,7 +69,7 @@ class AccountPurchasesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountPurchasesWidget::setCurrency
+     * Тестирует метод AccountOrdersWidget::setCurrency
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -77,18 +77,18 @@ class AccountPurchasesWidgetTests extends TestCase
     {
         $currency = new class() {};
         
-        $widget = new AccountPurchasesWidget();
+        $widget = new AccountOrdersWidget();
         $widget->setCurrency($currency);
     }
     
     /**
-     * Тестирует метод AccountPurchasesWidget::setCurrency
+     * Тестирует метод AccountOrdersWidget::setCurrency
      */
     public function testSetCurrency()
     {
         $currency = new class() extends CurrencyModel {};
         
-        $widget = new AccountPurchasesWidget();
+        $widget = new AccountOrdersWidget();
         $widget->setCurrency($currency);
         
         $reflection = new \ReflectionProperty($widget, 'currency');
@@ -99,20 +99,20 @@ class AccountPurchasesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountPurchasesWidget::run
-     * если пуст AccountPurchasesWidget::currency
+     * Тестирует метод AccountOrdersWidget::run
+     * если пуст AccountOrdersWidget::currency
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
-        $widget = new AccountPurchasesWidget();
+        $widget = new AccountOrdersWidget();
         $widget->run();
     }
     
     /**
-     * Тестирует метод AccountPurchasesWidget::run
-     * если пуст AccountPurchasesWidget::view
+     * Тестирует метод AccountOrdersWidget::run
+     * если пуст AccountOrdersWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
@@ -120,7 +120,7 @@ class AccountPurchasesWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AccountPurchasesWidget();
+        $widget = new AccountOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -130,7 +130,7 @@ class AccountPurchasesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountPurchasesWidget::run
+     * Тестирует метод AccountOrdersWidget::run
      * если нет неотправленных покупок
      */
     public function testRunNotProcessedPurchases()
@@ -140,7 +140,7 @@ class AccountPurchasesWidgetTests extends TestCase
             public $code = 'MONEY';
         };
         
-        $widget = new AccountPurchasesWidget();
+        $widget = new AccountOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -156,7 +156,7 @@ class AccountPurchasesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountPurchasesWidget::run
+     * Тестирует метод AccountOrdersWidget::run
      * если есть неотправленные покупки
      */
     public function testRunExistProcessedPurchases()
@@ -219,7 +219,7 @@ class AccountPurchasesWidgetTests extends TestCase
             },
         ];
         
-        $widget = new AccountPurchasesWidget();
+        $widget = new AccountOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);

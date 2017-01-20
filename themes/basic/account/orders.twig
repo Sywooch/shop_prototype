@@ -1,0 +1,7 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use ('app/widgets/AccountOrdersBreadcrumbsWidget') }}
+
+{{ include('@theme/common/account-common.twig') }}
+
+{{ account_orders_breadcrumbs_widget_widget() }}

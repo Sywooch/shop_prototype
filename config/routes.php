@@ -32,9 +32,9 @@ $routes = [
     # Аккаунт
     'account'=>'account/index',
     'account-orders'=>'account/orders',
-    'account-contact-details'=>'account/contact-details',
+    /*'account-contact-details'=>'account/contact-details',
     'account-change-password'=>'account/change-password',
-    'account-subscriptions'=>'account/subscriptions',
+    'account-subscriptions'=>'account/subscriptions',*/
     
     # Валюта
     'set-currency'=>'currency/set',

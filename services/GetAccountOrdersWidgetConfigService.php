@@ -8,12 +8,12 @@ use app\services\{AbstractBaseService,
 use app\finders\PurchasesIdUserFinder;
 
 /**
- * Возвращает массив конфигурации для виджета AccountPurchasesWidget
+ * Возвращает массив конфигурации для виджета AccountOrdersWidget
  */
-class GetAccountPurchasesWidgetConfigService extends AbstractBaseService
+class GetAccountOrdersWidgetConfigService extends AbstractBaseService
 {
     /**
-     * @var array конфигурации для виджета AccountPurchasesWidget
+     * @var array конфигурации для виджета AccountOrdersWidget
      */
     private $accountPurchasesWidgetArray = [];
     
