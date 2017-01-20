@@ -7,9 +7,9 @@ use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
-    GetMailingsUnsubscribeEmptyWidgetConfigService,
     GetSearchWidgetConfigService,
     GetShortCartWidgetConfigService,
+    GetUnsubscribeEmptyWidgetConfigService,
     GetUnsubscribeFormWidgetConfigService,
     GetUserInfoWidgetConfigService};
 use app\helpers\HashHelper;
@@ -41,7 +41,7 @@ class MailingsUnsubscribeService extends AbstractBaseService
                 throw new NotFoundHttpException($this->error404());
             } else {
                 if (empty((\Yii::$app->registry->get(MailingsEmailFinder::class, ['email'=>$email]))->find())) {
-                    $service = \Yii::$app->registry->get(GetMailingsUnsubscribeEmptyWidgetConfigService::class);
+                    $service = \Yii::$app->registry->get(GetUnsubscribeEmptyWidgetConfigService::class);
                     $dataArray['mailingsUnsubscribeEmptyWidgetConfig'] = $service->handle($request);
                 } else {
                     $service = \Yii::$app->registry->get(GetUnsubscribeFormWidgetConfigService::class);

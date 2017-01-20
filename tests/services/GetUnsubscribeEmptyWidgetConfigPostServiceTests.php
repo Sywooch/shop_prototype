@@ -3,25 +3,25 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetMailingsUnsubscribeEmptyWidgetConfigService;
+use app\services\GetUnsubscribeEmptyWidgetConfigPostService;
 
 /**
- * Тестирует класс GetMailingsUnsubscribeEmptyWidgetConfigService
+ * Тестирует класс GetUnsubscribeEmptyWidgetConfigPostService
  */
-class GetMailingsUnsubscribeEmptyWidgetConfigServiceTests extends TestCase
+class GetUnsubscribeEmptyWidgetConfigPostServiceTests extends TestCase
 {
     /**
-     * Тестирует свойства GetMailingsUnsubscribeEmptyWidgetConfigService
+     * Тестирует свойства GetUnsubscribeEmptyWidgetConfigPostService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetMailingsUnsubscribeEmptyWidgetConfigService::class);
+        $reflection = new \ReflectionClass(GetUnsubscribeEmptyWidgetConfigPostService::class);
         
-        $this->assertTrue($reflection->hasProperty('unsubscribeEmptyWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('mailingsUnsubscribeEmptyWidgetArray'));
     }
     
     /**
-     * Тестирует метод GetMailingsUnsubscribeEmptyWidgetConfigService::handle
+     * Тестирует метод GetUnsubscribeEmptyWidgetConfigPostService::handle
      * если пуст $request[email]
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: email
@@ -29,29 +29,33 @@ class GetMailingsUnsubscribeEmptyWidgetConfigServiceTests extends TestCase
     public function testHandleEmptyEmail()
     {
         $request = new class() {
-            public function get($name = null, $defaultValue = null)
+            public function post($name = null, $defaultValue = null)
             {
                 return null;
             }
         };
         
-        $service = new GetMailingsUnsubscribeEmptyWidgetConfigService();
+        $service = new GetUnsubscribeEmptyWidgetConfigPostService();
         $result = $service->handle($request);
     }
     
     /**
-     * Тестирует метод GetMailingsUnsubscribeEmptyWidgetConfigService::handle
+     * Тестирует метод GetUnsubscribeEmptyWidgetConfigPostService::handle
      */
     public function testHandle()
     {
         $request = new class() {
-            public function get($name = null, $defaultValue = null)
+            public function post($name = null, $defaultValue = null)
             {
-                return 'some@some.com';
+                return [
+                    'MailingForm'=>[
+                        'email'=>'some@some.com'
+                    ],
+                ];
             }
         };
         
-        $service = new GetMailingsUnsubscribeEmptyWidgetConfigService();
+        $service = new GetUnsubscribeEmptyWidgetConfigPostService();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);

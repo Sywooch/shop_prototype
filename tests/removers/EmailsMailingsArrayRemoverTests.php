@@ -81,7 +81,7 @@ class EmailsMailingsArrayRemoverTests extends TestCase
     public function testRemove()
     {
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailings}}')->queryAll();
-        $this->assertCount(2, $result);
+        $this->assertCount(4, $result);
         
         $models = [
             new class() {
@@ -101,7 +101,7 @@ class EmailsMailingsArrayRemoverTests extends TestCase
         $this->assertEquals(1, $result);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailings}}')->queryAll();
-        $this->assertCount(1, $result);
+        $this->assertCount(3, $result);
     }
     
     /**
@@ -111,7 +111,7 @@ class EmailsMailingsArrayRemoverTests extends TestCase
     public function testRemoveSome()
     {
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailings}}')->queryAll();
-        $this->assertCount(2, $result);
+        $this->assertCount(4, $result);
         
         $models = [
             new class() {
@@ -120,7 +120,7 @@ class EmailsMailingsArrayRemoverTests extends TestCase
             },
             new class() {
                 public $id_mailing = 2;
-                public $id_email = 2;
+                public $id_email = 1;
             },
         ];
         
@@ -135,7 +135,7 @@ class EmailsMailingsArrayRemoverTests extends TestCase
         $this->assertEquals(2, $result);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailings}}')->queryAll();
-        $this->assertEmpty($result);
+        $this->assertCount(2, $result);
     }
     
     public function tearDown()

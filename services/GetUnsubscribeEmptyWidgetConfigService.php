@@ -4,17 +4,16 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\AbstractBaseService;
-use app\forms\MailingForm;
 
 /**
  * Возвращает массив данных для UnsubscribeEmptyWidget
  */
-class GetMailingsUnsubscribeEmptyWidgetConfigPostService extends AbstractBaseService
+class GetUnsubscribeEmptyWidgetConfigService extends AbstractBaseService
 {
     /**
      * @var array данные для UnsubscribeEmptyWidget
      */
-    private $mailingsUnsubscribeEmptyWidgetArray = [];
+    private $unsubscribeEmptyWidgetArray = [];
     
     /**
      * Возвращает массив данных для UnsubscribeEmptyWidget
@@ -24,24 +23,22 @@ class GetMailingsUnsubscribeEmptyWidgetConfigPostService extends AbstractBaseSer
     public function handle($request)
     {
         try {
-            $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
+            $email = $request->get(\Yii::$app->params['emailKey']);
             
-            if ($form->load($request->post()) === false) {
+            if (empty($email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
             
-            $email = $form->email;
-            
-            if (empty($this->mailingsUnsubscribeEmptyWidgetArray)) {
+            if (empty($this->unsubscribeEmptyWidgetArray)) {
                 $dataArray = [];
                 
                 $dataArray['email'] = $email;
                 $dataArray['view'] = 'unsubscribe-empty.twig';
                 
-                $this->mailingsUnsubscribeEmptyWidgetArray = $dataArray;
+                $this->unsubscribeEmptyWidgetArray = $dataArray;
             }
             
-            return $this->mailingsUnsubscribeEmptyWidgetArray;
+            return $this->unsubscribeEmptyWidgetArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
