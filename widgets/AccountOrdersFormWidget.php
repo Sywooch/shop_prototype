@@ -3,7 +3,8 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\{Html,
+use yii\helpers\{ArrayHelper,
+    Html,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyModel;
@@ -59,9 +60,12 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                 $renderArray['listClass'] = 'account-orders';
                 $renderArray['statusClass'] = 'account-order-status';
                 
+                ArrayHelper::multisort($this->purchases, 'received_date', SORT_DESC, SORT_REGULAR);
+                
                 foreach ($this->purchases as $purchase) {
                     $set = [];
-                    $set['orderId'] = sprintf('account-order-%d', $purchase->id_product);
+                    $set['orderId'] = sprintf('account-order-%d', $purchase->id);
+                    $set['date'] = \Yii::$app->formatter->asDate($purchase->received_date);
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
                     $set['linkText'] = Html::encode($purchase->product->name);
                     $set['short_description'] = Html::encode($purchase->product->short_description);
@@ -86,10 +90,10 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                         $set['status'] = \Yii::t('base', 'Received');
                     }
                     
-                    if ((bool) $purchase->processed === true || (bool) $purchase->received === true) {
+                    if ((bool) $purchase->shipped !== true && (bool) $purchase->canceled !== true) {
                         $form = clone $this->form;
-                        $set['modelForm'] = \Yii::configure($form, ['id_product'=>$purchase->id_product]);
-                        $set['formId'] = sprintf('%s-%d', 'order-cancellation-form', $purchase->id_product);
+                        $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id]);
+                        $set['formId'] = sprintf('order-cancellation-form-%d', $purchase->id);
                         
                         $set['ajaxValidation'] = false;
                         $set['validateOnSubmit'] = false;
@@ -104,6 +108,7 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                     $renderArray['purchases'][] = $set;
                 }
                 
+                $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
                 $renderArray['quantityHeader'] = \Yii::t('base', 'Quantity');
                 $renderArray['priceHeader'] = \Yii::t('base', 'Price');
                 $renderArray['colorHeader'] = \Yii::t('base', 'Color');

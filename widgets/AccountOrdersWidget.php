@@ -3,7 +3,8 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\{Html,
+use yii\helpers\{ArrayHelper,
+    Html,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyModel;
@@ -50,8 +51,11 @@ class AccountOrdersWidget extends AbstractBaseWidget
                 if (!empty($purchases)) {
                     $renderArray['userOrders'] = \Yii::t('base', 'Current orders');
                     
+                    ArrayHelper::multisort($purchases, 'received_date', SORT_DESC, SORT_REGULAR);
+                    
                     foreach ($purchases as $purchase) {
                         $set = [];
+                        $set['date'] = \Yii::$app->formatter->asDate($purchase->received_date);
                         $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
                         $set['linkText'] = Html::encode($purchase->product->name);
                         $set['short_description'] = Html::encode($purchase->product->short_description);
@@ -75,6 +79,7 @@ class AccountOrdersWidget extends AbstractBaseWidget
                         $renderArray['purchases'][] = $set;
                     }
                     
+                    $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
                     $renderArray['quantityHeader'] = \Yii::t('base', 'Quantity');
                     $renderArray['priceHeader'] = \Yii::t('base', 'Price');
                     $renderArray['colorHeader'] = \Yii::t('base', 'Color');

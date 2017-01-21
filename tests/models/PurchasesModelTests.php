@@ -42,6 +42,7 @@ class PurchasesModelTests extends TestCase
         $this->assertTrue($reflection->hasConstant('UPDATE'));
         $this->assertTrue($reflection->hasConstant('DELETE'));
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('CANCEL'));
         
         $model = new PurchasesModel();
         
@@ -204,6 +205,19 @@ class PurchasesModelTests extends TestCase
         $this->assertSame(1, $result['received']);
         $this->assertArrayHasKey('received_date', $result);
         $this->assertSame(1458471063, $result['received_date']);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::CANCEL]);
+        $model->attributes = [
+            'canceled'=>true,
+        ];
+        
+        $result = $model->toArray();
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        
+        $this->assertArrayHasKey('canceled', $result);
+        $this->assertTrue($result['canceled']);
         
         /*$model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
         $model->attributes = [

@@ -27,6 +27,7 @@ class PurchaseFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('id_size'));
         $this->assertTrue($reflection->hasProperty('id_product'));
         $this->assertTrue($reflection->hasProperty('price'));
+        $this->assertTrue($reflection->hasProperty('id'));
     }
     
     /**
@@ -98,10 +99,10 @@ class PurchaseFormTests extends TestCase
         
         $form = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
         $form->attributes = [
-            'id_product'=>7,
+            'id'=>7,
         ];
         
-        $reflection = new \ReflectionProperty($form, 'id_product');
+        $reflection = new \ReflectionProperty($form, 'id');
         $result = $reflection->getValue($form);
         $this->assertSame(7, $result);
     }
@@ -174,11 +175,11 @@ class PurchaseFormTests extends TestCase
         
         $this->assertNotEmpty($form->errors);
         $this->assertCount(1, $form->errors);
-        $this->assertArrayHasKey('id_product', $form->errors);
+        $this->assertArrayHasKey('id', $form->errors);
         
         $form = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
         $form->attributes = [
-            'id_product'=>2,
+            'id'=>2,
         ];
         
         $this->assertEmpty($form->errors);

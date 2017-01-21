@@ -42,7 +42,7 @@ class PurchasesIdUserFinderTests extends TestCase
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: id_user
      */
-    public function testFindEmptySeocode()
+    public function testFindEmptyIdUser()
     {
         $finder = new PurchasesIdUserFinder();
         $finder->find();

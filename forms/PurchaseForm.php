@@ -47,6 +47,10 @@ class PurchaseForm extends AbstractBaseForm
      * @var float стоимость товара
      */
     public $price;
+    /**
+     * @var int Id покупки
+     */
+    public $id;
     
     public function scenarios()
     {
@@ -54,7 +58,7 @@ class PurchaseForm extends AbstractBaseForm
             self::SAVE=>['quantity', 'id_color', 'id_size', 'id_product', 'price'],
             self::UPDATE=>['quantity', 'id_color', 'id_size', 'id_product'],
             self::DELETE=>['id_product'],
-            self::CANCEL=>['id_product']
+            self::CANCEL=>['id']
         ];
     }
     
@@ -64,7 +68,7 @@ class PurchaseForm extends AbstractBaseForm
             [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::SAVE],
             [['quantity', 'id_color', 'id_size', 'id_product'], 'required', 'on'=>self::UPDATE],
             [['id_product'], 'required', 'on'=>self::DELETE],
-            [['id_product'], 'required', 'on'=>self::CANCEL]
+            [['id'], 'required', 'on'=>self::CANCEL]
         ];
     }
 }

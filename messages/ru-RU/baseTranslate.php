@@ -156,7 +156,8 @@ $translate = [
     'Received'=>'Получен',
     'Shipped'=>'Доставлен',
     'Canceled'=>'Отменен',
-    'Cancel'=>'Отменить'
+    'Cancel'=>'Отменить',
+    'Order date'=>'Дата заказа'
 ];
 
 return $translate;

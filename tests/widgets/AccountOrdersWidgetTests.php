@@ -178,6 +178,7 @@ class AccountOrdersWidgetTests extends TestCase
                 public $canceled = 0;
                 public $shipped = 0;
                 public $processed = 0;
+                public $received_date = 1459112400;
                 public function __construct()
                 {
                     $this->product = new class() {
@@ -203,6 +204,7 @@ class AccountOrdersWidgetTests extends TestCase
                 public $canceled = 0;
                 public $shipped = 0;
                 public $processed = 1;
+                public $received_date = 1459112400;
                 public function __construct()
                 {
                     $this->product = new class() {
@@ -242,6 +244,7 @@ class AccountOrdersWidgetTests extends TestCase
         $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_1">Name 1</a>#', $result);
         $this->assertRegExp('#<br>Description 1#', $result);
         $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);
+        $this->assertRegExp('#<br>Дата заказа:\s.+#', $result);
         $this->assertRegExp('#<br>Цвет: gray#', $result);
         $this->assertRegExp('#<br>Размер: 45#', $result);
         $this->assertRegExp('#<br>Количество: 1#', $result);

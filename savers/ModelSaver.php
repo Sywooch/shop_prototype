@@ -15,7 +15,7 @@ class ModelSaver extends AbstractBaseSaver implements SaverModelInterface
     /**
      * @var Model
      */
-    private $model = [];
+    private $model;
     
     /**
      * Сохраняет данные в СУБД

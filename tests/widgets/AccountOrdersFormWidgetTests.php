@@ -227,7 +227,7 @@ class AccountOrdersFormWidgetTests extends TestCase
         
         $purchases = [
             new class() {
-                public $id_product = 2;
+                public $id = 2;
                 public $product;
                 public $color;
                 public $size;
@@ -237,6 +237,7 @@ class AccountOrdersFormWidgetTests extends TestCase
                 public $shipped = 0;
                 public $processed = 0;
                 public $received = 1;
+                public $received_date = 1459112400;
                 public function __construct()
                 {
                     $this->product = new class() {
@@ -254,7 +255,7 @@ class AccountOrdersFormWidgetTests extends TestCase
                 }
             },
             new class() {
-                public $id_product = 1;
+                public $id = 1;
                 public $product;
                 public $color;
                 public $size;
@@ -264,6 +265,7 @@ class AccountOrdersFormWidgetTests extends TestCase
                 public $shipped = 0;
                 public $processed = 1;
                 public $received = 1;
+                public $received_date = 1459112400;
                 public function __construct()
                 {
                     $this->product = new class() {
@@ -281,7 +283,7 @@ class AccountOrdersFormWidgetTests extends TestCase
                 }
             },
             new class() {
-                public $id_product = 3;
+                public $id = 3;
                 public $product;
                 public $color;
                 public $size;
@@ -291,6 +293,7 @@ class AccountOrdersFormWidgetTests extends TestCase
                 public $shipped = 1;
                 public $processed = 1;
                 public $received = 1;
+                public $received_date = 1459112400;
                 public function __construct()
                 {
                     $this->product = new class() {
@@ -308,7 +311,7 @@ class AccountOrdersFormWidgetTests extends TestCase
                 }
             },
             new class() {
-                public $id_product = 4;
+                public $id = 4;
                 public $product;
                 public $color;
                 public $size;
@@ -318,6 +321,7 @@ class AccountOrdersFormWidgetTests extends TestCase
                 public $shipped = 0;
                 public $processed = 1;
                 public $received = 1;
+                public $received_date = 1459112400;
                 public function __construct()
                 {
                     $this->product = new class() {
@@ -371,6 +375,7 @@ class AccountOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#Description 3#', $result);
         $this->assertRegExp('#Description 4#', $result);
         $this->assertRegExp('#<img src=".+" height="200" alt="">#', $result);
+        $this->assertRegExp('#Дата заказа:\s.+#', $result);
         $this->assertRegExp('#Цвет:\s.+#', $result);
         $this->assertRegExp('#Размер:\s.+#', $result);
         $this->assertRegExp('#Количество:\s\d+#', $result);
@@ -380,7 +385,7 @@ class AccountOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#Статус:\s<span class="account-order-status">Доставлен</span>#', $result);
         $this->assertRegExp('#Статус:\s<span class="account-order-status">Отменен</span>#', $result);
         $this->assertRegExp('#<form id="order-cancellation-form-\d{1}" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id_product\]" value="\d{1}">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="\d{1}">#', $result);
         $this->assertRegExp('#<input type="submit" value="Отменить">#', $result);
     }
     

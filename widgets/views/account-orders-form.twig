@@ -9,6 +9,7 @@
                 <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
                 <br>{{ purchase.short_description }}
                 <br>{{ purchase.image | raw }}
+                <br>{{ dateHeader }}: {{ purchase.date }}
                 <br>{{ colorHeader }}: {{ purchase.color }}
                 <br>{{ sizeHeader }}: {{ purchase.size }}
                 <br>{{ quantityHeader }}: {{ purchase.quantity }}
@@ -16,7 +17,7 @@
                 <br>{{ statusHeader }}: <span class="{{ statusClass }}">{{ purchase.status }}</span>
                 {% if purchase.modelForm %}
                     {% set form=active_form_begin({'id':purchase.formId, 'enableAjaxValidation':purchase.ajaxValidation, 'validateOnSubmit':purchase.validateOnSubmit, 'validateOnChange':purchase.validateOnChange, 'validateOnBlur':purchase.validateOnBlur, 'validateOnType':purchase.validateOnType, 'action':purchase.formAction, 'method':'POST'}) %}
-                        {{ form.field(purchase.modelForm, 'id_product').hiddenInput().label(false) | raw }}
+                        {{ form.field(purchase.modelForm, 'id').hiddenInput().label(false) | raw }}
                         <input type="submit" value="{{ purchase.button }}">
                     {{ active_form_end() }}
                 {% endif %}
