@@ -3,45 +3,45 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\CommentSaveInfoWidget;
+use app\widgets\CommentSaveSuccessWidget;
 
 /**
- * Тестирует класс CommentSaveInfoWidget
+ * Тестирует класс CommentSaveSuccessWidget
  */
-class CommentSaveInfoWidgetTests extends TestCase
+class CommentSaveSuccessWidgetTests extends TestCase
 {
     /**
-     * Тестирует свойства CommentSaveInfoWidget
+     * Тестирует свойства CommentSaveSuccessWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(CommentSaveInfoWidget::class);
+        $reflection = new \ReflectionClass(CommentSaveSuccessWidget::class);
         
         $this->assertTrue($reflection->hasProperty('view'));
     }
     
     /**
-     * Тестирует метод CommentSaveInfoWidget::run
-     * если пуст CommentSaveInfoWidget::view
+     * Тестирует метод CommentSaveSuccessWidget::run
+     * если пуст CommentSaveSuccessWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
     public function testRunEmptyView()
     {
-        $widget = new CommentSaveInfoWidget();
+        $widget = new CommentSaveSuccessWidget();
         $widget->run();
     }
     
     /**
-     * Тестирует метод CommentSaveInfoWidget::run
+     * Тестирует метод CommentSaveSuccessWidget::run
      */
     public function testRun()
     {
-        $widget = new CommentSaveInfoWidget();
+        $widget = new CommentSaveSuccessWidget();
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'save-comment-info.twig');
+        $reflection->setValue($widget, 'comment-save-success.twig');
         
         $result = $widget->run();
         

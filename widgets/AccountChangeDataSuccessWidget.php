@@ -8,7 +8,7 @@ use app\widgets\AbstractBaseWidget;
 /**
  * Формирует HTML строку с информацией об успешном сохранении комментария
  */
-class CommentSaveInfoWidget extends AbstractBaseWidget
+class AccountChangeDataSuccessWidget extends AbstractBaseWidget
 {
     /**
      * @var string имя шаблона
@@ -28,7 +28,7 @@ class CommentSaveInfoWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['text'] = \Yii::t('base', 'Comment saved and will be available after being moderated. Thanks!');
+            $renderArray['text'] = \Yii::t('base', 'The data updated successfully!');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {

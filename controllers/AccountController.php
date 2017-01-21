@@ -5,7 +5,8 @@ namespace app\controllers;
 use yii\web\Controller;
 use app\actions\{AjaxAction,
     GetAction};
-use app\services\{AccountChangeDataService,
+use app\services\{AccountChangeDataPostService,
+    AccountChangeDataService,
     AccountIndexService,
     AccountOrdersCancelService,
     AccountOrdersService};
@@ -37,10 +38,10 @@ class AccountController extends Controller
                 'service'=>new AccountChangeDataService(),
                 'view'=>'change-data.twig',
             ],
-            /*'change-data-post'=>[
+            'change-data-post'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AccountChangeDataPostService(),
-            ],*/
+            ],
         ];
     }
 }

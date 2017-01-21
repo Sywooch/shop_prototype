@@ -10,7 +10,7 @@ use app\services\{AbstractBaseService,
     NameGetSaveNameService};
 use app\forms\CommentForm;
 use app\savers\ModelSaver;
-use app\widgets\CommentSaveInfoWidget;
+use app\widgets\CommentSaveSuccessWidget;
 use app\models\CommentsModel;
 
 /**
@@ -59,7 +59,7 @@ class CommentSaveService extends AbstractBaseService
                         
                         $transaction->commit();
                         
-                        return CommentSaveInfoWidget::widget(['view'=>'save-comment-info.twig']);
+                        return CommentSaveSuccessWidget::widget(['view'=>'comment-save-success.twig']);
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;
