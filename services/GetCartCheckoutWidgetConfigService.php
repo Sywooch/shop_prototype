@@ -50,14 +50,15 @@ class GetCartCheckoutWidgetConfigService extends AbstractBaseService
                 $form = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
                 if (\Yii::$app->user->isGuest === false) {
                     $user = \Yii::$app->user->identity;
-                    $form->name = $user->name->name;
-                    $form->surname = $user->surname->surname;
-                    $form->email = $user->email->email;
-                    $form->phone = $user->phone->phone;
-                    $form->address = $user->address->address;
-                    $form->city = $user->city->city;
-                    $form->country = $user->country->country;
-                    $form->postcode = $user->postcode->postcode;
+                    
+                    $form->email = !empty($user->id_email) ? $user->email->email : null;
+                    $form->name = !empty($user->id_name) ? $user->name->name : null;
+                    $form->surname = !empty($user->id_surname) ? $user->surname->surname: null;
+                    $form->phone = !empty($user->id_phone) ? $user->phone->phone : null;
+                    $form->address = !empty($user->id_address) ? $user->address->address : null;
+                    $form->city = !empty($user->id_city) ? $user->city->city : null;
+                    $form->country = !empty($user->id_country) ? $user->country->country : null;
+                    $form->postcode = !empty($user->id_postcode) ? $user->postcode->postcode : null;
                 }
                 $dataArray['form'] = $form;
                 

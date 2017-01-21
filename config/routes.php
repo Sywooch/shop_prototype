@@ -33,8 +33,9 @@ $routes = [
     'account'=>'account/index',
     'account-orders'=>'account/orders',
     'account-order-cancel'=>'account/order-cancel',
-    /*'account-contact-details'=>'account/contact-details',
-    'account-change-password'=>'account/change-password',
+    'account-change-data'=>'account/change-data',
+    'account-change-data-post'=>'account/change-data-post',
+    /*'account-change-password'=>'account/change-password',
     'account-subscriptions'=>'account/subscriptions',*/
     
     # Валюта
