@@ -7,8 +7,8 @@ $(function() {
         self.success = function(data, status, jqXHR)
         {
             self.form.find('div.help-block').html('');
+            self.form.find('input').blur();
             if (typeof data == 'string') {
-                self.form.find('input[type="text"]').val('');
                 self.infoDiv.html(data);
                 setTimeout(timeoutRemove, 5000);
             } else if (typeof data == 'object' && data.length != 0) {

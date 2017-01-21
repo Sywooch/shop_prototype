@@ -62,11 +62,11 @@ class AccountMenuWidget extends Menu
             $this->items = array_merge($this->items, [
                 [
                     'label'=>\Yii::t('base', 'Change data'),
-                    'url'=>['/account/change-data']
+                    'url'=>['/account/data']
                 ],
                 [
                     'label'=>\Yii::t('base', 'Change password'),
-                    'url'=>['/account/change-password']
+                    'url'=>['/account/password']
                 ],
                 [
                     'label'=>\Yii::t('base', 'Manage subscriptions'),

@@ -30,6 +30,8 @@ class AccountChangeDataServiceTests extends TestCase
      */
     public function testHandle()
     {
+        \Yii::$app->user->logout();
+        
         $service = new AccountChangeDataService();
         $result = $service->handle();
         

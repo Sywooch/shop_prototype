@@ -6,10 +6,7 @@ $(function() {
         self.success = function(data, status, jqXHR)
         {
             self.form.find('div.help-block').html('');
-            /*if (typeof data == 'object' && data.length != 0) {
-                $('div.shortCart').html(data['shortCart']);
-                alert(data['successInfo']);
-            }*/
+            self.form.find('input').blur();
             if (typeof data == 'string') {
                 alert('Товар успешно добавлен в корзину!');
                 $('div.shortCart').html(data);

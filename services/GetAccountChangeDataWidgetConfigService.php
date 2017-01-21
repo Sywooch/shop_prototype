@@ -29,17 +29,15 @@ class GetAccountChangeDataWidgetConfigService extends AbstractBaseService
                 
                 $form = new UserUpdateForm(['scenario'=>UserUpdateForm::UPDATE]);
                 
-                if (\Yii::$app->user->isGuest !== true) {
-                    $user = \Yii::$app->user->identity;
-                    
-                    $form->name = !empty($user->id_name) ? $user->name->name : null;
-                    $form->surname = !empty($user->id_surname) ? $user->surname->surname: null;
-                    $form->phone = !empty($user->id_phone) ? $user->phone->phone : null;
-                    $form->address = !empty($user->id_address) ? $user->address->address : null;
-                    $form->city = !empty($user->id_city) ? $user->city->city : null;
-                    $form->country = !empty($user->id_country) ? $user->country->country : null;
-                    $form->postcode = !empty($user->id_postcode) ? $user->postcode->postcode : null;
-                }
+                $user = \Yii::$app->user->identity;
+                
+                $form->name = !empty($user->id_name) ? $user->name->name : null;
+                $form->surname = !empty($user->id_surname) ? $user->surname->surname: null;
+                $form->phone = !empty($user->id_phone) ? $user->phone->phone : null;
+                $form->address = !empty($user->id_address) ? $user->address->address : null;
+                $form->city = !empty($user->id_city) ? $user->city->city : null;
+                $form->country = !empty($user->id_country) ? $user->country->country : null;
+                $form->postcode = !empty($user->id_postcode) ? $user->postcode->postcode : null;
                 
                 $dataArray['form'] = $form;
                 $dataArray['view'] = 'account-change-data-form.twig';

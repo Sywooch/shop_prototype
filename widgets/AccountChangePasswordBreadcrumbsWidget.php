@@ -9,7 +9,7 @@ use app\exceptions\ExceptionsTrait;
 /**
  * Формирует breadcrumbs для страницы аккаунта
  */
-class AccountChangeDataBreadcrumbsWidget extends BreadcrumbsWidget
+class AccountChangePasswordBreadcrumbsWidget extends BreadcrumbsWidget
 {
     use ExceptionsTrait;
     
@@ -17,7 +17,7 @@ class AccountChangeDataBreadcrumbsWidget extends BreadcrumbsWidget
     {
         try {
             \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Basic account data'), 'url'=>['/account/index']];
-            \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Change data'), 'url'=>['/account/data']];
+            \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Change password'), 'url'=>['/account/password']];
             
             parent::init();
         } catch (\Throwable $t) {

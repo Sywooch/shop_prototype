@@ -43,11 +43,20 @@ class GetAccountChangeDataWidgetConfigServiceTests extends TestCase
     
     /**
      * Тестирует метод GetAccountChangeDataWidgetConfigService::handle
-     * если isGuest is true
+     * если данные пользователя пусты
      */
     public function testHandleGuest()
     {
-        \Yii::$app->user->logout();
+        $user = UsersModel::findOne(1);
+        $user->id_name = 0;
+        $user->id_surname = 0;
+        $user->id_phone = 0;
+        $user->id_address = 0;
+        $user->id_city = 0;
+        $user->id_country = 0;
+        $user->id_postcode = 0;
+        
+        \Yii::$app->user->login($user);
         
         $service = new GetAccountChangeDataWidgetConfigService();
         $result = $service->handle();

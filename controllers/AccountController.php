@@ -7,6 +7,7 @@ use app\actions\{AjaxAction,
     GetAction};
 use app\services\{AccountChangeDataPostService,
     AccountChangeDataService,
+    AccountChangePasswordService,
     AccountIndexService,
     AccountOrdersCancelService,
     AccountOrdersService};
@@ -33,7 +34,7 @@ class AccountController extends Controller
                 'class'=>AjaxAction::class,
                 'service'=>new AccountOrdersCancelService(),
             ],
-            'change-data'=>[
+            'data'=>[
                 'class'=>GetAction::class,
                 'service'=>new AccountChangeDataService(),
                 'view'=>'change-data.twig',
@@ -41,6 +42,11 @@ class AccountController extends Controller
             'change-data-post'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AccountChangeDataPostService(),
+            ],
+            'password'=>[
+                'class'=>GetAction::class,
+                'service'=>new AccountChangePasswordService(),
+                'view'=>'change-password.twig',
             ],
         ];
     }
