@@ -158,7 +158,8 @@ $translate = [
     'Canceled'=>'Отменен',
     'Cancel'=>'Отменить',
     'Order date'=>'Дата заказа',
-    'The data updated successfully!'=>'Данные успешно обновлены!'
+    'The data updated successfully!'=>'Данные успешно обновлены!',
+    'The password updated successfully!'=>'Пароль успешно обновлен!'
 ];
 
 return $translate;

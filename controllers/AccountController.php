@@ -7,6 +7,7 @@ use app\actions\{AjaxAction,
     GetAction};
 use app\services\{AccountChangeDataPostService,
     AccountChangeDataService,
+    AccountChangePasswordPostService,
     AccountChangePasswordService,
     AccountIndexService,
     AccountOrdersCancelService,
@@ -47,6 +48,10 @@ class AccountController extends Controller
                 'class'=>GetAction::class,
                 'service'=>new AccountChangePasswordService(),
                 'view'=>'change-password.twig',
+            ],
+            'change-password-post'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new AccountChangePasswordPostService(),
             ],
         ];
     }
