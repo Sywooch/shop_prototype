@@ -1,0 +1,26 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+{% if purchases %}
+    <p><strong>{{ userOrders }}</strong></p>
+    
+    <ol class="{{ listClass }}">
+        {% for purchase in purchases %}
+            <li class="{{ purchase.orderId }}">
+                <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
+                <br>{{ purchase.short_description }}
+                <br>{{ purchase.image | raw }}
+                <br>{{ colorHeader }}: {{ purchase.color }}
+                <br>{{ sizeHeader }}: {{ purchase.size }}
+                <br>{{ quantityHeader }}: {{ purchase.quantity }}
+                <br>{{ priceHeader }}: {{ purchase.price }}
+                <br>{{ statusHeader }}: <span class="{{ statusClass }}">{{ purchase.status }}</span>
+                {% if purchase.modelForm %}
+                    {% set form=active_form_begin({'id':purchase.formId, 'enableAjaxValidation':purchase.ajaxValidation, 'validateOnSubmit':purchase.validateOnSubmit, 'validateOnChange':purchase.validateOnChange, 'validateOnBlur':purchase.validateOnBlur, 'validateOnType':purchase.validateOnType, 'action':purchase.formAction, 'method':'POST'}) %}
+                        {{ form.field(purchase.modelForm, 'id_product').hiddenInput().label(false) | raw }}
+                        <input type="submit" value="{{ purchase.button }}">
+                    {{ active_form_end() }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ol>
+{% endif %}

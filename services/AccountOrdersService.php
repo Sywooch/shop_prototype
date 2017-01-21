@@ -3,7 +3,8 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use app\services\AbstractBaseService;
+use app\services\{AbstractBaseService,
+    GetAccountOrdersFormWidgetConfigService};
 
 /**
  * Формирует массив данных для рендеринга страницы с заказами
@@ -24,9 +25,10 @@ class AccountOrdersService extends AbstractBaseService
     {
         try {
             if (empty($this->dataArray)) {
-                $dataArray = [1];
+                $dataArray = [];
                 
-                
+                $service = \Yii::$app->registry->get(GetAccountOrdersFormWidgetConfigService::class);
+                $dataArray['accountOrdersFormWidgetConfig'] = $service->handle();
                 
                 $this->dataArray = $dataArray;
             }

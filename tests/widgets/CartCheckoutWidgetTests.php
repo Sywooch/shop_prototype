@@ -279,6 +279,8 @@ class CartCheckoutWidgetTests extends TestCase
      */
     public function testRunGuest()
     {
+        \Yii::$app->user->logout();
+        
         $form = new class() extends CustomerInfoForm {};
         
         $deliveries = [

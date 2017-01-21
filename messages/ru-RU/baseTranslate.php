@@ -152,7 +152,11 @@ $translate = [
     'You successfully unsubscribed from mailings:'=>'Вы успешно отписаны от рассылок:',
     'Basic account data'=>'Основные данные аккаунта',
     'Current subscriptions'=>'Текущие подписки',
-    'Manage subscriptions'=>'Управление подписками'
+    'Manage subscriptions'=>'Управление подписками',
+    'Received'=>'Получен',
+    'Shipped'=>'Доставлен',
+    'Canceled'=>'Отменен',
+    'Cancel'=>'Отменить'
 ];
 
 return $translate;

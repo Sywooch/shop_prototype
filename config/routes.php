@@ -32,6 +32,7 @@ $routes = [
     # Аккаунт
     'account'=>'account/index',
     'account-orders'=>'account/orders',
+    'account-order-cancel'=>'account/order-cancel',
     /*'account-contact-details'=>'account/contact-details',
     'account-change-password'=>'account/change-password',
     'account-subscriptions'=>'account/subscriptions',*/

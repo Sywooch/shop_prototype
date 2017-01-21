@@ -177,6 +177,7 @@ class AccountOrdersWidgetTests extends TestCase
                 public $price = 12.89;
                 public $canceled = 0;
                 public $shipped = 0;
+                public $processed = 0;
                 public function __construct()
                 {
                     $this->product = new class() {
@@ -201,6 +202,7 @@ class AccountOrdersWidgetTests extends TestCase
                 public $price = 56.00;
                 public $canceled = 0;
                 public $shipped = 0;
+                public $processed = 1;
                 public function __construct()
                 {
                     $this->product = new class() {
@@ -244,7 +246,7 @@ class AccountOrdersWidgetTests extends TestCase
         $this->assertRegExp('#<br>Размер: 45#', $result);
         $this->assertRegExp('#<br>Количество: 1#', $result);
         $this->assertRegExp('#<br>Цена: 26,94 MONEY#', $result);
-        $this->assertRegExp('#<br>Статус: Выполняется#', $result);
+        $this->assertRegExp('#<br>Статус: Получен#', $result);
         $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_2">Name 2</a>#', $result);
         $this->assertRegExp('#<br>Description 2#', $result);
         $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);

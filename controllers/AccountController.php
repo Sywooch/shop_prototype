@@ -3,7 +3,8 @@
 namespace app\controllers;
 
 use yii\web\Controller;
-use app\actions\GetAction;
+use app\actions\{AjaxAction,
+    GetAction};
 use app\services\{AccountIndexService,
     AccountOrdersService};
 
@@ -25,6 +26,10 @@ class AccountController extends Controller
                 'service'=>new AccountOrdersService(),
                 'view'=>'orders.twig',
             ],
+            /*'order-cancel'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new AccountOrdersCancelService(),
+            ],*/
         ];
     }
 }

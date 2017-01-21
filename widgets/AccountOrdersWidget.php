@@ -65,7 +65,13 @@ class AccountOrdersWidget extends AbstractBaseWidget
                                 $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $purchase->product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]), ['height'=>200]);
                             }
                         }
-                        $set['status'] = \Yii::t('base', 'Processed');
+                        
+                        if ((bool) $purchase->processed === true) {
+                            $set['status'] = \Yii::t('base', 'Processed');
+                        } else {
+                            $set['status'] = \Yii::t('base', 'Received');
+                        }
+                        
                         $renderArray['purchases'][] = $set;
                     }
                     

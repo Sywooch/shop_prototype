@@ -47,10 +47,6 @@ class PurchaseForm extends AbstractBaseForm
      * @var float стоимость товара
      */
     public $price;
-    /**
-     * @var bool отмена заказа
-     */
-    public $cancel;
     
     public function scenarios()
     {
@@ -58,7 +54,7 @@ class PurchaseForm extends AbstractBaseForm
             self::SAVE=>['quantity', 'id_color', 'id_size', 'id_product', 'price'],
             self::UPDATE=>['quantity', 'id_color', 'id_size', 'id_product'],
             self::DELETE=>['id_product'],
-            self::CANCEL=>['cancel']
+            self::CANCEL=>['id_product']
         ];
     }
     
@@ -68,7 +64,7 @@ class PurchaseForm extends AbstractBaseForm
             [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::SAVE],
             [['quantity', 'id_color', 'id_size', 'id_product'], 'required', 'on'=>self::UPDATE],
             [['id_product'], 'required', 'on'=>self::DELETE],
-            [['cancel'], 'default', 'value'=>0, 'on'=>self::CANCEL]
+            [['id_product'], 'required', 'on'=>self::CANCEL]
         ];
     }
 }

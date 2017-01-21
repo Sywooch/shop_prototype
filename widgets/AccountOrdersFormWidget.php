@@ -7,6 +7,7 @@ use yii\helpers\{Html,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyModel;
+use app\forms\PurchaseForm;
 
 /**
  * Формирует HTML строку с основными данными аккаунта
@@ -37,8 +38,14 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
     public function run()
     {
         try {
+            if (empty($this->purchases)) {
+                throw new ErrorException($this->emptyError('purchases'));
+            }
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
+            }
+            if (empty($this->form)) {
+                throw new ErrorException($this->emptyError('form'));
             }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
@@ -47,10 +54,14 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
             $renderArray = [];
             
             if (!empty($this->purchases)) {
-                $renderArray['userOrders'] = \Yii::t('base', 'Current orders');
+                $renderArray['userOrders'] = \Yii::t('base', 'Orders');
                 
-                foreach ($purchases as $purchase) {
+                $renderArray['listClass'] = 'account-orders';
+                $renderArray['statusClass'] = 'account-order-status';
+                
+                foreach ($this->purchases as $purchase) {
                     $set = [];
+                    $set['orderId'] = sprintf('account-order-%d', $purchase->id_product);
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
                     $set['linkText'] = Html::encode($purchase->product->name);
                     $set['short_description'] = Html::encode($purchase->product->short_description);
@@ -64,9 +75,32 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                             $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $purchase->product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]), ['height'=>200]);
                         }
                     }
+                    
                     if ((bool) $purchase->shipped === true) {
                         $set['status'] = \Yii::t('base', 'Shipped');
+                    } elseif ((bool) $purchase->canceled === true) {
+                        $set['status'] = \Yii::t('base', 'Canceled');
+                    } elseif ((bool) $purchase->processed === true) {
+                        $set['status'] = \Yii::t('base', 'Processed');
+                    } elseif ((bool) $purchase->received === true) {
+                        $set['status'] = \Yii::t('base', 'Received');
                     }
+                    
+                    if ((bool) $purchase->processed === true || (bool) $purchase->received === true) {
+                        $form = clone $this->form;
+                        $set['modelForm'] = \Yii::configure($form, ['id_product'=>$purchase->id_product]);
+                        $set['formId'] = sprintf('%s-%d', 'order-cancellation-form', $purchase->id_product);
+                        
+                        $set['ajaxValidation'] = false;
+                        $set['validateOnSubmit'] = false;
+                        $set['validateOnChange'] = false;
+                        $set['validateOnBlur'] = false;
+                        $set['validateOnType'] = false;
+                        
+                        $set['formAction'] = Url::to(['/account/order-cancel']);
+                        $set['button'] = \Yii::t('base', 'Cancel');
+                    }
+                    
                     $renderArray['purchases'][] = $set;
                 }
                 
