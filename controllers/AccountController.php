@@ -9,9 +9,11 @@ use app\services\{AccountChangeDataPostService,
     AccountChangeDataService,
     AccountChangePasswordPostService,
     AccountChangePasswordService,
+    AccountChangeSubscriptionsService,
     AccountIndexService,
     AccountOrdersCancelService,
-    AccountOrdersService};
+    AccountOrdersService,
+    AccountSubscriptionsCancelService};
 
 /**
  * Обрабатывает запросы к настройкам аккаунта
@@ -52,6 +54,15 @@ class AccountController extends Controller
             'change-password-post'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AccountChangePasswordPostService(),
+            ],
+            'subscriptions'=>[
+                'class'=>GetAction::class,
+                'service'=>new AccountChangeSubscriptionsService(),
+                'view'=>'change-subscriptions.twig',
+            ],
+            'subscriptions-cancel'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new AccountSubscriptionsCancelService(),
             ],
         ];
     }

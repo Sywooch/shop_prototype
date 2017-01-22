@@ -32,7 +32,7 @@ class AccountMailingsWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['userMailings'] = \Yii::t('base', 'Current subscriptions');
+            $renderArray['header'] = \Yii::t('base', 'Current subscriptions');
             
             if (!empty($this->mailings)) {
                 foreach ($this->mailings as $mailing) {

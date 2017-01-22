@@ -37,7 +37,8 @@ $routes = [
     'account-change-data-post'=>'account/change-data-post',
     'account-password'=>'account/password',
     'account-change-password-post'=>'account/change-password-post',
-    //'account-subscriptions'=>'account/subscriptions',
+    'account-subscriptions'=>'account/subscriptions',
+    'account-subscriptions-cancel'=>'account/subscriptions-cancel',
     
     # Валюта
     'set-currency'=>'currency/set',

@@ -19,6 +19,14 @@ class MailingForm extends AbstractBaseForm
      * Сценарий удаление связи пользователя с рассылками
      */
     const UNSUBSCRIBE = 'unsubscribe';
+    /**
+     * Сценарий удаление связи пользователя с рассылкой из настроек аккаунта
+     */
+    const UNSUBSCRIBE_ACC = 'unsubscribe_acc';
+    /**
+     * Сценарий добавления подписки пользователю из настроек аккаунта
+     */
+    const SAVE_ACC = 'save_acc';
     
     /**
      * @var string email
@@ -27,7 +35,7 @@ class MailingForm extends AbstractBaseForm
     /**
      * @var int ID выбранных подписок
      */
-    public $id = [];
+    public $id;
     /**
      * @var string ключ идентификации
      */
@@ -38,6 +46,8 @@ class MailingForm extends AbstractBaseForm
         return [
             self::SAVE=>['id', 'email'],
             self::UNSUBSCRIBE=>['id', 'email', 'key'],
+            self::UNSUBSCRIBE_ACC=>['id'],
+            self::SAVE_ACC=>['id'],
         ];
     }
     
@@ -51,6 +61,8 @@ class MailingForm extends AbstractBaseForm
             }],
             [['id', 'email', 'key'], 'required', 'on'=>self::UNSUBSCRIBE],
             [['email'], 'email', 'on'=>self::UNSUBSCRIBE],
+            [['id'], 'required', 'on'=>self::UNSUBSCRIBE_ACC],
+            [['id'], 'required', 'on'=>self::SAVE_ACC],
         ];
     }
 }
