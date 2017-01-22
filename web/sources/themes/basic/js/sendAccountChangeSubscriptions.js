@@ -14,7 +14,7 @@ $(function() {
         };
     };
     
-    $('div.account-unsubscribe').find('input[type="submit"]').on('click', function(event) {
+    $('div.account-unsubscribe, div.account-subscribe').find('input[type="submit"]').on('click', function(event) {
         (new SendAccountChangeSubscriptions()).send(event);
         event.preventDefault();
     });

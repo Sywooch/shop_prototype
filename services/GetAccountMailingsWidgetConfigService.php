@@ -7,14 +7,14 @@ use app\services\AbstractBaseService;
 use app\finders\MailingsEmailFinder;
 
 /**
- * Возвращает массив конфигурации для виджета AccountMailingsWidget
+ * Возвращает массив конфигурации для виджета MailingsWidget
  */
 class GetAccountMailingsWidgetConfigService extends AbstractBaseService
 {
     /**
-     * @var array конфигурации для виджета AccountMailingsWidget
+     * @var array конфигурации для виджета MailingsWidget
      */
-    private $accountMailingsWidgetArray = [];
+    private $mailingsWidgetArray = [];
     
     /**
      * Возвращает массив конфигурации
@@ -28,7 +28,7 @@ class GetAccountMailingsWidgetConfigService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('user'));
             }
             
-            if (empty($this->accountMailingsWidgetArray)) {
+            if (empty($this->mailingsWidgetArray)) {
                 $dataArray = [];
                 
                 $user = \Yii::$app->user->identity;
@@ -36,12 +36,14 @@ class GetAccountMailingsWidgetConfigService extends AbstractBaseService
                 $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, ['email'=>$user->email->email]);
                 $dataArray['mailings'] = $finder->find();
                 
-                $dataArray['view'] = 'account-mailings.twig';
+                $dataArray['header'] = \Yii::t('base', 'Current subscriptions');
                 
-                $this->accountMailingsWidgetArray = $dataArray;
+                $dataArray['view'] = 'mailings.twig';
+                
+                $this->mailingsWidgetArray = $dataArray;
             }
             
-            return $this->accountMailingsWidgetArray;
+            return $this->mailingsWidgetArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

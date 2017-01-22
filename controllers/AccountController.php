@@ -13,6 +13,7 @@ use app\services\{AccountChangeDataPostService,
     AccountIndexService,
     AccountOrdersCancelService,
     AccountOrdersService,
+    AccountSubscriptionsAddService,
     AccountSubscriptionsCancelService};
 
 /**
@@ -63,6 +64,10 @@ class AccountController extends Controller
             'subscriptions-cancel'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AccountSubscriptionsCancelService(),
+            ],
+            'subscriptions-add'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new AccountSubscriptionsAddService(),
             ],
         ];
     }

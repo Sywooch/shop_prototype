@@ -3,7 +3,7 @@
 {{ use ('app/widgets/AccountBreadcrumbsWidget') }}
 {{ use ('app/widgets/AccountContactsWidget') }}
 {{ use ('app/widgets/AccountOrdersWidget') }}
-{{ use ('app/widgets/AccountMailingsWidget') }}
+{{ use('app/widgets/MailingsWidget') }}
 
 {{ include('@theme/common/account-common.twig') }}
 
@@ -13,4 +13,4 @@
 
 {{ account_orders_widget_widget(accountOrdersWidgetConfig) }}
 
-{{ account_mailings_widget_widget(accountMailingsWidgetConfig) }}
+{{ mailings_widget_widget(accountMailingsWidgetConfig) }}

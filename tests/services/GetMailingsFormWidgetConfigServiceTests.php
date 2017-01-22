@@ -3,14 +3,15 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetMailingsWidgetConfigService;
+use app\services\GetMailingsFormWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\MailingsFixture;
+use app\forms\MailingForm;
 
 /**
- * Тестирует класс GetMailingsWidgetConfigService
+ * Тестирует класс GetMailingsFormWidgetConfigService
  */
-class GetMailingsWidgetConfigServiceTests extends TestCase
+class GetMailingsFormWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -30,32 +31,32 @@ class GetMailingsWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetMailingsWidgetConfigService
+     * Тестирует свойства GetMailingsFormWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetMailingsWidgetConfigService::class);
+        $reflection = new \ReflectionClass(GetMailingsFormWidgetConfigService::class);
         
-        $this->assertTrue($reflection->hasProperty('mailingsWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('mailingsFormWidgetArray'));
     }
     
     /**
-     * Тестирует метод GetMailingsWidgetConfigService::handle
+     * Тестирует метод GetMailingsFormWidgetConfigService::handle
      */
     public function testHandle()
     {
-        $service = new GetMailingsWidgetConfigService();
+        $service = new GetMailingsFormWidgetConfigService();
         $result = $service->handle();
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         
         $this->assertArrayHasKey('mailings', $result);
-        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('view', $result);
         
         $this->assertInternalType('array', $result['mailings']);
-        $this->assertInternalType('string', $result['header']);
+        $this->assertInstanceOf(MailingForm::class, $result['form']);
         $this->assertInternalType('string', $result['view']);
     }
     

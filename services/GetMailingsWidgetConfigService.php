@@ -5,7 +5,6 @@ namespace app\services;
 use yii\base\ErrorException;
 use app\services\AbstractBaseService;
 use app\finders\MailingsFinder;
-use app\forms\MailingForm;
 
 /**
  * Возвращает массив конфигурации для виджета MailingsWidget
@@ -31,9 +30,9 @@ class GetMailingsWidgetConfigService extends AbstractBaseService
                 $finder = \Yii::$app->registry->get(MailingsFinder::class);
                 $dataArray['mailings'] = $finder->find();
                 
-                $dataArray['form'] = new MailingForm(['scenario'=>MailingForm::SAVE]);
+                $dataArray['header'] = \Yii::t('base', 'Available mailings');
                 
-                $dataArray['view'] = 'mailings-form.twig';
+                $dataArray['view'] = 'mailings.twig';
                 
                 $this->mailingsWidgetArray = $dataArray;
             }

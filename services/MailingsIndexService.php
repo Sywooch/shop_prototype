@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetCategoriesMenuWidgetConfigService,
     GetCurrencyWidgetConfigService,
-    GetMailingsWidgetConfigService,
+    GetMailingsFormWidgetConfigService,
     GetSearchWidgetConfigService,
     GetShortCartWidgetConfigService,
     GetUserInfoWidgetConfigService};
@@ -49,6 +49,9 @@ class MailingsIndexService extends AbstractBaseService
                 
                 $service = \Yii::$app->registry->get(GetMailingsWidgetConfigService::class);
                 $dataArray['mailingsWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetMailingsFormWidgetConfigService::class);
+                $dataArray['mailingsFormWidgetConfig'] = $service->handle();
                 
                 $this->dataArray = $dataArray;
             }

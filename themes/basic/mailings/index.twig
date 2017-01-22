@@ -2,11 +2,14 @@
 
 {{ use('app/widgets/MailingsBreadcrumbsWidget') }}
 {{ use('app/widgets/MailingsWidget') }}
+{{ use('app/widgets/MailingsFormWidget') }}
 
 {{ include('@theme/common/frontend-common.twig') }}
 
 {{ mailings_breadcrumbs_widget_widget() }}
 
 {{ mailings_widget_widget(mailingsWidgetConfig) }}
+
+{{ mailings_form_widget_widget(mailingsFormWidgetConfig) }}
 
 {{ include('@theme/common/frontend-bottom-common.twig') }}

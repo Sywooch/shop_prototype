@@ -34,7 +34,7 @@ class GetAccountMailingsWidgetConfigServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(GetAccountMailingsWidgetConfigService::class);
         
-        $this->assertTrue($reflection->hasProperty('accountMailingsWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('mailingsWidgetArray'));
     }
     
     /**
@@ -66,9 +66,11 @@ class GetAccountMailingsWidgetConfigServiceTests extends TestCase
         $this->assertNotEmpty($result);
         
         $this->assertArrayHasKey('mailings', $result);
+        $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('view', $result);
         
         $this->assertInternalType('array', $result['mailings']);
+        $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['view']);
     }
     

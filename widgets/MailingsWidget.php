@@ -3,13 +3,10 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Url};
 use app\widgets\AbstractBaseWidget;
-use app\forms\MailingForm;
 
 /**
- * Формирует HTML строку с информацией о текущем статусе корзины заказов
+ * Формирует HTML строку со списком доступных рассылок
  */
 class MailingsWidget extends AbstractBaseWidget
 {
@@ -18,26 +15,23 @@ class MailingsWidget extends AbstractBaseWidget
      */
     private $mailings;
     /**
-     * @var object MailingForm
+     * @var string заголовок
      */
-    private $form;
+    public $header;
     /**
      * @var string имя шаблона
      */
     public $view;
     
     /**
-     * Конструирует HTML строку с информацией о текущем статусе корзины заказов
+     * Конструирует HTML строку
      * @return string
      */
     public function run()
     {
         try {
-            if (empty($this->mailings)) {
-                throw new ErrorException($this->emptyError('mailings'));
-            }
-            if (empty($this->form)) {
-                throw new ErrorException($this->emptyError('form'));
+            if (empty($this->header)) {
+                throw new ErrorException($this->emptyError('header'));
             }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
@@ -45,29 +39,16 @@ class MailingsWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['header'] = \Yii::t('base', 'Available mailings');
-            $renderArray['headerForm'] = \Yii::t('base', 'Sign up now!');
+            $renderArray['header'] = $this->header;
             
-            foreach ($this->mailings as $mailing) {
-                $renderArray['mailingsSet'][] = ['name'=>$mailing->name, 'description'=>$mailing->description];
+            if (!empty($this->mailings)) {
+                foreach ($this->mailings as $mailing) {
+                    $set = [];
+                    $set['name'] = $mailing->name;
+                    $set['description'] = $mailing->description;
+                    $renderArray['mailings'][] = $set;
+                }
             }
-            
-            ArrayHelper::multisort($this->mailings, 'name');
-            $renderArray['mailings'] = ArrayHelper::map($this->mailings, 'id', 'name');
-            
-            $renderArray['formModel'] = $this->form;
-            $renderArray['formId'] = 'mailings-form';
-            
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
-            
-            $renderArray['multiple'] = true;
-            
-            $renderArray['formAction'] = Url::to(['/mailings/save']);
-            $renderArray['button'] = \Yii::t('base', 'Subscribe');
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
@@ -83,19 +64,6 @@ class MailingsWidget extends AbstractBaseWidget
     {
         try {
             $this->mailings = $mailings;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает MailingForm свойству MailingsWidget::form
-     * @param MailingForm $form
-     */
-    public function setForm(MailingForm $form)
-    {
-        try {
-            $this->form = $form;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
