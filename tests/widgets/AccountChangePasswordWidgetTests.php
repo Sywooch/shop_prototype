@@ -104,9 +104,9 @@ class AccountChangePasswordWidgetTests extends TestCase
         
         $this->assertRegExp('#<p><strong>Изменить пароль</strong></p>#', $result);
         $this->assertRegExp('#<form id="change-password-form" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[currentPassword\]">#', $result);
-        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[password\]">#', $result);
-        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[password2\]">#', $result);
+        $this->assertRegExp('#<input type="password" id=".+" class="form-control" name=".+\[currentPassword\]">#', $result);
+        $this->assertRegExp('#<input type="password" id=".+" class="form-control" name=".+\[password\]">#', $result);
+        $this->assertRegExp('#<input type="password" id=".+" class="form-control" name=".+\[password2\]">#', $result);
         $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
     }
 }

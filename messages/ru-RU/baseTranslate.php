@@ -153,13 +153,14 @@ $translate = [
     'Basic account data'=>'Основные данные аккаунта',
     'Current subscriptions'=>'Текущие подписки',
     'Manage subscriptions'=>'Управление подписками',
-    'Received'=>'Получен',
+    'Received'=>'Принят',
     'Shipped'=>'Доставлен',
     'Canceled'=>'Отменен',
     'Cancel'=>'Отменить',
     'Order date'=>'Дата заказа',
     'The data updated successfully!'=>'Данные успешно обновлены!',
-    'The password updated successfully!'=>'Пароль успешно обновлен!'
+    'The password updated successfully!'=>'Пароль успешно обновлен!',
+    'Client'=>'Покупатель',
 ];
 
 return $translate;

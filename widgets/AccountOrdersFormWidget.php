@@ -80,6 +80,15 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                         }
                     }
                     
+                    $set['client'] = sprintf('%s %s', $purchase->name->name, $purchase->surname->surname);
+                    $set['phone'] = $purchase->phone->phone;
+                    $set['address'] = $purchase->address->address;
+                    $set['city'] = $purchase->city->city;
+                    $set['country'] = $purchase->country->country;
+                    $set['postcode'] = $purchase->postcode->postcode;
+                    $set['payment'] = $purchase->payment->description;
+                    $set['delivery'] = $purchase->delivery->description;
+                    
                     if ((bool) $purchase->shipped === true) {
                         $set['status'] = \Yii::t('base', 'Shipped');
                     } elseif ((bool) $purchase->canceled === true) {
@@ -114,6 +123,15 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                 $renderArray['colorHeader'] = \Yii::t('base', 'Color');
                 $renderArray['sizeHeader'] = \Yii::t('base', 'Size');
                 $renderArray['statusHeader'] = \Yii::t('base', 'Status');
+                
+                $renderArray['clientHeader'] = \Yii::t('base', 'Client');
+                $renderArray['phoneHeader'] = \Yii::t('base', 'Phone');
+                $renderArray['addressHeader'] = \Yii::t('base', 'Address');
+                $renderArray['cityHeader'] = \Yii::t('base', 'City');
+                $renderArray['countryHeader'] = \Yii::t('base', 'Country');
+                $renderArray['postcodeHeader'] = \Yii::t('base', 'Postcode');
+                $renderArray['paymentHeader'] = \Yii::t('base', 'Payment');
+                $renderArray['deliveryHeader'] = \Yii::t('base', 'Delivery');
             }
             
             return $this->render($this->view, $renderArray);

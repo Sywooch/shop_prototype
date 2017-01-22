@@ -93,18 +93,34 @@ class UserChangePasswordFormTests extends TestCase
         $this->assertCount(1, $form->errors);
         $this->assertArrayHasKey('currentPassword', $form->errors);
         
+        $rawPassword = $user->password;
+        
+        \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password WHERE [[id]]=:id')->bindValues([':password'=>password_hash($rawPassword, PASSWORD_DEFAULT), ':id'=>$user->id])->execute();
+        
+        $user = UsersModel::findOne(1);
+        \Yii::$app->user->login($user);
+        
         $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
         $form->attributes = [
-            'currentPassword'=>'Ui7Htyy',
+            'currentPassword'=>$rawPassword,
             'password'=>'9Iui7Yhh',
             'password2'=>'8Iui7Yhh',
         ];
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
-        $this->assertCount(2, $form->errors);
-        $this->assertArrayHasKey('currentPassword', $form->errors);
+        $this->assertCount(1, $form->errors);
         $this->assertArrayHasKey('password2', $form->errors);
+        
+        $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
+        $form->attributes = [
+            'currentPassword'=>$rawPassword,
+            'password'=>'9Iui7Yhh',
+            'password2'=>'9Iui7Yhh',
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
     }
     
     public static function tearDownAfterClass()

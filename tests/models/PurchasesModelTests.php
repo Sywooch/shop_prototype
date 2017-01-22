@@ -5,11 +5,29 @@ namespace app\tests\model;
 use PHPUnit\Framework\TestCase;
 use app\models\PurchasesModel;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{ColorsFixture,
+use app\tests\sources\fixtures\{AddressFixture,
+    CitiesFixture,
+    ColorsFixture,
+    CountriesFixture,
+    DeliveriesFixture,
+    NamesFixture,
+    PaymentsFixture,
+    PhonesFixture,
+    PostcodesFixture,
     ProductsFixture,
+    SurnamesFixture,
     SizesFixture};
-use app\models\{ColorsModel,
+use app\models\{AddressModel,
+    CitiesModel,
+    ColorsModel,
+    CountriesModel,
+    DeliveriesModel,
+    NamesModel,
+    PaymentsModel,
+    PhonesModel,
+    PostcodesModel,
     ProductsModel,
+    SurnamesModel,
     SizesModel};
 
 /**
@@ -23,9 +41,18 @@ class PurchasesModelTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
+                'address'=>AddressFixture::class,
                 'products'=>ProductsFixture::class,
                 'colors'=>ColorsFixture::class,
                 'sizes'=>SizesFixture::class,
+                'names'=>NamesFixture::class,
+                'surnames'=>SurnamesFixture::class,
+                'cities'=>CitiesFixture::class,
+                'countries'=>CountriesFixture::class,
+                'postcodes'=>PostcodesFixture::class,
+                'phones'=>PhonesFixture::class,
+                'payments'=>PaymentsFixture::class,
+                'deliveries'=>DeliveriesFixture::class,
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -218,82 +245,6 @@ class PurchasesModelTests extends TestCase
         
         $this->assertArrayHasKey('canceled', $result);
         $this->assertTrue($result['canceled']);
-        
-        /*$model = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
-        $model->attributes = [
-            'id'=>1,
-            'id_user'=>2,
-            'id_name'=>3,
-            'id_surname'=>1,
-            'id_email'=>12,
-            'id_phone'=>4,
-            'id_address'=>2,
-            'id_city'=>6,
-            'id_country'=>7,
-            'id_postcode'=>2,
-            'id_product'=>34, 
-            'quantity'=>2, 
-            'id_color'=>4, 
-            'id_size'=>2,
-            'price'=>245.98, 
-            'id_delivery'=>2, 
-            'id_payment'=>1, 
-            'received'=>1, 
-            'received_date'=>1458471063,
-            'processed'=>1, 
-            'canceled'=>0, 
-            'shipped'=>0,
-        ];
-        
-        $result = $model->toArray();
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        
-        $this->assertArrayHasKey('id', $result);
-        $this->assertSame(1, $result['id']);
-        $this->assertArrayHasKey('id_user', $result);
-        $this->assertSame(2, $result['id_user']);
-        $this->assertArrayHasKey('id_name', $result);
-        $this->assertSame(3, $result['id_name']);
-        $this->assertArrayHasKey('id_surname', $result);
-        $this->assertSame(1, $result['id_surname']);
-        $this->assertArrayHasKey('id_email', $result);
-        $this->assertSame(12, $result['id_email']);
-        $this->assertArrayHasKey('id_phone', $result);
-        $this->assertSame(4, $result['id_phone']);
-        $this->assertArrayHasKey('id_address', $result);
-        $this->assertSame(2, $result['id_address']);
-        $this->assertArrayHasKey('id_city', $result);
-        $this->assertSame(6, $result['id_city']);
-        $this->assertArrayHasKey('id_country', $result);
-        $this->assertSame(7, $result['id_country']);
-        $this->assertArrayHasKey('id_postcode', $result);
-        $this->assertSame(2, $result['id_postcode']);
-        $this->assertArrayHasKey('id_product', $result);
-        $this->assertSame(34, $result['id_product']);
-        $this->assertArrayHasKey('quantity', $result);
-        $this->assertSame(2, $result['quantity']);
-        $this->assertArrayHasKey('id_color', $result);
-        $this->assertSame(4, $result['id_color']);
-        $this->assertArrayHasKey('id_size', $result);
-        $this->assertSame(2, $result['id_size']);
-        $this->assertArrayHasKey('price', $result);
-        $this->assertSame(245.98, $result['price']);
-        $this->assertArrayHasKey('id_delivery', $result);
-        $this->assertSame(2, $result['id_delivery']);
-        $this->assertArrayHasKey('id_payment', $result);
-        $this->assertSame(1, $result['id_payment']);
-        $this->assertArrayHasKey('received', $result);
-        $this->assertSame(1, $result['received']);
-        $this->assertArrayHasKey('received_date', $result);
-        $this->assertSame(1458471063, $result['received_date']);
-        $this->assertArrayHasKey('processed', $result);
-        $this->assertSame(1, $result['processed']);
-        $this->assertArrayHasKey('canceled', $result);
-        $this->assertSame(0, $result['canceled']);
-        $this->assertArrayHasKey('shipped', $result);
-        $this->assertSame(0, $result['shipped']);*/
     }
     
     /**
@@ -450,6 +401,123 @@ class PurchasesModelTests extends TestCase
         $result = $model->size;
         
         $this->assertInstanceOf(SizesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getName
+     */
+    public function testGetName()
+    {
+        $model = new PurchasesModel();
+        $model->id_name = 1;
+        
+        $result = $model->name;
+        
+        $this->assertInstanceOf(NamesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getSurname
+     */
+    public function testGetSurname()
+    {
+        $model = new PurchasesModel();
+        $model->id_surname = 1;
+        
+        $result = $model->surname;
+        
+        $this->assertInstanceOf(SurnamesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getAddress
+     */
+    public function testGetAddress()
+    {
+        $model = new PurchasesModel();
+        $model->id_address = 1;
+        
+        $result = $model->address;
+        
+        $this->assertInstanceOf(AddressModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getCity
+     */
+    public function testGetCity()
+    {
+        $model = new PurchasesModel();
+        $model->id_city = 1;
+        
+        $result = $model->city;
+        
+        $this->assertInstanceOf(CitiesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getCountries
+     */
+    public function testGetCountry()
+    {
+        $model = new PurchasesModel();
+        $model->id_country = 1;
+        
+        $result = $model->country;
+        
+        $this->assertInstanceOf(CountriesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getPostcode
+     */
+    public function testGetPostcode()
+    {
+        $model = new PurchasesModel();
+        $model->id_postcode = 1;
+        
+        $result = $model->postcode;
+        
+        $this->assertInstanceOf(PostcodesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getPhone
+     */
+    public function testGetPhone()
+    {
+        $model = new PurchasesModel();
+        $model->id_phone = 1;
+        
+        $result = $model->phone;
+        
+        $this->assertInstanceOf(PhonesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getPayments
+     */
+    public function testGetPayment()
+    {
+        $model = new PurchasesModel();
+        $model->id_payment = 1;
+        
+        $result = $model->payment;
+        
+        $this->assertInstanceOf(PaymentsModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getDeliveries
+     */
+    public function testGetDelivery()
+    {
+        $model = new PurchasesModel();
+        $model->id_delivery = 1;
+        
+        $result = $model->delivery;
+        
+        $this->assertInstanceOf(DeliveriesModel::class, $result);
     }
     
     public static function tearDownAfterClass()

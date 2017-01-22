@@ -252,6 +252,33 @@ class AccountOrdersFormWidgetTests extends TestCase
                     $this->size = new class() {
                         public $size = 45;
                     };
+                    $this->name = new class() {
+                        public $name = 'Name 1';
+                    };
+                    $this->surname = new class() {
+                        public $surname = 'Surname 1';
+                    };
+                    $this->phone = new class() {
+                        public $phone = 'Phone 1';
+                    };
+                    $this->address = new class() {
+                        public $address = 'Address 1';
+                    };
+                    $this->city = new class() {
+                        public $city = 'City 1';
+                    };
+                    $this->country = new class() {
+                        public $country = 'Country 1';
+                    };
+                    $this->postcode = new class() {
+                        public $postcode = 'Postcode 1';
+                    };
+                    $this->payment = new class() {
+                        public $description = 'Payment 1';
+                    };
+                    $this->delivery = new class() {
+                        public $description = 'Delivery 1';
+                    };
                 }
             },
             new class() {
@@ -279,6 +306,33 @@ class AccountOrdersFormWidgetTests extends TestCase
                     };
                     $this->size = new class() {
                         public $size = 15.5;
+                    };
+                    $this->name = new class() {
+                        public $name = 'Name 2';
+                    };
+                    $this->surname = new class() {
+                        public $surname = 'Surname 2';
+                    };
+                    $this->phone = new class() {
+                        public $phone = 'Phone 2';
+                    };
+                    $this->address = new class() {
+                        public $address = 'Address 2';
+                    };
+                    $this->city = new class() {
+                        public $city = 'City 2';
+                    };
+                    $this->country = new class() {
+                        public $country = 'Country 2';
+                    };
+                    $this->postcode = new class() {
+                        public $postcode = 'Postcode 2';
+                    };
+                    $this->payment = new class() {
+                        public $description = 'Payment 2';
+                    };
+                    $this->delivery = new class() {
+                        public $description = 'Delivery 2';
                     };
                 }
             },
@@ -308,6 +362,33 @@ class AccountOrdersFormWidgetTests extends TestCase
                     $this->size = new class() {
                         public $size = 25.5;
                     };
+                    $this->name = new class() {
+                        public $name = 'Name 3';
+                    };
+                    $this->surname = new class() {
+                        public $surname = 'Surname 3';
+                    };
+                    $this->phone = new class() {
+                        public $phone = 'Phone 3';
+                    };
+                    $this->address = new class() {
+                        public $address = 'Address 3';
+                    };
+                    $this->city = new class() {
+                        public $city = 'City 3';
+                    };
+                    $this->country = new class() {
+                        public $country = 'Country 3';
+                    };
+                    $this->postcode = new class() {
+                        public $postcode = 'Postcode 3';
+                    };
+                    $this->payment = new class() {
+                        public $description = 'Payment 3';
+                    };
+                    $this->delivery = new class() {
+                        public $description = 'Delivery 3';
+                    };
                 }
             },
             new class() {
@@ -335,6 +416,33 @@ class AccountOrdersFormWidgetTests extends TestCase
                     };
                     $this->size = new class() {
                         public $size = 45.5;
+                    };
+                    $this->name = new class() {
+                        public $name = 'Name 4';
+                    };
+                    $this->surname = new class() {
+                        public $surname = 'Surname 4';
+                    };
+                    $this->phone = new class() {
+                        public $phone = 'Phone 4';
+                    };
+                    $this->address = new class() {
+                        public $address = 'Address 4';
+                    };
+                    $this->city = new class() {
+                        public $city = 'City 4';
+                    };
+                    $this->country = new class() {
+                        public $country = 'Country 4';
+                    };
+                    $this->postcode = new class() {
+                        public $postcode = 'Postcode 4';
+                    };
+                    $this->payment = new class() {
+                        public $description = 'Payment 4';
+                    };
+                    $this->delivery = new class() {
+                        public $description = 'Delivery 4';
                     };
                 }
             },
@@ -380,7 +488,15 @@ class AccountOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#Размер:\s.+#', $result);
         $this->assertRegExp('#Количество:\s\d+#', $result);
         $this->assertRegExp('#Цена:\s.+\sMONEY#', $result);
-        $this->assertRegExp('#Статус:\s<span class="account-order-status">Получен</span>#', $result);
+        $this->assertRegExp('#Покупатель: Name \d{1} Surname \d{1}#', $result);
+        $this->assertRegExp('#Телефон: Phone \d{1}#', $result);
+        $this->assertRegExp('#Адрес: Address \d{1}#', $result);
+        $this->assertRegExp('#Город: City \d{1}#', $result);
+        $this->assertRegExp('#Страна: Country \d{1}#', $result);
+        $this->assertRegExp('#Почтовый код: Postcode \d{1}#', $result);
+        $this->assertRegExp('#Оплата: Payment \d{1}#', $result);
+        $this->assertRegExp('#Доставка: Delivery \d{1}#', $result);
+        $this->assertRegExp('#Статус:\s<span class="account-order-status">Принят</span>#', $result);
         $this->assertRegExp('#Статус:\s<span class="account-order-status">Выполняется</span>#', $result);
         $this->assertRegExp('#Статус:\s<span class="account-order-status">Доставлен</span>#', $result);
         $this->assertRegExp('#Статус:\s<span class="account-order-status">Отменен</span>#', $result);

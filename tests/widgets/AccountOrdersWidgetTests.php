@@ -249,7 +249,7 @@ class AccountOrdersWidgetTests extends TestCase
         $this->assertRegExp('#<br>Размер: 45#', $result);
         $this->assertRegExp('#<br>Количество: 1#', $result);
         $this->assertRegExp('#<br>Цена: 26,94 MONEY#', $result);
-        $this->assertRegExp('#<br>Статус: Получен#', $result);
+        $this->assertRegExp('#<br>Статус: Принят#', $result);
         $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_2">Name 2</a>#', $result);
         $this->assertRegExp('#<br>Description 2#', $result);
         $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);

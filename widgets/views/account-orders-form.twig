@@ -14,6 +14,16 @@
                 <br>{{ sizeHeader }}: {{ purchase.size }}
                 <br>{{ quantityHeader }}: {{ purchase.quantity }}
                 <br>{{ priceHeader }}: {{ purchase.price }}
+                
+                <br>{{ clientHeader }}: {{ purchase.client }}
+                <br>{{ phoneHeader }}: {{ purchase.phone }}
+                <br>{{ addressHeader }}: {{ purchase.address }}
+                <br>{{ cityHeader }}: {{ purchase.city }}
+                <br>{{ countryHeader }}: {{ purchase.country }}
+                <br>{{ postcodeHeader }}: {{ purchase.postcode }}
+                <br>{{ paymentHeader }}: {{ purchase.payment }}
+                <br>{{ deliveryHeader }}: {{ purchase.delivery }}
+                
                 <br>{{ statusHeader }}: <span class="{{ statusClass }}">{{ purchase.status }}</span>
                 {% if purchase.modelForm %}
                     {% set form=active_form_begin({'id':purchase.formId, 'enableAjaxValidation':purchase.ajaxValidation, 'validateOnSubmit':purchase.validateOnSubmit, 'validateOnChange':purchase.validateOnChange, 'validateOnBlur':purchase.validateOnBlur, 'validateOnType':purchase.validateOnType, 'action':purchase.formAction, 'method':'POST'}) %}
