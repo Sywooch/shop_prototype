@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use app\actions\GetAction;
 use app\services\{ProductsListIndexService,
     ProductsListSearchService};
@@ -24,6 +25,21 @@ class ProductsListController extends Controller
                 'class'=>GetAction::class,
                 'service'=>new ProductsListSearchService(),
                 'view'=>'products-search.twig'
+            ],
+        ];
+    }
+    
+    public function behaviors()
+    {
+        return [
+            'access'=>[
+                'class'=>AccessControl::class,
+                'rules'=>[
+                    [
+                        'allow'=>true,
+                        'roles'=>['?', '@']
+                    ],
+                ],
             ],
         ];
     }

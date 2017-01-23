@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
@@ -58,6 +59,31 @@ class UserController extends Controller
                 'class'=>GetAction::class,
                 'service'=>new UserGenerateService(),
                 'view'=>'generate.twig',
+            ],
+        ];
+    }
+    
+    public function behaviors()
+    {
+        return [
+            'access'=>[
+                'class'=>AccessControl::class,
+                'rules'=>[
+                    [
+                        'allow'=>false,
+                        'actions'=>['login-post', 'logout', 'registration-post', 'recovery-post'],
+                        'verbs'=>['GET'],
+                    ],
+                    [
+                        'allow'=>false,
+                        'actions'=>['login', 'login-post', 'registration', 'registration-post', 'recovery', 'recovery-post', 'generate'],
+                        'roles'=>['@']
+                    ],
+                    [
+                        'allow'=>true,
+                        'roles'=>['?', '@'],
+                    ],
+                ],
             ],
         ];
     }

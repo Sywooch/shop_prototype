@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use app\actions\AjaxAction;
 use app\services\CommentSaveService;
 
@@ -17,6 +18,25 @@ class CommentsController extends Controller
             'save'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new CommentSaveService(),
+            ],
+        ];
+    }
+    
+    public function behaviors()
+    {
+        return [
+            'access'=>[
+                'class'=>AccessControl::class,
+                'rules'=>[
+                    [
+                        'allow'=>false,
+                        'verbs'=>['GET']
+                    ],
+                    [
+                        'allow'=>true,
+                        'roles'=>['?', '@']
+                    ],
+                ],
             ],
         ];
     }

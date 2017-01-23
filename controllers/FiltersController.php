@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     RedirectAction};
 use app\services\{FiltersSetService,
@@ -23,6 +24,25 @@ class FiltersController extends Controller
             'unset'=>[
                 'class'=>RedirectAction::class,
                 'service'=>new FiltersUnsetService()
+            ],
+        ];
+    }
+    
+    public function behaviors()
+    {
+        return [
+            'access'=>[
+                'class'=>AccessControl::class,
+                'rules'=>[
+                    [
+                        'allow'=>false,
+                        'verbs'=>['GET']
+                    ],
+                    [
+                        'allow'=>true,
+                        'roles'=>['?', '@']
+                    ],
+                ],
             ],
         ];
     }

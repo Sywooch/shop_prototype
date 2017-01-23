@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction};
 use app\services\{MailingsIndexService,
@@ -35,6 +36,26 @@ class MailingsController extends Controller
             'unsubscribe-post'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new MailingsUnsubscribePostService(),
+            ],
+        ];
+    }
+    
+    public function behaviors()
+    {
+        return [
+            'access'=>[
+                'class'=>AccessControl::class,
+                'rules'=>[
+                    [
+                        'allow'=>false,
+                        'actions'=>['save', 'unsubscribe-post'],
+                        'verbs'=>['GET']
+                    ],
+                    [
+                        'allow'=>true,
+                        'roles'=>['?', '@']
+                    ],
+                ],
             ],
         ];
     }

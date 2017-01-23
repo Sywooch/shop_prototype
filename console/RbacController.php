@@ -5,7 +5,7 @@ namespace app\console;
 use yii\console\Controller;
 use yii\helpers\Console;
 use app\exceptions\ExceptionsTrait;
-use app\rbac\rules\UserDataEditingRule;
+use app\rbac\rules\AccountPermissionRule;
 
 /**
  * Инициирует создание RBAC данных авторизации
@@ -23,19 +23,6 @@ class RbacController extends Controller
             $auth = \Yii::$app->authManager;
             
             $this->stdout(\Yii::t('base/console', 'Create RBAC authorization data...' . PHP_EOL));
-            
-            # Права на просмотр и редактирование данных зарегистрированного пользователя
-            $userDataEditingRule = new UserDataEditingRule();
-            $auth->add($userDataEditingRule);
-            $userDataEditingPermission = $auth->createPermission('userDataEditing');
-            $userDataEditingPermission->description = \Yii::t('base', 'User data editing');
-            $userDataEditingPermission->ruleName = $userDataEditingRule->name;
-            $auth->add($userDataEditingPermission);
-            
-            # Зарегистрированный пользователь
-            $user = $auth->createRole('user');
-            $auth->add($user);
-            $auth->addChild($user, $userDataEditingPermission);
             
             $this->stdout(\Yii::t('base/console', 'Create an authorization RBAC successfully completed!' . PHP_EOL));
             return parent::EXIT_CODE_NORMAL;

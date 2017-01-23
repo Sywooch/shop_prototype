@@ -24,6 +24,10 @@ class GetAccountChangePasswordWidgetConfigService extends AbstractBaseService
     public function handle($request=null): array
     {
         try {
+            if (\Yii::$app->user->isGuest === true) {
+                throw new ErrorException($this->emptyError('user'));
+            }
+            
             if (empty($this->accountChangePasswordWidgetArray)) {
                 $dataArray = [];
                 

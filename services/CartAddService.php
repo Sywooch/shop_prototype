@@ -66,9 +66,6 @@ class CartAddService extends AbstractBaseService
                     $service = \Yii::$app->registry->get(GetShortCartWidgetAjaxConfigService::class);
                     $shortCartWidgetAjaxConfig = $service->handle();
                     
-                    /*$dataArray['shortCart'] = ShortCartWidget::widget($shortCartWidgetAjaxConfig);
-                    $dataArray['successInfo'] = PurchaseSaveInfoWidget::widget(['view'=>'save-purchase-info.twig']);*/
-                    
                     return ShortCartWidget::widget($shortCartWidgetAjaxConfig);
                 }
             }

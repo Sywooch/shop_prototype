@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use yii\web\Controller;
+use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction};
 use app\services\{AccountChangeDataPostService,
@@ -68,6 +69,31 @@ class AccountController extends Controller
             'subscriptions-add'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AccountSubscriptionsAddService(),
+            ],
+        ];
+    }
+    
+    public function behaviors()
+    {
+        return [
+            'access'=>[
+                'class'=>AccessControl::class,
+                'rules'=>[
+                    [
+                        'allow'=>false,
+                        'roles'=>['?']
+                    ],
+                    [
+                        'allow'=>false,
+                        'actions'=>['order-cancel', 'change-data-post', 'change-password-post', 'subscriptions-cancel', 'subscriptions-add'],
+                        'verbs'=>['GET'],
+                        'roles'=>['@'],
+                    ],
+                    [
+                        'allow'=>true,
+                        'roles'=>['@']
+                    ],
+                ],
             ],
         ];
     }

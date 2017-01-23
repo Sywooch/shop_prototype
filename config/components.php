@@ -98,6 +98,7 @@ $components = [
     'user'=>[
         'class'=>'yii\web\User',
         'identityClass'=>'app\models\UsersModel',
+        'loginUrl'=>['/user/login']
     ],
     
     'authManager'=>[
