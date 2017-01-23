@@ -1,0 +1,10 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use ('app/widgets/AdminBreadcrumbsWidget') }}
+{{ use ('app/widgets/OrdersWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_breadcrumbs_widget_widget() }}
+
+{{ orders_widget_widget(adminOrdersWidgetConfig) }}

@@ -31,7 +31,7 @@ class ProductsFinder extends AbstractBaseFinder
      */
     private $filters;
     /**
-     * @var array загруженных ProductsModel
+     * @var ProductsCollection
      */
     private $storage = null;
     

@@ -3,7 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetAccountOrdersWidgetConfigService;
+use app\services\GetAdminOrdersWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture,
@@ -12,9 +12,9 @@ use app\models\{CurrencyModel,
     UsersModel};
 
 /**
- * Тестирует класс GetAccountOrdersWidgetConfigService
+ * Тестирует класс GetAdminOrdersWidgetConfigService
  */
-class GetAccountOrdersWidgetConfigServiceTests extends TestCase
+class GetAdminOrdersWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -31,38 +31,24 @@ class GetAccountOrdersWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetAccountOrdersWidgetConfigService
+     * Тестирует свойства GetAdminOrdersWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetAccountOrdersWidgetConfigService::class);
+        $reflection = new \ReflectionClass(GetAdminOrdersWidgetConfigService::class);
         
-        $this->assertTrue($reflection->hasProperty('accountOrdersWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('adminOrdersWidgetArray'));
     }
     
     /**
-     * Тестирует метод  GetAccountOrdersWidgetConfigService::handle
-     * если пользователь не аутентифицирован
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: user
-     */
-    public function testHandleIsGuest()
-    {
-        \Yii::$app->user->logout();
-        
-        $service = new GetAccountOrdersWidgetConfigService();
-        $service->handle();
-    }
-    
-    /**
-     * Тестирует метод  GetAccountOrdersWidgetConfigService::handle
+     * Тестирует метод  GetAdminOrdersWidgetConfigService::handle
      */
     public function testHandle()
     {
         $user = UsersModel::findOne(1);
         \Yii::$app->user->login($user);
         
-        $service = new GetAccountOrdersWidgetConfigService();
+        $service = new GetAdminOrdersWidgetConfigService();
         $result = $service->handle();
         
         $this->assertInternalType('array', $result);

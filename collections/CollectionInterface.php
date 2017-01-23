@@ -15,4 +15,5 @@ interface CollectionInterface
     public function multisort(string $key, $type);
     public function map(string $key, string $value);
     public function asArray();
+    public function count();
 }

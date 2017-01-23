@@ -161,6 +161,13 @@ $translate = [
     'The data updated successfully!'=>'Данные успешно обновлены!',
     'The password updated successfully!'=>'Пароль успешно обновлен!',
     'Client'=>'Покупатель',
+    'Basic data'=>'Основные данные',
+    'Products'=>'Товары',
+    'Users'=>'Пользователи',
+    'Exit'=>'Выход',
+    'Orders received today'=>'Заказы, полученные сегодня',
+    'Average bill'=>'Средний чек',
+    'Average bill today'=>'Средний чек сегодня'
 ];
 
 return $translate;

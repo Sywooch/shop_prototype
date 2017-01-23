@@ -204,4 +204,28 @@ class AbstractBaseCollectionTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
     }
+    
+    /**
+     * Тестирует метод AbstractBaseCollection::count
+     */
+    public function testCount()
+    {
+        $model_1 = new class() {
+            public $one = 'one';
+            public $two = 'two';
+        };
+        
+        $model_2 = new class() {
+            public $one = 'three';
+            public $two = 'four';
+        };
+        
+        $reflection = new \ReflectionProperty($this->collection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->collection, [$model_1, $model_2]);
+        
+        $result = $this->collection->count();
+        
+        $this->assertEquals(2, $result);
+    }
 }

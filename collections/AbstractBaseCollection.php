@@ -105,4 +105,17 @@ abstract class AbstractBaseCollection extends AbstractIterator implements Collec
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает количество элементов коллекции
+     * @return int
+     */
+    public function count(): int
+    {
+        try {
+            return count($this->items);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

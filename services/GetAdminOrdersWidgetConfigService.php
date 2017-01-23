@@ -5,17 +5,17 @@ namespace app\services;
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetCurrentCurrencyModelService};
-use app\finders\PurchasesIdUserFinder;
+use app\finders\PurchasesTodayFinder;
 
 /**
  * Возвращает массив конфигурации для виджета OrdersWidget
  */
-class GetAccountOrdersWidgetConfigService extends AbstractBaseService
+class GetAdminOrdersWidgetConfigService extends AbstractBaseService
 {
     /**
      * @var array конфигурации для виджета OrdersWidget
      */
-    private $accountOrdersWidgetArray = [];
+    private $adminOrdersWidgetArray = [];
     
     /**
      * Возвращает массив конфигурации
@@ -25,29 +25,23 @@ class GetAccountOrdersWidgetConfigService extends AbstractBaseService
     public function handle($request=null): array
     {
         try {
-            if (\Yii::$app->user->isGuest === true) {
-                throw new ErrorException($this->emptyError('user'));
-            }
-            
-            if (empty($this->accountOrdersWidgetArray)) {
+            if (empty($this->adminOrdersWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['header'] = \Yii::t('base', 'Current orders');
+                $dataArray['header'] = \Yii::t('base', 'Orders received today');
                 
-                $user = \Yii::$app->user->identity;
-                
-                $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, ['id_user'=>$user->id]);
-                $dataArray['purchases'] = $finder->find();
+                $finder = \Yii::$app->registry->get(PurchasesTodayFinder::class);
+                $dataArray['purchases'] = $finder->find()->asArray();
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['view'] = 'account-admin-purchases.twig';
                 
-                $this->accountOrdersWidgetArray = $dataArray;
+                $this->adminOrdersWidgetArray = $dataArray;
             }
             
-            return $this->accountOrdersWidgetArray;
+            return $this->adminOrdersWidgetArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -12,7 +12,7 @@ use app\models\CurrencyModel;
 /**
  * Формирует HTML строку с основными данными аккаунта
  */
-class AccountOrdersWidget extends AbstractBaseWidget
+class OrdersWidget extends AbstractBaseWidget
 {
     /**
      * @var array PurchasesModel
@@ -22,6 +22,10 @@ class AccountOrdersWidget extends AbstractBaseWidget
      * @var CurrencyModel
      */
     private $currency;
+    /**
+     * @var string заголовок
+     */
+    public $header;
     /**
      * @var string имя шаблона
      */
@@ -37,6 +41,9 @@ class AccountOrdersWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
+            if (empty($this->header)) {
+                throw new ErrorException($this->emptyError('header'));
+            }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
             }
@@ -49,7 +56,7 @@ class AccountOrdersWidget extends AbstractBaseWidget
                 });
                 
                 if (!empty($purchases)) {
-                    $renderArray['userOrders'] = \Yii::t('base', 'Current orders');
+                    $renderArray['header'] = $this->header;
                     
                     ArrayHelper::multisort($purchases, 'received_date', SORT_DESC, SORT_REGULAR);
                     
@@ -95,7 +102,7 @@ class AccountOrdersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array PurchasesModel свойству AccountOrdersWidget::purchases
+     * Присваивает array PurchasesModel свойству OrdersWidget::purchases
      * @param array $purchases
      */
     public function setPurchases(array $purchases)
@@ -108,7 +115,7 @@ class AccountOrdersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству AccountOrdersWidget::currency
+     * Присваивает CurrencyModel свойству OrdersWidget::currency
      * @param CurrencyModel $currency
      */
     public function setCurrency(CurrencyModel $currency)
