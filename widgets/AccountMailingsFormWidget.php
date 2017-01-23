@@ -50,7 +50,9 @@ class AccountMailingsFormWidget extends AbstractBaseWidget
                     $set['name'] = $mailing->name;
                     $set['description'] = $mailing->description;
                     
-                    $set['formModel'] = clone $this->form;
+                    $form = clone $this->form;
+                    
+                    $set['modelForm'] = \Yii::configure($form, ['id'=>$mailing->id]);
                     $set['formId'] = sprintf('account-mailings-form-%d', $mailing->id);
                     
                     $set['ajaxValidation'] = false;

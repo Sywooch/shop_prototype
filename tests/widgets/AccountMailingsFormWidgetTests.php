@@ -180,13 +180,12 @@ class AccountMailingsFormWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<div class="account-subscribe">#', $result);
         $this->assertRegExp('#<p><strong>Подпишитесь сейчас!</strong></p>#', $result);
         $this->assertRegExp('#<li class="account-mailings-form-\d">#', $result);
         $this->assertRegExp('#Mailing \d#', $result);
         $this->assertRegExp('#Mailing description \d#', $result);
         $this->assertRegExp('#<form id="account-mailings-form-\d" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="\d{1}">#', $result);
         $this->assertRegExp('#<input type="submit" value="Подписаться">#', $result);
     }
 }

@@ -7,6 +7,7 @@ $(function() {
         self.success = function(data, status, jqXHR)
         {
             self.form.find('div.help-block').html('');
+            self.form.find('input').blur();
             if (typeof data == 'string') {
                 self.form.find('input[type="text"]').val('');
                 self.form.find('input[type="checkbox"]').prop("checked", false);

@@ -1,9 +1,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 {% if mailings %}
-<div class="account-unsubscribe">
     <p><strong>{{ header }}</strong></p>
-    
     <ol>
         {% for mailing in mailings %}
             <li class="{{ mailing.formId }}">
@@ -16,6 +14,5 @@
                 {{ active_form_end() }}
             </li>
     {% endfor %}
-    </ol>
-</div>
+       </ol>
 {% endif %}

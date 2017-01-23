@@ -9,7 +9,7 @@ use app\services\{AbstractBaseService,
     GetAccountMailingsFormWidgetConfigService,
     GetAccountMailingsUnsubscribeWidgetConfigService};
 use app\forms\MailingForm;
-use app\saver\ModelSaver;
+use app\savers\ModelSaver;
 use app\widgets\{AccountMailingsFormWidget,
     AccountMailingsUnsubscribeWidget};
 use app\models\EmailsMailingsModel;
