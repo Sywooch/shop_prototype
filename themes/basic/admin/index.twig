@@ -2,6 +2,7 @@
 
 {{ use ('app/widgets/AdminBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminOrdersWidget') }}
+{{ use ('app/widgets/VisitsWidget') }}
 {{ use ('app/widgets/AverageBillWidget') }}
 {{ use ('app/widgets/PopularGoodsWidget') }}
 
@@ -10,6 +11,8 @@
 {{ admin_breadcrumbs_widget_widget() }}
 
 {{ admin_orders_widget_widget(adminOrdersWidgetConfig) }}
+
+{{ visits_widget_widget(visitsWidgetConfig) }}
 
 {{ average_bill_widget_widget(averageBillWidgetConfig) }}
 

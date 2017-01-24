@@ -26,16 +26,6 @@ class VisitorsCounterGetSaveDateServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства VisitorsCounterGetSaveDateService
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(VisitorsCounterGetSaveDateService::class);
-        
-        $this->assertTrue($reflection->hasProperty('visitorsCounterModel'));
-    }
-    
-    /**
      * Тестирует метод VisitorsCounterGetSaveDateService::handle
      * если данные еще не сохранены в СУБД
      */

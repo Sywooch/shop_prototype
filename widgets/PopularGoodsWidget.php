@@ -41,7 +41,7 @@ class PopularGoodsWidget extends AbstractBaseWidget
             $renderArray['header'] = $this->header;
             
             if (!empty($this->goods)) {
-                ArrayHelper::multisort($this->goods, 'views', SORT_DESC, SORT_STRING);
+                ArrayHelper::multisort($this->goods, 'views', SORT_DESC, SORT_NUMERIC);
                 
                 foreach ($this->goods as $product) {
                     $set = [];

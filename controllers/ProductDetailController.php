@@ -6,7 +6,8 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\GetAction;
 use app\services\ProductDetailIndexService;
-use app\filters\ProductViewsCounterFilter;
+use app\filters\{ProductViewsCounterFilter,
+    VisitorsCounterFilter};
 
 /**
  * Обрабатывает запросы на получение информации о конкретном товаре
@@ -38,7 +39,9 @@ class ProductDetailController extends Controller
             ],
             'counter'=>[
                 'class'=>ProductViewsCounterFilter::class,
-                'only'=>['index']
+            ],
+            'visitsCounter'=>[
+                'class'=>VisitorsCounterFilter::class,
             ],
         ];
     }

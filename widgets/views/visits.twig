@@ -1,0 +1,11 @@
+<p><strong>{{ header }}</strong></p>
+
+{% if visitsEmpty %}
+    <p>{{ visitsEmpty }}</p>
+{% else %}
+    <p>
+        {% for visit in visits %}
+            {{ visit }}<br>
+        {% endfor %}
+    </p>
+{% endif %}
