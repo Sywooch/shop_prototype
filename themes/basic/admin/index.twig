@@ -3,6 +3,7 @@
 {{ use ('app/widgets/AdminBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminOrdersWidget') }}
 {{ use ('app/widgets/AverageBillWidget') }}
+{{ use ('app/widgets/PopularGoodsWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
@@ -11,3 +12,5 @@
 {{ admin_orders_widget_widget(adminOrdersWidgetConfig) }}
 
 {{ average_bill_widget_widget(averageBillWidgetConfig) }}
+
+{{ popular_goods_widget_widget(popularGoodsWidgetConfig) }}

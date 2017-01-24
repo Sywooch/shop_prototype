@@ -168,7 +168,10 @@ $translate = [
     'Orders received today'=>'Заказы, полученные сегодня',
     'Average bill'=>'Средний чек',
     'Average bill today'=>'Средний чек сегодня',
-    'Today no orders'=>'Сегодня заказов нет'
+    'Today no orders'=>'Сегодня заказов нет',
+    'No popular items'=>'Нет популярных товаров',
+    'Views'=>'Просмотров',
+    'Popular goods'=>'Популярные товары'
 ];
 
 return $translate;

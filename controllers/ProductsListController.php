@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use app\actions\GetAction;
 use app\services\{ProductsListIndexService,
     ProductsListSearchService};
+use app\filters\VisitorsCounterFilter;
 
 /**
  * Обрабатывает запросы на получение списка продуктов 
@@ -40,6 +41,9 @@ class ProductsListController extends Controller
                         'roles'=>['?', '@']
                     ],
                 ],
+            ],
+            'visitsCounter'=>[
+                'class'=>VisitorsCounterFilter::class,
             ],
         ];
     }

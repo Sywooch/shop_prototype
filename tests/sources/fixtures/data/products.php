@@ -15,7 +15,8 @@ $data = [
         'id_brand'=>1,
         'active'=>true,
         'total_products'=>23,
-        'seocode'=>'bryuki-sinie-modnogo-fasona'
+        'seocode'=>'bryuki-sinie-modnogo-fasona',
+        'views'=>785
     ],
     'product_2'=>[
         'id'=>2,
@@ -31,7 +32,8 @@ $data = [
         'id_brand'=>2,
         'active'=>true,
         'total_products'=>18,
-        'seocode'=>'rubashka-zheltaya-modnogo-fasona'
+        'seocode'=>'rubashka-zheltaya-modnogo-fasona',
+        'views'=>26
     ],
     'product_3'=>[
         'id'=>3,
@@ -47,7 +49,8 @@ $data = [
         'id_brand'=>1,
         'active'=>true,
         'total_products'=>123,
-        'seocode'=>'bryuki-belie-modnogo-fasona'
+        'seocode'=>'bryuki-belie-modnogo-fasona',
+        'views'=>506
     ],
     'product_4'=>[
         'id'=>4,
@@ -63,7 +66,8 @@ $data = [
         'id_brand'=>2,
         'active'=>true,
         'total_products'=>18,
-        'seocode'=>'rubashka-chernaya-modnogo-fasona'
+        'seocode'=>'rubashka-chernaya-modnogo-fasona',
+        'views'=>309
     ],
     'product_5'=>[
         'id'=>28,
@@ -79,7 +83,8 @@ $data = [
         'id_brand'=>2,
         'active'=>true,
         'total_products'=>18,
-        'seocode'=>'rubashka-true-zheltaya-modnogo-fasona'
+        'seocode'=>'rubashka-true-zheltaya-modnogo-fasona',
+        'views'=>702
     ],
     'product_6'=>[
         'id'=>42,
@@ -95,7 +100,8 @@ $data = [
         'id_brand'=>2,
         'active'=>true,
         'total_products'=>18,
-        'seocode'=>'rubashka-new-chernaya-modnogo-fasona'
+        'seocode'=>'rubashka-new-chernaya-modnogo-fasona',
+        'views'=>107
     ],
     'product_7'=>[
         'id'=>13,
@@ -111,7 +117,8 @@ $data = [
         'id_brand'=>2,
         'active'=>true,
         'total_products'=>18,
-        'seocode'=>'rubashka-new-chernaya-modnogo-fasona-13'
+        'seocode'=>'rubashka-new-chernaya-modnogo-fasona-13',
+        'views'=>811
     ],
     'product_8'=>[
         'id'=>14,
@@ -127,7 +134,8 @@ $data = [
         'id_brand'=>2,
         'active'=>true,
         'total_products'=>18,
-        'seocode'=>'rubashka-new-chernaya-modnogo-fasona-14'
+        'seocode'=>'rubashka-new-chernaya-modnogo-fasona-14',
+        'views'=>600
     ],
     'product_9'=>[
         'id'=>15,
@@ -143,7 +151,8 @@ $data = [
         'id_brand'=>2,
         'active'=>true,
         'total_products'=>18,
-        'seocode'=>'rubashka-new-chernaya-modnogo-fasona-15'
+        'seocode'=>'rubashka-new-chernaya-modnogo-fasona-15',
+        'views'=>897
     ],
     'product_10'=>[
         'id'=>16,
@@ -159,7 +168,8 @@ $data = [
         'id_brand'=>2,
         'active'=>true,
         'total_products'=>18,
-        'seocode'=>'rubashka-new-chernaya-modnogo-fasona-16'
+        'seocode'=>'rubashka-new-chernaya-modnogo-fasona-16',
+        'views'=>268
     ],
 ];
 
