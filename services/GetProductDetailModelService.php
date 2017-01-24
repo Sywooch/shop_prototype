@@ -7,6 +7,7 @@ use yii\web\NotFoundHttpException;
 use app\services\AbstractBaseService;
 use app\finders\ProductDetailFinder;
 use app\models\ProductsModel;
+use app\counters\ProductViewsCounter;
 
 /**
  * Возвращает объект ProductsModel

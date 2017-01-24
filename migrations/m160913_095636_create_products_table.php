@@ -26,7 +26,8 @@ class m160913_095636_create_products_table extends Migration
             'id_brand'=>$this->integer(3)->unsigned()->notNull(),
             'active'=>$this->boolean()->notNull()->defaultValue(true),
             'total_products'=>$this->smallInteger(5)->unsigned()->notNull()->defaultValue(0),
-            'seocode'=>$this->string(255)->notNull()
+            'seocode'=>$this->string(255)->notNull(),
+            'views'=>$this->integer(10)->unsigned()->notNull()->defaultValue(0),
         ], 'ENGINE=InnoDB');
         
         $this->createIndex('seocode', 'products', 'seocode(255)', true);

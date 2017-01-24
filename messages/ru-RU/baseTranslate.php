@@ -167,7 +167,8 @@ $translate = [
     'Exit'=>'Выход',
     'Orders received today'=>'Заказы, полученные сегодня',
     'Average bill'=>'Средний чек',
-    'Average bill today'=>'Средний чек сегодня'
+    'Average bill today'=>'Средний чек сегодня',
+    'Today no orders'=>'Сегодня заказов нет'
 ];
 
 return $translate;

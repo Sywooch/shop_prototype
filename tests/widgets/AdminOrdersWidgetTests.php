@@ -3,16 +3,16 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\OrdersWidget;
+use app\widgets\AdminOrdersWidget;
 use app\models\{CurrencyModel,
     UsersModel};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\UsersFixture;
 
 /**
- * Тестирует класс OrdersWidget
+ * Тестирует класс AdminOrdersWidget
  */
-class OrdersWidgetTests extends TestCase
+class AdminOrdersWidgetTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,11 +27,11 @@ class OrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует свойства OrdersWidget
+     * Тестирует свойства AdminOrdersWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(OrdersWidget::class);
+        $reflection = new \ReflectionClass(AdminOrdersWidget::class);
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
@@ -40,7 +40,7 @@ class OrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод OrdersWidget::setPurchases
+     * Тестирует метод AdminOrdersWidget::setPurchases
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -48,18 +48,18 @@ class OrdersWidgetTests extends TestCase
     {
         $purchases = new class() {};
         
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setPurchases($purchases);
     }
     
     /**
-     * Тестирует метод OrdersWidget::setPurchases
+     * Тестирует метод AdminOrdersWidget::setPurchases
      */
     public function testSetPurchases()
     {
         $purchases = [new class() {}];
         
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setPurchases($purchases);
         
         $reflection = new \ReflectionProperty($widget, 'purchases');
@@ -70,7 +70,7 @@ class OrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод OrdersWidget::setCurrency
+     * Тестирует метод AdminOrdersWidget::setCurrency
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -78,18 +78,18 @@ class OrdersWidgetTests extends TestCase
     {
         $currency = new class() {};
         
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setCurrency($currency);
     }
     
     /**
-     * Тестирует метод OrdersWidget::setCurrency
+     * Тестирует метод AdminOrdersWidget::setCurrency
      */
     public function testSetCurrency()
     {
         $currency = new class() extends CurrencyModel {};
         
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setCurrency($currency);
         
         $reflection = new \ReflectionProperty($widget, 'currency');
@@ -100,20 +100,20 @@ class OrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод OrdersWidget::run
-     * если пуст OrdersWidget::currency
+     * Тестирует метод AdminOrdersWidget::run
+     * если пуст AdminOrdersWidget::currency
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         $widget->run();
     }
     
     /**
-     * Тестирует метод OrdersWidget::run
-     * если пуст OrdersWidget::header
+     * Тестирует метод AdminOrdersWidget::run
+     * если пуст AdminOrdersWidget::header
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
@@ -121,7 +121,7 @@ class OrdersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -131,8 +131,8 @@ class OrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод OrdersWidget::run
-     * если пуст OrdersWidget::view
+     * Тестирует метод AdminOrdersWidget::run
+     * если пуст AdminOrdersWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
@@ -140,7 +140,7 @@ class OrdersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -154,17 +154,17 @@ class OrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод OrdersWidget::run
-     * если нет неотправленных покупок
+     * Тестирует метод AdminOrdersWidget::run
+     * если нет оформленных покупок
      */
-    public function testRunNotProcessedPurchases()
+    public function testRunNotPurchases()
     {
         $currency = new class() extends CurrencyModel {
             public $exchange_rate = 2.09;
             public $code = 'MONEY';
         };
         
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -176,16 +176,17 @@ class OrdersWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-admin-purchases.twig');
+        $reflection->setValue($widget, 'admin-purchases.twig');
         
         $result = $widget->run();
         
-        $this->assertEmpty($result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
+        $this->assertRegExp('#<p>Сегодня заказов нет</p>#', $result);
     }
     
     /**
-     * Тестирует метод OrdersWidget::run
-     * если есть неотправленные покупки
+     * Тестирует метод AdminOrdersWidget::run
+     * если есть оформленные покупки
      */
     public function testRunExistProcessedPurchases()
     {
@@ -203,6 +204,7 @@ class OrdersWidgetTests extends TestCase
                 public $size;
                 public $quantity = 1;
                 public $price = 12.89;
+                public $received = 1;
                 public $canceled = 0;
                 public $shipped = 0;
                 public $processed = 0;
@@ -229,6 +231,7 @@ class OrdersWidgetTests extends TestCase
                 public $size;
                 public $quantity = 1;
                 public $price = 56.00;
+                public $received = 1;
                 public $canceled = 0;
                 public $shipped = 0;
                 public $processed = 1;
@@ -251,7 +254,7 @@ class OrdersWidgetTests extends TestCase
             },
         ];
         
-        $widget = new OrdersWidget();
+        $widget = new AdminOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -267,7 +270,7 @@ class OrdersWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'view');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-admin-purchases.twig');
+        $reflection->setValue($widget, 'admin-purchases.twig');
         
         $result = $widget->run();
         

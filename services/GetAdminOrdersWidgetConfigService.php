@@ -8,12 +8,12 @@ use app\services\{AbstractBaseService,
 use app\finders\PurchasesTodayFinder;
 
 /**
- * Возвращает массив конфигурации для виджета OrdersWidget
+ * Возвращает массив конфигурации для виджета AdminOrdersWidget
  */
 class GetAdminOrdersWidgetConfigService extends AbstractBaseService
 {
     /**
-     * @var array конфигурации для виджета OrdersWidget
+     * @var array конфигурации для виджета AdminOrdersWidget
      */
     private $adminOrdersWidgetArray = [];
     
@@ -36,7 +36,7 @@ class GetAdminOrdersWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['view'] = 'account-admin-purchases.twig';
+                $dataArray['view'] = 'admin-purchases.twig';
                 
                 $this->adminOrdersWidgetArray = $dataArray;
             }

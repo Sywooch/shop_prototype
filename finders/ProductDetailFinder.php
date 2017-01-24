@@ -33,7 +33,7 @@ class ProductDetailFinder extends AbstractBaseFinder
                 }
                 
                 $query = ProductsModel::find();
-                $query->select(['[[products.id]]', '[[products.code]]', '[[products.name]]', '[[products.price]]', '[[products.description]]', '[[products.images]]', '[[products.seocode]]', '[[products.id_category]]', '[[products.id_subcategory]]']);
+                $query->select(['[[products.id]]', '[[products.code]]', '[[products.name]]', '[[products.price]]', '[[products.description]]', '[[products.images]]', '[[products.seocode]]', '[[products.id_category]]', '[[products.id_subcategory]]', '[[products.views]]']);
                 $query->where(['[[products.seocode]]'=>$this->seocode]);
                 
                 $this->storage = $query->one();

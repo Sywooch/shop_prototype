@@ -14,6 +14,11 @@ use app\exceptions\ExceptionsTrait;
 class ProductsModel extends AbstractBaseModel
 {
     /**
+     * Сценарий фиксации просмотров товара
+     */
+    const VIEWS = 'views';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -24,6 +29,20 @@ class ProductsModel extends AbstractBaseModel
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
+    }
+    
+    public function scenarios()
+    {
+        return [
+            self::VIEWS=>['views'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['views'], 'required', 'on'=>self::VIEWS],
+        ];
     }
     
     /**

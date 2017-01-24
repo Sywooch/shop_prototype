@@ -45,6 +45,10 @@ class ProductsModelTests extends TestCase
      */
     public function testProperties()
     {
+        $reflection = new \ReflectionClass(ProductsModel::class);
+        
+        $this->assertTrue($reflection->hasConstant('VIEWS'));
+        
         $model = new ProductsModel();
         
         $this->assertArrayHasKey('id', $model->attributes);
@@ -61,6 +65,41 @@ class ProductsModelTests extends TestCase
         $this->assertArrayHasKey('active', $model->attributes);
         $this->assertArrayHasKey('total_products', $model->attributes);
         $this->assertArrayHasKey('seocode', $model->attributes);
+        $this->assertArrayHasKey('views', $model->attributes);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::scenarios
+     */
+    public function testScenarios()
+    {
+        $model = new ProductsModel(['scenario'=>ProductsModel::VIEWS]);
+        $model->attributes = [
+            'views'=>12
+        ];
+        
+        $this->assertEquals(12, $model->views);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::rules
+     */
+    public function testRules()
+    {
+        $model = new ProductsModel(['scenario'=>ProductsModel::VIEWS]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        $this->assertArrayHasKey('views', $model->errors);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::VIEWS]);
+        $model->attributes = [
+            'views'=>12
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
     
     /**

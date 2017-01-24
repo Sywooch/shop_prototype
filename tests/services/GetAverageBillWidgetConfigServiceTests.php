@@ -43,9 +43,6 @@ class GetAverageBillWidgetConfigServiceTests extends TestCase
      */
     public function testHandle()
     {
-        $user = UsersModel::findOne(1);
-        \Yii::$app->user->login($user);
-        
         $service = new GetAverageBillWidgetConfigService();
         $result = $service->handle();
         
@@ -56,7 +53,7 @@ class GetAverageBillWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('view', $result);
         
-        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['user']);
+        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInternalType('string', $result['view']);
     }

@@ -4,7 +4,8 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetAdminOrdersWidgetConfigService};
+    GetAdminOrdersWidgetConfigService,
+    GetAverageBillWidgetConfigService};
 
 /**
  * Формирует массив данных для рендеринга страницы 
@@ -30,6 +31,9 @@ class AdminIndexService extends AbstractBaseService
                 
                 $service = \Yii::$app->registry->get(GetAdminOrdersWidgetConfigService::class);
                 $dataArray['adminOrdersWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetAverageBillWidgetConfigService::class);
+                $dataArray['averageBillWidgetConfig'] = $service->handle();
                 
                 $this->dataArray = $dataArray;
             }

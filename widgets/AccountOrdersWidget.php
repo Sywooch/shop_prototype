@@ -12,7 +12,7 @@ use app\models\CurrencyModel;
 /**
  * Формирует HTML строку с основными данными аккаунта
  */
-class OrdersWidget extends AbstractBaseWidget
+class AccountOrdersWidget extends AbstractBaseWidget
 {
     /**
      * @var array PurchasesModel
@@ -102,7 +102,7 @@ class OrdersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array PurchasesModel свойству OrdersWidget::purchases
+     * Присваивает array PurchasesModel свойству AccountOrdersWidget::purchases
      * @param array $purchases
      */
     public function setPurchases(array $purchases)
@@ -115,7 +115,7 @@ class OrdersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству OrdersWidget::currency
+     * Присваивает CurrencyModel свойству AccountOrdersWidget::currency
      * @param CurrencyModel $currency
      */
     public function setCurrency(CurrencyModel $currency)
