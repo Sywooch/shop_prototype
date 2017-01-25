@@ -5,6 +5,7 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
+    GetAdminOrdersFiltersWidgetConfigService,
     GetAdminOrdersFormWidgetConfigService,
     GetAdminOrdersPaginationWidgetConfigService};
 
@@ -29,6 +30,9 @@ class AdminOrdersService extends AbstractBaseService
         try {
             if (empty($this->dataArray)) {
                 $dataArray = [1];
+                
+                $service = \Yii::$app->registry->get(GetAdminOrdersFiltersWidgetConfigService::class);
+                $dataArray['adminOrdersFiltersWidgetConfig'] = $service->handle($request);
                 
                 $service = \Yii::$app->registry->get(GetAdminOrdersFormWidgetConfigService::class);
                 $dataArray['adminOrdersFormWidgetConfig'] = $service->handle($request);

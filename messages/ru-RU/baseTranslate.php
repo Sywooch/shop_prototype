@@ -178,6 +178,7 @@ $translate = [
     'Conversion today'=>'Конверсия сегодня',
     'Conversion'=>'Конверсия',
     'No orders'=>'Заказов нет',
+    'All'=>'Все'
 ];
 
 return $translate;

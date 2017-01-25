@@ -1,12 +1,15 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use ('app/widgets/AdminOrdersBreadcrumbsWidget') }}
+{{ use('app/widgets/AdminOrdersFiltersWidget') }}
 {{ use ('app/widgets/AdminOrdersFormWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
 {{ admin_orders_breadcrumbs_widget_widget() }}
+
+{{ admin_orders_filters_widget_widget(adminOrdersFiltersWidgetConfig) }}
 
 {{ admin_orders_form_widget_widget(adminOrdersFormWidgetConfig) }}
 

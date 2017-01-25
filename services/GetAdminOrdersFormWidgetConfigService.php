@@ -8,6 +8,7 @@ use app\services\{AbstractBaseService,
     GetCurrentCurrencyModelService,
     GetPurchasesCollectionService};
 use app\forms\OrderStatusForm;
+use app\finders\OrderStatusesFinder;
 
 /**
  * Возвращает массив конфигурации для виджета AdminOrdersFormWidget
@@ -45,6 +46,9 @@ class GetAdminOrdersFormWidgetConfigService extends AbstractBaseService
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
+                
+                $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
+                $dataArray['statuses'] = $finder->find();
                 
                 $dataArray['form'] = new OrderStatusForm(['scenario'=>OrderStatusForm::SAVE]);
                 

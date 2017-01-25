@@ -43,7 +43,6 @@ class PurchasesFinder extends AbstractBaseFinder
                 $query->offset($this->storage->pagination->offset);
                 $query->limit($this->storage->pagination->limit);
                 
-                //$sortingField = $this->filters->sortingField ?? \Yii::$app->params['sortingField'];
                 //$sortingType = $this->filters->sortingType ?? \Yii::$app->params['sortingType'];
                 $sortingField = \Yii::$app->params['sortingFieldOrders'];
                 $sortingType = \Yii::$app->params['sortingTypeOrders'];

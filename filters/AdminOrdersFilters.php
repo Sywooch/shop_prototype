@@ -20,10 +20,6 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     const SESSION = 'session';
     
     /**
-     * @var string имя столбца, покоторому будут отсортированы результаты
-     */
-    private $sortingField;
-    /**
      * @var string тип сортировки
      */
     private $sortingType;
@@ -35,34 +31,8 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     public function scenarios()
     {
         return [
-            self::SESSION=>['sortingField', 'sortingType', 'status']
+            self::SESSION=>['sortingType', 'status']
         ];
-    }
-    
-    /**
-     * Присваивает значение AdminOrdersFilters::sortingField
-     * @param string $sortingField
-     */
-    public function setSortingField(string $sortingField)
-    {
-        try {
-            $this->sortingField = $sortingField;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает значение AdminOrdersFilters::sortingField
-     * @return mixed
-     */
-    public function getSortingField()
-    {
-        try {
-            return !empty($this->sortingField) ? $this->sortingField : null;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
     }
     
     /**
@@ -92,78 +62,26 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     }
     
     /**
-     * Присваивает значение AdminOrdersFilters::colors
-     * @param mixed $colors
+     * Присваивает значение AdminOrdersFilters::status
+     * @param string $status
      */
-    public function setColors($colors)
+    public function setStatus($status)
     {
         try {
-            $this->colors = $colors;
+            $this->status = $status;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Возвращает значение AdminOrdersFilters::colors
+     * Возвращает значение AdminOrdersFilters::status
      * @return mixed
      */
-    public function getColors()
+    public function getStatus()
     {
         try {
-            return !empty($this->colors) ? $this->colors : null;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает значение AdminOrdersFilters::sizes
-     * @param mixed $colors
-     */
-    public function setSizes($sizes)
-    {
-        try {
-            $this->sizes = $sizes;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает значение AdminOrdersFilters::sizes
-     * @return mixed
-     */
-    public function getSizes()
-    {
-        try {
-            return !empty($this->sizes) ? $this->sizes : null;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает значение AdminOrdersFilters::brands
-     * @param mixed $brands
-     */
-    public function setBrands($brands)
-    {
-        try {
-            $this->brands = $brands;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает значение AdminOrdersFilters::brands
-     * @return mixed
-     */
-    public function getBrands()
-    {
-        try {
-            return !empty($this->brands) ? $this->brands : null;
+            return !empty($this->status) ? $this->status : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -177,20 +95,11 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     {
         try {
             return [
-                'sortingField'=>function() {
-                    return $this->sortingField;
-                },
                 'sortingType'=>function() {
                     return $this->sortingType;
                 },
-                'colors'=>function() {
-                    return $this->colors;
-                },
-                'sizes'=>function() {
-                    return $this->sizes;
-                },
-                'brands'=>function() {
-                    return $this->brands;
+                'status'=>function() {
+                    return $this->status;
                 },
             ];
         } catch (\Throwable $t) {

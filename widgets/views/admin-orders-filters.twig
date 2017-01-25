@@ -1,0 +1,13 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+{% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionApply, 'method':'POST'}) %}
+    {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes) | raw }}
+    {{ form.field(formModel, 'status').dropDownList(statuses) | raw }}
+    <input type="submit" value="{{ buttonApply }}">
+{{ active_form_end() }}
+
+{% set form = active_form_begin({'id':formIdClean, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionClean, 'method':'POST'}) %}
+    <input type="submit" value="{{ buttonClean }}">
+{{ active_form_end() }}

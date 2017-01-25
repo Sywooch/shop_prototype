@@ -21,6 +21,7 @@ class AdminOrdersFormWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
+        $this->assertTrue($reflection->hasProperty('statuses'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('view'));
@@ -87,6 +88,36 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод AdminOrdersFormWidget::setStatuses
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetStatusesError()
+    {
+        $statuses = new class() {};
+        
+        $widget = new AdminOrdersFormWidget();
+        $widget->setStatuses($statuses);
+    }
+    
+    /**
+     * Тестирует метод AdminOrdersFormWidget::setStatuses
+     */
+    public function testSetStatuses()
+    {
+        $statuses = new class() {};
+        
+        $widget = new AdminOrdersFormWidget();
+        $widget->setStatuses([$statuses]);
+        
+        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
      * Тестирует метод AdminOrdersFormWidget::setForm
      * если передан параметр неверного типа
      * @expectedException TypeError
@@ -130,6 +161,25 @@ class AdminOrdersFormWidgetTests extends TestCase
     
     /**
      * Тестирует метод AdminOrdersFormWidget::run
+     * если пуст AdminOrdersFormWidget::statuses
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: statuses
+     */
+    public function testRunEmptyStatuses()
+    {
+        $mock = new class() {};
+        
+        $widget = new AdminOrdersFormWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AdminOrdersFormWidget::run
      * если пуст AdminOrdersFormWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
@@ -143,6 +193,10 @@ class AdminOrdersFormWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$mock]);
         
         $widget->run();
     }
@@ -162,6 +216,10 @@ class AdminOrdersFormWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$mock]);
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
@@ -187,6 +245,10 @@ class AdminOrdersFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
         
+        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$mock]);
+        
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
@@ -209,6 +271,8 @@ class AdminOrdersFormWidgetTests extends TestCase
             public $code = 'MONEY';
         };
         
+        $statuses = ['shipped'=>'Shipped', 'canceled'=>'Canceled', 'processed'=>'Processed', 'received'=>'Received'];
+        
         $form = new class() extends OrderStatusForm {};
         
         $widget = new AdminOrdersFormWidget();
@@ -216,6 +280,10 @@ class AdminOrdersFormWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $statuses);
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
@@ -244,6 +312,8 @@ class AdminOrdersFormWidgetTests extends TestCase
             public $exchange_rate = 2.09;
             public $code = 'MONEY';
         };
+        
+        $statuses = ['shipped'=>'Shipped', 'canceled'=>'Canceled', 'processed'=>'Processed', 'received'=>'Received'];
         
         $form = new class() extends OrderStatusForm {};
         
@@ -480,6 +550,10 @@ class AdminOrdersFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
+        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $statuses);
+        
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
@@ -525,9 +599,9 @@ class AdminOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#<form id="order-status-form-\d" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="\d">#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[status\]">#', $result);
-        $this->assertRegExp('#<option value="received">Принят</option>#', $result);
-        $this->assertRegExp('#<option value="processed">Выполняется</option>#', $result);
-        $this->assertRegExp('#<option value="canceled" selected>Отменен</option>#', $result);
-        $this->assertRegExp('#<option value="shipped">Доставлен</option>#', $result);
+        $this->assertRegExp('#<option value="received">Received</option>#', $result);
+        $this->assertRegExp('#<option value="processed">Processed</option>#', $result);
+        $this->assertRegExp('#<option value="canceled" selected>Canceled</option>#', $result);
+        $this->assertRegExp('#<option value="shipped">Shipped</option>#', $result);
     }
 }

@@ -82,12 +82,14 @@ class GetAdminOrdersFormWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('purchases', $result);
         $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('statuses', $result);
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('view', $result);
         
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('array', $result['purchases']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInternalType('array', $result['statuses']);
         $this->assertInstanceOf(OrderStatusForm::class, $result['form']);
         $this->assertInternalType('string', $result['view']);
     }
