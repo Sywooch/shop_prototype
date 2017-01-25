@@ -81,6 +81,20 @@ class PurchasesCollection extends AbstractBaseCollection implements PurchasesCol
     }
     
     /**
+     * Добавляет объект в коллекцию
+     * без проверки свойства id_product
+     * @param $object Model 
+     */
+    public function addRaw(Model $object)
+    {
+        try {
+            $this->items[] = $object;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Обновляет объект в коллекции
      * @param $object Model 
      */

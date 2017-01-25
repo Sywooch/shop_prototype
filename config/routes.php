@@ -64,7 +64,8 @@ $routes = [
     'unsubscribe-post'=>'mailings/unsubscribe-post',
     
     # Админ
-    'admin'=>'admin/index'
+    'admin'=>'admin/index',
+    'admin-orders'=>'admin/orders'
 ];
 
 return $routes;

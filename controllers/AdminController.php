@@ -5,7 +5,8 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\GetAction;
-use app\services\AdminIndexService;
+use app\services\{AdminIndexService,
+    AdminOrdersService};
 
 /**
  * Обрабатывает запросы к админ разделу
@@ -19,6 +20,11 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'service'=>new AdminIndexService(),
                 'view'=>'index.twig',
+            ],
+            'orders'=>[
+                'class'=>GetAction::class,
+                'service'=>new AdminOrdersService(),
+                'view'=>'orders.twig',
             ],
         ];
     }

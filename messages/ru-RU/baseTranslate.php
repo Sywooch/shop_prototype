@@ -176,7 +176,8 @@ $translate = [
     'Visits'=>'Посещаемость',
     'visitors'=>'посетителей',
     'Conversion today'=>'Конверсия сегодня',
-    'Conversion'=>'Конверсия'
+    'Conversion'=>'Конверсия',
+    'No orders'=>'Заказов нет',
 ];
 
 return $translate;

@@ -42,7 +42,7 @@ class AdminMenuWidget extends Menu
                 ],
                 [
                     'label'=>\Yii::t('base', 'Orders'),
-                    'url'=>['/admin/index']
+                    'url'=>['/admin/orders']
                 ],
                 [
                     'label'=>\Yii::t('base', 'Products'),

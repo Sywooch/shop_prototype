@@ -9,6 +9,7 @@ use yii\base\Model;
  */
 interface PurchasesCollectionInterface
 {
+    public function addRaw(Model $object);
     public function totalQuantity();
     public function totalPrice();
     public function update(Model $object);

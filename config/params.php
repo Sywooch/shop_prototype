@@ -28,6 +28,7 @@ $params = [
     # Корзина
     'cartKey'=>'cart', # Ключ, по которому в $_SESSION доступно текущее состояние корзины
     'customerKey'=>'customer', # Ключ, по которому в $_SESSION доступны данные покупателя
+    'orderStatuses'=>[0=>'received', 1=>'processed', 2=>'canceled', 3=>'shipped'], # Статусы заказа
     
     # Компоненты Breadcrumbs
     'breadcrumbs'=>[],
