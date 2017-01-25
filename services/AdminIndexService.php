@@ -4,8 +4,9 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetAdminOrdersWidgetConfigService,
+    GetAdminTodayOrdersWidgetConfigService,
     GetAverageBillWidgetConfigService,
+    GetConversionWidgetConfigService,
     GetPopularGoodsWidgetConfigService,
     GetVisitsWidgetConfigService};
 
@@ -31,11 +32,14 @@ class AdminIndexService extends AbstractBaseService
             if (empty($this->dataArray)) {
                 $dataArray = [1];
                 
-                $service = \Yii::$app->registry->get(GetAdminOrdersWidgetConfigService::class);
-                $dataArray['adminOrdersWidgetConfig'] = $service->handle();
+                $service = \Yii::$app->registry->get(GetAdminTodayOrdersWidgetConfigService::class);
+                $dataArray['adminTodayOrdersWidgetConfig'] = $service->handle();
                 
                 $service = \Yii::$app->registry->get(GetVisitsWidgetConfigService::class);
                 $dataArray['visitsWidgetConfig'] = $service->handle();
+                
+                $service = \Yii::$app->registry->get(GetConversionWidgetConfigService::class);
+                $dataArray['conversionWidgetConfig'] = $service->handle();
                 
                 $service = \Yii::$app->registry->get(GetAverageBillWidgetConfigService::class);
                 $dataArray['averageBillWidgetConfig'] = $service->handle();

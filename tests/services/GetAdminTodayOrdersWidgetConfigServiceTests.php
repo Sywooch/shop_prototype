@@ -3,7 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetAdminOrdersWidgetConfigService;
+use app\services\GetAdminTodayOrdersWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture,
@@ -12,9 +12,9 @@ use app\models\{CurrencyModel,
     UsersModel};
 
 /**
- * Тестирует класс GetAdminOrdersWidgetConfigService
+ * Тестирует класс GetAdminTodayOrdersWidgetConfigService
  */
-class GetAdminOrdersWidgetConfigServiceTests extends TestCase
+class GetAdminTodayOrdersWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -31,24 +31,24 @@ class GetAdminOrdersWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetAdminOrdersWidgetConfigService
+     * Тестирует свойства GetAdminTodayOrdersWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetAdminOrdersWidgetConfigService::class);
+        $reflection = new \ReflectionClass(GetAdminTodayOrdersWidgetConfigService::class);
         
-        $this->assertTrue($reflection->hasProperty('adminOrdersWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('adminTodayOrdersWidgetArray'));
     }
     
     /**
-     * Тестирует метод  GetAdminOrdersWidgetConfigService::handle
+     * Тестирует метод  GetAdminTodayOrdersWidgetConfigService::handle
      */
     public function testHandle()
     {
         $user = UsersModel::findOne(1);
         \Yii::$app->user->login($user);
         
-        $service = new GetAdminOrdersWidgetConfigService();
+        $service = new GetAdminTodayOrdersWidgetConfigService();
         $result = $service->handle();
         
         $this->assertInternalType('array', $result);

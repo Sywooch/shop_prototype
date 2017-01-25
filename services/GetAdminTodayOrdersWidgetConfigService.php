@@ -3,19 +3,20 @@
 namespace app\services;
 
 use yii\base\ErrorException;
+use yii\helpers\ArrayHelper;
 use app\services\{AbstractBaseService,
     GetCurrentCurrencyModelService};
 use app\finders\PurchasesTodayFinder;
 
 /**
- * Возвращает массив конфигурации для виджета AdminOrdersWidget
+ * Возвращает массив конфигурации для виджета AdminTodayOrdersWidget
  */
-class GetAdminOrdersWidgetConfigService extends AbstractBaseService
+class GetAdminTodayOrdersWidgetConfigService extends AbstractBaseService
 {
     /**
-     * @var array конфигурации для виджета AdminOrdersWidget
+     * @var array конфигурации для виджета AdminTodayOrdersWidget
      */
-    private $adminOrdersWidgetArray = [];
+    private $adminTodayOrdersWidgetArray = [];
     
     /**
      * Возвращает массив конфигурации
@@ -25,23 +26,28 @@ class GetAdminOrdersWidgetConfigService extends AbstractBaseService
     public function handle($request=null): array
     {
         try {
-            if (empty($this->adminOrdersWidgetArray)) {
+            if (empty($this->adminTodayOrdersWidgetArray)) {
                 $dataArray = [];
                 
                 $dataArray['header'] = \Yii::t('base', 'Orders received today');
                 
                 $finder = \Yii::$app->registry->get(PurchasesTodayFinder::class);
-                $dataArray['purchases'] = $finder->find()->asArray();
+                $purchases = $finder->find()->asArray();
+                if (!empty($purchases)) {
+                    ArrayHelper::multisort($purchases, 'received_date', SORT_DESC, SORT_NUMERIC);
+                    $purchases = array_slice($purchases, 0, \Yii::$app->params['todayOrdersLimit']);
+                }
+                $dataArray['purchases'] = $purchases;
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['view'] = 'admin-purchases.twig';
                 
-                $this->adminOrdersWidgetArray = $dataArray;
+                $this->adminTodayOrdersWidgetArray = $dataArray;
             }
             
-            return $this->adminOrdersWidgetArray;
+            return $this->adminTodayOrdersWidgetArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

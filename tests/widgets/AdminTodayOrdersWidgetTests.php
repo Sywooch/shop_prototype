@@ -3,16 +3,16 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\AdminOrdersWidget;
+use app\widgets\AdminTodayOrdersWidget;
 use app\models\{CurrencyModel,
     UsersModel};
 use app\tests\DbManager;
 use app\tests\sources\fixtures\UsersFixture;
 
 /**
- * Тестирует класс AdminOrdersWidget
+ * Тестирует класс AdminTodayOrdersWidget
  */
-class AdminOrdersWidgetTests extends TestCase
+class AdminTodayOrdersWidgetTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,11 +27,11 @@ class AdminOrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует свойства AdminOrdersWidget
+     * Тестирует свойства AdminTodayOrdersWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminOrdersWidget::class);
+        $reflection = new \ReflectionClass(AdminTodayOrdersWidget::class);
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
@@ -40,7 +40,7 @@ class AdminOrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::setPurchases
+     * Тестирует метод AdminTodayOrdersWidget::setPurchases
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -48,18 +48,18 @@ class AdminOrdersWidgetTests extends TestCase
     {
         $purchases = new class() {};
         
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         $widget->setPurchases($purchases);
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::setPurchases
+     * Тестирует метод AdminTodayOrdersWidget::setPurchases
      */
     public function testSetPurchases()
     {
         $purchases = [new class() {}];
         
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         $widget->setPurchases($purchases);
         
         $reflection = new \ReflectionProperty($widget, 'purchases');
@@ -70,7 +70,7 @@ class AdminOrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::setCurrency
+     * Тестирует метод AdminTodayOrdersWidget::setCurrency
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -78,18 +78,18 @@ class AdminOrdersWidgetTests extends TestCase
     {
         $currency = new class() {};
         
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         $widget->setCurrency($currency);
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::setCurrency
+     * Тестирует метод AdminTodayOrdersWidget::setCurrency
      */
     public function testSetCurrency()
     {
         $currency = new class() extends CurrencyModel {};
         
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         $widget->setCurrency($currency);
         
         $reflection = new \ReflectionProperty($widget, 'currency');
@@ -100,20 +100,20 @@ class AdminOrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::run
-     * если пуст AdminOrdersWidget::currency
+     * Тестирует метод AdminTodayOrdersWidget::run
+     * если пуст AdminTodayOrdersWidget::currency
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         $widget->run();
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::run
-     * если пуст AdminOrdersWidget::header
+     * Тестирует метод AdminTodayOrdersWidget::run
+     * если пуст AdminTodayOrdersWidget::header
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
@@ -121,7 +121,7 @@ class AdminOrdersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -131,8 +131,8 @@ class AdminOrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::run
-     * если пуст AdminOrdersWidget::view
+     * Тестирует метод AdminTodayOrdersWidget::run
+     * если пуст AdminTodayOrdersWidget::view
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: view
      */
@@ -140,7 +140,7 @@ class AdminOrdersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -154,7 +154,7 @@ class AdminOrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::run
+     * Тестирует метод AdminTodayOrdersWidget::run
      * если нет оформленных покупок
      */
     public function testRunNotPurchases()
@@ -164,7 +164,7 @@ class AdminOrdersWidgetTests extends TestCase
             public $code = 'MONEY';
         };
         
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -185,7 +185,7 @@ class AdminOrdersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersWidget::run
+     * Тестирует метод AdminTodayOrdersWidget::run
      * если есть оформленные покупки
      */
     public function testRunExistProcessedPurchases()
@@ -254,7 +254,7 @@ class AdminOrdersWidgetTests extends TestCase
             },
         ];
         
-        $widget = new AdminOrdersWidget();
+        $widget = new AdminTodayOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);

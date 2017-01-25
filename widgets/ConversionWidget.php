@@ -9,12 +9,16 @@ use app\widgets\AbstractBaseWidget;
 /**
  * Формирует HTML строку с информацией о количестве посещений сегодня
  */
-class VisitsWidget extends AbstractBaseWidget
+class ConversionWidget extends AbstractBaseWidget
 {
-    /**
-     * @var array VisitorsCounterModel
+     /**
+     * @var int количество покупок сегодня
      */
-    private $visitors;
+    public $purchases;
+    /**
+     * @var int количество посещений сегодня
+     */
+    public $visits;
     /**
      * @var string заголовок
      */
@@ -42,29 +46,18 @@ class VisitsWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             
-            if (!empty($this->visitors)) {
-                ArrayHelper::multisort($this->visitors, 'date', SORT_DESC, SORT_NUMERIC);
-                foreach ($this->visitors as $visit) {
-                    $renderArray['visits'][] = sprintf('%s - %d %s', \Yii::$app->formatter->asDate($visit->date), $visit->counter, \Yii::t('base', 'visitors'));
-                }
+            $purchases = $this->purchases ?? 0;
+            $visits = $this->visits ?? 0;
+            
+            if ((int) $purchases !== 0 && (int) $visits !== 0) {
+                $conversion = round(($purchases / $visits) * 100, 2);
             } else {
-                $renderArray['visitsEmpty'] = \Yii::t('base', 'Today no visits');
+                $conversion = 0;
             }
             
+            $renderArray['conversion'] = sprintf('%s: %s%%', \Yii::t('base', 'Conversion today'), $conversion);
+            
             return $this->render($this->view, $renderArray);
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает array VisitorsCounterModel свойству VisitsWidget::visitors
-     * @param CurrencyModel $currency
-     */
-    public function setVisitors(array $visitors)
-    {
-        try {
-            $this->visitors = $visitors;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

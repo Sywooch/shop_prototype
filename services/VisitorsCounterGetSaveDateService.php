@@ -7,6 +7,7 @@ use app\services\AbstractBaseService;
 use app\models\VisitorsCounterModel;
 use app\finders\VisitorsCounterDateFinder;
 use app\savers\ModelSaver;
+use app\helpers\DateHelper;
 
 /**
  * Возвращает объект VisitorsCounterModel, 
@@ -24,8 +25,7 @@ class VisitorsCounterGetSaveDateService extends AbstractBaseService
     public function handle($request=null): bool
     {
         try {
-            $today = new \DateTime(sprintf('%s %s', (new \DateTime())->format('Y-m-d'), '00:00:00'));
-            $date = $today->getTimestamp();
+            $date = DateHelper::getToday00();
             
             $finder = \Yii::$app->registry->get(VisitorsCounterDateFinder::class, ['date'=>$date]);
             $visitorsCounterModel = $finder->find();

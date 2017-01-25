@@ -136,7 +136,7 @@ class VisitsWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<li>13 янв. 2017 г. - 5690 посетителей</li>#', $result);
-        $this->assertRegExp('#<li>5 янв. 2017 г. - 8976 посетителей</li>#', $result);
+        $this->assertRegExp('#13 янв. 2017 г. - 5690 посетителей<br>#', $result);
+        $this->assertRegExp('#5 янв. 2017 г. - 8976 посетителей<br>#', $result);
     }
 }

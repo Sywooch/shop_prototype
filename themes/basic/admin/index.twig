@@ -1,8 +1,9 @@
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use ('app/widgets/AdminBreadcrumbsWidget') }}
-{{ use ('app/widgets/AdminOrdersWidget') }}
+{{ use ('app/widgets/AdminTodayOrdersWidget') }}
 {{ use ('app/widgets/VisitsWidget') }}
+{{ use ('app/widgets/ConversionWidget') }}
 {{ use ('app/widgets/AverageBillWidget') }}
 {{ use ('app/widgets/PopularGoodsWidget') }}
 
@@ -10,9 +11,11 @@
 
 {{ admin_breadcrumbs_widget_widget() }}
 
-{{ admin_orders_widget_widget(adminOrdersWidgetConfig) }}
+{{ admin_today_orders_widget_widget(adminTodayOrdersWidgetConfig) }}
 
 {{ visits_widget_widget(visitsWidgetConfig) }}
+
+{{ conversion_widget_widget(conversionWidgetConfig) }}
 
 {{ average_bill_widget_widget(averageBillWidgetConfig) }}
 
