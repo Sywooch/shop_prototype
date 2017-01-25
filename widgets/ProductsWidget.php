@@ -5,7 +5,7 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\Html;
 use app\widgets\AbstractBaseWidget;
-use app\collections\ProductsCollection;
+use app\collections\CollectionInterface;
 use app\models\CurrencyModel;
 
 /**
@@ -14,7 +14,7 @@ use app\models\CurrencyModel;
 class ProductsWidget extends AbstractBaseWidget
 {
     /**
-     * @var object ProductsCollection
+     * @var object CollectionInterface
      */
     private $products;
     /**
@@ -71,10 +71,10 @@ class ProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает ProductsCollection свойству ProductsWidget::products
-     * @param ProductsCollection $products
+     * Присваивает CollectionInterface свойству ProductsWidget::products
+     * @param CollectionInterface $products
      */
-    public function setProducts(ProductsCollection $products)
+    public function setProducts(CollectionInterface $products)
     {
         try {
             $this->products = $products;

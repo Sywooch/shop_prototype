@@ -7,7 +7,7 @@ use app\services\{AbstractBaseService,
     GetProductsFiltersModelService,
     GetSphinxArrayService};
 use app\finders\ProductsSphinxFinder;
-use app\collections\ProductsCollectionInterface;
+use app\collections\CollectionInterface;
 
 /**
  * Возвращает объект ProductsCollection
@@ -24,7 +24,7 @@ class GetProductsCollectionSphinxService extends AbstractBaseService
      * @param $request
      * @return ProductsCollection
      */
-    public function handle($request): ProductsCollectionInterface
+    public function handle($request): CollectionInterface
     {
         try {
             if (empty($this->productsCollection)) {

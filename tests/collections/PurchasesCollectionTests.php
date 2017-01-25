@@ -267,4 +267,35 @@ class PurchasesCollectionTests extends TestCase
         
         $this->assertEmpty($result);
     }
+    
+    /**
+    * Тестирует метод PurchasesCollection::addRaw
+    * если коллекция пуста
+    */
+    public function testAddRaw()
+    {
+        $model = new class() extends Model {
+            public $quantity = 2;
+            public $id_color = 1;
+            public $id_size = 15;
+            public $id_product = 236;
+            public $price = 24.78;
+        };
+        
+        $collection = new PurchasesCollection();
+        
+        $this->assertTrue($collection->isEmpty());
+        
+        $collection->addRaw($model);
+        
+        $this->assertFalse($collection->isEmpty());
+        
+        $reflection = new \ReflectionProperty($collection, 'items');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($collection);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        $this->assertCount(1, $result);
+    }
 }

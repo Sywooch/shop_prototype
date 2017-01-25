@@ -4,7 +4,7 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\ProductsWidget;
-use app\collections\{ProductsCollectionInterface,
+use app\collections\{CollectionInterface,
     ProductsCollection};
 use app\models\CurrencyModel;
 use app\controllers\ProductsListController;
@@ -53,7 +53,7 @@ class ProductsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(ProductsCollectionInterface::class, $result);
+        $this->assertInstanceOf(CollectionInterface::class, $result);
     }
     
     /**

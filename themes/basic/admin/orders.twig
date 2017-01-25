@@ -2,9 +2,12 @@
 
 {{ use ('app/widgets/AdminOrdersBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminOrdersFormWidget') }}
+{{ use('app/widgets/PaginationWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
 {{ admin_orders_breadcrumbs_widget_widget() }}
 
 {{ admin_orders_form_widget_widget(adminOrdersFormWidgetConfig) }}
+
+{{ pagination_widget_widget(paginationWidgetConfig) }}

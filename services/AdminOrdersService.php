@@ -3,8 +3,10 @@
 namespace app\services;
 
 use yii\base\ErrorException;
+use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    GetAdminOrdersFormWidgetConfigService};
+    GetAdminOrdersFormWidgetConfigService,
+    GetAdminOrdersPaginationWidgetConfigService};
 
 /**
  * Формирует массив данных для рендеринга страницы 
@@ -22,19 +24,24 @@ class AdminOrdersService extends AbstractBaseService
      * формирования HTML страницы
      * @param array $request
      */
-    public function handle($request=null)
+    public function handle($request)
     {
         try {
             if (empty($this->dataArray)) {
                 $dataArray = [1];
                 
                 $service = \Yii::$app->registry->get(GetAdminOrdersFormWidgetConfigService::class);
-                $dataArray['adminOrdersFormWidgetConfig'] = $service->handle();
+                $dataArray['adminOrdersFormWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetAdminOrdersPaginationWidgetConfigService::class);
+                $dataArray['paginationWidgetConfig'] = $service->handle($request);
                 
                 $this->dataArray = $dataArray;
             }
             
             return $this->dataArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

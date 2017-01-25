@@ -16,6 +16,37 @@ abstract class AbstractBaseCollection extends AbstractIterator implements Collec
     use ExceptionsTrait;
     
     /**
+     * @var object PaginationInterface
+     */
+    protected $pagination = null;
+    
+    /**
+     * Сохраняет объект пагинации
+     * @param object $pagination PaginationInterface
+     */
+    public function setPagination(PaginationInterface $pagination)
+    {
+        try {
+            $this->pagination = $pagination;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает объект пагинации
+     * @return PaginationInterface/null
+     */
+    public function getPagination()
+    {
+        try {
+            return $this->pagination;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Добавляет объект в коллекцию
      * @param $object Model 
      */

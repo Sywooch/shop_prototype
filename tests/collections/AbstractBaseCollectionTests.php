@@ -3,7 +3,9 @@
 namespace app\tests\collections;
 
 use PHPUnit\Framework\TestCase;
-use app\collections\AbstractBaseCollection;
+use app\collections\{AbstractBaseCollection,
+    PaginationInterface,
+    LightPagination};
 use yii\base\Model;
 
 /**
@@ -18,6 +20,16 @@ class AbstractBaseCollectionTests extends TestCase
         $this->collection = new class() extends AbstractBaseCollection {
             public $items;
         };
+    }
+    
+    /**
+     * Тестирует свойства AbstractBaseCollection
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(AbstractBaseCollection::class);
+        
+        $this->assertTrue($reflection->hasProperty('pagination'));
     }
     
     /**
@@ -227,5 +239,49 @@ class AbstractBaseCollectionTests extends TestCase
         $result = $this->collection->count();
         
         $this->assertEquals(2, $result);
+    }
+    
+    /**
+     * Тестирует метод AbstractBaseCollection::setPagination
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPaginationError()
+    {
+        $pagination = new class() {};
+        
+        $this->collection->setPagination($pagination);
+    }
+    
+    /**
+     * Тестирует метод AbstractBaseCollection::setPagination
+     */
+    public function testSetPagination()
+    {
+        $pagination = new class() extends LightPagination {};
+        
+        $this->collection->setPagination($pagination);
+        
+        $reflection = new \ReflectionProperty($this->collection, 'pagination');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->collection);
+        
+        $this->assertInstanceOf(PaginationInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод AbstractBaseCollection::getPagination
+     */
+    public function testGetPagination()
+    {
+        $pagination = new class() extends LightPagination {};
+        
+        $reflection = new \ReflectionProperty($this->collection, 'pagination');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->collection, $pagination);
+        
+        $result = $this->collection->getPagination();
+        
+        $this->assertInstanceOf(PaginationInterface::class, $result);
     }
 }

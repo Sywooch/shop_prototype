@@ -13,6 +13,8 @@ $params = [
     'filterKeys'=>['colors', 'sizes', 'brands'], # Ключи, по которым доступны значения фильтров
     'sortingField'=>'date', # Поле сортировки по умолчанию
     'sortingType'=>SORT_DESC, # Тип сортировки по умолчанию
+    'sortingFieldOrders'=>'received_date', # Поле сортировки заказов по умолчанию
+    'sortingTypeOrders'=>SORT_DESC, # Тип сортировки заказов по умолчанию
     
     # Путь к товару
     'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступна текущая категория
@@ -28,7 +30,8 @@ $params = [
     # Корзина
     'cartKey'=>'cart', # Ключ, по которому в $_SESSION доступно текущее состояние корзины
     'customerKey'=>'customer', # Ключ, по которому в $_SESSION доступны данные покупателя
-    'orderStatuses'=>[0=>'received', 1=>'processed', 2=>'canceled', 3=>'shipped'], # Статусы заказа
+    //'orderStatuses'=>[0=>'received', 1=>'processed', 2=>'canceled', 3=>'shipped'], # Статусы заказа
+    'orderStatuses'=>['received', 'processed', 'canceled', 'shipped'], # Статусы заказа
     
     # Компоненты Breadcrumbs
     'breadcrumbs'=>[],

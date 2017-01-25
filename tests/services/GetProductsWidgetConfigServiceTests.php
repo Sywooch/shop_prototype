@@ -7,7 +7,7 @@ use app\services\GetProductsWidgetConfigService;
 use app\controllers\ProductsListController;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
-use app\collections\ProductsCollectionInterface;
+use app\collections\CollectionInterface;
 use app\models\CurrencyModel;
 
 /**
@@ -69,7 +69,7 @@ class GetProductsWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('products', $result);
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('view', $result);
-        $this->assertInstanceOf(ProductsCollectionInterface::class, $result['products']);
+        $this->assertInstanceOf(CollectionInterface::class, $result['products']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInternalType('string', $result['view']);
     }

@@ -7,7 +7,7 @@ use app\services\GetProductsCollectionSphinxService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\ProductsFixture;
 use app\controllers\ProductsListController;
-use app\collections\ProductsCollectionInterface;
+use app\collections\CollectionInterface;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
 
@@ -70,7 +70,7 @@ class GetProductsCollectionSphinxServiceTests extends TestCase
         $service = new GetProductsCollectionSphinxService();
         $result = $service->handle($request);
 
-        $this->assertInstanceOf(ProductsCollectionInterface::class, $result);
+        $this->assertInstanceOf(CollectionInterface::class, $result);
         $this->assertFalse($result->isEmpty());
     }
     
@@ -98,7 +98,7 @@ class GetProductsCollectionSphinxServiceTests extends TestCase
         $service = new GetProductsCollectionSphinxService();
         $result = $service->handle($request);
 
-        $this->assertInstanceOf(ProductsCollectionInterface::class, $result);
+        $this->assertInstanceOf(CollectionInterface::class, $result);
         $this->assertFalse($result->isEmpty());
     }
     
@@ -133,7 +133,7 @@ class GetProductsCollectionSphinxServiceTests extends TestCase
         $service = new GetProductsCollectionSphinxService();
         $result = $service->handle($request);
 
-        $this->assertInstanceOf(ProductsCollectionInterface::class, $result);
+        $this->assertInstanceOf(CollectionInterface::class, $result);
         $this->assertFalse($result->isEmpty());
         
         $session->remove($key);

@@ -3,9 +3,10 @@
 namespace app\services;
 
 use yii\base\ErrorException;
+use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    GetCurrentCurrencyModelService};
-use app\finders\PurchasesFinder;
+    GetCurrentCurrencyModelService,
+    GetPurchasesCollectionService};
 use app\forms\OrderStatusForm;
 
 /**
@@ -23,7 +24,7 @@ class GetAdminOrdersFormWidgetConfigService extends AbstractBaseService
      * @param $request
      * @return array
      */
-    public function handle($request=null): array
+    public function handle($request): array
     {
         try {
             if (empty($this->adminOrdersFormWidgetArray)) {
@@ -31,8 +32,16 @@ class GetAdminOrdersFormWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['header'] = \Yii::t('base', 'Orders');
                 
-                $finder = \Yii::$app->registry->get(PurchasesFinder::class);
-                $dataArray['purchases'] = $finder->find()->asArray();
+                $service = \Yii::$app->registry->get(GetPurchasesCollectionService::class);
+                $purchasesCollection = $service->handle($request);
+                
+                if ($purchasesCollection->isEmpty() === true) {
+                    if ($purchasesCollection->pagination->totalCount > 0) {
+                        throw new NotFoundHttpException($this->error404());
+                    }
+                }
+                
+                $dataArray['purchases'] = $purchasesCollection->asArray();
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
@@ -45,6 +54,8 @@ class GetAdminOrdersFormWidgetConfigService extends AbstractBaseService
             }
             
             return $this->adminOrdersFormWidgetArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

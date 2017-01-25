@@ -65,7 +65,8 @@ $routes = [
     
     # Админ
     'admin'=>'admin/index',
-    'admin-orders'=>'admin/orders'
+    'admin-orders-<page:\d{1,3}>'=>'admin/orders',
+    'admin-orders'=>'admin/orders',
 ];
 
 return $routes;

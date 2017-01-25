@@ -58,17 +58,16 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
+            $renderArray['header'] = $this->header;
+            
             if (!empty($this->purchases)) {
-                $renderArray['header'] = $this->header;
-                
-                $renderArray['listClass'] = 'account-orders';
-                $renderArray['statusClass'] = 'account-order-status';
+                $renderArray['listClass'] = 'admin-orders';
                 
                 ArrayHelper::multisort($this->purchases, 'received_date', SORT_DESC, SORT_REGULAR);
                 
                 foreach ($this->purchases as $purchase) {
                     $set = [];
-                    $set['orderId'] = sprintf('account-order-%d', $purchase->id);
+                    $set['orderId'] = sprintf('admin-order-%d', $purchase->id);
                     $set['date'] = \Yii::$app->formatter->asDate($purchase->received_date);
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
                     $set['linkText'] = Html::encode($purchase->product->name);
@@ -93,8 +92,18 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                     $set['payment'] = $purchase->payment->description;
                     $set['delivery'] = $purchase->delivery->description;
                     
+                    if ((bool) $purchase->shipped === true) {
+                        $status = 'shipped';
+                    } elseif ((bool) $purchase->canceled === true) {
+                        $status = 'canceled';
+                    } elseif ((bool) $purchase->processed === true) {
+                        $status = 'processed';
+                    } elseif ((bool) $purchase->received === true) {
+                        $status = 'received';
+                    }
+                    
                     $form = clone $this->form;
-                    $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id]);
+                    $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id, 'status'=>$status]);
                     $set['formId'] = sprintf('order-status-form-%d', $purchase->id);
                     
                     $set['ajaxValidation'] = false;
@@ -103,13 +112,15 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                     $set['validateOnBlur'] = false;
                     $set['validateOnType'] = false;
                     
-                    $set['formAction'] = Url::to(['/account/order-cancel']);
+                    $set['formAction'] = Url::to(['/admin/order-change']);
                     $set['button'] = \Yii::t('base', 'Change');
                     
                     $renderArray['purchases'][] = $set;
                 }
                 
-                $renderArray['statuses'] = \Yii::$app->params['orderStatuses'];
+                foreach (\Yii::$app->params['orderStatuses'] as $status) {
+                    $renderArray['statuses'][$status] = \Yii::t('base', mb_convert_case($status, MB_CASE_TITLE));
+                }
                 
                 $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
                 $renderArray['quantityHeader'] = \Yii::t('base', 'Quantity');
