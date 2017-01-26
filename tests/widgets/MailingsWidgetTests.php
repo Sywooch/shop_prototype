@@ -19,7 +19,7 @@ class MailingsWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('mailings'));
         $this->assertTrue($reflection->hasProperty('header'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -54,6 +54,66 @@ class MailingsWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод MailingsWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new MailingsWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод MailingsWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new MailingsWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод MailingsWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new MailingsWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод MailingsWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new MailingsWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод MailingsWidget::run
      * если пуст MailingsWidget::header
      * @expectedException ErrorException
@@ -67,9 +127,9 @@ class MailingsWidgetTests extends TestCase
     
     /**
      * Тестирует метод MailingsWidget::run
-     * если пуст MailingsWidget::view
+     * если пуст MailingsWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -100,7 +160,7 @@ class MailingsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'mailings.twig');
         
@@ -137,7 +197,7 @@ class MailingsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'mailings.twig');
         

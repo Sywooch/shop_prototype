@@ -52,7 +52,7 @@ class GetAdminOrdersFormWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['form'] = new OrderStatusForm(['scenario'=>OrderStatusForm::SAVE]);
                 
-                $dataArray['view'] = 'admin-orders-form.twig';
+                $dataArray['template'] = 'admin-orders-form.twig';
                 
                 $this->adminOrdersFormWidgetArray = $dataArray;
             }

@@ -39,7 +39,9 @@ class GetAccountMailingsUnsubscribeWidgetConfigService extends AbstractBaseServi
                 
                 $dataArray['form'] = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE_ACC]);
                 
-                $dataArray['view'] = 'account-mailings-unsubscribe.twig';
+                $dataArray['header'] = \Yii::t('base', 'Current subscriptions');
+                
+                $dataArray['template'] = 'account-mailings-unsubscribe.twig';
                 
                 $this->accountMailingsUnsubscribeWidgetArray = $dataArray;
             }

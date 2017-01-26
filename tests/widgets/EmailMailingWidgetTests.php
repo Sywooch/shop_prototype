@@ -21,7 +21,7 @@ class EmailMailingWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('mailings'));
         $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('email'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -53,6 +53,96 @@ class EmailMailingWidgetTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+    }
+    
+    /**
+     * Тестирует метод EmailMailingWidget::setKey
+     * если передан неверный параметр
+     * @expectedException TypeError
+     */
+    public function testSetKeyError()
+    {
+        $key = null;
+        
+        $widget = new EmailMailingWidget();
+        $widget->setKey($key);
+    }
+    
+    /**
+     * Тестирует метод EmailMailingWidget::setKey
+     */
+    public function testSetKey()
+    {
+        $key = 'key';
+        
+        $widget = new EmailMailingWidget();
+        $widget->setKey($key);
+        
+        $reflection = new \ReflectionProperty($widget, 'key');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод EmailMailingWidget::setEmail
+     * если передан неверный параметр
+     * @expectedException TypeError
+     */
+    public function testSetEmailError()
+    {
+        $email = null;
+        
+        $widget = new EmailMailingWidget();
+        $widget->setEmail($email);
+    }
+    
+    /**
+     * Тестирует метод EmailMailingWidget::setEmail
+     */
+    public function testSetEmail()
+    {
+        $email = 'email';
+        
+        $widget = new EmailMailingWidget();
+        $widget->setEmail($email);
+        
+        $reflection = new \ReflectionProperty($widget, 'email');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод EmailMailingWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new EmailMailingWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод EmailMailingWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new EmailMailingWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
@@ -111,9 +201,9 @@ class EmailMailingWidgetTests extends TestCase
     
     /**
      * Тестирует метод EmailMailingWidget::run
-     * если пуст EmailMailingWidget::view
+     * если пуст EmailMailingWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -166,7 +256,7 @@ class EmailMailingWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'some@some.com');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'email-mailings-subscribe-success.twig');
         

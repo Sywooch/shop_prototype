@@ -36,7 +36,7 @@ class AccountOrdersWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
         $this->assertTrue($reflection->hasProperty('header'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -100,6 +100,66 @@ class AccountOrdersWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод AccountOrdersWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new AccountOrdersWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new AccountOrdersWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new AccountOrdersWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new AccountOrdersWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод AccountOrdersWidget::run
      * если пуст AccountOrdersWidget::currency
      * @expectedException ErrorException
@@ -132,9 +192,9 @@ class AccountOrdersWidgetTests extends TestCase
     
     /**
      * Тестирует метод AccountOrdersWidget::run
-     * если пуст AccountOrdersWidget::view
+     * если пуст AccountOrdersWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -174,7 +234,7 @@ class AccountOrdersWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'account-purchases.twig');
         
@@ -265,7 +325,7 @@ class AccountOrdersWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'account-purchases.twig');
         

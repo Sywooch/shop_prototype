@@ -64,10 +64,12 @@ class GetAccountContactsWidgetConfigServiceTests extends TestCase
         $this->assertNotEmpty($result);
         
         $this->assertArrayHasKey('user', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(UsersModel::class, $result['user']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

@@ -23,7 +23,8 @@ class AdminOrdersFiltersWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('statuses'));
         $this->assertTrue($reflection->hasProperty('sortingTypes'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -119,6 +120,66 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод AdminOrdersFiltersWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new AdminOrdersFiltersWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод AdminOrdersFiltersWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new AdminOrdersFiltersWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод AdminOrdersFiltersWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new AdminOrdersFiltersWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод AdminOrdersFiltersWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new AdminOrdersFiltersWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод AdminOrdersFiltersWidget::run
      * если пуст AdminOrdersFiltersWidget::statuses
      * @expectedException ErrorException
@@ -174,11 +235,11 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     
     /**
      * Тестирует метод AdminOrdersFiltersWidget::run
-     * если пуст AdminOrdersFiltersWidget::view
+     * если пуст AdminOrdersFiltersWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
         $mock = new class() {};
         
@@ -195,6 +256,37 @@ class AdminOrdersFiltersWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AdminOrdersFiltersWidget::run
+     * если пуст AdminOrdersFiltersWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $mock = new class() {};
+        
+        $widget = new AdminOrdersFiltersWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$mock]);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$mock]);
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$mock]);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
         
         $widget->run();
     }
@@ -224,13 +316,17 @@ class AdminOrdersFiltersWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'admin-orders-filters.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Фильтры</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="admin-orders-filters-form" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<label class="control-label" for=".+">Дата заказа</label>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[sortingType\]">#', $result);

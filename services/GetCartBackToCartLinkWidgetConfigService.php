@@ -26,7 +26,7 @@ class GetCartBackToCartLinkWidgetConfigService extends AbstractBaseService
             if (empty($this->cartBackToCartLinkWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['view'] = 'cart-back-to-cart-link.twig';
+                $dataArray['template'] = 'cart-back-to-cart-link.twig';
                 
                 $this->cartBackToCartLinkWidgetArray = $dataArray;
             }

@@ -30,7 +30,7 @@ class GetCartBackToCartLinkWidgetConfigServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('view', $result);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertArrayHasKey('template', $result);
+        $this->assertInternalType('string', $result['template']);
     }
 }

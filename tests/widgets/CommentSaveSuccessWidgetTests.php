@@ -17,16 +17,46 @@ class CommentSaveSuccessWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(CommentSaveSuccessWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод CommentSaveSuccessWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new CommentSaveSuccessWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод CommentSaveSuccessWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new CommentSaveSuccessWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод CommentSaveSuccessWidget::run
-     * если пуст CommentSaveSuccessWidget::view
+     * если пуст CommentSaveSuccessWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $widget = new CommentSaveSuccessWidget();
         $widget->run();
@@ -39,7 +69,7 @@ class CommentSaveSuccessWidgetTests extends TestCase
     {
         $widget = new CommentSaveSuccessWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'comment-save-success.twig');
         

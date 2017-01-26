@@ -31,8 +31,9 @@ class GetAccountChangePasswordWidgetConfigService extends AbstractBaseService
             if (empty($this->accountChangePasswordWidgetArray)) {
                 $dataArray = [];
                 
+                $dataArray['header'] = \Yii::t('base', 'Change password');
                 $dataArray['form'] = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
-                $dataArray['view'] = 'account-change-password-form.twig';
+                $dataArray['template'] = 'account-change-password-form.twig';
                 
                 $this->accountChangePasswordWidgetArray = $dataArray;
             }

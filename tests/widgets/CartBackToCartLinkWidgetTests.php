@@ -17,16 +17,46 @@ class CartBackToCartLinkWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(CartBackToCartLinkWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод CartBackToCartLinkWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new CartBackToCartLinkWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод CartBackToCartLinkWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new CartBackToCartLinkWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод CartBackToCartLinkWidget::run
-     * если пуст CartBackToCartLinkWidget::view
+     * если пуст CartBackToCartLinkWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $widget = new CartBackToCartLinkWidget();
         $widget->run();
@@ -39,7 +69,7 @@ class CartBackToCartLinkWidgetTests extends TestCase
     {
         $widget = new CartBackToCartLinkWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'cart-back-to-cart-link.twig');
         

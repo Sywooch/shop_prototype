@@ -20,7 +20,7 @@ class CommentFormWidgetTests extends TestCase
         $reflection = new \ReflectionClass(CommentFormWidget::class);
         
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -54,6 +54,36 @@ class CommentFormWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод CommentFormWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new CommentFormWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод CommentFormWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new CommentFormWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод CommentFormWidget::run
      * если пуст CommentFormWidget::form
      * @expectedException ErrorException
@@ -67,9 +97,9 @@ class CommentFormWidgetTests extends TestCase
     
     /**
      * Тестирует метод CommentFormWidget::run
-     * если пуст CommentFormWidget::view
+     * если пуст CommentFormWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -99,7 +129,7 @@ class CommentFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'comment-form.twig');
         

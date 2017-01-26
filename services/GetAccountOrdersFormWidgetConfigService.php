@@ -43,7 +43,9 @@ class GetAccountOrdersFormWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
                 
-                $dataArray['view'] = 'account-orders-form.twig';
+                $dataArray['header'] = \Yii::t('base', 'Orders');
+                
+                $dataArray['template'] = 'account-orders-form.twig';
                 
                 $this->accountOrdersFormWidgetArray = $dataArray;
             }

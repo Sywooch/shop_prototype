@@ -20,7 +20,127 @@ class ConversionWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('visits'));
         $this->assertTrue($reflection->hasProperty('header'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод ConversionWidget::setPurchases
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPurchasesError()
+    {
+        $purchases = null;
+        
+        $widget = new ConversionWidget();
+        $widget->setPurchases($purchases);
+    }
+    
+    /**
+     * Тестирует метод ConversionWidget::setPurchases
+     */
+    public function testSetPurchases()
+    {
+        $purchases = 25;
+        
+        $widget = new ConversionWidget();
+        $widget->setPurchases($purchases);
+        
+        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('int', $result);
+    }
+    
+    /**
+     * Тестирует метод ConversionWidget::setVisits
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetVisitsError()
+    {
+        $visits = null;
+        
+        $widget = new ConversionWidget();
+        $widget->setVisits($visits);
+    }
+    
+    /**
+     * Тестирует метод ConversionWidget::setVisits
+     */
+    public function testSetVisits()
+    {
+        $visits = 18;
+        
+        $widget = new ConversionWidget();
+        $widget->setVisits($visits);
+        
+        $reflection = new \ReflectionProperty($widget, 'visits');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('int', $result);
+    }
+    
+    /**
+     * Тестирует метод ConversionWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new ConversionWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод ConversionWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new ConversionWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод ConversionWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new ConversionWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод ConversionWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new ConversionWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
@@ -37,11 +157,11 @@ class ConversionWidgetTests extends TestCase
     
     /**
      * Тестирует метод ConversionWidget::run
-     * если пуст ConversionWidget::view
+     * если пуст ConversionWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $widget = new ConversionWidget();
         
@@ -68,7 +188,7 @@ class ConversionWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'conversion.twig');
         
@@ -94,7 +214,7 @@ class ConversionWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'conversion.twig');
         
@@ -123,7 +243,7 @@ class ConversionWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'conversion.twig');
         

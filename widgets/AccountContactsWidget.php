@@ -16,9 +16,13 @@ class AccountContactsWidget extends AbstractBaseWidget
      */
     private $user;
     /**
+     * @var string заголовок
+     */
+    private $header;
+    /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку с данными
@@ -30,13 +34,16 @@ class AccountContactsWidget extends AbstractBaseWidget
             if (empty($this->user)) {
                 throw new ErrorException($this->emptyError('user'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->header)) {
+                throw new ErrorException($this->emptyError('header'));
+            }
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
             
-            $renderArray['userHeader'] = \Yii::t('base', 'Current contact details');
+            $renderArray['userHeader'] = $this->header;
             
             $set = [];
             
@@ -59,7 +66,7 @@ class AccountContactsWidget extends AbstractBaseWidget
             
             $renderArray['user'] = $set;
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -73,6 +80,32 @@ class AccountContactsWidget extends AbstractBaseWidget
     {
         try {
             $this->user = $user;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает заголовок свойству AccountContactsWidget::header
+     * @param string $header
+     */
+    public function setHeader(string $header)
+    {
+        try {
+            $this->header = $header;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству AccountContactsWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

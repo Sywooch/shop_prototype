@@ -33,7 +33,10 @@ class GetPasswordGenerateSuccessWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['tempPassword'] = $tempPassword;
-                $dataArray['view'] = 'generate-success.twig';
+                
+                 $dataArray['header'] = \Yii::t('base', 'Password recovery');
+                
+                $dataArray['template'] = 'generate-success.twig';
                 
                 $this->passwordGenerateSuccessWidgetArray = $dataArray;
             }

@@ -31,7 +31,8 @@ class GetAccountContactsWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['user'] = \Yii::$app->user->identity;
-                $dataArray['view'] = 'account-contacts.twig';
+                $dataArray['header'] = \Yii::t('base', 'Current contact details');
+                $dataArray['template'] = 'account-contacts.twig';
                 
                 $this->accountContactsWidgetArray = $dataArray;
             }

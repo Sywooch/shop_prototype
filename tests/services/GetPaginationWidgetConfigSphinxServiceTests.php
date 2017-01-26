@@ -66,9 +66,9 @@ class GetPaginationWidgetConfigSphinxServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertArrayHasKey('pagination', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

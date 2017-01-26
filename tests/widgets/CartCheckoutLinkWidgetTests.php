@@ -17,16 +17,46 @@ class CartCheckoutLinkWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(CartCheckoutLinkWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод CartCheckoutLinkWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new CartCheckoutLinkWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод CartCheckoutLinkWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new CartCheckoutLinkWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод CartCheckoutLinkWidget::run
-     * если пуст CartCheckoutLinkWidget::view
+     * если пуст CartCheckoutLinkWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $widget = new CartCheckoutLinkWidget();
         $widget->run();
@@ -39,7 +69,7 @@ class CartCheckoutLinkWidgetTests extends TestCase
     {
         $widget = new CartCheckoutLinkWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'cart-checkout-link.twig');
         

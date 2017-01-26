@@ -34,7 +34,9 @@ class GetAverageBillWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                
-                $dataArray['view'] = 'average-bill.twig';
+                $dataArray['header'] = \Yii::t('base', 'Average bill');
+               
+                $dataArray['template'] = 'average-bill.twig';
                 
                 $this->averageBillWidgetArray = $dataArray;
             }

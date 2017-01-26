@@ -17,16 +17,46 @@ class AccountChangePasswordSuccessWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(AccountChangePasswordSuccessWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод AccountChangePasswordSuccessWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new AccountChangePasswordSuccessWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод AccountChangePasswordSuccessWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new AccountChangePasswordSuccessWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод AccountChangePasswordSuccessWidget::run
-     * если пуст AccountChangePasswordSuccessWidget::view
+     * если пуст AccountChangePasswordSuccessWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $widget = new AccountChangePasswordSuccessWidget();
         $widget->run();
@@ -39,7 +69,7 @@ class AccountChangePasswordSuccessWidgetTests extends TestCase
     {
         $widget = new AccountChangePasswordSuccessWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'account-change-password-success.twig');
         

@@ -26,7 +26,8 @@ class FiltersWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('sortingFields'));
         $this->assertTrue($reflection->hasProperty('sortingTypes'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -215,6 +216,66 @@ class FiltersWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод FiltersWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new FiltersWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new FiltersWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new FiltersWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new FiltersWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод FiltersWidget::run
      * если пуст FiltersWidget::colors
      * @expectedException ErrorException
@@ -363,11 +424,11 @@ class FiltersWidgetTests extends TestCase
     
     /**
      * Тестирует метод FiltersWidget::run
-     * если пуст FiltersWidget::view
+     * если пуст FiltersWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
         $data = [1=>'some'];
         
@@ -396,6 +457,49 @@ class FiltersWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$data]);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод FiltersWidget::run
+     * если пуст FiltersWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $data = [1=>'some'];
+        
+        $widget = new FiltersWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$data]);
+        
+        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$data]);
+        
+        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$data]);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$data]);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$data]);
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, [$data]);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
         
         $widget->run();
     }
@@ -450,13 +554,17 @@ class FiltersWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'products-filters.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Фильтры</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="products-filters-form"#', $result);
         $this->assertRegExp('#<option value="date">Sorting by date</option>#', $result);
         $this->assertRegExp('#<option value="price">Sorting by price</option>#', $result);

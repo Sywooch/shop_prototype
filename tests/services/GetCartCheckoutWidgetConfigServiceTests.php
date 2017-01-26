@@ -65,7 +65,7 @@ class GetCartCheckoutWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('payments', $result);
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['deliveries']);
         $this->assertInternalType('array', $result['payments']);
@@ -81,7 +81,7 @@ class GetCartCheckoutWidgetConfigServiceTests extends TestCase
         $this->assertEmpty($result['form']->country);
         $this->assertEmpty($result['form']->postcode);
         
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     /**
@@ -102,7 +102,7 @@ class GetCartCheckoutWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('payments', $result);
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['deliveries']);
         $this->assertInternalType('array', $result['payments']);
@@ -118,7 +118,7 @@ class GetCartCheckoutWidgetConfigServiceTests extends TestCase
         $this->assertEquals($user->country->country, $result['form']->country);
         $this->assertEquals($user->postcode->postcode, $result['form']->postcode);
         
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

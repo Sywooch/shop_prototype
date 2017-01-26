@@ -36,7 +36,7 @@ class GetCommentFormWidgetConfigService extends AbstractBaseService
                     'scenario'=>CommentForm::SAVE,
                     'id_product'=>$productsModel->id,
                 ]);
-                $dataArray['view'] = 'comment-form.twig';
+                $dataArray['template'] = 'comment-form.twig';
                 
                 $this->commentFormWidgetArray = $dataArray;
             }

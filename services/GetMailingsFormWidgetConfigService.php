@@ -33,7 +33,9 @@ class GetMailingsFormWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['form'] = new MailingForm(['scenario'=>MailingForm::SAVE]);
                 
-                $dataArray['view'] = 'mailings-form.twig';
+                $dataArray['header'] = \Yii::t('base', 'Sign up now!');
+                
+                $dataArray['template'] = 'mailings-form.twig';
                 
                 $this->mailingsFormWidgetArray = $dataArray;
             }

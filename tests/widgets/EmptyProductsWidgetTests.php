@@ -17,14 +17,44 @@ class EmptyProductsWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(EmptyProductsWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод EmptyProductsWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new EmptyProductsWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод EmptyProductsWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new EmptyProductsWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод EmptyProductsWidget::run
-     * если пуст EmptyProductsWidget::view
+     * если пуст EmptyProductsWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -39,7 +69,7 @@ class EmptyProductsWidgetTests extends TestCase
     {
         $widget = new EmptyProductsWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'empty-products.twig');
         

@@ -84,14 +84,14 @@ class GetAdminOrdersFormWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('statuses', $result);
         $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('array', $result['purchases']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInternalType('array', $result['statuses']);
         $this->assertInstanceOf(OrderStatusForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

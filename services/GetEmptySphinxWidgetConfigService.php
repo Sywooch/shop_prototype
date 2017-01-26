@@ -26,7 +26,7 @@ class GetEmptySphinxWidgetConfigService extends AbstractBaseService
             if (empty($this->emptySphinxWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['view'] = 'empty-sphinx.twig';
+                $dataArray['template'] = 'empty-sphinx.twig';
                 
                 $this->emptySphinxWidgetArray = $dataArray;
             }

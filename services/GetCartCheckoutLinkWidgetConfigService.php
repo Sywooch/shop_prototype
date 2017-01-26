@@ -26,7 +26,7 @@ class GetCartCheckoutLinkWidgetConfigService extends AbstractBaseService
             if (empty($this->cartCheckoutLinkWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['view'] = 'cart-checkout-link.twig';
+                $dataArray['template'] = 'cart-checkout-link.twig';
                 
                 $this->cartCheckoutLinkWidgetArray = $dataArray;
             }

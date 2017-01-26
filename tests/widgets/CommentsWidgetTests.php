@@ -18,7 +18,7 @@ class CommentsWidgetTests extends TestCase
         $reflection = new \ReflectionClass(CommentsWidget::class);
         
         $this->assertTrue($reflection->hasProperty('comments'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -53,12 +53,42 @@ class CommentsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CommentsWidget::run
-     * если пуст CommentsWidget::view
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * Тестирует метод CommentsWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
      */
-    public function testRunEmptyView()
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new CommentsWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод CommentsWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new CommentsWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод CommentsWidget::run
+     * если пуст CommentsWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
     {
         $widget = new CommentsWidget();
         $result = $widget->run();
@@ -78,7 +108,7 @@ class CommentsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $comments);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'comments.twig');
         
@@ -121,7 +151,7 @@ class CommentsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $comments);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'comments.twig');
         

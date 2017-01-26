@@ -14,7 +14,7 @@ class CartBackToCartLinkWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку
@@ -23,8 +23,8 @@ class CartBackToCartLinkWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -40,7 +40,20 @@ class CartBackToCartLinkWidget extends AbstractBaseWidget
             $renderArray['formAction'] = Url::to(['/cart/index']);
             $renderArray['button'] = \Yii::t('base', 'Back to shopping');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству CartBackToCartLinkWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

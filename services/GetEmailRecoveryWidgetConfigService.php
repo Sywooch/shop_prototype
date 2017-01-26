@@ -38,7 +38,7 @@ class GetEmailRecoveryWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['key'] = $key;
                 $dataArray['email'] = $email;
-                $dataArray['view'] = 'recovery-mail.twig';
+                $dataArray['template'] = 'recovery-mail.twig';
                 
                 $this->emailRecoveryWidgetArray = $dataArray;
             }

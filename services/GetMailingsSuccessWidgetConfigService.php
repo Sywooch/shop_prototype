@@ -36,7 +36,7 @@ class GetMailingsSuccessWidgetConfigService extends AbstractBaseService
                 $finder = \Yii::$app->registry->get(MailingsIdFinder::class, ['id'=>$diffIdArray]);
                 $dataArray['mailings'] = $finder->find();
                 
-                $dataArray['view'] = 'mailings-success.twig';
+                $dataArray['template'] = 'mailings-success.twig';
                 
                 $this->mailingsSuccessWidgetArray = $dataArray;
             }

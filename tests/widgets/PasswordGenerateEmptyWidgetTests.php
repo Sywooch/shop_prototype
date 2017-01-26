@@ -17,16 +17,46 @@ class PasswordGenerateEmptyWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(PasswordGenerateEmptyWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод PasswordGenerateEmptyWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new PasswordGenerateEmptyWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод PasswordGenerateEmptyWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new PasswordGenerateEmptyWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод PasswordGenerateEmptyWidget::run
-     * если пуст PasswordGenerateEmptyWidget::view
+     * если пуст PasswordGenerateEmptyWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $widget = new PasswordGenerateEmptyWidget();
         $widget->run();
@@ -39,7 +69,7 @@ class PasswordGenerateEmptyWidgetTests extends TestCase
     {
         $widget = new PasswordGenerateEmptyWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'generate-empty.twig');
         

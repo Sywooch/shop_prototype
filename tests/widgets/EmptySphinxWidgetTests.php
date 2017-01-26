@@ -11,12 +11,52 @@ use app\widgets\EmptySphinxWidget;
 class EmptySphinxWidgetTests extends TestCase
 {
     /**
-     * Тестирует метод EmptySphinxWidget::run
-     * при отсутствии EmptySphinxWidget::view
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * Тестирует свойства EmptySphinxWidget
      */
-    public function testRunEmptyView()
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(EmptySphinxWidget::class);
+        
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод EmptySphinxWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new EmptySphinxWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод EmptySphinxWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new EmptySphinxWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод EmptySphinxWidget::run
+     * при отсутствии EmptySphinxWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
     {
         $widget = new EmptySphinxWidget();
         $widget->run();
@@ -29,7 +69,7 @@ class EmptySphinxWidgetTests extends TestCase
     {
         $widget = new EmptySphinxWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'empty-sphinx.twig');
         

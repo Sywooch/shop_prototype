@@ -32,7 +32,7 @@ class CartCheckoutWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку
@@ -53,8 +53,8 @@ class CartCheckoutWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -88,7 +88,7 @@ class CartCheckoutWidget extends AbstractBaseWidget
             $renderArray['formAction'] = Url::to(['/cart/сheckout-ajax']);
             $renderArray['button'] = \Yii::t('base', 'Send an order');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -141,6 +141,19 @@ class CartCheckoutWidget extends AbstractBaseWidget
     {
         try {
             $this->currency = $currency;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству CartCheckoutWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

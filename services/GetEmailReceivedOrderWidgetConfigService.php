@@ -39,7 +39,9 @@ class GetEmailReceivedOrderWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['view'] = 'email-received-order-mail.twig';
+                $dataArray['header'] = \Yii::t('base', 'Hello! This is information about your order!');
+                
+                $dataArray['template'] = 'email-received-order-mail.twig';
                 
                 $this->emailReceivedOrderWidgetArray = $dataArray;
             }

@@ -14,19 +14,19 @@ class ConversionWidget extends AbstractBaseWidget
      /**
      * @var int количество покупок сегодня
      */
-    public $purchases;
+    private $purchases;
     /**
      * @var int количество посещений сегодня
      */
-    public $visits;
+    private $visits;
     /**
      * @var string заголовок
      */
-    public $header;
+    private $header;
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку с информацией об отсутствии результатов поиска
@@ -38,8 +38,8 @@ class ConversionWidget extends AbstractBaseWidget
             if (empty($this->header)) {
                 throw new ErrorException($this->emptyError('header'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -57,7 +57,59 @@ class ConversionWidget extends AbstractBaseWidget
             
             $renderArray['conversion'] = sprintf('%s: %s%%', \Yii::t('base', 'Conversion today'), $conversion);
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает количество покупок сегодня свойству ConversionWidget::purchases
+     * @param int $purchases
+     */
+    public function setPurchases(int $purchases)
+    {
+        try {
+            $this->purchases = $purchases;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает количество посещений сегодня свойству ConversionWidget::visits
+     * @param int $visits
+     */
+    public function setVisits(int $visits)
+    {
+        try {
+            $this->visits = $visits;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает заголовок свойству ConversionWidget::header
+     * @param string $header
+     */
+    public function setHeader(string $header)
+    {
+        try {
+            $this->header = $header;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству ConversionWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

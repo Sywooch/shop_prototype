@@ -59,7 +59,7 @@ class CommentSaveService extends AbstractBaseService
                         
                         $transaction->commit();
                         
-                        return CommentSaveSuccessWidget::widget(['view'=>'comment-save-success.twig']);
+                        return CommentSaveSuccessWidget::widget(['template'=>'comment-save-success.twig']);
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

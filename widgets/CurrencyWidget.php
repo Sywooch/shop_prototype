@@ -22,9 +22,13 @@ class CurrencyWidget extends AbstractBaseWidget
      */
     private $form;
     /**
+     * @var string заголовок
+     */
+    private $header;
+    /**
      * @var string имя HTML шаблона
      */
-    public $view;
+    private $template;
     
     public function run()
     {
@@ -35,13 +39,16 @@ class CurrencyWidget extends AbstractBaseWidget
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->header)) {
+                throw new ErrorException($this->emptyError('header'));
+            }
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
             
-            $renderArray['header'] = \Yii::t('base', 'Currency');
+            $renderArray['header'] = $this->header;
             $renderArray['currency'] = $this->currency;
             
             $renderArray['formModel'] = $this->form;
@@ -56,7 +63,7 @@ class CurrencyWidget extends AbstractBaseWidget
             $renderArray['formAction'] = Url::to(['/currency/set']);
             $renderArray['button'] = \Yii::t('base', 'Change');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -83,6 +90,32 @@ class CurrencyWidget extends AbstractBaseWidget
     {
         try {
             $this->form = $form;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает заголовок свойству ChangeCurrencyForm::header
+     * @param string $header
+     */
+    public function setHeader(string $header)
+    {
+        try {
+            $this->header = $header;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству ChangeCurrencyForm::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

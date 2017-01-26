@@ -62,10 +62,10 @@ class GetMailingsSuccessWidgetConfigServiceTests extends TestCase
         $this->assertNotEmpty($result);
         
         $this->assertArrayHasKey('mailings', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['mailings']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

@@ -57,9 +57,11 @@ class GetEmailRegistrationWidgetConfigServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        
         $this->assertArrayHasKey('email', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
+        
         $this->assertInternalType('string', $result['email']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
 }

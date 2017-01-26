@@ -62,7 +62,7 @@ class GetCartCheckoutWidgetConfigService extends AbstractBaseService
                 }
                 $dataArray['form'] = $form;
                 
-                $dataArray['view'] = 'cart-checkout-form.twig';
+                $dataArray['template'] = 'cart-checkout-form.twig';
                 
                 $this->cartCheckoutWidgetArray = $dataArray;
             }

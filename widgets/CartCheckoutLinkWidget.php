@@ -14,7 +14,7 @@ class CartCheckoutLinkWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку со ссылкой на страницу офрмления заказа
@@ -23,8 +23,8 @@ class CartCheckoutLinkWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -40,7 +40,20 @@ class CartCheckoutLinkWidget extends AbstractBaseWidget
             $renderArray['formAction'] = Url::to(['/cart/сheckout-ajax-form']);
             $renderArray['button'] = \Yii::t('base', 'Checkout');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству CartCheckoutLinkWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

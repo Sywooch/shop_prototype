@@ -26,7 +26,7 @@ class GetPasswordGenerateEmptyWidgetConfigService extends AbstractBaseService
             if (empty($this->passwordGenerateEmptyWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['view'] = 'generate-empty.twig';
+                $dataArray['template'] = 'generate-empty.twig';
                 
                 $this->passwordGenerateEmptyWidgetArray = $dataArray;
             }

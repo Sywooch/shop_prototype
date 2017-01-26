@@ -26,7 +26,7 @@ class GetEmptyProductsWidgetConfigService extends AbstractBaseService
             if (empty($this->emptyProductsWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['view'] = 'empty-products.twig';
+                $dataArray['template'] = 'empty-products.twig';
                 
                 $this->emptyProductsWidgetArray = $dataArray;
             }

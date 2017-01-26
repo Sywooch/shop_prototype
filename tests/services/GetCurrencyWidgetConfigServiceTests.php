@@ -49,12 +49,16 @@ class GetCurrencyWidgetConfigServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
         $this->assertInternalType('array', $result['currency']);
         $this->assertInstanceOf(ChangeCurrencyForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

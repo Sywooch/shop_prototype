@@ -37,7 +37,8 @@ class AccountOrdersFormWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -131,6 +132,66 @@ class AccountOrdersFormWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод AccountOrdersFormWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new AccountOrdersFormWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersFormWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new AccountOrdersFormWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersFormWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new AccountOrdersFormWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersFormWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new AccountOrdersFormWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод AccountOrdersFormWidget::run
      * если пуст AccountOrdersFormWidget::purchases
      * @expectedException ErrorException
@@ -186,11 +247,11 @@ class AccountOrdersFormWidgetTests extends TestCase
     
     /**
      * Тестирует метод AccountOrdersFormWidget::run
-     * если пуст AccountOrdersFormWidget::view
+     * если пуст AccountOrdersFormWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
         $mock = new class() {};
         
@@ -207,6 +268,37 @@ class AccountOrdersFormWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersFormWidget::run
+     * если пуст AccountOrdersFormWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $mock = new class() {};
+        
+        $widget = new AccountOrdersFormWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
         
         $widget->run();
     }
@@ -462,13 +554,17 @@ class AccountOrdersFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'account-orders-form.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Заказы</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<ol class="account-orders">#', $result);
         $this->assertRegExp('#<li class="account-order-2">#', $result);
         $this->assertRegExp('#<li class="account-order-1">#', $result);

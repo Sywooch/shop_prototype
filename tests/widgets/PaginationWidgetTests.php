@@ -30,7 +30,7 @@ class PaginationWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('nextMax'));
         $this->assertTrue($reflection->hasProperty('tags'));
         $this->assertTrue($reflection->hasProperty('pagePointer'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -61,6 +61,36 @@ class PaginationWidgetTests extends TestCase
         $result = $reflection->getValue($widget);
         
         $this->assertInstanceOf(PaginationInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PaginationWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new PaginationWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод PaginationWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new PaginationWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
@@ -327,9 +357,9 @@ class PaginationWidgetTests extends TestCase
     
     /**
      * Тестирует метод PaginationWidget::run
-     * если пуст PaginationWidget::view
+     * если пуст PaginationWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -367,7 +397,8 @@ class PaginationWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $pagination);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
         $reflection->setValue($widget, 'pagination.twig');
         
         $result = $widget->run();

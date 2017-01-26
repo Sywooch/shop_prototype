@@ -42,7 +42,7 @@ class GetAccountOrdersWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['view'] = 'account-purchases.twig';
+                $dataArray['template'] = 'account-purchases.twig';
                 
                 $this->accountOrdersWidgetArray = $dataArray;
             }

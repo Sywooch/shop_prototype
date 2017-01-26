@@ -40,7 +40,8 @@ class EmailReceivedOrderWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -134,6 +135,66 @@ class EmailReceivedOrderWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод EmailReceivedOrderWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new EmailReceivedOrderWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод EmailReceivedOrderWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new EmailReceivedOrderWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод EmailReceivedOrderWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new EmailReceivedOrderWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод EmailReceivedOrderWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new EmailReceivedOrderWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод EmailReceivedOrderWidget::run
      * если пуст EmailReceivedOrderWidget::purchases
      * @expectedException ErrorException
@@ -189,11 +250,11 @@ class EmailReceivedOrderWidgetTests extends TestCase
     
     /**
      * Тестирует метод EmailReceivedOrderWidget::run
-     * если пуст EmailReceivedOrderWidget::view
+     * если пуст EmailReceivedOrderWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunViewEmpty()
+    public function testRunEmptyHeader()
     {
         $mock = new class() {};
         
@@ -210,6 +271,37 @@ class EmailReceivedOrderWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод EmailReceivedOrderWidget::run
+     * если пуст EmailReceivedOrderWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $mock = new class() {};
+        
+        $widget = new EmailReceivedOrderWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
         
         $widget->run();
     }
@@ -303,13 +395,17 @@ class EmailReceivedOrderWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'email-received-order-mail.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<h1>Привет! Это информация о вашем заказе!</h1>#', $result);
+        $this->assertRegExp('#<h1>Header</h1>#', $result);
         $this->assertRegExp('#<a href=".+/seocode_1">Name 1</a>#', $result);
         $this->assertRegExp('#short_description 1#', $result);
         $this->assertRegExp('#Цвет: black#', $result);

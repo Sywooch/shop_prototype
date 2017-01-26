@@ -41,7 +41,9 @@ class GetCartWidgetConfigService extends AbstractBaseService
                 $dataArray['updateForm'] = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]);
                 $dataArray['deleteForm'] = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
                 
-                $dataArray['view'] = 'cart.twig';
+                $dataArray['header'] = \Yii::t('base', 'Selected products');
+                
+                $dataArray['template'] = 'cart.twig';
                 
                 $this->cartWidgetArray = $dataArray;
             }

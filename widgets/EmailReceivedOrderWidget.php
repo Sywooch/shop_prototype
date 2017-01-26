@@ -30,9 +30,13 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
+     * @var string заголовок
+     */
+    private $header;
+    /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку с информацией об успешной регистрации
@@ -50,13 +54,16 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->header)) {
+                throw new ErrorException($this->emptyError('header'));
+            }
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
             
-            $renderArray['header'] = \Yii::t('base', 'Hello! This is information about your order!');
+            $renderArray['header'] = $this->header;
             
             foreach ($this->purchases as $purchase) {
                 $set = [];
@@ -91,7 +98,7 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
             $paymentsModel = $finder->find();
             $renderArray['payment'] = sprintf('%s: %s', \Yii::t('base', 'Payment'), $paymentsModel->description);
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -131,6 +138,32 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
     {
         try {
             $this->currency = $currency;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает заголовок свойству EmailReceivedOrderWidget::header
+     * @param string $header
+     */
+    public function setHeader(string $header)
+    {
+        try {
+            $this->header = $header;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству EmailReceivedOrderWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -33,7 +33,7 @@ class GetEmailRegistrationWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['email'] = $email;
-                $dataArray['view'] = 'registration-mail.twig';
+                $dataArray['template'] = 'registration-mail.twig';
                 
                 $this->emailRegistrationWidgetArray = $dataArray;
             }

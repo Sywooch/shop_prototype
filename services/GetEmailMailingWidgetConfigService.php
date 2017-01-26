@@ -43,7 +43,7 @@ class GetEmailMailingWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['email'] = $email;
                 $dataArray['key'] = HashHelper::createHash([$email]);
-                $dataArray['view'] = 'email-mailings-subscribe-success.twig';
+                $dataArray['template'] = 'email-mailings-subscribe-success.twig';
                 
                 $this->emailMailingWidgetArray = $dataArray;
             }

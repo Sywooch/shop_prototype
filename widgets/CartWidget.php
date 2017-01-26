@@ -33,9 +33,13 @@ class CartWidget extends AbstractBaseWidget
      */
     private $deleteForm;
     /**
+     * @var string заголовок
+     */
+    private $header;
+    /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку с информацией о текущем статусе корзины заказов
@@ -56,8 +60,11 @@ class CartWidget extends AbstractBaseWidget
             if (empty($this->deleteForm)) {
                 throw new ErrorException($this->emptyError('deleteForm'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->header)) {
+                throw new ErrorException($this->emptyError('header'));
+            }
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -99,7 +106,7 @@ class CartWidget extends AbstractBaseWidget
                 $renderArray['collection'][] = $set;
             }
             
-            $renderArray['header'] = \Yii::t('base', 'Selected products');
+            $renderArray['header'] = $this->header;
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -113,7 +120,7 @@ class CartWidget extends AbstractBaseWidget
             $renderArray['formActionDelete'] = Url::to(['/cart/delete']);
             $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -166,6 +173,32 @@ class CartWidget extends AbstractBaseWidget
     {
         try {
             $this->deleteForm = $deleteForm;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает заголовок свойству CartWidget::header
+     * @param string $header
+     */
+    public function setHeader(string $header)
+    {
+        try {
+            $this->header = $header;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству CartWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

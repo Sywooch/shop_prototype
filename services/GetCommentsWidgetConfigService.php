@@ -41,7 +41,7 @@ class GetCommentsWidgetConfigService extends AbstractBaseService
                     $dataArray['comments'] = $commentsArray;
                 }
                 
-                $dataArray['view'] = 'comments.twig';
+                $dataArray['template'] = 'comments.twig';
                 
                 $this->commentsWidgetArray = $dataArray;
             }

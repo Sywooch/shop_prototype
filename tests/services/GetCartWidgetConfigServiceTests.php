@@ -47,16 +47,20 @@ class GetCartWidgetConfigServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        
         $this->assertArrayHasKey('purchases', $result);
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('updateForm', $result);
         $this->assertArrayHasKey('deleteForm', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
         $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInstanceOf(PurchaseForm::class, $result['updateForm']);
         $this->assertInstanceOf(PurchaseForm::class, $result['deleteForm']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

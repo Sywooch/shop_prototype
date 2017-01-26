@@ -18,7 +18,7 @@ class MailingsSuccessWidgetTests extends TestCase
         $reflection = new \ReflectionClass(MailingsSuccessWidget::class);
         
         $this->assertTrue($reflection->hasProperty('mailings'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -53,6 +53,36 @@ class MailingsSuccessWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод MailingsSuccessWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new MailingsSuccessWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод MailingsSuccessWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new MailingsSuccessWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод MailingsSuccessWidget::run
      * если пуст MailingsSuccessWidget::mailings
      * @expectedException ErrorException
@@ -66,11 +96,11 @@ class MailingsSuccessWidgetTests extends TestCase
     
     /**
      * Тестирует метод MailingsSuccessWidget::run
-     * если пуст MailingsSuccessWidget::view
+     * если пуст MailingsSuccessWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $mailing = new class() {};
         
@@ -105,7 +135,7 @@ class MailingsSuccessWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mailings);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'mailings-success.twig');
         

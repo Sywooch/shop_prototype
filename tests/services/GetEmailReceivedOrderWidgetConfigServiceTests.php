@@ -69,12 +69,14 @@ class GetEmailReceivedOrderWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('purchases', $result);
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(PurchasesCollection::class, $result['purchases']);
         $this->assertInstanceOf(CustomerInfoForm::class, $result['form']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
         
         $session->remove($key);
         $session->close();

@@ -37,7 +37,7 @@ class GetPaginationWidgetConfigSphinxService extends AbstractBaseService
                 }
                 
                 $dataArray['pagination'] = $pagination;
-                $dataArray['view'] = 'pagination.twig';
+                $dataArray['template'] = 'pagination.twig';
                 
                 $this->paginationWidgetArray = $dataArray;
             }

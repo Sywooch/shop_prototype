@@ -50,12 +50,12 @@ class GetConversionWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('purchases', $result);
         $this->assertArrayHasKey('visits', $result);
         $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('integer', $result['purchases']);
         $this->assertInternalType('integer', $result['visits']);
         $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

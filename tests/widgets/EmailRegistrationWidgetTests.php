@@ -19,7 +19,67 @@ class EmailRegistrationWidgetTests extends TestCase
         $reflection = new \ReflectionClass(EmailRegistrationWidget::class);
         
         $this->assertTrue($reflection->hasProperty('email'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод EmailRegistrationWidget::setEmail
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetEmailError()
+    {
+        $email = null;
+        
+        $widget = new EmailRegistrationWidget();
+        $widget->setEmail($email);
+    }
+    
+    /**
+     * Тестирует метод EmailRegistrationWidget::setEmail
+     */
+    public function testSetEmail()
+    {
+        $email = 'email';
+        
+        $widget = new EmailRegistrationWidget();
+        $widget->setEmail($email);
+        
+        $reflection = new \ReflectionProperty($widget, 'email');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод EmailRegistrationWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new EmailRegistrationWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод EmailRegistrationWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new EmailRegistrationWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
@@ -36,15 +96,16 @@ class EmailRegistrationWidgetTests extends TestCase
     
     /**
      * Тестирует метод EmailRegistrationWidget::run
-     * если пуст EmailRegistrationWidget::view
+     * если пуст EmailRegistrationWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunViewEmpty()
     {
         $widget = new EmailRegistrationWidget();
         
         $reflection = new \ReflectionProperty($widget, 'email');
+        $reflection->setAccessible(true);
         $reflection->setValue($widget, 'email@email.com');
         
         $widget->run();
@@ -60,9 +121,11 @@ class EmailRegistrationWidgetTests extends TestCase
         $widget = new EmailRegistrationWidget();
         
         $reflection = new \ReflectionProperty($widget, 'email');
+        $reflection->setAccessible(true);
         $reflection->setValue($widget, 'email@email.com');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
         $reflection->setValue($widget, 'registration-mail.twig');
         
         $result = $widget->run();

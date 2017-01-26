@@ -1,7 +1,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 {% if purchases %}
-    <p><strong>{{ userOrders }}</strong></p>
+    <p><strong>{{ header }}</strong></p>
     
     <ol class="{{ listClass }}">
         {% for purchase in purchases %}

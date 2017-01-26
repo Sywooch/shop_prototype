@@ -17,13 +17,13 @@ class CommentsWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     public function run()
     {
         try {
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -38,7 +38,7 @@ class CommentsWidget extends AbstractBaseWidget
                 }
             }
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -52,6 +52,19 @@ class CommentsWidget extends AbstractBaseWidget
     {
         try {
             $this->comments = $comments;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству CommentsModel::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

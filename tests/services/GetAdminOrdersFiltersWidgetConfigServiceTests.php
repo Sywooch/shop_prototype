@@ -34,11 +34,13 @@ class GetAdminOrdersFiltersWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('sortingTypes', $result);
         $this->assertArrayHasKey('statuses', $result);
         $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['sortingTypes']);
         $this->assertInternalType('array', $result['statuses']);
         $this->assertInstanceOf(AdminOrdersFiltersForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
 }

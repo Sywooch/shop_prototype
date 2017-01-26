@@ -18,15 +18,15 @@ class EmailMailingWidget extends AbstractBaseWidget
     /**
      * @var string уникальный ключ, который будет добавлен к ссылке
      */
-    public $key;
+    private $key;
     /**
      * @var string email, который будет добавлен к ссылке
      */
-    public $email;
+    private $email;
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку
@@ -44,8 +44,8 @@ class EmailMailingWidget extends AbstractBaseWidget
             if (empty($this->email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -63,20 +63,59 @@ class EmailMailingWidget extends AbstractBaseWidget
             $renderArray['unsubscribeText'] = \Yii::t('base', 'If you wish to unsubscribe, click here');
             $renderArray['unsubscribeHref'] =Url::to(['/mailings/unsubscribe', \Yii::$app->params['unsubscribeKey']=>$this->key, 'email'=>$this->email], true);
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает array MailingsModel свойству MailingsSuccessWidget::mailings
+     * Присваивает array MailingsModel свойству EmailMailingWidget::mailings
      * @param $mailings array MailingsModel
      */
     public function setMailings(array $mailings)
     {
         try {
             $this->mailings = $mailings;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ключ свойству EmailMailingWidget::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает email свойству EmailMailingWidget::email
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        try {
+            $this->email = $email;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству EmailMailingWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

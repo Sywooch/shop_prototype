@@ -98,7 +98,10 @@ class GetFiltersWidgetConfigSphinxService extends AbstractBaseService
                     }
                 }
                 $dataArray['form'] = $form;
-                $dataArray['view'] = 'products-filters.twig';
+                
+                $dataArray['header'] = \Yii::t('base', 'Filters');
+                
+                $dataArray['template'] = 'products-filters.twig';
                 
                 $this->filtersWidgetArray = $dataArray;
             }

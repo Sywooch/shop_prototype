@@ -65,7 +65,8 @@ class GetAccountChangeDataWidgetConfigServiceTests extends TestCase
         $this->assertNotEmpty($result);
         
         $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(UserUpdateForm::class, $result['form']);
         $this->assertEmpty($result['form']->name);
@@ -76,7 +77,8 @@ class GetAccountChangeDataWidgetConfigServiceTests extends TestCase
         $this->assertEmpty($result['form']->country);
         $this->assertEmpty($result['form']->postcode);
         
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     /**
@@ -95,7 +97,8 @@ class GetAccountChangeDataWidgetConfigServiceTests extends TestCase
         $this->assertNotEmpty($result);
         
         $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(UserUpdateForm::class, $result['form']);
         $this->assertEquals($user->name->name, $result['form']->name);
@@ -106,7 +109,8 @@ class GetAccountChangeDataWidgetConfigServiceTests extends TestCase
         $this->assertEquals($user->country->country, $result['form']->country);
         $this->assertEquals($user->postcode->postcode, $result['form']->postcode);
         
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

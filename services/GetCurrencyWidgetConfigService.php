@@ -49,7 +49,9 @@ class GetCurrencyWidgetConfigService extends AbstractBaseService
                     'url'=>Url::current()
                 ]);
                 
-                $dataArray['view'] = 'currency-form.twig';
+                $dataArray['header'] = \Yii::t('base', 'Currency');
+                
+                $dataArray['template'] = 'currency-form.twig';
                 
                 $this->currencyWidgetArray = $dataArray;
             }

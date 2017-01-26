@@ -46,9 +46,13 @@ class GetPasswordGenerateSuccessWidgetConfigServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        
         $this->assertArrayHasKey('tempPassword', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
         $this->assertInternalType('string', $result['tempPassword']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
 }

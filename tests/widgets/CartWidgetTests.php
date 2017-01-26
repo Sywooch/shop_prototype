@@ -22,7 +22,10 @@ class CartWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('updateForm'));
+        $this->assertTrue($reflection->hasProperty('deleteForm'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -146,6 +149,66 @@ class CartWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод CartWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new CartWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод CartWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new CartWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод CartWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new CartWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод CartWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new CartWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод CartWidget::run
      * при отсутствии CartWidget::purchases
      * @expectedException ErrorException
@@ -259,11 +322,11 @@ class CartWidgetTests extends TestCase
     
     /**
      * Тестирует метод CartWidget::run
-     * при отсутствии CartWidget::view
+     * при отсутствии CartWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
         $purchases = new class() extends PurchasesCollection {
             protected $items = [1];
@@ -290,6 +353,47 @@ class CartWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'deleteForm');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод CartWidget::run
+     * при отсутствии CartWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $purchases = new class() extends PurchasesCollection {
+            protected $items = [1];
+        };
+        
+        $currency = new class() extends CurrencyModel {};
+        
+        $form = new class() extends PurchaseForm {};
+        
+        $widget = new CartWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $purchases);
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'updateForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'deleteForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
         
         $widget->run();
     }
@@ -372,13 +476,17 @@ class CartWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'cart.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Выбранные товары</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<li class="product-id-1">#', $result);
         $this->assertRegExp('#<a href=".+">Product 1</a>#', $result);
         $this->assertRegExp('#Short description 1#', $result);

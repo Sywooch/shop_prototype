@@ -58,7 +58,7 @@ class PaginationWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку пагинации
@@ -70,8 +70,8 @@ class PaginationWidget extends AbstractBaseWidget
             if (empty($this->pagination)) {
                 throw new ErrorException($this->emptyError('pagination'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             if ($this->pagination->pageCount >= 2) {
@@ -98,7 +98,7 @@ class PaginationWidget extends AbstractBaseWidget
             
             $renderArray['pagination'] = !empty($this->tags) ? implode(Html::tag($this->childTag, $this->separator), $this->tags) : '';
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch(\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -211,6 +211,19 @@ class PaginationWidget extends AbstractBaseWidget
     {
         try {
             $this->pagination = $pagination;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству PaginationWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

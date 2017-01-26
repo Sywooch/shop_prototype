@@ -61,7 +61,9 @@ class GetAdminOrdersFiltersWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['form'] = $form;
                 
-                $dataArray['view'] = 'admin-orders-filters.twig';
+                $dataArray['header'] = \Yii::t('base', 'Filters');
+                
+                $dataArray['template'] = 'admin-orders-filters.twig';
                 
                 $this->adminOrdersFiltersWidgetArray = $dataArray;
             }

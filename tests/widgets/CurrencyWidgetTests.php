@@ -27,7 +27,8 @@ class CurrencyWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('currency'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -91,6 +92,66 @@ class CurrencyWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод CurrencyWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new CurrencyWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод CurrencyWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new CurrencyWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод CurrencyWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new CurrencyWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод CurrencyWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new CurrencyWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод CurrencyWidget::run
      * если пуст CurrencyWidget::currency
      * @expectedException ErrorException
@@ -123,11 +184,11 @@ class CurrencyWidgetTests extends TestCase
     
     /**
      * Тестирует метод CurrencyWidget::run
-     * если пуст CurrencyWidget::view
+     * если пуст CurrencyWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
         $currency = [1=>'ONE', 2=>'TWO'];
         
@@ -142,6 +203,35 @@ class CurrencyWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод CurrencyWidget::run
+     * если пуст CurrencyWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $currency = [1=>'ONE', 2=>'TWO'];
+        
+        $form = new class() extends ChangeCurrencyForm {};
+        
+        $widget = new CurrencyWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, 'Header');
         
         $widget->run();
     }
@@ -167,13 +257,17 @@ class CurrencyWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'currency-form.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Валюта</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="set-currency-form"#', $result);
         $this->assertRegExp('#<option value="1">ONE</option>#', $result);
         $this->assertRegExp('#<option value="2">TWO</option>#', $result);

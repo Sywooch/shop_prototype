@@ -39,7 +39,7 @@ class GetConversionWidgetConfigService extends AbstractBaseService
                 $visitorsCounterModel = $finder->find();
                 $dataArray['visits'] = $visitorsCounterModel->counter ?? 0;
                 
-                $dataArray['view'] = 'conversion.twig';
+                $dataArray['template'] = 'conversion.twig';
                 
                 $this->conversionWidgetArray = $dataArray;
             }

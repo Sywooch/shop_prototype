@@ -74,9 +74,9 @@ class GetCommentFormWidgetConfigServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         $this->assertInstanceOf(CommentForm::class, $result['form']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

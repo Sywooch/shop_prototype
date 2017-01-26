@@ -44,7 +44,8 @@ class GetAccountChangeDataWidgetConfigService extends AbstractBaseService
                 $form->postcode = !empty($user->id_postcode) ? $user->postcode->postcode : null;
                 
                 $dataArray['form'] = $form;
-                $dataArray['view'] = 'account-change-data-form.twig';
+                $dataArray['header'] = \Yii::t('base', 'Change data');
+                $dataArray['template'] = 'account-change-data-form.twig';
                 
                 $this->accountChangeDataWidgetArray = $dataArray;
             }

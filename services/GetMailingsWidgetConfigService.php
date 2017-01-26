@@ -32,7 +32,7 @@ class GetMailingsWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['header'] = \Yii::t('base', 'Available mailings');
                 
-                $dataArray['view'] = 'mailings.twig';
+                $dataArray['template'] = 'mailings.twig';
                 
                 $this->mailingsWidgetArray = $dataArray;
             }

@@ -22,7 +22,8 @@ class AverageBillWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -86,6 +87,66 @@ class AverageBillWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод AverageBillWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new AverageBillWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод AverageBillWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new AverageBillWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод AverageBillWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new AverageBillWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод AverageBillWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new AverageBillWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод AverageBillWidget::run
      * если пуст AverageBillWidget::currency
      * @expectedException ErrorException
@@ -99,11 +160,11 @@ class AverageBillWidgetTests extends TestCase
     
     /**
      * Тестирует метод AverageBillWidget::run
-     * если пуст AverageBillWidget::view
+     * если пуст AverageBillWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
         $mock = new class() {};
         
@@ -112,6 +173,29 @@ class AverageBillWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AverageBillWidget::run
+     * если пуст AverageBillWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $mock = new class() {};
+        
+        $widget = new AverageBillWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
         
         $widget->run();
     }
@@ -144,13 +228,17 @@ class AverageBillWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $purchases);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'average-bill.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Средний чек</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p>Средний чек сегодня: 0,00 MONEY</p>#', $result);
     }
     
@@ -189,13 +277,17 @@ class AverageBillWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $purchases);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'average-bill.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Средний чек</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p>Средний чек сегодня: 74,33 MONEY</p>#', $result);
     }
 }

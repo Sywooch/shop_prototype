@@ -51,11 +51,13 @@ class GetAverageBillWidgetConfigServiceTests extends TestCase
         
         $this->assertArrayHasKey('purchases', $result);
         $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

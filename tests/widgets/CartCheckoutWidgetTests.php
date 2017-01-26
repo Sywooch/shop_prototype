@@ -38,7 +38,7 @@ class CartCheckoutWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('deliveries'));
         $this->assertTrue($reflection->hasProperty('payments'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -162,6 +162,36 @@ class CartCheckoutWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод CartCheckoutWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new CartCheckoutWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод CartCheckoutWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new CartCheckoutWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод CartCheckoutWidget::run
      * если пуст CartCheckoutWidget::form
      * @expectedException ErrorException
@@ -244,9 +274,9 @@ class CartCheckoutWidgetTests extends TestCase
     
     /**
      * Тестирует метод CartCheckoutWidget::run
-     * если пуст CartCheckoutWidget::view
+     * если пуст CartCheckoutWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -330,7 +360,7 @@ class CartCheckoutWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $payments);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'cart-checkout-form.twig');
         
@@ -419,7 +449,7 @@ class CartCheckoutWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $payments);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'cart-checkout-form.twig');
         

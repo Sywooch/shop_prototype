@@ -34,11 +34,11 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     /**
      * @var string заголовок
      */
-    public $header;
+    private $header;
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку с данными
@@ -59,8 +59,8 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
             if (empty($this->header)) {
                 throw new ErrorException($this->emptyError('header'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -144,7 +144,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                 $renderArray['ordersEmpty'] = \Yii::t('base', 'No orders');
             }
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -197,6 +197,32 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     {
         try {
             $this->form = $form;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает заголовок свойству AdminOrdersFormWidget::header
+     * @param string $header
+     */
+    public function setHeader(string $header)
+    {
+        try {
+            $this->header = $header;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству AdminOrdersFormWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

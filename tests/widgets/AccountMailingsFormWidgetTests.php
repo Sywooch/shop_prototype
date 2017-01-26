@@ -20,7 +20,8 @@ class AccountMailingsFormWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('mailings'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -84,6 +85,66 @@ class AccountMailingsFormWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод AccountMailingsFormWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new AccountMailingsFormWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод AccountMailingsFormWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new AccountMailingsFormWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод AccountMailingsFormWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new AccountMailingsFormWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод AccountMailingsFormWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new AccountMailingsFormWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод AccountMailingsFormWidget::run
      * если пуст AccountMailingsFormWidget::form
      * @expectedException ErrorException
@@ -97,19 +158,42 @@ class AccountMailingsFormWidgetTests extends TestCase
     
     /**
      * Тестирует метод AccountMailingsFormWidget::run
-     * если пуст AccountMailingsFormWidget::view
+     * если пуст AccountMailingsFormWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
-        $form = new class() extends MailingForm {};
+        $mock = new class() {};
         
         $widget = new AccountMailingsFormWidget();
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);
+        $reflection->setValue($widget, $mock);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AccountMailingsFormWidget::run
+     * если пуст AccountMailingsFormWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $mock = new class() {};
+        
+        $widget = new AccountMailingsFormWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
         
         $widget->run();
     }
@@ -130,11 +214,15 @@ class AccountMailingsFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mailings);
         
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'account-mailings-form.twig');
         
@@ -174,13 +262,17 @@ class AccountMailingsFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'account-mailings-form.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Подпишитесь сейчас!</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<li class="account-mailings-form-\d">#', $result);
         $this->assertRegExp('#Mailing \d#', $result);
         $this->assertRegExp('#Mailing description \d#', $result);
