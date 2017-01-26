@@ -232,11 +232,11 @@ class AdminOrdersFiltersWidgetTests extends TestCase
         
         $this->assertRegExp('#<p><strong>Фильтры</strong></p>#', $result);
         $this->assertRegExp('#<form id="admin-orders-filters-form" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<label class="control-label" for=".+">Sorting Type</label>#', $result);
+        $this->assertRegExp('#<label class="control-label" for=".+">Дата заказа</label>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[sortingType\]">#', $result);
         $this->assertRegExp('#<option value="4">Sort ascending</option>#', $result);
         $this->assertRegExp('#<option value="3">Sort descending</option>#', $result);
-        $this->assertRegExp('#<label class="control-label" for=".+">Status</label>#', $result);
+        $this->assertRegExp('#<label class="control-label" for=".+">Статус</label>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[status\]">#', $result);
         $this->assertRegExp('#<option value="received">Received</option>#', $result);
         $this->assertRegExp('#<option value="processed">Processed</option>#', $result);

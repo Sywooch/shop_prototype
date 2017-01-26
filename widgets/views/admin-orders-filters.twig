@@ -3,8 +3,8 @@
 <p><strong>{{ header }}</strong></p>
 
 {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionApply, 'method':'POST'}) %}
-    {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes) | raw }}
-    {{ form.field(formModel, 'status').dropDownList(statuses) | raw }}
+    {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes).label(sortingTypeLabel) | raw }}
+    {{ form.field(formModel, 'status').dropDownList(statuses).label(statusLabel) | raw }}
     <input type="submit" value="{{ buttonApply }}">
 {{ active_form_end() }}
 

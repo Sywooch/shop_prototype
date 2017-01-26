@@ -5,8 +5,8 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
-use app\collections\PurchasesCollection;
-use app\models\CurrencyModel;
+use app\collections\PurchasesCollectionInterface;
+use app\models\CurrencyInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -14,11 +14,11 @@ use app\models\CurrencyModel;
 class ShortCartWidget extends AbstractBaseWidget
 {
     /**
-     * @var object PurchasesCollection
+     * @var object PurchasesCollectionInterface
      */
     private $purchases;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -58,7 +58,7 @@ class ShortCartWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
             
             $renderArray['extended'] = $this->goods > 0 ? true : false;
             
@@ -84,10 +84,10 @@ class ShortCartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает PurchasesCollection свойству ShortCartWidget::purchases
-     * @param object $collection PurchasesCollection
+     * Присваивает PurchasesCollectionInterface свойству ShortCartWidget::purchases
+     * @param object $collection PurchasesCollectionInterface
      */
-    public function setPurchases(PurchasesCollection $collection)
+    public function setPurchases(PurchasesCollectionInterface $collection)
     {
         try {
             $this->purchases = $collection;
@@ -97,10 +97,10 @@ class ShortCartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству ShortCartWidget::currency
-     * @param CurrencyModel $model
+     * Присваивает CurrencyInterface свойству ShortCartWidget::currency
+     * @param CurrencyInterface $model
      */
-    public function setCurrency(CurrencyModel $model)
+    public function setCurrency(CurrencyInterface $model)
     {
         try {
             $this->currency = $model;

@@ -6,11 +6,11 @@ use yii\base\ErrorException;
 use yii\helpers\{Html,
     Url};
 use app\widgets\AbstractBaseWidget;
-use app\collections\PurchasesCollection;
+use app\collections\PurchasesCollectionInterface;
 use app\forms\CustomerInfoForm;
 use app\finders\{DeliveryIdFinder,
     PaymentIdFinder};
-use app\models\CurrencyModel;
+use app\models\CurrencyInterface;
 
 /**
  * Формирует HTML строку с информацией об успешной регистрации
@@ -18,7 +18,7 @@ use app\models\CurrencyModel;
 class EmailReceivedOrderWidget extends AbstractBaseWidget
 {
     /**
-     * @var PurchasesCollection
+     * @var PurchasesCollectionInterface
      */
     private $purchases;
     /**
@@ -26,7 +26,7 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
      */
     private $form;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -64,13 +64,13 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
                 $set['linkText'] = Html::encode($purchase->product->name);
                 $set['short_description'] = $purchase->product->short_description;
                 $set['quantity'] = sprintf('%s: %s', \Yii::t('base', 'Quantity'), $purchase->quantity);
-                $set['price'] = sprintf('%s: %s', \Yii::t('base', 'Price'), \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code);
+                $set['price'] = sprintf('%s: %s', \Yii::t('base', 'Price'), \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code());
                 $set['color'] = sprintf('%s: %s', \Yii::t('base', 'Color'), $purchase->color->color);
                 $set['size'] = sprintf('%s: %s', \Yii::t('base', 'Size'), $purchase->size->size);
                 $renderArray['collection'][] = $set;
             }
             
-            $renderArray['summary'] = \Yii::t('base', 'Total number of items: {goods}, Total cost: {cost}', ['goods'=>$this->purchases->totalQuantity(), 'cost'=>\Yii::$app->formatter->asDecimal($this->purchases->totalPrice() * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code]);
+            $renderArray['summary'] = \Yii::t('base', 'Total number of items: {goods}, Total cost: {cost}', ['goods'=>$this->purchases->totalQuantity(), 'cost'=>\Yii::$app->formatter->asDecimal($this->purchases->totalPrice() * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code()]);
             
             $renderArray['headerDelivery'] = \Yii::t('base', 'Delivery address');
             
@@ -98,10 +98,10 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает PurchasesCollection свойству EmailReceivedOrderWidget::purchases
-     * @param PurchasesCollection $purchases
+     * Присваивает PurchasesCollectionInterface свойству EmailReceivedOrderWidget::purchases
+     * @param PurchasesCollectionInterface $purchases
      */
-    public function setPurchases(PurchasesCollection $purchases)
+    public function setPurchases(PurchasesCollectionInterface $purchases)
     {
         try {
             $this->purchases = $purchases;
@@ -124,10 +124,10 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству EmailReceivedOrderWidget::currency
-     * @param CurrencyModel $model
+     * Присваивает CurrencyInterface свойству EmailReceivedOrderWidget::currency
+     * @param CurrencyInterface $model
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

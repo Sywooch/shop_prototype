@@ -4,7 +4,7 @@ namespace app\widgets;
 
 use yii\base\ErrorException;
 use app\widgets\AbstractBaseWidget;
-use app\models\CurrencyModel;
+use app\models\CurrencyInterface;
 use app\collections\PurchasesCollectionInterface;
 
 /**
@@ -17,7 +17,7 @@ class AverageBillWidget extends AbstractBaseWidget
      */
     private $purchases;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -47,7 +47,7 @@ class AverageBillWidget extends AbstractBaseWidget
                 $bill = $this->purchases->totalPrice() / $this->purchases->count();
             }
             
-            $renderArray['text'] = sprintf('%s: %s %s', \Yii::t('base', 'Average bill today'), \Yii::$app->formatter->asDecimal(($bill ?? 0) * $this->currency->exchange_rate, 2), $this->currency->code);
+            $renderArray['text'] = sprintf('%s: %s %s', \Yii::t('base', 'Average bill today'), \Yii::$app->formatter->asDecimal(($bill ?? 0) * $this->currency->exchangeRate(), 2), $this->currency->code());
             
             return $this->render($this->view, $renderArray);
         } catch (\Throwable $t) {
@@ -69,10 +69,10 @@ class AverageBillWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству AverageBillWidget::currency
-     * @param CurrencyModel $currency
+     * Присваивает CurrencyInterface свойству AverageBillWidget::currency
+     * @param CurrencyInterface $currency
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

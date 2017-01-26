@@ -5,8 +5,8 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
-use app\collections\PurchasesCollection;
-use app\models\CurrencyModel;
+use app\collections\PurchasesCollectionInterface;
+use app\models\CurrencyInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -14,11 +14,11 @@ use app\models\CurrencyModel;
 class ShortCartRedirectWidget extends AbstractBaseWidget
 {
     /**
-     * @var object PurchasesCollection
+     * @var object PurchasesCollectionInterface
      */
     private $purchases;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -58,7 +58,7 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+            $this->cost = \Yii::$app->formatter->asDecimal($this->cost * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
             
             $renderArray['goodsText'] = \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>$this->goods, 'cost'=>$this->cost]);
             
@@ -80,10 +80,10 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает PurchasesCollection свойству ShortCartRedirectWidget::purchases
-     * @param object $collection PurchasesCollection
+     * Присваивает PurchasesCollectionInterface свойству ShortCartRedirectWidget::purchases
+     * @param object $collection PurchasesCollectionInterface
      */
-    public function setPurchases(PurchasesCollection $collection)
+    public function setPurchases(PurchasesCollectionInterface $collection)
     {
         try {
             $this->purchases = $collection;
@@ -93,13 +93,13 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству ShortCartRedirectWidget::currency
-     * @param CurrencyModel $model
+     * Присваивает CurrencyInterface свойству ShortCartRedirectWidget::currency
+     * @param CurrencyInterface $model
      */
-    public function setCurrency(CurrencyModel $model)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
-            $this->currency = $model;
+            $this->currency = $currency;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -173,7 +173,7 @@ class ProductDetailWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($product, $sizes);
         
-        $currency = new class() {
+        $currency = new class() extends CurrencyModel {
             public $exchange_rate = 12.45;
             public $code = 'MONEY';
         };

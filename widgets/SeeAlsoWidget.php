@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\{Html,
     Url};
 use app\widgets\AbstractBaseWidget;
-use app\models\CurrencyModel;
+use app\models\CurrencyInterface;
 
 /**
  * Выводит информацию о похожих товарах
@@ -18,7 +18,7 @@ class SeeAlsoWidget extends AbstractBaseWidget
      */
     private $products;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -63,7 +63,7 @@ class SeeAlsoWidget extends AbstractBaseWidget
                     $set['image'] = !empty($result) ? $result : '';
                 }
                 
-                $set['price'] = \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+                $set['price'] = \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
                 
                 $renderArray['products'][] = $set;
             }
@@ -88,10 +88,10 @@ class SeeAlsoWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству SeeAlsoWidget::currency
-     * @param CurrencyModel $model
+     * Присваивает CurrencyInterface свойству SeeAlsoWidget::currency
+     * @param CurrencyInterface $model
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

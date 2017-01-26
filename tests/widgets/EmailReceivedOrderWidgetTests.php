@@ -271,7 +271,7 @@ class EmailReceivedOrderWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($purchases, $items);
         
-        $currency = new class() {
+        $currency = new class() extends CurrencyModel {
             public $exchange_rate = 1.00;
             public $code = 'MONEY';
         };

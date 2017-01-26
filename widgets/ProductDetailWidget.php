@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use app\widgets\AbstractBaseWidget;
 use yii\helpers\{ArrayHelper,
     Html};
-use app\models\{CurrencyModel,
+use app\models\{CurrencyInterface,
     ProductsModel};
 
 /**
@@ -19,7 +19,7 @@ class ProductDetailWidget extends AbstractBaseWidget
      */
     private $product;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -66,7 +66,7 @@ class ProductDetailWidget extends AbstractBaseWidget
             ArrayHelper::multisort($sizes, 'size');
             $renderArray['sizes'] = ArrayHelper::getColumn($sizes, 'size');
             
-            $renderArray['price'] = \Yii::$app->formatter->asDecimal($this->product->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+            $renderArray['price'] = \Yii::$app->formatter->asDecimal($this->product->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
             $renderArray['code'] = $this->product->code;
             $renderArray['colorsText'] = \Yii::t('base', 'Colors');
             $renderArray['sizesText'] = \Yii::t('base', 'Sizes');
@@ -93,10 +93,10 @@ class ProductDetailWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству ProductDetailWidget::currency
-     * @param CurrencyModel $currency
+     * Присваивает CurrencyInterface свойству ProductDetailWidget::currency
+     * @param CurrencyInterface $currency
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

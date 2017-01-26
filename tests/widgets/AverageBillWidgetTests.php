@@ -122,7 +122,7 @@ class AverageBillWidgetTests extends TestCase
      */
     public function testRunEmpty()
     {
-        $currency = new class() {
+        $currency = new class() extends CurrencyModel {
             public $exchange_rate = 2.23;
             public $code = 'MONEY';
         };
@@ -159,7 +159,7 @@ class AverageBillWidgetTests extends TestCase
      */
     public function testRun()
     {
-        $currency = new class() {
+        $currency = new class() extends CurrencyModel {
             public $exchange_rate = 2.23;
             public $code = 'MONEY';
         };

@@ -7,8 +7,8 @@ use yii\helpers\{ArrayHelper,
     Html,
     Url};
 use app\widgets\AbstractBaseWidget;
-use app\collections\PurchasesCollection;
-use app\models\CurrencyModel;
+use app\collections\PurchasesCollectionInterface;
+use app\models\CurrencyInterface;
 use app\forms\PurchaseForm;
 
 /**
@@ -17,11 +17,11 @@ use app\forms\PurchaseForm;
 class CartWidget extends AbstractBaseWidget
 {
     /**
-     * @var object PurchasesCollection
+     * @var object PurchasesCollectionInterface
      */
     private $purchases;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -67,7 +67,7 @@ class CartWidget extends AbstractBaseWidget
                 $set['id_product'] = $purchase->id_product;
                 $set['link'] = Html::a(Html::encode($purchase->product->name), ['/product-detail/index', 'seocode'=>$purchase->product->seocode]);
                 $set['short_description'] = $purchase->product->short_description;
-                $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+                $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
                 
                 $updateForm = clone $this->updateForm;
                 
@@ -120,10 +120,10 @@ class CartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает PurchasesCollection свойству CartWidget::purchases
-     * @param object $collection PurchasesCollection
+     * Присваивает PurchasesCollectionInterface свойству CartWidget::purchases
+     * @param object $collection PurchasesCollectionInterface
      */
-    public function setPurchases(PurchasesCollection $collection)
+    public function setPurchases(PurchasesCollectionInterface $collection)
     {
         try {
             $this->purchases = $collection;
@@ -133,10 +133,10 @@ class CartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству CartWidget::currency
-     * @param CurrencyModel $currency
+     * Присваивает CurrencyInterface свойству CartWidget::currency
+     * @param CurrencyInterface $currency
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

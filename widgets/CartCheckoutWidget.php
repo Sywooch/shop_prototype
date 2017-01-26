@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\forms\CustomerInfoForm;
-use app\models\CurrencyModel;
+use app\models\CurrencyInterface;
 
 /**
  * Формирует HTML строку с формой оформления заказа
@@ -26,7 +26,7 @@ class CartCheckoutWidget extends AbstractBaseWidget
      */
     private $payments;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -75,7 +75,7 @@ class CartCheckoutWidget extends AbstractBaseWidget
             
             ArrayHelper::multisort($this->deliveries, 'description');
             foreach ($this->deliveries as $delivery) {
-                $delivery->description .= sprintf(' %s', \Yii::$app->formatter->asDecimal($delivery->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code);
+                $delivery->description .= sprintf(' %s', \Yii::$app->formatter->asDecimal($delivery->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code());
             }
             $renderArray['deliveries'] = ArrayHelper::map($this->deliveries, 'id', 'description');
             
@@ -134,10 +134,10 @@ class CartCheckoutWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству CartCheckoutWidget::currency
-     * @param CurrencyModel $currency
+     * Присваивает CurrencyInterface свойству CartCheckoutWidget::currency
+     * @param CurrencyInterface $currency
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

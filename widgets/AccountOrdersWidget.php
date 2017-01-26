@@ -7,7 +7,7 @@ use yii\helpers\{ArrayHelper,
     Html,
     Url};
 use app\widgets\AbstractBaseWidget;
-use app\models\CurrencyModel;
+use app\models\CurrencyInterface;
 
 /**
  * Формирует HTML строку с основными данными аккаунта
@@ -19,7 +19,7 @@ class AccountOrdersWidget extends AbstractBaseWidget
      */
     private $purchases;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -67,7 +67,7 @@ class AccountOrdersWidget extends AbstractBaseWidget
                         $set['linkText'] = Html::encode($purchase->product->name);
                         $set['short_description'] = Html::encode($purchase->product->short_description);
                         $set['quantity'] = $purchase->quantity;
-                        $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+                        $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
                         $set['color'] = $purchase->color->color;
                         $set['size'] = $purchase->size->size;
                         if (!empty($purchase->product->images)) {
@@ -115,10 +115,10 @@ class AccountOrdersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству AccountOrdersWidget::currency
-     * @param CurrencyModel $currency
+     * Присваивает CurrencyInterface свойству AccountOrdersWidget::currency
+     * @param CurrencyInterface $currency
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

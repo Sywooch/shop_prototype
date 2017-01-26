@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\Html;
 use app\widgets\AbstractBaseWidget;
 use app\collections\CollectionInterface;
-use app\models\CurrencyModel;
+use app\models\CurrencyInterface;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -18,7 +18,7 @@ class ProductsWidget extends AbstractBaseWidget
      */
     private $products;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -50,7 +50,7 @@ class ProductsWidget extends AbstractBaseWidget
                 $set['id'] = $product->id;
                 $set['link'] = Html::a(Html::encode($product->name), ['/product-detail/index', 'seocode'=>$product->seocode]);
                 $set['short_description'] = $product->short_description;
-                $set['price'] = \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+                $set['price'] = \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
                 
                 if (!empty($product->images)) {
                     $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $product->images) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
@@ -84,10 +84,10 @@ class ProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству ProductsWidget::currency
-     * @param CurrencyModel $currency
+     * Присваивает CurrencyInterface свойству ProductsWidget::currency
+     * @param CurrencyInterface $currency
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

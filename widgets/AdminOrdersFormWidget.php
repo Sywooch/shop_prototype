@@ -7,7 +7,7 @@ use yii\helpers\{ArrayHelper,
     Html,
     Url};
 use app\widgets\AbstractBaseWidget;
-use app\models\CurrencyModel;
+use app\models\CurrencyInterface;
 use app\forms\OrderStatusForm;
 
 /**
@@ -20,7 +20,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
      */
     private $purchases;
     /**
-     * @var CurrencyModel
+     * @var CurrencyInterface
      */
     private $currency;
     /**
@@ -78,7 +78,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                     $set['linkText'] = Html::encode($purchase->product->name);
                     $set['short_description'] = Html::encode($purchase->product->short_description);
                     $set['quantity'] = $purchase->quantity;
-                    $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchange_rate, 2) . ' ' . $this->currency->code;
+                    $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
                     $set['color'] = $purchase->color->color;
                     $set['size'] = $purchase->size->size;
                     if (!empty($purchase->product->images)) {
@@ -118,7 +118,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                     $set['validateOnType'] = false;
                     
                     $set['formAction'] = Url::to(['/admin/order-change']);
-                    $set['button'] = \Yii::t('base', 'Change');
+                    //$set['button'] = \Yii::t('base', 'Change');
                     
                     $renderArray['purchases'][] = $set;
                 }
@@ -164,10 +164,10 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyModel свойству AdminOrdersFormWidget::currency
-     * @param CurrencyModel $currency
+     * Присваивает CurrencyInterface свойству AdminOrdersFormWidget::currency
+     * @param CurrencyInterface $currency
      */
-    public function setCurrency(CurrencyModel $currency)
+    public function setCurrency(CurrencyInterface $currency)
     {
         try {
             $this->currency = $currency;

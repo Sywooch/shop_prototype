@@ -186,7 +186,7 @@ class SeeAlsoWidgetTests extends TestCase
             public $price = 98.56;
         };
         
-        $currency = new class() {
+        $currency = new class() extends CurrencyModel {
             public $exchange_rate = 2.4587;
             public $code = 'MONEY';
         };

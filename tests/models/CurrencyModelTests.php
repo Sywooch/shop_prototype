@@ -45,7 +45,7 @@ class CurrencyModelTests extends TestCase
         $model = new CurrencyModel(['scenario'=>CurrencyModel::DBMS]);
         $model->attributes = [
             'id'=>2,
-            'code'=>'RUTG-8',
+            'code'=>'USD',
             'exchange_rate'=>23.17,
             'main'=>true
         ];
@@ -57,10 +57,38 @@ class CurrencyModelTests extends TestCase
         $this->assertArrayHasKey('id', $result);
         $this->assertSame(2, $result['id']);
         $this->assertArrayHasKey('code', $result);
-        $this->assertSame('RUTG-8', $result['code']);
+        $this->assertSame('USD', $result['code']);
         $this->assertArrayHasKey('exchange_rate', $result);
         $this->assertSame(23.17, $result['exchange_rate']);
         $this->assertArrayHasKey('main', $result);
         $this->assertSame(true, $result['main']);
+    }
+    
+    /**
+     * Тестирует метод CurrencyModel::exchangeRate
+     */
+    public function testExchangeRate()
+    {
+        $model = new CurrencyModel([
+            'exchange_rate'=>12.2,
+        ]);
+        
+        $result = $model ->exchangeRate();
+        
+        $this->assertEquals(12.2, $result);
+    }
+    
+    /**
+     * Тестирует метод CurrencyModel::code
+     */
+    public function testCode()
+    {
+        $model = new CurrencyModel([
+            'code'=>'USD',
+        ]);
+        
+        $result = $model ->code();
+        
+        $this->assertEquals('USD', $result);
     }
 }
