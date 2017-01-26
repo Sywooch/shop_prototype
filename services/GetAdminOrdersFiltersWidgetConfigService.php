@@ -4,11 +4,12 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
-use app\services\{AbstractBaseService,
-    GetAdminOrdersFiltersModelService};
+use app\services\AbstractBaseService;
 use app\forms\AdminOrdersFiltersForm;
-use app\finders\{OrderStatusesFinder,
+use app\finders\{AdminOrdersFiltersSessionFinder,
+    OrderStatusesFinder,
     SortingTypesFinder};
+use app\helpers\HashHelper;
 
 /**
  * Возвращает массив конфигурации для виджета AdminOrdersFiltersWidget
@@ -25,7 +26,7 @@ class GetAdminOrdersFiltersWidgetConfigService extends AbstractBaseService
      * @param $request
      * @return array
      */
-    public function handle($request): array
+    public function handle($request=null): array
     {
         try {
             if (empty($this->adminOrdersFiltersWidgetArray)) {
@@ -45,8 +46,8 @@ class GetAdminOrdersFiltersWidgetConfigService extends AbstractBaseService
                 array_unshift($statusesArray, \Yii::t('base', 'All'));
                 $dataArray['statuses'] = $statusesArray;
                 
-                $service = \Yii::$app->registry->get(GetAdminOrdersFiltersModelService::class);
-                $filtersModel = $service->handle();
+                $finder = \Yii::$app->registry->get(AdminOrdersFiltersSessionFinder::class, ['key'=>HashHelper::createHash([\Yii::$app->params['adminOrdersFilters']])]);
+                $filtersModel = $finder->find();
                 
                 $form = new AdminOrdersFiltersForm(array_filter($filtersModel->toArray()));
                 

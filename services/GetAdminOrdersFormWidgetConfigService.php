@@ -5,8 +5,8 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    GetCurrentCurrencyModelService,
-    GetPurchasesCollectionService};
+    AdminOrdersCollectionService,
+    GetCurrentCurrencyModelService};
 use app\forms\OrderStatusForm;
 use app\finders\OrderStatusesFinder;
 
@@ -33,7 +33,7 @@ class GetAdminOrdersFormWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['header'] = \Yii::t('base', 'Orders');
                 
-                $service = \Yii::$app->registry->get(GetPurchasesCollectionService::class);
+                $service = \Yii::$app->registry->get(AdminOrdersCollectionService::class);
                 $purchasesCollection = $service->handle($request);
                 
                 if ($purchasesCollection->isEmpty() === true) {

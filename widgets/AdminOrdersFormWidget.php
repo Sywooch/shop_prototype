@@ -70,8 +70,6 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
             if (!empty($this->purchases)) {
                 $renderArray['listClass'] = 'admin-orders';
                 
-                ArrayHelper::multisort($this->purchases, 'received_date', SORT_DESC, SORT_REGULAR);
-                
                 foreach ($this->purchases as $purchase) {
                     $set = [];
                     $set['orderId'] = sprintf('admin-order-%d', $purchase->id);

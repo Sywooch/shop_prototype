@@ -29,7 +29,7 @@ class AdminOrdersService extends AbstractBaseService
     {
         try {
             if (empty($this->dataArray)) {
-                $dataArray = [1];
+                $dataArray = [];
                 
                 $service = \Yii::$app->registry->get(GetAdminOrdersFiltersWidgetConfigService::class);
                 $dataArray['adminOrdersFiltersWidgetConfig'] = $service->handle($request);

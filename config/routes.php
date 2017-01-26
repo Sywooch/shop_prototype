@@ -15,6 +15,7 @@ $routes = [
     'set-filters'=>'filters/set',
     'unset-filters'=>'filters/unset',
     'admin-orders-set'=>'filters/admin-orders-set',
+    'admin-orders-unset'=>'filters/admin-orders-unset',
     
     # Поиск
     'search-<page:\d{1,3}>'=>'products-list/search',

@@ -3,39 +3,39 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\AdminOrdersSessionFinder;
+use app\finders\AdminOrdersFiltersSessionFinder;
 use app\filters\AdminOrdersFiltersInterface;
 
 /**
- * Тестирует класс AdminOrdersSessionFinder
+ * Тестирует класс AdminOrdersFiltersSessionFinder
  */
-class AdminOrdersSessionFinderTests extends TestCase
+class AdminOrdersFiltersSessionFinderTests extends TestCase
 {
     /**
-     * Тестирует свойства AdminOrdersSessionFinder
+     * Тестирует свойства AdminOrdersFiltersSessionFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminOrdersSessionFinder::class);
+        $reflection = new \ReflectionClass(AdminOrdersFiltersSessionFinder::class);
         
         $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('storage'));
     }
     
     /**
-     * Тестирует метод AdminOrdersSessionFinder::find
-     * если пуст AdminOrdersSessionFinder::key
+     * Тестирует метод AdminOrdersFiltersSessionFinder::find
+     * если пуст AdminOrdersFiltersSessionFinder::key
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testFindEmptyKey()
     {
-        $finder = new AdminOrdersSessionFinder();
+        $finder = new AdminOrdersFiltersSessionFinder();
         $finder->find();
     }
     
     /**
-     * Тестирует метод AdminOrdersSessionFinder::find
+     * Тестирует метод AdminOrdersFiltersSessionFinder::find
      */
     public function testFind()
     {
@@ -43,7 +43,7 @@ class AdminOrdersSessionFinderTests extends TestCase
         $session->open();
         $session->set('key_test', ['sortingType'=>SORT_ASC, 'status'=>'shipped']);
         
-        $finder = new AdminOrdersSessionFinder();
+        $finder = new AdminOrdersFiltersSessionFinder();
         
         $reflection = new \ReflectionProperty($finder, 'key');
         $reflection->setValue($finder, 'key_test');

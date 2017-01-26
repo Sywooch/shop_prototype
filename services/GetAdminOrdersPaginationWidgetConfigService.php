@@ -4,8 +4,7 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetProductsCollectionService,
-    GetPurchasesCollectionService};
+    AdminOrdersCollectionService};
 
 /**
  * Возвращает массив данных для PaginationWidget
@@ -28,7 +27,7 @@ class GetAdminOrdersPaginationWidgetConfigService extends AbstractBaseService
             if (empty($this->paginationWidgetArray)) {
                 $dataArray = [];
                 
-                $service = \Yii::$app->registry->get(GetPurchasesCollectionService::class);
+                $service = \Yii::$app->registry->get(AdminOrdersCollectionService::class);
                 $purchasesCollection = $service->handle($request);
             
                 $pagination = $purchasesCollection->pagination;

@@ -10,7 +10,7 @@ use app\filters\AdminOrdersFilters;
 /**
  * Возвращает AdminOrdersFilters из сессии
  */
-class AdminOrdersSessionFinder extends AbstractBaseFinder
+class AdminOrdersFiltersSessionFinder extends AbstractBaseFinder
 {
     /**
      * @var string key ключ доступа к данным

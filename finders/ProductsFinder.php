@@ -42,11 +42,11 @@ class ProductsFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->filters)) {
+                throw new ErrorException($this->emptyError('filters'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->filters)) {
-                    throw new ErrorException($this->emptyError('filters'));
-                }
-                
                 $this->createCollection();
                 
                 $query = $this->createQuery();
