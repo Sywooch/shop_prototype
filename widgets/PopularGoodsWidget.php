@@ -7,6 +7,7 @@ use yii\helpers\{ArrayHelper,
     Html,
     Url};
 use app\widgets\AbstractBaseWidget;
+use app\helpers\ImgHelper;
 
 /**
  * Выводит информацию о популярных товарах
@@ -48,12 +49,8 @@ class PopularGoodsWidget extends AbstractBaseWidget
                     $set['views'] = $product->views;
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$product->seocode], true);
                     $set['linkText'] = Html::encode($product->name);
-                    $set['short_description'] = Html::encode($product->short_description);
                     if (!empty($product->images)) {
-                        $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $product->images) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-                        if (!empty($imagesArray)) {
-                            $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]), ['height'=>200]);
-                        }
+                        $set['image'] = ImgHelper::randThumbn($product->images);
                     }
                     $renderArray['goods'][] = $set;
                 }

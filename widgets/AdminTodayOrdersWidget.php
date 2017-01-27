@@ -8,6 +8,7 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyInterface;
+use app\helpers\ImgHelper;
 
 /**
  * Формирует HTML строку с основными данными аккаунта
@@ -57,19 +58,11 @@ class AdminTodayOrdersWidget extends AbstractBaseWidget
                 
                 foreach ($this->purchases as $purchase) {
                     $set = [];
-                    $set['date'] = \Yii::$app->formatter->asDate($purchase->received_date);
-                    $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
+                    $set['id'] = $purchase->id;
+                    $set['link'] = Url::to(['/admin/order-detail', \Yii::$app->params['orderId']=>$purchase->id]);
                     $set['linkText'] = Html::encode($purchase->product->name);
-                    $set['short_description'] = Html::encode($purchase->product->short_description);
-                    $set['quantity'] = $purchase->quantity;
-                    $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
-                    $set['color'] = $purchase->color->color;
-                    $set['size'] = $purchase->size->size;
                     if (!empty($purchase->product->images)) {
-                        $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $purchase->product->images) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-                        if (!empty($imagesArray)) {
-                            $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $purchase->product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]), ['height'=>200]);
-                        }
+                        $set['image'] = ImgHelper::randThumbn($purchase->product->images);
                     }
                     
                     if ((bool) $purchase->shipped === true) {
@@ -85,11 +78,7 @@ class AdminTodayOrdersWidget extends AbstractBaseWidget
                     $renderArray['purchases'][] = $set;
                 }
                 
-                $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
-                $renderArray['quantityHeader'] = \Yii::t('base', 'Quantity');
-                $renderArray['priceHeader'] = \Yii::t('base', 'Price');
-                $renderArray['colorHeader'] = \Yii::t('base', 'Color');
-                $renderArray['sizeHeader'] = \Yii::t('base', 'Size');
+                $renderArray['idHeader'] = \Yii::t('base', 'Order number');
                 $renderArray['statusHeader'] = \Yii::t('base', 'Status');
             } else {
                 $renderArray['purchasesEmpty'] = \Yii::t('base', 'Today no orders');

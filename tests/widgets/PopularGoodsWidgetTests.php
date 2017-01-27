@@ -188,14 +188,12 @@ class PopularGoodsWidgetTests extends TestCase
                 public $views = 564;
                 public $seocode = 'good_1';
                 public $name = 'Good 1';
-                public $short_description = 'Good 1 description';
                 public $images = 'test';
             },
             new class() {
                 public $views = 305;
                 public $seocode = 'good_2';
                 public $name = 'Good 2';
-                public $short_description = 'Good 2 description';
                 public $images = 'test';
             },
         ];
@@ -219,7 +217,6 @@ class PopularGoodsWidgetTests extends TestCase
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#Просмотров: \d#', $result);
         $this->assertRegExp('#<a href=".+">Good \d</a>#', $result);
-        $this->assertRegExp('#Good \d description#', $result);
         $this->assertRegExp('#<img src=".+" height="200" alt="">#', $result);
     }
     

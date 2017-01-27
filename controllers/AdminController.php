@@ -4,8 +4,12 @@ namespace app\controllers;
 
 use yii\web\Controller;
 use yii\filters\AccessControl;
-use app\actions\GetAction;
+use app\actions\{AjaxAction,
+    GetAction,
+    RedirectAction};
 use app\services\{AdminIndexService,
+    AdminOrdersChangeStatusService,
+    AdminOrderDetailService,
     AdminOrdersService};
 
 /**
@@ -26,6 +30,15 @@ class AdminController extends Controller
                 'service'=>new AdminOrdersService(),
                 'view'=>'orders.twig',
             ],
+            'order-detail'=>[
+                'class'=>GetAction::class,
+                'service'=>new AdminOrderDetailService(),
+                'view'=>'order-detail.twig',
+            ],
+            /*'orders-change-status'=>[
+                'class'=>RedirectAction::class,
+                'service'=>new AdminOrdersChangeStatusService(),
+            ]*/
         ];
     }
     

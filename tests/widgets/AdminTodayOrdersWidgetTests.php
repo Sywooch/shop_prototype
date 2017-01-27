@@ -236,7 +236,7 @@ class AdminTodayOrdersWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'admin-purchases.twig');
+        $reflection->setValue($widget, 'admin-today-orders.twig');
         
         $result = $widget->run();
         
@@ -259,11 +259,8 @@ class AdminTodayOrdersWidgetTests extends TestCase
         
         $purchases = [
             new class() {
+                public $id = 1;
                 public $product;
-                public $color;
-                public $size;
-                public $quantity = 1;
-                public $price = 12.89;
                 public $received = 1;
                 public $canceled = 0;
                 public $shipped = 0;
@@ -274,23 +271,13 @@ class AdminTodayOrdersWidgetTests extends TestCase
                     $this->product = new class() {
                         public $seocode = 'prod_1';
                         public $name = 'Name 1';
-                        public $short_description = 'Description 1';
                         public $images = 'test';
-                    };
-                    $this->color = new class() {
-                        public $color = 'gray';
-                    };
-                    $this->size = new class() {
-                        public $size = 45;
                     };
                 }
             },
             new class() {
+                public $id = 2;
                 public $product;
-                public $color;
-                public $size;
-                public $quantity = 1;
-                public $price = 56.00;
                 public $received = 1;
                 public $canceled = 0;
                 public $shipped = 0;
@@ -301,14 +288,7 @@ class AdminTodayOrdersWidgetTests extends TestCase
                     $this->product = new class() {
                         public $seocode = 'prod_2';
                         public $name = 'Name 2';
-                        public $short_description = 'Description 2';
                         public $images = 'test';
-                    };
-                    $this->color = new class() {
-                        public $color = 'green';
-                    };
-                    $this->size = new class() {
-                        public $size = 15.5;
                     };
                 }
             },
@@ -330,28 +310,19 @@ class AdminTodayOrdersWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'admin-purchases.twig');
+        $reflection->setValue($widget, 'admin-today-orders.twig');
         
         $result = $widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<ol class="account-last-orders">#', $result);
-        $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_1">Name 1</a>#', $result);
-        $this->assertRegExp('#<br>Description 1#', $result);
+        $this->assertRegExp('#<a href=".+">Name 1</a>#', $result);
         $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);
-        $this->assertRegExp('#<br>Дата заказа:\s.+#', $result);
-        $this->assertRegExp('#<br>Цвет: gray#', $result);
-        $this->assertRegExp('#<br>Размер: 45#', $result);
-        $this->assertRegExp('#<br>Количество: 1#', $result);
-        $this->assertRegExp('#<br>Цена: 26,94 MONEY#', $result);
+        $this->assertRegExp('#<br>Номер заказа: 1#', $result);
         $this->assertRegExp('#<br>Статус: Принят#', $result);
-        $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_2">Name 2</a>#', $result);
-        $this->assertRegExp('#<br>Description 2#', $result);
+        $this->assertRegExp('#<a href=".+">Name 2</a>#', $result);
         $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);
-        $this->assertRegExp('#<br>Цвет: green#', $result);
-        $this->assertRegExp('#<br>Размер: 15.5#', $result);
-        $this->assertRegExp('#<br>Количество: 1#', $result);
-        $this->assertRegExp('#<br>Цена: 117,04 MONEY#', $result);
+        $this->assertRegExp('#<br>Номер заказа: 2#', $result);
         $this->assertRegExp('#<br>Статус: Выполняется#', $result);
     }
     

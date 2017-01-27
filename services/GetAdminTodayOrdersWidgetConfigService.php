@@ -42,7 +42,7 @@ class GetAdminTodayOrdersWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['template'] = 'admin-purchases.twig';
+                $dataArray['template'] = 'admin-today-orders.twig';
                 
                 $this->adminTodayOrdersWidgetArray = $dataArray;
             }

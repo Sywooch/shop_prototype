@@ -117,8 +117,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                     $set['validateOnBlur'] = false;
                     $set['validateOnType'] = false;
                     
-                    $set['formAction'] = Url::to(['/admin/order-change']);
-                    //$set['button'] = \Yii::t('base', 'Change');
+                    $set['formAction'] = Url::to(['/admin/orders-change-status']);
                     
                     $renderArray['purchases'][] = $set;
                 }

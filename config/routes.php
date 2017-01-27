@@ -69,6 +69,8 @@ $routes = [
     'admin'=>'admin/index',
     'admin-orders-<page:\d{1,3}>'=>'admin/orders',
     'admin-orders'=>'admin/orders',
+    'admin-order-<orderId:\d+>'=>'admin/order-detail',
+    'admin-orders-change-status'=>'admin/orders-change-status',
 ];
 
 return $routes;

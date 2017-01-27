@@ -9,6 +9,7 @@ use app\models\{AddressModel,
     ColorsModel,
     CountriesModel,
     DeliveriesModel,
+    EmailsModel,
     NamesModel,
     PaymentsModel,
     PhonesModel,
@@ -42,6 +43,10 @@ class PurchasesModel extends AbstractBaseModel
      * Сценарий отмены заказа
      */
     const CANCEL = 'cancel';
+    /**
+     * Сценарий смены статуса
+     */
+    const UPDATE_STATUS = 'update_status';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -64,6 +69,7 @@ class PurchasesModel extends AbstractBaseModel
             self::DELETE=>['id_product'],
             self::SAVE=>['id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'price', 'id_delivery', 'id_payment', 'received', 'received_date'],
             self::CANCEL=>['canceled'],
+            self::UPDATE_STATUS=>['received', 'processed', 'canceled', 'shipped'],
         ];
     }
     
@@ -229,6 +235,19 @@ class PurchasesModel extends AbstractBaseModel
     {
         try {
             return $this->hasOne(DeliveriesModel::class, ['id'=>'id_delivery']);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект EmailsModel
+     * @return ActiveQueryInterface
+     */
+    public function getEmail()
+    {
+        try {
+            return $this->hasOne(EmailsModel::class, ['id'=>'id_email']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

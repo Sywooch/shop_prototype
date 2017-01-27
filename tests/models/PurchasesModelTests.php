@@ -10,6 +10,7 @@ use app\tests\sources\fixtures\{AddressFixture,
     ColorsFixture,
     CountriesFixture,
     DeliveriesFixture,
+    EmailsFixture,
     NamesFixture,
     PaymentsFixture,
     PhonesFixture,
@@ -22,6 +23,7 @@ use app\models\{AddressModel,
     ColorsModel,
     CountriesModel,
     DeliveriesModel,
+    EmailsModel,
     NamesModel,
     PaymentsModel,
     PhonesModel,
@@ -53,6 +55,7 @@ class PurchasesModelTests extends TestCase
                 'phones'=>PhonesFixture::class,
                 'payments'=>PaymentsFixture::class,
                 'deliveries'=>DeliveriesFixture::class,
+                'emails'=>EmailsFixture::class
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -70,6 +73,7 @@ class PurchasesModelTests extends TestCase
         $this->assertTrue($reflection->hasConstant('DELETE'));
         $this->assertTrue($reflection->hasConstant('SAVE'));
         $this->assertTrue($reflection->hasConstant('CANCEL'));
+        $this->assertTrue($reflection->hasConstant('UPDATE_STATUS'));
         
         $model = new PurchasesModel();
         
@@ -245,6 +249,28 @@ class PurchasesModelTests extends TestCase
         
         $this->assertArrayHasKey('canceled', $result);
         $this->assertTrue($result['canceled']);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE_STATUS]);
+        $model->attributes = [
+            'received'=>true,
+            'processed'=>true,
+            'canceled'=>true,
+            'shipped'=>true,
+        ];
+        
+        $result = $model->toArray();
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        
+        $this->assertArrayHasKey('received', $result);
+        $this->assertTrue($result['received']);
+        $this->assertArrayHasKey('processed', $result);
+        $this->assertTrue($result['processed']);
+        $this->assertArrayHasKey('canceled', $result);
+        $this->assertTrue($result['canceled']);
+        $this->assertArrayHasKey('shipped', $result);
+        $this->assertTrue($result['shipped']);
     }
     
     /**
@@ -518,6 +544,19 @@ class PurchasesModelTests extends TestCase
         $result = $model->delivery;
         
         $this->assertInstanceOf(DeliveriesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод PurchasesModel::getEmail
+     */
+    public function testGetEmail()
+    {
+        $model = new PurchasesModel();
+        $model->id_email = 1;
+        
+        $result = $model->email;
+        
+        $this->assertInstanceOf(EmailsModel::class, $result);
     }
     
     public static function tearDownAfterClass()
