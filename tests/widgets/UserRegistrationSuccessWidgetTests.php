@@ -17,18 +17,96 @@ class UserRegistrationSuccessWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(UserRegistrationSuccessWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationSuccessWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new UserRegistrationSuccessWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationSuccessWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new UserRegistrationSuccessWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationSuccessWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new UserRegistrationSuccessWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationSuccessWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new UserRegistrationSuccessWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод UserRegistrationSuccessWidget::run
-     * если пуст UserRegistrationSuccessWidget::view
+     * если пуст UserRegistrationSuccessWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
         $widget = new UserRegistrationSuccessWidget();
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationSuccessWidget::run
+     * если пуст UserRegistrationSuccessWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $widget = new UserRegistrationSuccessWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
         $widget->run();
     }
     
@@ -39,12 +117,17 @@ class UserRegistrationSuccessWidgetTests extends TestCase
     {
         $widget = new UserRegistrationSuccessWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
         $reflection->setValue($widget, 'registration-success.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Регистрация</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p>Вы успешно зарегистрировались! Теперь вы можете войти в систему с помощью логина и пароля</p>#', $result);
         $this->assertRegExp('#<p><a href=".+">Войти</a></p>#', $result);
     }

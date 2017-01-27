@@ -17,14 +17,44 @@ class PurchaseSaveInfoWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(PurchaseSaveInfoWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод PurchaseSaveInfoWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new PurchaseSaveInfoWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод PurchaseSaveInfoWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new PurchaseSaveInfoWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод PurchaseSaveInfoWidget::run
-     * если пуст PurchaseSaveInfoWidget::view
+     * если пуст PurchaseSaveInfoWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -39,7 +69,7 @@ class PurchaseSaveInfoWidgetTests extends TestCase
     {
         $widget = new PurchaseSaveInfoWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'save-purchase-info.twig');
         

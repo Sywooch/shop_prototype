@@ -19,14 +19,74 @@ class SearchWidgetTests extends TestCase
         $reflection = new \ReflectionClass(SearchWidget::class);
         
         $this->assertTrue($reflection->hasProperty('text'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод SearchWidget::setText
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTextError()
+    {
+        $text = null;
+        
+        $widget = new SearchWidget();
+        $widget->setText($text);
+    }
+    
+    /**
+     * Тестирует метод SearchWidget::setText
+     */
+    public function testSetText()
+    {
+        $text = 'Text';
+        
+        $widget = new SearchWidget();
+        $widget->setText($text);
+        
+        $reflection = new \ReflectionProperty($widget, 'text');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод SearchWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new SearchWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод SearchWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new SearchWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
      * Тестирует метод SearchWidget::run
-     * при отсутствии SearchWidget::view
+     * при отсутствии SearchWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -44,7 +104,8 @@ class SearchWidgetTests extends TestCase
         
         $widget = new SearchWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
         $reflection->setValue($widget, 'search.twig');
         
         $result = $widget->run();
@@ -66,7 +127,8 @@ class SearchWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Some text');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
         $reflection->setValue($widget, 'search.twig');
         
         $result = $widget->run();

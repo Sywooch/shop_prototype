@@ -28,7 +28,7 @@ class GetUserLoginWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['form'] = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
-                $dataArray['view'] = 'login-form.twig';
+                $dataArray['template'] = 'login-form.twig';
                 
                 $this->userLoginWidgetArray = $dataArray;
             }

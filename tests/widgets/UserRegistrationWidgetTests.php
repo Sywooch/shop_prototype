@@ -19,7 +19,8 @@ class UserRegistrationWidgetTests extends TestCase
         $reflection = new \ReflectionClass(UserRegistrationWidget::class);
         
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -53,6 +54,66 @@ class UserRegistrationWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод UserRegistrationWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new UserRegistrationWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new UserRegistrationWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new UserRegistrationWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new UserRegistrationWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод UserRegistrationWidget::run
      * если пуст UserRegistrationWidget::form
      * @expectedException ErrorException
@@ -66,11 +127,11 @@ class UserRegistrationWidgetTests extends TestCase
     
     /**
      * Тестирует метод UserRegistrationWidget::run
-     * если пуст UserRegistrationWidget::view
+     * если пуст UserRegistrationWidget::header
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
-    public function testRunEmptyView()
+    public function testRunEmptyHeader()
     {
         $form = new class() extends UserRegistrationForm {};
         
@@ -79,6 +140,29 @@ class UserRegistrationWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
+        
+        $result = $widget->run();
+    }
+    
+    /**
+     * Тестирует метод UserRegistrationWidget::run
+     * если пуст UserRegistrationWidget::template
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
+     */
+    public function testRunEmptyTemplate()
+    {
+        $form = new class() extends UserRegistrationForm {};
+        
+        $widget = new UserRegistrationWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, 'Header');
         
         $result = $widget->run();
     }
@@ -97,13 +181,17 @@ class UserRegistrationWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'registration-form.twig');
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Регистрация</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="registration-form" action="#', $result);
         $this->assertRegExp('#<label.+>Email</label>#', $result);
         $this->assertRegExp('#<input type="text"#', $result);

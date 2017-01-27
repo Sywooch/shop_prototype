@@ -28,7 +28,8 @@ class GetUserRecoveryWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['form'] = new RecoveryPasswordForm(['scenario'=>RecoveryPasswordForm::GET]);
-                $dataArray['view'] = 'recovery-form.twig';
+                $dataArray['header'] = \Yii::t('base', 'Password recovery');
+                $dataArray['template'] = 'recovery-form.twig';
                 
                 $this->userRecoveryWidgetArray = $dataArray;
             }

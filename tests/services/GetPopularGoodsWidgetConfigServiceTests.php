@@ -47,11 +47,11 @@ class GetPopularGoodsWidgetConfigServiceTests extends TestCase
         
         $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('goods', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['goods']);
         $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

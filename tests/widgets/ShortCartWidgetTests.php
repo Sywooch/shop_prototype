@@ -21,7 +21,7 @@ class ShortCartWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
         $this->assertTrue($reflection->hasProperty('goods'));
         $this->assertTrue($reflection->hasProperty('cost'));
     }
@@ -87,6 +87,36 @@ class ShortCartWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод ShortCartWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new ShortCartWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод ShortCartWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new ShortCartWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод ShortCartWidget::run
      * при отсутствии ShortCartWidget::purchases
      * @expectedException ErrorException
@@ -119,9 +149,9 @@ class ShortCartWidgetTests extends TestCase
     
     /**
      * Тестирует метод ShortCartWidget::run
-     * при отсутствии ShortCartWidget::view
+     * при отсутствии ShortCartWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -174,7 +204,7 @@ class ShortCartWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'short-cart.twig');
         

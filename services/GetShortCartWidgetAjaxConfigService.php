@@ -29,7 +29,7 @@ class GetShortCartWidgetAjaxConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
                 $cartInfoWidget = $service->handle();
                 
-                $cartInfoWidget['view'] = 'short-cart-ajax.twig';
+                $cartInfoWidget['template'] = 'short-cart-ajax.twig';
                 
                 $this->cartWidgetAjaxArray = $cartInfoWidget;
             }

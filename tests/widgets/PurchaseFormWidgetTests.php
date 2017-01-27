@@ -24,7 +24,7 @@ class PurchaseFormWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('product'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -88,6 +88,36 @@ class PurchaseFormWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод PurchaseFormWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new PurchaseFormWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод PurchaseFormWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new PurchaseFormWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод PurchaseFormWidget::run
      * если отсутствует PurchaseFormWidget::product
      * @expectedException ErrorException
@@ -120,9 +150,9 @@ class PurchaseFormWidgetTests extends TestCase
     
     /**
      * Тестирует метод PurchaseFormWidget::run
-     * если отсутствует PurchaseFormWidget::view
+     * если отсутствует PurchaseFormWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -186,7 +216,7 @@ class PurchaseFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'purchase-form.twig');
         

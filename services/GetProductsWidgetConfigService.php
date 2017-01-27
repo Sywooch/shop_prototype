@@ -34,7 +34,7 @@ class GetProductsWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['view'] = 'products-list.twig';
+                $dataArray['template'] = 'products-list.twig';
                 
                 $this->productsWidgetArray = $dataArray;
             }

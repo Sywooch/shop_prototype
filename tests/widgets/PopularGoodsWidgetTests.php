@@ -33,7 +33,7 @@ class PopularGoodsWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('goods'));
         $this->assertTrue($reflection->hasProperty('header'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -67,6 +67,66 @@ class PopularGoodsWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод PopularGoodsWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new PopularGoodsWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод PopularGoodsWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new PopularGoodsWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод PopularGoodsWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new PopularGoodsWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод PopularGoodsWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new PopularGoodsWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод PopularGoodsWidget::run
      * если пуст PopularGoodsWidget::header
      * @expectedException ErrorException
@@ -80,9 +140,9 @@ class PopularGoodsWidgetTests extends TestCase
     
     /**
      * Тестирует метод PopularGoodsWidget::run
-     * если пуст PopularGoodsWidget::view
+     * если пуст PopularGoodsWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -107,7 +167,7 @@ class PopularGoodsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'popular-goods.twig');
         
@@ -150,7 +210,7 @@ class PopularGoodsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'popular-goods.twig');
         

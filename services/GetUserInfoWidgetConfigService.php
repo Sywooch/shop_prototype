@@ -27,7 +27,7 @@ class GetUserInfoWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['user'] = \Yii::$app->user;
-                $dataArray['view'] = 'user-info.twig';
+                $dataArray['template'] = 'user-info.twig';
                 
                 $this->userInfoWidgetArray = $dataArray;
             }

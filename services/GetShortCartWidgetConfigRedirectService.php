@@ -37,7 +37,7 @@ class GetShortCartWidgetConfigRedirectService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['view'] = 'short-cart-redirect.twig';
+                $dataArray['template'] = 'short-cart-redirect.twig';
                 
                 $this->shortCartWidgetArray = $dataArray;
             }

@@ -23,7 +23,7 @@ class ProductsWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('products'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -87,6 +87,36 @@ class ProductsWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод ProductsWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new ProductsWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод ProductsWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new ProductsWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод ProductsWidget::run
      * если пуст ProductsWidget::products
      * @expectedException ErrorException
@@ -119,9 +149,9 @@ class ProductsWidgetTests extends TestCase
     
     /**
      * Тестирует метод ProductsWidget::run
-     * если пуст ProductsWidget::view
+     * если пуст ProductsWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -182,7 +212,7 @@ class ProductsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'products-list.twig');
         

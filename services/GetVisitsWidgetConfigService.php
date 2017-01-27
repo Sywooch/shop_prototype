@@ -32,7 +32,7 @@ class GetVisitsWidgetConfigService extends AbstractBaseService
                 $finder = \Yii::$app->registry->get(VisitorsCounterFinder::class);
                 $dataArray['visitors'] = $finder->find();
                
-                $dataArray['view'] = 'visits.twig';
+                $dataArray['template'] = 'visits.twig';
                 
                 $this->visitsWidgetArray = $dataArray;
             }

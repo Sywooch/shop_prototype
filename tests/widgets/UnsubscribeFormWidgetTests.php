@@ -21,7 +21,7 @@ class UnsubscribeFormWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('mailings'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -86,6 +86,36 @@ class UnsubscribeFormWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод UnsubscribeFormWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new UnsubscribeFormWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод UnsubscribeFormWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new UnsubscribeFormWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод UnsubscribeFormWidget::run
      * если пуст UnsubscribeFormWidget::form
      * @expectedException ErrorException
@@ -118,9 +148,9 @@ class UnsubscribeFormWidgetTests extends TestCase
     
     /**
      * Тестирует метод UnsubscribeFormWidget::run
-     * если пуст UnsubscribeFormWidget::view
+     * если пуст UnsubscribeFormWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -174,7 +204,7 @@ class UnsubscribeFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mailings);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'unsubscribe-form.twig');
         

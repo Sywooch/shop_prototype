@@ -24,7 +24,7 @@ class UnsubscribeFormWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     public function run()
     {
@@ -35,8 +35,8 @@ class UnsubscribeFormWidget extends AbstractBaseWidget
             if (empty($this->mailings)) {
                 throw new ErrorException($this->emptyError('mailings'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -59,7 +59,7 @@ class UnsubscribeFormWidget extends AbstractBaseWidget
             ArrayHelper::multisort($this->mailings, 'name');
             $renderArray['mailings'] = ArrayHelper::map($this->mailings, 'id', 'name');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -86,6 +86,19 @@ class UnsubscribeFormWidget extends AbstractBaseWidget
     {
         try {
             $this->mailings = $mailings;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству UnsubscribeFormWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

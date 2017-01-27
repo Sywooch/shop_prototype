@@ -24,11 +24,11 @@ class SeeAlsoWidget extends AbstractBaseWidget
     /**
      * @var string заголовок
      */
-    public $header;
+    private $header;
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     public function run()
     {
@@ -42,8 +42,8 @@ class SeeAlsoWidget extends AbstractBaseWidget
             if (empty($this->header)) {
                 throw new ErrorException($this->emptyError('header'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -68,7 +68,7 @@ class SeeAlsoWidget extends AbstractBaseWidget
                 $renderArray['products'][] = $set;
             }
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -95,6 +95,32 @@ class SeeAlsoWidget extends AbstractBaseWidget
     {
         try {
             $this->currency = $currency;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает заголовок свойству SeeAlsoWidget::header
+     * @param string $header
+     */
+    public function setHeader(string $header)
+    {
+        try {
+            $this->header = $header;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству SeeAlsoWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

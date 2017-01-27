@@ -25,7 +25,7 @@ class PurchaseFormWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     public function run()
     {
@@ -36,8 +36,8 @@ class PurchaseFormWidget extends AbstractBaseWidget
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -65,7 +65,7 @@ class PurchaseFormWidget extends AbstractBaseWidget
             ArrayHelper::multisort($sizes, 'size');
             $renderArray['sizes'] = ArrayHelper::map($sizes, 'id', 'size');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -92,6 +92,19 @@ class PurchaseFormWidget extends AbstractBaseWidget
     {
         try {
             $this->form = $form;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству PurchaseFormWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

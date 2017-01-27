@@ -28,7 +28,8 @@ class GetUserRegistrationWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['form'] = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
-                $dataArray['view'] = 'registration-form.twig';
+                $dataArray['header'] = \Yii::t('base', 'Registration');
+                $dataArray['template'] = 'registration-form.twig';
                 
                 $this->userRegistrationWidgetArray = $dataArray;
             }

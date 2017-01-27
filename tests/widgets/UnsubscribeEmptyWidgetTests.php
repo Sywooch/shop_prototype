@@ -18,7 +18,67 @@ class UnsubscribeEmptyWidgetTests extends TestCase
         $reflection = new \ReflectionClass(UnsubscribeEmptyWidget::class);
         
         $this->assertTrue($reflection->hasProperty('email'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод UnsubscribeEmptyWidget::setEmail
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetEmailError()
+    {
+        $email = null;
+        
+        $widget = new UnsubscribeEmptyWidget();
+        $widget->setEmail($email);
+    }
+    
+    /**
+     * Тестирует метод UnsubscribeEmptyWidget::setEmail
+     */
+    public function testSetEmail()
+    {
+        $email = 'email';
+        
+        $widget = new UnsubscribeEmptyWidget();
+        $widget->setEmail($email);
+        
+        $reflection = new \ReflectionProperty($widget, 'email');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод UnsubscribeEmptyWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new UnsubscribeEmptyWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод UnsubscribeEmptyWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new UnsubscribeEmptyWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
@@ -35,9 +95,9 @@ class UnsubscribeEmptyWidgetTests extends TestCase
     
     /**
      * Тестирует метод UnsubscribeEmptyWidget::run
-     * если пуст UnsubscribeEmptyWidget::view
+     * если пуст UnsubscribeEmptyWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -61,7 +121,7 @@ class UnsubscribeEmptyWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'some@some.com');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'unsubscribe-empty.twig');
         

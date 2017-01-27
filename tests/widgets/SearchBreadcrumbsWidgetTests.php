@@ -21,6 +21,36 @@ class SearchBreadcrumbsWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод SearchBreadcrumbsWidget::setText
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTextError()
+    {
+        $text = null;
+        
+        $widget = new SearchBreadcrumbsWidget();
+        $widget->setText($text);
+    }
+    
+    /**
+     * Тестирует метод SearchBreadcrumbsWidget::setText
+     */
+    public function testSetText()
+    {
+        $text = 'Text';
+        
+        $widget = new SearchBreadcrumbsWidget();
+        $widget->setText($text);
+        
+        $reflection = new \ReflectionProperty($widget, 'text');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод SearchBreadcrumbsWidget::run
      */
     public function testRun()

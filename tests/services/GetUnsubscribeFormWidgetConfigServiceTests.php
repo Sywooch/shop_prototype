@@ -104,11 +104,11 @@ class GetUnsubscribeFormWidgetConfigServiceTests extends TestCase
         
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('mailings', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(MailingForm::class, $result['form']);
         $this->assertInternalType('array', $result['mailings']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

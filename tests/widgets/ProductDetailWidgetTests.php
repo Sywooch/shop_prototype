@@ -21,7 +21,7 @@ class ProductDetailWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('product'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -85,6 +85,36 @@ class ProductDetailWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод ProductDetailWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new ProductDetailWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод ProductDetailWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new ProductDetailWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод ProductDetailWidget::run
      * если пуст ProductDetailWidget::product
      * @expectedException ErrorException
@@ -117,11 +147,11 @@ class ProductDetailWidgetTests extends TestCase
     
     /**
      * Тестирует метод ProductDetailWidget::run
-     * если пуст ProductDetailWidget::view
+     * если пуст ProductDetailWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $product = new class() extends ProductsModel {};
         $currency = new class() extends CurrencyModel {};
@@ -188,7 +218,7 @@ class ProductDetailWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'product-detail.twig');
         

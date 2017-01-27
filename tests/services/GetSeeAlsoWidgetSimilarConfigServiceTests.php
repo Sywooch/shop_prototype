@@ -57,14 +57,16 @@ class GetSeeAlsoWidgetSimilarConfigServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        
         $this->assertArrayHasKey('products', $result);
         $this->assertArrayHasKey('currency', $result);
         $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
+        
         $this->assertInternalType('array', $result['products']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

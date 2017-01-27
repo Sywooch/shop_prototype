@@ -41,7 +41,7 @@ class GetSeeAlsoWidgetSimilarConfigService extends AbstractBaseService
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['header'] = \Yii::t('base', 'Similar products');
-                $dataArray['view'] = 'see-also.twig';
+                $dataArray['template'] = 'see-also.twig';
                 
                 $this->seeAlsoWidgetArray = $dataArray;
             }

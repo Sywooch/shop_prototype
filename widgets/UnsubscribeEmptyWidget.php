@@ -13,11 +13,11 @@ class UnsubscribeEmptyWidget extends AbstractBaseWidget
     /**
      * @var string email
      */
-    public $email;
+    private $email;
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку
@@ -29,8 +29,8 @@ class UnsubscribeEmptyWidget extends AbstractBaseWidget
             if (empty($this->email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -38,7 +38,33 @@ class UnsubscribeEmptyWidget extends AbstractBaseWidget
             $renderArray['header'] = \Yii::t('base', 'Unsubscribe');
             $renderArray['text'] = \Yii::t('base', 'Email {placeholder} not associated with any mailings!', ['placeholder'=>$this->email]);
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает email свойству UnsubscribeEmptyWidget::email
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        try {
+            $this->email = $email;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству UnsubscribeEmptyWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

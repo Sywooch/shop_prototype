@@ -19,7 +19,7 @@ class UserLoginWidgetTests extends TestCase
         $reflection = new \ReflectionClass(UserLoginWidget::class);
         
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -53,6 +53,36 @@ class UserLoginWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод UserLoginWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new UserLoginWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод UserLoginWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new UserLoginWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод UserLoginWidget::run
      * если пуст UserLoginWidget::form
      * @expectedException ErrorException
@@ -66,9 +96,9 @@ class UserLoginWidgetTests extends TestCase
     
     /**
      * Тестирует метод UserLoginWidget::run
-     * если пуст UserLoginWidget::view
+     * если пуст UserLoginWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -97,7 +127,7 @@ class UserLoginWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, 'login-form.twig');
         

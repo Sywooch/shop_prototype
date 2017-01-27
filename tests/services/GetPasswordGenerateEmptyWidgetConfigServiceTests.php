@@ -30,7 +30,11 @@ class GetPasswordGenerateEmptyWidgetConfigServiceTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        
+        $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
     }
 }

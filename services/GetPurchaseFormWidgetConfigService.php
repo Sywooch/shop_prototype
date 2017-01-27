@@ -33,7 +33,7 @@ class GetPurchaseFormWidgetConfigService extends AbstractBaseService
                 $dataArray['product'] = $service->handle($request);
                 
                 $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::SAVE, 'quantity'=>1]);
-                $dataArray['view'] = 'purchase-form.twig';
+                $dataArray['template'] = 'purchase-form.twig';
                 
                 $this->purchaseFormWidgetArray = $dataArray;
             }

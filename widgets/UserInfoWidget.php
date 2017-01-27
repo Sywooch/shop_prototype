@@ -20,7 +20,7 @@ class UserInfoWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку с информацией о текущем пользователе
@@ -32,8 +32,8 @@ class UserInfoWidget extends AbstractBaseWidget
             if (empty($this->user)) {
                 throw new ErrorException($this->emptyError('user'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $isGuest = $this->user->isGuest;
@@ -62,7 +62,7 @@ class UserInfoWidget extends AbstractBaseWidget
             $renderArray['isGuest'] = $isGuest;
             $renderArray['header'] = \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>$placeholder]);
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -76,6 +76,19 @@ class UserInfoWidget extends AbstractBaseWidget
     {
         try {
             $this->user = $user;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству UserInfoWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

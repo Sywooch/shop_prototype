@@ -36,7 +36,7 @@ class GetUnsubscribeSuccessWidgetConfigService extends AbstractBaseService
                 $finder = \Yii::$app->registry->get(MailingsIdFinder::class, ['id'=>$mailingsIdArray]);
                 $dataArray['mailings'] = $finder->find();
                 
-                $dataArray['view'] = 'unsubscribe-success.twig';
+                $dataArray['template'] = 'unsubscribe-success.twig';
                 
                 $this->unsubscribeSuccessWidgetArray = $dataArray;
             }

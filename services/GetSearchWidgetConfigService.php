@@ -27,7 +27,7 @@ class GetSearchWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['text'] = $request->get(\Yii::$app->params['searchKey']) ?? '';
-                $dataArray['view'] = 'search.twig';
+                $dataArray['template'] = 'search.twig';
                 
                 $this->searchWidgetArray = $dataArray;
             }

@@ -16,7 +16,7 @@ class UserInfoWidgetTests extends TestCase
         $reflection = new \ReflectionClass(UserInfoWidget::class);
         
         $this->assertTrue($reflection->hasProperty('user'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -52,6 +52,36 @@ class UserInfoWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод UserInfoWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new UserInfoWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод UserInfoWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new UserInfoWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод PaginationWidget::run
      * если пуст PaginationWidget::user
      * @expectedException ErrorException
@@ -65,9 +95,9 @@ class UserInfoWidgetTests extends TestCase
     
     /**
      * Тестирует метод PaginationWidget::run
-     * если пуст PaginationWidget::view
+     * если пуст PaginationWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -102,7 +132,7 @@ class UserInfoWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $user);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'user-info.twig');
         
@@ -142,7 +172,7 @@ class UserInfoWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $user);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'user-info.twig');
         

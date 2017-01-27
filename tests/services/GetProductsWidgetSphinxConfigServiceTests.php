@@ -66,12 +66,14 @@ class GetProductsWidgetSphinxConfigServiceTests extends TestCase
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
+        
         $this->assertArrayHasKey('products', $result);
         $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
+        
         $this->assertInstanceOf(CollectionInterface::class, $result['products']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

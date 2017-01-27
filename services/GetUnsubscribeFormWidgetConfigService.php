@@ -47,7 +47,7 @@ class GetUnsubscribeFormWidgetConfigService extends AbstractBaseService
                 $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, ['email'=>$email]);
                 $dataArray['mailings'] = $finder->find();
                 
-                $dataArray['view'] = 'unsubscribe-form.twig';
+                $dataArray['template'] = 'unsubscribe-form.twig';
                 
                 $this->unsubscribeFormWidgetArray = $dataArray;
             }

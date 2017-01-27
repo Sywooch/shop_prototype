@@ -51,7 +51,7 @@ class AccountChangePasswordPostService extends AbstractBaseService
                         
                         $transaction->commit();
                         
-                        return AccountChangePasswordSuccessWidget::widget(['view'=>'account-change-password-success.twig']);
+                        return AccountChangePasswordSuccessWidget::widget(['template'=>'account-change-password-success.twig']);
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

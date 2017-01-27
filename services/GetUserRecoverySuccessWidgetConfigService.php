@@ -33,7 +33,8 @@ class GetUserRecoverySuccessWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['email'] = $email;
-                $dataArray['view'] = 'recovery-success.twig';
+                $dataArray['header'] = \Yii::t('base', 'Password recovery');
+                $dataArray['template'] = 'recovery-success.twig';
                 
                 $this->userRecoverySuccessWidgetArray = $dataArray;
             }

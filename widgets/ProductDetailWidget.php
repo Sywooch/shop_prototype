@@ -25,7 +25,7 @@ class ProductDetailWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     public function run()
     {
@@ -36,8 +36,8 @@ class ProductDetailWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
@@ -73,7 +73,7 @@ class ProductDetailWidget extends AbstractBaseWidget
             $renderArray['priceText'] = \Yii::t('base', 'Price');
             $renderArray['codeText'] = \Yii::t('base', 'Code');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -100,6 +100,19 @@ class ProductDetailWidget extends AbstractBaseWidget
     {
         try {
             $this->currency = $currency;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству ProductDetailWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

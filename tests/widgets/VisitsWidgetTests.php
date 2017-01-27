@@ -19,7 +19,7 @@ class VisitsWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('visitors'));
         $this->assertTrue($reflection->hasProperty('header'));
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
@@ -53,6 +53,66 @@ class VisitsWidgetTests extends TestCase
     }
     
     /**
+     * Тестирует метод VisitsWidget::setHeader
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetHeaderError()
+    {
+        $header = null;
+        
+        $widget = new VisitsWidget();
+        $widget->setHeader($header);
+    }
+    
+    /**
+     * Тестирует метод VisitsWidget::setHeader
+     */
+    public function testSetHeader()
+    {
+        $header = 'Header';
+        
+        $widget = new VisitsWidget();
+        $widget->setHeader($header);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод VisitsWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new VisitsWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод VisitsWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new VisitsWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод VisitsWidget::run
      * если пуст VisitsWidget::header
      * @expectedException ErrorException
@@ -66,9 +126,9 @@ class VisitsWidgetTests extends TestCase
     
     /**
      * Тестирует метод VisitsWidget::run
-     * если пуст VisitsWidget::view
+     * если пуст VisitsWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
@@ -93,7 +153,7 @@ class VisitsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'visits.twig');
         
@@ -129,7 +189,7 @@ class VisitsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $visitors);
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'visits.twig');
         

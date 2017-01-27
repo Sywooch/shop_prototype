@@ -32,7 +32,7 @@ class GetPopularGoodsWidgetConfigService extends AbstractBaseService
                 $finder = \Yii::$app->registry->get(PopularProductsFinder::class);
                 $dataArray['goods'] = $finder->find();
                 
-                $dataArray['view'] = 'popular-goods.twig';
+                $dataArray['template'] = 'popular-goods.twig';
                 
                 $this->popularGoodsWidgetArray = $dataArray;
             }

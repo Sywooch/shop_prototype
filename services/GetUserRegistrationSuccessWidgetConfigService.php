@@ -26,7 +26,8 @@ class GetUserRegistrationSuccessWidgetConfigService extends AbstractBaseService
             if (empty($this->гserRegistrationSuccessWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['view'] = 'registration-success.twig';
+                $dataArray['header'] = \Yii::t('base', 'Registration');
+                $dataArray['template'] = 'registration-success.twig';
                 
                 $this->гserRegistrationSuccessWidgetArray = $dataArray;
             }

@@ -33,7 +33,7 @@ class GetUnsubscribeEmptyWidgetConfigService extends AbstractBaseService
                 $dataArray = [];
                 
                 $dataArray['email'] = $email;
-                $dataArray['view'] = 'unsubscribe-empty.twig';
+                $dataArray['template'] = 'unsubscribe-empty.twig';
                 
                 $this->unsubscribeEmptyWidgetArray = $dataArray;
             }

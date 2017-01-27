@@ -24,7 +24,7 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     /**
      * @var int общее количество товаров в корзине
      */
@@ -47,8 +47,8 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             if ($this->purchases->isEmpty() === false) {
@@ -73,7 +73,7 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
             $renderArray['formAction'] = Url::to(['/cart/clean-redirect']);
             $renderArray['button'] = \Yii::t('base', 'To clean cart');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -100,6 +100,19 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
     {
         try {
             $this->currency = $currency;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству ShortCartRedirectWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
