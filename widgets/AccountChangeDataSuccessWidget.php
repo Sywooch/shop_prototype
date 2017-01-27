@@ -13,7 +13,7 @@ class AccountChangeDataSuccessWidget extends AbstractBaseWidget
     /**
      * @var string имя шаблона
      */
-    public $view;
+    private $template;
     
     /**
      * Конструирует HTML строку
@@ -22,15 +22,28 @@ class AccountChangeDataSuccessWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->view)) {
-                throw new ErrorException($this->emptyError('view'));
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
             
             $renderArray['text'] = \Yii::t('base', 'The data updated successfully!');
             
-            return $this->render($this->view, $renderArray);
+            return $this->render($this->template, $renderArray);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству AccountChangeDataSuccessWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

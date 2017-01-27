@@ -17,19 +17,49 @@ class AccountChangeDataSuccessWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(AccountChangeDataSuccessWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('view'));
+        $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
      * Тестирует метод AccountChangeDataSuccessWidget::run
-     * если пуст AccountChangeDataSuccessWidget::view
+     * если пуст AccountChangeDataSuccessWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: view
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyView()
     {
         $widget = new AccountChangeDataSuccessWidget();
         $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AccountChangeDataSuccessWidget::setTemplate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetTemplateError()
+    {
+        $template = null;
+        
+        $widget = new AccountChangeDataSuccessWidget();
+        $widget->setTemplate($template);
+    }
+    
+    /**
+     * Тестирует метод AccountChangeDataSuccessWidget::setTemplate
+     */
+    public function testSetTemplate()
+    {
+        $template = 'Template';
+        
+        $widget = new AccountChangeDataSuccessWidget();
+        $widget->setTemplate($template);
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
     }
     
     /**
@@ -39,7 +69,7 @@ class AccountChangeDataSuccessWidgetTests extends TestCase
     {
         $widget = new AccountChangeDataSuccessWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'view');
+        $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'account-change-data-success.twig');
         

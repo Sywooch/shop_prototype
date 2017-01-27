@@ -86,7 +86,7 @@ class AccountChangeDataPostService extends AbstractBaseService
                         
                         $transaction->commit();
                         
-                        return AccountChangeDataSuccessWidget::widget(['view'=>'account-change-data-success.twig']);
+                        return AccountChangeDataSuccessWidget::widget(['template'=>'account-change-data-success.twig']);
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

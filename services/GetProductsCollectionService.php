@@ -31,8 +31,8 @@ class GetProductsCollectionService extends AbstractBaseService
                 $filtersModel = $service->handle();
                 
                 $finder = \Yii::$app->registry->get(ProductsFinder::class, [
-                    'category'=>$request->get(\Yii::$app->params['categoryKey']) ?? null,
-                    'subcategory'=>$request->get(\Yii::$app->params['subcategoryKey']) ?? null,
+                    'category'=>$request->get(\Yii::$app->params['categoryKey']) ?? '',
+                    'subcategory'=>$request->get(\Yii::$app->params['subcategoryKey']) ?? '',
                     'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
                     'filters'=>$filtersModel
                 ]);

@@ -36,7 +36,7 @@ class GetProductsCollectionSphinxService extends AbstractBaseService
                 
                 $finder = \Yii::$app->registry->get(ProductsSphinxFinder::class, [
                     'sphinx'=>$sphinxArray,
-                    'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
+                    'page'=>(int) $request->get(\Yii::$app->params['pagePointer']) ?? 0,
                     'filters'=>$filtersModel
                 ]);
                 

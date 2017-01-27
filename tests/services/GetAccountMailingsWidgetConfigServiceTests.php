@@ -67,11 +67,11 @@ class GetAccountMailingsWidgetConfigServiceTests extends TestCase
         
         $this->assertArrayHasKey('mailings', $result);
         $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('view', $result);
+        $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['mailings']);
         $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['view']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

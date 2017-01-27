@@ -46,7 +46,7 @@ class CityCityFinderTests extends TestCase
         $city = null;
         
         $widget = new CityCityFinder();
-        $widget->setСity($city);
+        $widget->setCity($city);
     }
     
     /**
@@ -57,7 +57,7 @@ class CityCityFinderTests extends TestCase
         $city = 'city';
         
         $widget = new CityCityFinder();
-        $widget->setСity($city);
+        $widget->setCity($city);
         
         $reflection = new \ReflectionProperty($widget, 'city');
         $reflection->setAccessible(true);

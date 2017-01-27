@@ -49,7 +49,7 @@ class CityCityFinder extends AbstractBaseFinder
      * Присваивает название города свойству CityCityFinder::city
      * @param string $city
      */
-    public function setСity(string $city)
+    public function setCity(string $city)
     {
         try {
             $this->city = $city;

@@ -38,7 +38,7 @@ class GetAccountMailingsWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['header'] = \Yii::t('base', 'Current subscriptions');
                 
-                $dataArray['view'] = 'mailings.twig';
+                $dataArray['template'] = 'mailings.twig';
                 
                 $this->mailingsWidgetArray = $dataArray;
             }

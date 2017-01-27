@@ -35,8 +35,8 @@ class GetFiltersWidgetConfigService extends AbstractBaseService
             if (empty($this->filtersWidgetArray)) {
                 $dataArray = [];
                 
-                $category = $request->get(\Yii::$app->params['categoryKey']) ?? null;
-                $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? null;
+                $category = $request->get(\Yii::$app->params['categoryKey']) ?? '';
+                $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? '';
                 
                 $finder = \Yii::$app->registry->get(ColorsFilterFinder::class, ['category'=>$category, 'subcategory'=>$subcategory]);
                 $colorsArray = $finder->find();
