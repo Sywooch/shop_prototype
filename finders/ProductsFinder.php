@@ -17,15 +17,15 @@ class ProductsFinder extends AbstractBaseFinder
     /**
      * @var string GET параметр, определяющий текущую категорию каталога товаров
      */
-    public $category;
+    private $category;
     /**
      * @var string GET параметр, определяющий текущую подкатегорию каталога товаров
      */
-    public $subcategory;
+    private $subcategory;
     /**
      * @var string GET параметр, определяющий текущую страницу каталога товаров
      */
-    public $page;
+    private $page;
     /**
      * @var ProductsFiltersInterface объект товарных фильтров
      */
@@ -83,6 +83,45 @@ class ProductsFinder extends AbstractBaseFinder
     {
         try {
             $this->filters = $filters;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию ProductsFinder::category
+     * @param string $category
+     */
+    public function setCategory(string $category)
+    {
+        try {
+            $this->category = $category;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает подкатегорию ProductsFinder::subcategory
+     * @param string $category
+     */
+    public function setSubcategory(string $subcategory)
+    {
+        try {
+            $this->subcategory = $subcategory;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает номер страницы ProductsFinder::page
+     * @param int $page
+     */
+    public function setPage(int $page)
+    {
+        try {
+            $this->page = $page;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

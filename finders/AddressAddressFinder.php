@@ -14,7 +14,7 @@ class AddressAddressFinder extends AbstractBaseFinder
     /**
      * @var string address
      */
-    public $address;
+    private $address;
     /**
      * @var AddressModel
      */
@@ -27,11 +27,11 @@ class AddressAddressFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->address)) {
+                throw new ErrorException($this->emptyError('address'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->address)) {
-                    throw new ErrorException($this->emptyError('address'));
-                }
-                
                 $query = AddressModel::find();
                 $query->select(['[[address.id]]', '[[address.address]]']);
                 $query->where(['[[address.address]]'=>$this->address]);
@@ -40,6 +40,19 @@ class AddressAddressFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает адрес свойству AddressAddressFinder::address
+     * @param string $address
+     */
+    public function setAddress(string $address)
+    {
+        try {
+            $this->address = $address;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

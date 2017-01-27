@@ -17,11 +17,11 @@ class BrandsFilterFinder extends AbstractBaseFinder
     /**
      * @var string GET параметр, определяющий текущую категорию каталога товаров
      */
-    public $category;
+    private $category;
     /**
      * @var string GET параметр, определяющий текущую подкатегорию каталога товаров
      */
-    public $subcategory;
+    private $subcategory;
     /**
      * @var массив загруженных BrandsModel
      */
@@ -50,6 +50,32 @@ class BrandsFilterFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию свойству BrandsFilterFinder::category
+     * @param string $category
+     */
+    public function setCategory(string $category)
+    {
+        try {
+            $this->category = $category;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает подкатегорию свойству BrandsFilterFinder::subcategory
+     * @param string $subcategory
+     */
+    public function setSubcategory(string $subcategory)
+    {
+        try {
+            $this->subcategory = $subcategory;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

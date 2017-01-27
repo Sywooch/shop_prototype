@@ -15,7 +15,7 @@ class FiltersSessionFinder extends AbstractBaseFinder
     /**
      * @var string key ключ доступа к данным
      */
-    public $key;
+    private $key;
     /**
      * @var PurchasesCollection
      */
@@ -28,11 +28,11 @@ class FiltersSessionFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->key)) {
+                throw new ErrorException($this->emptyError('key'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->key)) {
-                    throw new ErrorException($this->emptyError('key'));
-                }
-                
                 $this->storage = new ProductsFilters(['scenario'=>ProductsFilters::SESSION]);
                 
                 $array = SessionHelper::read($this->key);
@@ -42,6 +42,19 @@ class FiltersSessionFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию свойству FiltersSessionFinder::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

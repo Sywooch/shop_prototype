@@ -14,7 +14,7 @@ class PurchasesIdUserFinder extends AbstractBaseFinder
     /**
      * @var int id_user
      */
-    public $id_user;
+    private $id_user;
     /**
      * @var array массив загруженных PurchasesModel
      */
@@ -41,6 +41,19 @@ class PurchasesIdUserFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ID свойству PurchasesIdUserFinder::id_user
+     * @param int $id_user
+     */
+    public function setId_user(int $id_user)
+    {
+        try {
+            $this->id_user = $id_user;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

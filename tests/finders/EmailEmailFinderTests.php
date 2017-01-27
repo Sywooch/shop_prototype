@@ -37,6 +37,36 @@ class EmailEmailFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод EmailEmailFinder::setEmail
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetEmailError()
+    {
+        $email = null;
+        
+        $widget = new EmailEmailFinder();
+        $widget->setEmail($email);
+    }
+    
+    /**
+     * Тестирует метод EmailEmailFinder::setEmail
+     */
+    public function testSetEmail()
+    {
+        $email = 'email';
+        
+        $widget = new EmailEmailFinder();
+        $widget->setEmail($email);
+        
+        $reflection = new \ReflectionProperty($widget, 'email');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод EmailEmailFinder::find
      * если пуст EmailEmailFinder::email
      * @expectedException ErrorException
@@ -58,6 +88,7 @@ class EmailEmailFinderTests extends TestCase
         $finder = new EmailEmailFinder();
         
         $reflection = new \ReflectionProperty($finder, 'email');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, $fixture['email']);
         
         $result = $finder->find();

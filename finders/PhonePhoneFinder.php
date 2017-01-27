@@ -14,7 +14,7 @@ class PhonePhoneFinder extends AbstractBaseFinder
     /**
      * @var string phone
      */
-    public $phone;
+    private $phone;
     /**
      * @var PhonesModel
      */
@@ -27,11 +27,11 @@ class PhonePhoneFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->phone)) {
+                throw new ErrorException($this->emptyError('phone'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->phone)) {
-                    throw new ErrorException($this->emptyError('phone'));
-                }
-                
                 $query = PhonesModel::find();
                 $query->select(['[[phones.id]]', '[[phones.phone]]']);
                 $query->where(['[[phones.phone]]'=>$this->phone]);
@@ -40,6 +40,19 @@ class PhonePhoneFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает номер телефона свойству PhonePhoneFinder::phone
+     * @param string $phone
+     */
+    public function setPhone(string $phone)
+    {
+        try {
+            $this->phone = $phone;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

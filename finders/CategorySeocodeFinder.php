@@ -14,7 +14,7 @@ class CategorySeocodeFinder extends AbstractBaseFinder
     /**
      * @var string seocode категории
      */
-    public $seocode;
+    private $seocode;
     /**
      * @var CategoriesModel
      */
@@ -27,11 +27,11 @@ class CategorySeocodeFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->seocode)) {
+                throw new ErrorException($this->emptyError('seocode'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->seocode)) {
-                    throw new ErrorException($this->emptyError('seocode'));
-                }
-                
                 $query = CategoriesModel::find();
                 $query->select(['[[categories.id]]', '[[categories.name]]', '[[categories.seocode]]', '[[categories.active]]']);
                 $query->where(['[[categories.seocode]]'=>$this->seocode]);
@@ -40,6 +40,19 @@ class CategorySeocodeFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию свойству CategorySeocodeFinder::seocode
+     * @param string $seocode
+     */
+    public function setSeocode(string $seocode)
+    {
+        try {
+            $this->seocode = $seocode;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

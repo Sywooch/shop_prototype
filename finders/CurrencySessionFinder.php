@@ -15,7 +15,7 @@ class CurrencySessionFinder extends AbstractBaseFinder
     /**
      * @var string key ключ доступа к данным
      */
-    public $key;
+    private $key;
     /**
      * @var загруженный CurrencyModel
      */
@@ -28,11 +28,11 @@ class CurrencySessionFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->key)) {
+                throw new ErrorException($this->emptyError('key'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->key)) {
-                    throw new ErrorException($this->emptyError('key'));
-                }
-                
                 $data = SessionHelper::read($this->key);
                 
                 if (!empty($data)) {
@@ -43,6 +43,19 @@ class CurrencySessionFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию свойству CurrencySessionFinder::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -15,7 +15,7 @@ class AdminOrdersFiltersSessionFinder extends AbstractBaseFinder
     /**
      * @var string key ключ доступа к данным
      */
-    public $key;
+    private $key;
     /**
      * @var AdminOrdersFilters
      */
@@ -42,6 +42,19 @@ class AdminOrdersFiltersSessionFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ключ свойству AdminOrdersFilters::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

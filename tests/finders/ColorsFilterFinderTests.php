@@ -46,6 +46,66 @@ class ColorsFilterFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод ColorsFilterFinder::setCategory
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetCategoryError()
+    {
+        $category = null;
+        
+        $widget = new ColorsFilterFinder();
+        $widget->setCategory($category);
+    }
+    
+    /**
+     * Тестирует метод ColorsFilterFinder::setCategory
+     */
+    public function testSetCategory()
+    {
+        $category = 'category';
+        
+        $widget = new ColorsFilterFinder();
+        $widget->setCategory($category);
+        
+        $reflection = new \ReflectionProperty($widget, 'category');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод ColorsFilterFinder::setSubcategory
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetSubcategoryError()
+    {
+        $subcategory = null;
+        
+        $widget = new ColorsFilterFinder();
+        $widget->setSubcategory($subcategory);
+    }
+    
+    /**
+     * Тестирует метод ColorsFilterFinder::setSubcategory
+     */
+    public function testSetSubcategory()
+    {
+        $subcategory = 'subcategory';
+        
+        $widget = new ColorsFilterFinder();
+        $widget->setSubcategory($subcategory);
+        
+        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод ColorsFilterFinder::run
      */
     public function testRun()
@@ -69,6 +129,7 @@ class ColorsFilterFinderTests extends TestCase
         $finder = new ColorsFilterFinder();
         
         $reflection = new \ReflectionProperty($finder, 'category');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->categories['category_1']['seocode']);
         
         $result = $finder->find();
@@ -89,9 +150,11 @@ class ColorsFilterFinderTests extends TestCase
         $finder = new ColorsFilterFinder();
         
         $reflection = new \ReflectionProperty($finder, 'category');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->categories['category_1']['seocode']);
         
         $reflection = new \ReflectionProperty($finder, 'subcategory');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->subcategory['subcategory_1']['seocode']);
         
         $result = $finder->find();

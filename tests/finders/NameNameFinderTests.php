@@ -37,6 +37,36 @@ class NameNameFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод NameNameFinder::setName
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetNameError()
+    {
+        $name = null;
+        
+        $widget = new NameNameFinder();
+        $widget->setName($name);
+    }
+    
+    /**
+     * Тестирует метод NameNameFinder::setName
+     */
+    public function testSetName()
+    {
+        $name = 'name';
+        
+        $widget = new NameNameFinder();
+        $widget->setName($name);
+        
+        $reflection = new \ReflectionProperty($widget, 'name');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод NameNameFinder::find
      * если пуст NameNameFinder::name
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class NameNameFinderTests extends TestCase
         $finder = new NameNameFinder();
         
         $reflection = new \ReflectionProperty($finder, 'name');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->names['name_1']['name']);
         
         $result = $finder->find();

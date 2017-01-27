@@ -37,6 +37,36 @@ class PhonePhoneFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод PhonePhoneFinder::setPhone
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPhoneError()
+    {
+        $phone = null;
+        
+        $widget = new PhonePhoneFinder();
+        $widget->setPhone($phone);
+    }
+    
+    /**
+     * Тестирует метод PhonePhoneFinder::setPhone
+     */
+    public function testSetPhone()
+    {
+        $phone = '+897 897 56 88';
+        
+        $widget = new PhonePhoneFinder();
+        $widget->setPhone($phone);
+        
+        $reflection = new \ReflectionProperty($widget, 'phone');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод PhonePhoneFinder::find
      * если пуст PhonePhoneFinder::phone
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class PhonePhoneFinderTests extends TestCase
         $finder = new PhonePhoneFinder();
         
         $reflection = new \ReflectionProperty($finder, 'phone');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->phones['phone_1']['phone']);
         
         $result = $finder->find();

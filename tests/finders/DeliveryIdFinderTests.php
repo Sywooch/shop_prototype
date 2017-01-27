@@ -37,6 +37,36 @@ class DeliveryIdFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод DeliveryIdFinder::setId
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetIdError()
+    {
+        $id = null;
+        
+        $widget = new DeliveryIdFinder();
+        $widget->setId($id);
+    }
+    
+    /**
+     * Тестирует метод DeliveryIdFinder::setId
+     */
+    public function testSetId()
+    {
+        $id = 2;
+        
+        $widget = new DeliveryIdFinder();
+        $widget->setId($id);
+        
+        $reflection = new \ReflectionProperty($widget, 'id');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('integer', $result);
+    }
+    
+    /**
      * Тестирует метод DeliveryIdFinder::find
      * если пуст DeliveryIdFinder::id
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class DeliveryIdFinderTests extends TestCase
         $finder = new DeliveryIdFinder();
         
         $reflection = new \ReflectionProperty($finder, 'id');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 1);
         
         $result = $finder->find();

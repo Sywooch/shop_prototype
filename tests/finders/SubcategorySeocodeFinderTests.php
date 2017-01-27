@@ -37,6 +37,36 @@ class SubcategorySeocodeFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод SubcategorySeocodeFinder::setSeocode
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetSeocodeError()
+    {
+        $seocode = null;
+        
+        $widget = new SubcategorySeocodeFinder();
+        $widget->setSeocode($seocode);
+    }
+    
+    /**
+     * Тестирует метод SubcategorySeocodeFinder::setSeocode
+     */
+    public function testSetSeocode()
+    {
+        $seocode = 'seocode';
+        
+        $widget = new SubcategorySeocodeFinder();
+        $widget->setSeocode($seocode);
+        
+        $reflection = new \ReflectionProperty($widget, 'seocode');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод SubcategorySeocodeFinder::find
      * если пуст SubcategorySeocodeFinder::seocode
      * @expectedException ErrorException
@@ -58,6 +88,7 @@ class SubcategorySeocodeFinderTests extends TestCase
         $finder = new SubcategorySeocodeFinder();
         
         $reflection = new \ReflectionProperty($finder, 'seocode');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, $fixture['seocode']);
         
         $result = $finder->find();

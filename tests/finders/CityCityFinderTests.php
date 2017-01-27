@@ -37,6 +37,36 @@ class CityCityFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод CityCityFinder::setСity
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetСityError()
+    {
+        $city = null;
+        
+        $widget = new CityCityFinder();
+        $widget->setСity($city);
+    }
+    
+    /**
+     * Тестирует метод CityCityFinder::setСity
+     */
+    public function testSetСity()
+    {
+        $city = 'city';
+        
+        $widget = new CityCityFinder();
+        $widget->setСity($city);
+        
+        $reflection = new \ReflectionProperty($widget, 'city');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод CityCityFinder::find
      * если пуст CityCityFinder::city
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class CityCityFinderTests extends TestCase
         $finder = new CityCityFinder();
         
         $reflection = new \ReflectionProperty($finder, 'city');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->cities['city_1']['city']);
         
         $result = $finder->find();

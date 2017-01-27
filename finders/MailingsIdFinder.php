@@ -14,7 +14,7 @@ class MailingsIdFinder extends AbstractBaseFinder
     /**
      * @var массив ID
      */
-    public $id = [];
+    private $id = [];
     /**
      * @var массив загруженных MailingsModel
      */
@@ -40,6 +40,19 @@ class MailingsIdFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает array свойству MailingsIdFinder::id
+     * @param array $id
+     */
+    public function setId(array $id)
+    {
+        try {
+            $this->id = $id;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

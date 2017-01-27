@@ -15,7 +15,7 @@ class SphinxFinder extends AbstractBaseFinder
     /**
      * @var string искомая фраза
      */
-    public $search;
+    private $search;
     /**
      * @var массив загруженных данных
      */
@@ -42,6 +42,19 @@ class SphinxFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает искомую фразу SphinxFinder::search
+     * @param string $search
+     */
+    public function setSearch(string $search)
+    {
+        try {
+            $this->search = $search;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

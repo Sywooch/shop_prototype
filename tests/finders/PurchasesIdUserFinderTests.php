@@ -37,6 +37,36 @@ class PurchasesIdUserFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод PurchasesIdUserFinder::setId_user
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetId_userError()
+    {
+        $id_user = null;
+        
+        $widget = new PurchasesIdUserFinder();
+        $widget->setId_user($id_user);
+    }
+    
+    /**
+     * Тестирует метод PurchasesIdUserFinder::setId_user
+     */
+    public function testSetId_user()
+    {
+        $id_user = 2;
+        
+        $widget = new PurchasesIdUserFinder();
+        $widget->setId_user($id_user);
+        
+        $reflection = new \ReflectionProperty($widget, 'id_user');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('integer', $result);
+    }
+    
+    /**
      * Тестирует метод PurchasesIdUserFinder::find
      * если пуст PurchasesIdUserFinder::id_user
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class PurchasesIdUserFinderTests extends TestCase
         $finder = new PurchasesIdUserFinder();
         
         $reflection = new \ReflectionProperty($finder, 'id_user');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->purchases['purchase_1']['id_user']);
         
         $result = $finder->find();

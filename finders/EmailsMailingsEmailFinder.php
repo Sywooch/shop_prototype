@@ -14,7 +14,7 @@ class EmailsMailingsEmailFinder extends AbstractBaseFinder
     /**
      * @var string email
      */
-    public $email;
+    private $email;
     /**
      * @var array EmailsMailingsModel
      */
@@ -41,6 +41,19 @@ class EmailsMailingsEmailFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает email свойству EmailsMailingsEmailFinder::email
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        try {
+            $this->email = $email;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

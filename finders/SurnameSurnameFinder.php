@@ -14,7 +14,7 @@ class SurnameSurnameFinder extends AbstractBaseFinder
     /**
      * @var string surname
      */
-    public $surname;
+    private $surname;
     /**
      * @var SurnamesModel
      */
@@ -40,6 +40,19 @@ class SurnameSurnameFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает фамилию свойству SurnameSurnameFinder::surname
+     * @param string $surname
+     */
+    public function setSurname(string $surname)
+    {
+        try {
+            $this->surname = $surname;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

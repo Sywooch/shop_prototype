@@ -37,6 +37,36 @@ class CountryCountryFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод CountryCountryFinder::setCountry
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetCountryError()
+    {
+        $country = null;
+        
+        $widget = new CountryCountryFinder();
+        $widget->setCountry($country);
+    }
+    
+    /**
+     * Тестирует метод CountryCountryFinder::setCountry
+     */
+    public function testSetCountry()
+    {
+        $country = 'country';
+        
+        $widget = new CountryCountryFinder();
+        $widget->setCountry($country);
+        
+        $reflection = new \ReflectionProperty($widget, 'country');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод CountryCountryFinder::find
      * если пуст CountryCountryFinder::country
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class CountryCountryFinderTests extends TestCase
         $finder = new CountryCountryFinder();
         
         $reflection = new \ReflectionProperty($finder, 'country');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->countries['country_1']['country']);
         
         $result = $finder->find();

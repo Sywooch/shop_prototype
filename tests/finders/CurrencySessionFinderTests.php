@@ -23,6 +23,36 @@ class CurrencySessionFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод CurrencySessionFinder::setKey
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetKeyError()
+    {
+        $key = null;
+        
+        $widget = new CurrencySessionFinder();
+        $widget->setKey($key);
+    }
+    
+    /**
+     * Тестирует метод CurrencySessionFinder::setKey
+     */
+    public function testSetKey()
+    {
+        $key = 'key';
+        
+        $widget = new CurrencySessionFinder();
+        $widget->setKey($key);
+        
+        $reflection = new \ReflectionProperty($widget, 'key');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод CurrencySessionFinder::find
      * если пуст CurrencySessionFinder::key
      * @expectedException ErrorException
@@ -46,6 +76,7 @@ class CurrencySessionFinderTests extends TestCase
         $finder = new CurrencySessionFinder();
         
         $reflection = new \ReflectionProperty($finder, 'key');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 'key_test');
         
         $result = $finder->find();

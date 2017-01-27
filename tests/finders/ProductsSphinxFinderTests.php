@@ -115,6 +115,36 @@ class ProductsSphinxFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод ProductsSphinxFinder::setPage
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPageError()
+    {
+        $page = null;
+        
+        $finder = new ProductsSphinxFinder();
+        $finder->setPage($page);
+    }
+    
+    /**
+     * Тестирует метод ProductsSphinxFinder::setPage
+     */
+    public function testSetPage()
+    {
+        $page = 2;
+        
+        $finder = new ProductsSphinxFinder();
+        $finder->setPage($page);
+        
+        $reflection = new \ReflectionProperty($finder, 'page');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($finder);
+        
+        $this->assertInternalType('integer', $result);
+    }
+    
+    /**
      * Тестирует метод ProductsSphinxFinder::find
      * если пуст ProductsSphinxFinder::sphinx
      * @expectedException ErrorException
@@ -196,6 +226,7 @@ class ProductsSphinxFinderTests extends TestCase
         $reflection->setValue($finder, $sphinx);
         
         $reflection = new \ReflectionProperty($finder, 'page');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 2);
         
         $collection = $finder->find();

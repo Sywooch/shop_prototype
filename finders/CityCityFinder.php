@@ -14,7 +14,7 @@ class CityCityFinder extends AbstractBaseFinder
     /**
      * @var string city
      */
-    public $city;
+    private $city;
     /**
      * @var CitiesModel
      */
@@ -27,11 +27,11 @@ class CityCityFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->city)) {
+                throw new ErrorException($this->emptyError('city'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->city)) {
-                    throw new ErrorException($this->emptyError('city'));
-                }
-                
                 $query = CitiesModel::find();
                 $query->select(['[[cities.id]]', '[[cities.city]]']);
                 $query->where(['[[cities.city]]'=>$this->city]);
@@ -40,6 +40,19 @@ class CityCityFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает название города свойству CityCityFinder::city
+     * @param string $city
+     */
+    public function setСity(string $city)
+    {
+        try {
+            $this->city = $city;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -24,6 +24,36 @@ class PurchasesSessionFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод PurchasesSessionFinder::setKey
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetKeyError()
+    {
+        $key = null;
+        
+        $widget = new PurchasesSessionFinder();
+        $widget->setKey($key);
+    }
+    
+    /**
+     * Тестирует метод PurchasesSessionFinder::setKey
+     */
+    public function testSetKey()
+    {
+        $key = 'key';
+        
+        $widget = new PurchasesSessionFinder();
+        $widget->setKey($key);
+        
+        $reflection = new \ReflectionProperty($widget, 'key');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод PurchasesSessionFinder::find
      * если пуст PurchasesSessionFinder::key
      * @expectedException ErrorException
@@ -47,6 +77,7 @@ class PurchasesSessionFinderTests extends TestCase
         $finder = new PurchasesSessionFinder();
         
         $reflection = new \ReflectionProperty($finder, 'key');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 'key_test');
         
         $collection = $finder->find();

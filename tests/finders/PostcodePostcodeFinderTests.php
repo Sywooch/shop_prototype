@@ -37,6 +37,36 @@ class PostcodePostcodeFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод PostcodePostcodeFinder::setPostcode
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPostcodeError()
+    {
+        $postcode = null;
+        
+        $widget = new PostcodePostcodeFinder();
+        $widget->setPostcode($postcode);
+    }
+    
+    /**
+     * Тестирует метод PostcodePostcodeFinder::setPostcode
+     */
+    public function testSetPostcode()
+    {
+        $postcode = 'postcode';
+        
+        $widget = new PostcodePostcodeFinder();
+        $widget->setPostcode($postcode);
+        
+        $reflection = new \ReflectionProperty($widget, 'postcode');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод PostcodePostcodeFinder::find
      * если пуст PostcodePostcodeFinder::postcode
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class PostcodePostcodeFinderTests extends TestCase
         $finder = new PostcodePostcodeFinder();
         
         $reflection = new \ReflectionProperty($finder, 'postcode');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->postcodes['postcode_1']['postcode']);
         
         $result = $finder->find();

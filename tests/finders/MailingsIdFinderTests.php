@@ -37,6 +37,36 @@ class MailingsIdFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод MailingsIdFinder::setId
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetIdError()
+    {
+        $id = null;
+        
+        $widget = new MailingsIdFinder();
+        $widget->setId($id);
+    }
+    
+    /**
+     * Тестирует метод MailingsIdFinder::setId
+     */
+    public function testSetId()
+    {
+        $id = 2;
+        
+        $widget = new MailingsIdFinder();
+        $widget->setId([$id]);
+        
+        $reflection = new \ReflectionProperty($widget, 'id');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('array', $result);
+    }
+    
+    /**
      * Тестирует метод MailingsIdFinder::find
      * если пуст MailingsIdFinder::id
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class MailingsIdFinderTests extends TestCase
         $finder = new MailingsIdFinder();
         
         $reflection = new \ReflectionProperty($finder, 'id');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, [self::$dbClass->mailings['mailing_1']['id'], self::$dbClass->mailings['mailing_2']['id']]);
         
         $result = $finder->find();

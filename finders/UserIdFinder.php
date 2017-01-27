@@ -14,7 +14,7 @@ class UserIdFinder extends AbstractBaseFinder
     /**
      * @var int Id пользователя
      */
-    public $id;
+    private $id;
     /**
      * @var array найденный UsersModel
      */
@@ -40,6 +40,19 @@ class UserIdFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ID свойству UserIdFinder::id
+     * @param int $id
+     */
+    public function setId(int $id)
+    {
+        try {
+            $this->id = $id;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

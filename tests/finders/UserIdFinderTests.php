@@ -37,6 +37,36 @@ class UserIdFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод UserIdFinder::setId
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetIdError()
+    {
+        $id = null;
+        
+        $widget = new UserIdFinder();
+        $widget->setId($id);
+    }
+    
+    /**
+     * Тестирует метод UserIdFinder::setId
+     */
+    public function testSetId()
+    {
+        $id = 2;
+        
+        $widget = new UserIdFinder();
+        $widget->setId($id);
+        
+        $reflection = new \ReflectionProperty($widget, 'id');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('integer', $result);
+    }
+    
+    /**
      * Тестирует метод UserIdFinder::find
      * если пуст UserIdFinder::id
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class UserIdFinderTests extends TestCase
         $finder = new UserIdFinder();
         
         $reflection = new \ReflectionProperty($finder, 'id');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 1);
         
         $result = $finder->find();

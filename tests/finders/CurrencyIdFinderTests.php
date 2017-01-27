@@ -37,6 +37,36 @@ class CurrencyIdFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод CurrencyIdFinder::setId
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetIdError()
+    {
+        $id = null;
+        
+        $widget = new CurrencyIdFinder();
+        $widget->setId($id);
+    }
+    
+    /**
+     * Тестирует метод CurrencyIdFinder::setId
+     */
+    public function testSetId()
+    {
+        $id = 2;
+        
+        $widget = new CurrencyIdFinder();
+        $widget->setId($id);
+        
+        $reflection = new \ReflectionProperty($widget, 'id');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('integer', $result);
+    }
+    
+    /**
      * Тестирует метод CurrencyIdFinder::find
      * если пуст CurrencyIdFinder::id
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class CurrencyIdFinderTests extends TestCase
         $finder = new CurrencyIdFinder();
         
         $reflection = new \ReflectionProperty($finder, 'id');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 1);
         
         $result = $finder->find();

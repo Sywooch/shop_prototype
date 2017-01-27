@@ -21,7 +21,7 @@ class ProductsSphinxFinder extends AbstractBaseFinder
     /**
      * @var string GET параметр, определяющий текущую страницу каталога товаров
      */
-    public $page;
+    private $page;
     /**
      * @var ProductsFiltersInterface объект товарных фильтров
      */
@@ -38,14 +38,14 @@ class ProductsSphinxFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->sphinx)) {
+                throw new ErrorException($this->emptyError('sphinx'));
+            }
+            if (empty($this->filters)) {
+                   throw new ErrorException($this->emptyError('filters'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->sphinx)) {
-                    throw new ErrorException($this->emptyError('sphinx'));
-                }
-                if (empty($this->filters)) {
-                    throw new ErrorException($this->emptyError('filters'));
-                }
-                
                 $this->createCollection();
                 
                 $query = $this->createQuery();
@@ -88,6 +88,19 @@ class ProductsSphinxFinder extends AbstractBaseFinder
     {
         try {
             $this->filters = $filters;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает номер страницы ProductsSphinxFinder::page
+     * @param int $page
+     */
+    public function setPage(int $page)
+    {
+        try {
+            $this->page = $page;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

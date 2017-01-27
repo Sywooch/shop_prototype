@@ -23,7 +23,7 @@ class AdminOrdersFinder extends AbstractBaseFinder
     /**
      * @var string GET параметр, определяющий текущую страницу
      */
-    public $page;
+    private $page;
     /**
      * @var PurchasesCollection
      */
@@ -90,6 +90,19 @@ class AdminOrdersFinder extends AbstractBaseFinder
     {
         try {
             $this->filters = $filters;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает номер страницы ProductsFinder::page
+     * @param string $page
+     */
+    public function setPage(string $page)
+    {
+        try {
+            $this->page = $page;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

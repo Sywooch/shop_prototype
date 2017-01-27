@@ -69,6 +69,36 @@ class AdminOrdersFinderTests extends TestCase
         $this->assertInstanceOf(AdminOrdersFiltersInterface::class, $result);
     }
     
+    /**
+     * Тестирует метод AdminOrdersFinder::setPage
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPageError()
+    {
+        $page = null;
+        
+        $widget = new AdminOrdersFinder();
+        $widget->setPage($page);
+    }
+    
+    /**
+     * Тестирует метод AdminOrdersFinder::setPage
+     */
+    public function testSetPage()
+    {
+        $page = 2;
+        
+        $widget = new AdminOrdersFinder();
+        $widget->setPage($page);
+        
+        $reflection = new \ReflectionProperty($widget, 'page');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('integer', (int) $result);
+    }
+    
      /**
      * Тестирует метод AdminOrdersFinder::find
      * если пуст AdminOrdersFinder::filters
@@ -139,6 +169,7 @@ class AdminOrdersFinderTests extends TestCase
         $reflection->setValue($finder, $filters);
         
         $reflection = new \ReflectionProperty($finder, 'page');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 2);
         
         $result = $finder->find();

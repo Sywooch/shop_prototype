@@ -14,7 +14,7 @@ class CountryCountryFinder extends AbstractBaseFinder
     /**
      * @var string country
      */
-    public $country;
+    private $country;
     /**
      * @var CountriesModel
      */
@@ -27,11 +27,11 @@ class CountryCountryFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->country)) {
+                throw new ErrorException($this->emptyError('country'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->country)) {
-                    throw new ErrorException($this->emptyError('country'));
-                }
-                
                 $query = CountriesModel::find();
                 $query->select(['[[countries.id]]', '[[countries.country]]']);
                 $query->where(['[[countries.country]]'=>$this->country]);
@@ -40,6 +40,19 @@ class CountryCountryFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает название страны свойству CountryCountryFinder::country
+     * @param string $country
+     */
+    public function setCountry(string $country)
+    {
+        try {
+            $this->country = $country;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

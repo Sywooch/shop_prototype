@@ -15,7 +15,7 @@ class RecoverySessionFinder extends AbstractBaseFinder
     /**
      * @var string key ключ доступа к данным
      */
-    public $key;
+    private $key;
     /**
      * @var загруженный RecoveryModel
      */
@@ -43,6 +43,19 @@ class RecoverySessionFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию свойству RecoverySessionFinder::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

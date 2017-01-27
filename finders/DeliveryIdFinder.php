@@ -14,7 +14,7 @@ class DeliveryIdFinder extends AbstractBaseFinder
     /**
      * @var int Id
      */
-    public $id;
+    private $id;
     /**
      * @var загруженный DeliveriesModel
      */
@@ -40,6 +40,19 @@ class DeliveryIdFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ID свойству DeliveriesModel::id
+     * @param int $id
+     */
+    public function setId(int $id)
+    {
+        try {
+            $this->id = $id;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

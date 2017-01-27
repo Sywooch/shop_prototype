@@ -37,6 +37,36 @@ class AddressAddressFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод AddressAddressFinder::setAddress
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetAddressError()
+    {
+        $address = null;
+        
+        $widget = new AddressAddressFinder();
+        $widget->setAddress($address);
+    }
+    
+    /**
+     * Тестирует метод AddressAddressFinder::setAddress
+     */
+    public function testSetAddress()
+    {
+        $address = 'Address';
+        
+        $widget = new AddressAddressFinder();
+        $widget->setAddress($address);
+        
+        $reflection = new \ReflectionProperty($widget, 'address');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод AddressAddressFinder::find
      * если пуст AddressAddressFinder::address
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class AddressAddressFinderTests extends TestCase
         $finder = new AddressAddressFinder();
         
         $reflection = new \ReflectionProperty($finder, 'address');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->address['address_1']['address']);
         
         $result = $finder->find();

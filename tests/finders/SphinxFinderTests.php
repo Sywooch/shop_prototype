@@ -22,6 +22,36 @@ class SphinxFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод SphinxFinder::setSearch
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetSearchError()
+    {
+        $search = null;
+        
+        $widget = new SphinxFinder();
+        $widget->setSearch($search);
+    }
+    
+    /**
+     * Тестирует метод SphinxFinder::setSearch
+     */
+    public function testSetSearch()
+    {
+        $search = 'search';
+        
+        $widget = new SphinxFinder();
+        $widget->setSearch($search);
+        
+        $reflection = new \ReflectionProperty($widget, 'search');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод SphinxFinder::find
      * если пуст SphinxFinder::search
      * @expectedException ErrorException
@@ -41,6 +71,7 @@ class SphinxFinderTests extends TestCase
         $finder = new SphinxFinder();
         
         $reflection = new \ReflectionProperty($finder, 'search');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 'пиджак');
         
         $result = $finder->find();

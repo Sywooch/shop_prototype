@@ -15,7 +15,7 @@ class CustomerInfoSessionFinder extends AbstractBaseFinder
     /**
      * @var string key ключ доступа к данным
      */
-    public $key;
+    private $key;
     /**
      * @var PurchasesCollection
      */
@@ -41,6 +41,19 @@ class CustomerInfoSessionFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию свойству CustomerInfoSessionFinder::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -14,7 +14,7 @@ class VisitorsCounterDateFinder extends AbstractBaseFinder
     /**
      * @var int date
      */
-    public $date;
+    private $date;
     /**
      * @var VisitorsCounterModel
      */
@@ -40,6 +40,19 @@ class VisitorsCounterDateFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает номер телефона свойству VisitorsCounterDateFinder::date
+     * @param string $date
+     */
+    public function setDate(int $date)
+    {
+        try {
+            $this->date = $date;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

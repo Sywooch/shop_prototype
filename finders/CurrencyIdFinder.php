@@ -14,7 +14,7 @@ class CurrencyIdFinder extends AbstractBaseFinder
     /**
      * @var int параметр, определяющий искомую валюту
      */
-    public $id;
+    private $id;
     /**
      * @var загруженный CurrencyModel
      */
@@ -39,6 +39,19 @@ class CurrencyIdFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ID свойству CurrencyIdFinder::id
+     * @param int $id
+     */
+    public function setId(int $id)
+    {
+        try {
+            $this->id = $id;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

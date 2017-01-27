@@ -24,6 +24,36 @@ class CustomerInfoSessionFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод CustomerInfoSessionFinder::setKey
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetKeyError()
+    {
+        $key = null;
+        
+        $widget = new CustomerInfoSessionFinder();
+        $widget->setKey($key);
+    }
+    
+    /**
+     * Тестирует метод CustomerInfoSessionFinder::setKey
+     */
+    public function testSetKey()
+    {
+        $key = 'key';
+        
+        $widget = new CustomerInfoSessionFinder();
+        $widget->setKey($key);
+        
+        $reflection = new \ReflectionProperty($widget, 'key');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод CustomerInfoSessionFinder::find
      * если пуст CustomerInfoSessionFinder::key
      * @expectedException ErrorException
@@ -60,6 +90,7 @@ class CustomerInfoSessionFinderTests extends TestCase
         $finder = new CustomerInfoSessionFinder();
         
         $reflection = new \ReflectionProperty($finder, 'key');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, $key);
         
         $form = $finder->find();

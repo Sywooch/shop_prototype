@@ -37,6 +37,36 @@ class PaymentIdFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод PaymentIdFinder::setId
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetIdError()
+    {
+        $id = null;
+        
+        $widget = new PaymentIdFinder();
+        $widget->setId($id);
+    }
+    
+    /**
+     * Тестирует метод PaymentIdFinder::setId
+     */
+    public function testSetId()
+    {
+        $id = 2;
+        
+        $widget = new PaymentIdFinder();
+        $widget->setId($id);
+        
+        $reflection = new \ReflectionProperty($widget, 'id');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('integer', $result);
+    }
+    
+    /**
      * Тестирует метод PaymentIdFinder::find
      * если пуст PaymentIdFinder::id
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class PaymentIdFinderTests extends TestCase
         $finder = new PaymentIdFinder();
         
         $reflection = new \ReflectionProperty($finder, 'id');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, 1);
         
         $result = $finder->find();

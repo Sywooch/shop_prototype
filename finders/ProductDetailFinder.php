@@ -14,7 +14,7 @@ class ProductDetailFinder extends AbstractBaseFinder
     /**
      * @var string GET параметр, определяющий запрашиваемый товар
      */
-    public $seocode;
+    private $seocode;
     /**
      * @var загруженный ProductsModel
      */
@@ -27,11 +27,11 @@ class ProductDetailFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->seocode)) {
+                throw new ErrorException($this->emptyError('seocode'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->seocode)) {
-                    throw new ErrorException($this->emptyError('seocode'));
-                }
-                
                 $query = ProductsModel::find();
                 $query->select(['[[products.id]]', '[[products.code]]', '[[products.name]]', '[[products.price]]', '[[products.description]]', '[[products.images]]', '[[products.seocode]]', '[[products.id_category]]', '[[products.id_subcategory]]', '[[products.views]]']);
                 $query->where(['[[products.seocode]]'=>$this->seocode]);
@@ -40,6 +40,19 @@ class ProductDetailFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию свойству ProductDetailFinder::seocode
+     * @param string $seocode
+     */
+    public function setSeocode(string $seocode)
+    {
+        try {
+            $this->seocode = $seocode;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

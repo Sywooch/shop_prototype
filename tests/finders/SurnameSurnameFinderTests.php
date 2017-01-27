@@ -37,6 +37,36 @@ class SurnameSurnameFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод SurnameSurnameFinder::setSurname
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetSurnameError()
+    {
+        $surname = null;
+        
+        $widget = new SurnameSurnameFinder();
+        $widget->setSurname($surname);
+    }
+    
+    /**
+     * Тестирует метод SurnameSurnameFinder::setSurname
+     */
+    public function testSetSurname()
+    {
+        $surname = 'surname';
+        
+        $widget = new SurnameSurnameFinder();
+        $widget->setSurname($surname);
+        
+        $reflection = new \ReflectionProperty($widget, 'surname');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод SurnameSurnameFinder::find
      * если пуст SurnameSurnameFinder::surname
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class SurnameSurnameFinderTests extends TestCase
         $finder = new SurnameSurnameFinder();
         
         $reflection = new \ReflectionProperty($finder, 'surname');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->surnames['surname_1']['surname']);
         
         $result = $finder->find();

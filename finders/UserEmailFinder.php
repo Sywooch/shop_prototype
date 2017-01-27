@@ -14,7 +14,7 @@ class UserEmailFinder extends AbstractBaseFinder
     /**
      * @var string email пользователя
      */
-    public $email;
+    private $email;
     /**
      * @var array найденный UsersModel
      */
@@ -41,6 +41,19 @@ class UserEmailFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает email свойству UserEmailFinder::email
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        try {
+            $this->email = $email;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

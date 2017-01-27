@@ -14,7 +14,7 @@ class PostcodePostcodeFinder extends AbstractBaseFinder
     /**
      * @var string postcode
      */
-    public $postcode;
+    private $postcode;
     /**
      * @var PostcodesModel
      */
@@ -27,11 +27,11 @@ class PostcodePostcodeFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->postcode)) {
+                throw new ErrorException($this->emptyError('postcode'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->postcode)) {
-                    throw new ErrorException($this->emptyError('postcode'));
-                }
-                
                 $query = PostcodesModel::find();
                 $query->select(['[[postcodes.id]]', '[[postcodes.postcode]]']);
                 $query->where(['[[postcodes.postcode]]'=>$this->postcode]);
@@ -40,6 +40,19 @@ class PostcodePostcodeFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает почтовый код свойству PostcodePostcodeFinder::postcode
+     * @param string $postcode
+     */
+    public function setPostcode(string $postcode)
+    {
+        try {
+            $this->postcode = $postcode;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

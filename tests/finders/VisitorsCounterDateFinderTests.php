@@ -37,6 +37,36 @@ class VisitorsCounterDateFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод VisitorsCounterDateFinder::setDate
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetDateError()
+    {
+        $date = null;
+        
+        $widget = new VisitorsCounterDateFinder();
+        $widget->setDate($date);
+    }
+    
+    /**
+     * Тестирует метод VisitorsCounterDateFinder::setDate
+     */
+    public function testSetDate()
+    {
+        $date = 1212302154;
+        
+        $widget = new VisitorsCounterDateFinder();
+        $widget->setDate($date);
+        
+        $reflection = new \ReflectionProperty($widget, 'date');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('integer', $result);
+    }
+    
+    /**
      * Тестирует метод VisitorsCounterDateFinder::find
      * если пуст VisitorsCounterDateFinder::date
      * @expectedException ErrorException
@@ -56,6 +86,7 @@ class VisitorsCounterDateFinderTests extends TestCase
         $finder = new VisitorsCounterDateFinder();
         
         $reflection = new \ReflectionProperty($finder, 'date');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, self::$dbClass->visitors_counter['visitors_counter_1']['date']);
         
         $result = $finder->find();

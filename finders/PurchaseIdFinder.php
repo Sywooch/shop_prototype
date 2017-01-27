@@ -14,7 +14,7 @@ class PurchaseIdFinder extends AbstractBaseFinder
     /**
      * @var int id
      */
-    public $id;
+    private $id;
     /**
      * @var PurchasesModel
      */
@@ -40,6 +40,19 @@ class PurchaseIdFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ID свойству PurchaseIdFinder::id
+     * @param int $id
+     */
+    public function setId(int $id)
+    {
+        try {
+            $this->id = $id;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

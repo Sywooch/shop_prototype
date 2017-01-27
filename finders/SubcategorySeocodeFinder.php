@@ -14,7 +14,7 @@ class SubcategorySeocodeFinder extends AbstractBaseFinder
     /**
      * @var string seocode категории
      */
-    public $seocode;
+    private $seocode;
     /**
      * @var array массив загруженных SubcategoryModel
      */
@@ -40,6 +40,19 @@ class SubcategorySeocodeFinder extends AbstractBaseFinder
             }
             
             return $this->storage;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает категорию свойству SubcategorySeocodeFinder::seocode
+     * @param string $seocode
+     */
+    public function setSeocode(string $seocode)
+    {
+        try {
+            $this->seocode = $seocode;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

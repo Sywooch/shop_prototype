@@ -37,6 +37,36 @@ class ProductDetailFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод ProductDetailFinder::setSeocode
+     * если передан параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetSeocodeError()
+    {
+        $seocode = null;
+        
+        $widget = new ProductDetailFinder();
+        $widget->setSeocode($seocode);
+    }
+    
+    /**
+     * Тестирует метод ProductDetailFinder::setSeocode
+     */
+    public function testSetSeocode()
+    {
+        $seocode = 'seocode';
+        
+        $widget = new ProductDetailFinder();
+        $widget->setSeocode($seocode);
+        
+        $reflection = new \ReflectionProperty($widget, 'seocode');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
      * Тестирует метод ProductDetailFinder::find
      * если пуст ProductDetailFinder::seocode
      * @expectedException ErrorException
@@ -58,6 +88,7 @@ class ProductDetailFinderTests extends TestCase
         $finder = new ProductDetailFinder();
         
         $reflection = new \ReflectionProperty($finder, 'seocode');
+        $reflection->setAccessible(true);
         $reflection->setValue($finder, $fixture['seocode']);
         
         $result = $finder->find();

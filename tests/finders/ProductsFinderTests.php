@@ -60,7 +60,6 @@ class ProductsFinderTests extends TestCase
         $filter = new class() {};
         
         $finder = new ProductsFinder();
-        
         $finder->setFilters($filter);
     }
     
@@ -72,7 +71,6 @@ class ProductsFinderTests extends TestCase
         $filters = new class() extends ProductsFilters {};
         
         $finder = new ProductsFinder();
-        
         $finder->setFilters($filters);
         
         $reflection = new \ReflectionProperty($finder, 'filters');
@@ -80,6 +78,96 @@ class ProductsFinderTests extends TestCase
         $result = $reflection->getValue($finder);
         
         $this->assertInstanceOf(ProductsFiltersInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsFinder::setСategory
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetСategoryError()
+    {
+        $category = null;
+        
+        $finder = new ProductsFinder();
+        $finder->setCategory($category);
+    }
+    
+    /**
+     * Тестирует метод ProductsFinder::setСategory
+     */
+    public function testSetСategory()
+    {
+        $category ='category';
+        
+        $finder = new ProductsFinder();
+        $finder->setCategory($category);
+        
+        $reflection = new \ReflectionProperty($finder, 'category');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($finder);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsFinder::setSubcategory
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetSubcategoryError()
+    {
+        $subcategory = null;
+        
+        $finder = new ProductsFinder();
+        $finder->setSubcategory($subcategory);
+    }
+    
+    /**
+     * Тестирует метод ProductsFinder::setSubcategory
+     */
+    public function testSetSubcategory()
+    {
+        $subcategory ='subcategory';
+        
+        $finder = new ProductsFinder();
+        $finder->setSubcategory($subcategory);
+        
+        $reflection = new \ReflectionProperty($finder, 'subcategory');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($finder);
+        
+        $this->assertInternalType('string', $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsFinder::setPage
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPageError()
+    {
+        $page = null;
+        
+        $finder = new ProductsFinder();
+        $finder->setPage($page);
+    }
+    
+    /**
+     * Тестирует метод ProductsFinder::setPage
+     */
+    public function testSetPage()
+    {
+        $page = 2;
+        
+        $finder = new ProductsFinder();
+        $finder->setPage($page);
+        
+        $reflection = new \ReflectionProperty($finder, 'page');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($finder);
+        
+        $this->assertInternalType('integer', $result);
     }
     
     /**
