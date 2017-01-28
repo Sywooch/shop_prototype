@@ -3,23 +3,18 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Html};
+use yii\helpers\Html;
 use app\widgets\AbstractBaseWidget;
 
 /**
- * Формирует HTML строку с информацией о количестве посещений сегодня
+ * Формирует HTML строку с данными о количестве заказов
  */
-class ConversionWidget extends AbstractBaseWidget
+class AdminTodayOrdersMinimalWidget extends AbstractBaseWidget
 {
-     /**
-     * @var int количество покупок сегодня
+    /**
+     * @var int количество заказов
      */
     private $purchases;
-    /**
-     * @var int количество посещений сегодня
-     */
-    private $visits;
     /**
      * @var string заголовок
      */
@@ -30,7 +25,7 @@ class ConversionWidget extends AbstractBaseWidget
     private $template;
     
     /**
-     * Конструирует HTML строку с информацией об отсутствии результатов поиска
+     * Конструирует HTML строку с данными
      * @return string
      */
     public function run()
@@ -47,16 +42,11 @@ class ConversionWidget extends AbstractBaseWidget
             
             //$renderArray['header'] = $this->header;
             
-            $purchases = $this->purchases ?? 0;
-            $visits = $this->visits ?? 0;
-            
-            if ((int) $purchases !== 0 && (int) $visits !== 0) {
-                $conversion = round(($purchases / $visits) * 100, 2);
+            if (!empty($this->purchases)) {
+                $renderArray['purchases'] = sprintf('%s: %s', Html::tag('strong', \Yii::t('base', 'Orders')), $this->purchases ?? 0);
             } else {
-                $conversion = 0;
+                $renderArray['purchasesEmpty'] = \Yii::t('base', 'Today no orders');
             }
-            
-            $renderArray['conversion'] = sprintf('%s: %s%%', Html::tag('strong', \Yii::t('base', 'Conversion')), $conversion);
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
@@ -65,7 +55,7 @@ class ConversionWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает количество покупок сегодня свойству ConversionWidget::purchases
+     * Присваивает количество заказов свойству AdminTodayOrdersMinimalWidget::purchases
      * @param int $purchases
      */
     public function setPurchases(int $purchases)
@@ -78,20 +68,7 @@ class ConversionWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает количество посещений сегодня свойству ConversionWidget::visits
-     * @param int $visits
-     */
-    public function setVisits(int $visits)
-    {
-        try {
-            $this->visits = $visits;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает заголовок свойству ConversionWidget::header
+     * Присваивает заголовок свойству AdminTodayOrdersMinimalWidget::header
      * @param string $header
      */
     public function setHeader(string $header)
@@ -104,7 +81,7 @@ class ConversionWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает имя шаблона свойству ConversionWidget::template
+     * Присваивает имя шаблона свойству AdminTodayOrdersMinimalWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)

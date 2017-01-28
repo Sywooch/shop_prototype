@@ -1,0 +1,7 @@
+<p><strong>{{ header }}</strong></p>
+
+{% if visitors %}
+    <p>{{ visitors | raw }}</p>
+{% else %}
+    <p>{{ visitorsEmpty }}</p>
+{% endif %}

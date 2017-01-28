@@ -5,6 +5,7 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
 use app\widgets\AbstractBaseWidget;
+use app\helpers\DateHelper;
 
 /**
  * Формирует HTML строку с информацией о количестве посещений сегодня
@@ -43,9 +44,17 @@ class VisitsWidget extends AbstractBaseWidget
             $renderArray['header'] = $this->header;
             
             if (!empty($this->visitors)) {
+                $today = DateHelper::getToday00();
                 ArrayHelper::multisort($this->visitors, 'date', SORT_DESC, SORT_NUMERIC);
                 foreach ($this->visitors as $visit) {
-                    $renderArray['visits'][] = sprintf('%s - %d %s', \Yii::$app->formatter->asDate($visit->date), $visit->counter, \Yii::t('base', 'visitors'));
+                    switch ($visit->date) {
+                        case $today:
+                            $date = \Yii::t('base', 'Today');
+                            break;
+                        default:
+                            $date = \Yii::$app->formatter->asDate($visit->date);
+                    }
+                    $renderArray['visits'][] = sprintf('%s - %d %s', $date, $visit->counter, \Yii::t('base', 'visitors'));
                 }
             } else {
                 $renderArray['visitsEmpty'] = \Yii::t('base', 'Today no visits');

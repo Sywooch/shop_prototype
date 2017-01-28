@@ -1,0 +1,7 @@
+<p><strong>{{ header }}</strong></p>
+
+{% if purchases %}
+    <p>{{ purchases | raw }}</p>
+{% else %}
+    <p>{{ purchasesEmpty }}</p>
+{% endif %}

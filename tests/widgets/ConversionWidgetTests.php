@@ -194,8 +194,8 @@ class ConversionWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>Конверсия сегодня: 0%</p>#', $result);
+        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Конверсия</strong>: 0%</p>#', $result);
     }
     
     /**
@@ -220,8 +220,8 @@ class ConversionWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>Конверсия сегодня: 0%</p>#', $result);
+        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Конверсия</strong>: 0%</p>#', $result);
     }
     
     /**
@@ -249,7 +249,7 @@ class ConversionWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>Конверсия сегодня: 10.43%</p>#', $result);
+        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Конверсия</strong>: 10.43%</p>#', $result);
     }
 }

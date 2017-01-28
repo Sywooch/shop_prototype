@@ -173,14 +173,17 @@ $translate = [
     'Views'=>'Просмотров',
     'Popular goods'=>'Популярные товары',
     'Today no visits'=>'Сегодня посещений не было',
-    'Visits'=>'Посещаемость',
+    'Today visits'=>'Посетителей сегодня',
+    'Visits'=>'Посещений',
     'visitors'=>'посетителей',
     'Conversion today'=>'Конверсия сегодня',
     'Conversion'=>'Конверсия',
+    'Today orders'=>'Заказов сегодня',
     'No orders'=>'Заказов нет',
     'All'=>'Все',
     'Order number'=>'Номер заказа',
-    'Save'=>'Сохранить'
+    'Save'=>'Сохранить',
+    'Today'=>'Сегодня'
 ];
 
 return $translate;

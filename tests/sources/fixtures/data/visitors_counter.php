@@ -2,11 +2,11 @@
 
 $data = [
     'visitors_counter_1'=>[
-        'date'=>1477487902,
+        'date'=>time(),
         'counter'=>569,
     ],
     'visitors_counter_2'=>[
-        'date'=>1477486477,
+        'date'=>(time() + 3600),
         'counter'=>309,
     ],
 ];
