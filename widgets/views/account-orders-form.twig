@@ -5,15 +5,17 @@
     
     <ol class="{{ listClass }}">
         {% for purchase in purchases %}
-            <li class="{{ purchase.orderId }}">
+            <li>
                 <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
                 <br>{{ purchase.short_description }}
                 <br>{{ purchase.image | raw }}
+                <br>{{ idHeader }}: {{ purchase.id }}
                 <br>{{ dateHeader }}: {{ purchase.date }}
                 <br>{{ colorHeader }}: {{ purchase.color }}
                 <br>{{ sizeHeader }}: {{ purchase.size }}
                 <br>{{ quantityHeader }}: {{ purchase.quantity }}
                 <br>{{ priceHeader }}: {{ purchase.price }}
+                <br>{{ totalPriceHeader }}: {{ purchase.totalPrice }}
                 
                 <br>{{ clientHeader }}: {{ purchase.client }}
                 <br>{{ phoneHeader }}: {{ purchase.phone }}

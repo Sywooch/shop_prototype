@@ -73,7 +73,7 @@ class PurchasesModelTests extends TestCase
         $this->assertTrue($reflection->hasConstant('DELETE'));
         $this->assertTrue($reflection->hasConstant('SAVE'));
         $this->assertTrue($reflection->hasConstant('CANCEL'));
-        $this->assertTrue($reflection->hasConstant('UPDATE_STATUS'));
+        $this->assertTrue($reflection->hasConstant('UPDATE_ADMIN'));
         
         $model = new PurchasesModel();
         
@@ -250,8 +250,20 @@ class PurchasesModelTests extends TestCase
         $this->assertArrayHasKey('canceled', $result);
         $this->assertTrue($result['canceled']);
         
-        $model = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE_STATUS]);
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE_ADMIN]);
         $model->attributes = [
+            'id_name'=>3,
+            'id_surname'=>1,
+            'id_phone'=>4,
+            'id_address'=>2,
+            'id_city'=>6,
+            'id_country'=>7,
+            'id_postcode'=>2,
+            'quantity'=>2, 
+            'id_color'=>4, 
+            'id_size'=>2,
+            'id_delivery'=>2, 
+            'id_payment'=>1, 
             'received'=>true,
             'processed'=>true,
             'canceled'=>true,
@@ -263,6 +275,30 @@ class PurchasesModelTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         
+        $this->assertArrayHasKey('id_name', $result);
+        $this->assertSame(3, $result['id_name']);
+        $this->assertArrayHasKey('id_surname', $result);
+        $this->assertSame(1, $result['id_surname']);
+        $this->assertArrayHasKey('id_phone', $result);
+        $this->assertSame(4, $result['id_phone']);
+        $this->assertArrayHasKey('id_address', $result);
+        $this->assertSame(2, $result['id_address']);
+        $this->assertArrayHasKey('id_city', $result);
+        $this->assertSame(6, $result['id_city']);
+        $this->assertArrayHasKey('id_country', $result);
+        $this->assertSame(7, $result['id_country']);
+        $this->assertArrayHasKey('id_postcode', $result);
+        $this->assertSame(2, $result['id_postcode']);
+        $this->assertArrayHasKey('quantity', $result);
+        $this->assertSame(2, $result['quantity']);
+        $this->assertArrayHasKey('id_color', $result);
+        $this->assertSame(4, $result['id_color']);
+        $this->assertArrayHasKey('id_size', $result);
+        $this->assertSame(2, $result['id_size']);
+        $this->assertArrayHasKey('id_delivery', $result);
+        $this->assertSame(2, $result['id_delivery']);
+        $this->assertArrayHasKey('id_payment', $result);
+        $this->assertSame(1, $result['id_payment']);
         $this->assertArrayHasKey('received', $result);
         $this->assertTrue($result['received']);
         $this->assertArrayHasKey('processed', $result);
@@ -388,6 +424,36 @@ class PurchasesModelTests extends TestCase
         
         $this->assertEmpty($model->errors);
         $this->assertEquals(0, $model['id_user']);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE_ADMIN]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(16, $model->errors);
+        
+        $model = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE_ADMIN]);
+        $model->attributes = [
+            'id_name'=>3,
+            'id_surname'=>1,
+            'id_phone'=>4,
+            'id_address'=>2,
+            'id_city'=>6,
+            'id_country'=>7,
+            'id_postcode'=>2,
+            'quantity'=>2, 
+            'id_color'=>4, 
+            'id_size'=>2,
+            'price'=>245.98, 
+            'id_delivery'=>2, 
+            'id_payment'=>1, 
+            'received'=>true,
+            'processed'=>false,
+            'canceled'=>false,
+            'shipped'=>false,
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
     
     /**

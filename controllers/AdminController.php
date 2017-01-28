@@ -5,10 +5,9 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
-    GetAction,
-    RedirectAction};
+    GetAction};
 use app\services\{AdminIndexService,
-    AdminOrdersChangeStatusService,
+    AdminOrderDetailChangeService,
     AdminOrderDetailFormService,
     AdminOrdersService};
 
@@ -34,10 +33,10 @@ class AdminController extends Controller
                 'class'=>AjaxAction::class,
                 'service'=>new AdminOrderDetailFormService(),
             ],
-            /*'orders-change-status'=>[
-                'class'=>RedirectAction::class,
-                'service'=>new AdminOrdersChangeStatusService(),
-            ]*/
+            'order-detail-change'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new AdminOrderDetailChangeService(),
+            ]
         ];
     }
     

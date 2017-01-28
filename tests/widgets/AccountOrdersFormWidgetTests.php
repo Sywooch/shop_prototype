@@ -566,10 +566,6 @@ class AccountOrdersFormWidgetTests extends TestCase
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<ol class="account-orders">#', $result);
-        $this->assertRegExp('#<li class="account-order-2">#', $result);
-        $this->assertRegExp('#<li class="account-order-1">#', $result);
-        $this->assertRegExp('#<li class="account-order-3">#', $result);
-        $this->assertRegExp('#<li class="account-order-4">#', $result);
         $this->assertRegExp('#<a href=".+">Name 1</a>#', $result);
         $this->assertRegExp('#<a href=".+">Name 2</a>#', $result);
         $this->assertRegExp('#<a href=".+">Name 3</a>#', $result);
@@ -579,11 +575,13 @@ class AccountOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#Description 3#', $result);
         $this->assertRegExp('#Description 4#', $result);
         $this->assertRegExp('#<img src=".+" height="200" alt="">#', $result);
+        $this->assertRegExp('#Номер заказа:\s.+#', $result);
         $this->assertRegExp('#Дата заказа:\s.+#', $result);
         $this->assertRegExp('#Цвет:\s.+#', $result);
         $this->assertRegExp('#Размер:\s.+#', $result);
         $this->assertRegExp('#Количество:\s\d+#', $result);
         $this->assertRegExp('#Цена:\s.+\sMONEY#', $result);
+        $this->assertRegExp('#Общая стоимость:\s.+\sMONEY#', $result);
         $this->assertRegExp('#Покупатель: Name \d{1} Surname \d{1}#', $result);
         $this->assertRegExp('#Телефон: Phone \d{1}#', $result);
         $this->assertRegExp('#Адрес: Address \d{1}#', $result);

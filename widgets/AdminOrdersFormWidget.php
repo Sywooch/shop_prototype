@@ -72,13 +72,14 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                 
                 foreach ($this->purchases as $purchase) {
                     $set = [];
-                    $set['orderId'] = sprintf('admin-order-%d', $purchase->id);
+                    $set['id'] = $purchase->id;
                     $set['date'] = \Yii::$app->formatter->asDate($purchase->received_date);
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
                     $set['linkText'] = Html::encode($purchase->product->name);
                     $set['short_description'] = Html::encode($purchase->product->short_description);
                     $set['quantity'] = $purchase->quantity;
-                    $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
+                    $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2), $this->currency->code());
+                    $set['totalPrice'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal(($purchase->price * $purchase->quantity) * $this->currency->exchangeRate(), 2), $this->currency->code());
                     $set['color'] = $purchase->color->color;
                     $set['size'] = $purchase->size->size;
                     if (!empty($purchase->product->images)) {
@@ -98,18 +99,18 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                     $set['delivery'] = $purchase->delivery->description;
                     
                     if ((bool) $purchase->shipped === true) {
-                        $status = 'shipped';
+                        $set['status'] = \Yii::t('base', 'Shipped');
                     } elseif ((bool) $purchase->canceled === true) {
-                        $status = 'canceled';
+                        $set['status'] = \Yii::t('base', 'Canceled');
                     } elseif ((bool) $purchase->processed === true) {
-                        $status = 'processed';
+                        $set['status'] = \Yii::t('base', 'Processed');
                     } elseif ((bool) $purchase->received === true) {
-                        $status = 'received';
+                        $set['status'] = \Yii::t('base', 'Received');
                     }
                     
                     $form = clone $this->form;
-                    $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id, 'status'=>$status]);
-                    $set['formId'] = sprintf('order-status-form-%d', $purchase->id);
+                    $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id]);
+                    $set['formId'] = sprintf('admin-order-detail-get-form-%d', $purchase->id);
                     $set['formAction'] = Url::to(['/admin/order-detail-form']);
                     $set['button'] = \Yii::t('base', 'Change');
                     
@@ -125,8 +126,10 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                 $renderArray['statuses'] = $this->statuses;
                 
                 $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
+                $renderArray['idHeader'] = \Yii::t('base', 'Order number');
                 $renderArray['quantityHeader'] = \Yii::t('base', 'Quantity');
                 $renderArray['priceHeader'] = \Yii::t('base', 'Price');
+                $renderArray['totalPriceHeader'] = \Yii::t('base', 'Total price');
                 $renderArray['colorHeader'] = \Yii::t('base', 'Color');
                 $renderArray['sizeHeader'] = \Yii::t('base', 'Size');
                 $renderArray['statusHeader'] = \Yii::t('base', 'Status');

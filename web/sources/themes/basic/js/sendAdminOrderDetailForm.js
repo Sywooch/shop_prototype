@@ -16,7 +16,7 @@ $(function() {
         };
     };
     
-    $('li[class^="admin-order-"]').on('click', 'input[type="submit"]', function(event) {
+    $('li').on('click', 'form[id^="admin-order-detail-get-form-"] > input[type="submit"]', function(event) {
         (new SendAdminOrderDetailForm()).send(event);
         event.preventDefault();
     });

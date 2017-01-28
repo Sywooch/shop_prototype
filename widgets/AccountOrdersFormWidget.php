@@ -71,13 +71,14 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                 
                 foreach ($this->purchases as $purchase) {
                     $set = [];
-                    $set['orderId'] = sprintf('account-order-%d', $purchase->id);
+                    $set['id'] = $purchase->id;
                     $set['date'] = \Yii::$app->formatter->asDate($purchase->received_date);
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
                     $set['linkText'] = Html::encode($purchase->product->name);
                     $set['short_description'] = Html::encode($purchase->product->short_description);
                     $set['quantity'] = $purchase->quantity;
-                    $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
+                    $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2), $this->currency->code());
+                    $set['totalPrice'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal(($purchase->price * $purchase->quantity) * $this->currency->exchangeRate(), 2), $this->currency->code());
                     $set['color'] = $purchase->color->color;
                     $set['size'] = $purchase->size->size;
                     if (!empty($purchase->product->images)) {
@@ -125,8 +126,10 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                 }
                 
                 $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
+                $renderArray['idHeader'] = \Yii::t('base', 'Order number');
                 $renderArray['quantityHeader'] = \Yii::t('base', 'Quantity');
                 $renderArray['priceHeader'] = \Yii::t('base', 'Price');
+                $renderArray['totalPriceHeader'] = \Yii::t('base', 'Total price');
                 $renderArray['colorHeader'] = \Yii::t('base', 'Color');
                 $renderArray['sizeHeader'] = \Yii::t('base', 'Size');
                 $renderArray['statusHeader'] = \Yii::t('base', 'Status');

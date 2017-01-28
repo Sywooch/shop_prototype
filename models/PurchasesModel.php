@@ -44,9 +44,9 @@ class PurchasesModel extends AbstractBaseModel
      */
     const CANCEL = 'cancel';
     /**
-     * Сценарий смены статуса
+     * Сценарий обновления администратором
      */
-    const UPDATE_STATUS = 'update_status';
+    const UPDATE_ADMIN = 'update_admin';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -69,7 +69,7 @@ class PurchasesModel extends AbstractBaseModel
             self::DELETE=>['id_product'],
             self::SAVE=>['id_user', 'id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'price', 'id_delivery', 'id_payment', 'received', 'received_date'],
             self::CANCEL=>['canceled'],
-            self::UPDATE_STATUS=>['received', 'processed', 'canceled', 'shipped'],
+            self::UPDATE_ADMIN=>['id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'received', 'processed', 'canceled', 'shipped'],
         ];
     }
     
@@ -81,6 +81,7 @@ class PurchasesModel extends AbstractBaseModel
             [['id_product'], 'required', 'on'=>self::DELETE],
             [['id_name', 'id_surname', 'id_email', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'id_product', 'quantity', 'id_color', 'id_size', 'price', 'id_delivery', 'id_payment', 'received', 'received_date'], 'required', 'on'=>self::SAVE],
             [['id_user'], 'default', 'value'=>0, 'on'=>self::SAVE],
+            [['id_name', 'id_surname', 'id_phone', 'id_address', 'id_city', 'id_country', 'id_postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'received', 'processed', 'canceled', 'shipped'], 'required', 'on'=>self::UPDATE_ADMIN],
         ];
     }
     

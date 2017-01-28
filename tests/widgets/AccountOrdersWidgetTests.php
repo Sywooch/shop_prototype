@@ -258,6 +258,7 @@ class AccountOrdersWidgetTests extends TestCase
         
         $purchases = [
             new class() {
+                public $id = 1;
                 public $product;
                 public $color;
                 public $size;
@@ -284,6 +285,7 @@ class AccountOrdersWidgetTests extends TestCase
                 }
             },
             new class() {
+                public $id = 2;
                 public $product;
                 public $color;
                 public $size;
@@ -336,11 +338,13 @@ class AccountOrdersWidgetTests extends TestCase
         $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_1">Name 1</a>#', $result);
         $this->assertRegExp('#<br>Description 1#', $result);
         $this->assertRegExp('#<br><img src=".+" height="200" alt="">#', $result);
+        $this->assertRegExp('#<br>Номер заказа:\s.+#', $result);
         $this->assertRegExp('#<br>Дата заказа:\s.+#', $result);
         $this->assertRegExp('#<br>Цвет: gray#', $result);
         $this->assertRegExp('#<br>Размер: 45#', $result);
         $this->assertRegExp('#<br>Количество: 1#', $result);
-        $this->assertRegExp('#<br>Цена: 26,94 MONEY#', $result);
+        $this->assertRegExp('#<br>Цена:\s.+\sMONEY#', $result);
+        $this->assertRegExp('#<br>Общая стоимость:\s.+\sMONEY#', $result);
         $this->assertRegExp('#<br>Статус: Принят#', $result);
         $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/prod_2">Name 2</a>#', $result);
         $this->assertRegExp('#<br>Description 2#', $result);

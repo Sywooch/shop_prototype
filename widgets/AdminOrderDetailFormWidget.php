@@ -128,7 +128,7 @@ class AdminOrderDetailFormWidget extends AbstractBaseWidget
                 'status'=>$currentStatus,
             ]);
             
-            $renderArray['formId'] = sprintf('admin-order-detail-form-%d', $this->purchase->id);
+            $renderArray['formId'] = sprintf('admin-order-detail-send-form-%d', $this->purchase->id);
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -136,8 +136,8 @@ class AdminOrderDetailFormWidget extends AbstractBaseWidget
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
             
-            $renderArray['formAction'] = Url::to(['/admin/order-change']);
-            $renderArray['button'] = \Yii::t('base', 'Change');
+            $renderArray['formAction'] = Url::to(['/admin/order-detail-change']);
+            $renderArray['button'] = \Yii::t('base', 'Save');
             
             $renderArray['statuses'] = $this->statuses;
             $renderArray['colors'] = $this->colors;

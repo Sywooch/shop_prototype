@@ -630,10 +630,6 @@ class AdminOrdersFormWidgetTests extends TestCase
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<ol class="admin-orders">#', $result);
-        $this->assertRegExp('#<li class="admin-order-2">#', $result);
-        $this->assertRegExp('#<li class="admin-order-1">#', $result);
-        $this->assertRegExp('#<li class="admin-order-3">#', $result);
-        $this->assertRegExp('#<li class="admin-order-4">#', $result);
         $this->assertRegExp('#<a href=".+">Name 1</a>#', $result);
         $this->assertRegExp('#<a href=".+">Name 2</a>#', $result);
         $this->assertRegExp('#<a href=".+">Name 3</a>#', $result);
@@ -648,7 +644,8 @@ class AdminOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#Размер:\s.+#', $result);
         $this->assertRegExp('#Количество:\s\d+#', $result);
         $this->assertRegExp('#Цена:\s.+\sMONEY#', $result);
-        $this->assertRegExp('#Покупатель: Name \d{1} Surname \d{1}#', $result);
+        $this->assertRegExp('#Общая стоимость:\s.+\sMONEY#', $result);
+        $this->assertRegExp('#Покупатель:\sName \d{1} Surname \d{1}#', $result);
         $this->assertRegExp('#Телефон: Phone \d{1}#', $result);
         $this->assertRegExp('#Адрес: Address \d{1}#', $result);
         $this->assertRegExp('#Город: City \d{1}#', $result);
@@ -656,7 +653,7 @@ class AdminOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#Почтовый код: Postcode \d{1}#', $result);
         $this->assertRegExp('#Оплата: Payment \d{1}#', $result);
         $this->assertRegExp('#Доставка: Delivery \d{1}#', $result);
-        $this->assertRegExp('#<form id="order-status-form-\d" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<form id="order-detail-form-\d" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="\d">#', $result);
         $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
     }
