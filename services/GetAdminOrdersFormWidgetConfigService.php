@@ -7,7 +7,7 @@ use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
     AdminOrdersCollectionService,
     GetCurrentCurrencyModelService};
-use app\forms\OrderStatusForm;
+use app\forms\AdminChangeOrderForm;
 use app\finders\OrderStatusesFinder;
 
 /**
@@ -50,7 +50,7 @@ class GetAdminOrdersFormWidgetConfigService extends AbstractBaseService
                 $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
                 $dataArray['statuses'] = $finder->find();
                 
-                $dataArray['form'] = new OrderStatusForm(['scenario'=>OrderStatusForm::SAVE]);
+                $dataArray['form'] = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
                 
                 $dataArray['template'] = 'admin-orders-form.twig';
                 

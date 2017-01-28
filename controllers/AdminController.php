@@ -9,7 +9,7 @@ use app\actions\{AjaxAction,
     RedirectAction};
 use app\services\{AdminIndexService,
     AdminOrdersChangeStatusService,
-    AdminOrderDetailService,
+    AdminOrderDetailFormService,
     AdminOrdersService};
 
 /**
@@ -30,10 +30,9 @@ class AdminController extends Controller
                 'service'=>new AdminOrdersService(),
                 'view'=>'orders.twig',
             ],
-            'order-detail'=>[
-                'class'=>GetAction::class,
-                'service'=>new AdminOrderDetailService(),
-                'view'=>'order-detail.twig',
+            'order-detail-form'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new AdminOrderDetailFormService(),
             ],
             /*'orders-change-status'=>[
                 'class'=>RedirectAction::class,

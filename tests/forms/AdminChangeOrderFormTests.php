@@ -17,6 +17,7 @@ class AdminChangeOrderFormTests extends TestCase
     {
         $reflection = new \ReflectionClass(AdminChangeOrderForm::class);
         
+        $this->assertTrue($reflection->hasConstant('GET'));
         $this->assertTrue($reflection->hasConstant('SAVE'));
         
         $this->assertTrue($reflection->hasProperty('id'));
@@ -28,10 +29,10 @@ class AdminChangeOrderFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('country'));
         $this->assertTrue($reflection->hasProperty('postcode'));
         $this->assertTrue($reflection->hasProperty('quantity'));
-        $this->assertTrue($reflection->hasProperty('color'));
-        $this->assertTrue($reflection->hasProperty('size'));
-        $this->assertTrue($reflection->hasProperty('delivery'));
-        $this->assertTrue($reflection->hasProperty('payment'));
+        $this->assertTrue($reflection->hasProperty('id_color'));
+        $this->assertTrue($reflection->hasProperty('id_size'));
+        $this->assertTrue($reflection->hasProperty('id_delivery'));
+        $this->assertTrue($reflection->hasProperty('id_payment'));
         $this->assertTrue($reflection->hasProperty('status'));
     }
     
@@ -40,6 +41,14 @@ class AdminChangeOrderFormTests extends TestCase
      */
     public function testScenarios()
     {
+        $form = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
+        $form->attributes = [
+           'id'=>1,
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $this->assertSame(1, $reflection->getValue($form));
+        
         $form = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::SAVE]);
         $form->attributes = [
            'id'=>1,
@@ -51,10 +60,10 @@ class AdminChangeOrderFormTests extends TestCase
            'country'=>'Country',
            'postcode'=>'postcode',
            'quantity'=>2,
-           'color'=>'color',
-           'size'=>45,
-           'delivery'=>'delivery',
-           'payment'=>'payment',
+           'id_color'=>'id_color',
+           'id_size'=>45,
+           'id_delivery'=>'id_delivery',
+           'id_payment'=>'id_payment',
            'status'=>'status',
         ];
         
@@ -76,14 +85,14 @@ class AdminChangeOrderFormTests extends TestCase
         $this->assertSame('postcode', $reflection->getValue($form));
         $reflection = new \ReflectionProperty($form, 'quantity');
         $this->assertSame(2, $reflection->getValue($form));
-        $reflection = new \ReflectionProperty($form, 'color');
-        $this->assertSame('color', $reflection->getValue($form));
-        $reflection = new \ReflectionProperty($form, 'size');
+        $reflection = new \ReflectionProperty($form, 'id_color');
+        $this->assertSame('id_color', $reflection->getValue($form));
+        $reflection = new \ReflectionProperty($form, 'id_size');
         $this->assertSame(45, $reflection->getValue($form));
-        $reflection = new \ReflectionProperty($form, 'delivery');
-        $this->assertSame('delivery', $reflection->getValue($form));
-        $reflection = new \ReflectionProperty($form, 'payment');
-        $this->assertSame('payment', $reflection->getValue($form));
+        $reflection = new \ReflectionProperty($form, 'id_delivery');
+        $this->assertSame('id_delivery', $reflection->getValue($form));
+        $reflection = new \ReflectionProperty($form, 'id_payment');
+        $this->assertSame('id_payment', $reflection->getValue($form));
         $reflection = new \ReflectionProperty($form, 'status');
         $this->assertSame('status', $reflection->getValue($form));
     }
@@ -93,6 +102,20 @@ class AdminChangeOrderFormTests extends TestCase
      */
     public function testRules()
     {
+        $form = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
+        $form->attributes = [];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
+        $form->attributes = [
+            'id'=>1,
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
         $form = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::SAVE]);
         $form->attributes = [];
         $form->validate();
@@ -110,10 +133,10 @@ class AdminChangeOrderFormTests extends TestCase
            'country'=>'Country',
            'postcode'=>'postcode',
            'quantity'=>2,
-           'color'=>'color',
-           'size'=>45,
-           'delivery'=>'delivery',
-           'payment'=>'payment',
+           'id_color'=>'id_color',
+           'id_size'=>45,
+           'id_delivery'=>'id_delivery',
+           'id_payment'=>'id_payment',
            'status'=>'status',
         ];
         $form->validate();

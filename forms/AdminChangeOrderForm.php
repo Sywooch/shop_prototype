@@ -11,6 +11,10 @@ use app\forms\AbstractBaseForm;
 class AdminChangeOrderForm extends AbstractBaseForm
 {
     /**
+     * Сценарий запроса формы для редактирования заказа
+     */
+    const GET = 'get';
+    /**
      * Сценарий сохранения изменений в заказе
      */
     const SAVE = 'save';
@@ -54,19 +58,19 @@ class AdminChangeOrderForm extends AbstractBaseForm
     /**
      * @var int цвет
      */
-    public $color;
+    public $id_color;
     /**
      * @var int размер
      */
-    public $size;
+    public $id_size;
     /**
      * @var int доставка
      */
-    public $delivery;
+    public $id_delivery;
     /**
      * @var int оплата
      */
-    public $payment;
+    public $id_payment;
     /**
      * @var string статус
      */
@@ -75,14 +79,16 @@ class AdminChangeOrderForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::SAVE=>['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'quantity', 'color', 'size', 'delivery', 'payment', 'status'],
+            self::SAVE=>['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'status'],
+            self::GET=>['id'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'quantity', 'color', 'size', 'delivery', 'payment', 'status'], 'required', 'on'=>self::SAVE],
+            [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'status'], 'required', 'on'=>self::SAVE],
+            [['id'], 'required', 'on'=>self::GET],
         ];
     }
 }

@@ -106,9 +106,9 @@ class ColorsFilterFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод ColorsFilterFinder::run
+     * Тестирует метод ColorsFilterFinder::find
      */
-    public function testRun()
+    public function testFind()
     {
         $finder = new ColorsFilterFinder();
         $result = $finder->find();
@@ -121,10 +121,10 @@ class ColorsFilterFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод ColorsFilterFinder::run
+     * Тестирует метод ColorsFilterFinder::find
      * если не пуст ColorsFilterFinder::category
      */
-    public function testRunСategory()
+    public function testFindСategory()
     {
         $finder = new ColorsFilterFinder();
         
@@ -142,10 +142,10 @@ class ColorsFilterFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод ColorsFilterFinder::run
+     * Тестирует метод ColorsFilterFinder::find
      * если не пуст ColorsFilterFinder::subcategory
      */
-    public function testRunSubcategory()
+    public function testFindSubcategory()
     {
         $finder = new ColorsFilterFinder();
         

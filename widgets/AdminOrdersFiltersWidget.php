@@ -58,7 +58,7 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
             
             $renderArray['formModel'] = $this->form;
             
-            $renderArray['statuses'] = $this->statuses;
+            //$renderArray['statuses'] = $this->statuses;
             $renderArray['sortingTypes'] = $this->sortingTypes;
             
             $renderArray['sortingTypeLabel'] = \Yii::t('base', 'Order date');

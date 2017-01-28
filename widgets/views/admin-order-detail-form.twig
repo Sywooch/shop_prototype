@@ -1,0 +1,27 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<a href="{{ link }}">{{ linkText }}</a>
+<br>{{ short_description }}
+<br>{{ image | raw }}
+<br>{{ idHeader }}: {{ id }}
+<br>{{ dateHeader }}: {{ date }}
+<br>{{ priceHeader }}: {{ price }}
+<br>{{ emailHeader }}: {{ email }}
+
+{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+    {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
+    {{ form.field(modelForm, 'name') | raw }}
+    {{ form.field(modelForm, 'surname') | raw }}
+    {{ form.field(modelForm, 'phone') | raw }}
+    {{ form.field(modelForm, 'address') | raw }}
+    {{ form.field(modelForm, 'city') | raw }}
+    {{ form.field(modelForm, 'country') | raw }}
+    {{ form.field(modelForm, 'postcode') | raw }}
+    {{ form.field(modelForm, 'quantity').input('number', {'step':1, 'min':1}) | raw }}
+    {{ form.field(modelForm, 'id_color').dropDownList(colors) | raw }}
+    {{ form.field(modelForm, 'id_size').dropDownList(sizes) | raw }}
+    {{ form.field(modelForm, 'id_delivery').radioList(deliveries) | raw }}
+    {{ form.field(modelForm, 'id_payment').radioList(payments) | raw }}
+    {{ form.field(modelForm, 'status').dropDownList(statuses) | raw }}
+    <input type="submit" value="{{ button }}">
+{{ active_form_end() }}

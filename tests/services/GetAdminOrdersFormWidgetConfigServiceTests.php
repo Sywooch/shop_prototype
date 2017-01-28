@@ -8,7 +8,7 @@ use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture};
 use app\models\CurrencyModel;
-use app\forms\OrderStatusForm;
+use app\forms\AdminChangeOrderForm;
 
 /**
  * Тестирует класс GetAdminOrdersFormWidgetConfigService
@@ -90,7 +90,7 @@ class GetAdminOrdersFormWidgetConfigServiceTests extends TestCase
         $this->assertInternalType('array', $result['purchases']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
         $this->assertInternalType('array', $result['statuses']);
-        $this->assertInstanceOf(OrderStatusForm::class, $result['form']);
+        $this->assertInstanceOf(AdminChangeOrderForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
     }
     

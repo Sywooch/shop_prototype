@@ -5,7 +5,7 @@ namespace app\tests\widgets;
 use PHPUnit\Framework\TestCase;
 use app\widgets\AdminOrdersFormWidget;
 use app\models\CurrencyModel;
-use app\forms\OrderStatusForm;
+use app\forms\AdminChangeOrderForm;
 
 /**
  * Тестирует класс AdminOrdersFormWidget
@@ -135,7 +135,7 @@ class AdminOrdersFormWidgetTests extends TestCase
      */
     public function testSetForm()
     {
-        $form = new class() extends OrderStatusForm {};
+        $form = new class() extends AdminChangeOrderForm {};
         
         $widget = new AdminOrdersFormWidget();
         $widget->setForm($form);
@@ -144,7 +144,7 @@ class AdminOrdersFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(OrderStatusForm::class, $result);
+        $this->assertInstanceOf(AdminChangeOrderForm::class, $result);
     }
     
     /**
@@ -333,7 +333,7 @@ class AdminOrdersFormWidgetTests extends TestCase
         
         $statuses = ['shipped'=>'Shipped', 'canceled'=>'Canceled', 'processed'=>'Processed', 'received'=>'Received'];
         
-        $form = new class() extends OrderStatusForm {};
+        $form = new class() extends AdminChangeOrderForm {};
         
         $widget = new AdminOrdersFormWidget();
         
@@ -375,7 +375,7 @@ class AdminOrdersFormWidgetTests extends TestCase
         
         $statuses = ['shipped'=>'Shipped', 'canceled'=>'Canceled', 'processed'=>'Processed', 'received'=>'Received'];
         
-        $form = new class() extends OrderStatusForm {};
+        $form = new class() extends AdminChangeOrderForm {};
         
         $purchases = [
             new class() {
@@ -658,10 +658,6 @@ class AdminOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#Доставка: Delivery \d{1}#', $result);
         $this->assertRegExp('#<form id="order-status-form-\d" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="\d">#', $result);
-        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[status\]">#', $result);
-        $this->assertRegExp('#<option value="received">Received</option>#', $result);
-        $this->assertRegExp('#<option value="processed">Processed</option>#', $result);
-        $this->assertRegExp('#<option value="canceled" selected>Canceled</option>#', $result);
-        $this->assertRegExp('#<option value="shipped">Shipped</option>#', $result);
+        $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
     }
 }

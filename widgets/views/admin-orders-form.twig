@@ -26,7 +26,7 @@
                 
                 {% set form=active_form_begin({'id':purchase.formId, 'enableAjaxValidation':purchase.ajaxValidation, 'validateOnSubmit':purchase.validateOnSubmit, 'validateOnChange':purchase.validateOnChange, 'validateOnBlur':purchase.validateOnBlur, 'validateOnType':purchase.validateOnType, 'action':purchase.formAction, 'method':'POST'}) %}
                     {{ form.field(purchase.modelForm, 'id').hiddenInput().label(false) | raw }}
-                    {{ form.field(purchase.modelForm, 'status').dropDownList(statuses) | raw }}
+                    <input type="submit" value="{{ purchase.button }}">
                 {{ active_form_end() }}
             </li>
         {% endfor %}

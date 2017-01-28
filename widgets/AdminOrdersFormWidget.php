@@ -8,7 +8,7 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyInterface;
-use app\forms\OrderStatusForm;
+use app\forms\AdminChangeOrderForm;
 
 /**
  * Формирует HTML строку с основными данными аккаунта
@@ -28,7 +28,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
      */
     private $statuses;
     /**
-     * @var OrderStatusForm
+     * @var AdminChangeOrderForm
      */
     private $form;
     /**
@@ -110,14 +110,14 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                     $form = clone $this->form;
                     $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id, 'status'=>$status]);
                     $set['formId'] = sprintf('order-status-form-%d', $purchase->id);
+                    $set['formAction'] = Url::to(['/admin/order-detail-form']);
+                    $set['button'] = \Yii::t('base', 'Change');
                     
                     $set['ajaxValidation'] = false;
                     $set['validateOnSubmit'] = false;
                     $set['validateOnChange'] = false;
                     $set['validateOnBlur'] = false;
                     $set['validateOnType'] = false;
-                    
-                    $set['formAction'] = Url::to(['/admin/orders-change-status']);
                     
                     $renderArray['purchases'][] = $set;
                 }
@@ -189,10 +189,10 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает OrderStatusForm свойству AdminOrdersFormWidget::form
-     * @param OrderStatusForm $form
+     * Присваивает AdminChangeOrderForm свойству AdminOrdersFormWidget::form
+     * @param AdminChangeOrderForm $form
      */
-    public function setForm(OrderStatusForm $form)
+    public function setForm(AdminChangeOrderForm $form)
     {
         try {
             $this->form = $form;
