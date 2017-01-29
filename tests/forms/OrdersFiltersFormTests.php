@@ -23,6 +23,8 @@ class OrdersFiltersFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('sortingField'));
         $this->assertTrue($reflection->hasProperty('sortingType'));
         $this->assertTrue($reflection->hasProperty('status'));
+        $this->assertTrue($reflection->hasProperty('url'));
+        $this->assertTrue($reflection->hasProperty('datesInterval'));
     }
     
     /**
@@ -36,6 +38,7 @@ class OrdersFiltersFormTests extends TestCase
             'sortingType'=>SORT_ASC,
             'status'=>'shipped',
             'url'=>'https://shop.com',
+            'datesInterval'=>time(),
         ];
         
         $reflection = new \ReflectionProperty($form, 'sortingField');
@@ -49,6 +52,9 @@ class OrdersFiltersFormTests extends TestCase
         
         $reflection = new \ReflectionProperty($form, 'url');
         $this->assertSame('https://shop.com', $reflection->getValue($form));
+        
+        $reflection = new \ReflectionProperty($form, 'datesInterval');
+        $this->assertSame(time(), $reflection->getValue($form));
         
         $form = new OrdersFiltersForm(['scenario'=>OrdersFiltersForm::CLEAN]);
         $form->attributes = [

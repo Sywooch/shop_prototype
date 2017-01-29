@@ -38,24 +38,9 @@ class PurchasesTodayFinderTests extends TestCase
     
     /**
      * Тестирует метод PurchasesTodayFinder::find
-     * если нет удовлетворяющих условию заказов
-     */
-    public function testFindEmptyOrders()
-    {
-        $finder = new PurchasesTodayFinder();
-        $result = $finder->find();
-        
-        $this->assertInstanceOf(PurchasesCollection::class, $result);
-        $this->assertTrue($result->isEmpty());
-    }
-    
-    /**
-     * Тестирует метод PurchasesTodayFinder::find
      */
     public function testFind()
     {
-        \Yii::$app->db->createCommand('UPDATE {{purchases}} SET [[received_date]]=:received_date')->bindValue(':received_date', time())->execute();
-        
         $finder = new PurchasesTodayFinder();
         $result = $finder->find();
         

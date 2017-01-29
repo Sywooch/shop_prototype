@@ -21,6 +21,10 @@ class OrdersFiltersWidget extends AbstractBaseWidget
      */
     private $sortingTypes;
     /**
+     * @var array
+     */
+    //private $datesIntervals;
+    /**
      * @var OrdersFiltersForm
      */
     private $form;
@@ -39,6 +43,9 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             if (empty($this->sortingTypes)) {
                 throw new ErrorException($this->emptyError('sortingTypes'));
             }
+            /*if (empty($this->datesIntervals)) {
+                throw new ErrorException($this->emptyError('datesIntervals'));
+            }*/
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
@@ -57,9 +64,11 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             
             //$renderArray['statuses'] = $this->statuses;
             $renderArray['sortingTypes'] = $this->sortingTypes;
+            //$renderArray['datesIntervals'] = $this->datesIntervals;
             
-            $renderArray['sortingTypeLabel'] = \Yii::t('base', 'Order date');
-            $renderArray['statusLabel'] = \Yii::t('base', 'Status');
+            //$renderArray['statusLabel'] = \Yii::t('base', 'Status');
+            $renderArray['sortingTypeLabel'] = \Yii::t('base', 'Sorting by date');
+            //$renderArray['datesIntervalLabel'] = \Yii::t('base', 'Order date');
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -106,6 +115,19 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Присваивает array свойству OrdersFiltersWidget::datesIntervals
+     * @param array $datesIntervals
+     */
+    /*public function setDatesIntervals(array $datesIntervals)
+    {
+        try {
+            $this->datesIntervals = $datesIntervals;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }*/
     
     /**
      * Присваивает OrdersFiltersForm свойству OrdersFiltersWidget::form

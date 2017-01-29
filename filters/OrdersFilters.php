@@ -15,7 +15,7 @@ class OrdersFilters extends Model implements OrdersFiltersInterface
     use ExceptionsTrait;
     
     /**
-     * Сценарий загрузки данных из сессии
+     * Сценарий загрузки данных в/из сессии
      */
     const SESSION = 'session';
     
@@ -27,11 +27,15 @@ class OrdersFilters extends Model implements OrdersFiltersInterface
      * @var string статус заказа
      */
     private $status;
+    /**
+     * @var int код временного промежутка выборки
+     */
+    private $datesInterval;
     
     public function scenarios()
     {
         return [
-            self::SESSION=>['sortingType', 'status']
+            self::SESSION=>['sortingType', 'status', 'datesInterval']
         ];
     }
     
@@ -88,6 +92,32 @@ class OrdersFilters extends Model implements OrdersFiltersInterface
     }
     
     /**
+     * Присваивает значение OrdersFilters::datesInterval
+     * @param int $datesInterval
+     */
+    public function setDatesInterval($datesInterval)
+    {
+        try {
+            $this->datesInterval = $datesInterval;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение OrdersFilters::datesInterval
+     * @return mixed
+     */
+    public function getDatesInterval()
+    {
+        try {
+            return !empty($this->datesInterval) ? $this->datesInterval : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает массив данных при вызове OrdersFilters::toArray
      * @return array
      */
@@ -100,6 +130,9 @@ class OrdersFilters extends Model implements OrdersFiltersInterface
                 },
                 'status'=>function() {
                     return $this->status;
+                },
+                'datesInterval'=>function() {
+                    return $this->datesInterval;
                 },
             ];
         } catch (\Throwable $t) {

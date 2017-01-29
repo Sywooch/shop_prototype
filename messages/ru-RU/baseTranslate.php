@@ -183,7 +183,9 @@ $translate = [
     'All'=>'Все',
     'Order number'=>'Номер заказа',
     'Save'=>'Сохранить',
-    'Today'=>'Сегодня'
+    'Today'=>'Сегодня',
+    'In three days'=>'За три дня',
+    'In two days'=>'За два дня'
 ];
 
 return $translate;

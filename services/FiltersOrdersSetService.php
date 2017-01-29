@@ -35,6 +35,7 @@ class FiltersOrdersSetService extends AbstractBaseService
             $model = new OrdersFilters(['scenario'=>OrdersFilters::SESSION]);
             $model->sortingType = $form->sortingType;
             $model->status = $form->status;
+            $model->datesInterval = $form->datesInterval;
             if ($model->validate() === false) {
                 throw new ErrorException($this->modelError($model->errors));
             }

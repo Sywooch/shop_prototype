@@ -32,6 +32,10 @@ class OrdersFiltersForm extends AbstractBaseForm
      */
     public $status;
     /**
+     * @var int код временного промежутка выборки
+     */
+    public $datesInterval;
+    /**
      * @var string URL, с которого была запрошена сортировка
      */
     public $url;
@@ -39,7 +43,7 @@ class OrdersFiltersForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::SAVE=>['sortingField', 'sortingType', 'status', 'url'],
+            self::SAVE=>['sortingField', 'sortingType', 'status', 'url', 'datesInterval'],
             self::CLEAN=>['url'],
         ];
     }

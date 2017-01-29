@@ -31,11 +31,12 @@ $params = [
     # URL запроса
     'urlKey'=>'url', # Ключ, по которому в $_REQUEST доступен URL, с которого был отправлен запрос
     
-    # Корзина
+    # Заказы
     'cartKey'=>'cart', # Ключ, по которому в $_SESSION доступно текущее состояние корзины
     'customerKey'=>'customer', # Ключ, по которому в $_SESSION доступны данные покупателя
-    //'orderStatuses'=>[0=>'received', 1=>'processed', 2=>'canceled', 3=>'shipped'], # Статусы заказа
     'orderStatuses'=>['received', 'processed', 'canceled', 'shipped'], # Статусы заказа
+    //'orderDatesInterval'=>[1=>'Today', 2=>'All', 3=>'In three days', 4=>'In two days'], # Временной промежуток выборки заказов
+    //'orderDatesIntervalDefault'=>1, # Временной промежуток выборки заказов по умолчанию
     
     # Компоненты Breadcrumbs
     'breadcrumbs'=>[],
