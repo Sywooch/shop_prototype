@@ -47,9 +47,6 @@ class GetAdminOrdersFormWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
-                $dataArray['statuses'] = $finder->find();
-                
                 $dataArray['form'] = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
                 
                 $dataArray['template'] = 'admin-orders-form.twig';

@@ -3,8 +3,11 @@
 namespace app\services;
 
 use yii\base\ErrorException;
+use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    GetAccountOrdersFormWidgetConfigService};
+    GetAccountOrdersPaginationWidgetConfigService,
+    GetAccountOrdersFormWidgetConfigService,
+    GetOrdersFiltersWidgetConfigService};
 
 /**
  * Формирует массив данных для рендеринга страницы с заказами
@@ -27,13 +30,21 @@ class AccountOrdersService extends AbstractBaseService
             if (empty($this->dataArray)) {
                 $dataArray = [];
                 
+                $service = \Yii::$app->registry->get(GetOrdersFiltersWidgetConfigService::class);
+                $dataArray['оrdersFiltersWidgetConfig'] = $service->handle($request);
+                
                 $service = \Yii::$app->registry->get(GetAccountOrdersFormWidgetConfigService::class);
-                $dataArray['accountOrdersFormWidgetConfig'] = $service->handle();
+                $dataArray['accountOrdersFormWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetAccountOrdersPaginationWidgetConfigService::class);
+                $dataArray['paginationWidgetConfig'] = $service->handle($request);
                 
                 $this->dataArray = $dataArray;
             }
             
             return $this->dataArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

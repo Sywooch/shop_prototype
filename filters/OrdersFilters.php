@@ -4,13 +4,13 @@ namespace app\filters;
 
 use yii\base\{ErrorException,
     Model};
-use app\filters\AdminOrdersFiltersInterface;
+use app\filters\OrdersFiltersInterface;
 use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные формы фильтров для каталога товаров
  */
-class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
+class OrdersFilters extends Model implements OrdersFiltersInterface
 {
     use ExceptionsTrait;
     
@@ -36,7 +36,7 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     }
     
     /**
-     * Присваивает значение AdminOrdersFilters::sortingType
+     * Присваивает значение OrdersFilters::sortingType
      * @param string $sortingType
      */
     public function setSortingType(string $sortingType)
@@ -49,7 +49,7 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     }
     
     /**
-     * Возвращает значение AdminOrdersFilters::sortingType
+     * Возвращает значение OrdersFilters::sortingType
      * @return mixed
      */
     public function getSortingType()
@@ -62,7 +62,7 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     }
     
     /**
-     * Присваивает значение AdminOrdersFilters::status
+     * Присваивает значение OrdersFilters::status
      * @param string $status
      */
     public function setStatus($status)
@@ -75,7 +75,7 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     }
     
     /**
-     * Возвращает значение AdminOrdersFilters::status
+     * Возвращает значение OrdersFilters::status
      * @return mixed
      */
     public function getStatus()
@@ -88,7 +88,7 @@ class AdminOrdersFilters extends Model implements AdminOrdersFiltersInterface
     }
     
     /**
-     * Возвращает массив данных при вызове AdminOrdersFilters::toArray
+     * Возвращает массив данных при вызове OrdersFilters::toArray
      * @return array
      */
     public function fields()

@@ -24,10 +24,6 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
-     * @var array
-     */
-    private $statuses;
-    /**
      * @var AdminChangeOrderForm
      */
     private $form;
@@ -49,9 +45,6 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
         try {
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
-            }
-            if (empty($this->statuses)) {
-                throw new ErrorException($this->emptyError('statuses'));
             }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
@@ -123,8 +116,6 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
                     $renderArray['purchases'][] = $set;
                 }
                 
-                $renderArray['statuses'] = $this->statuses;
-                
                 $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
                 $renderArray['idHeader'] = \Yii::t('base', 'Order number');
                 $renderArray['quantityHeader'] = \Yii::t('base', 'Quantity');
@@ -173,19 +164,6 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     {
         try {
             $this->currency = $currency;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает array свойству AdminOrdersFormWidget::statuses
-     * @param array $statuses
-     */
-    public function setStatuses(array $statuses)
-    {
-        try {
-            $this->statuses = $statuses;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

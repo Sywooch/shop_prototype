@@ -3,9 +3,10 @@
 namespace app\services;
 
 use yii\base\ErrorException;
+use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
+    AccountOrdersCollectionService,
     GetCurrentCurrencyModelService};
-use app\finders\PurchasesIdUserFinder;
 use app\forms\PurchaseForm;
 
 /**
@@ -23,7 +24,7 @@ class GetAccountOrdersFormWidgetConfigService extends AbstractBaseService
      * @param $request
      * @return array
      */
-    public function handle($request=null): array
+    public function handle($request): array
     {
         try {
             if (\Yii::$app->user->isGuest === true) {
@@ -33,17 +34,23 @@ class GetAccountOrdersFormWidgetConfigService extends AbstractBaseService
             if (empty($this->accountOrdersFormWidgetArray)) {
                 $dataArray = [];
                 
-                $user = \Yii::$app->user->identity;
+                $dataArray['header'] = \Yii::t('base', 'Orders');
                 
-                $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, ['id_user'=>$user->id]);
-                $dataArray['purchases'] = $finder->find();
+                $service = \Yii::$app->registry->get(AccountOrdersCollectionService::class);
+                $purchasesCollection = $service->handle($request);
+                
+                if ($purchasesCollection->isEmpty() === true) {
+                    if ($purchasesCollection->pagination->totalCount > 0) {
+                        throw new NotFoundHttpException($this->error404());
+                    }
+                }
+                
+                $dataArray['purchases'] = $purchasesCollection->asArray();
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
                 $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
-                
-                $dataArray['header'] = \Yii::t('base', 'Orders');
                 
                 $dataArray['template'] = 'account-orders-form.twig';
                 
@@ -51,6 +58,8 @@ class GetAccountOrdersFormWidgetConfigService extends AbstractBaseService
             }
             
             return $this->accountOrdersFormWidgetArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

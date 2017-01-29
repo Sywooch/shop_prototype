@@ -1,10 +1,16 @@
 {{ register_asset_bundle('app/assets/AccountOrdersAsset') }}
 
 {{ use ('app/widgets/AccountOrdersBreadcrumbsWidget') }}
+{{ use('app/widgets/OrdersFiltersWidget') }}
 {{ use ('app/widgets/AccountOrdersFormWidget') }}
+{{ use('app/widgets/PaginationWidget') }}
 
 {{ include('@theme/common/account-common.twig') }}
 
 {{ account_orders_breadcrumbs_widget_widget() }}
 
+{{ orders_filters_widget_widget(оrdersFiltersWidgetConfig) }}
+
 {{ account_orders_form_widget_widget(accountOrdersFormWidgetConfig) }}
+
+{{ pagination_widget_widget(paginationWidgetConfig) }}

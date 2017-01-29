@@ -3,19 +3,19 @@
 namespace app\tests\filters;
 
 use PHPUnit\Framework\TestCase;
-use app\filters\AdminOrdersFilters;
+use app\filters\OrdersFilters;
 
 /**
- * Тестирует класс AdminOrdersFilters
+ * Тестирует класс OrdersFilters
  */
-class AdminOrdersFiltersTests extends TestCase
+class OrdersFiltersTests extends TestCase
 {
     /**
      * Тестирует наличие свойств и констант
      */
     public function testProperty()
     {
-        $reflection = new \ReflectionClass(AdminOrdersFilters::class);
+        $reflection = new \ReflectionClass(OrdersFilters::class);
         
         $this->assertTrue($reflection->hasConstant('SESSION'));
         
@@ -24,11 +24,11 @@ class AdminOrdersFiltersTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFilters::scenarios
+     * Тестирует метод OrdersFilters::scenarios
      */
     public function testScenarios()
     {
-        $filter = new AdminOrdersFilters(['scenario'=>AdminOrdersFilters::SESSION]);
+        $filter = new OrdersFilters(['scenario'=>OrdersFilters::SESSION]);
         $filter->attributes = [
             'sortingType'=>SORT_ASC,
             'status'=>'shipped',
@@ -46,11 +46,11 @@ class AdminOrdersFiltersTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFilters::setSortingType
+     * Тестирует метод OrdersFilters::setSortingType
      */
     public function testSetSortingType()
     {
-        $filter = new AdminOrdersFilters();
+        $filter = new OrdersFilters();
         $filter->setSortingType(SORT_ASC);
         
         $reflection = new \ReflectionProperty($filter, 'sortingType');
@@ -61,11 +61,11 @@ class AdminOrdersFiltersTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFilters::getSortingType
+     * Тестирует метод OrdersFilters::getSortingType
      */
     public function testGetSortingType()
     {
-        $filter = new AdminOrdersFilters();
+        $filter = new OrdersFilters();
         
         $reflection = new \ReflectionProperty($filter, 'sortingType');
         $reflection->setAccessible(true);
@@ -77,11 +77,11 @@ class AdminOrdersFiltersTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFilters::setStatus
+     * Тестирует метод OrdersFilters::setStatus
      */
     public function testSetStatus()
     {
-        $filter = new AdminOrdersFilters();
+        $filter = new OrdersFilters();
         $filter->setStatus('shipped');
         
         $reflection = new \ReflectionProperty($filter, 'status');
@@ -92,11 +92,11 @@ class AdminOrdersFiltersTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFilters::getStatus
+     * Тестирует метод OrdersFilters::getStatus
      */
     public function testGetColors()
     {
-        $filter = new AdminOrdersFilters();
+        $filter = new OrdersFilters();
         
         $reflection = new \ReflectionProperty($filter, 'status');
         $reflection->setAccessible(true);
@@ -108,11 +108,11 @@ class AdminOrdersFiltersTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFilters::fields
+     * Тестирует метод OrdersFilters::fields
      */
     public function testFields()
     {
-        $filter = new AdminOrdersFilters();
+        $filter = new OrdersFilters();
         
         $reflection = new \ReflectionProperty($filter, 'sortingType');
         $reflection->setAccessible(true);

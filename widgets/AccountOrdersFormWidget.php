@@ -3,8 +3,7 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Html,
+use yii\helpers\{Html,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyInterface;
@@ -66,8 +65,6 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
             if (!empty($this->purchases)) {
                 $renderArray['listClass'] = 'account-orders';
                 $renderArray['statusClass'] = 'account-order-status';
-                
-                ArrayHelper::multisort($this->purchases, 'received_date', SORT_DESC, SORT_REGULAR);
                 
                 foreach ($this->purchases as $purchase) {
                     $set = [];

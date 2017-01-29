@@ -7,14 +7,17 @@ use app\finders\AbstractBaseFinder;
 use app\models\PurchasesModel;
 use app\collections\{LightPagination,
     PurchasesCollection};
-use app\helpers\HashHelper;
 use app\filters\OrdersFiltersInterface;
 
 /**
  * Возвращает заказы из СУБД
  */
-class AdminOrdersFinder extends AbstractBaseFinder
+class AccountOrdersFinder extends AbstractBaseFinder
 {
+    /**
+     * @var int id_user
+     */
+    private $id_user;
     /**
      * @var OrdersFiltersInterface
      */
@@ -35,6 +38,9 @@ class AdminOrdersFinder extends AbstractBaseFinder
     public function find(): PurchasesCollection
     {
         try {
+            if (empty($this->id_user)) {
+                throw new ErrorException($this->emptyError('id_user'));
+            }
             if (empty($this->filters)) {
                 throw new ErrorException($this->emptyError('filters'));
             }
@@ -44,16 +50,7 @@ class AdminOrdersFinder extends AbstractBaseFinder
                 
                 $query = PurchasesModel::find();
                 $query->select(['[[purchases.id]]', '[[purchases.id_user]]', '[[purchases.id_name]]', '[[purchases.id_surname]]', '[[purchases.id_email]]', '[[purchases.id_phone]]', '[[purchases.id_address]]', '[[purchases.id_city]]', '[[purchases.id_country]]', '[[purchases.id_postcode]]', '[[purchases.id_product]]',  '[[purchases.quantity]]', '[[purchases.id_color]]', '[[purchases.id_size]]', '[[purchases.price]]', '[[purchases.id_delivery]]', '[[purchases.id_payment]]', '[[purchases.received]]', '[[purchases.received_date]]', '[[purchases.processed]]', '[[purchases.canceled]]', '[[purchases.shipped]]']);
-                $query->with('product', 'color', 'size', 'name', 'surname', 'address', 'city', 'country', 'postcode', 'phone', 'payment', 'delivery');
-                
-                if (!empty($this->filters->getStatus())) {
-                    $query->where([sprintf('[[purchases.%s]]', $this->filters->getStatus())=>true]);
-                    foreach (\Yii::$app->params['orderStatuses'] as $status) {
-                        if ($status !== $this->filters->getStatus() && $status !== 'received') {
-                            $query->andWhere([sprintf('[[purchases.%s]]', $status)=>false]);
-                        }
-                    }
-                }
+                $query->where(['[[purchases.id_user]]'=>$this->id_user]);
                 
                 $this->storage->pagination->pageSize = \Yii::$app->params['limit'];
                 $this->storage->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
@@ -82,7 +79,20 @@ class AdminOrdersFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает OrdersFiltersInterface ProductsFinder::filters
+     * Присваивает ID пользователя AccountOrdersFinder::id_user
+     * @param int $id_user
+     */
+    public function setId_user(int $id_user)
+    {
+        try {
+            $this->id_user = $id_user;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает OrdersFiltersInterface AccountOrdersFinder::filters
      * @param OrdersFiltersInterface $filters
      */
     public function setFilters(OrdersFiltersInterface $filters)
@@ -95,7 +105,7 @@ class AdminOrdersFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает номер страницы ProductsFinder::page
+     * Присваивает номер страницы AccountOrdersFinder::page
      * @param string $page
      */
     public function setPage(string $page)

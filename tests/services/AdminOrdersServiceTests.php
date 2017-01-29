@@ -7,6 +7,7 @@ use app\services\AdminOrdersService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture};
+use app\controllers\FiltersController;
 
 /**
  * Тестирует класс AdminOrdersService
@@ -52,6 +53,8 @@ class AdminOrdersServiceTests extends TestCase
      */
     public function testHandle()
     {
+        \Yii::$app->controller = new FiltersController('filters', \Yii::$app);
+        
         $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
@@ -64,11 +67,11 @@ class AdminOrdersServiceTests extends TestCase
 
         $this->assertInternalType('array', $result);
         
-        $this->assertArrayHasKey('adminOrdersFiltersWidgetConfig', $result);
+        $this->assertArrayHasKey('оrdersFiltersWidgetConfig', $result);
         $this->assertArrayHasKey('adminOrdersFormWidgetConfig', $result);
         $this->assertArrayHasKey('paginationWidgetConfig', $result);
         
-        $this->assertInternalType('array', $result['adminOrdersFiltersWidgetConfig']);
+        $this->assertInternalType('array', $result['оrdersFiltersWidgetConfig']);
         $this->assertInternalType('array', $result['adminOrdersFormWidgetConfig']);
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
     }

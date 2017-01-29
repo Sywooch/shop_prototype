@@ -6,8 +6,8 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     RedirectAction};
-use app\services\{FiltersAdminOrdersSetService,
-    FiltersAdminOrdersUnsetService,
+use app\services\{FiltersOrdersSetService,
+    FiltersOrdersUnsetService,
     FiltersSetService,
     FiltersUnsetService};
 
@@ -27,13 +27,13 @@ class FiltersController extends Controller
                 'class'=>RedirectAction::class,
                 'service'=>new FiltersUnsetService()
             ],
-            'admin-orders-set'=>[
+            'orders-set'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new FiltersAdminOrdersSetService()
+                'service'=>new FiltersOrdersSetService()
             ],
-            'admin-orders-unset'=>[
+            'orders-unset'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new FiltersAdminOrdersUnsetService()
+                'service'=>new FiltersOrdersUnsetService()
             ],
         ];
     }

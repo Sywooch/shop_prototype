@@ -5,7 +5,7 @@ namespace app\filters;
 /**
  * Интерфейс товарных фильров
  */
-interface AdminOrdersFiltersInterface
+interface OrdersFiltersInterface
 {
     public function getSortingType();
     public function getStatus();

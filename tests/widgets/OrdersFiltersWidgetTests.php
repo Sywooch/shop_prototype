@@ -3,22 +3,22 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\AdminOrdersFiltersWidget;
+use app\widgets\OrdersFiltersWidget;
 use app\collections\{SortingFieldsCollection,
     SortingTypesCollection};
-use app\forms\AdminOrdersFiltersForm;
+use app\forms\OrdersFiltersForm;
 
 /**
- * Тестирует класс AdminOrdersFiltersWidget
+ * Тестирует класс OrdersFiltersWidget
  */
-class AdminOrdersFiltersWidgetTests extends TestCase
+class OrdersFiltersWidgetTests extends TestCase
 {
     /**
      * Тестирует наличие свойств
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminOrdersFiltersWidget::class);
+        $reflection = new \ReflectionClass(OrdersFiltersWidget::class);
         
         $this->assertTrue($reflection->hasProperty('statuses'));
         $this->assertTrue($reflection->hasProperty('sortingTypes'));
@@ -28,7 +28,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setStatuses
+     * Тестирует метод OrdersFiltersWidget::setStatuses
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
@@ -36,18 +36,18 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $statuses = new class() {};
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setStatuses($statuses);
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setStatuses
+     * Тестирует метод OrdersFiltersWidget::setStatuses
      */
     public function testSetStatuses()
     {
         $statuses = new class() {};
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setStatuses([$statuses]);
         
         $reflection = new \ReflectionProperty($widget, 'statuses');
@@ -59,7 +59,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setSortingTypes
+     * Тестирует метод OrdersFiltersWidget::setSortingTypes
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
@@ -67,18 +67,18 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $collection = new class() {};
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setSortingTypes($collection);
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setSortingTypes
+     * Тестирует метод OrdersFiltersWidget::setSortingTypes
      */
     public function testSetSortingTypes()
     {
         $collection = [SORT_ASC=>'asc'];
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setSortingTypes($collection);
         
         $reflection = new \ReflectionProperty($widget, 'sortingTypes');
@@ -90,7 +90,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setForm
+     * Тестирует метод OrdersFiltersWidget::setForm
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
@@ -98,29 +98,29 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $form = new class() {};
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setForm($form);
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setForm
+     * Тестирует метод OrdersFiltersWidget::setForm
      */
     public function testSetForm()
     {
-        $form = new class() extends AdminOrdersFiltersForm {};
+        $form = new class() extends OrdersFiltersForm {};
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setForm($form);
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(AdminOrdersFiltersForm::class, $result);
+        $this->assertInstanceOf(OrdersFiltersForm::class, $result);
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setHeader
+     * Тестирует метод OrdersFiltersWidget::setHeader
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -128,18 +128,18 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $header = null;
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setHeader($header);
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setHeader
+     * Тестирует метод OrdersFiltersWidget::setHeader
      */
     public function testSetHeader()
     {
         $header = 'Header';
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setHeader($header);
         
         $reflection = new \ReflectionProperty($widget, 'header');
@@ -150,7 +150,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setTemplate
+     * Тестирует метод OrdersFiltersWidget::setTemplate
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -158,18 +158,18 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $template = null;
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setTemplate($template);
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::setTemplate
+     * Тестирует метод OrdersFiltersWidget::setTemplate
      */
     public function testSetTemplate()
     {
         $template = 'Template';
         
-        $widget = new AdminOrdersFiltersWidget();
+        $widget = new OrdersFiltersWidget();
         $widget->setTemplate($template);
         
         $reflection = new \ReflectionProperty($widget, 'template');
@@ -180,20 +180,8 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::run
-     * если пуст AdminOrdersFiltersWidget::statuses
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: statuses
-     */
-    public function testRunEmptyStatuses()
-    {
-        $widget = new AdminOrdersFiltersWidget();
-        $widget->run();
-    }
-    
-    /**
-     * Тестирует метод AdminOrdersFiltersWidget::run
-     * если пуст AdminOrdersFiltersWidget::sortingTypes
+     * Тестирует метод OrdersFiltersWidget::run
+     * если пуст OrdersFiltersWidget::sortingTypes
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: sortingTypes
      */
@@ -201,18 +189,14 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $widget = new OrdersFiltersWidget();
         
         $widget->run();
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::run
-     * если пуст AdminOrdersFiltersWidget::form
+     * Тестирует метод OrdersFiltersWidget::run
+     * если пуст OrdersFiltersWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
@@ -220,11 +204,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $widget = new OrdersFiltersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'sortingTypes');
         $reflection->setAccessible(true);
@@ -234,8 +214,8 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::run
-     * если пуст AdminOrdersFiltersWidget::header
+     * Тестирует метод OrdersFiltersWidget::run
+     * если пуст OrdersFiltersWidget::header
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
@@ -243,11 +223,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $widget = new OrdersFiltersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'sortingTypes');
         $reflection->setAccessible(true);
@@ -261,8 +237,8 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::run
-     * если пуст AdminOrdersFiltersWidget::template
+     * Тестирует метод OrdersFiltersWidget::run
+     * если пуст OrdersFiltersWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
@@ -270,11 +246,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $widget = new OrdersFiltersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'sortingTypes');
         $reflection->setAccessible(true);
@@ -292,7 +264,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFiltersWidget::run
+     * Тестирует метод OrdersFiltersWidget::run
      */
     public function testRun()
     {
@@ -300,13 +272,9 @@ class AdminOrdersFiltersWidgetTests extends TestCase
         
         $sortingTypes = [SORT_ASC=>'Sort ascending', SORT_DESC=>'Sort descending'];
         
-        $form = new class() extends AdminOrdersFiltersForm {};
+        $form = new class() extends OrdersFiltersForm {};
         
-        $widget = new AdminOrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
-        $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $statuses);
+        $widget = new OrdersFiltersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'sortingTypes');
         $reflection->setAccessible(true);
@@ -322,7 +290,7 @@ class AdminOrdersFiltersWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, 'admin-orders-filters.twig');
+        $result = $reflection->setValue($widget, 'orders-filters.twig');
         
         $result = $widget->run();
         

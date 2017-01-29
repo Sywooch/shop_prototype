@@ -1,7 +1,7 @@
 {{ register_asset_bundle('app/assets/AdminOrdersAsset') }}
 
 {{ use ('app/widgets/AdminOrdersBreadcrumbsWidget') }}
-{{ use('app/widgets/AdminOrdersFiltersWidget') }}
+{{ use('app/widgets/OrdersFiltersWidget') }}
 {{ use ('app/widgets/AdminOrdersFormWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
 
@@ -9,7 +9,7 @@
 
 {{ admin_orders_breadcrumbs_widget_widget() }}
 
-{{ admin_orders_filters_widget_widget(adminOrdersFiltersWidgetConfig) }}
+{{ orders_filters_widget_widget(оrdersFiltersWidgetConfig) }}
 
 {{ admin_orders_form_widget_widget(adminOrdersFormWidgetConfig) }}
 

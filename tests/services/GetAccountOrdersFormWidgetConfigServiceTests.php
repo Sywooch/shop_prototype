@@ -31,6 +31,11 @@ class GetAccountOrdersFormWidgetConfigServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+    }
+    
     /**
      * Тестирует свойства GetAccountOrdersFormWidgetConfigService
      */
@@ -43,6 +48,27 @@ class GetAccountOrdersFormWidgetConfigServiceTests extends TestCase
     
     /**
      * Тестирует метод  GetAccountOrdersFormWidgetConfigService::handle
+     * если передана несуществующая страница
+     * @expectedException yii\web\NotFoundHttpException
+     */
+    public function testHandleNotExistsPage()
+    {
+        $user = UsersModel::findOne(1);
+        \Yii::$app->user->login($user);
+        
+        $request = new class() {
+            public function get($name=null, $defaultValue=null)
+            {
+                return 18;
+            }
+        };
+        
+        $service = new GetAccountOrdersFormWidgetConfigService();
+        $service->handle($request);
+    }
+    
+    /**
+     * Тестирует метод  GetAccountOrdersFormWidgetConfigService::handle
      * если пользователь не аутентифицирован
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: user
@@ -51,8 +77,15 @@ class GetAccountOrdersFormWidgetConfigServiceTests extends TestCase
     {
         \Yii::$app->user->logout();
         
+        $request = new class() {
+            public function get($name=null, $defaultValue=null)
+            {
+                return null;
+            }
+        };
+        
         $service = new GetAccountOrdersFormWidgetConfigService();
-        $service->handle();
+        $service->handle($request);
     }
     
     /**
@@ -63,8 +96,15 @@ class GetAccountOrdersFormWidgetConfigServiceTests extends TestCase
         $user = UsersModel::findOne(1);
         \Yii::$app->user->login($user);
         
+        $request = new class() {
+            public function get($name=null, $defaultValue=null)
+            {
+                return null;
+            }
+        };
+        
         $service = new GetAccountOrdersFormWidgetConfigService();
-        $result = $service->handle();
+        $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);

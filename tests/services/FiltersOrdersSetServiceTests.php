@@ -3,17 +3,16 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use yii\helpers\Url;
-use app\services\FiltersAdminOrdersSetService;
+use app\services\FiltersOrdersSetService;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс FiltersAdminOrdersSetService
+ * Тестирует класс FiltersOrdersSetService
  */
-class FiltersAdminOrdersSetServiceTests extends TestCase
+class FiltersOrdersSetServiceTests extends TestCase
 {
     /**
-     * Тестирует метод FiltersAdminOrdersSetService::handle
+     * Тестирует метод FiltersOrdersSetService::handle
      */
     public function testHandle()
     {
@@ -21,20 +20,21 @@ class FiltersAdminOrdersSetServiceTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'AdminOrdersFiltersForm'=>[
+                    'OrdersFiltersForm'=>[
                         'sortingType'=>SORT_ASC,
                         'status'=>'shipped',
+                        'url'=>'https://shop.com'
                     ]
                 ];
             }
         };
         
-        $filter = new FiltersAdminOrdersSetService();
+        $filter = new FiltersOrdersSetService();
         $result = $filter->handle($request);
         
-        $this->assertEquals(Url::to(['/admin/orders']), $result);
+        $this->assertEquals('https://shop.com', $result);
         
-        $key = HashHelper::createHash([\Yii::$app->params['adminOrdersFilters']]);
+        $key = HashHelper::createHash([\Yii::$app->params['ordersFilters']]);
         $session = \Yii::$app->session;
         $session->open();
         $result = $session->get($key);

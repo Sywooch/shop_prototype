@@ -3,33 +3,34 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\helpers\ArrayHelper;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\services\AbstractBaseService;
-use app\forms\AdminOrdersFiltersForm;
-use app\finders\{AdminOrdersFiltersSessionFinder,
+use app\forms\OrdersFiltersForm;
+use app\finders\{OrdersFiltersSessionFinder,
     OrderStatusesFinder,
     SortingTypesFinder};
 use app\helpers\HashHelper;
 
 /**
- * Возвращает массив конфигурации для виджета AdminOrdersFiltersWidget
+ * Возвращает массив конфигурации для виджета OrdersFiltersWidget
  */
-class GetAdminOrdersFiltersWidgetConfigService extends AbstractBaseService
+class GetOrdersFiltersWidgetConfigService extends AbstractBaseService
 {
     /**
-     * @var array конфигурации для виджета AdminOrdersFiltersWidget
+     * @var array конфигурации для виджета OrdersFiltersWidget
      */
-    private $adminOrdersFiltersWidgetArray = [];
+    private $ordersFiltersWidgetArray = [];
     
     /**
-     * Возвращает массив конфигурации для виджета AdminOrdersFiltersWidget
+     * Возвращает массив конфигурации для виджета OrdersFiltersWidget
      * @param $request
      * @return array
      */
     public function handle($request=null): array
     {
         try {
-            if (empty($this->adminOrdersFiltersWidgetArray)) {
+            if (empty($this->ordersFiltersWidgetArray)) {
                 $dataArray = [];
                 
                 $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
@@ -40,16 +41,16 @@ class GetAdminOrdersFiltersWidgetConfigService extends AbstractBaseService
                 ArrayHelper::multisort($sortingTypesArray, 'value');
                 $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
                 
-                $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
+                /*$finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
                 $statusesArray = $finder->find();
                 asort($statusesArray,SORT_STRING);
                 array_unshift($statusesArray, \Yii::t('base', 'All'));
-                $dataArray['statuses'] = $statusesArray;
+                $dataArray['statuses'] = $statusesArray;*/
                 
-                $finder = \Yii::$app->registry->get(AdminOrdersFiltersSessionFinder::class, ['key'=>HashHelper::createHash([\Yii::$app->params['adminOrdersFilters']])]);
+                $finder = \Yii::$app->registry->get(OrdersFiltersSessionFinder::class, ['key'=>HashHelper::createHash([\Yii::$app->params['ordersFilters']])]);
                 $filtersModel = $finder->find();
                 
-                $form = new AdminOrdersFiltersForm(array_filter($filtersModel->toArray()));
+                $form = new OrdersFiltersForm(array_filter($filtersModel->toArray()));
                 
                 if (empty($form->sortingType)) {
                     foreach ($sortingTypesArray as $item) {
@@ -59,16 +60,18 @@ class GetAdminOrdersFiltersWidgetConfigService extends AbstractBaseService
                     }
                 }
                 
+                $form->url = Url::current();
+                
                 $dataArray['form'] = $form;
                 
                 $dataArray['header'] = \Yii::t('base', 'Filters');
                 
-                $dataArray['template'] = 'admin-orders-filters.twig';
+                $dataArray['template'] = 'orders-filters.twig';
                 
-                $this->adminOrdersFiltersWidgetArray = $dataArray;
+                $this->ordersFiltersWidgetArray = $dataArray;
             }
             
-            return $this->adminOrdersFiltersWidgetArray;
+            return $this->ordersFiltersWidgetArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

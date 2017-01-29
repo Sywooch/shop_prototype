@@ -5,19 +5,19 @@ namespace app\finders;
 use yii\base\ErrorException;
 use app\finders\AbstractBaseFinder;
 use app\helpers\SessionHelper;
-use app\filters\AdminOrdersFilters;
+use app\filters\OrdersFilters;
 
 /**
- * Возвращает AdminOrdersFilters из сессии
+ * Возвращает OrdersFilters из сессии
  */
-class AdminOrdersFiltersSessionFinder extends AbstractBaseFinder
+class OrdersFiltersSessionFinder extends AbstractBaseFinder
 {
     /**
      * @var string key ключ доступа к данным
      */
     private $key;
     /**
-     * @var AdminOrdersFilters
+     * @var OrdersFilters
      */
     private $storage = null;
     
@@ -33,7 +33,7 @@ class AdminOrdersFiltersSessionFinder extends AbstractBaseFinder
             }
             
             if (empty($this->storage)) {
-                $this->storage = new AdminOrdersFilters(['scenario'=>AdminOrdersFilters::SESSION]);
+                $this->storage = new OrdersFilters(['scenario'=>OrdersFilters::SESSION]);
                 
                 $array = SessionHelper::read($this->key);
                 if (!empty($array)) {
@@ -48,7 +48,7 @@ class AdminOrdersFiltersSessionFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает ключ свойству AdminOrdersFilters::key
+     * Присваивает ключ свойству OrdersFilters::key
      * @param string $key
      */
     public function setKey(string $key)

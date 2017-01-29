@@ -14,8 +14,8 @@ $routes = [
     # Фильтры
     'set-filters'=>'filters/set',
     'unset-filters'=>'filters/unset',
-    'admin-orders-set'=>'filters/admin-orders-set',
-    'admin-orders-unset'=>'filters/admin-orders-unset',
+    'filters-orders-set'=>'filters/orders-set',
+    'filters-orders-unset'=>'filters/orders-unset',
     
     # Поиск
     'search-<page:\d{1,3}>'=>'products-list/search',
@@ -33,6 +33,7 @@ $routes = [
     
     # Аккаунт
     'account'=>'account/index',
+    'account-orders-<page:\d{1,3}>'=>'account/orders',
     'account-orders'=>'account/orders',
     'account-order-cancel'=>'account/order-cancel',
     'account-data'=>'account/data',

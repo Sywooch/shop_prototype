@@ -16,7 +16,7 @@ $(function() {
         };
     };
     
-    $('form').find('input[type="submit"]').on('click', function(event) {
+    $('li').on('click', 'form[id^="order-cancellation-form-"] > input[type="submit"]', function(event) {
         (new SendCancelOrder()).send(event);
         event.preventDefault();
     });

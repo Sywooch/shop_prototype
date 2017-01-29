@@ -3,7 +3,7 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\AdminOrdersFinder;
+use app\finders\AccountOrdersFinder;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\PurchasesFixture;
 use app\filters\{OrdersFiltersInterface,
@@ -11,9 +11,9 @@ use app\filters\{OrdersFiltersInterface,
 use app\collections\PurchasesCollection;
 
 /**
- * Тестирует класс AdminOrdersFinder
+ * Тестирует класс AccountOrdersFinder
  */
-class AdminOrdersFinderTests extends TestCase
+class AccountOrdersFinderTests extends TestCase
 {
     private static $dbClass;
     
@@ -28,19 +28,50 @@ class AdminOrdersFinderTests extends TestCase
     }
     
     /**
-     * Тестирует свойства AdminOrdersFinder
+     * Тестирует свойства AccountOrdersFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminOrdersFinder::class);
+        $reflection = new \ReflectionClass(AccountOrdersFinder::class);
         
+        $this->assertTrue($reflection->hasProperty('id_user'));
         $this->assertTrue($reflection->hasProperty('filters'));
         $this->assertTrue($reflection->hasProperty('page'));
         $this->assertTrue($reflection->hasProperty('storage'));
     }
     
     /**
-     * Тестирует метод AdminOrdersFinder::setFilters
+     * Тестирует метод AccountOrdersFinder::setId_user
+     * если передан неверный тип аргумента
+     * @expectedException TypeError
+     */
+    public function testSetId_userError()
+    {
+        $id_user = null;
+        
+        $finder = new AccountOrdersFinder();
+        $finder->setId_user($id_user);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersFinder::setId_user
+     */
+    public function testSetId_user()
+    {
+        $id_user = 2;
+        
+        $finder = new AccountOrdersFinder();
+        $finder->setId_user($id_user);
+        
+        $reflection = new \ReflectionProperty($finder, 'id_user');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($finder);
+        
+        $this->assertInternalType('integer', $result);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersFinder::setFilters
      * если передан неверный тип аргумента
      * @expectedException TypeError
      */
@@ -48,18 +79,18 @@ class AdminOrdersFinderTests extends TestCase
     {
         $filters = new class() {};
         
-        $finder = new AdminOrdersFinder();
+        $finder = new AccountOrdersFinder();
         $finder->setFilters($filters);
     }
     
     /**
-     * Тестирует метод AdminOrdersFinder::setFilters
+     * Тестирует метод AccountOrdersFinder::setFilters
      */
     public function testSetFilters()
     {
         $filters = new class() extends OrdersFilters {};
         
-        $finder = new AdminOrdersFinder();
+        $finder = new AccountOrdersFinder();
         $finder->setFilters($filters);
         
         $reflection = new \ReflectionProperty($finder, 'filters');
@@ -70,7 +101,7 @@ class AdminOrdersFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFinder::setPage
+     * Тестирует метод AccountOrdersFinder::setPage
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -78,41 +109,58 @@ class AdminOrdersFinderTests extends TestCase
     {
         $page = null;
         
-        $widget = new AdminOrdersFinder();
-        $widget->setPage($page);
+        $finder = new AccountOrdersFinder();
+        $finder->setPage($page);
     }
     
     /**
-     * Тестирует метод AdminOrdersFinder::setPage
+     * Тестирует метод AccountOrdersFinder::setPage
      */
     public function testSetPage()
     {
         $page = 2;
         
-        $widget = new AdminOrdersFinder();
-        $widget->setPage($page);
+        $finder = new AccountOrdersFinder();
+        $finder->setPage($page);
         
-        $reflection = new \ReflectionProperty($widget, 'page');
+        $reflection = new \ReflectionProperty($finder, 'page');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($finder);
         
         $this->assertInternalType('integer', (int) $result);
     }
     
-     /**
-     * Тестирует метод AdminOrdersFinder::find
-     * если пуст AdminOrdersFinder::filters
+    /**
+     * Тестирует метод AccountOrdersFinder::find
+     * если пуст AccountOrdersFinder::id_user
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: id_user
+     */
+    public function testFindEmptyId_user()
+    {
+        $finder = new AccountOrdersFinder();
+        $finder->find();
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersFinder::find
+     * если пуст AccountOrdersFinder::filters
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: filters
      */
     public function testFindEmptyFilters()
     {
-        $finder = new AdminOrdersFinder();
+        $finder = new AccountOrdersFinder();
+        
+        $reflection = new \ReflectionProperty($finder, 'id_user');
+        $reflection->setAccessible(true);
+        $reflection->setValue($finder, 2);
+        
         $finder->find();
     }
     
     /**
-     * Тестирует метод AdminOrdersFinder::find
+     * Тестирует метод AccountOrdersFinder::find
      * если фильтры пусты
      * страница === 0
      */
@@ -120,7 +168,11 @@ class AdminOrdersFinderTests extends TestCase
     {
         $filters = new class() extends OrdersFilters {};
         
-        $finder = new AdminOrdersFinder();
+        $finder = new AccountOrdersFinder();
+        
+        $reflection = new \ReflectionProperty($finder, 'id_user');
+        $reflection->setAccessible(true);
+        $reflection->setValue($finder, 1);
         
         $reflection = new \ReflectionProperty($finder, 'filters');
         $reflection->setAccessible(true);
@@ -132,17 +184,21 @@ class AdminOrdersFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFinder::find
+     * Тестирует метод AccountOrdersFinder::find
      * если фильтры не пусты
      * страница === 0
      */
     public function testFindEmptyPage()
     {
         $filters = new class() extends OrdersFilters {
-            public $status = 'shipped';
+            public $sortingType = SORT_ASC;
         };
         
-        $finder = new AdminOrdersFinder();
+        $finder = new AccountOrdersFinder();
+        
+        $reflection = new \ReflectionProperty($finder, 'id_user');
+        $reflection->setAccessible(true);
+        $reflection->setValue($finder, 1);
         
         $reflection = new \ReflectionProperty($finder, 'filters');
         $reflection->setAccessible(true);
@@ -154,7 +210,7 @@ class AdminOrdersFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFinder::find
+     * Тестирует метод AccountOrdersFinder::find
      * если фильтры пусты
      * страница !== 0
      */
@@ -162,7 +218,11 @@ class AdminOrdersFinderTests extends TestCase
     {
         $filters = new class() extends OrdersFilters {};
         
-        $finder = new AdminOrdersFinder();
+        $finder = new AccountOrdersFinder();
+        
+        $reflection = new \ReflectionProperty($finder, 'id_user');
+        $reflection->setAccessible(true);
+        $reflection->setValue($finder, 1);
         
         $reflection = new \ReflectionProperty($finder, 'filters');
         $reflection->setAccessible(true);

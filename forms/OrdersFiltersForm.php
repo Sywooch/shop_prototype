@@ -8,7 +8,7 @@ use app\forms\AbstractBaseForm;
 /**
  * Представляет данные формы фильтров для списка заказов
  */
-class AdminOrdersFiltersForm extends AbstractBaseForm
+class OrdersFiltersForm extends AbstractBaseForm
 {
     /**
      * Сценарий сохранения значений фильтров
@@ -31,11 +31,23 @@ class AdminOrdersFiltersForm extends AbstractBaseForm
      * @var string статус заказа
      */
     public $status;
+    /**
+     * @var string URL, с которого была запрошена сортировка
+     */
+    public $url;
     
     public function scenarios()
     {
         return [
-            self::SAVE=>['sortingField', 'sortingType', 'status'],
+            self::SAVE=>['sortingField', 'sortingType', 'status', 'url'],
+            self::CLEAN=>['url'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['url'], 'required'],
         ];
     }
 }

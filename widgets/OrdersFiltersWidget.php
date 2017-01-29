@@ -5,12 +5,12 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
-use app\forms\AdminOrdersFiltersForm;
+use app\forms\OrdersFiltersForm;
 
 /**
  * Формирует HTML строку с формой, представляющей фильтры товаров
  */
-class AdminOrdersFiltersWidget extends AbstractBaseWidget
+class OrdersFiltersWidget extends AbstractBaseWidget
 {
     /**
      * @var array варианты статусов заказа
@@ -21,7 +21,7 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
      */
     private $sortingTypes;
     /**
-     * @var AdminOrdersFiltersForm
+     * @var OrdersFiltersForm
      */
     private $form;
     /**
@@ -36,9 +36,6 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->statuses)) {
-                throw new ErrorException($this->emptyError('statuses'));
-            }
             if (empty($this->sortingTypes)) {
                 throw new ErrorException($this->emptyError('sortingTypes'));
             }
@@ -71,11 +68,11 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
             $renderArray['validateOnType'] = false;
             
             $renderArray['formIdApply'] = 'admin-orders-filters-form';
-            $renderArray['formActionApply'] = Url::to(['/filters/admin-orders-set']);
+            $renderArray['formActionApply'] = Url::to(['/filters/orders-set']);
             $renderArray['buttonApply'] = \Yii::t('base', 'Apply');
             
             $renderArray['formIdClean'] = 'admin-orders-filters-clean';
-            $renderArray['formActionClean'] = Url::to(['/filters/admin-orders-unset']);
+            $renderArray['formActionClean'] = Url::to(['/filters/orders-unset']);
             $renderArray['buttonClean'] = \Yii::t('base', 'Clean');
             
             return $this->render($this->template, $renderArray);
@@ -85,7 +82,7 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array свойству AdminOrdersFiltersWidget::statuses
+     * Присваивает array свойству OrdersFiltersWidget::statuses
      * @param array $statuses
      */
     public function setStatuses(array $statuses)
@@ -98,7 +95,7 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array свойству AdminOrdersFiltersWidget::sortingTypes
+     * Присваивает array свойству OrdersFiltersWidget::sortingTypes
      * @param array $sortingTypes
      */
     public function setSortingTypes(array $sortingTypes)
@@ -111,10 +108,10 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает AdminOrdersFiltersForm свойству AdminOrdersFiltersWidget::form
-     * @param AdminOrdersFiltersForm $form
+     * Присваивает OrdersFiltersForm свойству OrdersFiltersWidget::form
+     * @param OrdersFiltersForm $form
      */
-    public function setForm(AdminOrdersFiltersForm $form)
+    public function setForm(OrdersFiltersForm $form)
     {
         try {
             $this->form = $form;
@@ -124,7 +121,7 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает заголовок свойству AdminOrdersFiltersWidget::header
+     * Присваивает заголовок свойству OrdersFiltersWidget::header
      * @param string $header
      */
     public function setHeader(string $header)
@@ -137,7 +134,7 @@ class AdminOrdersFiltersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает имя шаблона свойству AdminOrdersFiltersWidget::template
+     * Присваивает имя шаблона свойству OrdersFiltersWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)
