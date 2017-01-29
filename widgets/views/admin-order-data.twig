@@ -1,27 +1,29 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<a href="{{ link }}">{{ linkText }}</a>
-<br>{{ short_description }}
-<br>{{ image | raw }}
-<br>{{ idHeader }}: {{ id }}
-<br>{{ dateHeader }}: {{ date }}
-<br>{{ colorHeader }}: {{ color }}
-<br>{{ sizeHeader }}: {{ size }}
-<br>{{ quantityHeader }}: {{ quantity }}
-<br>{{ priceHeader }}: {{ price }}
-<br>{{ totalPriceHeader }}: {{ totalPrice }}
+<div class="admin-order-previous-data">
+    <a href="{{ link }}">{{ linkText }}</a>
+    <br>{{ short_description }}
+    <br>{{ image | raw }}
+    <br>{{ idHeader }}: {{ id }}
+    <br>{{ dateHeader }}: {{ date }}
+    <br>{{ colorHeader }}: {{ color }}
+    <br>{{ sizeHeader }}: {{ size }}
+    <br>{{ quantityHeader }}: {{ quantity }}
+    <br>{{ priceHeader }}: {{ price }}
+    <br>{{ totalPriceHeader }}: {{ totalPrice }}
+    
+    <br>{{ clientHeader }}: {{ client }}
+    <br>{{ phoneHeader }}: {{ phone }}
+    <br>{{ addressHeader }}: {{ address }}
+    <br>{{ cityHeader }}: {{ city }}
+    <br>{{ countryHeader }}: {{ country }}
+    <br>{{ postcodeHeader }}: {{ postcode }}
+    <br>{{ paymentHeader }}: {{ payment }}
+    <br>{{ deliveryHeader }}: {{ delivery }}
+    <br>{{ statusHeader }}: {{ status }}
 
-<br>{{ clientHeader }}: {{ client }}
-<br>{{ phoneHeader }}: {{ phone }}
-<br>{{ addressHeader }}: {{ address }}
-<br>{{ cityHeader }}: {{ city }}
-<br>{{ countryHeader }}: {{ country }}
-<br>{{ postcodeHeader }}: {{ postcode }}
-<br>{{ paymentHeader }}: {{ payment }}
-<br>{{ deliveryHeader }}: {{ delivery }}
-<br>{{ statusHeader }}: {{ status }}
-
-{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
-    {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
-    <input type="submit" value="{{ button }}">
-{{ active_form_end() }}
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
+        <input type="submit" value="{{ button }}">
+    {{ active_form_end() }}
+</div>

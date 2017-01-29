@@ -17,35 +17,35 @@ class AdminTodayOrdersMinimalWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(AdminTodayOrdersMinimalWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('purchases'));
+        $this->assertTrue($reflection->hasProperty('orders'));
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
-     * Тестирует метод AdminTodayOrdersMinimalWidget::setPurchases
+     * Тестирует метод AdminTodayOrdersMinimalWidget::setOrders
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
     public function testSetPurchasesError()
     {
-        $purchases = new class() {};
+        $orders = new class() {};
         
         $widget = new AdminTodayOrdersMinimalWidget();
-        $widget->setPurchases($purchases);
+        $widget->setOrders($orders);
     }
     
     /**
-     * Тестирует метод AdminTodayOrdersMinimalWidget::setPurchases
+     * Тестирует метод AdminTodayOrdersMinimalWidget::setOrders
      */
     public function testSetPurchases()
     {
-        $purchases = 2;
+        $orders = 2;
         
         $widget = new AdminTodayOrdersMinimalWidget();
-        $widget->setPurchases($purchases);
+        $widget->setOrders($orders);
         
-        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection = new \ReflectionProperty($widget, 'orders');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
@@ -160,7 +160,7 @@ class AdminTodayOrdersMinimalWidgetTests extends TestCase
         $result = $widget->run();
         
         //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>Сегодня заказов нет</p>#', $result);
+        $this->assertRegExp('#<p><strong>Сегодня заказов нет</strong></p>#', $result);
     }
     
     /**
@@ -169,13 +169,13 @@ class AdminTodayOrdersMinimalWidgetTests extends TestCase
      */
     public function testRunExistProcessedPurchases()
     {
-        $purchases = 3;
+        $orders = 3;
         
         $widget = new AdminTodayOrdersMinimalWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'purchases');
+        $reflection = new \ReflectionProperty($widget, 'orders');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $purchases);
+        $reflection->setValue($widget, $orders);
         
         $reflection = new \ReflectionProperty($widget, 'header');
         $reflection->setAccessible(true);
@@ -188,6 +188,6 @@ class AdminTodayOrdersMinimalWidgetTests extends TestCase
         $result = $widget->run();
         
         //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p><strong>Заказы</strong>: 3</p>#', $result);
+        $this->assertRegExp('#<p><strong>Заказы:</strong> 3</p>#', $result);
     }
 }

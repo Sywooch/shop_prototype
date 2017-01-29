@@ -18,7 +18,7 @@ class GetAdminTodayOrdersMinimalWidgetConfigServiceTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'purchases'=>PurchasesFixture::class,
+                'orders'=>PurchasesFixture::class,
             ]
         ]);
         self::$dbClass->loadFixtures();
@@ -45,11 +45,11 @@ class GetAdminTodayOrdersMinimalWidgetConfigServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         
-        $this->assertArrayHasKey('purchases', $result);
+        $this->assertArrayHasKey('orders', $result);
         $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('template', $result);
         
-        $this->assertInternalType('integer', $result['purchases']);
+        $this->assertInternalType('integer', $result['orders']);
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
     }

@@ -14,7 +14,7 @@ class AdminTodayOrdersMinimalWidget extends AbstractBaseWidget
     /**
      * @var int количество заказов
      */
-    private $purchases;
+    private $orders;
     /**
      * @var string заголовок
      */
@@ -42,10 +42,11 @@ class AdminTodayOrdersMinimalWidget extends AbstractBaseWidget
             
             //$renderArray['header'] = $this->header;
             
-            if (!empty($this->purchases)) {
-                $renderArray['purchases'] = sprintf('%s: %s', Html::tag('strong', \Yii::t('base', 'Orders')), $this->purchases ?? 0);
+            if (!empty($this->orders)) {
+                $renderArray['text'] = sprintf('%s:', \Yii::t('base', 'Orders'));
+                $renderArray['orders'] = $this->orders ?? 0;
             } else {
-                $renderArray['purchasesEmpty'] = \Yii::t('base', 'Today no orders');
+                $renderArray['ordersEmpty'] = \Yii::t('base', 'Today no orders');
             }
             
             return $this->render($this->template, $renderArray);
@@ -55,13 +56,13 @@ class AdminTodayOrdersMinimalWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает количество заказов свойству AdminTodayOrdersMinimalWidget::purchases
-     * @param int $purchases
+     * Присваивает количество заказов свойству AdminTodayOrdersMinimalWidget::orders
+     * @param int $orders
      */
-    public function setPurchases(int $purchases)
+    public function setOrders(int $orders)
     {
         try {
-            $this->purchases = $purchases;
+            $this->orders = $orders;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -160,7 +160,7 @@ class VisitsMinimalWidgetTests extends TestCase
         $result = $widget->run();
         
         //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>Сегодня посещений не было</p>#', $result);
+        $this->assertRegExp('#<p><strong>Сегодня посещений не было</strong></p>#', $result);
     }
     
     /**
@@ -187,6 +187,6 @@ class VisitsMinimalWidgetTests extends TestCase
         $result = $widget->run();
         
         //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p><strong>Посещений</strong>: 8561</p>#', $result);
+        $this->assertRegExp('#<p><strong>Посещений:</strong> 8561</p>#', $result);
     }
 }

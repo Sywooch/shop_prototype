@@ -238,8 +238,8 @@ class AverageBillWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>Средний чек сегодня: 0,00 MONEY</p>#', $result);
+        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Средний чек:</strong> 0,00 MONEY</p>#', $result);
     }
     
     /**
@@ -287,7 +287,7 @@ class AverageBillWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>Средний чек сегодня: 74,33 MONEY</p>#', $result);
+        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
+        $this->assertRegExp('#<p><strong>Средний чек:</strong> 74,33 MONEY</p>#', $result);
     }
 }

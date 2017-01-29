@@ -30,8 +30,8 @@ class GetAdminTodayOrdersMinimalWidgetConfigService extends AbstractBaseService
                 $dataArray['header'] = \Yii::t('base', 'Orders');
                 
                 $finder = \Yii::$app->registry->get(PurchasesTodayFinder::class);
-                $purchases = $finder->find();
-                $dataArray['purchases'] = $purchases->count();
+                $orders = $finder->find();
+                $dataArray['orders'] = $orders->count();
                 
                 $dataArray['template'] = 'admin-today-orders-minimal.twig';
                 

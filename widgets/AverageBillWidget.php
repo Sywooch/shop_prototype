@@ -48,13 +48,14 @@ class AverageBillWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['header'] = $this->header;
+            //$renderArray['header'] = $this->header;
             
             if ($this->purchases->isEmpty() === false) {
                 $bill = $this->purchases->totalPrice() / $this->purchases->count();
             }
             
-            $renderArray['text'] = sprintf('%s: %s %s', \Yii::t('base', 'Average bill today'), \Yii::$app->formatter->asDecimal(($bill ?? 0) * $this->currency->exchangeRate(), 2), $this->currency->code());
+            $renderArray['text'] = sprintf('%s:', \Yii::t('base', 'Average bill'));
+            $renderArray['sum'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal(($bill ?? 0) * $this->currency->exchangeRate(), 2), $this->currency->code());
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

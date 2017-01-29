@@ -693,7 +693,7 @@ class AdminOrderDetailFormWidgetTests extends TestCase
         $this->assertRegExp('#Дата заказа: 28 марта 2016 г.#', $result);
         $this->assertRegExp('#Цена: 26,94 MONEY#', $result);
         $this->assertRegExp('#Email: mail@mail.com#', $result);
-        $this->assertRegExp('#<form id="admin-order-detail-form-2" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<form id="admin-order-detail-send-form-\d" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="2">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[name\]" value="Name 1">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[surname\]" value="Surname 1">#', $result);
@@ -709,6 +709,7 @@ class AdminOrderDetailFormWidgetTests extends TestCase
         $this->assertRegExp('#<label><input type="radio" name=".+\[id_payment\]" value="1" checked> Payment \d</label>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[status\]">#', $result);
         $this->assertRegExp('#<option value=".+">.+</option>#', $result);
-        $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
+        $this->assertRegExp('#<input type="submit" name="send" value="Сохранить">#', $result);
+        $this->assertRegExp('#<input type="submit" name="cancel" value="Отменить">#', $result);
     }
 }

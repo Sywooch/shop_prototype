@@ -138,6 +138,7 @@ class AdminOrderDetailFormWidget extends AbstractBaseWidget
             
             $renderArray['formAction'] = Url::to(['/admin/order-detail-change']);
             $renderArray['button'] = \Yii::t('base', 'Save');
+            $renderArray['buttonCancel'] = \Yii::t('base', 'Cancel');
             
             $renderArray['statuses'] = $this->statuses;
             $renderArray['colors'] = $this->colors;

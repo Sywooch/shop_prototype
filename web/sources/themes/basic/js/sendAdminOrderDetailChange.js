@@ -16,8 +16,15 @@ $(function() {
         };
     };
     
-    $('li').on('click', 'form[id^="admin-order-detail-send-form-"] > input[type="submit"]', function(event) {
+    $('li').on('click', 'form[id^="admin-order-detail-send-form-"] > input[type="submit"][name="send"]', function(event) {
         (new SendAdminOrderDetailChange()).send(event);
+        event.preventDefault();
+    });
+    
+    $('li').on('click', 'form[id^="admin-order-detail-send-form-"] > input[type="submit"][name="cancel"]', function(event) {
+        var li = $(event.target).closest('li');
+        li.find('div.admin-order-previous-data').toggleClass('disable');
+        li.find('div.admin-order-change-form').remove();
         event.preventDefault();
     });
     

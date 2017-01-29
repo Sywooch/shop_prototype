@@ -1,7 +1,7 @@
 <p><strong>{{ header }}</strong></p>
 
-{% if purchases %}
-    <p>{{ purchases | raw }}</p>
+{% if orders %}
+    <p><strong>{{ text }}</strong> {{ orders }}</p>
 {% else %}
-    <p>{{ purchasesEmpty }}</p>
+    <p><strong>{{ ordersEmpty }}</strong></p>
 {% endif %}

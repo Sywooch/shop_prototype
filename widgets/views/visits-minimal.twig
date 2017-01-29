@@ -1,7 +1,7 @@
 <p><strong>{{ header }}</strong></p>
 
 {% if visitors %}
-    <p>{{ visitors | raw }}</p>
+    <p><strong>{{ text }}</strong> {{ visitors }}</p>
 {% else %}
-    <p>{{ visitorsEmpty }}</p>
+    <p><strong>{{ visitorsEmpty }}</strong></p>
 {% endif %}

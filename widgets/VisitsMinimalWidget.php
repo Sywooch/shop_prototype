@@ -45,7 +45,8 @@ class VisitsMinimalWidget extends AbstractBaseWidget
             //$renderArray['header'] = $this->header;
             
             if (!empty($this->visitors)) {
-                $renderArray['visitors'] = sprintf('%s: %s', Html::tag('strong', \Yii::t('base', 'Visits')), $this->visitors ?? 0);
+                $renderArray['text'] = sprintf('%s:', \Yii::t('base', 'Visits'));
+                $renderArray['visitors'] = $this->visitors ?? 0;
             } else {
                 $renderArray['visitorsEmpty'] = \Yii::t('base', 'Today no visits');
             }

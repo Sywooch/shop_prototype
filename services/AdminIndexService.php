@@ -32,7 +32,7 @@ class AdminIndexService extends AbstractBaseService
     {
         try {
             if (empty($this->dataArray)) {
-                $dataArray = [1];
+                $dataArray = [];
                 
                 /*$service = \Yii::$app->registry->get(GetAdminTodayOrdersWidgetConfigService::class);
                 $dataArray['adminTodayOrdersWidgetConfig'] = $service->handle();*/
