@@ -185,7 +185,14 @@ $translate = [
     'Save'=>'Сохранить',
     'Today'=>'Сегодня',
     'In three days'=>'За три дня',
-    'In two days'=>'За два дня'
+    'In two days'=>'За два дня',
+    'Mon'=>'Пн',
+    'Tue'=>'Вт',
+    'Wed'=>'Ср',
+    'Thu'=>'Чтв',
+    'Fri'=>'Птн',
+    'Sat'=>'Сб',
+    'Sun'=>'Вск',
 ];
 
 return $translate;
