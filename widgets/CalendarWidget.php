@@ -3,6 +3,7 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
+use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
 
 /**
@@ -10,14 +11,6 @@ use app\widgets\AbstractBaseWidget;
  */
 class CalendarWidget extends AbstractBaseWidget
 {
-    /**
-     * @var int номер года, 4 цифры
-     */
-    private $year;
-    /**
-     * @var int номер месяца без ведущего нуля
-     */
-    private $month;
     /**
      * @var DateTime, созданный из переданных данных
      */
@@ -30,48 +23,74 @@ class CalendarWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->year)) {
-                throw new ErrorException($this->invalidError('year'));
+            if (empty($this->period)) {
+                throw new ErrorException($this->emptyError('period'));
             }
-            
-            if (empty($this->month)) {
-                throw new ErrorException($this->invalidError('month'));
-            }
-            
-            $this->period = new \DateTime(sprintf('%s-%s-1', $this->year, $this->month));
             
             $renderArray = [];
             
+            $renderArray['header'] = sprintf('%s %s', $this->getMonthVerb(), $this->getYear());
+            
+            $period = clone $this->period;
+            
+            $prevMonth = $period->modify('-1 month');
+            $renderArray['prevTimestamp'] = $prevMonth->getTimestamp();
+            
+            $nextMonth = $period->modify('+2 month');
+            $renderArray['nextTimestamp'] = $nextMonth->getTimestamp();
+            
+            $renderArray['calendarHref'] = Url::to(['/calendar/get']);
+            
             $renderArray['dayNames'] = $this->getDayNames();
             
+            $renderArray['month'] = $this->getCalendar();
+            
+            return $this->render($this->template, $renderArray);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив данных для формирования календаря
+     * @returb array
+     */
+    private function getCalendar(): array
+    {
+        try {
+            $dataArray = [];
             $days = $this->getDaysInMonth();
             $week = [];
             
             for ($day=1; $day <= 7; $day++) {
-                if ($this->period->format('N') == $day) {
-                    $week[] = ['number'=>$this->period->format('d'), 'timestamp'=>$this->period->getTimestamp()];
+                if ((int) $this->period->format('N') === $day) {
+                    $week[] = [
+                        'number'=>$this->period->format('d'), 
+                        'timestamp'=>$this->period->getTimestamp(),
+                        'format'=>\Yii::$app->formatter->asDate($this->period->getTimestamp())
+                    ];
                     $this->period->modify('+1 day');
                     $days--;
                 } else {
                     $week[] = '';
                 }
                 
-                if ($day === 7 || $days == 0) {
+                if ($day === 7 || $days === 0) {
                     if (count($week) < 7) {
                         $filler = array_fill(0, 7 - count($week), '');
                         $week = array_merge($week, $filler);
                     }
-                    $renderArray['month'][] = $week;
+                    $dataArray[] = $week;
                     $week = [];
                     $day = 0;
                 }
                 
-                if ($days == 0) {
+                if ($days === 0) {
                     break;
                 }
             }
             
-            return $this->render($this->template, $renderArray);
+            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -164,34 +183,13 @@ class CalendarWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает номер года свойству CalendarWidget::year
-     * @param int $year
+     * Присваивает DateTime свойству CalendarWidget::period
+     * @param DateTime $period
      */
-    public function setYear(int $year)
+    public function setPeriod(\DateTime $period)
     {
         try {
-            if (preg_match('/^[0-9]{4}$/', $year) !== 1) {
-                throw new ErrorException($this->invalidError('year'));
-            }
-            
-            $this->year = $year;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает номер месяца свойству CalendarWidget::month
-     * @param int $month
-     */
-    public function setMonth(int $month)
-    {
-        try {
-            if (preg_match('/^[0-9]{1,2}$/', $month) !== 1) {
-                throw new ErrorException($this->invalidError('month'));
-            }
-            
-            $this->month = $month;
+            $this->period = $period;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

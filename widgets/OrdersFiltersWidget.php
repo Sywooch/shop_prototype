@@ -6,6 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
 use app\forms\OrdersFiltersForm;
+use app\helpers\DateHelper;
 
 /**
  * Формирует HTML строку с формой, представляющей фильтры товаров
@@ -20,10 +21,6 @@ class OrdersFiltersWidget extends AbstractBaseWidget
      * @var array
      */
     private $sortingTypes;
-    /**
-     * @var array
-     */
-    //private $datesIntervals;
     /**
      * @var OrdersFiltersForm
      */
@@ -43,9 +40,6 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             if (empty($this->sortingTypes)) {
                 throw new ErrorException($this->emptyError('sortingTypes'));
             }
-            /*if (empty($this->datesIntervals)) {
-                throw new ErrorException($this->emptyError('datesIntervals'));
-            }*/
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
@@ -64,11 +58,13 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             
             //$renderArray['statuses'] = $this->statuses;
             $renderArray['sortingTypes'] = $this->sortingTypes;
-            //$renderArray['datesIntervals'] = $this->datesIntervals;
             
             //$renderArray['statusLabel'] = \Yii::t('base', 'Status');
             $renderArray['sortingTypeLabel'] = \Yii::t('base', 'Sorting by date');
-            //$renderArray['datesIntervalLabel'] = \Yii::t('base', 'Order date');
+            
+            $renderArray['calendarDate'] = \Yii::$app->formatter->asDate(DateHelper::getToday00());
+            $renderArray['calendarHref'] = Url::to(['/calendar/get']);
+            $renderArray['calendarTimestamp'] = DateHelper::getToday00();
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -115,19 +111,6 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             $this->throwException($t, __METHOD__);
         }
     }
-    
-    /**
-     * Присваивает array свойству OrdersFiltersWidget::datesIntervals
-     * @param array $datesIntervals
-     */
-    /*public function setDatesIntervals(array $datesIntervals)
-    {
-        try {
-            $this->datesIntervals = $datesIntervals;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }*/
     
     /**
      * Присваивает OrdersFiltersForm свойству OrdersFiltersWidget::form

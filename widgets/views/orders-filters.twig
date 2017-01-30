@@ -2,9 +2,12 @@
 
 <p><strong>{{ header }}</strong></p>
 
+<div class="orders-filters">
 {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionApply, 'method':'POST'}) %}
     {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes).label(sortingTypeLabel) | raw }}
     {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    <p><a href="{{ calendarHref }}" data-timestamp="{{ calendarTimestamp }}" class="calendar-href-from">{{ calendarDate }}</a> &ndash; <a href="{{ calendarHref }}" data-timestamp="{{ calendarTimestamp }}" class="calendar-href-to">{{ calendarDate }}</a></p>
+    <p class="calendar-place"></p>
     <input type="submit" value="{{ buttonApply }}">
 {{ active_form_end() }}
 
@@ -12,3 +15,4 @@
     {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
     <input type="submit" value="{{ buttonClean }}">
 {{ active_form_end() }}
+</div>

@@ -72,6 +72,9 @@ $routes = [
     'admin-orders'=>'admin/orders',
     'admin-order-detail-form'=>'admin/order-detail-form',
     'admin-order-detail-change'=>'admin/order-detail-change',
+    
+    # Календарь
+    'calendar-get'=>'calendar/get',
 ];
 
 return $routes;

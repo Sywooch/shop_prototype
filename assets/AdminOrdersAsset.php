@@ -17,7 +17,8 @@ class AdminOrdersAsset extends AbstractAsset
      */
     public $js = [
         'js/sendAdminOrderDetailForm.js',
-        'js/sendAdminOrderDetailChange.js'
+        'js/sendAdminOrderDetailChange.js',
+        'js/sendGetCalendar.js'
     ];
     /**
      * @var array зависимости пакета

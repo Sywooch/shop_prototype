@@ -235,6 +235,37 @@ class CalendarWidgetTests extends TestCase
     
     /**
      * Тестирует метод CalendarWidget::run
+     * если пуст CalendarWidget::year
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: year
+     */
+    public function testRunEmptyYear()
+    {
+        $widget = new CalendarWidget();
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод CalendarWidget::run
+     * если пуст CalendarWidget::month
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: month
+     */
+    public function testRunEmptyMonth()
+    {
+        $mock = 2017;
+        
+        $widget = new CalendarWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'year');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод CalendarWidget::run
      */
     public function testRun()
     {
@@ -248,5 +279,15 @@ class CalendarWidgetTests extends TestCase
         $reflection->setValue($widget, 'calendar.twig');
         
         $result = $widget->run();
+        
+        print_r($result);
+        
+        $this->assertRegExp('#<div class="calendar">#', $result);
+        $this->assertRegExp('#<td data-prev-month="December" data-prev-year="2016">#', $result);
+        $this->assertRegExp('#January 2017#', $result);
+        $this->assertRegExp('#<td data-next-month="February" data-next-year="2017">#', $result);
+        $this->assertRegExp('#<td>Пн</td>#', $result);
+        $this->assertRegExp('#<td data=".+">[0-9]{1,2}</td>#', $result);
+        $this->assertRegExp('#<td data=""></td>#', $result);
     }
 }

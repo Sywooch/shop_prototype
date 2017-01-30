@@ -7,8 +7,7 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\services\AbstractBaseService;
 use app\forms\OrdersFiltersForm;
-use app\finders\{OrderDatesIntervalFinder,
-    OrdersFiltersSessionFinder,
+use app\finders\{OrdersFiltersSessionFinder,
     OrderStatusesFinder,
     SortingTypesFinder};
 use app\helpers\HashHelper;
@@ -48,11 +47,6 @@ class GetOrdersFiltersWidgetConfigService extends AbstractBaseService
                 array_unshift($statusesArray, \Yii::t('base', 'All'));
                 $dataArray['statuses'] = $statusesArray;*/
                 
-                /*$finder = \Yii::$app->registry->get(OrderDatesIntervalFinder::class);
-                $datesIntervalArray = $finder->find();
-                asort($datesIntervalArray, SORT_STRING);
-                $dataArray['datesIntervals'] = $datesIntervalArray;*/
-                
                 $finder = \Yii::$app->registry->get(OrdersFiltersSessionFinder::class, ['key'=>HashHelper::createHash([\Yii::$app->params['ordersFilters']])]);
                 $filtersModel = $finder->find();
                 
@@ -64,10 +58,6 @@ class GetOrdersFiltersWidgetConfigService extends AbstractBaseService
                             $form->sortingType = $item;
                         }
                     }
-                }
-                
-                if (empty($form->datesInterval)) {
-                    $form->datesInterval = \Yii::$app->params['orderDatesIntervalDefault'];
                 }
                 
                 $form->url = Url::current();

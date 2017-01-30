@@ -56,19 +56,6 @@ class AdminOrdersFinder extends AbstractBaseFinder
                     }
                 }*/
                 
-                /*switch ((int) $this->filters->getDatesInterval()) {
-                    case 2:
-                        break;
-                    case 3:
-                        $query->where(['>', '[[purchases.received_date]]', DateHelper::getDaysAgo00(3)]);
-                        break;
-                    case 4:
-                        $query->where(['>', '[[purchases.received_date]]', DateHelper::getDaysAgo00(1)]);
-                        break;
-                    default:
-                        $query->where(['>', '[[purchases.received_date]]', DateHelper::getToday00()]);
-                }*/
-                
                 $this->storage->pagination->pageSize = \Yii::$app->params['limit'];
                 $this->storage->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
                 $this->storage->pagination->setTotalCount($query);

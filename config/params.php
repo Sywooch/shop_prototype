@@ -35,8 +35,6 @@ $params = [
     'cartKey'=>'cart', # Ключ, по которому в $_SESSION доступно текущее состояние корзины
     'customerKey'=>'customer', # Ключ, по которому в $_SESSION доступны данные покупателя
     'orderStatuses'=>['received', 'processed', 'canceled', 'shipped'], # Статусы заказа
-    //'orderDatesInterval'=>[1=>'Today', 2=>'All', 3=>'In three days', 4=>'In two days'], # Временной промежуток выборки заказов
-    //'orderDatesIntervalDefault'=>1, # Временной промежуток выборки заказов по умолчанию
     
     # Компоненты Breadcrumbs
     'breadcrumbs'=>[],
