@@ -26,6 +26,9 @@ class CalendarWidget extends AbstractBaseWidget
             if (empty($this->period)) {
                 throw new ErrorException($this->emptyError('period'));
             }
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
+            }
             
             $renderArray = [];
             
@@ -33,13 +36,15 @@ class CalendarWidget extends AbstractBaseWidget
             
             $period = clone $this->period;
             
+            $renderArray['calendarHref'] = Url::to(['/calendar/get']);
+            
             $prevMonth = $period->modify('-1 month');
             $renderArray['prevTimestamp'] = $prevMonth->getTimestamp();
             
             $nextMonth = $period->modify('+2 month');
             $renderArray['nextTimestamp'] = $nextMonth->getTimestamp();
             
-            $renderArray['calendarHref'] = Url::to(['/calendar/get']);
+            $renderArray['allowNext'] =((int) $this->getMonth() === (int) (new \DateTime())->format('m')) ? false : true;
             
             $renderArray['dayNames'] = $this->getDayNames();
             

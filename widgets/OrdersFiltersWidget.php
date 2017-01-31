@@ -37,6 +37,9 @@ class OrdersFiltersWidget extends AbstractBaseWidget
     public function run()
     {
         try {
+            if (empty($this->statuses)) {
+                throw new ErrorException($this->emptyError('statuses'));
+            }
             if (empty($this->sortingTypes)) {
                 throw new ErrorException($this->emptyError('sortingTypes'));
             }
@@ -56,15 +59,17 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             
             $renderArray['formModel'] = $this->form;
             
-            //$renderArray['statuses'] = $this->statuses;
+            $renderArray['statuses'] = $this->statuses;
             $renderArray['sortingTypes'] = $this->sortingTypes;
             
-            //$renderArray['statusLabel'] = \Yii::t('base', 'Status');
+            $renderArray['statusLabel'] = \Yii::t('base', 'Status');
             $renderArray['sortingTypeLabel'] = \Yii::t('base', 'Sorting by date');
             
-            $renderArray['calendarDate'] = \Yii::$app->formatter->asDate(DateHelper::getToday00());
             $renderArray['calendarHref'] = Url::to(['/calendar/get']);
-            $renderArray['calendarTimestamp'] = DateHelper::getToday00();
+            $renderArray['calendarDateFrom'] = \Yii::$app->formatter->asDate($this->form->dateFrom ?? DateHelper::getToday00());
+            $renderArray['calendarDateTo'] = \Yii::$app->formatter->asDate($this->form->dateTo ?? DateHelper::getToday00());
+            $renderArray['calendarTimestampForm'] = $this->form->dateFrom ?? DateHelper::getToday00();
+            $renderArray['calendarTimestampTo'] = $this->form->dateTo ?? DateHelper::getToday00();
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;

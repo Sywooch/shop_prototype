@@ -47,14 +47,22 @@ class AdminOrdersFinder extends AbstractBaseFinder
                 $query->select(['[[purchases.id]]', '[[purchases.id_user]]', '[[purchases.id_name]]', '[[purchases.id_surname]]', '[[purchases.id_email]]', '[[purchases.id_phone]]', '[[purchases.id_address]]', '[[purchases.id_city]]', '[[purchases.id_country]]', '[[purchases.id_postcode]]', '[[purchases.id_product]]',  '[[purchases.quantity]]', '[[purchases.id_color]]', '[[purchases.id_size]]', '[[purchases.price]]', '[[purchases.id_delivery]]', '[[purchases.id_payment]]', '[[purchases.received]]', '[[purchases.received_date]]', '[[purchases.processed]]', '[[purchases.canceled]]', '[[purchases.shipped]]']);
                 $query->with('product', 'color', 'size', 'name', 'surname', 'address', 'city', 'country', 'postcode', 'phone', 'payment', 'delivery');
                 
-                /*if (!empty($this->filters->getStatus())) {
+                if (!empty($this->filters->getStatus())) {
                     $query->where([sprintf('[[purchases.%s]]', $this->filters->getStatus())=>true]);
                     foreach (\Yii::$app->params['orderStatuses'] as $status) {
                         if ($status !== $this->filters->getStatus() && $status !== 'received') {
                             $query->andWhere([sprintf('[[purchases.%s]]', $status)=>false]);
                         }
                     }
-                }*/
+                }
+                
+                $dateFrom = $this->filters->getDateFrom() ?? DateHelper::getToday00();
+                $dateTo = ($this->filters->getDateTo() ?? DateHelper::getToday00()) + (60 * 60 * 24);
+                
+                $query->andWhere(['and', 
+                    ['>', '[[purchases.received_date]]', $dateFrom], 
+                    ['<', '[[purchases.received_date]]', $dateTo]
+                ]);
                 
                 $this->storage->pagination->pageSize = \Yii::$app->params['limit'];
                 $this->storage->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
@@ -66,6 +74,8 @@ class AdminOrdersFinder extends AbstractBaseFinder
                 $sortingField = \Yii::$app->params['sortingFieldOrders'];
                 $sortingType = $this->filters->getSortingType() ?? \Yii::$app->params['sortingTypeOrders'];
                 $query->orderBy([sprintf('[[purchases.%s]]', $sortingField)=>(int) $sortingType]);
+                
+                print_r($query->createCommand()->getRawSql());
                 
                 $purchasesModelArray = $query->all();
                 

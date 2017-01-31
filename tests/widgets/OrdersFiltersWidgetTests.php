@@ -22,7 +22,6 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('statuses'));
         $this->assertTrue($reflection->hasProperty('sortingTypes'));
-        $this->assertTrue($reflection->hasProperty('datesIntervals'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
@@ -88,36 +87,6 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод OrdersFiltersWidget::setDatesIntervals
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetDatesIntervalsError()
-    {
-        $mock = new class() {};
-        
-        $widget = new OrdersFiltersWidget();
-        $widget->setDatesIntervals($mock);
-    }
-    
-    /**
-     * Тестирует метод OrdersFiltersWidget::setDatesIntervals
-     */
-    public function testSetDatesIntervals()
-    {
-        $mock = new class() {};
-        
-        $widget = new OrdersFiltersWidget();
-        $widget->setDatesIntervals([$mock]);
-        
-        $reflection = new \ReflectionProperty($widget, 'datesIntervals');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
-        
-        $this->assertInternalType('array', $result);
     }
     
     /**
@@ -212,6 +181,18 @@ class OrdersFiltersWidgetTests extends TestCase
     
     /**
      * Тестирует метод OrdersFiltersWidget::run
+     * если пуст OrdersFiltersWidget::statuses
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: statuses
+     */
+    public function testRunEmptyStatuses()
+    {
+        $widget = new OrdersFiltersWidget();
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод OrdersFiltersWidget::run
      * если пуст OrdersFiltersWidget::sortingTypes
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: sortingTypes
@@ -222,22 +203,7 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $widget = new OrdersFiltersWidget();
         
-        $widget->run();
-    }
-    
-    /**
-     * Тестирует метод OrdersFiltersWidget::run
-     * если пуст OrdersFiltersWidget::datesIntervals
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: datesIntervals
-     */
-    public function testRunEmptyDatesIntervals()
-    {
-        $mock = new class() {};
-        
-        $widget = new OrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($widget, 'statuses');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
         
@@ -256,11 +222,11 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $widget = new OrdersFiltersWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($widget, 'statuses');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'datesIntervals');
+        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
         
@@ -279,11 +245,11 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $widget = new OrdersFiltersWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($widget, 'statuses');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'datesIntervals');
+        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
         
@@ -306,11 +272,11 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $widget = new OrdersFiltersWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($widget, 'statuses');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'datesIntervals');
+        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, [$mock]);
         
@@ -334,19 +300,17 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $sortingTypes = [SORT_ASC=>'Sort ascending', SORT_DESC=>'Sort descending'];
         
-        $datesIntervals = [0=>'Today', 1=>'All'];
-        
         $form = new class() extends OrdersFiltersForm {};
         
         $widget = new OrdersFiltersWidget();
         
+        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $statuses);
+        
         $reflection = new \ReflectionProperty($widget, 'sortingTypes');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $sortingTypes);
-        
-        $reflection = new \ReflectionProperty($widget, 'datesIntervals');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $datesIntervals);
         
         $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
@@ -368,14 +332,13 @@ class OrdersFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[sortingType\]">#', $result);
         $this->assertRegExp('#<option value="4">Sort ascending</option>#', $result);
         $this->assertRegExp('#<option value="3">Sort descending</option>#', $result);
-        $this->assertRegExp('#<label class="control-label" for=".+">Дата заказа</label>#', $result);
-        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[datesInterval\]">#', $result);
-        $this->assertRegExp('#<option value="0">Today</option>#', $result);
-        $this->assertRegExp('#<option value="1">All</option>#', $result);
-        //$this->assertRegExp('#<label class="control-label" for=".+">Статус</label>#', $result);
-        //$this->assertRegExp('#<select id=".+" class="form-control" name=".+\[status\]">#', $result);
-        //$this->assertRegExp('#<option value="received">Received</option>#', $result);
-        //$this->assertRegExp('#<option value="processed">Processed</option>#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]">#', $result);
+        $this->assertRegExp('#<p><a href=".+" data-timestamp="[0-9]{10}" class="calendar-href-from">[0-9]{1,2} .+ [0-9]{4} г\.</a> &ndash; <a href=".+" data-timestamp="[0-9]{10}" class="calendar-href-to">[0-9]{1,2} .+ [0-9]{4} г\.</a></p>#', $result);
+        $this->assertRegExp('#<p class="calendar-place"></p>#', $result);
+        $this->assertRegExp('#<label class="control-label" for=".+">Статус</label>#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[status\]">#', $result);
+        $this->assertRegExp('#<option value="received">Received</option>#', $result);
+        $this->assertRegExp('#<option value="processed">Processed</option>#', $result);
         $this->assertRegExp('#<input type="submit" value="Применить">#', $result);
         $this->assertRegExp('#<form id="admin-orders-filters-clean" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="submit" value="Очистить">#', $result);

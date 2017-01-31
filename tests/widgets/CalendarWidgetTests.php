@@ -17,10 +17,33 @@ class CalendarWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(CalendarWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('year'));
-        $this->assertTrue($reflection->hasProperty('month'));
         $this->assertTrue($reflection->hasProperty('period'));
         $this->assertTrue($reflection->hasProperty('template'));
+    }
+    
+    /**
+     * Тестирует метод CalendarWidget::getCalendar
+     */
+    public function testGetCalendar()
+    {
+        $widget = new CalendarWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'period');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, new \DateTime());
+        
+        $reflection = new \ReflectionMethod($widget, 'getCalendar');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($widget);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+        
+        $this->assertInternalType('array', $result[0]);
+        
+        $this->assertArrayHasKey('number', $result[0][6]);
+        $this->assertArrayHasKey('timestamp', $result[0][6]);
+        $this->assertArrayHasKey('format', $result[0][6]);
     }
     
     /**
@@ -33,6 +56,14 @@ class CalendarWidgetTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        
+        $this->assertContains(\Yii::t('base', 'Mon'), $result);
+        $this->assertContains(\Yii::t('base', 'Tue'), $result);
+        $this->assertContains(\Yii::t('base', 'Wed'), $result);
+        $this->assertContains(\Yii::t('base', 'Thu'), $result);
+        $this->assertContains(\Yii::t('base', 'Fri'), $result);
+        $this->assertContains(\Yii::t('base', 'Sat'), $result);
+        $this->assertContains(\Yii::t('base', 'Sun'), $result);
     }
     
     /**
@@ -116,91 +147,33 @@ class CalendarWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CalendarWidget::setYear
+     * Тестирует метод CalendarWidget::setPeriod
      * передаю параметр неверного типа
      * @expectedException TypeError
      */
-    public function testSetYearTypeError()
+    public function testSetPeriodTypeError()
     {
-        $year = 'a2017';
+        $period = new class() {};
         
         $widget = new CalendarWidget();
-        $widget->setYear($year);
+        $widget->setPeriod($period);
     }
     
     /**
-     * Тестирует метод CalendarWidget::setYear
-     * передаю не корректный номер года
-     * @expectedException ErrorException
-     * @@expectedExceptionMessage Получен неверный тип данных вместо: year
+     * Тестирует метод CalendarWidget::setPeriod
      */
-    public function testSetYearError()
+    public function testSetPeriod()
     {
-        $year = 201;
+        $period = new \DateTime();
         
         $widget = new CalendarWidget();
-        $widget->setYear($year);
-    }
-    
-    /**
-     * Тестирует метод CalendarWidget::setYear
-     */
-    public function testSetYear()
-    {
-        $year = 2017;
+        $widget->setPeriod($period);
         
-        $widget = new CalendarWidget();
-        $widget->setYear($year);
-        
-        $reflection = new \ReflectionProperty($widget, 'year');
+        $reflection = new \ReflectionProperty($widget, 'period');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertEquals(2017, $result);
-    }
-    
-    /**
-     * Тестирует метод CalendarWidget::setMonth
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetMonthTypeError()
-    {
-        $month = 'a2';
-        
-        $widget = new CalendarWidget();
-        $widget->setMonth($month);
-    }
-    
-    /**
-     * Тестирует метод CalendarWidget::setMonth
-     * передаю не корректный номер года
-     * @expectedException ErrorException
-     * @@expectedExceptionMessage Получен неверный тип данных вместо: month
-     */
-    public function testSetMonthError()
-    {
-        $month = 201;
-        
-        $widget = new CalendarWidget();
-        $widget->setMonth($month);
-    }
-    
-    /**
-     * Тестирует метод CalendarWidget::setMonth
-     */
-    public function testSetMonth()
-    {
-        $month = 2;
-        
-        $widget = new CalendarWidget();
-        $widget->setMonth($month);
-        
-        $reflection = new \ReflectionProperty($widget, 'month');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
-        
-        $this->assertEquals(2, $result);
+        $this->assertInstanceOf(\DateTime::class, $result);
     }
     
     /**
@@ -235,9 +208,9 @@ class CalendarWidgetTests extends TestCase
     
     /**
      * Тестирует метод CalendarWidget::run
-     * если пуст CalendarWidget::year
+     * если пуст CalendarWidget::period
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: year
+     * @expectedExceptionMessage Отсутствуют необходимые данные: period
      */
     public function testRunEmptyYear()
     {
@@ -247,17 +220,17 @@ class CalendarWidgetTests extends TestCase
     
     /**
      * Тестирует метод CalendarWidget::run
-     * если пуст CalendarWidget::month
+     * если пуст CalendarWidget::template
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: month
+     * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyMonth()
+    public function testRunEmptyTemplate()
     {
-        $mock = 2017;
+        $mock = new class() {};
         
         $widget = new CalendarWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'year');
+        $reflection = new \ReflectionProperty($widget, 'period');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
         
@@ -266,13 +239,15 @@ class CalendarWidgetTests extends TestCase
     
     /**
      * Тестирует метод CalendarWidget::run
+     * если выбранный месяц равен текущему
      */
-    public function testRun()
+    public function testRunCurrentMonth()
     {
-        $widget = new CalendarWidget([
-            'year'=>2017,
-            'month'=>1
-        ]);
+        $widget = new CalendarWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'period');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, new \DateTime());
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
@@ -280,14 +255,38 @@ class CalendarWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        print_r($result);
+        $this->assertRegExp('#<div class="calendar">#', $result);
+        $this->assertRegExp('#<a href=".+" data-timestamp="[0-9]{10}" class="calendar-href-prev"><<</a>#', $result);
+        $this->assertRegExp('#January 2017#', $result);
+        //$this->assertRegExp('#<a href=".+" data-timestamp="[0-9]{10}" class="calendar-href-next">>></a>#', $result);
+        $this->assertRegExp('#<td>Пн</td>#', $result);
+        $this->assertRegExp('#<td data-timestamp="" data-format=""></td>#', $result);
+        $this->assertRegExp('#<td data-timestamp="[0-9]{10}" data-format="[0-9]{1,2} .+ [0-9]{4} г\.">[0-9]{1,2}</td>#', $result);
+    }
+    
+    /**
+     * Тестирует метод CalendarWidget::run
+     */
+    public function testRun()
+    {
+        $widget = new CalendarWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'period');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, (new \DateTime())->setTimestamp(time() - (60 * 60 * 24 * 52)));
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'calendar.twig');
+        
+        $result = $widget->run();
         
         $this->assertRegExp('#<div class="calendar">#', $result);
-        $this->assertRegExp('#<td data-prev-month="December" data-prev-year="2016">#', $result);
-        $this->assertRegExp('#January 2017#', $result);
-        $this->assertRegExp('#<td data-next-month="February" data-next-year="2017">#', $result);
+        $this->assertRegExp('#<a href=".+" data-timestamp="[0-9]{10}" class="calendar-href-prev"><<</a>#', $result);
+        $this->assertRegExp('#December 2016#', $result);
+        $this->assertRegExp('#<a href=".+" data-timestamp="[0-9]{10}" class="calendar-href-next">>></a>#', $result);
         $this->assertRegExp('#<td>Пн</td>#', $result);
-        $this->assertRegExp('#<td data=".+">[0-9]{1,2}</td>#', $result);
-        $this->assertRegExp('#<td data=""></td>#', $result);
+        $this->assertRegExp('#<td data-timestamp="" data-format=""></td>#', $result);
+        $this->assertRegExp('#<td data-timestamp="[0-9]{10}" data-format="[0-9]{1,2} .+ [0-9]{4} г\.">[0-9]{1,2}</td>#', $result);
     }
 }

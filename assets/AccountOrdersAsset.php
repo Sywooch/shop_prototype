@@ -17,6 +17,7 @@ class AccountOrdersAsset extends AbstractAsset
      */
     public $js = [
         'js/sendCancelOrder.js',
+        'js/sendGetCalendar.js'
     ];
     /**
      * @var array зависимости пакета

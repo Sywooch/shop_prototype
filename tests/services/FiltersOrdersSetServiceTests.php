@@ -23,6 +23,8 @@ class FiltersOrdersSetServiceTests extends TestCase
                     'OrdersFiltersForm'=>[
                         'sortingType'=>SORT_ASC,
                         'status'=>'shipped',
+                        'dateFrom'=>time(),
+                        'dateTo'=>time(),
                         'url'=>'https://shop.com'
                     ]
                 ];
@@ -44,9 +46,13 @@ class FiltersOrdersSetServiceTests extends TestCase
         
         $this->assertArrayHasKey('sortingType', $result);
         $this->assertArrayHasKey('status', $result);
+        $this->assertArrayHasKey('dateFrom', $result);
+        $this->assertArrayHasKey('dateTo', $result);
         
         $this->assertSame(SORT_ASC, (int) $result['sortingType']);
         $this->assertSame('shipped', $result['status']);
+        $this->assertSame(time(), $result['dateFrom']);
+        $this->assertSame(time(), $result['dateTo']);
         
         $session->remove($key);
         $session->close();

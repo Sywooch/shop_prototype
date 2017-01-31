@@ -21,7 +21,8 @@ class OrdersFiltersTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('sortingType'));
         $this->assertTrue($reflection->hasProperty('status'));
-        $this->assertTrue($reflection->hasProperty('datesInterval'));
+        $this->assertTrue($reflection->hasProperty('dateFrom'));
+        $this->assertTrue($reflection->hasProperty('dateTo'));
     }
     
     /**
@@ -33,7 +34,8 @@ class OrdersFiltersTests extends TestCase
         $filter->attributes = [
             'sortingType'=>SORT_ASC,
             'status'=>'shipped',
-            'datesInterval'=>1,
+            'dateFrom'=>time(),
+            'dateTo'=>time(),
         ];
         
         $reflection = new \ReflectionProperty($filter, 'sortingType');
@@ -46,10 +48,15 @@ class OrdersFiltersTests extends TestCase
         $result = $reflection->getValue($filter);
         $this->assertSame('shipped', $result);
         
-        $reflection = new \ReflectionProperty($filter, 'datesInterval');
+        $reflection = new \ReflectionProperty($filter, 'dateFrom');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($filter);
-        $this->assertSame(1, $result);
+        $this->assertSame(time(), $result);
+        
+        $reflection = new \ReflectionProperty($filter, 'dateTo');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($filter);
+        $this->assertSame(time(), $result);
     }
     
     /**
@@ -115,34 +122,93 @@ class OrdersFiltersTests extends TestCase
     }
     
     /**
-     * Тестирует метод OrdersFilters::setDatesInterval
+     * Тестирует метод OrdersFilters::setDateFrom
+     * передаю неверное значение
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Получен неверный тип данных вместо: dateFrom
      */
-    public function testSetDatesInterval()
+    public function testSetDateFromError()
     {
         $filter = new OrdersFilters();
-        $filter->setDatesInterval(1);
-        
-        $reflection = new \ReflectionProperty($filter, 'datesInterval');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($filter);
-        
-        $this->assertSame(1, $result);
+        $filter->setDateFrom((int) substr(time(), 0, 8));
     }
     
     /**
-     * Тестирует метод OrdersFilters::getDatesInterval
+     * Тестирует метод OrdersFilters::setDateFrom
      */
-    public function testGetDatesInterval()
+    public function testSetDateFrom()
+    {
+        $filter = new OrdersFilters();
+        $filter->setDateFrom(time());
+        
+        $reflection = new \ReflectionProperty($filter, 'dateFrom');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($filter);
+        
+        $this->assertInternalType('integer', $result);
+        $this->assertEquals(10, strlen($result));
+    }
+    
+    /**
+     * Тестирует метод OrdersFilters::getDateFrom
+     */
+    public function testGetDateFrom()
     {
         $filter = new OrdersFilters();
         
-        $reflection = new \ReflectionProperty($filter, 'datesInterval');
+        $reflection = new \ReflectionProperty($filter, 'dateFrom');
         $reflection->setAccessible(true);
-        $reflection->setValue($filter, 1);
+        $reflection->setValue($filter, time());
         
-        $result = $filter->getDatesInterval();
+        $result = $filter->getDateFrom();
         
-        $this->assertSame(1, $result);
+        $this->assertInternalType('integer', $result);
+        $this->assertEquals(10, strlen($result));
+    }
+    
+    /**
+     * Тестирует метод OrdersFilters::setDateTo
+     * передаю неверное значение
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Получен неверный тип данных вместо: dateTo
+     */
+    public function testSetDateToError()
+    {
+        $filter = new OrdersFilters();
+        $filter->setDateTo((int) substr(time(), 0, 8));
+    }
+    
+    /**
+     * Тестирует метод OrdersFilters::setDateTo
+     */
+    public function testSetDateTo()
+    {
+        $filter = new OrdersFilters();
+        $filter->setDateTo(time());
+        
+        $reflection = new \ReflectionProperty($filter, 'dateTo');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($filter);
+        
+        $this->assertInternalType('integer', $result);
+        $this->assertEquals(10, strlen($result));
+    }
+    
+    /**
+     * Тестирует метод OrdersFilters::getDateTo
+     */
+    public function testGetDateTo()
+    {
+        $filter = new OrdersFilters();
+        
+        $reflection = new \ReflectionProperty($filter, 'dateTo');
+        $reflection->setAccessible(true);
+        $reflection->setValue($filter, time());
+        
+        $result = $filter->getDateTo();
+        
+        $this->assertInternalType('integer', $result);
+        $this->assertEquals(10, strlen($result));
     }
     
     /**
@@ -160,9 +226,13 @@ class OrdersFiltersTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($filter, 'canceled');
         
-        $reflection = new \ReflectionProperty($filter, 'datesInterval');
+        $reflection = new \ReflectionProperty($filter, 'dateFrom');
         $reflection->setAccessible(true);
-        $reflection->setValue($filter, 1);
+        $reflection->setValue($filter, time());
+        
+        $reflection = new \ReflectionProperty($filter, 'dateTo');
+        $reflection->setAccessible(true);
+        $reflection->setValue($filter, time());
         
         $result = $filter->toArray();
         
@@ -170,10 +240,12 @@ class OrdersFiltersTests extends TestCase
         
         $this->assertArrayHasKey('sortingType', $result);
         $this->assertArrayHasKey('status', $result);
-        $this->assertArrayHasKey('datesInterval', $result);
+        $this->assertArrayHasKey('dateFrom', $result);
+        $this->assertArrayHasKey('dateTo', $result);
         
         $this->assertSame(SORT_ASC, $result['sortingType']);
         $this->assertSame('canceled', $result['status']);
-        $this->assertSame(1, $result['datesInterval']);
+        $this->assertSame(time(), $result['dateFrom']);
+        $this->assertSame(time(), $result['dateTo']);
     }
 }

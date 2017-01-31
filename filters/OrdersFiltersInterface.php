@@ -9,5 +9,6 @@ interface OrdersFiltersInterface
 {
     public function getSortingType();
     public function getStatus();
-    public function getDatesInterval();
+    public function getDateFrom();
+    public function getDateTo();
 }

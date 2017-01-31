@@ -28,14 +28,18 @@ class OrdersFilters extends Model implements OrdersFiltersInterface
      */
     private $status;
     /**
-     * @var int код временного промежутка выборки
+     * @var int Unix Timestamp
      */
-    private $datesInterval;
+    private $dateFrom;
+    /**
+     * @var int Unix Timestamp
+     */
+    private $dateTo;
     
     public function scenarios()
     {
         return [
-            self::SESSION=>['sortingType', 'status', 'datesInterval']
+            self::SESSION=>['sortingType', 'status', 'dateFrom', 'dateTo']
         ];
     }
     
@@ -69,7 +73,7 @@ class OrdersFilters extends Model implements OrdersFiltersInterface
      * Присваивает значение OrdersFilters::status
      * @param string $status
      */
-    public function setStatus($status)
+    public function setStatus(string $status)
     {
         try {
             $this->status = $status;
@@ -92,26 +96,60 @@ class OrdersFilters extends Model implements OrdersFiltersInterface
     }
     
     /**
-     * Присваивает значение OrdersFilters::datesInterval
-     * @param int $datesInterval
+     * Присваивает значение OrdersFilters::dateFrom
+     * @param int $dateFrom
      */
-    public function setDatesInterval($datesInterval)
+    public function setDateFrom(int $dateFrom)
     {
         try {
-            $this->datesInterval = $datesInterval;
+            if (preg_match('/^[0-9]{10}$/', $dateFrom) !== 1) {
+                throw new ErrorException($this->invalidError('dateFrom'));
+            }
+            
+            $this->dateFrom = $dateFrom;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Возвращает значение OrdersFilters::datesInterval
+     * Возвращает значение OrdersFilters::dateFrom
      * @return mixed
      */
-    public function getDatesInterval()
+    public function getDateFrom()
     {
         try {
-            return !empty($this->datesInterval) ? $this->datesInterval : null;
+            return !empty($this->dateFrom) ? $this->dateFrom : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение OrdersFilters::dateTo
+     * @param int $dateTo
+     */
+    public function setDateTo(int $dateTo)
+    {
+        try {
+            if (preg_match('/^[0-9]{10}$/', $dateTo) !== 1) {
+                throw new ErrorException($this->invalidError('dateTo'));
+            }
+            
+            $this->dateTo = $dateTo;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение OrdersFilters::dateTo
+     * @return mixed
+     */
+    public function getDateTo()
+    {
+        try {
+            return !empty($this->dateTo) ? $this->dateTo : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -131,8 +169,11 @@ class OrdersFilters extends Model implements OrdersFiltersInterface
                 'status'=>function() {
                     return $this->status;
                 },
-                'datesInterval'=>function() {
-                    return $this->datesInterval;
+                'dateFrom'=>function() {
+                    return $this->dateFrom;
+                },
+                'dateTo'=>function() {
+                    return $this->dateTo;
                 },
             ];
         } catch (\Throwable $t) {

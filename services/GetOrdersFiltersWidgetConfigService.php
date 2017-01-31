@@ -10,7 +10,8 @@ use app\forms\OrdersFiltersForm;
 use app\finders\{OrdersFiltersSessionFinder,
     OrderStatusesFinder,
     SortingTypesFinder};
-use app\helpers\HashHelper;
+use app\helpers\{DateHelper,
+    HashHelper};
 
 /**
  * Возвращает массив конфигурации для виджета OrdersFiltersWidget
@@ -41,11 +42,11 @@ class GetOrdersFiltersWidgetConfigService extends AbstractBaseService
                 ArrayHelper::multisort($sortingTypesArray, 'value');
                 $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
                 
-                /*$finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
+                $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
                 $statusesArray = $finder->find();
                 asort($statusesArray,SORT_STRING);
                 array_unshift($statusesArray, \Yii::t('base', 'All'));
-                $dataArray['statuses'] = $statusesArray;*/
+                $dataArray['statuses'] = $statusesArray;
                 
                 $finder = \Yii::$app->registry->get(OrdersFiltersSessionFinder::class, ['key'=>HashHelper::createHash([\Yii::$app->params['ordersFilters']])]);
                 $filtersModel = $finder->find();
@@ -60,12 +61,17 @@ class GetOrdersFiltersWidgetConfigService extends AbstractBaseService
                     }
                 }
                 
+                if (empty($form->dateFrom)) {
+                    $form->dateFrom = DateHelper::getToday00();
+                }
+                if (empty($form->dateTo)) {
+                    $form->dateTo = DateHelper::getToday00();
+                }
+                
                 $form->url = Url::current();
                 
                 $dataArray['form'] = $form;
-                
                 $dataArray['header'] = \Yii::t('base', 'Filters');
-                
                 $dataArray['template'] = 'orders-filters.twig';
                 
                 $this->ordersFiltersWidgetArray = $dataArray;

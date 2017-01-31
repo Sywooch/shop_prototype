@@ -5,8 +5,11 @@
 <div class="orders-filters">
 {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionApply, 'method':'POST'}) %}
     {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes).label(sortingTypeLabel) | raw }}
+    {{ form.field(formModel, 'status').dropDownList(statuses).label(statusLabel) | raw }}
+    {{ form.field(formModel, 'dateFrom').hiddenInput().label(false) | raw }}
+    {{ form.field(formModel, 'dateTo').hiddenInput().label(false) | raw }}
     {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
-    <p><a href="{{ calendarHref }}" data-timestamp="{{ calendarTimestamp }}" class="calendar-href-from">{{ calendarDate }}</a> &ndash; <a href="{{ calendarHref }}" data-timestamp="{{ calendarTimestamp }}" class="calendar-href-to">{{ calendarDate }}</a></p>
+    <p><a href="{{ calendarHref }}" data-timestamp="{{ calendarTimestampForm }}" class="calendar-href-from">{{ calendarDateFrom }}</a> &ndash; <a href="{{ calendarHref }}" data-timestamp="{{ calendarTimestampTo }}" class="calendar-href-to">{{ calendarDateTo }}</a></p>
     <p class="calendar-place"></p>
     <input type="submit" value="{{ buttonApply }}">
 {{ active_form_end() }}

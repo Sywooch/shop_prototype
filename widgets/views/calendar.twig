@@ -8,7 +8,9 @@
                 {{ header }}
             </th>
             <th>
-                <a href="{{ calendarHref }}" data-timestamp="{{ nextTimestamp }}" class="calendar-href-next">>></a>
+                {% if allowNext %}
+                    <a href="{{ calendarHref }}" data-timestamp="{{ nextTimestamp }}" class="calendar-href-next">>></a>
+                {% endif %}
             </th>
         </tr>
         <tr>

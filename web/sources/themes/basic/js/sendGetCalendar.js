@@ -26,12 +26,14 @@ $(function() {
                     if ($('.calendar-href-from').attr('data-timestamp') > eventTarget.attr('data-timestamp')) {
                         return;
                     }
+                    $('#ordersfiltersform-dateto').val(eventTarget.attr('data-timestamp'));
                 }
                 
                 if (self.target.attr('class') == 'calendar-href-from') {
                     if ($('.calendar-href-to').attr('data-timestamp') < eventTarget.attr('data-timestamp')) {
                         return;
                     }
+                    $('#ordersfiltersform-datefrom').val(eventTarget.attr('data-timestamp'));
                 }
                 
                 self.target.html(eventTarget.attr('data-format'));

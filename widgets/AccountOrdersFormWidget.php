@@ -42,9 +42,6 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->purchases)) {
-                throw new ErrorException($this->emptyError('purchases'));
-            }
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
@@ -108,15 +105,14 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                         $form = clone $this->form;
                         $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id]);
                         $set['formId'] = sprintf('order-cancellation-form-%d', $purchase->id);
+                        $set['formAction'] = Url::to(['/account/order-cancel']);
+                        $set['button'] = \Yii::t('base', 'Cancel');
                         
                         $set['ajaxValidation'] = false;
                         $set['validateOnSubmit'] = false;
                         $set['validateOnChange'] = false;
                         $set['validateOnBlur'] = false;
                         $set['validateOnType'] = false;
-                        
-                        $set['formAction'] = Url::to(['/account/order-cancel']);
-                        $set['button'] = \Yii::t('base', 'Cancel');
                     }
                     
                     $renderArray['purchases'][] = $set;
@@ -139,6 +135,8 @@ class AccountOrdersFormWidget extends AbstractBaseWidget
                 $renderArray['postcodeHeader'] = \Yii::t('base', 'Postcode');
                 $renderArray['paymentHeader'] = \Yii::t('base', 'Payment');
                 $renderArray['deliveryHeader'] = \Yii::t('base', 'Delivery');
+            } else {
+                $renderArray['ordersEmpty'] = \Yii::t('base', 'No orders');
             }
             
             return $this->render($this->template, $renderArray);

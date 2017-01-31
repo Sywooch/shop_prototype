@@ -193,32 +193,13 @@ class AccountOrdersFormWidgetTests extends TestCase
     
     /**
      * Тестирует метод AccountOrdersFormWidget::run
-     * если пуст AccountOrdersFormWidget::purchases
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: purchases
-     */
-    public function testRunEmptyPurchases()
-    {
-        $widget = new AccountOrdersFormWidget();
-        $widget->run();
-    }
-    
-    /**
-     * Тестирует метод AccountOrdersFormWidget::run
      * если пуст AccountOrdersFormWidget::currency
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
-        $mock = new class() {};
-        
         $widget = new AccountOrdersFormWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'purchases');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
-        
         $widget->run();
     }
     
@@ -233,10 +214,6 @@ class AccountOrdersFormWidgetTests extends TestCase
         $mock = new class() {};
         
         $widget = new AccountOrdersFormWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'purchases');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -256,10 +233,6 @@ class AccountOrdersFormWidgetTests extends TestCase
         $mock = new class() {};
         
         $widget = new AccountOrdersFormWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'purchases');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -284,10 +257,6 @@ class AccountOrdersFormWidgetTests extends TestCase
         
         $widget = new AccountOrdersFormWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'purchases');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
-        
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
@@ -301,6 +270,45 @@ class AccountOrdersFormWidgetTests extends TestCase
         $reflection->setValue($widget, 'Header');
         
         $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersFormWidget::run
+     * если нет заказов
+     */
+    public function testRunEmptyOrders()
+    {
+        $currency = new class() extends CurrencyModel {
+            public $exchange_rate = 2.09;
+            public $code = 'MONEY';
+        };
+        
+        $statuses = ['shipped'=>'Shipped', 'canceled'=>'Canceled', 'processed'=>'Processed', 'received'=>'Received'];
+        
+        $form = new class() extends PurchaseForm {};
+        
+        $widget = new AccountOrdersFormWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'currency');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $currency);
+        
+        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $form);
+        
+        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'Header');
+        
+        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, 'admin-orders-form.twig');
+        
+        $result = $widget->run();
+        
+        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
+        $this->assertRegExp('#<p>Заказов нет</p>#', $result);
     }
     
     /**

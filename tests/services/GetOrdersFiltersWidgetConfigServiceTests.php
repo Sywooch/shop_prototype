@@ -35,15 +35,13 @@ class GetOrdersFiltersWidgetConfigServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         
         $this->assertArrayHasKey('sortingTypes', $result);
-        $this->assertArrayHasKey('datesIntervals', $result);
-        //$this->assertArrayHasKey('statuses', $result);
+        $this->assertArrayHasKey('statuses', $result);
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['sortingTypes']);
-        $this->assertInternalType('array', $result['datesIntervals']);
-        //$this->assertInternalType('array', $result['statuses']);
+        $this->assertInternalType('array', $result['statuses']);
         $this->assertInstanceOf(OrdersFiltersForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
