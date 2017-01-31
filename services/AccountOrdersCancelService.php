@@ -45,7 +45,18 @@ class AccountOrdersCancelService extends AbstractBaseService
                         }
                         
                         $purchasesModel->scenario = PurchasesModel::CANCEL;
-                        $purchasesModel->canceled = true;
+                        
+                        foreach (\Yii::$app->params['orderStatuses'] as $status) {
+                            switch ($status) {
+                                case 'canceled':
+                                    $purchasesModel->$status = true;
+                                    break;
+                                case 'received':
+                                    break;
+                                default:
+                                    $purchasesModel->$status = false;
+                            }
+                        }
                         
                         $saver = new ModelSaver([
                             'model'=>$purchasesModel

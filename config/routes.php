@@ -75,6 +75,9 @@ $routes = [
     
     # Календарь
     'calendar-get'=>'calendar/get',
+    
+    # Csv
+    'csv-get-orders'=>'csv/get-orders',
 ];
 
 return $routes;

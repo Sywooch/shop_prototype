@@ -53,10 +53,19 @@ class AccountOrdersFinder extends AbstractBaseFinder
                 $query->select(['[[purchases.id]]', '[[purchases.id_user]]', '[[purchases.id_name]]', '[[purchases.id_surname]]', '[[purchases.id_email]]', '[[purchases.id_phone]]', '[[purchases.id_address]]', '[[purchases.id_city]]', '[[purchases.id_country]]', '[[purchases.id_postcode]]', '[[purchases.id_product]]',  '[[purchases.quantity]]', '[[purchases.id_color]]', '[[purchases.id_size]]', '[[purchases.price]]', '[[purchases.id_delivery]]', '[[purchases.id_payment]]', '[[purchases.received]]', '[[purchases.received_date]]', '[[purchases.processed]]', '[[purchases.canceled]]', '[[purchases.shipped]]']);
                 $query->where(['[[purchases.id_user]]'=>$this->id_user]);
                 
+                if (!empty($this->filters->getStatus())) {
+                    $query->andWhere([sprintf('[[purchases.%s]]', $this->filters->getStatus())=>true]);
+                    foreach (\Yii::$app->params['orderStatuses'] as $status) {
+                        if ($status !== $this->filters->getStatus() && $status !== 'received') {
+                            $query->andWhere([sprintf('[[purchases.%s]]', $status)=>false]);
+                        }
+                    }
+                }
+                
                 $dateFrom = $this->filters->getDateFrom() ?? DateHelper::getToday00();
                 $dateTo = ($this->filters->getDateTo() ?? DateHelper::getToday00()) + (60 * 60 * 24);
                 
-                $query->where(['and', 
+                $query->andWhere(['and', 
                     ['>', '[[purchases.received_date]]', $dateFrom], 
                     ['<', '[[purchases.received_date]]', $dateTo]
                 ]);
