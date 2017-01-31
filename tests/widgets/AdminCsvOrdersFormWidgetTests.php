@@ -129,8 +129,7 @@ class AdminCsvOrdersFormWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<p>Скачать эти заказы в формате csv</p>#', $result);
         $this->assertRegExp('#<form id="admin-scv-orders-form" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="submit" value="Get">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Скачать">#', $result);
     }
 }

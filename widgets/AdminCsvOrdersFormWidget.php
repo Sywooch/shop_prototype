@@ -5,6 +5,7 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
+use app\services\AdminOrdersCollectionService;
 
 /**
  * Формирует HTML строку с формой регистрации
@@ -37,17 +38,20 @@ class AdminCsvOrdersFormWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['header'] = $this->header;
-            $renderArray['text'] =  \Yii::t('base', 'Download those orders in csv format');
             
             $renderArray['formId'] = 'admin-scv-orders-form';
             $renderArray['formAction'] = Url::to(['/csv/get-orders']);
-            $renderArray['button'] = \Yii::t('base', 'Get');
+            $renderArray['button'] = \Yii::t('base', 'Download');
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
             $renderArray['validateOnChange'] = false;
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
+            
+            $service = \Yii::$app->registry->get(AdminOrdersCollectionService::class);
+            $ordersArray = $service->handle(\Yii::$app->request);
+            $renderArray['orders'] = !empty($ordersArray);
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

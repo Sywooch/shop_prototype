@@ -4,12 +4,15 @@
 {{ use('app/widgets/OrdersFiltersWidget') }}
 {{ use ('app/widgets/AdminOrdersFormWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
+{{ use('app/widgets/AdminCsvOrdersFormWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
 {{ admin_orders_breadcrumbs_widget_widget() }}
 
 {{ orders_filters_widget_widget(оrdersFiltersWidgetConfig) }}
+
+{{ admin_csv_orders_form_widget_widget(adminCsvOrdersFormWidgetConfig) }}
 
 {{ admin_orders_form_widget_widget(adminOrdersFormWidgetConfig) }}
 

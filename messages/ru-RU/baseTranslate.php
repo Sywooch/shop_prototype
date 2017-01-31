@@ -193,8 +193,8 @@ $translate = [
     'Fri'=>'Птн',
     'Sat'=>'Сб',
     'Sun'=>'Вск',
-    'Download those orders in csv format'=>'Скачать эти заказы в формате csv',
-    'Download as csv'=>'Скачать как csv',
+    'Download selected orders in csv format'=>'Скачать выбранные заказы в формате CSV',
+    'Download'=>'Скачать',
 ];
 
 return $translate;

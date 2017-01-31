@@ -5,9 +5,10 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    GetOrdersFiltersWidgetConfigService,
+    GetAdminCsvOrdersFormWidgetConfigService,
     GetAdminOrdersFormWidgetConfigService,
-    GetAdminOrdersPaginationWidgetConfigService};
+    GetAdminOrdersPaginationWidgetConfigService,
+    GetOrdersFiltersWidgetConfigService};
 
 /**
  * Формирует массив данных для рендеринга страницы 
@@ -39,6 +40,9 @@ class AdminOrdersService extends AbstractBaseService
                 
                 $service = \Yii::$app->registry->get(GetAdminOrdersPaginationWidgetConfigService::class);
                 $dataArray['paginationWidgetConfig'] = $service->handle($request);
+                
+                $service = \Yii::$app->registry->get(GetAdminCsvOrdersFormWidgetConfigService::class);
+                $dataArray['adminCsvOrdersFormWidgetConfig'] = $service->handle();
                 
                 $this->dataArray = $dataArray;
             }
