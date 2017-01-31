@@ -12,6 +12,7 @@ $config = [
         '@theme'=>'@app/themes/basic',
         '@imagesroot'=>'@app/web/sources/images/products',
         '@imagesweb'=>'/sources/images/products',
+        '@csvroot'=>'@app/web/sources/csv',
     ],
     
     'layout'=>'main.twig',

@@ -21,22 +21,18 @@ class CsvGetOrdersService extends AbstractBaseService
     {
         try {
             if ($request->isAjax === true) {
-                if ($form->load($request->post()) === true) {
-                    \Yii::$app->response->format = Response::FORMAT_JSON;
-                    $errors = ActiveForm::validate($form);
-                    if (!empty($errors)) {
-                        return $errors;
-                    }
+                \Yii::$app->response->format = Response::FORMAT_JSON;
+                
+                /*$service = \Yii::$app->registry->get(AdminOrdersCsvArrayService::class);
+                $ordersQuery = $service->handle();*/
+                
+                //$file = fopen(\Yii::getAlias(sprintf('%s/orders/orders%s.csv', '@csvroot', time()))), 'w');
+                
+                /*foreach ($ordersQuery->each(10) as $order) {
                     
-                    $service = \Yii::$app->registry->get(AdminOrdersCsvArrayService::class);
-                    $purchasesArray = $service->handle();
-                    
-                    if (!empty($purchasesArray)) {
-                        
-                    }
-                    
-                    return 'SUCCESS';
-                }
+                }*/
+                
+                return \Yii::getAlias(sprintf('%s/orders/orders%s.csv', '@csvroot', time()));
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
