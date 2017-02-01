@@ -7,6 +7,7 @@ use yii\helpers\Html;
 use app\widgets\AbstractBaseWidget;
 use app\collections\CollectionInterface;
 use app\models\CurrencyInterface;
+use app\helpers\ImgHelper;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -50,13 +51,10 @@ class ProductsWidget extends AbstractBaseWidget
                 $set['id'] = $product->id;
                 $set['link'] = Html::a(Html::encode($product->name), ['/product-detail/index', 'seocode'=>$product->seocode]);
                 $set['short_description'] = $product->short_description;
-                $set['price'] = \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
+                $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2), $this->currency->code());
                 
                 if (!empty($product->images)) {
-                    $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $product->images) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-                    if (!empty($imagesArray)) {
-                        $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]));
-                    }
+                    $set['image'] = ImgHelper::randThumbn($product->images, 400);
                 }
                 
                 $renderArray['collection'][] = $set;

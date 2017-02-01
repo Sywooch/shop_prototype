@@ -4,12 +4,26 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\AdminCsvOrdersFormWidget;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\PurchasesFixture;
 
 /**
  * Тестирует класс AdminCsvOrdersFormWidget
  */
 class AdminCsvOrdersFormWidgetTests extends TestCase
 {
+    private static $dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'purchases'=>PurchasesFixture::class,
+            ],
+        ]);
+        self::$dbClass->loadFixtures();
+    }
+    
     /**
      * Тестирует свойства AdminCsvOrdersFormWidget
      */
@@ -132,6 +146,11 @@ class AdminCsvOrdersFormWidgetTests extends TestCase
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p class="csv-success"></p>#', $result);
         $this->assertRegExp('#<form id="admin-scv-orders-form" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="submit" value="Скачать">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Получить ссылку">#', $result);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$dbClass->unloadFixtures();
     }
 }

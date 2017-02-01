@@ -14,6 +14,7 @@ $config['components']['mailer']['useFileTransport'] = true;
 $config['components']['mailer']['fileTransportPath'] = '@app/tests/sources/mail/letters';
 $config['aliases']['@imagesroot'] = '@app/tests/sources/images/products';
 $config['aliases']['@imagestemp'] = '@app/tests/sources/images/temp';
+$config['aliases']['@csvroot'] = '@app/tests/sources/csv';
 
 (new yii\web\Application($config));
 

@@ -3,6 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
+use yii\db\ActiveQuery;
 use app\services\AdminOrdersCsvArrayService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\PurchasesFixture;
@@ -32,7 +33,7 @@ class AdminOrdersCsvArrayServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(AdminOrdersCsvArrayService::class);
         
-        $this->assertTrue($reflection->hasProperty('purchasesArray'));
+        $this->assertTrue($reflection->hasProperty('ordersQuery'));
     }
     
     /**
@@ -43,9 +44,8 @@ class AdminOrdersCsvArrayServiceTests extends TestCase
     {
         $service = new AdminOrdersCsvArrayService();
         $result = $service->handle();
-
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
+        
+        $this->assertInstanceOf(ActiveQuery::class, $result);
     }
     
     /**
@@ -65,8 +65,7 @@ class AdminOrdersCsvArrayServiceTests extends TestCase
         $service = new AdminOrdersCsvArrayService();
         $result = $service->handle();
 
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
+        $this->assertInstanceOf(ActiveQuery::class, $result);
 
         $session->remove($key);
         $session->close();

@@ -3,6 +3,7 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
+use yii\db\ActiveQuery;
 use app\finders\AbstractBaseFinder;
 use app\models\PurchasesModel;
 use app\helpers\DateHelper;
@@ -24,9 +25,9 @@ class AdminOrdersCsvFinder extends AbstractBaseFinder
     
     /**
      * Возвращает данные из СУБД
-     * @return array
+     * @return ActiveQuery
      */
-    public function find()
+    public function find(): ActiveQuery
     {
         try {
             if (empty($this->filters)) {
@@ -36,7 +37,7 @@ class AdminOrdersCsvFinder extends AbstractBaseFinder
             if (empty($this->storage)) {
                 $query = PurchasesModel::find();
                 $query->select(['[[purchases.id]]', '[[purchases.id_user]]', '[[purchases.id_name]]', '[[purchases.id_surname]]', '[[purchases.id_email]]', '[[purchases.id_phone]]', '[[purchases.id_address]]', '[[purchases.id_city]]', '[[purchases.id_country]]', '[[purchases.id_postcode]]', '[[purchases.id_product]]',  '[[purchases.quantity]]', '[[purchases.id_color]]', '[[purchases.id_size]]', '[[purchases.price]]', '[[purchases.id_delivery]]', '[[purchases.id_payment]]', '[[purchases.received]]', '[[purchases.received_date]]', '[[purchases.processed]]', '[[purchases.canceled]]', '[[purchases.shipped]]']);
-                $query->with('product', 'color', 'size', 'name', 'surname', 'address', 'city', 'country', 'postcode', 'phone', 'payment', 'delivery');
+                $query->with('email', 'product', 'color', 'size', 'name', 'surname', 'address', 'city', 'country', 'postcode', 'phone', 'payment', 'delivery');
                 
                 if (!empty($this->filters->getStatus())) {
                     $query->where([sprintf('[[purchases.%s]]', $this->filters->getStatus())=>true]);
@@ -59,7 +60,7 @@ class AdminOrdersCsvFinder extends AbstractBaseFinder
                 $sortingType = $this->filters->getSortingType() ?? \Yii::$app->params['sortingTypeOrders'];
                 $query->orderBy([sprintf('[[purchases.%s]]', $sortingField)=>(int) $sortingType]);
                 
-                $this->storage = $query->all();
+                $this->storage = $query;
             }
             
             return $this->storage;

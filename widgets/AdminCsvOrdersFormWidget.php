@@ -41,7 +41,7 @@ class AdminCsvOrdersFormWidget extends AbstractBaseWidget
             
             $renderArray['formId'] = 'admin-scv-orders-form';
             $renderArray['formAction'] = Url::to(['/csv/get-orders']);
-            $renderArray['button'] = \Yii::t('base', 'Download');
+            $renderArray['button'] = \Yii::t('base', 'Get link');
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -51,7 +51,7 @@ class AdminCsvOrdersFormWidget extends AbstractBaseWidget
             
             $service = \Yii::$app->registry->get(AdminOrdersCollectionService::class);
             $ordersArray = $service->handle(\Yii::$app->request);
-            $renderArray['orders'] = !empty($ordersArray);
+            $renderArray['orders'] = !$ordersArray->isEmpty();
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

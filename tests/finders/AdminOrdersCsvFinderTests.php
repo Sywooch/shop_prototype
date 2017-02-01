@@ -3,6 +3,7 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
+use yii\db\ActiveQuery;
 use app\finders\AdminOrdersCsvFinder;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\PurchasesFixture;
@@ -96,8 +97,7 @@ class AdminOrdersCsvFinderTests extends TestCase
         
         $result = $finder->find();
         
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
+        $this->assertInstanceOf(ActiveQuery::class, $result);
     }
     
     /**
@@ -118,8 +118,7 @@ class AdminOrdersCsvFinderTests extends TestCase
         
         $result = $finder->find();
         
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
+        $this->assertInstanceOf(ActiveQuery::class, $result);
     }
     
     public static function tearDownAfterClass()

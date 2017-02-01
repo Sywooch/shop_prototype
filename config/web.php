@@ -13,6 +13,7 @@ $config = [
         '@imagesroot'=>'@app/web/sources/images/products',
         '@imagesweb'=>'/sources/images/products',
         '@csvroot'=>'@app/web/sources/csv',
+        '@csvweb'=>'/sources/csv',
     ],
     
     'layout'=>'main.twig',

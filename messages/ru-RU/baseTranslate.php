@@ -90,6 +90,7 @@ $translate = [
     'City'=>'Город',
     'Country'=>'Страна',
     'Postcode'=>'Почтовый код',
+    'Product Id'=>'Id товара',
     'Delivery'=>'Доставка',
     'Payment'=>'Оплата',
     'Delivery Information'=>'Информация о доставке',
@@ -153,6 +154,7 @@ $translate = [
     'Basic account data'=>'Основные данные аккаунта',
     'Current subscriptions'=>'Текущие подписки',
     'Manage subscriptions'=>'Управление подписками',
+    'Received date'=>'Дата заказа',
     'Received'=>'Принят',
     'Shipped'=>'Доставлен',
     'Canceled'=>'Отменен',
@@ -182,6 +184,9 @@ $translate = [
     'No orders'=>'Заказов нет',
     'All'=>'Все',
     'Order number'=>'Номер заказа',
+    'Client Id'=>'Id клиента',
+    'Client name'=>'Имя клиента',
+    'Client surname'=>'Фамилия клиента',
     'Save'=>'Сохранить',
     'Today'=>'Сегодня',
     'In three days'=>'За три дня',
@@ -194,7 +199,7 @@ $translate = [
     'Sat'=>'Сб',
     'Sun'=>'Вск',
     'Download selected orders in csv format'=>'Скачать выбранные заказы в формате CSV',
-    'Download'=>'Скачать',
+    'Get link'=>'Получить ссылку',
 ];
 
 return $translate;

@@ -14,19 +14,19 @@ use app\helpers\HashHelper;
 class AdminOrdersCsvArrayService extends AbstractBaseService
 {
     /**
-     * @var array PurchasesModel
+     * @var ActiveQuery
      */
-    private $purchasesArray = null;
+    private $ordersQuery = null;
     
     /**
-     * Возвращает array PurchasesModel
+     * Возвращает ActiveQuery
      * @param $request
-     * @return array PurchasesModel
+     * @return ActiveQuery
      */
     public function handle($request=null)
     {
         try {
-            if (empty($this->purchasesArray)) {
+            if (empty($this->ordersQuery)) {
                 $finder = \Yii::$app->registry->get(OrdersFiltersSessionFinder::class, ['key'=>HashHelper::createHash([\Yii::$app->params['ordersFilters']])]);
                 $filtersModel = $finder->find();
                 
@@ -34,10 +34,10 @@ class AdminOrdersCsvArrayService extends AbstractBaseService
                     'filters'=>$filtersModel
                 ]);
                 
-                $this->purchasesArray = $finder->find();
+                $this->ordersQuery = $finder->find();
             }
             
-            return $this->purchasesArray;
+            return $this->ordersQuery;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
