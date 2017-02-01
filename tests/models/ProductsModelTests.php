@@ -5,14 +5,16 @@ namespace app\tests\model;
 use PHPUnit\Framework\TestCase;
 use app\models\ProductsModel;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{CategoriesFixture,
+use app\tests\sources\fixtures\{BrandsFixture,
+    CategoriesFixture,
     ColorsFixture,
     ProductsColorsFixture,
     ProductsFixture,
     ProductsSizesFixture,
     SizesFixture,
     SubcategoryFixture};
-use app\models\{CategoriesModel,
+use app\models\{BrandsModel,
+    CategoriesModel,
     ColorsModel,
     SizesModel,
     SubcategoryModel};
@@ -28,6 +30,7 @@ class ProductsModelTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
+                'brands'=>BrandsFixture::class,
                 'categories'=>CategoriesFixture::class,
                 'subcategory'=>SubcategoryFixture::class,
                 'products'=>ProductsFixture::class,
@@ -170,6 +173,19 @@ class ProductsModelTests extends TestCase
         foreach ($result as $item) {
             $this->assertInstanceOf(SizesModel::class, $item);
         }
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getBrand
+     */
+    public function testGetBrand()
+    {
+        $model = new ProductsModel();
+        $model->id_brand = 1;
+        
+        $result = $model->brand;
+        
+        $this->assertInstanceOf(BrandsModel::class, $result);
     }
     
     public static function tearDownAfterClass()

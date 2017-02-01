@@ -10,6 +10,7 @@ use app\widgets\AbstractBaseWidget;
 use app\collections\PurchasesCollectionInterface;
 use app\models\CurrencyInterface;
 use app\forms\PurchaseForm;
+use app\helpers\ImgHelper;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -97,10 +98,7 @@ class CartWidget extends AbstractBaseWidget
                 $set['sizes'] = ArrayHelper::map($sizes, 'id', 'size');
                 
                 if (!empty($purchase->product->images)) {
-                    $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $purchase->product->images) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-                    if (!empty($imagesArray)) {
-                        $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $purchase->product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]), ['height'=>200]);
-                    }
+                    $set['image'] = ImgHelper::randThumbn($purchase->product->images);
                 }
                 
                 $renderArray['collection'][] = $set;

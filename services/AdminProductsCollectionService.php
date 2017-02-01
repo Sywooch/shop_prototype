@@ -3,9 +3,8 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use app\services\{AbstractBaseService,
-    GetProductsFiltersModelService};
-use app\finders\ProductsFinder;
+use app\services\AbstractBaseService;
+use app\finders\AdminProductsFinder;
 
 /**
  * Возвращает объект ProductsCollection
@@ -26,14 +25,12 @@ class AdminProductsCollectionService extends AbstractBaseService
     {
         try {
             if (empty($this->productsCollection)) {
-                $service = \Yii::$app->registry->get(GetProductsFiltersModelService::class);
-                $filtersModel = $service->handle();
+                /*$service = \Yii::$app->registry->get(GetProductsFiltersModelService::class);
+                $filtersModel = $service->handle();*/
                 
-                $finder = \Yii::$app->registry->get(ProductsFinder::class, [
-                    'category'=>$request->get(\Yii::$app->params['categoryKey']) ?? '',
-                    'subcategory'=>$request->get(\Yii::$app->params['subcategoryKey']) ?? '',
+                $finder = \Yii::$app->registry->get(AdminProductsFinder::class, [
                     'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
-                    'filters'=>$filtersModel
+                    //'filters'=>$filtersModel
                 ]);
                 
                 $this->productsCollection = $finder->find();

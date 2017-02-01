@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\{AbstractBaseModel,
+    BrandsModel,
     CategoriesModel,
     SizesModel,
     SubcategoryModel};
@@ -92,6 +93,19 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             return $this->hasMany(SizesModel::class, ['id'=>'id_size'])->viaTable('products_sizes', ['id_product'=>'id']);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает BrandsModel
+     * @return ActiveQueryInterface
+     */
+    public function getBrand()
+    {
+        try {
+            return $this->hasOne(BrandsModel::class, ['id'=>'id_brand']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

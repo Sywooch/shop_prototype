@@ -8,6 +8,7 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyInterface;
+use app\helpers\ImgHelper;
 
 /**
  * Формирует HTML строку с основными данными аккаунта
@@ -73,10 +74,7 @@ class AccountCurrentOrdersWidget extends AbstractBaseWidget
                         $set['color'] = $purchase->color->color;
                         $set['size'] = $purchase->size->size;
                         if (!empty($purchase->product->images)) {
-                            $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $purchase->product->images) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
-                            if (!empty($imagesArray)) {
-                                $set['image'] = Html::img(\Yii::getAlias('@imagesweb/' . $purchase->product->images . '/') . basename($imagesArray[random_int(0, count($imagesArray) - 1)]), ['height'=>200]);
-                            }
+                            $set['image'] = ImgHelper::randThumbn($purchase->product->images);
                         }
                         
                         if ((bool) $purchase->processed === true) {
