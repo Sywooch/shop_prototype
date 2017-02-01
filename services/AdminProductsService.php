@@ -5,16 +5,13 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    GetAdminCsvOrdersFormWidgetConfigService,
-    GetAdminOrdersWidgetConfigService,
-    GetAdminOrdersPaginationWidgetConfigService,
-    GetOrdersFiltersWidgetConfigService};
+    GetAdminProductsWidgetConfigService};
 
 /**
  * Формирует массив данных для рендеринга страницы 
  * с перечнем заказов
  */
-class AdminOrdersService extends AbstractBaseService
+class AdminProductsService extends AbstractBaseService
 {
     /**
      * @var array массив данных для рендеринга
@@ -32,17 +29,8 @@ class AdminOrdersService extends AbstractBaseService
             if (empty($this->dataArray)) {
                 $dataArray = [];
                 
-                $service = \Yii::$app->registry->get(GetOrdersFiltersWidgetConfigService::class);
-                $dataArray['оrdersFiltersWidgetConfig'] = $service->handle($request);
-                
-                $service = \Yii::$app->registry->get(GetAdminOrdersWidgetConfigService::class);
-                $dataArray['adminOrdersWidgetConfig'] = $service->handle($request);
-                
-                $service = \Yii::$app->registry->get(GetAdminOrdersPaginationWidgetConfigService::class);
-                $dataArray['paginationWidgetConfig'] = $service->handle($request);
-                
-                $service = \Yii::$app->registry->get(GetAdminCsvOrdersFormWidgetConfigService::class);
-                $dataArray['adminCsvOrdersFormWidgetConfig'] = $service->handle();
+                $service = \Yii::$app->registry->get(GetAdminProductsWidgetConfigService::class);
+                $dataArray['adminProductsWidgetConfig'] = $service->handle($request);
                 
                 $this->dataArray = $dataArray;
             }

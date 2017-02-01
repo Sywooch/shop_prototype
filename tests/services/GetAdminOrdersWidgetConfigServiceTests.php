@@ -3,7 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetAdminOrdersFormWidgetConfigService;
+use app\services\GetAdminOrdersWidgetConfigService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture};
@@ -11,9 +11,9 @@ use app\models\CurrencyModel;
 use app\forms\AdminChangeOrderForm;
 
 /**
- * Тестирует класс GetAdminOrdersFormWidgetConfigService
+ * Тестирует класс GetAdminOrdersWidgetConfigService
  */
-class GetAdminOrdersFormWidgetConfigServiceTests extends TestCase
+class GetAdminOrdersWidgetConfigServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -34,17 +34,17 @@ class GetAdminOrdersFormWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetAdminOrdersFormWidgetConfigService
+     * Тестирует свойства GetAdminOrdersWidgetConfigService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetAdminOrdersFormWidgetConfigService::class);
+        $reflection = new \ReflectionClass(GetAdminOrdersWidgetConfigService::class);
         
-        $this->assertTrue($reflection->hasProperty('adminOrdersFormWidgetArray'));
+        $this->assertTrue($reflection->hasProperty('adminOrdersWidgetArray'));
     }
     
     /**
-     * Тестирует метод  GetAdminOrdersFormWidgetConfigService::handle
+     * Тестирует метод  GetAdminOrdersWidgetConfigService::handle
      * если передана несуществующая страница
      * @expectedException yii\web\NotFoundHttpException
      */
@@ -57,12 +57,12 @@ class GetAdminOrdersFormWidgetConfigServiceTests extends TestCase
             }
         };
         
-        $service = new GetAdminOrdersFormWidgetConfigService();
+        $service = new GetAdminOrdersWidgetConfigService();
         $service->handle($request);
     }
     
     /**
-     * Тестирует метод  GetAdminOrdersFormWidgetConfigService::handle
+     * Тестирует метод  GetAdminOrdersWidgetConfigService::handle
      */
     public function testHandle()
     {
@@ -73,7 +73,7 @@ class GetAdminOrdersFormWidgetConfigServiceTests extends TestCase
             }
         };
         
-        $service = new GetAdminOrdersFormWidgetConfigService();
+        $service = new GetAdminOrdersWidgetConfigService();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);

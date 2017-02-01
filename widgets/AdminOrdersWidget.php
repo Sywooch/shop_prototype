@@ -13,7 +13,7 @@ use app\forms\AdminChangeOrderForm;
 /**
  * Формирует HTML строку с основными данными аккаунта
  */
-class AdminOrdersFormWidget extends AbstractBaseWidget
+class AdminOrdersWidget extends AbstractBaseWidget
 {
     /**
      * @var array PurchasesModel
@@ -144,7 +144,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array PurchasesModel свойству AdminOrdersFormWidget::purchases
+     * Присваивает array PurchasesModel свойству AdminOrdersWidget::purchases
      * @param array $purchases
      */
     public function setPurchases(array $purchases)
@@ -157,7 +157,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyInterface свойству AdminOrdersFormWidget::currency
+     * Присваивает CurrencyInterface свойству AdminOrdersWidget::currency
      * @param CurrencyInterface $currency
      */
     public function setCurrency(CurrencyInterface $currency)
@@ -170,7 +170,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает AdminChangeOrderForm свойству AdminOrdersFormWidget::form
+     * Присваивает AdminChangeOrderForm свойству AdminOrdersWidget::form
      * @param AdminChangeOrderForm $form
      */
     public function setForm(AdminChangeOrderForm $form)
@@ -183,7 +183,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает заголовок свойству AdminOrdersFormWidget::header
+     * Присваивает заголовок свойству AdminOrdersWidget::header
      * @param string $header
      */
     public function setHeader(string $header)
@@ -196,7 +196,7 @@ class AdminOrdersFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает имя шаблона свойству AdminOrdersFormWidget::template
+     * Присваивает имя шаблона свойству AdminOrdersWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)

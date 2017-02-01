@@ -21,7 +21,7 @@
         {% for week in month %}
             <tr>
                 {% for day in week %}
-                    <td data-timestamp="{{ day.timestamp }}" data-format="{{ day.format }}">{{ day.number }}</td>
+                    <td data-timestamp="{{ day.timestamp }}" data-format="{{ day.format }}"{% if day.today %} class="today"{% endif %}>{{ day.number }}</td>
                 {% endfor %}
             </tr>
         {% endfor %}

@@ -3,9 +3,11 @@
 namespace app\services;
 
 use yii\base\ErrorException;
+use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
+    AccountOrdersCollectionService,
     GetCurrentCurrencyModelService};
-use app\finders\PurchasesIdUserFinder;
+use app\forms\PurchaseForm;
 
 /**
  * Возвращает массив конфигурации для виджета AccountOrdersWidget
@@ -22,7 +24,7 @@ class GetAccountOrdersWidgetConfigService extends AbstractBaseService
      * @param $request
      * @return array
      */
-    public function handle($request=null): array
+    public function handle($request): array
     {
         try {
             if (\Yii::$app->user->isGuest === true) {
@@ -32,22 +34,32 @@ class GetAccountOrdersWidgetConfigService extends AbstractBaseService
             if (empty($this->accountOrdersWidgetArray)) {
                 $dataArray = [];
                 
-                $dataArray['header'] = \Yii::t('base', 'Current orders');
+                $dataArray['header'] = \Yii::t('base', 'Orders');
                 
-                $user = \Yii::$app->user->identity;
+                $service = \Yii::$app->registry->get(AccountOrdersCollectionService::class);
+                $purchasesCollection = $service->handle($request);
                 
-                $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, ['id_user'=>$user->id]);
-                $dataArray['purchases'] = $finder->find();
+                if ($purchasesCollection->isEmpty() === true) {
+                    if ($purchasesCollection->pagination->totalCount > 0) {
+                        throw new NotFoundHttpException($this->error404());
+                    }
+                }
+                
+                $dataArray['purchases'] = $purchasesCollection->asArray();
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['template'] = 'account-purchases.twig';
+                $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
+                
+                $dataArray['template'] = 'account-orders.twig';
                 
                 $this->accountOrdersWidgetArray = $dataArray;
             }
             
             return $this->accountOrdersWidgetArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

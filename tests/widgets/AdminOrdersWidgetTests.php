@@ -3,21 +3,21 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\AdminOrdersFormWidget;
+use app\widgets\AdminOrdersWidget;
 use app\models\CurrencyModel;
 use app\forms\AdminChangeOrderForm;
 
 /**
- * Тестирует класс AdminOrdersFormWidget
+ * Тестирует класс AdminOrdersWidget
  */
-class AdminOrdersFormWidgetTests extends TestCase
+class AdminOrdersWidgetTests extends TestCase
 {
     /**
-     * Тестирует свойства AdminOrdersFormWidget
+     * Тестирует свойства AdminOrdersWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminOrdersFormWidget::class);
+        $reflection = new \ReflectionClass(AdminOrdersWidget::class);
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
@@ -27,7 +27,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setPurchases
+     * Тестирует метод AdminOrdersWidget::setPurchases
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -35,18 +35,18 @@ class AdminOrdersFormWidgetTests extends TestCase
     {
         $purchases = new class() {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setPurchases($purchases);
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setPurchases
+     * Тестирует метод AdminOrdersWidget::setPurchases
      */
     public function testSetPurchases()
     {
         $purchases = [new class() {}];
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setPurchases($purchases);
         
         $reflection = new \ReflectionProperty($widget, 'purchases');
@@ -57,7 +57,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setCurrency
+     * Тестирует метод AdminOrdersWidget::setCurrency
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -65,18 +65,18 @@ class AdminOrdersFormWidgetTests extends TestCase
     {
         $currency = new class() {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setCurrency($currency);
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setCurrency
+     * Тестирует метод AdminOrdersWidget::setCurrency
      */
     public function testSetCurrency()
     {
         $currency = new class() extends CurrencyModel {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setCurrency($currency);
         
         $reflection = new \ReflectionProperty($widget, 'currency');
@@ -87,7 +87,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setForm
+     * Тестирует метод AdminOrdersWidget::setForm
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -95,18 +95,18 @@ class AdminOrdersFormWidgetTests extends TestCase
     {
         $form = new class() {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setForm($form);
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setForm
+     * Тестирует метод AdminOrdersWidget::setForm
      */
     public function testSetForm()
     {
         $form = new class() extends AdminChangeOrderForm {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setForm($form);
         
         $reflection = new \ReflectionProperty($widget, 'form');
@@ -117,7 +117,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setHeader
+     * Тестирует метод AdminOrdersWidget::setHeader
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -125,18 +125,18 @@ class AdminOrdersFormWidgetTests extends TestCase
     {
         $header = null;
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setHeader($header);
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setHeader
+     * Тестирует метод AdminOrdersWidget::setHeader
      */
     public function testSetHeader()
     {
         $header = 'Header';
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setHeader($header);
         
         $reflection = new \ReflectionProperty($widget, 'header');
@@ -147,7 +147,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setTemplate
+     * Тестирует метод AdminOrdersWidget::setTemplate
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -155,18 +155,18 @@ class AdminOrdersFormWidgetTests extends TestCase
     {
         $template = null;
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setTemplate($template);
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::setTemplate
+     * Тестирует метод AdminOrdersWidget::setTemplate
      */
     public function testSetTemplate()
     {
         $template = 'Template';
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->setTemplate($template);
         
         $reflection = new \ReflectionProperty($widget, 'template');
@@ -177,20 +177,20 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::run
-     * если пуст AdminOrdersFormWidget::currency
+     * Тестирует метод AdminOrdersWidget::run
+     * если пуст AdminOrdersWidget::currency
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
     public function testRunEmptyCurrency()
     {
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         $widget->run();
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::run
-     * если пуст AdminOrdersFormWidget::form
+     * Тестирует метод AdminOrdersWidget::run
+     * если пуст AdminOrdersWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
@@ -198,7 +198,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -208,8 +208,8 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::run
-     * если пуст AdminOrdersFormWidget::header
+     * Тестирует метод AdminOrdersWidget::run
+     * если пуст AdminOrdersWidget::header
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
@@ -217,7 +217,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -232,8 +232,8 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::run
-     * если пуст AdminOrdersFormWidget::template
+     * Тестирует метод AdminOrdersWidget::run
+     * если пуст AdminOrdersWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
@@ -241,7 +241,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
        
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -259,7 +259,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::run
+     * Тестирует метод AdminOrdersWidget::run
      * если нет заказов
      */
     public function testRunEmptyOrders()
@@ -273,7 +273,7 @@ class AdminOrdersFormWidgetTests extends TestCase
         
         $form = new class() extends AdminChangeOrderForm {};
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
@@ -289,7 +289,7 @@ class AdminOrdersFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'admin-orders-form.twig');
+        $reflection->setValue($widget, 'admin-orders.twig');
         
         $result = $widget->run();
         
@@ -298,7 +298,7 @@ class AdminOrdersFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminOrdersFormWidget::run
+     * Тестирует метод AdminOrdersWidget::run
      */
     public function testRun()
     {
@@ -532,7 +532,7 @@ class AdminOrdersFormWidgetTests extends TestCase
             },
         ];
         
-        $widget = new AdminOrdersFormWidget();
+        $widget = new AdminOrdersWidget();
         
         $reflection = new \ReflectionProperty($widget, 'purchases');
         $reflection->setAccessible(true);
@@ -552,7 +552,7 @@ class AdminOrdersFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'admin-orders-form.twig');
+        $reflection->setValue($widget, 'admin-orders.twig');
         
         $result = $widget->run();
         

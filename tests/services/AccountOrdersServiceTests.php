@@ -3,16 +3,17 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AdminOrdersService;
+use app\services\AccountOrdersService;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture};
 use app\controllers\FiltersController;
+use app\models\UsersModel;
 
 /**
- * Тестирует класс AdminOrdersService
+ * Тестирует класс AccountOrdersService
  */
-class AdminOrdersServiceTests extends TestCase
+class AccountOrdersServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -28,32 +29,34 @@ class AdminOrdersServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства AdminOrdersService
+     * Тестирует свойства AccountOrdersService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminOrdersService::class);
+        $reflection = new \ReflectionClass(AccountOrdersService::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод AdminOrdersService::handle
+     * Тестирует метод AccountOrdersService::handle
      * если отсутствует параметр $request
      * @expectedException ErrorException
      */
     public function testHandleEmptyRequest()
     {
-        $service = new AdminOrdersService();
+        $service = new AccountOrdersService();
         $service->handle();
     }
     
     /**
-     * Тестирует метод AdminOrdersService::handle
+     * Тестирует метод AccountOrdersService::handle
      */
     public function testHandle()
     {
         \Yii::$app->controller = new FiltersController('filters', \Yii::$app);
+        $user = UsersModel::findOne(1);
+        \Yii::$app->user->login($user);
         
         $request = new class() {
             public function get($name = null, $defaultValue = null)
@@ -62,20 +65,18 @@ class AdminOrdersServiceTests extends TestCase
             }
         };
         
-        $service = new AdminOrdersService();
+        $service = new AccountOrdersService();
         $result = $service->handle($request);
 
         $this->assertInternalType('array', $result);
         
         $this->assertArrayHasKey('оrdersFiltersWidgetConfig', $result);
-        $this->assertArrayHasKey('adminOrdersWidgetConfig', $result);
+        $this->assertArrayHasKey('accountOrdersWidgetConfig', $result);
         $this->assertArrayHasKey('paginationWidgetConfig', $result);
-        $this->assertArrayHasKey('adminCsvOrdersFormWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['оrdersFiltersWidgetConfig']);
-        $this->assertInternalType('array', $result['adminOrdersWidgetConfig']);
+        $this->assertInternalType('array', $result['accountOrdersWidgetConfig']);
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
-        $this->assertInternalType('array', $result['adminCsvOrdersFormWidgetConfig']);
     }
     
     public static function tearDownAfterClass()

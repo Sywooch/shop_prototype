@@ -67,9 +67,12 @@ class CalendarWidget extends AbstractBaseWidget
             $days = $this->getDaysInMonth();
             $week = [];
             
+            $now = new \DateTime();
+            
             for ($day=1; $day <= 7; $day++) {
                 if ((int) $this->period->format('N') === $day) {
                     $week[] = [
+                        'today'=>($this->period->format('d') === $now->format('d') && $this->period->format('m') === $now->format('m')) ? true : false,
                         'number'=>$this->period->format('d'), 
                         'timestamp'=>$this->period->getTimestamp(),
                         'format'=>\Yii::$app->formatter->asDate($this->period->getTimestamp())

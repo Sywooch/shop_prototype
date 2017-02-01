@@ -5,19 +5,20 @@ namespace app\services;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
-    AccountOrdersCollectionService,
+    AdminOrdersCollectionService,
     GetCurrentCurrencyModelService};
-use app\forms\PurchaseForm;
+use app\forms\AdminChangeOrderForm;
+use app\finders\OrderStatusesFinder;
 
 /**
- * Возвращает массив конфигурации для виджета AccountOrdersFormWidget
+ * Возвращает массив конфигурации для виджета AdminOrdersWidget
  */
-class GetAccountOrdersFormWidgetConfigService extends AbstractBaseService
+class GetAdminOrdersWidgetConfigService extends AbstractBaseService
 {
     /**
-     * @var array конфигурации для виджета AccountOrdersFormWidget
+     * @var array конфигурации для виджета AdminOrdersWidget
      */
-    private $accountOrdersFormWidgetArray = [];
+    private $adminOrdersWidgetArray = [];
     
     /**
      * Возвращает массив конфигурации
@@ -27,16 +28,12 @@ class GetAccountOrdersFormWidgetConfigService extends AbstractBaseService
     public function handle($request): array
     {
         try {
-            if (\Yii::$app->user->isGuest === true) {
-                throw new ErrorException($this->emptyError('user'));
-            }
-            
-            if (empty($this->accountOrdersFormWidgetArray)) {
+            if (empty($this->adminOrdersWidgetArray)) {
                 $dataArray = [];
                 
                 $dataArray['header'] = \Yii::t('base', 'Orders');
                 
-                $service = \Yii::$app->registry->get(AccountOrdersCollectionService::class);
+                $service = \Yii::$app->registry->get(AdminOrdersCollectionService::class);
                 $purchasesCollection = $service->handle($request);
                 
                 if ($purchasesCollection->isEmpty() === true) {
@@ -50,14 +47,14 @@ class GetAccountOrdersFormWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
+                $dataArray['form'] = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
                 
-                $dataArray['template'] = 'account-orders-form.twig';
+                $dataArray['template'] = 'admin-orders.twig';
                 
-                $this->accountOrdersFormWidgetArray = $dataArray;
+                $this->adminOrdersWidgetArray = $dataArray;
             }
             
-            return $this->accountOrdersFormWidgetArray;
+            return $this->adminOrdersWidgetArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
         } catch (\Throwable $t) {

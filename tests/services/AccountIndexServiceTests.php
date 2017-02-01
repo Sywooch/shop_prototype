@@ -49,14 +49,14 @@ class AccountIndexServiceTests extends TestCase
         $this->assertNotEmpty($result);
         
         $this->assertArrayHasKey('accountContactsWidgetConfig', $result);
-        $this->assertArrayHasKey('accountOrdersWidgetConfig', $result);
+        $this->assertArrayHasKey('accountCurrentOrdersWidgetConfig', $result);
         $this->assertArrayHasKey('accountMailingsWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['accountContactsWidgetConfig']);
         $this->assertNotEmpty($result['accountContactsWidgetConfig']);
         
-        $this->assertInternalType('array', $result['accountOrdersWidgetConfig']);
-        $this->assertNotEmpty($result['accountOrdersWidgetConfig']);
+        $this->assertInternalType('array', $result['accountCurrentOrdersWidgetConfig']);
+        $this->assertNotEmpty($result['accountCurrentOrdersWidgetConfig']);
         
         $this->assertInternalType('array', $result['accountMailingsWidgetConfig']);
         $this->assertNotEmpty($result['accountMailingsWidgetConfig']);

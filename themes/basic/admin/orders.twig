@@ -2,7 +2,7 @@
 
 {{ use ('app/widgets/AdminOrdersBreadcrumbsWidget') }}
 {{ use('app/widgets/OrdersFiltersWidget') }}
-{{ use ('app/widgets/AdminOrdersFormWidget') }}
+{{ use ('app/widgets/AdminOrdersWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
 {{ use('app/widgets/AdminCsvOrdersFormWidget') }}
 
@@ -14,6 +14,6 @@
 
 {{ admin_csv_orders_form_widget_widget(adminCsvOrdersFormWidgetConfig) }}
 
-{{ admin_orders_form_widget_widget(adminOrdersFormWidgetConfig) }}
+{{ admin_orders_widget_widget(adminOrdersWidgetConfig) }}
 
 {{ pagination_widget_widget(paginationWidgetConfig) }}

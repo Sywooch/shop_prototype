@@ -9,7 +9,8 @@ use app\actions\{AjaxAction,
 use app\services\{AdminIndexService,
     AdminOrderDetailChangeService,
     AdminOrderDetailFormService,
-    AdminOrdersService};
+    AdminOrdersService,
+    AdminProductsService};
 
 /**
  * Обрабатывает запросы к админ разделу
@@ -36,7 +37,12 @@ class AdminController extends Controller
             'order-detail-change'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AdminOrderDetailChangeService(),
-            ]
+            ],
+            'products'=>[
+                'class'=>GetAction::class,
+                'service'=>new AdminProductsService(),
+                'view'=>'products.twig',
+            ],
         ];
     }
     

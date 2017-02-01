@@ -2,7 +2,7 @@
 
 {{ use ('app/widgets/AccountOrdersBreadcrumbsWidget') }}
 {{ use('app/widgets/OrdersFiltersWidget') }}
-{{ use ('app/widgets/AccountOrdersFormWidget') }}
+{{ use ('app/widgets/AccountOrdersWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
 
 {{ include('@theme/common/account-common.twig') }}
@@ -11,6 +11,6 @@
 
 {{ orders_filters_widget_widget(оrdersFiltersWidgetConfig) }}
 
-{{ account_orders_form_widget_widget(accountOrdersFormWidgetConfig) }}
+{{ account_orders_widget_widget(accountOrdersWidgetConfig) }}
 
 {{ pagination_widget_widget(paginationWidgetConfig) }}

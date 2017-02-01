@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
     GetAccountOrdersPaginationWidgetConfigService,
-    GetAccountOrdersFormWidgetConfigService,
+    GetAccountOrdersWidgetConfigService,
     GetOrdersFiltersWidgetConfigService};
 
 /**
@@ -33,8 +33,8 @@ class AccountOrdersService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetOrdersFiltersWidgetConfigService::class);
                 $dataArray['оrdersFiltersWidgetConfig'] = $service->handle($request);
                 
-                $service = \Yii::$app->registry->get(GetAccountOrdersFormWidgetConfigService::class);
-                $dataArray['accountOrdersFormWidgetConfig'] = $service->handle($request);
+                $service = \Yii::$app->registry->get(GetAccountOrdersWidgetConfigService::class);
+                $dataArray['accountOrdersWidgetConfig'] = $service->handle($request);
                 
                 $service = \Yii::$app->registry->get(GetAccountOrdersPaginationWidgetConfigService::class);
                 $dataArray['paginationWidgetConfig'] = $service->handle($request);
