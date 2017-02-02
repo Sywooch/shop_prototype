@@ -2,9 +2,12 @@
 
 {{ use ('app/widgets/AdminProductsBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminProductsWidget') }}
+{{ use('app/widgets/PaginationWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
 {{ admin_products_breadcrumbs_widget_widget() }}
 
 {{ admin_products_widget_widget(adminProductsWidgetConfig) }}
+
+{{ pagination_widget_widget(paginationWidgetConfig) }}

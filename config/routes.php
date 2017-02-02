@@ -72,6 +72,7 @@ $routes = [
     'admin-orders'=>'admin/orders',
     'admin-order-detail-form'=>'admin/order-detail-form',
     'admin-order-detail-change'=>'admin/order-detail-change',
+    'admin-products-<page:\d{1,3}>'=>'admin/products',
     'admin-products'=>'admin/products',
     'admin-product-detail-form'=>'admin/product-detail-form',
     
