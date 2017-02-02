@@ -3,18 +3,18 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\GetProductsCollectionSphinxService;
-use app\tests\DbManager;
+use app\services\AdminProductsCollectionService;
 use app\tests\sources\fixtures\ProductsFixture;
-use app\controllers\ProductsListController;
-use app\collections\CollectionInterface;
+use app\tests\DbManager;
+use app\controllers\AdminController;
+use app\collections\ProductsCollection;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
 
 /**
- * Тестирует класс GetProductsCollectionSphinxService
+ * Тестирует класс AdminProductsCollectionService
  */
-class GetProductsCollectionSphinxServiceTests extends TestCase
+class AdminProductsCollectionServiceTests extends TestCase
 {
     private static $dbClass;
     
@@ -29,113 +29,105 @@ class GetProductsCollectionSphinxServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства GetProductsCollectionSphinxService
+     * Тестирует свойства AdminProductsCollectionService
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(GetProductsCollectionSphinxService::class);
+        $reflection = new \ReflectionClass(AdminProductsCollectionService::class);
         
         $this->assertTrue($reflection->hasProperty('productsCollection'));
     }
     
     /**
-     * Тестирует метод GetProductsCollectionSphinxService::handle
+     * Тестирует метод AdminProductsCollectionService::handle
      * если отсутствует параметр $request
      * @expectedException ErrorException
      */
     public function testHandleEmptyRequest()
     {
-        $service = new GetProductsCollectionSphinxService();
+        $service = new AdminProductsCollectionService();
         $service->handle();
     }
     
     /**
-     * Тестирует метод GetProductsCollectionSphinxService::handle
+     * Тестирует метод AdminProductsCollectionService::handle
      * page === null
      * filters === null
      */
-    public function testHandleOne()
+    public function testHandle()
     {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
+        \Yii::$app->controller = new AdminController('admin', \Yii::$app);
         
         $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
-                if ($name === 'search') {
-                    return 'пиджак';
-                }
+                return null;
             }
         };
         
-        $service = new GetProductsCollectionSphinxService();
+        $service = new AdminProductsCollectionService();
         $result = $service->handle($request);
 
-        $this->assertInstanceOf(CollectionInterface::class, $result);
+        $this->assertInstanceOf(ProductsCollection::class, $result);
         $this->assertFalse($result->isEmpty());
     }
     
     /**
-     * Тестирует метод GetProductsCollectionSphinxService::handle
+     * Тестирует метод AdminProductsCollectionService::handle
      * page === true
      * filters === null
      */
-    public function testHandleTwo()
+    public function testHandlePage()
     {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
         $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
-                if ($name === 'search') {
-                    return 'пиджак';
-                }
-                if ($name === 'page') {
-                    return 1;
-                }
+                return 2;
             }
         };
         
-        $service = new GetProductsCollectionSphinxService();
+        $service = new AdminProductsCollectionService();
         $result = $service->handle($request);
 
-        $this->assertInstanceOf(CollectionInterface::class, $result);
+        $this->assertInstanceOf(ProductsCollection::class, $result);
         $this->assertFalse($result->isEmpty());
     }
-    
+
     /**
-     * Тестирует метод GetProductsCollectionSphinxService::handle
+     * Тестирует метод AdminProductsCollectionService::handle
      * page === null
      * filters === true
      */
-    public function testHandleThree()
+    public function testHandleFilters()
     {
-        \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
-        
         $key = HashHelper::createFiltersKey(Url::current());
         
         $session = \Yii::$app->session;
         $session->open();
         $session->set($key, [
+            'sortingField'=>'views',
+            'sortingType'=>SORT_ASC,
             'colors'=>[1, 2, 3, 4, 5],
             'sizes'=>[1, 2, 3, 4, 5],
             'brands'=>[1, 2, 3, 4, 5],
+            'categories'=>[1, 2],
+            'subcategory'=>[1, 2],
+            'active'=>true
         ]);
-        
+
         $request = new class() {
             public function get($name = null, $defaultValue = null)
             {
-                if ($name === 'search') {
-                    return 'пиджак';
-                }
+                return null;
             }
         };
         
-        $service = new GetProductsCollectionSphinxService();
+        $service = new AdminProductsCollectionService();
         $result = $service->handle($request);
 
-        $this->assertInstanceOf(CollectionInterface::class, $result);
+        $this->assertInstanceOf(ProductsCollection::class, $result);
         $this->assertFalse($result->isEmpty());
-        
+
         $session->remove($key);
         $session->close();
     }

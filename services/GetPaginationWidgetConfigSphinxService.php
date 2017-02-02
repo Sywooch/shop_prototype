@@ -4,7 +4,7 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetProductsCollectionSphinxService};
+    ProductsCollectionSphinxService};
 
 /**
  * Возвращает массив данных для ProductsWidget
@@ -27,7 +27,7 @@ class GetPaginationWidgetConfigSphinxService extends AbstractBaseService
             if (empty($this->paginationWidgetArray)) {
                 $dataArray = [];
                 
-                $service = \Yii::$app->registry->get(GetProductsCollectionSphinxService::class);
+                $service = \Yii::$app->registry->get(ProductsCollectionSphinxService::class);
                 $productsCollection = $service->handle($request);
             
                 $pagination = $productsCollection->pagination;

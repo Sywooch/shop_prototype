@@ -7,6 +7,7 @@ use app\finders\AbstractBaseFinder;
 use app\filters\AdminProductsFiltersInterface;
 use app\collections\{LightPagination,
     ProductsCollection};
+use app\models\ProductsModel;
 
 /**
  * Возвращает array ProductsModel из СУБД
@@ -33,9 +34,9 @@ class AdminProductsFinder extends AbstractBaseFinder
     public function find(): ProductsCollection
     {
         try {
-            /*if (empty($this->filters)) {
+            if (empty($this->filters)) {
                 throw new ErrorException($this->emptyError('filters'));
-            }*/
+            }
             
             if (empty($this->storage)) {
                 $this->storage = new ProductsCollection(['pagination'=>new LightPagination()]);
@@ -43,6 +44,10 @@ class AdminProductsFinder extends AbstractBaseFinder
                 $query = ProductsModel::find();
                 $query->select(['[[products.id]]', '[[products.date]]', '[[products.code]]', '[[products.name]]', '[[products.description]]', '[[products.short_description]]', '[[products.price]]', '[[products.images]]', '[[products.id_category]]', '[[products.id_subcategory]]', '[[products.id_brand]]', '[[products.active]]', '[[products.total_products]]', '[[products.seocode]]', '[[products.views]]', ]);
                 $query->with('category', 'subcategory', 'brand', 'colors', 'sizes');
+                
+                if ($this->filters->active === true || $this->filters->active === false) {
+                    $query->andWhere(['[[products.active]]'=>$this->filters->active]);
+                }
                 
                 if (!empty($this->filters->colors)) {
                     $query->innerJoin('{{products_colors}}', '[[products_colors.id_product]]=[[products.id]]');
@@ -60,6 +65,14 @@ class AdminProductsFinder extends AbstractBaseFinder
                     $query->andWhere(['[[products.id_brand]]'=>$this->filters->brands]);
                 }
                 
+                if (!empty($this->filters->categories)) {
+                    $query->andWhere(['[[products.id_category]]'=>$this->filters->categories]);
+                }
+                
+                if (!empty($this->filters->subcategory)) {
+                    $query->andWhere(['[[products.id_subcategory]]'=>$this->filters->subcategory]);
+                }
+                
                 $this->storage->pagination->pageSize = \Yii::$app->params['limit'];
                 $this->storage->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
                 $this->storage->pagination->setTotalCount($query);
@@ -71,7 +84,13 @@ class AdminProductsFinder extends AbstractBaseFinder
                 $sortingType = $this->filters->sortingType ?? \Yii::$app->params['sortingType'];
                 $query->orderBy(['[[products.' . $sortingField . ']]'=>(int) $sortingType]);
                 
-                $this->get($query);
+                $productsModelArray = $query->all();
+                
+                if (!empty($productsModelArray)) {
+                    foreach ($productsModelArray as $model) {
+                        $this->storage->add($model);
+                    }
+                }
             }
             
             return $this->storage;

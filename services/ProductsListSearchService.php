@@ -12,11 +12,11 @@ use app\services\{AbstractBaseService,
     GetEmptySphinxWidgetConfigService,
     GetFiltersWidgetConfigSphinxService,
     GetPaginationWidgetConfigSphinxService,
-    GetProductsCollectionSphinxService,
     GetProductsWidgetSphinxConfigService,
     GetSearchWidgetConfigService,
     GetSphinxArrayService,
-    GetUserInfoWidgetConfigService};
+    GetUserInfoWidgetConfigService,
+    ProductsCollectionSphinxService};
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -65,7 +65,7 @@ class ProductsListSearchService extends AbstractBaseService
                     $service = \Yii::$app->registry->get(GetEmptySphinxWidgetConfigService::class);
                     $dataArray['emptySphinxWidgetConfig'] = $service->handle();
                 } else {
-                    $service = \Yii::$app->registry->get(GetProductsCollectionSphinxService::class);
+                    $service = \Yii::$app->registry->get(ProductsCollectionSphinxService::class);
                     $productsCollection = $service->handle($request);
                     
                     if ($productsCollection->isEmpty() === true) {

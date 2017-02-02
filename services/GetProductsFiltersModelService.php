@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\services\AbstractBaseService;
 use app\filters\ProductsFilters;
-use app\finders\FiltersSessionFinder;
+use app\finders\ProductsFiltersSessionFinder;
 use app\helpers\HashHelper;
 
 /**
@@ -28,7 +28,9 @@ class GetProductsFiltersModelService extends AbstractBaseService
     {
         try {
             if (empty($this->filtersModel)) {
-                $finder = \Yii::$app->registry->get(FiltersSessionFinder::class, ['key'=>HashHelper::createFiltersKey(Url::current())]);
+                $finder = \Yii::$app->registry->get(ProductsFiltersSessionFinder::class, [
+                    'key'=>HashHelper::createFiltersKey(Url::current())
+                ]);
                 $filtersModel = $finder->find();
                 
                 if (empty($filtersModel)) {

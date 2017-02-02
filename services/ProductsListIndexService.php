@@ -14,7 +14,8 @@ use app\services\{AbstractBaseService,
     GetSearchWidgetConfigService,
     GetPaginationWidgetConfigService,
     GetProductsWidgetConfigService,
-    GetUserInfoWidgetConfigService};
+    GetUserInfoWidgetConfigService,
+    ProductsCollectionService};
 
 /**
  * Формирует массив данных для рендеринга страницы каталога товаров
@@ -52,7 +53,7 @@ class ProductsListIndexService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
                 $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
                 
-                $service = \Yii::$app->registry->get(GetProductsCollectionService::class);
+                $service = \Yii::$app->registry->get(ProductsCollectionService::class);
                 $productsCollection = $service->handle($request);
                 
                 if ($productsCollection->isEmpty() === true) {

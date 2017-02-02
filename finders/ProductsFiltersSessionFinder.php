@@ -10,7 +10,7 @@ use app\filters\ProductsFilters;
 /**
  * Возвращает коллекцию PurchasesModel из сессии
  */
-class FiltersSessionFinder extends AbstractBaseFinder
+class ProductsFiltersSessionFinder extends AbstractBaseFinder
 {
     /**
      * @var string key ключ доступа к данным
@@ -48,7 +48,7 @@ class FiltersSessionFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает категорию свойству FiltersSessionFinder::key
+     * Присваивает категорию свойству ProductsFiltersSessionFinder::key
      * @param string $key
      */
     public function setKey(string $key)

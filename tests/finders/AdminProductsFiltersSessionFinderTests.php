@@ -3,27 +3,27 @@
 namespace app\tests\finders;
 
 use PHPUnit\Framework\TestCase;
-use app\finders\FiltersSessionFinder;
-use app\filters\ProductsFiltersInterface;
+use app\finders\AdminProductsFiltersSessionFinder;
+use app\filters\AdminProductsFiltersInterface;
 
 /**
- * Тестирует класс FiltersSessionFinder
+ * Тестирует класс AdminProductsFiltersSessionFinder
  */
-class FiltersSessionFinderTests extends TestCase
+class AdminProductsFiltersSessionFinderTests extends TestCase
 {
     /**
-     * Тестирует свойства FiltersSessionFinder
+     * Тестирует свойства AdminProductsFiltersSessionFinder
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(FiltersSessionFinder::class);
+        $reflection = new \ReflectionClass(AdminProductsFiltersSessionFinder::class);
         
         $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('storage'));
     }
     
     /**
-     * Тестирует метод FiltersSessionFinder::setKey
+     * Тестирует метод AdminProductsFiltersSessionFinder::setKey
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
@@ -31,18 +31,18 @@ class FiltersSessionFinderTests extends TestCase
     {
         $key = null;
         
-        $widget = new FiltersSessionFinder();
+        $widget = new AdminProductsFiltersSessionFinder();
         $widget->setKey($key);
     }
     
     /**
-     * Тестирует метод FiltersSessionFinder::setKey
+     * Тестирует метод AdminProductsFiltersSessionFinder::setKey
      */
     public function testSetKey()
     {
         $key = 'key';
         
-        $widget = new FiltersSessionFinder();
+        $widget = new AdminProductsFiltersSessionFinder();
         $widget->setKey($key);
         
         $reflection = new \ReflectionProperty($widget, 'key');
@@ -53,27 +53,36 @@ class FiltersSessionFinderTests extends TestCase
     }
     
     /**
-     * Тестирует метод FiltersSessionFinder::find
-     * если пуст FiltersSessionFinder::key
+     * Тестирует метод AdminProductsFiltersSessionFinder::find
+     * если пуст AdminProductsFiltersSessionFinder::key
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
     public function testFindEmptyKey()
     {
-        $finder = new FiltersSessionFinder();
+        $finder = new AdminProductsFiltersSessionFinder();
         $finder->find();
     }
     
     /**
-     * Тестирует метод FiltersSessionFinder::find
+     * Тестирует метод AdminProductsFiltersSessionFinder::find
      */
     public function testFind()
     {
         $session = \Yii::$app->session;
         $session->open();
-        $session->set('key_test', [['sortingField'=>'price', 'sortingType'=>SORT_ASC, 'colors'=>[1, 3], 'sizes'=>[1, 2], 'brands'=>[1]]]);
+        $session->set('key_test', [
+            'sortingField'=>'price',
+            'sortingType'=>SORT_ASC,
+            'colors'=>[1, 3],
+            'sizes'=>[1, 2],
+            'brands'=>[1],
+            'categories'=>[1, 4],
+            'subcategory'=>[1],
+            'active'=>true
+        ]);
         
-        $finder = new FiltersSessionFinder();
+        $finder = new AdminProductsFiltersSessionFinder();
         
         $reflection = new \ReflectionProperty($finder, 'key');
         $reflection->setAccessible(true);
@@ -81,7 +90,7 @@ class FiltersSessionFinderTests extends TestCase
         
         $collection = $finder->find();
         
-        $this->assertInstanceOf(ProductsFiltersInterface::class, $collection);
+        $this->assertInstanceOf(AdminProductsFiltersInterface::class, $collection);
         
         $session->remove('key_test');
         $session->close();

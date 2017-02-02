@@ -4,14 +4,15 @@ namespace app\services;
 
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
-    GetProductsFiltersModelService};
-use app\finders\ProductsFinder;
-use app\collections\ProductsCollection;
+    GetProductsFiltersModelService,
+    GetSphinxArrayService};
+use app\finders\ProductsSphinxFinder;
+use app\collections\CollectionInterface;
 
 /**
  * Возвращает объект ProductsCollection
  */
-class GetProductsCollectionService extends AbstractBaseService
+class ProductsCollectionSphinxService extends AbstractBaseService
 {
     /**
      * @var ProductsCollection
@@ -23,17 +24,19 @@ class GetProductsCollectionService extends AbstractBaseService
      * @param $request
      * @return ProductsCollection
      */
-    public function handle($request): ProductsCollection
+    public function handle($request): CollectionInterface
     {
         try {
             if (empty($this->productsCollection)) {
                 $service = \Yii::$app->registry->get(GetProductsFiltersModelService::class);
                 $filtersModel = $service->handle();
                 
-                $finder = \Yii::$app->registry->get(ProductsFinder::class, [
-                    'category'=>$request->get(\Yii::$app->params['categoryKey']) ?? '',
-                    'subcategory'=>$request->get(\Yii::$app->params['subcategoryKey']) ?? '',
-                    'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
+                $service = \Yii::$app->registry->get(GetSphinxArrayService::class);
+                $sphinxArray = $service->handle($request);
+                
+                $finder = \Yii::$app->registry->get(ProductsSphinxFinder::class, [
+                    'sphinx'=>$sphinxArray,
+                    'page'=>(int) $request->get(\Yii::$app->params['pagePointer']) ?? 0,
                     'filters'=>$filtersModel
                 ]);
                 

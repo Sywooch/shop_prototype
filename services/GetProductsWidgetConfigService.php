@@ -5,7 +5,7 @@ namespace app\services;
 use yii\base\ErrorException;
 use app\services\{AbstractBaseService,
     GetCurrentCurrencyModelService,
-    GetProductsCollectionService};
+    ProductsCollectionService};
 
 /**
  * Возвращает массив данных для ProductsWidget
@@ -28,7 +28,7 @@ class GetProductsWidgetConfigService extends AbstractBaseService
             if (empty($this->productsWidgetArray)) {
                 $dataArray = [];
                 
-                $service = \Yii::$app->registry->get(GetProductsCollectionService::class);
+                $service = \Yii::$app->registry->get(ProductsCollectionService::class);
                 $dataArray['products'] = $service->handle($request);
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
