@@ -4,7 +4,7 @@ namespace app\finders;
 
 use yii\base\ErrorException;
 use app\finders\AbstractBaseFinder;
-use app\filters\ProductsFiltersInterface;
+use app\filters\AdminProductsFiltersInterface;
 use app\collections\{LightPagination,
     ProductsCollection};
 
@@ -13,6 +13,10 @@ use app\collections\{LightPagination,
  */
 class AdminProductsFinder extends AbstractBaseFinder
 {
+    /**
+     * @var AdminProductsFiltersInterface объект товарных фильтров
+     */
+    private $filters;
     /**
      * @var string GET параметр, определяющий текущую страницу каталога товаров
      */
@@ -77,17 +81,17 @@ class AdminProductsFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает ProductsFiltersInterface AdminProductsFinder::filters
-     * @param ProductsFiltersInterface $filters
+     * Присваивает AdminProductsFiltersInterface AdminProductsFinder::filters
+     * @param AdminProductsFiltersInterface $filters
      */
-    /*public function setFilters(ProductsFiltersInterface $filters)
+    public function setFilters(AdminProductsFiltersInterface $filters)
     {
         try {
             $this->filters = $filters;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }*/
+    }
     
     /**
      * Присваивает номер страницы AdminProductsFinder::page
