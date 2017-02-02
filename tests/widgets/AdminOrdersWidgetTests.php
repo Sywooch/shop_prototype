@@ -237,7 +237,7 @@ class AdminOrdersWidgetTests extends TestCase
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
-    public function testRunEmptyView()
+    public function testRunEmptyTemplate()
     {
         $mock = new class() {};
         
@@ -268,8 +268,6 @@ class AdminOrdersWidgetTests extends TestCase
             public $exchange_rate = 2.09;
             public $code = 'MONEY';
         };
-        
-        $statuses = ['shipped'=>'Shipped', 'canceled'=>'Canceled', 'processed'=>'Processed', 'received'=>'Received'];
         
         $form = new class() extends AdminChangeOrderForm {};
         

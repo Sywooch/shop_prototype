@@ -200,6 +200,16 @@ $translate = [
     'Sun'=>'Вск',
     'Download selected orders in csv format'=>'Скачать выбранные заказы в формате CSV',
     'Get link'=>'Получить ссылку',
+    'No products'=>'Нет товаров',
+    'Short description'=>'Краткое описание',
+    'Description'=>'Описание',
+    'Date added'=>'Дата добавления',
+    'Category'=>'Категория',
+    'Subcategory'=>'Подкатегория',
+    'Brand'=>'Бренд',
+    'Active'=>'Активен',
+    'Total products'=>'Количество товаров',
+    'Seocode'=>'Сеокод',
 ];
 
 return $translate;

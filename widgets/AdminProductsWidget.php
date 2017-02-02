@@ -8,7 +8,7 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyInterface;
-use app\forms\AdminChangeOrderForm;
+use app\forms\AdminChangeProductForm;
 use app\helpers\ImgHelper;
 
 /**
@@ -25,9 +25,9 @@ class AdminProductsWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
-     * @var AdminChangeOrderForm
+     * @var AdminChangeProductForm
      */
-    //private $form;
+    private $form;
     /**
      * @var string заголовок
      */
@@ -47,9 +47,9 @@ class AdminProductsWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            /*if (empty($this->form)) {
+            if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
-            }*/
+            }
             if (empty($this->header)) {
                 throw new ErrorException($this->emptyError('header'));
             }
@@ -74,8 +74,8 @@ class AdminProductsWidget extends AbstractBaseWidget
                     $set['short_description'] = Html::encode($product->short_description);
                     $set['description'] = Html::encode($product->description);
                     $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2), $this->currency->code());
-                    $set['colors'] = ArrayHelper::getColumn($product->colors, 'color');
-                    $set['sizes'] = ArrayHelper::getColumn($product->sizes, 'size');
+                    $set['colors'] = implode(', ', ArrayHelper::getColumn($product->colors, 'color'));
+                    $set['sizes'] = implode(', ', ArrayHelper::getColumn($product->sizes, 'size'));
                     if (!empty($product->images)) {
                         $set['image'] = ImgHelper::randThumbn($product->images);
                     }
@@ -87,17 +87,17 @@ class AdminProductsWidget extends AbstractBaseWidget
                     $set['seocode'] = $product->seocode;
                     $set['views'] = $product->views;
                     
-                    /*$form = clone $this->form;
+                    $form = clone $this->form;
                     $set['modelForm'] = \Yii::configure($form, ['id'=>$product->id]);
-                    $set['formId'] = sprintf('admin-order-detail-get-form-%d', $product->id);
-                    $set['formAction'] = Url::to(['/admin/order-detail-form']);
+                    $set['formId'] = sprintf('admin-product-detail-get-form-%d', $product->id);
+                    $set['formAction'] = Url::to(['/admin/product-detail-form']);
                     $set['button'] = \Yii::t('base', 'Change');
                     
                     $set['ajaxValidation'] = false;
                     $set['validateOnSubmit'] = false;
                     $set['validateOnChange'] = false;
                     $set['validateOnBlur'] = false;
-                    $set['validateOnType'] = false;*/
+                    $set['validateOnType'] = false;
                     
                     $renderArray['products'][] = $set;
                 }
@@ -154,17 +154,17 @@ class AdminProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает AdminChangeOrderForm свойству AdminProductsWidget::form
-     * @param AdminChangeOrderForm $form
+     * Присваивает AdminChangeProductForm свойству AdminProductsWidget::form
+     * @param AdminChangeProductForm $form
      */
-    /*public function setForm(AdminChangeOrderForm $form)
+    public function setForm(AdminChangeProductForm $form)
     {
         try {
             $this->form = $form;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }*/
+    }
     
     /**
      * Присваивает заголовок свойству AdminProductsWidget::header
