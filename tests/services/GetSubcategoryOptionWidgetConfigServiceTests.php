@@ -41,6 +41,29 @@ class GetSubcategoryOptionWidgetConfigServiceTests extends TestCase
     
     /**
      * Тестирует метод  GetSubcategoryOptionWidgetConfigService::handle
+     * если request пуст
+     */
+    public function testHandleEmptyRequest()
+    {
+        $request = new class() {
+            public function post($name=null, $defaultValue=null)
+            {
+                return null;
+            }
+        };
+        
+        $service = new GetSubcategoryOptionWidgetConfigService();
+        $result = $service->handle($request);
+        
+        $this->assertArrayHasKey('subcategoryArray', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['subcategoryArray']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод  GetSubcategoryOptionWidgetConfigService::handle
      */
     public function testHandle()
     {

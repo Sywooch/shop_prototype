@@ -117,20 +117,7 @@ class SubcategoryOptionWidgetTests extends TestCase
      */
     public function testRun()
     {
-        $subcategoryArray = [
-            new class() {
-                public $id = 1;
-                public $name = 'First';
-            },
-            new class() {
-                public $id = 2;
-                public $name = 'Second';
-            },
-            new class() {
-                public $id = 3;
-                public $name = 'Three';
-            },
-        ];
+        $subcategoryArray = [1=>'First', 2=>'Second', 3=>'Three'];
         
         $widget = new SubcategoryOptionWidget();
         

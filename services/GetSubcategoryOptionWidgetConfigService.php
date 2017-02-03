@@ -25,9 +25,9 @@ class GetSubcategoryOptionWidgetConfigService extends AbstractBaseService
     public function handle($request): array
     {
         try {
-            $id_category = $request->post(\Yii::$app->params['categoryKey']);
-            
             if (empty($this->subcategoryOptionWidgetArray)) {
+                $id_category = $request->post(\Yii::$app->params['categoryKey']);
+                
                 $dataArray = [];
                 
                 $dataArray['subcategoryArray'] = [\Yii::$app->params['formFiller']];
