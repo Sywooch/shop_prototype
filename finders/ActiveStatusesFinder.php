@@ -6,9 +6,9 @@ use yii\base\ErrorException;
 use app\finders\AbstractBaseFinder;
 
 /**
- * Возвращает доступные поля сортировки
+ * Возвращает доступные поля сортировки по доступности
  */
-class SortingFieldsFinder extends AbstractBaseFinder
+class ActiveStatusesFinder extends AbstractBaseFinder
 {
     /**
      * @var array
@@ -24,8 +24,8 @@ class SortingFieldsFinder extends AbstractBaseFinder
         try {
             if (empty($this->storage)) {
                 $this->storage = [
-                    'date'=>\Yii::t('base', 'Sorting by date'),
-                    'price'=>\Yii::t('base', 'Sorting by price')
+                    1=>\Yii::t('base', 'Active'),
+                    0=>\Yii::t('base', 'Not active')
                 ];
             }
             

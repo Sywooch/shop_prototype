@@ -68,39 +68,40 @@ class GetFiltersWidgetConfigSphinxService extends AbstractBaseService
                 if (empty($sortingFieldsArray)) {
                     throw new ErrorException($this->emptyError('sortingFieldsArray'));
                 }
-                ArrayHelper::multisort($sortingFieldsArray, 'value');
-                $dataArray['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
+                asort($sortingFieldsArray, SORT_STRING);
+                $dataArray['sortingFields'] = $sortingFieldsArray;
                 
                 $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
                 $sortingTypesArray = $finder->find();
                 if (empty($sortingTypesArray)) {
                     throw new ErrorException($this->emptyError('sortingTypesArray'));
                 }
-                ArrayHelper::multisort($sortingTypesArray, 'value');
-                $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
+                asort($sortingTypesArray, SORT_STRING);
+                $dataArray['sortingTypes'] = $sortingTypesArray;
                 
                 $service = \Yii::$app->registry->get(GetProductsFiltersModelService::class);
                 $filtersModel = $service->handle();
                 
                 $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel ->toArray())));
+                
                 if (empty($form->sortingField)) {
-                    foreach ($sortingFieldsArray as $item) {
-                        if ($item['name'] === \Yii::$app->params['sortingField']) {
-                            $form->sortingField = $item;
+                    foreach ($sortingFieldsArray as $key=>$val) {
+                        if ($key === \Yii::$app->params['sortingField']) {
+                            $form->sortingField = $key;
                         }
                     }
                 }
+                
                 if (empty($form->sortingType)) {
-                    foreach ($sortingTypesArray as $item) {
-                        if ($item['name'] === \Yii::$app->params['sortingType']) {
-                            $form->sortingType = $item;
+                    foreach ($sortingTypesArray as $key=>$val) {
+                        if ($key === \Yii::$app->params['sortingType']) {
+                            $form->sortingType = $key;
                         }
                     }
                 }
+                
                 $dataArray['form'] = $form;
-                
                 $dataArray['header'] = \Yii::t('base', 'Filters');
-                
                 $dataArray['template'] = 'products-filters.twig';
                 
                 $this->filtersWidgetArray = $dataArray;

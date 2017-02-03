@@ -208,6 +208,7 @@ $translate = [
     'Subcategory'=>'Подкатегория',
     'Brand'=>'Бренд',
     'Active'=>'Активен',
+    'Not active'=>'Не активен',
     'Total products'=>'Количество товаров',
     'Seocode'=>'Сеокод',
 ];

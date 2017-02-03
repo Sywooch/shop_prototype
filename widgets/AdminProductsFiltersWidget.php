@@ -38,6 +38,10 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
      */
     private $categories;
     /**
+     * @var array статусы доступности
+     */
+    private $activeStatuses;
+    /**
      * @var AdminProductsFiltersForm
      */
     private $form;
@@ -53,11 +57,26 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->statuses)) {
-                throw new ErrorException($this->emptyError('statuses'));
+            if (empty($this->sortingFields)) {
+                throw new ErrorException($this->emptyError('sortingFields'));
             }
             if (empty($this->sortingTypes)) {
                 throw new ErrorException($this->emptyError('sortingTypes'));
+            }
+            if (empty($this->colors)) {
+                throw new ErrorException($this->emptyError('colors'));
+            }
+            if (empty($this->sizes)) {
+                throw new ErrorException($this->emptyError('sizes'));
+            }
+            if (empty($this->brands)) {
+                throw new ErrorException($this->emptyError('brands'));
+            }
+            if (empty($this->categories)) {
+                throw new ErrorException($this->emptyError('categories'));
+            }
+            if (empty($this->activeStatuses)) {
+                throw new ErrorException($this->emptyError('activeStatuses'));
             }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
@@ -75,17 +94,14 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             
             $renderArray['formModel'] = $this->form;
             
-            $renderArray['statuses'] = $this->statuses;
+            $renderArray['sortingFields'] = $this->sortingFields;
             $renderArray['sortingTypes'] = $this->sortingTypes;
-            
-            $renderArray['statusLabel'] = \Yii::t('base', 'Status');
-            $renderArray['sortingTypeLabel'] = \Yii::t('base', 'Sorting by date');
-            
-            $renderArray['calendarHref'] = Url::to(['/calendar/get']);
-            $renderArray['calendarDateFrom'] = \Yii::$app->formatter->asDate($this->form->dateFrom ?? DateHelper::getToday00());
-            $renderArray['calendarDateTo'] = \Yii::$app->formatter->asDate($this->form->dateTo ?? DateHelper::getToday00());
-            $renderArray['calendarTimestampForm'] = $this->form->dateFrom ?? DateHelper::getToday00();
-            $renderArray['calendarTimestampTo'] = $this->form->dateTo ?? DateHelper::getToday00();
+            $renderArray['colors'] = $this->colors;
+            $renderArray['sizes'] = $this->sizes;
+            $renderArray['brands'] = $this->brands;
+            $renderArray['categories'] = $this->categories;
+            $renderArray['subcategory'] = [\Yii::$app->params['formFiller']];
+            $renderArray['activeStatuses'] = $this->activeStatuses;
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -93,12 +109,12 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
             
-            $renderArray['formIdApply'] = 'admin-orders-filters-form';
-            $renderArray['formActionApply'] = Url::to(['/filters/orders-set']);
+            $renderArray['formIdApply'] = 'admin-products-filters-form';
+            $renderArray['formActionApply'] = Url::to(['/filters/products-set']);
             $renderArray['buttonApply'] = \Yii::t('base', 'Apply');
             
-            $renderArray['formIdClean'] = 'admin-orders-filters-clean';
-            $renderArray['formActionClean'] = Url::to(['/filters/orders-unset']);
+            $renderArray['formIdClean'] = 'admin-products-filters-clean';
+            $renderArray['formActionClean'] = Url::to(['/filters/products-unset']);
             $renderArray['buttonClean'] = \Yii::t('base', 'Clean');
             
             return $this->render($this->template, $renderArray);
@@ -108,13 +124,13 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array свойству AdminProductsFiltersWidget::statuses
-     * @param array $statuses
+     * Присваивает array свойству AdminProductsFiltersWidget::sortingFields
+     * @param array $sortingFields
      */
-    public function setStatuses(array $statuses)
+    public function setSortingFields(array $sortingFields)
     {
         try {
-            $this->statuses = $statuses;
+            $this->sortingFields = $sortingFields;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -128,6 +144,71 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
     {
         try {
             $this->sortingTypes = $sortingTypes;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает array свойству AdminProductsFiltersWidget::colors
+     * @param array $colors
+     */
+    public function setColors(array $colors)
+    {
+        try {
+            $this->colors = $colors;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает array свойству AdminProductsFiltersWidget::sizes
+     * @param array $sizes
+     */
+    public function setSizes(array $sizes)
+    {
+        try {
+            $this->sizes = $sizes;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает array свойству AdminProductsFiltersWidget::brands
+     * @param array $brands
+     */
+    public function setBrands(array $brands)
+    {
+        try {
+            $this->brands = $brands;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает array свойству AdminProductsFiltersWidget::categories
+     * @param array $categories
+     */
+    public function setCategories(array $categories)
+    {
+        try {
+            $this->categories = $categories;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает array свойству AdminProductsFiltersWidget::activeStatuses
+     * @param array $activeStatuses
+     */
+    public function setActiveStatuses(array $activeStatuses)
+    {
+        try {
+            $this->activeStatuses = $activeStatuses;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

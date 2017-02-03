@@ -1,0 +1,23 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<div class="orders-filters">
+{% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionApply, 'method':'POST'}) %}
+    {{ form.field(formModel, 'sortingField').dropDownList(sortingFields) | raw }}
+    {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes) | raw }}
+    {{ form.field(formModel, 'colors').checkboxList(colors) | raw }}
+    {{ form.field(formModel, 'sizes').checkboxList(sizes) | raw }}
+    {{ form.field(formModel, 'brands').checkboxList(brands) | raw }}
+    {{ form.field(formModel, 'categories').dropDownList(categories) | raw }}
+    {{ form.field(formModel, 'subcategory').dropDownList(subcategory) | raw }}
+    {{ form.field(formModel, 'active').checkboxList(activeStatuses) | raw }}
+    {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    <input type="submit" value="{{ buttonApply }}">
+{{ active_form_end() }}
+
+{% set form = active_form_begin({'id':formIdClean, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionClean, 'method':'POST'}) %}
+    {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    <input type="submit" value="{{ buttonClean }}">
+{{ active_form_end() }}
+</div>

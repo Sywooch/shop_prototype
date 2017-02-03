@@ -3,10 +3,13 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\services\AbstractBaseService;
-use app\finders\{AdminProductsFiltersSessionFinder,
+use app\finders\{ActiveStatusesFinder,
+    AdminProductsFiltersSessionFinder,
     BrandsFinder,
+    CategoriesFinder,
     ColorsFinder,
     SizesFinder,
     SortingFieldsFinder,
@@ -40,16 +43,16 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                 if (empty($sortingFieldsArray)) {
                     throw new ErrorException($this->emptyError('sortingFieldsArray'));
                 }
-                ArrayHelper::multisort($sortingFieldsArray, 'value');
-                $dataArray['sortingFields'] = ArrayHelper::map($sortingFieldsArray, 'name', 'value');
+                asort($sortingFieldsArray, SORT_STRING);
+                $dataArray['sortingFields'] = $sortingFieldsArray;
                 
                 $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
                 $sortingTypesArray = $finder->find();
                 if (empty($sortingTypesArray)) {
                     throw new ErrorException($this->emptyError('sortingTypesArray'));
                 }
-                ArrayHelper::multisort($sortingTypesArray, 'value');
-                $dataArray['sortingTypes'] = ArrayHelper::map($sortingTypesArray, 'name', 'value');
+                asort($sortingTypesArray, SORT_STRING);
+                $dataArray['sortingTypes'] = $sortingTypesArray;
                 
                 $finder = \Yii::$app->registry->get(ColorsFinder::class);
                 $colorsArray = $finder->find();
@@ -81,7 +84,17 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('categoriesArray'));
                 }
                 ArrayHelper::multisort($categoriesArray, 'name');
-                $dataArray['categories'] = ArrayHelper::map($categoriesArray, 'id', 'name');
+                $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
+                array_unshift($categoriesArray, \Yii::$app->params['formFiller']);
+                $dataArray['categories'] = $categoriesArray;
+                
+                $finder = \Yii::$app->registry->get(ActiveStatusesFinder::class);
+                $activeStatusesArray = $finder->find();
+                if (empty($activeStatusesArray)) {
+                    throw new ErrorException($this->emptyError('activeStatusesArray'));
+                }
+                asort($activeStatusesArray, SORT_STRING);
+                $dataArray['activeStatuses'] = $activeStatusesArray;
                 
                 $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
                     'key'=>HashHelper::createFiltersKey(Url::current())
@@ -91,16 +104,17 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                 $form = new AdminProductsFiltersForm(array_filter($filtersModel->toArray()));
                 
                 if (empty($form->sortingField)) {
-                    foreach ($sortingFieldsArray as $item) {
-                        if ($item['name'] === \Yii::$app->params['sortingField']) {
-                            $form->sortingField = $item;
+                    foreach ($sortingFieldsArray as $key=>$val) {
+                        if ($key === \Yii::$app->params['sortingField']) {
+                            $form->sortingField = $key;
                         }
                     }
                 }
+                
                 if (empty($form->sortingType)) {
-                    foreach ($sortingTypesArray as $item) {
-                        if ($item['name'] === \Yii::$app->params['sortingType']) {
-                            $form->sortingType = $item;
+                    foreach ($sortingTypesArray as $key=>$val) {
+                        if ($key === \Yii::$app->params['sortingType']) {
+                            $form->sortingType = $key;
                         }
                     }
                 }
@@ -109,7 +123,7 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                 
                 $dataArray['form'] = $form;
                 $dataArray['header'] = \Yii::t('base', 'Filters');
-                $dataArray['template'] = 'products-filters.twig';
+                $dataArray['template'] = 'admin-products-filters.twig';
                 
                 $this->adminProductsFiltersWidgetArray = $dataArray;
             }
