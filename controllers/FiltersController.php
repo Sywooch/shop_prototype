@@ -8,6 +8,7 @@ use app\actions\{AjaxAction,
     RedirectAction};
 use app\services\{FiltersOrdersSetService,
     FiltersOrdersUnsetService,
+    FiltersProductsSetService,
     FiltersSetService,
     FiltersUnsetService};
 
@@ -34,6 +35,10 @@ class FiltersController extends Controller
             'orders-unset'=>[
                 'class'=>RedirectAction::class,
                 'service'=>new FiltersOrdersUnsetService()
+            ],
+            'products-set'=>[
+                'class'=>RedirectAction::class,
+                'service'=>new FiltersProductsSetService()
             ],
         ];
     }

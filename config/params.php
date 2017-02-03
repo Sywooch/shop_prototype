@@ -16,6 +16,7 @@ $params = [
     'sortingFieldOrders'=>'received_date', # Поле сортировки заказов по умолчанию
     'sortingTypeOrders'=>SORT_DESC, # Тип сортировки заказов по умолчанию
     'ordersFilters'=>'ordersFilters', # Ключ, по которому в $_REQUEST доступны фильтры заказов админ раздела
+    'adminProductsFilters'=>'adminProductsFilters', # Ключ, по которому в $_REQUEST доступны фильтры товаров админ раздела
     
     # Путь к товару
     'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступна текущая категория

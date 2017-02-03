@@ -30,7 +30,7 @@ class AdminProductsCollectionService extends AbstractBaseService
         try {
             if (empty($this->productsCollection)) {
                 $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
-                    'key'=>HashHelper::createFiltersKey(Url::current())
+                    'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]),
                 ]);
                 $filtersModel = $finder->find();
                 

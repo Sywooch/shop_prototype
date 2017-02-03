@@ -45,7 +45,7 @@ class AdminProductsFinder extends AbstractBaseFinder
                 $query->select(['[[products.id]]', '[[products.date]]', '[[products.code]]', '[[products.name]]', '[[products.description]]', '[[products.short_description]]', '[[products.price]]', '[[products.images]]', '[[products.id_category]]', '[[products.id_subcategory]]', '[[products.id_brand]]', '[[products.active]]', '[[products.total_products]]', '[[products.seocode]]', '[[products.views]]', ]);
                 $query->with('category', 'subcategory', 'brand', 'colors', 'sizes');
                 
-                if ($this->filters->active === true || $this->filters->active === false) {
+                if (!empty($this->filters->active)) {
                     $query->andWhere(['[[products.active]]'=>$this->filters->active]);
                 }
                 
@@ -83,6 +83,8 @@ class AdminProductsFinder extends AbstractBaseFinder
                 $sortingField = $this->filters->sortingField ?? \Yii::$app->params['sortingField'];
                 $sortingType = $this->filters->sortingType ?? \Yii::$app->params['sortingType'];
                 $query->orderBy(['[[products.' . $sortingField . ']]'=>(int) $sortingType]);
+                
+                print_r($query->createCommand()->getRawSql());
                 
                 $productsModelArray = $query->all();
                 

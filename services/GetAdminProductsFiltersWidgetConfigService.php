@@ -96,11 +96,11 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                 $dataArray['activeStatuses'] = $activeStatusesArray;
                 
                 $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
-                    'key'=>HashHelper::createFiltersKey(Url::current())
+                    'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']])
                 ]);
                 $filtersModel = $finder->find();
                 
-                $form = new AdminProductsFiltersForm(array_filter($filtersModel->toArray()));
+                $form = new AdminProductsFiltersForm($filtersModel->toArray());
                 
                 if (empty($form->sortingField)) {
                     foreach ($sortingFieldsArray as $key=>$val) {
