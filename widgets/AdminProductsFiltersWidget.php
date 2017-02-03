@@ -109,6 +109,8 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
             
+            $renderArray['categoriesHref'] = Url::to(['/categories/get-subcategory']);
+            
             $renderArray['formIdApply'] = 'admin-products-filters-form';
             $renderArray['formActionApply'] = Url::to(['/filters/products-set']);
             $renderArray['buttonApply'] = \Yii::t('base', 'Apply');

@@ -739,7 +739,7 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[sizes\]\[\]" value="2"> 45</label>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[brands\]\[\]" value="1"> Adidas</label>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[brands\]\[\]" value="3"> Canon</label>#', $result);
-        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[categories\]">#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[categories\]" data-href=".+">#', $result);
         $this->assertRegExp('#<option value="1">Shoes</option>#', $result);
         $this->assertRegExp('#<option value="2">Hats</option>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[subcategory\]">#', $result);

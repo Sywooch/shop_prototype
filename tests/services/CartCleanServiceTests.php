@@ -83,7 +83,7 @@ class CartCleanServiceTests extends TestCase
         
         $session->remove(HashHelper::createCartKey());
         $session->remove(HashHelper::createCartCustomerKey());
-        $session->open();
+        $session->close();
     }
     
     public static function tearDownAfterClass()

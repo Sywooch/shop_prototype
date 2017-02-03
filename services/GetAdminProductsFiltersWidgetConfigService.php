@@ -85,8 +85,7 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                 }
                 ArrayHelper::multisort($categoriesArray, 'name');
                 $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
-                array_unshift($categoriesArray, \Yii::$app->params['formFiller']);
-                $dataArray['categories'] = $categoriesArray;
+                $dataArray['categories'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
                 
                 $finder = \Yii::$app->registry->get(ActiveStatusesFinder::class);
                 $activeStatusesArray = $finder->find();
