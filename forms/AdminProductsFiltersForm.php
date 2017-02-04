@@ -40,9 +40,9 @@ class AdminProductsFiltersForm extends AbstractBaseForm
      */
     public $brands;
     /**
-     * @var array массив ID категорий
+     * @var int ID категории
      */
-    public $categories;
+    public $category;
     /**
      * @var array массив ID подкатегорий
      */
@@ -59,7 +59,7 @@ class AdminProductsFiltersForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::SAVE=>['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'categories', 'subcategory', 'active', 'url'],
+            self::SAVE=>['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'category', 'subcategory', 'active', 'url'],
             self::CLEAN=>['url'],
         ];
     }

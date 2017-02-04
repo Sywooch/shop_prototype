@@ -3,16 +3,16 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FiltersProductsSetService;
+use app\services\FiltersAdminProductsSetService;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс FiltersProductsSetService
+ * Тестирует класс FiltersAdminProductsSetService
  */
-class FiltersProductsSetServiceTests extends TestCase
+class FiltersAdminProductsSetServiceTests extends TestCase
 {
     /**
-     * Тестирует метод FiltersProductsSetService::handle
+     * Тестирует метод FiltersAdminProductsSetService::handle
      * если не загрузилась форма
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: request
@@ -26,12 +26,12 @@ class FiltersProductsSetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersProductsSetService();
+        $filter = new FiltersAdminProductsSetService();
         $result = $filter->handle($request);
     }
     
     /**
-     * Тестирует метод FiltersProductsSetService::handle
+     * Тестирует метод FiltersAdminProductsSetService::handle
      * если не валидны
      * @expectedException ErrorException
      * @expectedExceptionMessage Необходимо заполнить «Url».
@@ -49,12 +49,12 @@ class FiltersProductsSetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersProductsSetService();
+        $filter = new FiltersAdminProductsSetService();
         $result = $filter->handle($request);
     }
     
     /**
-     * Тестирует метод FiltersProductsSetService::handle
+     * Тестирует метод FiltersAdminProductsSetService::handle
      */
     public function testHandle()
     {
@@ -68,7 +68,7 @@ class FiltersProductsSetServiceTests extends TestCase
                         'colors'=>[1, 2],
                         'sizes'=>[1, 2],
                         'brands'=>[1, 2],
-                        'categories'=>[1, 2],
+                        'category'=>1,
                         'subcategory'=>[1],
                         'active'=>true,
                         'url'=>'https://shop.com-4'
@@ -77,7 +77,7 @@ class FiltersProductsSetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersProductsSetService();
+        $filter = new FiltersAdminProductsSetService();
         $result = $filter->handle($request);
         
         $this->assertEquals('https://shop.com', $result);
@@ -95,7 +95,7 @@ class FiltersProductsSetServiceTests extends TestCase
         $this->assertArrayHasKey('colors', $result);
         $this->assertArrayHasKey('sizes', $result);
         $this->assertArrayHasKey('brands', $result);
-        $this->assertArrayHasKey('categories', $result);
+        $this->assertArrayHasKey('category', $result);
         $this->assertArrayHasKey('subcategory', $result);
         $this->assertArrayHasKey('active', $result);
         
@@ -104,7 +104,7 @@ class FiltersProductsSetServiceTests extends TestCase
         $this->assertSame([1, 2], $result['colors']);
         $this->assertSame([1, 2], $result['sizes']);
         $this->assertSame([1, 2], $result['brands']);
-        $this->assertSame([1, 2], $result['categories']);
+        $this->assertSame(1, $result['category']);
         $this->assertSame([1], $result['subcategory']);
         $this->assertSame(true, $result['active']);
         

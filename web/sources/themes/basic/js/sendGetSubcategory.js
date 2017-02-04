@@ -31,7 +31,7 @@ $(function() {
         };
     };
     
-    $('#adminproductsfiltersform-categories').on('change', function(event) {
+    $('#adminproductsfiltersform-category').on('change', function(event) {
         (new SendGetSubcategory()).send(event);
         event.preventDefault();
     });

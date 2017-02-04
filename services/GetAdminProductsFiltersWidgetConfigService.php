@@ -13,7 +13,8 @@ use app\finders\{ActiveStatusesFinder,
     ColorsFinder,
     SizesFinder,
     SortingFieldsFinder,
-    SortingTypesFinder};
+    SortingTypesFinder,
+    SubcategoryIdCategoryFinder};
 use app\helpers\HashHelper;
 use app\forms\AdminProductsFiltersForm;
 
@@ -37,6 +38,11 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
         try {
             if (empty($this->adminProductsFiltersWidgetArray)) {
                 $dataArray = [];
+                
+                $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
+                    'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']])
+                ]);
+                $filtersModel = $finder->find();
                 
                 $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
                 $sortingFieldsArray = $finder->find();
@@ -87,6 +93,15 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                 $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
                 $dataArray['categories'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
                 
+                $dataArray['subcategory'] = [\Yii::$app->params['formFiller']];
+                if (!empty($filtersModel->category)) {
+                    $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, ['id_category'=>$filtersModel->category]);
+                    $subcategoryArray = $finder->find();
+                    $subcategoryArray = ArrayHelper::map($subcategoryArray, 'id', 'name');
+                    $dataArray['subcategory'] = ArrayHelper::merge($dataArray['subcategory'], $subcategoryArray);
+                }
+                
+                
                 $finder = \Yii::$app->registry->get(ActiveStatusesFinder::class);
                 $activeStatusesArray = $finder->find();
                 if (empty($activeStatusesArray)) {
@@ -94,11 +109,6 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                 }
                 asort($activeStatusesArray, SORT_STRING);
                 $dataArray['activeStatuses'] = $activeStatusesArray;
-                
-                $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
-                    'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']])
-                ]);
-                $filtersModel = $finder->find();
                 
                 $form = new AdminProductsFiltersForm($filtersModel->toArray());
                 

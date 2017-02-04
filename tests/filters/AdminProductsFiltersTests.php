@@ -24,7 +24,7 @@ class AdminProductsFiltersTests extends TestCase
         $this->assertTrue($reflection->hasProperty('colors'));
         $this->assertTrue($reflection->hasProperty('sizes'));
         $this->assertTrue($reflection->hasProperty('brands'));
-        $this->assertTrue($reflection->hasProperty('categories'));
+        $this->assertTrue($reflection->hasProperty('category'));
         $this->assertTrue($reflection->hasProperty('subcategory'));
         $this->assertTrue($reflection->hasProperty('active'));
     }
@@ -41,7 +41,7 @@ class AdminProductsFiltersTests extends TestCase
             'colors'=>[12, 4],
             'sizes'=>[3, 7],
             'brands'=>[2],
-            'categories'=>[1, 2],
+            'category'=>1,
             'subcategory'=>[2],
             'active'=>true,
         ];
@@ -71,10 +71,10 @@ class AdminProductsFiltersTests extends TestCase
         $result = $reflection->getValue($filter);
         $this->assertSame([2], $result);
         
-        $reflection = new \ReflectionProperty($filter, 'categories');
+        $reflection = new \ReflectionProperty($filter, 'category');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($filter);
-        $this->assertSame([1, 2], $result);
+        $this->assertSame(1, $result);
         
         $reflection = new \ReflectionProperty($filter, 'subcategory');
         $reflection->setAccessible(true);
@@ -243,34 +243,34 @@ class AdminProductsFiltersTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminProductsFilters::setCategories
+     * Тестирует метод AdminProductsFilters::setCategory
      */
-    public function testSetCategories()
+    public function testSetCategory()
     {
         $filter = new AdminProductsFilters();
-        $filter->setCategories([56, 1]);
+        $filter->setCategory(12);
         
-        $reflection = new \ReflectionProperty($filter, 'categories');
+        $reflection = new \ReflectionProperty($filter, 'category');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($filter);
         
-        $this->assertSame([56, 1], $result);
+        $this->assertSame(12, $result);
     }
     
     /**
-     * Тестирует метод AdminProductsFilters::getCategories
+     * Тестирует метод AdminProductsFilters::getCategory
      */
-    public function testGetCategories()
+    public function testGetCategory()
     {
         $filter = new AdminProductsFilters();
         
-        $reflection = new \ReflectionProperty($filter, 'categories');
+        $reflection = new \ReflectionProperty($filter, 'category');
         $reflection->setAccessible(true);
-        $reflection->setValue($filter, [3]);
+        $reflection->setValue($filter, 2);
         
-        $result = $filter->getCategories();
+        $result = $filter->getCategory();
         
-        $this->assertSame([3], $result);
+        $this->assertSame(2, $result);
     }
     
     /**
@@ -362,9 +362,9 @@ class AdminProductsFiltersTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($filter, [12]);
         
-        $reflection = new \ReflectionProperty($filter, 'categories');
+        $reflection = new \ReflectionProperty($filter, 'category');
         $reflection->setAccessible(true);
-        $reflection->setValue($filter, [3]);
+        $reflection->setValue($filter, 2);
         
         $reflection = new \ReflectionProperty($filter, 'subcategory');
         $reflection->setAccessible(true);
@@ -388,7 +388,7 @@ class AdminProductsFiltersTests extends TestCase
         $this->assertSame([1, 3], $result['sizes']);
         $this->assertSame([12], $result['brands']);
         
-        $this->assertSame([3], $result['categories']);
+        $this->assertSame(2, $result['category']);
         $this->assertSame([2, 3], $result['subcategory']);
         $this->assertSame(true, $result['active']);
     }

@@ -38,6 +38,10 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
      */
     private $categories;
     /**
+     * @var array SubcategoryModel
+     */
+    private $subcategory;
+    /**
      * @var array статусы доступности
      */
     private $activeStatuses;
@@ -75,6 +79,9 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             if (empty($this->categories)) {
                 throw new ErrorException($this->emptyError('categories'));
             }
+            if (empty($this->subcategory)) {
+                throw new ErrorException($this->emptyError('subcategory'));
+            }
             if (empty($this->activeStatuses)) {
                 throw new ErrorException($this->emptyError('activeStatuses'));
             }
@@ -100,7 +107,7 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             $renderArray['sizes'] = $this->sizes;
             $renderArray['brands'] = $this->brands;
             $renderArray['categories'] = $this->categories;
-            $renderArray['subcategory'] = [\Yii::$app->params['formFiller']];
+            $renderArray['subcategory'] = $this->subcategory;
             $renderArray['activeStatuses'] = $this->activeStatuses;
             
             $renderArray['ajaxValidation'] = false;
@@ -112,11 +119,11 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             $renderArray['categoriesHref'] = Url::to(['/categories/get-subcategory']);
             
             $renderArray['formIdApply'] = 'admin-products-filters-form';
-            $renderArray['formActionApply'] = Url::to(['/filters/products-set']);
+            $renderArray['formActionApply'] = Url::to(['/filters/admin-products-set']);
             $renderArray['buttonApply'] = \Yii::t('base', 'Apply');
             
             $renderArray['formIdClean'] = 'admin-products-filters-clean';
-            $renderArray['formActionClean'] = Url::to(['/filters/products-unset']);
+            $renderArray['formActionClean'] = Url::to(['/filters/admin-products-unset']);
             $renderArray['buttonClean'] = \Yii::t('base', 'Clean');
             
             return $this->render($this->template, $renderArray);
@@ -198,6 +205,19 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
     {
         try {
             $this->categories = $categories;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает array свойству AdminProductsFiltersWidget::subcategory
+     * @param array $subcategory
+     */
+    public function setSubcategory(array $subcategory)
+    {
+        try {
+            $this->subcategory = $subcategory;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

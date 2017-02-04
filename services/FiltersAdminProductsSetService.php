@@ -13,7 +13,7 @@ use app\filters\AdminProductsFilters;
 /**
  * Сохраняет фильтры каталога товаров
  */
-class FiltersProductsSetService extends AbstractBaseService
+class FiltersAdminProductsSetService extends AbstractBaseService
 {
     /**
      * Обрабатывает запрос на сохранение товарных фильтров
@@ -38,7 +38,7 @@ class FiltersProductsSetService extends AbstractBaseService
             $model->colors = $form->colors;
             $model->sizes = $form->sizes;
             $model->brands = $form->brands;
-            $model->categories = $form->categories;
+            $model->category = $form->category;
             $model->subcategory = $form->subcategory;
             $model->active = $form->active;
             if ($model->validate() === false) {

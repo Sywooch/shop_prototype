@@ -25,7 +25,7 @@ class AdminProductsFiltersFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('colors'));
         $this->assertTrue($reflection->hasProperty('sizes'));
         $this->assertTrue($reflection->hasProperty('brands'));
-        $this->assertTrue($reflection->hasProperty('categories'));
+        $this->assertTrue($reflection->hasProperty('category'));
         $this->assertTrue($reflection->hasProperty('subcategory'));
         $this->assertTrue($reflection->hasProperty('active'));
         $this->assertTrue($reflection->hasProperty('url'));
@@ -43,7 +43,7 @@ class AdminProductsFiltersFormTests extends TestCase
             'colors'=>[1,2],
             'sizes'=>[1,3],
             'brands'=>[1],
-            'categories'=>[1,2],
+            'category'=>1,
             'subcategory'=>[2],
             'active'=>true,
             'url'=>'https://shop.com',
@@ -64,8 +64,8 @@ class AdminProductsFiltersFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'brands');
         $this->assertSame([1], $reflection->getValue($form));
         
-        $reflection = new \ReflectionProperty($form, 'categories');
-        $this->assertSame([1,2], $reflection->getValue($form));
+        $reflection = new \ReflectionProperty($form, 'category');
+        $this->assertSame(1, $reflection->getValue($form));
         
         $reflection = new \ReflectionProperty($form, 'subcategory');
         $this->assertSame([2], $reflection->getValue($form));

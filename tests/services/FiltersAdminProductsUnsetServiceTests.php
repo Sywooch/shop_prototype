@@ -3,16 +3,16 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FiltersOrdersUnsetService;
+use app\services\FiltersAdminProductsUnsetService;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс FiltersOrdersUnsetService
+ * Тестирует класс FiltersAdminProductsUnsetService
  */
-class FiltersOrdersUnsetServiceTests extends TestCase
+class FiltersAdminProductsUnsetServiceTests extends TestCase
 {
     /**
-     * Тестирует метод FiltersOrdersUnsetService::handle
+     * Тестирует метод FiltersAdminProductsUnsetService::handle
      */
     public function testHandle()
     {
@@ -20,7 +20,7 @@ class FiltersOrdersUnsetServiceTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'OrdersFiltersForm'=>[
+                    'AdminProductsFiltersForm'=>[
                         'url'=>'https://shop.com'
                     ]
                 ];
@@ -37,7 +37,7 @@ class FiltersOrdersUnsetServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         
-        $filter = new FiltersOrdersUnsetService();
+        $filter = new FiltersAdminProductsUnsetService();
         $result = $filter->handle($request);
         
         $this->assertEquals('https://shop.com', $result);

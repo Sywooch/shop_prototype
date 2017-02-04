@@ -40,9 +40,9 @@ class AdminProductsFilters extends Model implements AdminProductsFiltersInterfac
      */
     private $brands;
     /**
-     * @var array массив ID категорий
+     * @var int ID категории
      */
-    private $categories;
+    private $category;
     /**
      * @var array массив ID подкатегорий
      */
@@ -55,7 +55,7 @@ class AdminProductsFilters extends Model implements AdminProductsFiltersInterfac
     public function scenarios()
     {
         return [
-            self::SESSION=>['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'categories', 'subcategory', 'active']
+            self::SESSION=>['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'category', 'subcategory', 'active']
         ];
     }
     
@@ -190,26 +190,26 @@ class AdminProductsFilters extends Model implements AdminProductsFiltersInterfac
     }
     
     /**
-     * Присваивает значение AdminProductsFilters::categories
-     * @param array $categories
+     * Присваивает значение AdminProductsFilters::category
+     * @param array $category
      */
-    public function setCategories($categories)
+    public function setCategory($category)
     {
         try {
-            $this->categories = $categories;
+            $this->category = $category;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Возвращает значение AdminProductsFilters::categories
+     * Возвращает значение AdminProductsFilters::category
      * @return mixed
      */
-    public function getCategories()
+    public function getCategory()
     {
         try {
-            return !empty($this->categories) ? $this->categories : null;
+            return !empty($this->category) ? $this->category : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -290,8 +290,8 @@ class AdminProductsFilters extends Model implements AdminProductsFiltersInterfac
                 'brands'=>function() {
                     return $this->brands;
                 },
-                'categories'=>function() {
-                    return $this->categories;
+                'category'=>function() {
+                    return $this->category;
                 },
                 'subcategory'=>function() {
                     return $this->subcategory;

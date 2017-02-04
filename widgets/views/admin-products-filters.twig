@@ -9,7 +9,7 @@
     {{ form.field(formModel, 'colors').checkboxList(colors) | raw }}
     {{ form.field(formModel, 'sizes').checkboxList(sizes) | raw }}
     {{ form.field(formModel, 'brands').checkboxList(brands) | raw }}
-    {{ form.field(formModel, 'categories').dropDownList(categories, {'data-href':categoriesHref}) | raw }}
+    {{ form.field(formModel, 'category').dropDownList(categories, {'data-href':categoriesHref}) | raw }}
     {{ form.field(formModel, 'subcategory').dropDownList(subcategory) | raw }}
     {{ form.field(formModel, 'active').checkboxList(activeStatuses) | raw }}
     {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}

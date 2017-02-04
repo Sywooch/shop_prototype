@@ -12,7 +12,7 @@ interface AdminProductsFiltersInterface
     public function getColors();
     public function getSizes();
     public function getBrands();
-    public function getCategories();
+    public function getCategory();
     public function getSubcategory();
     public function getActive();
 }

@@ -10,7 +10,8 @@ use app\tests\DbManager;
 use app\tests\sources\fixtures\{BrandsFixture,
     CategoriesFixture,
     ColorsFixture,
-    SizesFixture};
+    SizesFixture,
+    SubcategoryFixture};
 
 /**
  * Тестирует класс GetAdminProductsFiltersWidgetConfigService
@@ -25,6 +26,7 @@ class GetAdminProductsFiltersWidgetConfigServiceTests extends TestCase
             'fixtures'=>[
                 'brands'=>BrandsFixture::class,
                 'categories'=>CategoriesFixture::class,
+                'subcategory'=>SubcategoryFixture::class,
                 'colors'=>ColorsFixture::class,
                 'sizes'=>SizesFixture::class,
             ],
@@ -60,6 +62,7 @@ class GetAdminProductsFiltersWidgetConfigServiceTests extends TestCase
         $this->assertArrayHasKey('sizes', $result);
         $this->assertArrayHasKey('brands', $result);
         $this->assertArrayHasKey('categories', $result);
+        $this->assertArrayHasKey('subcategory', $result);
         $this->assertArrayHasKey('activeStatuses', $result);
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('header', $result);
@@ -71,6 +74,7 @@ class GetAdminProductsFiltersWidgetConfigServiceTests extends TestCase
         $this->assertInternalType('array', $result['sizes']);
         $this->assertInternalType('array', $result['brands']);
         $this->assertInternalType('array', $result['categories']);
+        $this->assertInternalType('array', $result['subcategory']);
         $this->assertInternalType('array', $result['activeStatuses']);
         $this->assertInstanceOf(AdminProductsFiltersForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);

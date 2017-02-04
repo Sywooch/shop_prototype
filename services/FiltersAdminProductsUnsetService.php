@@ -7,12 +7,12 @@ use app\services\AbstractBaseService;
 use app\helpers\{HashHelper,
     StringHelper};
 use app\cleaners\SessionCleaner;
-use app\forms\OrdersFiltersForm;
+use app\forms\AdminProductsFiltersForm;
 
 /**
  * Обнуляет фильтры заказов админ раздела
  */
-class FiltersOrdersUnsetService extends AbstractBaseService
+class FiltersAdminProductsUnsetService extends AbstractBaseService
 {
     /**
      * Обрабатывает запрос на обнуление фильтров заказов
@@ -22,7 +22,7 @@ class FiltersOrdersUnsetService extends AbstractBaseService
     public function handle($request): string
     {
         try {
-            $form = new OrdersFiltersForm(['scenario'=>OrdersFiltersForm::CLEAN]);
+            $form = new AdminProductsFiltersForm(['scenario'=>AdminProductsFiltersForm::CLEAN]);
             
             if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('request'));
@@ -32,7 +32,7 @@ class FiltersOrdersUnsetService extends AbstractBaseService
             }
             
             $cleaner = new SessionCleaner([
-                'keys'=>[HashHelper::createHash([\Yii::$app->params['ordersFilters']])],
+                'keys'=>[HashHelper::createHash([\Yii::$app->params['adminProductsFilters']])],
             ]);
             $cleaner->clean();
             

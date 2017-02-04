@@ -26,6 +26,7 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $this->assertTrue($reflection->hasProperty('sizes'));
         $this->assertTrue($reflection->hasProperty('brands'));
         $this->assertTrue($reflection->hasProperty('categories'));
+        $this->assertTrue($reflection->hasProperty('subcategory'));
         $this->assertTrue($reflection->hasProperty('activeStatuses'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('header'));
@@ -211,6 +212,37 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $widget->setCategories($categories);
         
         $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($widget);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+    }
+    
+    /**
+     * Тестирует метод AdminProductsFiltersWidget::setSubcategory
+     * передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetSubcategoryError()
+    {
+        $subcategory = null;
+        
+        $widget = new AdminProductsFiltersWidget();
+        $widget->setSubcategory($subcategory);
+    }
+    
+    /**
+     * Тестирует метод AdminProductsFiltersWidget::setSubcategory
+     */
+    public function testSetSubcategory()
+    {
+        $subcategory = [null];
+        
+        $widget = new AdminProductsFiltersWidget();
+        $widget->setSubcategory($subcategory);
+        
+        $reflection = new \ReflectionProperty($widget, 'subcategory');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
@@ -488,6 +520,45 @@ class AdminProductsFiltersWidgetTests extends TestCase
     
     /**
      * Тестирует метод AdminProductsFiltersWidget::run
+     * если пуст AdminProductsFiltersWidget::subcategory
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: subcategory
+     */
+    public function testRunEmptySubcategory()
+    {
+        $mock = 'mock';
+        
+        $widget = new AdminProductsFiltersWidget();
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $widget->run();
+    }
+    
+    /**
+     * Тестирует метод AdminProductsFiltersWidget::run
      * если пуст AdminProductsFiltersWidget::activeStatuses
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: activeStatuses
@@ -519,6 +590,10 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $reflection->setValue($widget, $mock);
         
         $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'subcategory');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
         
@@ -558,6 +633,10 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $reflection->setValue($widget, $mock);
         
         $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'subcategory');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
         
@@ -601,6 +680,10 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $reflection->setValue($widget, $mock);
         
         $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
+        $reflection = new \ReflectionProperty($widget, 'subcategory');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
         
@@ -651,6 +734,10 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
         
+        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $mock);
+        
         $reflection = new \ReflectionProperty($widget, 'activeStatuses');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
@@ -676,7 +763,8 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $colors = [1=>'black', 2=>'red'];
         $sizes = [0=>35, 2=>45];
         $brands = [1=>'Adidas', 3=>'Canon'];
-        $categories = [1=>'Shoes', 2=>'Hats'];
+        $categories = [0=>\Yii::$app->params['formFiller'], 1=>'Shoes', 2=>'Hats'];
+        $subcategory = [0=>\Yii::$app->params['formFiller'], 1=>'Sneakers'];
         $activeStatuses = [1=>'Active', 0=>'Not active'];
         $form = new class() extends AdminProductsFiltersForm {};
         
@@ -705,6 +793,10 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'categories');
         $reflection->setAccessible(true);
         $result = $reflection->setValue($widget, $categories);
+        
+        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, $subcategory);
         
         $reflection = new \ReflectionProperty($widget, 'activeStatuses');
         $reflection->setAccessible(true);
@@ -739,11 +831,12 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[sizes\]\[\]" value="2"> 45</label>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[brands\]\[\]" value="1"> Adidas</label>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[brands\]\[\]" value="3"> Canon</label>#', $result);
-        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[categories\]" data-href=".+">#', $result);
+        $this->assertRegExp('#<option value="0">------------------------</option>#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[category\]" data-href=".+">#', $result);
         $this->assertRegExp('#<option value="1">Shoes</option>#', $result);
         $this->assertRegExp('#<option value="2">Hats</option>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[subcategory\]">#', $result);
-        $this->assertRegExp('#<option value="0">------------------------</option>#', $result);
+        $this->assertRegExp('#<option value="1">Sneakers</option>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[active\]\[\]" value="1"> Active</label>#', $result);
         $this->assertRegExp('#<label><input type="checkbox" name=".+\[active\]\[\]" value="0"> Not active</label>#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]">#', $result);
