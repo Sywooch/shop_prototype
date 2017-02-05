@@ -199,6 +199,7 @@ $translate = [
     'Sat'=>'Сб',
     'Sun'=>'Вск',
     'Download selected orders in csv format'=>'Скачать выбранные заказы в формате CSV',
+    'Download selected products in csv format'=>'Скачать выбранные товары в формате CSV',
     'Get link'=>'Получить ссылку',
     'No products'=>'Нет товаров',
     'Short description'=>'Краткое описание',

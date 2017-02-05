@@ -54,7 +54,7 @@ class ProductsWidget extends AbstractBaseWidget
                 $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2), $this->currency->code());
                 
                 if (!empty($product->images)) {
-                    $set['image'] = ImgHelper::randThumbn($product->images, 400);
+                    $set['image'] = ImgHelper::randThumbn($product->images);
                 }
                 
                 $renderArray['collection'][] = $set;

@@ -4,12 +4,15 @@
 {{ use ('app/widgets/AdminProductsFiltersWidget') }}
 {{ use ('app/widgets/AdminProductsWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
+{{ use('app/widgets/AdminCsvProductsFormWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
 {{ admin_products_breadcrumbs_widget_widget() }}
 
 {{ admin_products_filters_widget_widget(adminProductsFiltersWidgetConfig) }}
+
+{{ admin_csv_products_form_widget_widget(adminCsvProductsFormWidgetConfig) }}
 
 {{ admin_products_widget_widget(adminProductsWidgetConfig) }}
 

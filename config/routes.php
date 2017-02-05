@@ -83,6 +83,7 @@ $routes = [
     
     # Csv
     'csv-get-orders'=>'csv/get-orders',
+    'csv-get-products'=>'csv/get-products',
     
     # Категории
     'categories-get-subcategory'=>'categories/get-subcategory',
