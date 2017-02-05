@@ -212,6 +212,8 @@ $translate = [
     'Not active'=>'Не активен',
     'Total products'=>'Количество товаров',
     'Seocode'=>'Сеокод',
+    'Product name'=>'Название товара',
+    'Images catalog'=>'Каталог изображений'
 ];
 
 return $translate;

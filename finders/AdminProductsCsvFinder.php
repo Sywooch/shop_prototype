@@ -3,25 +3,20 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
+use yii\db\ActiveQuery;
 use app\finders\AbstractBaseFinder;
 use app\filters\AdminProductsFiltersInterface;
-use app\collections\{LightPagination,
-    ProductsCollection};
 use app\models\ProductsModel;
 
 /**
- * Возвращает array ProductsModel из СУБД
+ * Возвращает ProductsModel выбранного товара из СУБД
  */
-class AdminProductsFinder extends AbstractBaseFinder
+class AdminProductsCsvFinder extends AbstractBaseFinder
 {
     /**
      * @var AdminProductsFiltersInterface объект товарных фильтров
      */
     private $filters;
-    /**
-     * @var string GET параметр, определяющий текущую страницу каталога товаров
-     */
-    private $page;
     /**
      * @var ProductsCollection
      */
@@ -31,7 +26,7 @@ class AdminProductsFinder extends AbstractBaseFinder
      * Возвращает данные из СУБД
      * @return mixed
      */
-    public function find(): ProductsCollection
+    public function find(): ActiveQuery
     {
         try {
             if (empty($this->filters)) {
@@ -39,10 +34,8 @@ class AdminProductsFinder extends AbstractBaseFinder
             }
             
             if (empty($this->storage)) {
-                $this->storage = new ProductsCollection(['pagination'=>new LightPagination()]);
-                
                 $query = ProductsModel::find();
-                $query->select(['[[products.id]]', '[[products.date]]', '[[products.code]]', '[[products.name]]', '[[products.description]]', '[[products.short_description]]', '[[products.price]]', '[[products.images]]', '[[products.id_category]]', '[[products.id_subcategory]]', '[[products.id_brand]]', '[[products.active]]', '[[products.total_products]]', '[[products.seocode]]', '[[products.views]]', ]);
+                $query->select(['[[products.id]]', '[[products.date]]', '[[products.code]]', '[[products.name]]', '[[products.description]]', '[[products.short_description]]', '[[products.price]]', '[[products.images]]', '[[products.id_category]]', '[[products.id_subcategory]]', '[[products.id_brand]]', '[[products.active]]', '[[products.total_products]]', '[[products.seocode]]', '[[products.views]]']);
                 $query->with('category', 'subcategory', 'brand', 'colors', 'sizes');
                 
                 if (!empty($this->filters->active)) {
@@ -73,24 +66,11 @@ class AdminProductsFinder extends AbstractBaseFinder
                     $query->andWhere(['[[products.id_subcategory]]'=>$this->filters->subcategory]);
                 }
                 
-                $this->storage->pagination->pageSize = \Yii::$app->params['limit'];
-                $this->storage->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
-                $this->storage->pagination->setTotalCount($query);
-                
-                $query->offset($this->storage->pagination->offset);
-                $query->limit($this->storage->pagination->limit);
-                
                 $sortingField = $this->filters->sortingField ?? \Yii::$app->params['sortingField'];
                 $sortingType = $this->filters->sortingType ?? \Yii::$app->params['sortingType'];
                 $query->orderBy(['[[products.' . $sortingField . ']]'=>(int) $sortingType]);
                 
-                $productsModelArray = $query->all();
-                
-                if (!empty($productsModelArray)) {
-                    foreach ($productsModelArray as $model) {
-                        $this->storage->add($model);
-                    }
-                }
+                $this->storage = $query;
             }
             
             return $this->storage;
@@ -100,26 +80,13 @@ class AdminProductsFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает AdminProductsFiltersInterface AdminProductsFinder::filters
+     * Присваивает AdminProductsFiltersInterface AdminProductsCsvFinder::filters
      * @param AdminProductsFiltersInterface $filters
      */
     public function setFilters(AdminProductsFiltersInterface $filters)
     {
         try {
             $this->filters = $filters;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает номер страницы AdminProductsFinder::page
-     * @param int $page
-     */
-    public function setPage(int $page)
-    {
-        try {
-            $this->page = $page;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

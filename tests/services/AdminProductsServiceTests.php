@@ -83,10 +83,12 @@ class AdminProductsServiceTests extends TestCase
         $this->assertArrayHasKey('adminProductsFiltersWidgetConfig', $result);
         $this->assertArrayHasKey('adminProductsWidgetConfig', $result);
         $this->assertArrayHasKey('paginationWidgetConfig', $result);
+        $this->assertArrayHasKey('adminCsvProductsFormWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['adminProductsFiltersWidgetConfig']);
         $this->assertInternalType('array', $result['adminProductsWidgetConfig']);
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
+        $this->assertInternalType('array', $result['adminCsvProductsFormWidgetConfig']);
     }
     
     public static function tearDownAfterClass()

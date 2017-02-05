@@ -1,6 +1,6 @@
 $(function() {
     
-    function SendAdminOrderGetCsv() {
+    function SendAdminProductsGetCsv() {
         var self = this;
         AbstractSendForm.apply(this, arguments);
         self.success = function(data, status, jqXHR)
@@ -16,8 +16,8 @@ $(function() {
         };
     };
     
-    $('.get-csv').on('click', '#admin-scv-orders-form > input[type="submit"]', function(event) {
-        (new SendAdminOrderGetCsv()).send(event);
+    $('.get-csv').on('click', '#admin-scv-products-form > input[type="submit"]', function(event) {
+        (new SendAdminProductsGetCsv()).send(event);
         event.preventDefault();
     });
     
