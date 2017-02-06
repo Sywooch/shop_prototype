@@ -10,11 +10,11 @@ $components = [
             'twig'=>[
                 'class'=>'yii\twig\ViewRenderer',
                 'options'=>['auto_reload'=>true],
-                'globals'=>[
+                /*'globals'=>[
                     'url'=>'yii\helpers\Url',
                     'yii'=>'\Yii',
                     'array'=>'yii\helpers\ArrayHelper'
-                ],
+                ],*/
             ]
         ],
         'theme'=>[
@@ -47,7 +47,7 @@ $components = [
         'bundles'=>[
             'yii\web\JqueryAsset'=>[
                 'sourcePath'=>null,
-                'js'=>['https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js']
+                'js'=>['https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js']
             ],
         ],
         'basePath'=>'@webroot/sources/temp',

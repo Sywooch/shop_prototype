@@ -87,6 +87,9 @@ $routes = [
     
     # Категории
     'categories-get-subcategory'=>'categories/get-subcategory',
+    
+    # Отладчик
+    'debug/<controller>/<action>'=>'debug/<controller>/<action>',
 ];
 
 return $routes;

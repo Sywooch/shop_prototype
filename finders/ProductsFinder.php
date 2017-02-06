@@ -3,17 +3,17 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\finders\{AbstractBaseFinder,
-    ProductsFindersTrait};
+use app\finders\AbstractBaseFinder;
 use app\filters\ProductsFiltersInterface;
+use app\collections\{LightPagination,
+    ProductsCollection};
+use app\models\ProductsModel;
 
 /**
  * Возвращает ProductsModel выбранного товара из СУБД
  */
 class ProductsFinder extends AbstractBaseFinder
 {
-    use ProductsFindersTrait;
-    
     /**
      * @var string GET параметр, определяющий текущую категорию каталога товаров
      */
@@ -47,9 +47,11 @@ class ProductsFinder extends AbstractBaseFinder
             }
             
             if (empty($this->storage)) {
-                $this->createCollection();
+                $this->storage = new ProductsCollection(['pagination'=>new LightPagination()]);
                 
-                $query = $this->createQuery();
+                $query = ProductsModel::find();
+                $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
+                $query->where(['[[products.active]]'=>true]);
                 
                 if (!empty($this->category)) {
                     $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
@@ -60,13 +62,40 @@ class ProductsFinder extends AbstractBaseFinder
                     }
                 }
                 
-                $query = $this->addFilters($query);
+                if (!empty($this->filters->colors)) {
+                    $query->innerJoin('{{products_colors}}', '[[products_colors.id_product]]=[[products.id]]');
+                    $query->innerJoin('{{colors}}', '[[colors.id]]=[[products_colors.id_color]]');
+                    $query->andWhere(['[[colors.id]]'=>$this->filters->colors]);
+                }
                 
-                $query = $this->addPagination($query);
+                if (!empty($this->filters->sizes)) {
+                    $query->innerJoin('{{products_sizes}}', '[[products_sizes.id_product]]=[[products.id]]');
+                    $query->innerJoin('{{sizes}}', '[[sizes.id]]=[[products_sizes.id_size]]');
+                    $query->andWhere(['[[sizes.id]]'=>$this->filters->sizes]);
+                }
                 
-                $query = $this->addSorting($query);
+                if (!empty($this->filters->brands)) {
+                    $query->andWhere(['[[products.id_brand]]'=>$this->filters->brands]);
+                }
                 
-                $this->get($query);
+                $this->storage->pagination->pageSize = \Yii::$app->params['limit'];
+                $this->storage->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
+                $this->storage->pagination->setTotalCount($query);
+                
+                $query->offset($this->storage->pagination->offset);
+                $query->limit($this->storage->pagination->limit);
+                
+                $sortingField = $this->filters->sortingField ?? \Yii::$app->params['sortingField'];
+                $sortingType = $this->filters->sortingType ?? \Yii::$app->params['sortingType'];
+                $query->orderBy(['[[products.' . $sortingField . ']]'=>(int) $sortingType]);
+                
+                $productsArray = $query->all();
+                
+                if (!empty($productsArray)) {
+                    foreach ($productsArray as $product) {
+                        $this->storage->add($product);
+                    }
+                }
             }
             
             return $this->storage;
