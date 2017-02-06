@@ -8,7 +8,7 @@ use app\forms\AbstractBaseForm;
 /**
  * Представляет данные формы добавления коментария
  */
-class ProductsForm extends AbstractBaseForm
+class AdminProductForm extends AbstractBaseForm
 {
     /**
      * Сценарий создания нового товара
@@ -18,6 +18,10 @@ class ProductsForm extends AbstractBaseForm
      * Сценарий редактирования товара
      */
     const EDIT = 'edit';
+    /**
+     * Сценарий сценарий запроса формы редактирования
+     */
+    const GET = 'get';
     
     /**
      * @var int ID товара
@@ -89,6 +93,7 @@ class ProductsForm extends AbstractBaseForm
         return [
             self::CREATE=>['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode'],
             self::EDIT=>['id', 'code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode', 'views'],
+            self::GET=>['id'],
         ];
     }
     
@@ -96,7 +101,8 @@ class ProductsForm extends AbstractBaseForm
     {
         return [
             [['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode'], 'required', 'on'=>self::CREATE],
-            [['id'], 'required', 'on'=>self::EDIT]
+            [['id'], 'required', 'on'=>self::EDIT],
+            [['id'], 'required', 'on'=>self::GET],
         ];
     }
 }

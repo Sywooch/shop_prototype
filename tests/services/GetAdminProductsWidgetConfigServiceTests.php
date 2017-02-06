@@ -8,7 +8,7 @@ use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     ProductsFixture};
 use app\models\CurrencyModel;
-use app\forms\AdminChangeProductForm;
+use app\forms\AdminProductForm;
 use app\controllers\AdminController;
 
 /**
@@ -93,7 +93,7 @@ class GetAdminProductsWidgetConfigServiceTests extends TestCase
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('array', $result['products']);
         $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInstanceOf(AdminChangeProductForm::class, $result['form']);
+        $this->assertInstanceOf(AdminProductForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
     }
     

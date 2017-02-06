@@ -3,22 +3,23 @@
 namespace app\tests\forms;
 
 use PHPUnit\Framework\TestCase;
-use app\forms\ProductsForm;
+use app\forms\AdminProductForm;
 
 /**
- * Тестирует класс ProductsForm
+ * Тестирует класс AdminProductForm
  */
-class ProductsFormTests extends TestCase
+class AdminProductFormTests extends TestCase
 {
     /**
-     * Тестирует свойства ProductsForm
+     * Тестирует свойства AdminProductForm
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(ProductsForm::class);
+        $reflection = new \ReflectionClass(AdminProductForm::class);
         
         $this->assertTrue($reflection->hasConstant('CREATE'));
         $this->assertTrue($reflection->hasConstant('EDIT'));
+        $this->assertTrue($reflection->hasConstant('GET'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('code'));
@@ -39,11 +40,11 @@ class ProductsFormTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductsForm::scenarios
+     * Тестирует метод AdminProductForm::scenarios
      */
     public function testScenarios()
     {
-        $form = new ProductsForm(['scenario'=>ProductsForm::CREATE]);
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
         $form->attributes = [
             'code'=>'HJU780-R',
             'name'=>'Product 1',
@@ -104,7 +105,7 @@ class ProductsFormTests extends TestCase
         $result = $reflection->getValue($form);
         $this->assertSame('product', $result);
         
-        $form = new ProductsForm(['scenario'=>ProductsForm::EDIT]);
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
         $form->attributes = [
             'id'=>12,
             'code'=>'HJU780-R',
@@ -172,20 +173,29 @@ class ProductsFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'views');
         $result = $reflection->getValue($form);
         $this->assertSame(571, $result);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+        $form->attributes = [
+            'id'=>12,
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(12, $result);
     }
     
     /**
-     * Тестирует метод ProductsForm::rules
+     * Тестирует метод AdminProductForm::rules
      */
     public function testRules()
     {
-        $form = new ProductsForm(['scenario'=>ProductsForm::CREATE]);
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
         $this->assertCount(14, $form->errors);
         
-        $form = new ProductsForm(['scenario'=>ProductsForm::CREATE]);
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
         $form->attributes = [
             'code'=>'HJU780-R',
             'name'=>'Product 1',
@@ -205,15 +215,28 @@ class ProductsFormTests extends TestCase
         
         $this->assertEmpty($form->errors);
         
-        $form = new ProductsForm(['scenario'=>ProductsForm::EDIT]);
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
         $this->assertCount(1, $form->errors);
         
-        $form = new ProductsForm(['scenario'=>ProductsForm::CREATE]);
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
         $form->attributes = [
             'id'=>1, 
+        ];
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+        $form->attributes = [
+            'id'=>7,
         ];
         
         $this->assertEmpty($form->errors);

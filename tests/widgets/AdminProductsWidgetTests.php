@@ -5,7 +5,7 @@ namespace app\tests\widgets;
 use PHPUnit\Framework\TestCase;
 use app\widgets\AdminProductsWidget;
 use app\models\CurrencyModel;
-use app\forms\AdminChangeProductForm;
+use app\forms\AdminProductForm;
 
 /**
  * Тестирует класс AdminProductsWidget
@@ -104,7 +104,7 @@ class AdminProductsWidgetTests extends TestCase
      */
     public function testSetForm()
     {
-        $form = new class() extends AdminChangeProductForm {};
+        $form = new class() extends AdminProductForm {};
         
         $widget = new AdminProductsWidget();
         $widget->setForm($form);
@@ -113,7 +113,7 @@ class AdminProductsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(AdminChangeProductForm::class, $result);
+        $this->assertInstanceOf(AdminProductForm::class, $result);
     }
     
     /**
@@ -269,7 +269,7 @@ class AdminProductsWidgetTests extends TestCase
             public $code = 'MONEY';
         };
         
-        $form = new class() extends AdminChangeProductForm {};
+        $form = new class() extends AdminProductForm {};
         
         $widget = new AdminProductsWidget();
         
@@ -305,7 +305,7 @@ class AdminProductsWidgetTests extends TestCase
             public $code = 'MONEY';
         };
         
-        $form = new class() extends AdminChangeProductForm {};
+        $form = new class() extends AdminProductForm {};
         
         $products = [
             new class() {

@@ -10,6 +10,7 @@ use app\services\{AdminIndexService,
     AdminOrderDetailChangeService,
     AdminOrderDetailFormService,
     AdminOrdersService,
+    AdminProductDetailFormService,
     AdminProductsService};
 
 /**
@@ -42,6 +43,10 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'service'=>new AdminProductsService(),
                 'view'=>'products.twig',
+            ],
+            'product-detail-form'=>[
+                'class'=>AjaxAction::class,
+                'service'=>new AdminProductDetailFormService(),
             ],
         ];
     }

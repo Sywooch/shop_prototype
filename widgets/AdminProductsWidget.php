@@ -8,11 +8,11 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyInterface;
-use app\forms\AdminChangeProductForm;
+use app\forms\AdminProductForm;
 use app\helpers\ImgHelper;
 
 /**
- * Формирует HTML строку с основными данными аккаунта
+ * Формирует HTML строку с каталогом товаров
  */
 class AdminProductsWidget extends AbstractBaseWidget
 {
@@ -25,7 +25,7 @@ class AdminProductsWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
-     * @var AdminChangeProductForm
+     * @var AdminProductForm
      */
     private $form;
     /**
@@ -154,10 +154,10 @@ class AdminProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает AdminChangeProductForm свойству AdminProductsWidget::form
-     * @param AdminChangeProductForm $form
+     * Присваивает AdminProductForm свойству AdminProductsWidget::form
+     * @param AdminProductForm $form
      */
-    public function setForm(AdminChangeProductForm $form)
+    public function setForm(AdminProductForm $form)
     {
         try {
             $this->form = $form;

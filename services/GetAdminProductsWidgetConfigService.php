@@ -7,7 +7,7 @@ use yii\web\NotFoundHttpException;
 use app\services\{AbstractBaseService,
     AdminProductsCollectionService,
     GetCurrentCurrencyModelService};
-use app\forms\AdminChangeProductForm;
+use app\forms\AdminProductForm;
 
 /**
  * Возвращает массив конфигурации для виджета AdminProductsWidget
@@ -46,7 +46,7 @@ class GetAdminProductsWidgetConfigService extends AbstractBaseService
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
-                $dataArray['form'] = new AdminChangeProductForm(['scenario'=>AdminChangeProductForm::GET]);
+                $dataArray['form'] = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
                 
                 $dataArray['template'] = 'admin-products.twig';
                 

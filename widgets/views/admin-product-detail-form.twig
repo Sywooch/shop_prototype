@@ -1,0 +1,26 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<div class="admin-product-change-form">
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
+        {{ form.field(modelForm, 'code') | raw }}
+        {{ form.field(modelForm, 'name') | raw }}
+        {{ form.field(modelForm, 'short_description') | raw }}
+        {{ form.field(modelForm, 'description') | raw }}
+        {{ form.field(modelForm, 'price') | raw }}
+        <br>{{ image | raw }}
+        {{ form.field(modelForm, 'images') | raw }}
+        {{ form.field(modelForm, 'id_category').dropDownList(categories) | raw }}
+        {{ form.field(modelForm, 'id_subcategory').dropDownList(subcategory) | raw }}
+        {{ form.field(modelForm, 'id_colors').dropDownList(colors, {'multiple':true}) | raw }}
+        {{ form.field(modelForm, 'id_sizes').dropDownList(sizes, {'multiple':true}) | raw }}
+        {{ form.field(modelForm, 'id_brand').dropDownList(brands) | raw }}
+        {{ form.field(modelForm, 'active').radio() | raw }}
+        {{ form.field(modelForm, 'total_products').input('number', {'step':1, 'min':0}) | raw }}
+        {{ form.field(modelForm, 'seocode') | raw }}
+        {{ form.field(modelForm, 'views').input('number', {'step':1, 'min':0}) | raw }}
+        
+        <input type="submit" name="send" value="{{ button }}">
+        <input type="submit" name="cancel" value="{{ buttonCancel }}">
+    {{ active_form_end() }}
+</div>
