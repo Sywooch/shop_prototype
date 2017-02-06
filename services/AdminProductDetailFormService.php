@@ -39,8 +39,8 @@ class AdminProductDetailFormService extends AbstractBaseService
                         return $errors;
                     }
                     
-                    /*$service = \Yii::$app->registry->get(GetAdminProductDetailFormWidgetConfigService::class);
-                    $adminProductDetailFormWidgetConfig = $service->handle(['id'=>$form->id]);*/
+                    $service = \Yii::$app->registry->get(GetAdminProductDetailFormWidgetConfigService::class);
+                    $adminProductDetailFormWidgetConfig = $service->handle(['id'=>$form->id]);
                     
                     return AdminProductDetailFormWidget::widget($adminProductDetailFormWidgetConfig);
                 }

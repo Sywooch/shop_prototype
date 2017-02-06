@@ -85,7 +85,7 @@ class AdminProductDetailFormWidget extends AbstractBaseWidget
             $renderArray = [];
             
             if (!empty($this->product->images)) {
-                $renderArray['image'] = ImgHelper::randThumbn($this->product->images);
+                $renderArray['images'] = ImgHelper::allThumbn($this->product->images);
             }
             
             $renderArray['modelForm'] = \Yii::configure($this->form, [

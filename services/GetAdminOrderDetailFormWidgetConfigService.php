@@ -43,36 +43,56 @@ class GetAdminOrderDetailFormWidgetConfigService extends AbstractBaseService
                 
                 $finder = \Yii::$app->registry->get(PurchaseIdFinder::class, ['id'=>$id]);
                 $purchasesModel = $finder->find();
-                
                 if (empty($purchasesModel)) {
                     throw new ErrorException($this->emptyError('purchasesModel'));
                 }
-                
                 $dataArray['purchase'] = $purchasesModel;
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
                 $dataArray['currency'] = $service->handle();
                 
                 $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
-                $dataArray['statuses'] = $finder->find();
+                $statusesArray = $finder->find();
+                if (empty($statusesArray)) {
+                    throw new ErrorException($this->emptyError('statusesArray'));
+                }
+                $dataArray['statuses'] = $statusesArray;
                 
-                $dataArray['form'] = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::SAVE]);
+                $dataArray['form'] = new AdminChangeOrderForm([
+                    'scenario'=>AdminChangeOrderForm::SAVE
+                ]);
                 
                 $finder = \Yii::$app->registry->get(ColorsProductFinder::class, ['id_product'=>$purchasesModel->id_product]);
-                $colors = $finder->find();
-                $dataArray['colors'] = ArrayHelper::map($colors, 'id', 'color');
+                $colorsArray = $finder->find();
+                if (empty($colorsArray)) {
+                    throw new ErrorException($this->emptyError('colorsArray'));
+                }
+                ArrayHelper::multisort($colorsArray, 'color');
+                $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
                 
                 $finder = \Yii::$app->registry->get(SizesProductFinder::class, ['id_product'=>$purchasesModel->id_product]);
-                $sizes = $finder->find();
-                $dataArray['sizes'] = ArrayHelper::map($sizes, 'id', 'size');
+                $sizesArray = $finder->find();
+                if (empty($sizesArray)) {
+                    throw new ErrorException($this->emptyError('sizesArray'));
+                }
+                ArrayHelper::multisort($sizesArray, 'size');
+                $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
                 
                 $finder = \Yii::$app->registry->get(DeliveriesFinder::class);
-                $deliveries = $finder->find();
-                $dataArray['deliveries'] = ArrayHelper::map($deliveries, 'id', 'description');
+                $deliveriesArray = $finder->find();
+                if (empty($deliveriesArray)) {
+                    throw new ErrorException($this->emptyError('deliveriesArray'));
+                }
+                ArrayHelper::multisort($deliveriesArray, 'description');
+                $dataArray['deliveries'] = ArrayHelper::map($deliveriesArray, 'id', 'description');
                 
                 $finder = \Yii::$app->registry->get(PaymentsFinder::class);
-                $payments = $finder->find();
-                $dataArray['payments'] = ArrayHelper::map($payments, 'id', 'description');
+                $paymentsArray = $finder->find();
+                if (empty($paymentsArray)) {
+                    throw new ErrorException($this->emptyError('paymentsArray'));
+                }
+                ArrayHelper::multisort($paymentsArray, 'description');
+                $dataArray['payments'] = ArrayHelper::map($paymentsArray, 'id', 'description');
                 
                 $dataArray['template'] = 'admin-order-detail-form.twig';
                 

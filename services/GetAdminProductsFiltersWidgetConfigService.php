@@ -101,7 +101,6 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
                     $dataArray['subcategory'] = ArrayHelper::merge($dataArray['subcategory'], $subcategoryArray);
                 }
                 
-                
                 $finder = \Yii::$app->registry->get(ActiveStatusesFinder::class);
                 $activeStatusesArray = $finder->find();
                 if (empty($activeStatusesArray)) {
