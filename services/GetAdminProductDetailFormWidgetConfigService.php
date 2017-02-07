@@ -19,7 +19,11 @@ use app\forms\AdminProductForm;
 class GetAdminProductDetailFormWidgetConfigService extends AbstractBaseService
 {
     /**
-     * @var array конфигурации для виджета AdminProductDetailFormWidget
+     * @var int ID товара
+     */
+    private $id;
+    /**
+     * @var array конфигурация для виджета AdminProductDetailFormWidget
      */
     private $adminProductDetailFormWidgetArray = [];
     
@@ -28,19 +32,17 @@ class GetAdminProductDetailFormWidgetConfigService extends AbstractBaseService
      * @param $request
      * @return array
      */
-    public function handle($request): array
+    public function get(): array
     {
         try {
-            $id = $request['id'] ?? null;
-            
-            if (empty($id)) {
+            if (empty($this->id)) {
                 throw new ErrorException($this->emptyError('id'));
             }
             
             if (empty($this->adminProductDetailFormWidgetArray)) {
                 $dataArray = [];
                 
-                $finder = \Yii::$app->registry->get(ProductIdFinder::class, ['id'=>$id]);
+                $finder = \Yii::$app->registry->get(ProductIdFinder::class, ['id'=>$this->id]);
                 $productsModel = $finder->find();
                 if (empty($productsModel)) {
                     throw new ErrorException($this->emptyError('productsModel'));
@@ -56,13 +58,13 @@ class GetAdminProductDetailFormWidgetConfigService extends AbstractBaseService
                 $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
                 $dataArray['categories'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
                 
-                $dataArray['subcategory'] = [\Yii::$app->params['formFiller']];
-                if (!empty($filtersModel->category)) {
-                    $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, ['id_category'=>$filtersModel->category]);
-                    $subcategoryArray = $finder->find();
-                    $subcategoryArray = ArrayHelper::map($subcategoryArray, 'id', 'name');
-                    $dataArray['subcategory'] = ArrayHelper::merge($dataArray['subcategory'], $subcategoryArray);
+                $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, ['id_category'=>$productsModel->id_category]);
+                $subcategoryArray = $finder->find();
+                if (empty($subcategoryArray)) {
+                    throw new ErrorException($this->emptyError('subcategoryArray'));
                 }
+                $subcategoryArray = ArrayHelper::map($subcategoryArray, 'id', 'name');
+                $dataArray['subcategory'] = ArrayHelper::merge($dataArray['subcategory'], $subcategoryArray);
                 
                 $finder = \Yii::$app->registry->get(ColorsFinder::class);
                 $colorsArray = $finder->find();

@@ -1,20 +1,20 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\{AbstractBaseService,
-    GetAdminProductDetailFormWidgetConfigService};
+use app\handlers\AbstractBaseHandler;
+use app\services\GetAdminProductDetailFormWidgetConfigService;
 use app\forms\AdminProductForm;
 use app\widgets\AdminProductDetailFormWidget;
 
 /**
- * Формирует массив данных для рендеринга страницы 
+ * Обрабатывает запрос на получение данных 
  * с формой редактирования деталей товара
  */
-class AdminProductDetailFormService extends AbstractBaseService
+class AdminProductDetailFormHandler extends AbstractBaseHandler
 {
     /**
      * @var array массив данных для рендеринга

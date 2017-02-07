@@ -10,8 +10,8 @@ use app\services\{AdminIndexService,
     AdminOrderDetailChangeService,
     AdminOrderDetailFormService,
     AdminOrdersService,
-    AdminProductDetailFormService,
     AdminProductsService};
+use app\handlers\AdminProductDetailFormHandler;
 
 /**
  * Обрабатывает запросы к админ разделу
@@ -46,7 +46,7 @@ class AdminController extends Controller
             ],
             'product-detail-form'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AdminProductDetailFormService(),
+                'service'=>new AdminProductDetailFormHandler(),
             ],
         ];
     }

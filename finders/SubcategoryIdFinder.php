@@ -9,12 +9,12 @@ use app\finders\AbstractBaseFinder;
 /**
  * Возвращает доступные подкатегории товаров из СУБД
  */
-class SubcategoryIdCategoryFinder extends AbstractBaseFinder
+class SubcategoryIdFinder extends AbstractBaseFinder
 {
     /**
-     * @var int id_category
+     * @var int ID подкатегории
      */
-    private $id_category;
+    private $id;
     /**
      * @var array массив загруженных SubcategoryModel
      */
@@ -27,16 +27,16 @@ class SubcategoryIdCategoryFinder extends AbstractBaseFinder
     public function find()
     {
         try {
-            if (empty($this->id_category)) {
-                throw new ErrorException($this->emptyError('id_category'));
+            if (empty($this->id)) {
+                throw new ErrorException($this->emptyError('id'));
             }
             
             if (empty($this->storage)) {
                 $query = SubcategoryModel::find();
-                $query->select(['[[subcategory.id]]', '[[subcategory.name]]']);
-                $query->where(['[[subcategory.id_category]]'=>$this->id_category]);
+                $query->select(['[[subcategory.id]]', '[[subcategory.name]]', '[[subcategory.seocode]]', '[[subcategory.active]]']);
+                $query->where(['[[subcategory.id]]'=>$this->id]);
                 
-                $this->storage = $query->all();
+                $this->storage = $query->one();
             }
             
             return $this->storage;
@@ -46,13 +46,13 @@ class SubcategoryIdCategoryFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает категорию свойству SubcategoryIdCategoryFinder::id_category
-     * @param int $id_category
+     * Присваивает ID свойству SubcategoryIdFinder::id
+     * @param string $id
      */
-    public function setId_category(int $id_category)
+    public function setId(int $id)
     {
         try {
-            $this->id_category = $id_category;
+            $this->id = $id;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
