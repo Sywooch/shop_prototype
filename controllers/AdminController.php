@@ -11,7 +11,7 @@ use app\services\{AdminIndexService,
     AdminOrderDetailFormService,
     AdminOrdersService};
 use app\handlers\{AdminProductDetailFormHandler,
-    AdminProductsHandler};
+    AdminProductsRequestHandler};
 
 /**
  * Обрабатывает запросы к админ разделу
@@ -41,7 +41,7 @@ class AdminController extends Controller
             ],*/
             'products'=>[
                 'class'=>GetAction::class,
-                'handler'=>new AdminProductsHandler(),
+                'handler'=>new AdminProductsRequestHandler(),
                 'view'=>'products.twig',
             ],
             /*'product-detail-form'=>[

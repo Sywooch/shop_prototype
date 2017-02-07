@@ -35,7 +35,73 @@ class AdminProductsCollectionServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(AdminProductsCollectionService::class);
         
+        $this->assertTrue($reflection->hasProperty('key'));
+        $this->assertTrue($reflection->hasProperty('page'));
         $this->assertTrue($reflection->hasProperty('productsCollection'));
+    }
+    
+    /**
+     * Тестирует метод AdminProductsCollectionService::setKey
+     * если передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetKeyError()
+    {
+        $service = new AdminProductsCollectionService();
+        $service->setKey([]);
+    }
+    
+    /**
+     * Тестирует метод AdminProductsCollectionService::setKey
+     */
+    public function testSetKey()
+    {
+        $service = new AdminProductsCollectionService();
+        $service->setKey('key');
+        
+        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('key', $result);
+    }
+    
+    /**
+     * Тестирует метод AdminProductsCollectionService::setPage
+     * если передаю параметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetPageError()
+    {
+        $service = new AdminProductsCollectionService();
+        $service->setPage('a2');
+    }
+    
+    /**
+     * Тестирует метод AdminProductsCollectionService::setPage
+     */
+    public function testSetPage()
+    {
+        $service = new AdminProductsCollectionService();
+        $service->setPage(2);
+        
+        $reflection = new \ReflectionProperty($service, 'page');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals(2, $result);
+    }
+    
+    /**
+     * Тестирует метод AdminProductsCollectionService::get
+     * если пуст AdminProductsCollectionService::key
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: key
+     */
+    public function testGetEmptyKey()
+    {
+        $service = new AdminProductsCollectionService();
+        $service->get();
     }
     
     /**
@@ -45,9 +111,12 @@ class AdminProductsCollectionServiceTests extends TestCase
      */
     public function testGet()
     {
-        \Yii::$app->controller = new AdminController('admin', \Yii::$app);
-        
         $service = new AdminProductsCollectionService();
+        
+        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]));
+        
         $result = $service->get();
 
         $this->assertInstanceOf(ProductsCollection::class, $result);
@@ -60,9 +129,16 @@ class AdminProductsCollectionServiceTests extends TestCase
      */
     public function testGetPage()
     {
-        $_GET = [\Yii::$app->params['pagePointer']=>2];
-        
         $service = new AdminProductsCollectionService();
+        
+        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]));
+        
+        $reflection = new \ReflectionProperty($service, 'page');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, 2);
+        
         $result = $service->get();
 
         $this->assertInstanceOf(ProductsCollection::class, $result);
@@ -75,8 +151,7 @@ class AdminProductsCollectionServiceTests extends TestCase
      */
     public function testGetFilters()
     {
-        $_GET = [];
-        $key = HashHelper::createFiltersKey(Url::current());
+        $key = HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]);
         
         $session = \Yii::$app->session;
         $session->open();
@@ -92,6 +167,11 @@ class AdminProductsCollectionServiceTests extends TestCase
         ]);
 
         $service = new AdminProductsCollectionService();
+        
+        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, $key);
+        
         $result = $service->get();
 
         $this->assertInstanceOf(ProductsCollection::class, $result);

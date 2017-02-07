@@ -16,6 +16,14 @@ use app\collections\ProductsCollection;
 class AdminProductsCollectionService extends AbstractBaseService
 {
     /**
+     * @var string ключ для получения фильтров из сессии
+     */
+    private $key;
+    /**
+     * @var int номер страницы
+     */
+    private $page;
+    /**
      * @var ProductsCollection
      */
     private $productsCollection = null;
@@ -27,9 +35,13 @@ class AdminProductsCollectionService extends AbstractBaseService
     public function get(): ProductsCollection
     {
         try {
+            if (empty($this->key)) {
+                throw new ErrorException($this->emptyError('key'));
+            }
+            
             if (empty($this->productsCollection)) {
                 $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
-                    'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]),
+                    'key'=>$this->key,
                 ]);
                 $filtersModel = $finder->find();
                 
@@ -38,7 +50,7 @@ class AdminProductsCollectionService extends AbstractBaseService
                 }
                 
                 $finder = \Yii::$app->registry->get(AdminProductsFinder::class, [
-                    'page'=>\Yii::$app->request->get(\Yii::$app->params['pagePointer']) ?? 0,
+                    'page'=>$this->page ?? 0,
                     'filters'=>$filtersModel
                 ]);
                 
@@ -46,6 +58,32 @@ class AdminProductsCollectionService extends AbstractBaseService
             }
             
             return $this->productsCollection;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ключ AdminProductsCollectionService::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ключ AdminProductsCollectionService::page
+     * @param int $page
+     */
+    public function setPage(int $page)
+    {
+        try {
+            $this->page = $page;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -33,6 +33,7 @@ class AdminCsvProductsFormWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
+        $this->assertTrue($reflection->hasProperty('isAllowed'));
     }
     
     /**
@@ -139,6 +140,10 @@ class AdminCsvProductsFormWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'admin-csv-products-form.twig');
+        
+        $reflection = new \ReflectionProperty($widget, 'isAllowed');
+        $reflection->setAccessible(true);
+        $reflection->setValue($widget, true);
         
         $result = $widget->run();
 

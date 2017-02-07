@@ -20,6 +20,10 @@ class AdminCsvProductsFormWidget extends AbstractBaseWidget
      * @var string имя шаблона
      */
     private $template;
+    /**
+     * @var bool флаг доступности формы в зависимости от наличия данных
+     */
+    public $isAllowed;
     
     /**
      * Конструирует HTML строку с формой регистрации
@@ -49,9 +53,7 @@ class AdminCsvProductsFormWidget extends AbstractBaseWidget
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
             
-            $service = \Yii::$app->registry->get(AdminProductsCollectionService::class);
-            $productsArray = $service->get();
-            $renderArray['products'] = !$productsArray->isEmpty();
+            $renderArray['isAllowed'] = $this->isAllowed;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
