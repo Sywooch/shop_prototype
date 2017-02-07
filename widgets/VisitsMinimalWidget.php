@@ -7,6 +7,7 @@ use yii\helpers\{ArrayHelper,
     Html};
 use app\widgets\AbstractBaseWidget;
 use app\helpers\DateHelper;
+use app\models\VisitorsCounterInterface;
 
 /**
  * Формирует HTML строку с информацией о количестве посещений сегодня
@@ -14,13 +15,9 @@ use app\helpers\DateHelper;
 class VisitsMinimalWidget extends AbstractBaseWidget
 {
     /**
-     * @var array VisitorsCounterModel
+     * @var int количество посещений
      */
-    private $visitors;
-    /**
-     * @var string заголовок
-     */
-    private $header;
+    private $visits;
     /**
      * @var string имя шаблона
      */
@@ -33,22 +30,17 @@ class VisitsMinimalWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->header)) {
-                throw new ErrorException($this->emptyError('header'));
-            }
             if (empty($this->template)) {
                 throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
             
-            //$renderArray['header'] = $this->header;
-            
-            if (!empty($this->visitors)) {
+            if (!empty($this->visits)) {
                 $renderArray['text'] = sprintf('%s:', \Yii::t('base', 'Visits'));
-                $renderArray['visitors'] = $this->visitors ?? 0;
+                $renderArray['visits'] = $this->visits;
             } else {
-                $renderArray['visitorsEmpty'] = \Yii::t('base', 'Today no visits');
+                $renderArray['visitsEmpty'] = \Yii::t('base', 'Today no visits');
             }
             
             return $this->render($this->template, $renderArray);
@@ -58,26 +50,13 @@ class VisitsMinimalWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает количество посетителей свойству VisitsMinimalWidget::visitors
-     * @param int $visitors
+     * Присваивает количество посещений свойству VisitsMinimalWidget::visits
+     * @param int $visits
      */
-    public function setVisitors(int $visitors)
+    public function setVisits(int $visits)
     {
         try {
-            $this->visitors = $visitors;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает заголовок свойству VisitsMinimalWidget::header
-     * @param string $header
-     */
-    public function setHeader(string $header)
-    {
-        try {
-            $this->header = $header;
+            $this->visits = $visits;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

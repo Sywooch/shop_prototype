@@ -4,6 +4,8 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\VisitsMinimalWidget;
+use app\models\{VisitorsCounterInterface,
+    VisitorsCounterModel};
 
 /**
  * Тестирует класс VisitsMinimalWidget
@@ -17,69 +19,38 @@ class VisitsMinimalWidgetTests extends TestCase
     {
         $reflection = new \ReflectionClass(VisitsMinimalWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('visitors'));
-        $this->assertTrue($reflection->hasProperty('header'));
+        $this->assertTrue($reflection->hasProperty('visits'));
         $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
-     * Тестирует метод VisitsMinimalWidget::setVisitors
+     * Тестирует метод VisitsMinimalWidget::setVisits
      * передаю неверный тип параметра
      * @expectedException TypeError
      */
-    public function testSetVisitorsError()
+    public function testSetVisitsError()
     {
-        $visitors = new class() {};
+        $visits = 'a2';
         
         $widget = new VisitsMinimalWidget();
-        $widget->setVisitors($visitors);
+        $widget->setVisits($visits);
     }
     
     /**
-     * Тестирует метод VisitsMinimalWidget::setVisitors
+     * Тестирует метод VisitsMinimalWidget::setVisits
      */
-    public function testSetVisitors()
+    public function testSetVisits()
     {
-        $visitors = 5684;
+        $visits = 18564;
         
         $widget = new VisitsMinimalWidget();
-        $widget->setVisitors($visitors);
+        $widget->setVisits($visits);
         
-        $reflection = new \ReflectionProperty($widget, 'visitors');
+        $reflection = new \ReflectionProperty($widget, 'visits');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInternalType('integer', $result);
-    }
-    
-    /**
-     * Тестирует метод VisitsMinimalWidget::setHeader
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetHeaderError()
-    {
-        $header = null;
-        
-        $widget = new VisitsMinimalWidget();
-        $widget->setHeader($header);
-    }
-    
-    /**
-     * Тестирует метод VisitsMinimalWidget::setHeader
-     */
-    public function testSetHeader()
-    {
-        $header = 'Header';
-        
-        $widget = new VisitsMinimalWidget();
-        $widget->setHeader($header);
-        
-        $reflection = new \ReflectionProperty($widget, 'header');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
-        
-        $this->assertInternalType('string', $result);
+        $this->assertEquals(18564, $result);
     }
     
     /**
@@ -114,18 +85,6 @@ class VisitsMinimalWidgetTests extends TestCase
     
     /**
      * Тестирует метод VisitsMinimalWidget::run
-     * если пуст VisitsMinimalWidget::header
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: header
-     */
-    public function testRunEmptyHeader()
-    {
-        $widget = new VisitsMinimalWidget();
-        $widget->run();
-    }
-    
-    /**
-     * Тестирует метод VisitsMinimalWidget::run
      * если пуст VisitsMinimalWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
@@ -133,11 +92,6 @@ class VisitsMinimalWidgetTests extends TestCase
     public function testRunEmptyTemplate()
     {
         $widget = new VisitsMinimalWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'header');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
-        
         $widget->run();
     }
     
@@ -149,9 +103,9 @@ class VisitsMinimalWidgetTests extends TestCase
     {
         $widget = new VisitsMinimalWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($widget, 'visits');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($widget, 0);
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
@@ -159,7 +113,6 @@ class VisitsMinimalWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p><strong>Сегодня посещений не было</strong></p>#', $result);
     }
     
@@ -168,17 +121,11 @@ class VisitsMinimalWidgetTests extends TestCase
      */
     public function testRun()
     {
-        $visitors = 8561;
-        
         $widget = new VisitsMinimalWidget();
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($widget, 'visits');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
-        
-        $reflection = new \ReflectionProperty($widget, 'visitors');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $visitors);
+        $reflection->setValue($widget, 8561);
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
@@ -186,7 +133,6 @@ class VisitsMinimalWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p><strong>Посещений:</strong> 8561</p>#', $result);
     }
 }

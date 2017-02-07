@@ -19,7 +19,6 @@ class ConversionWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('visits'));
-        $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
     }
     
@@ -84,36 +83,6 @@ class ConversionWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод ConversionWidget::setHeader
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetHeaderError()
-    {
-        $header = null;
-        
-        $widget = new ConversionWidget();
-        $widget->setHeader($header);
-    }
-    
-    /**
-     * Тестирует метод ConversionWidget::setHeader
-     */
-    public function testSetHeader()
-    {
-        $header = 'Header';
-        
-        $widget = new ConversionWidget();
-        $widget->setHeader($header);
-        
-        $reflection = new \ReflectionProperty($widget, 'header');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
-        
-        $this->assertInternalType('string', $result);
-    }
-    
-    /**
      * Тестирует метод ConversionWidget::setTemplate
      * если передан параметр неверного типа
      * @expectedException TypeError
@@ -145,18 +114,6 @@ class ConversionWidgetTests extends TestCase
     
     /**
      * Тестирует метод ConversionWidget::run
-     * если пуст ConversionWidget::header
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: header
-     */
-    public function testRunEmptyHeader()
-    {
-        $widget = new ConversionWidget();
-        $widget->run();
-    }
-    
-    /**
-     * Тестирует метод ConversionWidget::run
      * если пуст ConversionWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
@@ -164,11 +121,6 @@ class ConversionWidgetTests extends TestCase
     public function testRunEmptyTemplate()
     {
         $widget = new ConversionWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'header');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
-        
         $widget->run();
     }
     
@@ -184,17 +136,12 @@ class ConversionWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 5);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
-        
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'conversion.twig');
         
         $result = $widget->run();
         
-        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p><strong>Конверсия</strong>: 0%</p>#', $result);
     }
     
@@ -210,17 +157,12 @@ class ConversionWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 508);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
-        
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'conversion.twig');
         
         $result = $widget->run();
         
-        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p><strong>Конверсия</strong>: 0%</p>#', $result);
     }
     
@@ -239,17 +181,12 @@ class ConversionWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 508);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
-        
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, 'conversion.twig');
         
         $result = $widget->run();
         
-        //$this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p><strong>Конверсия</strong>: 10.43%</p>#', $result);
     }
 }

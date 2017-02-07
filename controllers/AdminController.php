@@ -10,7 +10,8 @@ use app\services\{AdminIndexService,
     AdminOrderDetailChangeService,
     AdminOrderDetailFormService,
     AdminOrdersService};
-use app\handlers\{AdminProductDetailFormHandler,
+use app\handlers\{AdminIndexRequestHandler,
+    AdminProductDetailFormHandler,
     AdminProductsRequestHandler};
 
 /**
@@ -21,12 +22,13 @@ class AdminController extends Controller
     public function actions()
     {
         return [
-            /*'index'=>[
+            'index'=>[
                 'class'=>GetAction::class,
-                'service'=>new AdminIndexService(),
+                //'service'=>new AdminIndexService(),
+                'handler'=>new AdminIndexRequestHandler(),
                 'view'=>'index.twig',
             ],
-            'orders'=>[
+            /*'orders'=>[
                 'class'=>GetAction::class,
                 'service'=>new AdminOrdersService(),
                 'view'=>'orders.twig',

@@ -43,13 +43,13 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
     {
         try {
             if (empty($this->dataArray)) {
-                $dataArray = [];
-                
                 $service = \Yii::$app->registry->get(AdminProductsCollectionService::class, [
                     'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]),
                     'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0
                 ]);
                 $productsCollection = $service->get();
+                
+                $dataArray = [];
                 
                 $dataArray['adminProductsFiltersWidgetConfig'] = $this->adminProductsFiltersWidgetConfig();
                 $dataArray['adminProductsWidgetConfig'] = $this->adminProductsWidgetConfig($productsCollection);
@@ -67,6 +67,10 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
         }
     }
     
+    /**
+     * Возвращает массив конфигурации для виджета AdminProductsFiltersWidget
+     * @return array
+     */
     private function adminProductsFiltersWidgetConfig(): array
     {
         try {
@@ -175,7 +179,12 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
         }
     }
     
-    private function adminProductsWidgetConfig(CollectionInterface $productsCollection)
+    /**
+     * Возвращает массив конфигурации для виджета AdminProductsWidget
+     * @param CollectionInterface $productsCollection
+     * @return array
+     */
+    private function adminProductsWidgetConfig(CollectionInterface $productsCollection): array
     {
         try {
             $dataArray = [];
@@ -204,7 +213,12 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
         }
     }
     
-    private function paginationWidgetConfig(CollectionInterface $productsCollection)
+    /**
+     * Возвращает массив конфигурации для виджета PaginationWidget
+     * @param CollectionInterface $productsCollection
+     * @return array
+     */
+    private function paginationWidgetConfig(CollectionInterface $productsCollection): array
     {
         try {
             $dataArray = [];
@@ -224,7 +238,12 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
         }
     }
     
-    private function adminCsvProductsFormWidgetConfig(CollectionInterface $productsCollection)
+    /**
+     * Возвращает массив конфигурации для виджета AdminCsvProductsFormWidget
+     * @param CollectionInterface $productsCollection
+     * @return array
+     */
+    private function adminCsvProductsFormWidgetConfig(CollectionInterface $productsCollection): array
     {
         try {
             $dataArray = [];

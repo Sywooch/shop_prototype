@@ -6,6 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Html};
 use app\widgets\AbstractBaseWidget;
+use app\models\VisitorsCounterInterface;
 
 /**
  * Формирует HTML строку с информацией о количестве посещений сегодня
@@ -17,13 +18,9 @@ class ConversionWidget extends AbstractBaseWidget
      */
     private $purchases;
     /**
-     * @var int количество посещений сегодня
+     * @var int количество посещений
      */
     private $visits;
-    /**
-     * @var string заголовок
-     */
-    private $header;
     /**
      * @var string имя шаблона
      */
@@ -36,16 +33,11 @@ class ConversionWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->header)) {
-                throw new ErrorException($this->emptyError('header'));
-            }
             if (empty($this->template)) {
                 throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
-            
-            //$renderArray['header'] = $this->header;
             
             $purchases = $this->purchases ?? 0;
             $visits = $this->visits ?? 0;
@@ -85,19 +77,6 @@ class ConversionWidget extends AbstractBaseWidget
     {
         try {
             $this->visits = $visits;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает заголовок свойству ConversionWidget::header
-     * @param string $header
-     */
-    public function setHeader(string $header)
-    {
-        try {
-            $this->header = $header;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
