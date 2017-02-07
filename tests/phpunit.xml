@@ -19,6 +19,7 @@
             <directory suffix="Tests.php">filters</directory>
             <directory suffix="Tests.php">finders</directory>
             <directory suffix="Tests.php">forms</directory>
+            <directory suffix="Tests.php">handlers</directory>
             <directory suffix="Tests.php">helpers</directory>
             <directory suffix="Tests.php">models</directory>
             <directory suffix="Tests.php">registry</directory>

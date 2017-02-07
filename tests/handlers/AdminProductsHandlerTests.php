@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AdminProductsService;
+use app\handlers\AdminProductsHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{BrandsFixture,
     CategoriesFixture,
@@ -14,9 +14,9 @@ use app\tests\sources\fixtures\{BrandsFixture,
 use app\controllers\AdminController;
 
 /**
- * Тестирует класс AdminProductsService
+ * Тестирует класс AdminProductsHandler
  */
-class AdminProductsServiceTests extends TestCase
+class AdminProductsHandlerTests extends TestCase
 {
     private static $dbClass;
     
@@ -41,28 +41,28 @@ class AdminProductsServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства AdminProductsService
+     * Тестирует свойства AdminProductsHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminProductsService::class);
+        $reflection = new \ReflectionClass(AdminProductsHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод AdminProductsService::handle
+     * Тестирует метод AdminProductsHandler::handle
      * если отсутствует параметр $request
      * @expectedException ErrorException
      */
     public function testHandleEmptyRequest()
     {
-        $service = new AdminProductsService();
+        $service = new AdminProductsHandler();
         $service->handle();
     }
     
     /**
-     * Тестирует метод AdminProductsService::handle
+     * Тестирует метод AdminProductsHandler::handle
      */
     public function testHandle()
     {
@@ -75,7 +75,7 @@ class AdminProductsServiceTests extends TestCase
             }
         };
         
-        $service = new AdminProductsService();
+        $service = new AdminProductsHandler();
         $result = $service->handle($request);
 
         $this->assertInternalType('array', $result);

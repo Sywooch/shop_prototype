@@ -9,9 +9,9 @@ use app\actions\{AjaxAction,
 use app\services\{AdminIndexService,
     AdminOrderDetailChangeService,
     AdminOrderDetailFormService,
-    AdminOrdersService,
-    AdminProductsService};
-use app\handlers\AdminProductDetailFormHandler;
+    AdminOrdersService};
+use app\handlers\{AdminProductDetailFormHandler,
+    AdminProductsHandler};
 
 /**
  * Обрабатывает запросы к админ разделу
@@ -21,7 +21,7 @@ class AdminController extends Controller
     public function actions()
     {
         return [
-            'index'=>[
+            /*'index'=>[
                 'class'=>GetAction::class,
                 'service'=>new AdminIndexService(),
                 'view'=>'index.twig',
@@ -38,16 +38,16 @@ class AdminController extends Controller
             'order-detail-change'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AdminOrderDetailChangeService(),
-            ],
+            ],*/
             'products'=>[
                 'class'=>GetAction::class,
-                'service'=>new AdminProductsService(),
+                'handler'=>new AdminProductsHandler(),
                 'view'=>'products.twig',
             ],
-            'product-detail-form'=>[
+            /*'product-detail-form'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AdminProductDetailFormHandler(),
-            ],
+            ],*/
         ];
     }
     

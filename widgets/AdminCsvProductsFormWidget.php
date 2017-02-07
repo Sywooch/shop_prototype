@@ -50,7 +50,7 @@ class AdminCsvProductsFormWidget extends AbstractBaseWidget
             $renderArray['validateOnType'] = false;
             
             $service = \Yii::$app->registry->get(AdminProductsCollectionService::class);
-            $productsArray = $service->handle(\Yii::$app->request);
+            $productsArray = $service->get();
             $renderArray['products'] = !$productsArray->isEmpty();
             
             return $this->render($this->template, $renderArray);

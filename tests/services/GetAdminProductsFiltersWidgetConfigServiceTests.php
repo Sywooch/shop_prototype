@@ -45,14 +45,14 @@ class GetAdminProductsFiltersWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод GetAdminProductsFiltersWidgetConfigService::handle
+     * Тестирует метод GetAdminProductsFiltersWidgetConfigService::get
      */
-    public function testHandle()
+    public function testGet()
     {
         \Yii::$app->controller = new FiltersController('filters', \Yii::$app);
         
         $service = new GetAdminProductsFiltersWidgetConfigService();
-        $result = $service->handle();
+        $result = $service->get();
         
         $this->assertInternalType('array', $result);
         

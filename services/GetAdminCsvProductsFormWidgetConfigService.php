@@ -17,17 +17,15 @@ class GetAdminCsvProductsFormWidgetConfigService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации
-     * @param $request
      * @return array
      */
-    public function handle($request=null): array
+    public function get(): array
     {
         try {
             if (empty($this->adminCsvProductsFormWidgetArray)) {
                 $dataArray = [];
                 
                 $dataArray['header'] = \Yii::t('base', 'Download selected products in csv format');
-                
                 $dataArray['template'] = 'admin-csv-products-form.twig';
                 
                 $this->adminCsvProductsFormWidgetArray = $dataArray;

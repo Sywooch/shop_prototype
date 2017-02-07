@@ -21,10 +21,9 @@ class GetAdminProductsWidgetConfigService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации
-     * @param $request
      * @return array
      */
-    public function handle($request): array
+    public function get(): array
     {
         try {
             if (empty($this->adminProductsWidgetArray)) {
@@ -33,7 +32,7 @@ class GetAdminProductsWidgetConfigService extends AbstractBaseService
                 $dataArray['header'] = \Yii::t('base', 'Products');
                 
                 $service = \Yii::$app->registry->get(AdminProductsCollectionService::class);
-                $productsCollection = $service->handle($request);
+                $productsCollection = $service->get();
                 
                 if ($productsCollection->isEmpty() === true) {
                     if ($productsCollection->pagination->totalCount > 0) {
@@ -44,10 +43,9 @@ class GetAdminProductsWidgetConfigService extends AbstractBaseService
                 $dataArray['products'] = $productsCollection->asArray();
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
-                $dataArray['currency'] = $service->handle();
+                $dataArray['currency'] = $service->get();
                 
                 $dataArray['form'] = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
-                
                 $dataArray['template'] = 'admin-products.twig';
                 
                 $this->adminProductsWidgetArray = $dataArray;

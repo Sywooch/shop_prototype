@@ -45,41 +45,29 @@ class GetAdminProductsWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод  GetAdminProductsWidgetConfigService::handle
+     * Тестирует метод  GetAdminProductsWidgetConfigService::get
      * если передана несуществующая страница
      * @expectedException yii\web\NotFoundHttpException
      */
-    public function testHandleNotExistsPage()
+    public function testGetNotExistsPage()
     {
+        $_GET = [\Yii::$app->params['pagePointer']=>22];
         \Yii::$app->controller = new AdminController('admin', \Yii::$app);
         
-        $request = new class() {
-            public function get($name=null, $defaultValue=null)
-            {
-                return 18;
-            }
-        };
-        
         $service = new GetAdminProductsWidgetConfigService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
-     * Тестирует метод  GetAdminProductsWidgetConfigService::handle
+     * Тестирует метод  GetAdminProductsWidgetConfigService::get
      */
-    public function testHandle()
+    public function testGet()
     {
+        $_GET = [];
         \Yii::$app->controller = new AdminController('admin', \Yii::$app);
         
-        $request = new class() {
-            public function get($name=null, $defaultValue=null)
-            {
-                return null;
-            }
-        };
-        
         $service = new GetAdminProductsWidgetConfigService();
-        $result = $service->handle($request);
+        $result = $service->get();
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);

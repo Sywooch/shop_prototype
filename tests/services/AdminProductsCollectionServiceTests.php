@@ -39,67 +39,43 @@ class AdminProductsCollectionServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminProductsCollectionService::handle
-     * если отсутствует параметр $request
-     * @expectedException ErrorException
-     */
-    public function testHandleEmptyRequest()
-    {
-        $service = new AdminProductsCollectionService();
-        $service->handle();
-    }
-    
-    /**
-     * Тестирует метод AdminProductsCollectionService::handle
+     * Тестирует метод AdminProductsCollectionService::get
      * page === null
      * filters === null
      */
-    public function testHandle()
+    public function testGet()
     {
         \Yii::$app->controller = new AdminController('admin', \Yii::$app);
         
-        $request = new class() {
-            public function get($name = null, $defaultValue = null)
-            {
-                return null;
-            }
-        };
-        
         $service = new AdminProductsCollectionService();
-        $result = $service->handle($request);
+        $result = $service->get();
 
         $this->assertInstanceOf(ProductsCollection::class, $result);
-        $this->assertFalse($result->isEmpty());
     }
     
     /**
-     * Тестирует метод AdminProductsCollectionService::handle
+     * Тестирует метод AdminProductsCollectionService::get
      * page === true
      * filters === null
      */
-    public function testHandlePage()
+    public function testGetPage()
     {
-        $request = new class() {
-            public function get($name = null, $defaultValue = null)
-            {
-                return 2;
-            }
-        };
+        $_GET = [\Yii::$app->params['pagePointer']=>2];
         
         $service = new AdminProductsCollectionService();
-        $result = $service->handle($request);
+        $result = $service->get();
 
         $this->assertInstanceOf(ProductsCollection::class, $result);
-        $this->assertFalse($result->isEmpty());
     }
 
     /**
-     * Тестирует метод AdminProductsCollectionService::handle
+     * Тестирует метод AdminProductsCollectionService::get
      * page === null
      * filters === true
      */
-    public function testHandleFilters()
+    public function testGetFilters()
     {
+        $_GET = [];
         $key = HashHelper::createFiltersKey(Url::current());
         
         $session = \Yii::$app->session;
@@ -115,18 +91,10 @@ class AdminProductsCollectionServiceTests extends TestCase
             'active'=>true
         ]);
 
-        $request = new class() {
-            public function get($name = null, $defaultValue = null)
-            {
-                return null;
-            }
-        };
-        
         $service = new AdminProductsCollectionService();
-        $result = $service->handle($request);
+        $result = $service->get();
 
         $this->assertInstanceOf(ProductsCollection::class, $result);
-        $this->assertFalse($result->isEmpty());
 
         $session->remove($key);
         $session->close();

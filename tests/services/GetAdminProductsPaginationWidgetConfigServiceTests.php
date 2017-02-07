@@ -37,32 +37,15 @@ class GetAdminProductsPaginationWidgetConfigServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод GetAdminProductsPaginationWidgetConfigService::handle
-     * если отсутствует параметр $request
-     * @expectedException ErrorException
+     * Тестирует метод GetAdminProductsPaginationWidgetConfigService::get
      */
-    public function testHandleEmptyRequest()
+    public function testGet()
     {
-        $service = new GetAdminProductsPaginationWidgetConfigService();
-        $service->handle();
-    }
-    
-    /**
-     * Тестирует метод GetAdminProductsPaginationWidgetConfigService::handle
-     */
-    public function testHandle()
-    {
+        $_GET = [\Yii::$app->params['pagePointer']=>2];
         \Yii::$app->controller = new AdminController('admin', \Yii::$app);
         
-        $request = new class() {
-            public function get($name = null, $defaultValue = null)
-            {
-                return 1;
-            }
-        };
-        
         $service = new GetAdminProductsPaginationWidgetConfigService();
-        $result = $service->handle($request);
+        $result = $service->get();
         
         $this->assertInternalType('array', $result);
         

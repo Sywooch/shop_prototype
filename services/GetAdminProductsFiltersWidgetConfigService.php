@@ -30,10 +30,9 @@ class GetAdminProductsFiltersWidgetConfigService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета AdminProductsFiltersWidget
-     * @param $request
      * @return array
      */
-    public function handle($request=null): array
+    public function get(): array
     {
         try {
             if (empty($this->adminProductsFiltersWidgetArray)) {

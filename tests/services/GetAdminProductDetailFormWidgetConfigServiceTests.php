@@ -52,32 +52,60 @@ class GetAdminProductDetailFormWidgetConfigServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(GetAdminProductDetailFormWidgetConfigService::class);
         
+        $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('adminProductDetailFormWidgetArray'));
     }
     
     /**
-     * Тестирует метод GetAdminProductDetailFormWidgetConfigService::handle
-     * если передан пустой request
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: id
+     * Тестирует метод GetAdminProductDetailFormWidgetConfigService::setId
+     * если передан параметр неверного типа
+     * @expectedException TypeError
      */
-    public function testHandleNotExistsPage()
+    public function testSetIdError()
     {
-        $request = [];
-        
         $service = new GetAdminProductDetailFormWidgetConfigService();
-        $service->handle($request);
+        $service->setId('id');
     }
     
     /**
-     * Тестирует метод  GetAdminProductDetailFormWidgetConfigService::handle
+     * Тестирует метод GetAdminProductDetailFormWidgetConfigService::setId
      */
-    public function testHandle()
+    public function testSetId()
     {
-        $request = ['id'=>1];
-        
         $service = new GetAdminProductDetailFormWidgetConfigService();
-        $result = $service->handle($request);
+        $service->setId(23);
+        
+        $reflection = new \ReflectionProperty($service, 'id');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals(23, $result);
+    }
+    
+    /**
+     * Тестирует метод GetAdminProductDetailFormWidgetConfigService::get
+     * если отсутствует id
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: id
+     */
+    public function testGetEmptyId()
+    {
+        $service = new GetAdminProductDetailFormWidgetConfigService();
+        $service->get();
+    }
+    
+    /**
+     * Тестирует метод  GetAdminProductDetailFormWidgetConfigService::get
+     */
+    public function testGet()
+    {
+        $service = new GetAdminProductDetailFormWidgetConfigService();
+        
+        $reflection = new \ReflectionProperty($service, 'id');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, 1);
+        
+        $result = $service->get();
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);

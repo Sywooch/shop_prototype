@@ -22,10 +22,9 @@ class AdminProductsCollectionService extends AbstractBaseService
     
     /**
      * Возвращает ProductsCollection
-     * @param $request
      * @return ProductsCollection
      */
-    public function handle($request): ProductsCollection
+    public function get(): ProductsCollection
     {
         try {
             if (empty($this->productsCollection)) {
@@ -39,7 +38,7 @@ class AdminProductsCollectionService extends AbstractBaseService
                 }
                 
                 $finder = \Yii::$app->registry->get(AdminProductsFinder::class, [
-                    'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0,
+                    'page'=>\Yii::$app->request->get(\Yii::$app->params['pagePointer']) ?? 0,
                     'filters'=>$filtersModel
                 ]);
                 

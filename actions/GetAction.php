@@ -5,7 +5,7 @@ namespace app\actions;
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use app\actions\AbstractBaseAction;
-use app\services\ServiceInterface;
+use app\handlers\HandlerInterface;
 
 /**
  * Обрабатывает запрос на обработку формы
@@ -13,9 +13,9 @@ use app\services\ServiceInterface;
 class GetAction extends AbstractBaseAction
 {
     /**
-     * @var object ServiceInterface, обрабатывающий запрос
+     * @var object HandlerInterface, обрабатывающий запрос
      */
-    private $service;
+    private $handler;
     /**
      * @var string имя HTML шаблона
      */
@@ -24,8 +24,8 @@ class GetAction extends AbstractBaseAction
     public function run()
     {
         try {
-            if (empty($this->service)) {
-                throw new ErrorException($this->emptyError('service'));
+            if (empty($this->handler)) {
+                throw new ErrorException($this->emptyError('handler'));
             }
             if (empty($this->view)) {
                 throw new ErrorException($this->emptyError('view'));
@@ -34,7 +34,7 @@ class GetAction extends AbstractBaseAction
                 throw new ErrorException($this->invalidError('GET'));
             }
             
-            $result = $this->service->handle(\Yii::$app->request);
+            $result = $this->handler->handle(\Yii::$app->request);
             
             if (is_array($result) === false) {
                 throw new ErrorException($this->invalidError('result'));
@@ -54,13 +54,13 @@ class GetAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает ServiceInterface свойству GetAction::service
-     * @param $service ServiceInterface
+     * Присваивает HandlerInterface свойству GetAction::handler
+     * @param HandlerInterface $handler
      */
-    public function setService(ServiceInterface $service)
+    public function setHandler(HandlerInterface $handler)
     {
         try {
-            $this->service = $service;
+            $this->handler = $handler;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwServerError($t, __METHOD__);

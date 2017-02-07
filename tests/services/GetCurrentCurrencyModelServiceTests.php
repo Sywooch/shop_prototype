@@ -45,10 +45,10 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод GetCurrentCurrencyModelService::handle
+     * Тестирует метод GetCurrentCurrencyModelService::get
      * если сессия пуста
      */
-    public function testHandleEmptySession()
+    public function testGetEmptySession()
     {
         $key = HashHelper::createCurrencyKey();
         self::$session->open();
@@ -57,7 +57,7 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
         $this->assertFalse(self::$session->has($key));
         
         $service = new GetCurrentCurrencyModelService();
-        $result = $service->handle();
+        $result = $service->get();
         
         $this->assertInstanceOf(CurrencyModel::class, $result);
         
@@ -65,18 +65,18 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод GetCurrentCurrencyModelService::handle
+     * Тестирует метод GetCurrentCurrencyModelService::get
      * если сессия не пуста
-     * @depends testHandleEmptySession
+     * @depends testGetEmptySession
      */
-    public function testHandleMSDB()
+    public function testGetMSDB()
     {
         $key = HashHelper::createCurrencyKey();
         
         $this->assertTrue(self::$session->has($key));
         
         $service = new GetCurrentCurrencyModelService();
-        $result = $service->handle();
+        $result = $service->get();
         
         $this->assertInstanceOf(CurrencyModel::class, $result);
         

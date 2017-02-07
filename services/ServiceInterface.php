@@ -7,5 +7,5 @@ namespace app\services;
  */
 interface ServiceInterface
 {
-    public function handle($data);
+    public function get();
 }

@@ -21,14 +21,14 @@ class GetAdminProductsPaginationWidgetConfigService extends AbstractBaseService
      * @param array $request
      * @return array
      */
-    public function handle($request): array
+    public function get(): array
     {
         try {
             if (empty($this->paginationWidgetArray)) {
                 $dataArray = [];
                 
                 $service = \Yii::$app->registry->get(AdminProductsCollectionService::class);
-                $purchasesCollection = $service->handle($request);
+                $purchasesCollection = $service->get();
             
                 $pagination = $purchasesCollection->pagination;
                 

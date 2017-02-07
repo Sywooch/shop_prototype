@@ -26,7 +26,7 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
      * если данных нет, в СУБД и сохраняет полученные данные в сессию
      * @return CurrencyModel
      */
-    public function handle($request=null): CurrencyModel
+    public function get(): CurrencyModel
     {
         try {
             if (empty($this->currencyModel)) {

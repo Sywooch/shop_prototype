@@ -26,7 +26,7 @@ class GetAdminCsvProductsFormWidgetConfigServiceTests extends TestCase
     public function testHandle()
     {
         $service = new GetAdminCsvProductsFormWidgetConfigService();
-        $result = $service->handle();
+        $result = $service->get();
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);

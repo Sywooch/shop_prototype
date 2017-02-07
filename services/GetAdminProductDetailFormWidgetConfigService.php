@@ -29,7 +29,6 @@ class GetAdminProductDetailFormWidgetConfigService extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации
-     * @param $request
      * @return array
      */
     public function get(): array
@@ -64,7 +63,7 @@ class GetAdminProductDetailFormWidgetConfigService extends AbstractBaseService
                     throw new ErrorException($this->emptyError('subcategoryArray'));
                 }
                 $subcategoryArray = ArrayHelper::map($subcategoryArray, 'id', 'name');
-                $dataArray['subcategory'] = ArrayHelper::merge($dataArray['subcategory'], $subcategoryArray);
+                $dataArray['subcategory'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $subcategoryArray);
                 
                 $finder = \Yii::$app->registry->get(ColorsFinder::class);
                 $colorsArray = $finder->find();
@@ -97,6 +96,19 @@ class GetAdminProductDetailFormWidgetConfigService extends AbstractBaseService
             }
             
             return $this->adminProductDetailFormWidgetArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает заголовок свойству GetAdminProductDetailFormWidgetConfigService::id
+     * @param int $id
+     */
+    public function setId(int $id)
+    {
+        try {
+            $this->id = $id;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

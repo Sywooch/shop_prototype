@@ -1,20 +1,20 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
-use app\services\{AbstractBaseService,
-    GetAdminCsvProductsFormWidgetConfigService,
+use app\handlers\AbstractBaseHandler;
+use app\services\{GetAdminCsvProductsFormWidgetConfigService,
     GetAdminProductsFiltersWidgetConfigService,
     GetAdminProductsPaginationWidgetConfigService,
     GetAdminProductsWidgetConfigService};
 
 /**
- * Формирует массив данных для рендеринга страницы 
+ * Обрабатывает запрос на получение данных 
  * с перечнем заказов
  */
-class AdminProductsService extends AbstractBaseService
+class AdminProductsHandler extends AbstractBaseHandler
 {
     /**
      * @var array массив данных для рендеринга
@@ -33,16 +33,16 @@ class AdminProductsService extends AbstractBaseService
                 $dataArray = [];
                 
                 $service = \Yii::$app->registry->get(GetAdminProductsFiltersWidgetConfigService::class);
-                $dataArray['adminProductsFiltersWidgetConfig'] = $service->handle($request);
+                $dataArray['adminProductsFiltersWidgetConfig'] = $service->get();
                 
                 $service = \Yii::$app->registry->get(GetAdminProductsWidgetConfigService::class);
-                $dataArray['adminProductsWidgetConfig'] = $service->handle($request);
+                $dataArray['adminProductsWidgetConfig'] = $service->get();
                 
                 $service = \Yii::$app->registry->get(GetAdminProductsPaginationWidgetConfigService::class);
-                $dataArray['paginationWidgetConfig'] = $service->handle($request);
+                $dataArray['paginationWidgetConfig'] = $service->get();
                 
                 $service = \Yii::$app->registry->get(GetAdminCsvProductsFormWidgetConfigService::class);
-                $dataArray['adminCsvProductsFormWidgetConfig'] = $service->handle();
+                $dataArray['adminCsvProductsFormWidgetConfig'] = $service->get();
                 
                 $this->dataArray = $dataArray;
             }
