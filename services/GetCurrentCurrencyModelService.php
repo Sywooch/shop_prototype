@@ -16,6 +16,10 @@ use app\models\CurrencyModel;
 class GetCurrentCurrencyModelService extends AbstractBaseService
 {
     /**
+     * @var string ключ
+     */
+    private $key;
+    /**
      * @var CurrencyModel
      */
     private $currencyModel = null;
@@ -29,10 +33,14 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
     public function get(): CurrencyModel
     {
         try {
+            if (empty($this->key)) {
+                throw new ErrorException($this->emptyError('key'));
+            }
+            
             if (empty($this->currencyModel)) {
-                $key = HashHelper::createCurrencyKey();
-                
-                $finder = \Yii::$app->registry->get(CurrencySessionFinder::class, ['key'=>$key]);
+                $finder = \Yii::$app->registry->get(CurrencySessionFinder::class, [
+                    'key'=>$this->key
+                ]);
                 $currencyModel = $finder->find();
                 
                 if (empty($currencyModel)) {
@@ -43,7 +51,7 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
                     }
                     
                     $saver = new SessionModelSaver([
-                        'key'=>$key,
+                        'key'=>$this->key,
                         'model'=>$currencyModel
                     ]);
                     $saver->save();
@@ -53,6 +61,19 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
             }
             
             return $this->currencyModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает ключ GetCurrentCurrencyModelService::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -4,7 +4,7 @@ namespace app\actions;
 
 use yii\base\ErrorException;
 use app\actions\AbstractBaseAction;
-use app\services\ServiceInterface;
+use app\handlers\HandlerInterface;
 
 /**
  * Обрабатывает запрос на вывод каталога товаров
@@ -12,21 +12,21 @@ use app\services\ServiceInterface;
 class AjaxAction extends AbstractBaseAction
 {
     /**
-     * @var object ServiceInterface, обрабатывающий запрос
+     * @var object HandlerInterface, обрабатывающий запрос
      */
-    private $service;
+    private $handler;
     
     public function run()
     {
         try {
-            if (empty($this->service)) {
-                throw new ErrorException($this->emptyError('service'));
+            if (empty($this->handler)) {
+                throw new ErrorException($this->emptyError('handler'));
             }
             if (\Yii::$app->request->isAjax !== true) {
                 throw new ErrorException($this->invalidError('AJAX'));
             }
             
-            return $this->service->handle(\Yii::$app->request);
+            return $this->handler->handle(\Yii::$app->request);
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwServerError($t, __METHOD__);
@@ -34,13 +34,13 @@ class AjaxAction extends AbstractBaseAction
     }
     
     /**
-     * Присваивает ServiceInterface свойству AjaxAction::service
-     * @param $service ServiceInterface
+     * Присваивает HandlerInterface свойству AjaxAction::handler
+     * @param HandlerInterface $handler
      */
-    public function setService(ServiceInterface $service)
+    public function setHandler(HandlerInterface $handler)
     {
         try {
-            $this->service = $service;
+            $this->handler = $handler;
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwServerError($t, __METHOD__);

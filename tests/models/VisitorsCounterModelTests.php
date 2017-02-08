@@ -60,16 +60,4 @@ class VisitorsCounterModelTests extends TestCase
         
         $this->assertEmpty($model->errors);
     }
-    
-    /**
-     * Тестирует метод VisitorsCounterModel::getVisits
-     */
-    public function testGetVisits()
-    {
-        $model = new VisitorsCounterModel();
-        $model->counter = 658;
-        $result = $model->getVisits();
-        
-        $this->assertEquals(658, $result);
-    }
 }

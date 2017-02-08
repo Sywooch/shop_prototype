@@ -41,7 +41,46 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
     {
         $reflection = new \ReflectionClass(GetCurrentCurrencyModelService::class);
         
+        $this->assertTrue($reflection->hasProperty('key'));
         $this->assertTrue($reflection->hasProperty('currencyModel'));
+    }
+    
+    /**
+     * Тестирует метод GetCurrentCurrencyModelService::setKey
+     * передаю неверный параметр
+     * @expectedException TypeError
+     */
+    public function testSetKeyError()
+    {
+        $service = new GetCurrentCurrencyModelService();
+        $service->setKey([]);
+    }
+    
+    /**
+     * Тестирует метод GetCurrentCurrencyModelService::setKey
+     */
+    public function testSetKey()
+    {
+        $service = new GetCurrentCurrencyModelService();
+        $service->setKey('key');
+        
+        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('key', $result);
+    }
+    
+    /**
+     * Тестирует метод GetCurrentCurrencyModelService::get
+     * если пуст GetCurrentCurrencyModelService::key
+     * @expectedException ErrorException
+     * Отсутствуют необходимые данные: key
+     */
+    public function testGetEmptyKey()
+    {
+        $service = new GetCurrentCurrencyModelService();
+        $service->get();
     }
     
     /**
@@ -51,12 +90,16 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
     public function testGetEmptySession()
     {
         $key = HashHelper::createCurrencyKey();
-        self::$session->open();
-        self::$session->remove($key);
         
+        self::$session->open();
         $this->assertFalse(self::$session->has($key));
         
         $service = new GetCurrentCurrencyModelService();
+        
+        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, $key);
+        
         $result = $service->get();
         
         $this->assertInstanceOf(CurrencyModel::class, $result);
@@ -76,6 +119,11 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
         $this->assertTrue(self::$session->has($key));
         
         $service = new GetCurrentCurrencyModelService();
+        
+        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, $key);
+        
         $result = $service->get();
         
         $this->assertInstanceOf(CurrencyModel::class, $result);

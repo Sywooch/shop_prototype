@@ -4,19 +4,12 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use app\handlers\AbstractBaseHandler;
-use app\services\{GetAdminTodayOrdersWidgetConfigService,
-    GetAverageBillWidgetConfigService,
-    GetConversionWidgetConfigService,
-    GetCurrentCurrencyModelService,
-    GetPopularGoodsWidgetConfigService,
-    GetVisitsMinimalWidgetConfigService,
-    GetVisitsWidgetConfigService};
+use app\services\GetCurrentCurrencyModelService;
 use app\finders\{PopularProductsFinder,
     PurchasesTodayFinder,
     VisitorsCounterDateFinder};
 use app\helpers\DateHelper;
-use app\collections\PurchasesCollection;
-use app\models\VisitorsCounterInterface;
+use app\collections\PurchasesCollectionInterface;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -46,26 +39,14 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
                     'date'=>DateHelper::getToday00()
                 ]);
                 $visitorsCounterModel = $finder->find();
-                $numberVisits = $visitorsCounterModel->getVisits();
+                $numberVisits = !empty($visitorsCounterModel) ? $visitorsCounterModel->counter : 0;
                 
                 $dataArray = [];
                 
                 $dataArray['adminTodayOrdersMinimalWidgetConfig'] = $this->adminTodayOrdersMinimalWidgetConfig($numberOrders);
-                
-                /*$service = \Yii::$app->registry->get(GetVisitsMinimalWidgetConfigService::class);
-                $dataArray['visitsMinimalWidgetConfig'] = $service->handle();*/
                 $dataArray['visitsMinimalWidgetConfig'] = $this->visitsMinimalWidgetConfig($numberVisits);
-                
-                /*$service = \Yii::$app->registry->get(GetConversionWidgetConfigService::class);
-                $dataArray['conversionWidgetConfig'] = $service->handle();*/
                 $dataArray['conversionWidgetConfig'] = $this->conversionWidgetConfig($numberOrders, $numberVisits);
-                
-                /*$service = \Yii::$app->registry->get(GetAverageBillWidgetConfigService::class);
-                $dataArray['averageBillWidgetConfig'] = $service->handle();*/
                 $dataArray['averageBillWidgetConfig'] = $this->averageBillWidgetConfig($ordersCollection);
-                
-                /*$service = \Yii::$app->registry->get(GetPopularGoodsWidgetConfigService::class);
-                $dataArray['popularGoodsWidgetConfig'] = $service->handle();*/
                 $dataArray['popularGoodsWidgetConfig'] = $this->popularGoodsWidgetConfig();
                 
                 $this->dataArray = $dataArray;
@@ -138,10 +119,10 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AverageBillWidget
-     * @param PurchasesCollection $ordersCollection коллекция заказов
+     * @param PurchasesCollectionInterface $ordersCollection коллекция заказов
      * @return array
      */
-    private function averageBillWidgetConfig(PurchasesCollection $ordersCollection): array
+    private function averageBillWidgetConfig(PurchasesCollectionInterface $ordersCollection): array
     {
         try {
             $dataArray = [];

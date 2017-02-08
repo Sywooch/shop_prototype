@@ -2,14 +2,13 @@
 
 namespace app\models;
 
-use app\models\{AbstractBaseModel,
-    VisitorsCounterInterface};
+use app\models\AbstractBaseModel;
 use app\exceptions\ExceptionsTrait;
 
 /**
  * Представляет данные таблицы visitors_counter
  */
-class VisitorsCounterModel extends AbstractBaseModel implements VisitorsCounterInterface
+class VisitorsCounterModel extends AbstractBaseModel
 {
     /**
      * Сценарий сохранения данных
@@ -41,18 +40,5 @@ class VisitorsCounterModel extends AbstractBaseModel implements VisitorsCounterI
         return [
             [['date', 'counter'], 'required', 'on'=>self::SAVE],
         ];
-    }
-    
-    /**
-     * Возвращает значение свойства VisitorsCounterModel::counter
-     * @return int
-     */
-    public function getVisits()
-    {
-        try {
-            return $this->counter ?? 0;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
     }
 }

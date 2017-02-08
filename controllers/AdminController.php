@@ -8,9 +8,10 @@ use app\actions\{AjaxAction,
     GetAction};
 use app\services\{AdminIndexService,
     AdminOrderDetailChangeService,
-    AdminOrderDetailFormService,
-    AdminOrdersService};
+    AdminOrderDetailFormService};
 use app\handlers\{AdminIndexRequestHandler,
+    AdminOrderDetailFormRequestHandler,
+    AdminOrdersRequestHandler,
     AdminProductDetailFormHandler,
     AdminProductsRequestHandler};
 
@@ -24,20 +25,20 @@ class AdminController extends Controller
         return [
             'index'=>[
                 'class'=>GetAction::class,
-                //'service'=>new AdminIndexService(),
                 'handler'=>new AdminIndexRequestHandler(),
                 'view'=>'index.twig',
             ],
-            /*'orders'=>[
+            'orders'=>[
                 'class'=>GetAction::class,
-                'service'=>new AdminOrdersService(),
+                'handler'=>new AdminOrdersRequestHandler(),
                 'view'=>'orders.twig',
             ],
             'order-detail-form'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AdminOrderDetailFormService(),
+                //'service'=>new AdminOrderDetailFormService(),
+                'handler'=>new AdminOrderDetailFormRequestHandler()
             ],
-            'order-detail-change'=>[
+            /*'order-detail-change'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AdminOrderDetailChangeService(),
             ],*/
