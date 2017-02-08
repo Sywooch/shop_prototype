@@ -6,7 +6,7 @@
     <ol class="{{ listClass }}">
         {% for product in products %}
             <li>
-                <div class="admin-products-previous-data">
+                <div class="admin-product-previous-data">
                     <a href="{{ product.link }}">{{ product.linkText }}</a>
                     <br>{{ shortDescriptionHeader }}:  {{ product.short_description }}
                     <br>{{ product.image | raw }}

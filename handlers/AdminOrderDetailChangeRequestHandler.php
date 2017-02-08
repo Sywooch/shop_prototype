@@ -127,10 +127,11 @@ class AdminOrderDetailChangeRequestHandler extends AbstractBaseHandler
                         $saver->save();
                         
                         $adminOrderDataWidgetConfig = $this->adminOrderDataWidgetConfig($purchasesModel);
+                        $response = AdminOrderDataWidget::widget($adminOrderDataWidgetConfig);
                         
                         $transaction->commit();
                         
-                        return AdminOrderDataWidget::widget($adminOrderDataWidgetConfig);
+                        return $response;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

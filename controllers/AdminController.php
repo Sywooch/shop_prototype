@@ -10,7 +10,7 @@ use app\handlers\{AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
     AdminOrdersRequestHandler,
-    AdminProductDetailFormHandler,
+    AdminProductDetailFormRequestHandler,
     AdminProductsRequestHandler};
 
 /**
@@ -44,10 +44,10 @@ class AdminController extends Controller
                 'handler'=>new AdminProductsRequestHandler(),
                 'view'=>'products.twig',
             ],
-            /*'product-detail-form'=>[
+            'product-detail-form'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AdminProductDetailFormHandler(),
-            ],*/
+                'handler'=>new AdminProductDetailFormRequestHandler(),
+            ],
         ];
     }
     

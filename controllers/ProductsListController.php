@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use app\actions\GetAction;
 use app\services\{ProductsListIndexService,
     ProductsListSearchService};
+use app\handlers\ProductsListIndexRequestHandler;
 use app\filters\VisitorsCounterFilter;
 
 /**
@@ -19,14 +20,15 @@ class ProductsListController extends Controller
         return [
             'index'=>[
                 'class'=>GetAction::class,
-                'service'=>new ProductsListIndexService(),
+                //'service'=>new ProductsListIndexService(),
+                'handler'=>new ProductsListIndexRequestHandler(),
                 'view'=>'products-list.twig'
             ],
-            'search'=>[
+            /*'search'=>[
                 'class'=>GetAction::class,
                 'service'=>new ProductsListSearchService(),
                 'view'=>'products-search.twig'
-            ],
+            ],*/
         ];
     }
     
