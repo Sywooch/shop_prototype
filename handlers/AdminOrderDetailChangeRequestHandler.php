@@ -1,14 +1,15 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\{AbstractBaseService,
-    AddressGetSaveAddressService,
+use app\handlers\AbstractBaseHandler;
+use app\services\{AddressGetSaveAddressService,
     CityGetSaveCityService,
     CountryGetSaveCountryService,
+    GetCurrentCurrencyModelService,
     NameGetSaveNameService,
     PhoneGetSavePhoneService,
     PostcodeGetSavePostcodeService,
@@ -18,11 +19,12 @@ use app\savers\ModelSaver;
 use app\models\PurchasesModel;
 use app\finders\PurchaseIdFinder;
 use app\widgets\AdminOrderDataWidget;
+use app\helpers\HashHelper;
 
 /**
- * Отменят заказ
+ * Обрабатывает запрос на обновление заказа
  */
-class AdminOrderDetailChangeService extends AbstractBaseService
+class AdminOrderDetailChangeRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на отмену заказа
@@ -45,33 +47,49 @@ class AdminOrderDetailChangeService extends AbstractBaseService
                     $transaction = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $finder = \Yii::$app->registry->get(PurchaseIdFinder::class, ['id'=>$form->id]);
+                        $finder = \Yii::$app->registry->get(PurchaseIdFinder::class, [
+                            'id'=>$form->id
+                        ]);
                         $purchasesModel = $finder->find();
                         
                         if (empty($purchasesModel)) {
                             throw new ErrorException($this->emptyError('purchasesModel'));
                         }
                         
-                        $service = \Yii::$app->registry->get(NameGetSaveNameService::class);
-                        $namesModel = $service->handle(['name'=>$form->name]);
+                        $service = \Yii::$app->registry->get(NameGetSaveNameService::class, [
+                            'name'=>$form->name
+                        ]);
+                        $namesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(SurnameGetSaveSurnameService::class);
-                        $surnamesModel = $service->handle(['surname'=>$form->surname]);
+                        $service = \Yii::$app->registry->get(SurnameGetSaveSurnameService::class, [
+                            'surname'=>$form->surname
+                        ]);
+                        $surnamesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(PhoneGetSavePhoneService::class);
-                        $phonesModel = $service->handle(['phone'=>$form->phone]);
+                        $service = \Yii::$app->registry->get(PhoneGetSavePhoneService::class, [
+                            'phone'=>$form->phone
+                        ]);
+                        $phonesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(AddressGetSaveAddressService::class);
-                        $addressModel = $service->handle(['address'=>$form->address]);
+                        $service = \Yii::$app->registry->get(AddressGetSaveAddressService::class, [
+                            'address'=>$form->address
+                        ]);
+                        $addressModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(CityGetSaveCityService::class);
-                        $citiesModel = $service->handle(['city'=>$form->city]);
+                        $service = \Yii::$app->registry->get(CityGetSaveCityService::class, [
+                            'city'=>$form->city
+                        ]);
+                        $citiesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(CountryGetSaveCountryService::class);
-                        $countriesModel = $service->handle(['country'=>$form->country]);
+                        $service = \Yii::$app->registry->get(CountryGetSaveCountryService::class, [
+                            'country'=>$form->country
+                        ]);
+                        $countriesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(PostcodeGetSavePostcodeService::class);
-                        $postcodesModel = $service->handle(['postcode'=>$form->postcode]);
+                        $service = \Yii::$app->registry->get(PostcodeGetSavePostcodeService::class, [
+                            'postcode'=>$form->postcode
+                        ]);
+                        $postcodesModel = $service->get();
                         
                         $purchasesModel->scenario = PurchasesModel::UPDATE_ADMIN;
                         $purchasesModel->id_name = $namesModel->id;
@@ -108,8 +126,7 @@ class AdminOrderDetailChangeService extends AbstractBaseService
                         ]);
                         $saver->save();
                         
-                        $service = \Yii::$app->registry->get(GetAdminOrderDataWidgetConfigService::class);
-                        $adminOrderDataWidgetConfig = $service->handle(['id'=>$form->id]);
+                        $adminOrderDataWidgetConfig = $this->adminOrderDataWidgetConfig($purchasesModel);
                         
                         $transaction->commit();
                         
@@ -120,6 +137,32 @@ class AdminOrderDetailChangeService extends AbstractBaseService
                     }
                 }
             }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminOrderDataWidget
+     * @params PurchasesModel $purchasesModel
+     * @return array
+     */
+    private function adminOrderDataWidgetConfig(PurchasesModel $purchasesModel)
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['purchase'] = $purchasesModel;
+            
+            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                'key'=>HashHelper::createCurrencyKey()
+            ]);
+            $dataArray['currency'] = $service->get();
+            
+            $dataArray['form'] = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
+            $dataArray['template'] = 'admin-order-data.twig';
+            
+            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

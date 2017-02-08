@@ -55,17 +55,41 @@ class NameGetSaveNameServiceTests extends TestCase
     }
     
     /**
+     * Тестирует метод NameGetSaveNameService::setName
+     * передаю неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetNameError()
+    {
+        $service = new NameGetSaveNameService();
+        $service->setName([]);
+    }
+    
+    /**
+     * Тестирует метод NameGetSaveNameService::setName
+     */
+    public function testSetName()
+    {
+        $service = new NameGetSaveNameService();
+        $service->setName('Name');
+        
+        $reflection = new \ReflectionProperty($service, 'name');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('Name', $result);
+    }
+    
+    /**
      * Тестирует метод NameGetSaveNameService::handle
      * если пуст NameGetSaveNameService::name
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: request
+     * @expectedExceptionMessage Отсутствуют необходимые данные: name
      */
     public function testHandleEmptyName()
     {
-        $request = [];
-        
         $service = new NameGetSaveNameService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
@@ -74,10 +98,13 @@ class NameGetSaveNameServiceTests extends TestCase
      */
     public function testHandleExistsName()
     {
-        $request = ['name'=>self::$dbClass->names['name_1']['name']];
-        
         $service = new NameGetSaveNameService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'name');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, self::$dbClass->names['name_1']['name']);
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(NamesModel::class, $result);
     }
@@ -88,22 +115,24 @@ class NameGetSaveNameServiceTests extends TestCase
      */
     public function testHandleNotExistsName()
     {
-        $request = ['name'=>'new@name.com'];
-        
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{names}} WHERE [[name]]=:name')->bindValue(':name', 'new@name.com')->queryOne();
-        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{names}} WHERE [[name]]=:name')->bindValue(':name', 'New Name')->queryOne();
         $this->assertEmpty($result);
         
         $service = new NameGetSaveNameService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'name');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, 'New Name');
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(NamesModel::class, $result);
         
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{names}} WHERE [[name]]=:name')->bindValue(':name', 'new@name.com')->queryOne();
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{names}} WHERE [[name]]=:name')->bindValue(':name', 'New Name')->queryOne();
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertEquals('new@name.com', $result['name']);
+        $this->assertEquals('New Name', $result['name']);
     }
     
     public static function tearDownAfterClass()

@@ -199,7 +199,9 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
             
             $dataArray['products'] = $productsCollection->asArray();
             
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
+            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                'key'=>HashHelper::createCurrencyKey()
+            ]);
             $dataArray['currency'] = $service->get();
             
             $dataArray['form'] = new AdminProductForm(['scenario'=>AdminProductForm::GET]);

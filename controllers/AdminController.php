@@ -6,10 +6,8 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction};
-use app\services\{AdminIndexService,
-    AdminOrderDetailChangeService,
-    AdminOrderDetailFormService};
 use app\handlers\{AdminIndexRequestHandler,
+    AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
     AdminOrdersRequestHandler,
     AdminProductDetailFormHandler,
@@ -35,13 +33,12 @@ class AdminController extends Controller
             ],
             'order-detail-form'=>[
                 'class'=>AjaxAction::class,
-                //'service'=>new AdminOrderDetailFormService(),
                 'handler'=>new AdminOrderDetailFormRequestHandler()
             ],
-            /*'order-detail-change'=>[
+            'order-detail-change'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AdminOrderDetailChangeService(),
-            ],*/
+                'handler'=>new AdminOrderDetailChangeRequestHandler(),
+            ],
             'products'=>[
                 'class'=>GetAction::class,
                 'handler'=>new AdminProductsRequestHandler(),

@@ -27,14 +27,11 @@ class CityGetSaveCityService extends AbstractBaseService
      * Возвращает CitiesModel по city
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return CitiesModel
      */
-    public function handle($request): CitiesModel
+    public function get(): CitiesModel
     {
         try {
-            $this->city = $request['city'] ?? null;
-            
             if (empty($this->city)) {
                 throw new ErrorException($this->emptyError('city'));
             }
@@ -77,6 +74,19 @@ class CityGetSaveCityService extends AbstractBaseService
             $citiesModel = $finder->find();
             
             return $citiesModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение CityGetSaveCityService::city
+     * @param string $city
+     */
+    public function setCity(string $city)
+    {
+        try {
+            $this->city = $city;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

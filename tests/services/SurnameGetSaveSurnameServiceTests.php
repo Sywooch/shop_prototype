@@ -55,47 +55,76 @@ class SurnameGetSaveSurnameServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод SurnameGetSaveSurnameService::handle
+     * Тестирует метод SurnameGetSaveSurnameService::setSurname
+     * передаю неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetSurnameError()
+    {
+        $service = new SurnameGetSaveSurnameService();
+        $service->setSurname([]);
+    }
+    
+    /**
+     * Тестирует метод SurnameGetSaveSurnameService::setSurname
+     */
+    public function testSetSurname()
+    {
+        $service = new SurnameGetSaveSurnameService();
+        $service->setSurname('Surname');
+        
+        $reflection = new \ReflectionProperty($service, 'surname');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('Surname', $result);
+    }
+    
+    /**
+     * Тестирует метод SurnameGetSaveSurnameService::get
      * если пуст SurnameGetSaveSurnameService::surname
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: surname
      */
-    public function testHandleEmptyName()
+    public function testGetEmptyName()
     {
-        $request = [];
-        
         $service = new SurnameGetSaveSurnameService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
-     * Тестирует метод SurnameGetSaveSurnameService::handle
+     * Тестирует метод SurnameGetSaveSurnameService::get
      * если surname уже в СУБД
      */
-    public function testHandleExistsSurname()
+    public function testGetExistsSurname()
     {
-        $request = ['surname'=>self::$dbClass->surnames['surname_1']['surname']];
-        
         $service = new SurnameGetSaveSurnameService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'surname');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, self::$dbClass->surnames['surname_1']['surname']);
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(SurnamesModel::class, $result);
     }
     
     /**
-     * Тестирует метод SurnameGetSaveSurnameService::handle
+     * Тестирует метод SurnameGetSaveSurnameService::get
      * если surname еще не в СУБД
      */
-    public function testHandleNotExistsSurname()
+    public function testGetNotExistsSurname()
     {
-        $request = ['surname'=>'Shakespeare'];
-        
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{surnames}} WHERE [[surname]]=:surname')->bindValue(':surname', 'Shakespeare')->queryOne();
-        
         $this->assertEmpty($result);
         
         $service = new SurnameGetSaveSurnameService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'surname');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, 'Shakespeare');
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(SurnamesModel::class, $result);
         

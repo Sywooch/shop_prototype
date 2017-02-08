@@ -8,7 +8,8 @@ use app\services\GetCurrentCurrencyModelService;
 use app\finders\{PopularProductsFinder,
     PurchasesTodayFinder,
     VisitorsCounterDateFinder};
-use app\helpers\DateHelper;
+use app\helpers\{DateHelper,
+    HashHelper};
 use app\collections\PurchasesCollectionInterface;
 
 /**
@@ -129,7 +130,9 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
             
             $dataArray['purchases'] = $ordersCollection;
             
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
+            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                'key'=>HashHelper::createCurrencyKey()
+            ]);
             $dataArray['currency'] = $service->get();
                
             $dataArray['header'] = \Yii::t('base', 'Average bill');

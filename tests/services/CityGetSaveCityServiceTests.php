@@ -55,47 +55,76 @@ class CityGetSaveCityServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CityGetSaveCityService::handle
+     * Тестирует метод CityGetSaveCityService::setCity
+     * передаю неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetCityError()
+    {
+        $service = new CityGetSaveCityService();
+        $service->setCity([]);
+    }
+    
+    /**
+     * Тестирует метод CityGetSaveCityService::setCity
+     */
+    public function testSetCity()
+    {
+        $service = new CityGetSaveCityService();
+        $service->setCity('City');
+        
+        $reflection = new \ReflectionProperty($service, 'city');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('City', $result);
+    }
+    
+    /**
+     * Тестирует метод CityGetSaveCityService::get
      * если пуст CityGetSaveCityService::city
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: city
      */
-    public function testHandleEmptyName()
+    public function testGetEmptyCity()
     {
-        $request = [];
-        
         $service = new CityGetSaveCityService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
-     * Тестирует метод CityGetSaveCityService::handle
+     * Тестирует метод CityGetSaveCityService::get
      * если city уже в СУБД
      */
-    public function testHandleExistsAddress()
+    public function testGetExistsAddress()
     {
-        $request = ['city'=>self::$dbClass->cities['city_1']['city']];
-        
         $service = new CityGetSaveCityService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'city');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, self::$dbClass->cities['city_1']['city']);
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(CitiesModel::class, $result);
     }
     
     /**
-     * Тестирует метод CityGetSaveCityService::handle
+     * Тестирует метод CityGetSaveCityService::get
      * если city еще не в СУБД
      */
-    public function testHandleNotExistsAddress()
+    public function testGetNotExistsAddress()
     {
-        $request = ['city'=>'Оттава'];
-        
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{cities}} WHERE [[city]]=:city')->bindValue(':city', 'Оттава')->queryOne();
-        
         $this->assertEmpty($result);
         
         $service = new CityGetSaveCityService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'city');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, 'Оттава');
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(CitiesModel::class, $result);
         

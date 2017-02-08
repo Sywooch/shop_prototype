@@ -1,23 +1,17 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AdminOrderDetailFormService;
+use app\handlers\AdminOrderDetailChangeRequestHandler;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{ColorsFixture,
-    CurrencyFixture,
-    DeliveriesFixture,
-    PaymentsFixture,
-    ProductsColorsFixture,
-    ProductsSizesFixture,
-    PurchasesFixture,
-    SizesFixture};
+use app\tests\sources\fixtures\{CurrencyFixture,
+    PurchasesFixture};
 
 /**
- * Тестирует класс AdminOrderDetailFormService
+ * Тестирует класс AdminOrderDetailChangeRequestHandler
  */
-class AdminOrderDetailFormServiceTests extends TestCase
+class AdminOrderDetailChangeRequestHandlerTests extends TestCase
 {
     private static $dbClass;
     
@@ -27,12 +21,6 @@ class AdminOrderDetailFormServiceTests extends TestCase
             'fixtures'=>[
                 'currency'=>CurrencyFixture::class,
                 'purchases'=>PurchasesFixture::class,
-                'colors'=>ColorsFixture::class,
-                'products_colors'=>ProductsColorsFixture::class,
-                'sizes'=>SizesFixture::class,
-                'products_sizes'=>ProductsSizesFixture::class,
-                'deliveries'=>DeliveriesFixture::class,
-                'payments'=>PaymentsFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
@@ -44,73 +32,63 @@ class AdminOrderDetailFormServiceTests extends TestCase
     }
     
     /**
-     * Тестирует свойства AdminOrderDetailFormService
-     */
-    public function testProperties()
-    {
-        $reflection = new \ReflectionClass(AdminOrderDetailFormService::class);
-        
-        $this->assertTrue($reflection->hasProperty('dataArray'));
-    }
-    
-    /**
-     * Тестирует метод AdminOrderDetailFormService::handle
+     * Тестирует метод AdminOrderDetailChangeRequestHandler::handle
      * если отсутствует параметр $request
      * @expectedException ErrorException
      */
     public function testHandleEmptyRequest()
     {
-        $service = new AdminOrderDetailFormService();
+        $service = new AdminOrderDetailChangeRequestHandler();
         $service->handle();
     }
     
     /**
-     * Тестирует метод AdminOrderDetailFormService::handle
+     * Тестирует метод AdminOrderDetailChangeRequestHandler::handle
      * если в запросе ошибки
      */
-    public function testHandleAjaxError()
+    /*public function testHandleAjaxError()
     {
         $request = new class() {
             public $isAjax = true;
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'AdminChangeOrderForm'=>[
+                    'AdminProductForm'=>[
                         'id'=>null
                     ],
                 ];
             }
         };
         
-        $service = new AdminOrderDetailFormService();
+        $service = new AdminOrderDetailChangeRequestHandler();
         $result = $service->handle($request);
         
         $this->assertInternalType('array', $result);
-    }
+    }*/
     
     /**
-     * Тестирует метод AdminOrderDetailFormService::handle
+     * Тестирует метод AdminOrderDetailChangeRequestHandler::handle
      */
-    public function testHandle()
+    /*public function testHandle()
     {
         $request = new class() {
             public $isAjax = true;
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'AdminChangeOrderForm'=>[
+                    'AdminProductForm'=>[
                         'id'=>1
                     ],
                 ];
             }
         };
         
-        $service = new AdminOrderDetailFormService();
+        $service = new AdminOrderDetailChangeRequestHandler();
         $result = $service->handle($request);
 
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
-    }
+    }*/
     
     public static function tearDownAfterClass()
     {

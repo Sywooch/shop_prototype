@@ -27,14 +27,11 @@ class AddressGetSaveAddressService extends AbstractBaseService
      * Возвращает AddressModel по address
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return AddressModel
      */
-    public function handle($request): AddressModel
+    public function get(): AddressModel
     {
         try {
-            $this->address = $request['address'] ?? null;
-            
             if (empty($this->address)) {
                 throw new ErrorException($this->emptyError('address'));
             }
@@ -77,6 +74,19 @@ class AddressGetSaveAddressService extends AbstractBaseService
             $addressModel = $finder->find();
             
             return $addressModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение AddressGetSaveAddressService::address
+     * @param string $address
+     */
+    public function setAddress(string $address)
+    {
+        try {
+            $this->address = $address;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

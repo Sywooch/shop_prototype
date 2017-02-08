@@ -37,9 +37,9 @@ class PostcodeGetSavePostcodeServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод PostcodeGetSavePostcodeService::getCity
+     * Тестирует метод PostcodeGetSavePostcodeService::getPostcode
      */
-    public function testGetCity()
+    public function testGetPostcode()
     {
         $service = new PostcodeGetSavePostcodeService();
         
@@ -47,7 +47,7 @@ class PostcodeGetSavePostcodeServiceTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($service, self::$dbClass->postcodes['postcode_1']['postcode']);
         
-        $reflection = new \ReflectionMethod($service, 'getCity');
+        $reflection = new \ReflectionMethod($service, 'getPostcode');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($service);
         
@@ -55,47 +55,76 @@ class PostcodeGetSavePostcodeServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод PostcodeGetSavePostcodeService::handle
+     * Тестирует метод PostcodeGetSavePostcodeService::setPostcode
+     * передаю неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetPostcodeError()
+    {
+        $service = new PostcodeGetSavePostcodeService();
+        $service->setPostcode([]);
+    }
+    
+    /**
+     * Тестирует метод PostcodeGetSavePostcodeService::setPostcode
+     */
+    public function testSetPostcode()
+    {
+        $service = new PostcodeGetSavePostcodeService();
+        $service->setPostcode('Postcode');
+        
+        $reflection = new \ReflectionProperty($service, 'postcode');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('Postcode', $result);
+    }
+    
+    /**
+     * Тестирует метод PostcodeGetSavePostcodeService::get
      * если пуст PostcodeGetSavePostcodeService::postcode
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: postcode
      */
-    public function testHandleEmptyName()
+    public function testGetEmptyPostcode()
     {
-        $request = [];
-        
         $service = new PostcodeGetSavePostcodeService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
-     * Тестирует метод PostcodeGetSavePostcodeService::handle
+     * Тестирует метод PostcodeGetSavePostcodeService::get
      * если postcode уже в СУБД
      */
-    public function testHandleExistsAddress()
+    public function testGetExistsPostcode()
     {
-        $request = ['postcode'=>self::$dbClass->postcodes['postcode_1']['postcode']];
-        
         $service = new PostcodeGetSavePostcodeService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'postcode');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, self::$dbClass->postcodes['postcode_1']['postcode']);
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(PostcodesModel::class, $result);
     }
     
     /**
-     * Тестирует метод PostcodeGetSavePostcodeService::handle
+     * Тестирует метод PostcodeGetSavePostcodeService::get
      * если postcode еще не в СУБД
      */
-    public function testHandleNotExistsAddress()
+    public function testGetNotExistsPostcode()
     {
-        $request = ['postcode'=>'01365'];
-        
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{postcodes}} WHERE [[postcode]]=:postcode')->bindValue(':postcode', '01365')->queryOne();
-        
         $this->assertEmpty($result);
         
         $service = new PostcodeGetSavePostcodeService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'postcode');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, '01365');
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(PostcodesModel::class, $result);
         

@@ -20,25 +20,22 @@ class NameGetSaveNameService extends AbstractBaseService
     /**
      * @var string
      */
-    private $name = null;
+    private $name;
     
     /**
      * Возвращает NamesModel по name
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return NamesModel
      */
-    public function handle($request): NamesModel
+    public function get(): NamesModel
     {
         try {
-            if (empty($request['name'])) {
-                throw new ErrorException($this->emptyError('request'));
+            if (empty($this->name)) {
+                throw new ErrorException($this->emptyError('name'));
             }
             
             if (empty($this->namesModel)) {
-                $this->name = $request['name'];
-                
                 $namesModel = $this->getName();
                 
                 if ($namesModel === null) {
@@ -72,10 +69,25 @@ class NameGetSaveNameService extends AbstractBaseService
     private function getName()
     {
         try {
-            $finder = \Yii::$app->registry->get(NameNameFinder::class, ['name'=>$this->name]);
+            $finder = \Yii::$app->registry->get(NameNameFinder::class, [
+                'name'=>$this->name
+            ]);
             $namesModel = $finder->find();
             
             return $namesModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение NameGetSaveNameService::name
+     * @param string $name
+     */
+    public function setName(string $name)
+    {
+        try {
+            $this->name = $name;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

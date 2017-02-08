@@ -7,8 +7,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\handlers\AbstractBaseHandler;
-use app\services\{GetAdminOrderDetailFormWidgetConfigService,
-    GetCurrentCurrencyModelService};
+use app\services\GetCurrentCurrencyModelService;
 use app\forms\AdminChangeOrderForm;
 use app\widgets\AdminOrderDetailFormWidget;
 use app\finders\{ColorsProductFinder,
@@ -48,9 +47,6 @@ class AdminOrderDetailFormRequestHandler extends AbstractBaseHandler
                         return $errors;
                     }
                     
-                    /*$service = \Yii::$app->registry->get(GetAdminOrderDetailFormWidgetConfigService::class);
-                    $adminOrderDetailFormWidgetConfig = $service->handle(['id'=>$form->id]);*/
-                    
                     $adminOrderDetailFormWidgetConfig = $this->adminOrderDetailFormWidgetConfig($form->id);
                     
                     return AdminOrderDetailFormWidget::widget($adminOrderDetailFormWidgetConfig);
@@ -63,7 +59,7 @@ class AdminOrderDetailFormRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AdminOrderDetailFormWidget
-     * @params int $id товара, для которого запрашивается форма редактирования
+     * @params int $id товар, для которого запрашивается форма редактирования
      * @return array
      */
     private function adminOrderDetailFormWidgetConfig(int $id): array

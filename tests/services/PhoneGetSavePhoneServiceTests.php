@@ -55,29 +55,56 @@ class PhoneGetSavePhoneServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод PhoneGetSavePhoneService::handle
+     * Тестирует метод PhoneGetSavePhoneService::setPhone
+     * передаю неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetPhoneError()
+    {
+        $service = new PhoneGetSavePhoneService();
+        $service->setPhone([]);
+    }
+    
+    /**
+     * Тестирует метод PhoneGetSavePhoneService::setPhone
+     */
+    public function testSetPhone()
+    {
+        $service = new PhoneGetSavePhoneService();
+        $service->setPhone('098 786-88-09');
+        
+        $reflection = new \ReflectionProperty($service, 'phone');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('098 786-88-09', $result);
+    }
+    
+    /**
+     * Тестирует метод PhoneGetSavePhoneService::get
      * если пуст PhoneGetSavePhoneService::phone
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: phone
      */
-    public function testHandleEmptyName()
+    public function testGetEmptyPhone()
     {
-        $request = [];
-        
         $service = new PhoneGetSavePhoneService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
-     * Тестирует метод PhoneGetSavePhoneService::handle
+     * Тестирует метод PhoneGetSavePhoneService::get
      * если phone уже в СУБД
      */
-    public function testHandleExistsPhone()
+    public function testGetExistsPhone()
     {
-        $request = ['phone'=>self::$dbClass->phones['phone_1']['phone']];
-        
         $service = new PhoneGetSavePhoneService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'phone');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, self::$dbClass->phones['phone_1']['phone']);
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(PhonesModel::class, $result);
     }
@@ -91,11 +118,15 @@ class PhoneGetSavePhoneServiceTests extends TestCase
         $request = ['phone'=>'+0234567898'];
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{phones}} WHERE [[phone]]=:phone')->bindValue(':phone', '+0234567898')->queryOne();
-        
         $this->assertEmpty($result);
         
         $service = new PhoneGetSavePhoneService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'phone');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, '+0234567898');
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(PhonesModel::class, $result);
         

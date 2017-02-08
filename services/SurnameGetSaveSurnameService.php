@@ -26,14 +26,11 @@ class SurnameGetSaveSurnameService extends AbstractBaseService
      * Возвращает SurnamesModel по surname
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return SurnamesModel
      */
-    public function handle($request): SurnamesModel
+    public function get(): SurnamesModel
     {
         try {
-            $this->surname = $request['surname'] ?? null;
-            
             if (empty($this->surname)) {
                 throw new ErrorException($this->emptyError('surname'));
             }
@@ -72,10 +69,25 @@ class SurnameGetSaveSurnameService extends AbstractBaseService
     private function getSurname()
     {
         try {
-            $finder = \Yii::$app->registry->get(SurnameSurnameFinder::class, ['surname'=>$this->surname]);
+            $finder = \Yii::$app->registry->get(SurnameSurnameFinder::class, [
+                'surname'=>$this->surname
+            ]);
             $surnamesModel = $finder->find();
             
             return $surnamesModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение SurnameGetSaveSurnameService::surname
+     * @param string $surname
+     */
+    public function setSurname(string $surname)
+    {
+        try {
+            $this->surname = $surname;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

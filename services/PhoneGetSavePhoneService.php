@@ -21,20 +21,17 @@ class PhoneGetSavePhoneService extends AbstractBaseService
     /**
      * @var string
      */
-    private $phone = null;
+    private $phone;
     
     /**
      * Возвращает PhonesModel по phone
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return PhonesModel
      */
-    public function handle($request): PhonesModel
+    public function get(): PhonesModel
     {
         try {
-            $this->phone = $request['phone'] ?? null;
-            
             if (empty($this->phone)) {
                 throw new ErrorException($this->emptyError('phone'));
             }
@@ -77,6 +74,19 @@ class PhoneGetSavePhoneService extends AbstractBaseService
             $phonesModel = $finder->find();
             
             return $phonesModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение PhoneGetSavePhoneService::phone
+     * @param string $phone
+     */
+    public function setPhone(string $phone)
+    {
+        try {
+            $this->phone = $phone;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

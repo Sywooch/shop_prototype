@@ -37,9 +37,9 @@ class CountryGetSaveCountryServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CountryGetSaveCountryService::getCity
+     * Тестирует метод CountryGetSaveCountryService::getCountry
      */
-    public function testGetCity()
+    public function testGetCountry()
     {
         $service = new CountryGetSaveCountryService();
         
@@ -47,7 +47,7 @@ class CountryGetSaveCountryServiceTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($service, self::$dbClass->countries['country_1']['country']);
         
-        $reflection = new \ReflectionMethod($service, 'getCity');
+        $reflection = new \ReflectionMethod($service, 'getCountry');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($service);
         
@@ -55,47 +55,76 @@ class CountryGetSaveCountryServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CountryGetSaveCountryService::handle
+     * Тестирует метод CountryGetSaveCountryService::setCountry
+     * передаю неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetCountryError()
+    {
+        $service = new CountryGetSaveCountryService();
+        $service->setCountry([]);
+    }
+    
+    /**
+     * Тестирует метод CountryGetSaveCountryService::setCountry
+     */
+    public function testSetCountry()
+    {
+        $service = new CountryGetSaveCountryService();
+        $service->setCountry('Country');
+        
+        $reflection = new \ReflectionProperty($service, 'country');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('Country', $result);
+    }
+    
+    /**
+     * Тестирует метод CountryGetSaveCountryService::get
      * если пуст CountryGetSaveCountryService::country
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: country
      */
-    public function testHandleEmptyName()
+    public function testGetEmptyCountry()
     {
-        $request = [];
-        
         $service = new CountryGetSaveCountryService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
-     * Тестирует метод CountryGetSaveCountryService::handle
+     * Тестирует метод CountryGetSaveCountryService::get
      * если country уже в СУБД
      */
-    public function testHandleExistsAddress()
+    public function testGetExistsCountry()
     {
-        $request = ['country'=>self::$dbClass->countries['country_1']['country']];
-        
         $service = new CountryGetSaveCountryService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'country');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, self::$dbClass->countries['country_1']['country']);
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(CountriesModel::class, $result);
     }
     
     /**
-     * Тестирует метод CountryGetSaveCountryService::handle
+     * Тестирует метод CountryGetSaveCountryService::get
      * если country еще не в СУБД
      */
-    public function testHandleNotExistsAddress()
+    public function testGetNotExistsCountry()
     {
-        $request = ['country'=>'Австралия'];
-        
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{countries}} WHERE [[country]]=:country')->bindValue(':country', 'Австралия')->queryOne();
-        
         $this->assertEmpty($result);
         
         $service = new CountryGetSaveCountryService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'country');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, 'Австралия');
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(CountriesModel::class, $result);
         

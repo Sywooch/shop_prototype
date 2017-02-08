@@ -55,55 +55,84 @@ class AddressGetSaveAddressServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод AddressGetSaveAddressService::handle
+     * Тестирует метод AddressGetSaveAddressService::setAddress
+     * передаю неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetAddressError()
+    {
+        $service = new AddressGetSaveAddressService();
+        $service->setAddress([]);
+    }
+    
+    /**
+     * Тестирует метод AddressGetSaveAddressService::setAddress
+     */
+    public function testSetAddress()
+    {
+        $service = new AddressGetSaveAddressService();
+        $service->setAddress('Address');
+        
+        $reflection = new \ReflectionProperty($service, 'address');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('Address', $result);
+    }
+    
+    /**
+     * Тестирует метод AddressGetSaveAddressService::get
      * если пуст AddressGetSaveAddressService::address
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: address
      */
-    public function testHandleEmptyName()
+    public function testGetEmptyName()
     {
-        $request = [];
-        
         $service = new AddressGetSaveAddressService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
-     * Тестирует метод AddressGetSaveAddressService::handle
+     * Тестирует метод AddressGetSaveAddressService::get
      * если address уже в СУБД
      */
-    public function testHandleExistsAddress()
+    public function testGetExistsAddress()
     {
-        $request = ['address'=>self::$dbClass->address['address_1']['address']];
-        
         $service = new AddressGetSaveAddressService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'address');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, self::$dbClass->address['address_1']['address']);
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(AddressModel::class, $result);
     }
     
     /**
-     * Тестирует метод AddressGetSaveAddressService::handle
+     * Тестирует метод AddressGetSaveAddressService::get
      * если address еще не в СУБД
      */
-    public function testHandleNotExistsAddress()
+    public function testGetNotExistsAddress()
     {
-        $request = ['address'=>'ул. Харона, 15'];
-        
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{address}} WHERE [[address]]=:address')->bindValue(':address', 'ул. Харона, 15')->queryOne();
-        
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{address}} WHERE [[address]]=:address')->bindValue(':address', 'New Address')->queryOne();
         $this->assertEmpty($result);
         
         $service = new AddressGetSaveAddressService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'address');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, 'New Address');
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(AddressModel::class, $result);
         
-        $result = \Yii::$app->db->createCommand('SELECT * FROM {{address}} WHERE [[address]]=:address')->bindValue(':address', 'ул. Харона, 15')->queryOne();
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{address}} WHERE [[address]]=:address')->bindValue(':address', 'New Address')->queryOne();
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertEquals('ул. Харона, 15', $result['address']);
+        $this->assertEquals('New Address', $result['address']);
     }
     
     public static function tearDownAfterClass()

@@ -27,20 +27,17 @@ class PostcodeGetSavePostcodeService extends AbstractBaseService
      * Возвращает PostcodesModel по postcode
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return PostcodesModel
      */
-    public function handle($request): PostcodesModel
+    public function get(): PostcodesModel
     {
         try {
-            $this->postcode = $request['postcode'] ?? null;
-            
             if (empty($this->postcode)) {
                 throw new ErrorException($this->emptyError('postcode'));
             }
             
             if (empty($this->postcodesModel)) {
-                $postcodesModel = $this->getCity();
+                $postcodesModel = $this->getPostcode();
                 
                 if ($postcodesModel === null) {
                     $rawCityModel = new PostcodesModel();
@@ -50,7 +47,7 @@ class PostcodeGetSavePostcodeService extends AbstractBaseService
                     ]);
                     $saver->save();
                     
-                    $postcodesModel = $this->getCity();
+                    $postcodesModel = $this->getPostcode();
                     
                     if ($postcodesModel === null) {
                         throw new ErrorException($this->emptyError('postcodesModel'));
@@ -70,13 +67,26 @@ class PostcodeGetSavePostcodeService extends AbstractBaseService
      * Возвращает PostcodesModel из СУБД
      * @return mixed
      */
-    private function getCity()
+    private function getPostcode()
     {
         try {
             $finder = \Yii::$app->registry->get(PostcodePostcodeFinder::class, ['postcode'=>$this->postcode]);
             $postcodesModel = $finder->find();
             
             return $postcodesModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение PostcodeGetSavePostcodeService::postcode
+     * @param string $postcode
+     */
+    public function setPostcode(string $postcode)
+    {
+        try {
+            $this->postcode = $postcode;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

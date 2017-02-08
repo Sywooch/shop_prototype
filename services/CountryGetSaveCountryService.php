@@ -27,20 +27,17 @@ class CountryGetSaveCountryService extends AbstractBaseService
      * Возвращает CountriesModel по country
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return CountriesModel
      */
-    public function handle($request): CountriesModel
+    public function get(): CountriesModel
     {
         try {
-            $this->country = $request['country'] ?? null;
-            
             if (empty($this->country)) {
                 throw new ErrorException($this->emptyError('country'));
             }
             
             if (empty($this->countriesModel)) {
-                $countriesModel = $this->getCity();
+                $countriesModel = $this->getCountry();
                 
                 if ($countriesModel === null) {
                     $rawCityModel = new CountriesModel();
@@ -50,7 +47,7 @@ class CountryGetSaveCountryService extends AbstractBaseService
                     ]);
                     $saver->save();
                     
-                    $countriesModel = $this->getCity();
+                    $countriesModel = $this->getCountry();
                     
                     if ($countriesModel === null) {
                         throw new ErrorException($this->emptyError('countriesModel'));
@@ -70,13 +67,26 @@ class CountryGetSaveCountryService extends AbstractBaseService
      * Возвращает CountriesModel из СУБД
      * @return mixed
      */
-    private function getCity()
+    private function getCountry()
     {
         try {
             $finder = \Yii::$app->registry->get(CountryCountryFinder::class, ['country'=>$this->country]);
             $countriesModel = $finder->find();
             
             return $countriesModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение CountryGetSaveCountryService::country
+     * @param string $country
+     */
+    public function setCountry(string $country)
+    {
+        try {
+            $this->country = $country;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
