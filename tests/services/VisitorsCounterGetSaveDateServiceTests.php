@@ -26,32 +26,92 @@ class VisitorsCounterGetSaveDateServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод VisitorsCounterGetSaveDateService::handle
+     * Тестирует свойства VisitorsCounterGetSaveDateService
+     */
+    public function testProperties()
+    {
+        $reflection = new \ReflectionClass(VisitorsCounterGetSaveDateService::class);
+        
+        $this->assertTrue($reflection->hasProperty('date'));
+    }
+    
+    /**
+     * Тестирует метод VisitorsCounterGetSaveDateService::setDate
+     * неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetDateError()
+    {
+        $service = new VisitorsCounterGetSaveDateService();
+        $service->setDate('date');
+    }
+    
+    /**
+     * Тестирует метод VisitorsCounterGetSaveDateService::setDate
+     */
+    public function testSetDate()
+    {
+        $date = time();
+        
+        $service = new VisitorsCounterGetSaveDateService();
+        $service->setDate($date);
+        
+        $reflection = new \ReflectionProperty($service, 'date');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals($date, $result);
+    }
+    
+    /**
+     * Тестирует метод VisitorsCounterGetSaveDateService::get
+     * отсутствует date
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: date
+     */
+    public function testGetEmptyDate()
+    {
+        $service = new VisitorsCounterGetSaveDateService();
+        $result = $service->get();
+    }
+    
+    /**
+     * Тестирует метод VisitorsCounterGetSaveDateService::get
      * если данные еще не сохранены в СУБД
      */
-    public function testHandleNotExists()
+    public function testGetNotExists()
     {
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{visitors_counter}}')->queryAll();
         $this->assertCount(2, $result);
         
         $service = new VisitorsCounterGetSaveDateService();
-        $result = $service->handle();
+        
+        $reflection = new \ReflectionProperty($service, 'date');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, time() + (3600 * 3));
+        
+        $result = $service->get();
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{visitors_counter}}')->queryAll();
         $this->assertCount(3, $result);
     }
     
     /**
-     * Тестирует метод VisitorsCounterGetSaveDateService::handle
+     * Тестирует метод VisitorsCounterGetSaveDateService::get
      * если данные уже сохранены в СУБД
      */
-    public function testHandleExists()
+    public function testGetExists()
     {
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{visitors_counter}}')->queryAll();
         $this->assertCount(3, $result);
         
         $service = new VisitorsCounterGetSaveDateService();
-        $result = $service->handle();
+        
+        $reflection = new \ReflectionProperty($service, 'date');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, time() + (3600 * 3));
+        
+        $result = $service->get();
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{visitors_counter}}')->queryAll();
         $this->assertCount(3, $result);

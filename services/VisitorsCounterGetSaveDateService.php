@@ -16,23 +16,33 @@ use app\helpers\DateHelper;
 class VisitorsCounterGetSaveDateService extends AbstractBaseService
 {
     /**
+     * @var int текущая дата Unix Timestamp
+     */
+    private $date;
+    
+    /**
      * Возвращает VisitorsCounterModel по date
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return bool
      */
-    public function handle($request=null): bool
+    public function get(): bool
     {
         try {
-            $date = DateHelper::getToday00();
+            if (empty($this->date)) {
+                throw new ErrorException($this->emptyError('date'));
+            }
             
-            $finder = \Yii::$app->registry->get(VisitorsCounterDateFinder::class, ['date'=>$date]);
+            //$date = DateHelper::getToday00();
+            
+            $finder = \Yii::$app->registry->get(VisitorsCounterDateFinder::class, [
+                'date'=>$this->date
+            ]);
             $visitorsCounterModel = $finder->find();
             
             if ($visitorsCounterModel === null) {
                 $visitorsCounterModel = new VisitorsCounterModel();
-                $visitorsCounterModel->date = $date;
+                $visitorsCounterModel->date = $this->date;
             }
             
             $visitorsCounterModel->scenario = VisitorsCounterModel::SAVE;
@@ -48,6 +58,19 @@ class VisitorsCounterGetSaveDateService extends AbstractBaseService
             $saver->save();
             
             return true;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение VisitorsCounterGetSaveDateService::date
+     * @param int Unix Timestamp $date
+     */
+    public function setDate(int $date)
+    {
+        try {
+            $this->date = $date;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

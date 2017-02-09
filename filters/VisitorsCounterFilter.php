@@ -4,7 +4,8 @@ namespace app\filters;
 
 use yii\base\ActionFilter;
 use app\exceptions\ExceptionsTrait;
-use app\helpers\SessionHelper;
+use app\helpers\{DateHelper,
+    SessionHelper};
 use app\services\VisitorsCounterGetSaveDateService;
 
 /**
@@ -20,8 +21,10 @@ class VisitorsCounterFilter extends ActionFilter
             $timer = SessionHelper::read(\Yii::$app->params['visitorTimer']);
             
             if (empty($timer) || ((time() - $timer) > (60 * 30))) {
-                $service = \Yii::$app->registry->get(VisitorsCounterGetSaveDateService::class);
-                $result = $service->handle();
+                $service = \Yii::$app->registry->get(VisitorsCounterGetSaveDateService::class, [
+                    'date'=>DateHelper::getToday00()
+                ]);
+                $result = $service->get();
             }
             
             SessionHelper::write(\Yii::$app->params['visitorTimer'], time());

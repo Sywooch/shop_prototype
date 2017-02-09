@@ -1,29 +1,37 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
-use app\services\{AbstractBaseService,
-    GetShortCartWidgetConfigService,
-    GetCategoriesBreadcrumbsWidgetConfigService,
-    GetCategoriesMenuWidgetConfigService,
-    GetCurrentCurrencyModelService,
-    GetCurrencyWidgetConfigService,
-    GetEmptyProductsWidgetConfigService,
-    GetFiltersWidgetConfigService,
-    GetSearchWidgetConfigService,
-    GetPaginationWidgetConfigService,
-    GetProductsWidgetConfigService,
-    GetUserInfoWidgetConfigService,
-    ProductsCollectionService};
-use app\finders\PurchasesSessionFinder;
+use yii\helpers\{ArrayHelper,
+    Url};
+use app\handlers\AbstractBaseHandler;
+use app\services\GetCurrentCurrencyModelService;
+use app\finders\{BrandsFilterFinder,
+    CategoriesFinder,
+    CategorySeocodeFinder,
+    ColorsFilterFinder,
+    CurrencyFinder,
+    ProductsFiltersSessionFinder,
+    ProductsFinder,
+    PurchasesSessionFinder,
+    SizesFilterFinder,
+    SortingFieldsFinder,
+    SortingTypesFinder,
+    SubcategorySeocodeFinder};
+use app\forms\{ChangeCurrencyForm,
+    FiltersForm};
+use app\models\CurrencyInterface;
+use app\helpers\HashHelper;
+use app\filters\ProductsFiltersInterface;
+use app\collections\CollectionInterface;
 
 /**
  * Обрабатывает запрос на получение данных 
  * для страницы каталога товаров
  */
-class ProductsListIndexRequestHandler extends AbstractBaseService
+class ProductsListIndexRequestHandler extends AbstractBaseHandler
 {
     /**
      * @var array массив данных для рендеринга
@@ -39,48 +47,48 @@ class ProductsListIndexRequestHandler extends AbstractBaseService
     {
         try {
             if (empty($this->dataArray)) {
+                $category = $request->get(\Yii::$app->params['categoryKey']) ?? '';
+                $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? '';
+                $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
+                
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                
+                $finder = \Yii::$app->registry->get(ProductsFiltersSessionFinder::class, [
+                    'key'=>HashHelper::createFiltersKey(Url::current())
+                ]);
+                $filtersModel = $finder->find();
+                
                 $dataArray = [];
                 
-                /*$service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
-                $dataArray['userInfoWidgetConfig'] = $service->handle();*/
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig();
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($currentCurrencyModel);
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
+                $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
+                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig();
                 
-                /*$service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
-                $dataArray['shortCartWidgetConfig'] = $service->handle();*/
-                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig();
-                
-                $service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
-                $dataArray['currencyWidgetConfig'] = $service->handle();
-                
-                $service = \Yii::$app->registry->get(GetSearchWidgetConfigService::class);
-                $dataArray['searchWidgetConfig'] = $service->handle($request);
-                
-                $service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
-                $dataArray['categoriesMenuWidgetConfig'] = $service->handle();
-                
-                $service = \Yii::$app->registry->get(ProductsCollectionService::class);
-                $productsCollection = $service->handle($request);
+                $finder = \Yii::$app->registry->get(ProductsFinder::class, [
+                    'category'=>$category,
+                    'subcategory'=>$subcategory,
+                    'page'=>$page,
+                    'filters'=>$filtersModel
+                ]);
+                $productsCollection = $finder->find();
                 
                 if ($productsCollection->isEmpty() === true) {
                     if ($productsCollection->pagination->totalCount > 0) {
                         throw new NotFoundHttpException($this->error404());
                     }
-                    
-                    $service = \Yii::$app->registry->get(GetEmptyProductsWidgetConfigService::class);
-                    $dataArray['emptyProductsWidgetConfig'] = $service->handle();
+                    $dataArray['emptyProductsWidgetConfig'] = $this->emptyProductsWidgetConfig();
                 } else {
-                    $service = \Yii::$app->registry->get(GetProductsWidgetConfigService::class);
-                    $dataArray['productsWidgetConfig'] = $service->handle($request);
-                    
-                    $service = \Yii::$app->registry->get(GetPaginationWidgetConfigService::class);
-                    $dataArray['paginationWidgetConfig'] = $service->handle($request);
+                    $dataArray['productsWidgetConfig'] = $this->productsWidgetConfig($productsCollection, $currentCurrencyModel);
+                    $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection);
                 }
                 
-                $service = \Yii::$app->registry->get(GetCategoriesBreadcrumbsWidgetConfigService::class);
-                $dataArray['categoriesBreadcrumbsWidgetConfig'] = $service->handle($request);
-                
-                $service = \Yii::$app->registry->get(GetFiltersWidgetConfigService::class);
-                $dataArray['filtersWidgetConfig'] = $service->handle($request);
+                $dataArray['categoriesBreadcrumbsWidgetConfig'] = $this->categoriesBreadcrumbsWidgetConfig($category, $subcategory);
+                $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($category, $subcategory, $filtersModel);
                 
                 $this->dataArray = $dataArray;
             }
@@ -97,7 +105,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseService
      * Возвращает массив конфигурации для виджета UserInfoWidget
      * @return array
      */
-    private function userInfoWidgetConfig()
+    private function userInfoWidgetConfig(): array
     {
         try {
             $dataArray = [];
@@ -113,9 +121,10 @@ class ProductsListIndexRequestHandler extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета ShortCartWidget
+     * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
      * @return array
      */
-    private function shortCartWidgetConfig()
+    private function shortCartWidgetConfig(CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
@@ -126,12 +135,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseService
             $ordersCollection = $finder->find();
             
             $dataArray['purchases'] = $ordersCollection;
-            
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
-                'key'=>HashHelper::createCurrencyKey()
-            ]);
-            $dataArray['currency'] = $service->get();
-            
+            $dataArray['currency'] = $currentCurrencyModel;
             $dataArray['template'] = 'short-cart.twig';
             
             return $dataArray;
@@ -142,9 +146,10 @@ class ProductsListIndexRequestHandler extends AbstractBaseService
     
     /**
      * Возвращает массив конфигурации для виджета CurrencyWidget
+     * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
      * @return array
      */
-    private function currencyWidgetConfig()
+    private function currencyWidgetConfig(CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
@@ -154,12 +159,8 @@ class ProductsListIndexRequestHandler extends AbstractBaseService
             if (empty($currencyArray)) {
                 throw new ErrorException($this->emptyError('currencyArray'));
             }
-            
             ArrayHelper::multisort($currencyArray, 'code');
             $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
-            
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
-            $currentCurrencyModel = $service->handle();
             
             $dataArray['form'] = new ChangeCurrencyForm([
                 'scenario'=>ChangeCurrencyForm::SET,
@@ -169,6 +170,244 @@ class ProductsListIndexRequestHandler extends AbstractBaseService
             
             $dataArray['header'] = \Yii::t('base', 'Currency');
             $dataArray['template'] = 'currency-form.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета SearchWidget
+     * @param string $searchKey искомая фраза
+     * @return array
+     */
+    private function searchWidgetConfig(string $searchKey=''): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['text'] = $searchKey;
+            $dataArray['template'] = 'search.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета CategoriesMenuWidget
+     * @return array
+     */
+    private function categoriesMenuWidgetConfig(): array
+    {
+        try {
+            $dataArray = [];
+            
+            $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+            $categoriesArray = $finder->find();
+            if (empty($categoriesArray)) {
+                throw new ErrorException($this->emptyError('categoriesArray'));
+            }
+            $dataArray['categories'] = $categoriesArray;
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета EmptyProductsWidget
+     * @return array
+     */
+    private function emptyProductsWidgetConfig(): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['template'] = 'empty-products.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета ProductsWidget
+     * @param CollectionInterface $productsCollection
+     * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
+     * @return array
+     */
+    private function productsWidgetConfig(CollectionInterface $productsCollection, CurrencyInterface $currentCurrencyModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['products'] = $productsCollection;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['template'] = 'products-list.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета PaginationWidget
+     * @param CollectionInterface $productsCollection
+     * @return array
+     */
+    private function paginationWidgetConfig(CollectionInterface $productsCollection): array
+    {
+        try {
+            $dataArray = [];
+            
+            $pagination = $productsCollection->pagination;
+            
+            if (empty($pagination)) {
+                throw new ErrorException($this->emptyError('pagination'));
+            }
+            
+            $dataArray['pagination'] = $pagination;
+            $dataArray['template'] = 'pagination.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета CategoriesBreadcrumbsWidget
+     * @param string $category сеокод категории
+     * @param string $subcategory сеокод подкатегории
+     * @return array
+     */
+    private function categoriesBreadcrumbsWidgetConfig(string $category='', string $subcategory=''): array
+    {
+        try {
+            $dataArray = [];
+            
+            if (!empty($category)) {
+                $finder = \Yii::$app->registry->get(CategorySeocodeFinder::class, [
+                    'seocode'=>$category
+                ]);
+                $categoryModel = $finder->find();
+                if (empty($categoryModel)) {
+                    throw new ErrorException($this->emptyError('categoryModel'));
+                }
+                $dataArray['category'] = $categoryModel;
+                
+                if (!empty($subcategory)) {
+                    $finder = \Yii::$app->registry->get(SubcategorySeocodeFinder::class, [
+                        'seocode'=>$subcategory
+                    ]);
+                    $subcategoryModel = $finder->find();
+                    if (empty($subcategoryModel)) {
+                        throw new ErrorException($this->emptyError('subcategoryModel'));
+                    }
+                    $dataArray['subcategory'] = $subcategoryModel;
+                }
+            }
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета FiltersWidget
+     * @param string $category сеокод категории
+     * @param string $subcategory сеокод подкатегории
+     * @param ProductsFiltersInterface $filtersModel
+     * @return array
+     */
+    private function filtersWidgetConfig(string $category='', string $subcategory='', ProductsFiltersInterface $filtersModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $finder = \Yii::$app->registry->get(ColorsFilterFinder::class, [
+                'category'=>$category, 
+                'subcategory'=>$subcategory
+            ]);
+            $colorsArray = $finder->find();
+            if (empty($colorsArray)) {
+                throw new ErrorException($this->emptyError('colorsArray'));
+            }
+            ArrayHelper::multisort($colorsArray, 'color');
+            $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
+            
+            $finder = \Yii::$app->registry->get(SizesFilterFinder::class, [
+                'category'=>$category, 
+                'subcategory'=>$subcategory
+            ]);
+            $sizesArray = $finder->find();
+            if (empty($sizesArray)) {
+                throw new ErrorException($this->emptyError('sizesArray'));
+            }
+            ArrayHelper::multisort($sizesArray, 'size');
+            $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
+            
+            $finder = \Yii::$app->registry->get(BrandsFilterFinder::class, [
+                'category'=>$category, 
+                'subcategory'=>$subcategory
+            ]);
+            $brandsArray = $finder->find();
+            if (empty($brandsArray)) {
+                throw new ErrorException($this->emptyError('brandsArray'));
+            }
+            ArrayHelper::multisort($brandsArray, 'brand');
+            $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
+            
+            $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
+            $sortingFieldsArray = $finder->find();
+            if (empty($sortingFieldsArray)) {
+                throw new ErrorException($this->emptyError('sortingFieldsArray'));
+            }
+            asort($sortingFieldsArray, SORT_STRING);
+            $dataArray['sortingFields'] = $sortingFieldsArray;
+            
+            $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
+            $sortingTypesArray = $finder->find();
+            if (empty($sortingTypesArray)) {
+                throw new ErrorException($this->emptyError('sortingTypesArray'));
+            }
+            asort($sortingTypesArray, SORT_STRING);
+            $dataArray['sortingTypes'] = $sortingTypesArray;
+            
+            $filtersFormConfig = [
+                'scenario'=>FiltersForm::SAVE, 
+                'url'=>Url::current(),
+                'category'=>$category,
+                'subcategory'=>$subcategory
+            ];
+            $form = new FiltersForm(array_merge($filtersFormConfig, array_filter($filtersModel->toArray())));
+            
+            if (empty($form->sortingField)) {
+                foreach ($sortingFieldsArray as $key=>$val) {
+                    if ($key === \Yii::$app->params['sortingField']) {
+                        $form->sortingField = $key;
+                    }
+                }
+            }
+            
+            if (empty($form->sortingType)) {
+                foreach ($sortingTypesArray as $key=>$val) {
+                    if ($key === \Yii::$app->params['sortingType']) {
+                        $form->sortingType = $key;
+                    }
+                }
+            }
+            
+            $dataArray['form'] = $form;
+            $dataArray['header'] = \Yii::t('base', 'Filters');
+            $dataArray['template'] = 'products-filters.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
