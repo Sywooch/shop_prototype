@@ -4,16 +4,13 @@ namespace app\finders;
 
 use yii\base\ErrorException;
 use app\models\ColorsModel;
-use app\finders\{AbstractBaseFinder,
-    ColorsFilterFindersTrait};
+use app\finders\AbstractBaseFinder;
 
 /**
  * Возвращает коллекцию цветов из СУБД
  */
 class ColorsFilterFinder extends AbstractBaseFinder
 {
-    use ColorsFilterFindersTrait;
-    
     /**
      * @var string GET параметр, определяющий текущую категорию каталога товаров
      */
@@ -35,7 +32,12 @@ class ColorsFilterFinder extends AbstractBaseFinder
     {
         try {
             if (empty($this->storage)) {
-                $query = $this->createQuery();
+                $query = ColorsModel::find();
+                $query->select(['[[colors.id]]', '[[colors.color]]']);
+                $query->distinct();
+                $query->innerJoin('{{products_colors}}', '[[colors.id]]=[[products_colors.id_color]]');
+                $query->innerJoin('{{products}}', '[[products_colors.id_product]]=[[products.id]]');
+                $query->where(['[[products.active]]'=>true]);
             
                 if (!empty($this->category)) {
                     $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');

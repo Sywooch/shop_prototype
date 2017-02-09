@@ -7,31 +7,42 @@ use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\handlers\AbstractBaseHandler;
-use app\services\GetCurrentCurrencyModelService;
-use app\finders\{BrandsFilterFinder,
+use app\services\{GetShortCartWidgetConfigService,
+    GetCategoriesMenuWidgetConfigService,
+    GetCurrentCurrencyModelService,
+    GetCurrencyWidgetConfigService,
+    GetEmptyProductsWidgetConfigService,
+    GetEmptySphinxWidgetConfigService,
+    GetFiltersWidgetConfigSphinxService,
+    GetPaginationWidgetConfigSphinxService,
+    GetProductsWidgetSphinxConfigService,
+    GetSearchWidgetConfigService,
+    GetSphinxArrayService,
+    GetUserInfoWidgetConfigService,
+    ProductsCollectionSphinxService};
+use app\finders\{BrandsFilterSphinxFinder,
     CategoriesFinder,
-    CategorySeocodeFinder,
-    ColorsFilterFinder,
+    ColorsFilterSphinxFinder,
     CurrencyFinder,
     ProductsFiltersSessionFinder,
-    ProductsFinder,
+    ProductsSphinxFinder,
     PurchasesSessionFinder,
-    SizesFilterFinder,
+    SizesFilterSphinxFinder,
     SortingFieldsFinder,
     SortingTypesFinder,
-    SubcategorySeocodeFinder};
-use app\forms\{ChangeCurrencyForm,
-    FiltersForm};
-use app\models\CurrencyInterface;
+    SphinxFinder};
 use app\helpers\HashHelper;
+use app\models\CurrencyInterface;
+use app\forms\{FiltersForm,
+    ChangeCurrencyForm};
 use app\filters\ProductsFiltersInterface;
 use app\collections\CollectionInterface;
 
 /**
  * Обрабатывает запрос на получение данных 
- * для страницы каталога товаров
+ * для рендеринга страницы каталога товаров
  */
-class ProductsListIndexRequestHandler extends AbstractBaseHandler
+class ProductsListSearchRequestHandler extends AbstractBaseHandler
 {
     /**
      * @var array массив данных для рендеринга
@@ -46,9 +57,15 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
     public function handle($request): array
     {
         try {
+            if (empty($request->get(\Yii::$app->params['searchKey']))) {
+                throw new ErrorException($this->emptyError('searchKey'));
+            }
+            
             if (empty($this->dataArray)) {
-                $category = $request->get(\Yii::$app->params['categoryKey']) ?? '';
-                $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? '';
+                $searchText = $request->get(\Yii::$app->params['searchKey']) ?? null;
+                if (empty($searchText)) {
+                    throw new ErrorException($this->emptyError('searchText'));
+                }
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
@@ -61,37 +78,78 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 ]);
                 $filtersModel = $finder->find();
                 
-                $finder = \Yii::$app->registry->get(ProductsFinder::class, [
-                    'category'=>$category,
-                    'subcategory'=>$subcategory,
-                    'page'=>$page,
-                    'filters'=>$filtersModel
+                $finder = \Yii::$app->registry->get(SphinxFinder::class, [
+                    'search'=>$searchText
                 ]);
-                $productsCollection = $finder->find();
+                $sphinxArray = $finder->find();
+                $sphinxArray = ArrayHelper::getColumn($sphinxArray, 'id');
                 
                 $dataArray = [];
                 
+                /*$service = \Yii::$app->registry->get(GetUserInfoWidgetConfigService::class);
+                $dataArray['userInfoWidgetConfig'] = $service->handle();*/
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig();
-                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($currentCurrencyModel);
-                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
-                $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
-                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig();
-                $dataArray['categoriesBreadcrumbsWidgetConfig'] = $this->categoriesBreadcrumbsWidgetConfig($category, $subcategory);
-                $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($category, $subcategory, $filtersModel);
                 
-                if ($productsCollection->isEmpty() === true) {
-                    if ($productsCollection->pagination->totalCount > 0) {
-                        throw new NotFoundHttpException($this->error404());
-                    }
-                    $dataArray['emptyProductsWidgetConfig'] = $this->emptyProductsWidgetConfig();
+                /*$service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
+                $dataArray['shortCartWidgetConfig'] = $service->handle();*/
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($currentCurrencyModel);
+                
+                /*$service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
+                $dataArray['currencyWidgetConfig'] = $service->handle();*/
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
+                
+                /*$service = \Yii::$app->registry->get(GetSearchWidgetConfigService::class);
+                $dataArray['searchWidgetConfig'] = $service->handle($request);*/
+                $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
+                
+                /*$service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
+                $dataArray['categoriesMenuWidgetConfig'] = $service->handle();*/
+                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig();
+                
+                if (empty($sphinxArray)) {
+                    /*$service = \Yii::$app->registry->get(GetEmptySphinxWidgetConfigService::class);
+                    $dataArray['emptySphinxWidgetConfig'] = $service->handle();*/
+                    $dataArray['emptySphinxWidgetConfig'] = $this->emptySphinxWidgetConfig();
                 } else {
-                    $dataArray['productsWidgetConfig'] = $this->productsWidgetConfig($productsCollection, $currentCurrencyModel);
-                    $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection);
+                    /*$service = \Yii::$app->registry->get(ProductsCollectionSphinxService::class);
+                    $productsCollection = $service->handle($request);*/
+                    $finder = \Yii::$app->registry->get(ProductsSphinxFinder::class, [
+                        'sphinx'=>$sphinxArray,
+                        'page'=>$page,
+                        'filters'=>$filtersModel
+                    ]);
+                    $productsCollection = $finder->find();
+                    
+                    if ($productsCollection->isEmpty() === true) {
+                        if ($productsCollection->pagination->totalCount > 0) {
+                            throw new NotFoundHttpException($this->error404());
+                        }
+                        
+                        /*$service = \Yii::$app->registry->get(GetEmptyProductsWidgetConfigService::class);
+                        $dataArray['emptyProductsWidgetConfig'] = $service->handle();*/
+                        $dataArray['emptyProductsWidgetConfig'] = $this->emptyProductsWidgetConfig();
+                    } else {
+                        /*$service = \Yii::$app->registry->get(GetProductsWidgetSphinxConfigService::class);
+                        $dataArray['productsWidgetConfig'] = $service->handle($request);*/
+                        $dataArray['productsWidgetConfig'] = $this->productsWidgetConfig($productsCollection, $currentCurrencyModel);
+                        
+                        /*$service = \Yii::$app->registry->get(GetPaginationWidgetConfigSphinxService::class);
+                        $dataArray['paginationWidgetConfig'] = $service->handle($request);*/
+                        $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection);
+                    }
+                    
+                    /*$service = \Yii::$app->registry->get(GetFiltersWidgetConfigSphinxService::class);
+                    $dataArray['filtersWidgetConfig'] = $service->handle($request);*/
+                    $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($sphinxArray, $filtersModel);
                 }
+                
+                /*$service = \Yii::$app->registry->get(GetSearchBreadcrumbsWidgetConfigService::class);
+                $dataArray['searchBreadcrumbsWidgetConfig'] = $service->handle($request);*/
+                $dataArray['searchBreadcrumbsWidgetConfig'] = $this->searchBreadcrumbsWidgetConfig($searchText);
                 
                 $this->dataArray = $dataArray;
             }
-            
+                
             return $this->dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
@@ -218,6 +276,23 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
     }
     
     /**
+     * Возвращает массив конфигурации для виджета EmptySphinxWidget
+     * @return array
+     */
+    private function emptySphinxWidgetConfig(): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['template'] = 'empty-sphinx.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает массив конфигурации для виджета EmptyProductsWidget
      * @return array
      */
@@ -281,59 +356,18 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Возвращает массив конфигурации для виджета CategoriesBreadcrumbsWidget
-     * @param string $category сеокод категории
-     * @param string $subcategory сеокод подкатегории
-     * @return array
-     */
-    private function categoriesBreadcrumbsWidgetConfig(string $category='', string $subcategory=''): array
-    {
-        try {
-            $dataArray = [];
-            
-            if (!empty($category)) {
-                $finder = \Yii::$app->registry->get(CategorySeocodeFinder::class, [
-                    'seocode'=>$category
-                ]);
-                $categoryModel = $finder->find();
-                if (empty($categoryModel)) {
-                    throw new ErrorException($this->emptyError('categoryModel'));
-                }
-                $dataArray['category'] = $categoryModel;
-                
-                if (!empty($subcategory)) {
-                    $finder = \Yii::$app->registry->get(SubcategorySeocodeFinder::class, [
-                        'seocode'=>$subcategory
-                    ]);
-                    $subcategoryModel = $finder->find();
-                    if (empty($subcategoryModel)) {
-                        throw new ErrorException($this->emptyError('subcategoryModel'));
-                    }
-                    $dataArray['subcategory'] = $subcategoryModel;
-                }
-            }
-            
-            return $dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Возвращает массив конфигурации для виджета FiltersWidget
-     * @param string $category сеокод категории
-     * @param string $subcategory сеокод подкатегории
+     * @param array $sphinxArray массив ID найденных записей
      * @param ProductsFiltersInterface $filtersModel
      * @return array
      */
-    private function filtersWidgetConfig(string $category='', string $subcategory='', ProductsFiltersInterface $filtersModel): array
+    private function filtersWidgetConfig(array $sphinxArray, ProductsFiltersInterface $filtersModel): array
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(ColorsFilterFinder::class, [
-                'category'=>$category, 
-                'subcategory'=>$subcategory
+            $finder = \Yii::$app->registry->get(ColorsFilterSphinxFinder::class, [
+                'sphinx'=>$sphinxArray
             ]);
             $colorsArray = $finder->find();
             if (empty($colorsArray)) {
@@ -342,9 +376,8 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
             ArrayHelper::multisort($colorsArray, 'color');
             $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
             
-            $finder = \Yii::$app->registry->get(SizesFilterFinder::class, [
-                'category'=>$category, 
-                'subcategory'=>$subcategory
+            $finder = \Yii::$app->registry->get(SizesFilterSphinxFinder::class, [
+                'sphinx'=>$sphinxArray
             ]);
             $sizesArray = $finder->find();
             if (empty($sizesArray)) {
@@ -353,9 +386,8 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
             ArrayHelper::multisort($sizesArray, 'size');
             $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
-            $finder = \Yii::$app->registry->get(BrandsFilterFinder::class, [
-                'category'=>$category, 
-                'subcategory'=>$subcategory
+            $finder = \Yii::$app->registry->get(BrandsFilterSphinxFinder::class, [
+                'sphinx'=>$sphinxArray
             ]);
             $brandsArray = $finder->find();
             if (empty($brandsArray)) {
@@ -380,13 +412,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
             asort($sortingTypesArray, SORT_STRING);
             $dataArray['sortingTypes'] = $sortingTypesArray;
             
-            $filtersFormConfig = [
-                'scenario'=>FiltersForm::SAVE, 
-                'url'=>Url::current(),
-                'category'=>$category,
-                'subcategory'=>$subcategory
-            ];
-            $form = new FiltersForm(array_merge($filtersFormConfig, array_filter($filtersModel->toArray())));
+            $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel ->toArray())));
             
             if (empty($form->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {
@@ -407,6 +433,24 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
             $dataArray['form'] = $form;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'products-filters.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета SearchBreadcrumbsWidget
+     * @param string $searchText искомая фраза
+     * @return array
+     */
+    private function searchBreadcrumbsWidgetConfig(string $searchText=''): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['text'] = $searchText;
             
             return $dataArray;
         } catch (\Throwable $t) {
