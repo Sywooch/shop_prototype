@@ -145,7 +145,6 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Orders');
-            
             $dataArray['purchases'] = $ordersArray;
             $dataArray['currency'] = $currentCurrencyModel;
             $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);

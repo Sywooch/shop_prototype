@@ -7,14 +7,14 @@ use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction};
 use app\services\{AccountChangeDataPostService,
-    AccountChangeDataService,
     AccountChangePasswordPostService,
     AccountChangePasswordService,
     AccountChangeSubscriptionsService,
-    AccountOrdersCancelService,
     AccountSubscriptionsAddService,
     AccountSubscriptionsCancelService};
-use app\handlers\{AccountIndexRequestHandler,
+use app\handlers\{AccountChangeDataRequestHandler,
+    AccountIndexRequestHandler,
+    AccountOrdersCancelRequestHandler,
     AccountOrdersRequestHandler};
 
 /**
@@ -35,16 +35,16 @@ class AccountController extends Controller
                 'handler'=>new AccountOrdersRequestHandler(),
                 'view'=>'orders.twig',
             ],
-            /*'order-cancel'=>[
+            'order-cancel'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AccountOrdersCancelService(),
+                'handler'=>new AccountOrdersCancelRequestHandler(),
             ],
             'data'=>[
                 'class'=>GetAction::class,
-                'service'=>new AccountChangeDataService(),
+                'handler'=>new AccountChangeDataRequestHandler(),
                 'view'=>'change-data.twig',
             ],
-            'change-data-post'=>[
+            /*'change-data-post'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AccountChangeDataPostService(),
             ],

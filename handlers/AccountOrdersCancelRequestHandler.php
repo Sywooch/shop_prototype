@@ -1,20 +1,20 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\AbstractBaseService;
+use app\handlers\AbstractBaseHandler;
 use app\forms\PurchaseForm;
 use app\finders\PurchaseIdFinder;
 use app\savers\ModelSaver;
 use app\models\PurchasesModel;
 
 /**
- * Отменят заказ
+ * Обрабатывает запрос на отмену заказа
  */
-class AccountOrdersCancelService extends AbstractBaseService
+class AccountOrdersCancelRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на отмену заказа
@@ -37,7 +37,9 @@ class AccountOrdersCancelService extends AbstractBaseService
                     $transaction = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $finder = \Yii::$app->registry->get(PurchaseIdFinder::class, ['id'=>$form->id]);
+                        $finder = \Yii::$app->registry->get(PurchaseIdFinder::class, [
+                            'id'=>$form->id
+                        ]);
                         $purchasesModel = $finder->find();
                         
                         if (empty($purchasesModel)) {

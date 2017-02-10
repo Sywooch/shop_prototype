@@ -1,18 +1,19 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AccountOrdersCancelService;
+use app\handlers\AccountOrdersCancelRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\PurchasesFixture;
 
 /**
- * Тестирует класс AccountOrdersCancelService
+ * Тестирует класс AccountOrdersCancelRequestHandler
  */
-class AccountOrdersCancelServiceTests extends TestCase
+class AccountOrdersCancelRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -27,10 +28,12 @@ class AccountOrdersCancelServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AccountOrdersCancelRequestHandler();
     }
     
     /**
-     * Тестирует метод AccountOrdersCancelService::handle
+     * Тестирует метод AccountOrdersCancelRequestHandler::handle
      * если ошибки валидации
      */
     public function testHandleErrors()
@@ -47,15 +50,14 @@ class AccountOrdersCancelServiceTests extends TestCase
             }
         };
         
-        $service = new AccountOrdersCancelService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
     }
     
     /**
-     * Тестирует метод AccountOrdersCancelService::handle
+     * Тестирует метод AccountOrdersCancelRequestHandler::handle
      */
     public function testHandle()
     {
@@ -74,8 +76,7 @@ class AccountOrdersCancelServiceTests extends TestCase
             }
         };
         
-        $service = new AccountOrdersCancelService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertEquals(\Yii::t('base', 'Canceled'), $result);
