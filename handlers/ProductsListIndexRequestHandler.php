@@ -6,7 +6,9 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
-use app\handlers\AbstractBaseHandler;
+use app\handlers\{AbstractBaseHandler,
+    BaseFrontendHandlerTrait,
+    ProductsListHandlerTrait};
 use app\finders\{BrandsFilterFinder,
     CategorySeocodeFinder,
     ColorsFilterFinder,
@@ -24,6 +26,8 @@ use app\filters\ProductsFiltersInterface;
  */
 class ProductsListIndexRequestHandler extends AbstractBaseHandler
 {
+    use BaseFrontendHandlerTrait, ProductsListHandlerTrait;
+    
     /**
      * @var array массив данных для рендеринга
      */

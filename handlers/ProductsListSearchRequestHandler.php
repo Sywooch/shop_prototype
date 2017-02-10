@@ -6,25 +6,18 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
-use app\handlers\AbstractBaseHandler;
-use app\services\GetCurrentCurrencyModelService;
+use app\handlers\{AbstractBaseHandler,
+    BaseFrontendHandlerTrait,
+    ProductsListHandlerTrait};
 use app\finders\{BrandsFilterSphinxFinder,
-    CategoriesFinder,
     ColorsFilterSphinxFinder,
-    CurrencyFinder,
-    ProductsFiltersSessionFinder,
     ProductsSphinxFinder,
-    PurchasesSessionFinder,
     SizesFilterSphinxFinder,
     SortingFieldsFinder,
     SortingTypesFinder,
     SphinxFinder};
-use app\helpers\HashHelper;
-use app\models\CurrencyInterface;
-use app\forms\{FiltersForm,
-    ChangeCurrencyForm};
+use app\forms\FiltersForm;
 use app\filters\ProductsFiltersInterface;
-use app\collections\CollectionInterface;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -32,6 +25,8 @@ use app\collections\CollectionInterface;
  */
 class ProductsListSearchRequestHandler extends AbstractBaseHandler
 {
+    use BaseFrontendHandlerTrait, ProductsListHandlerTrait;
+    
     /**
      * @var array массив данных для рендеринга
      */

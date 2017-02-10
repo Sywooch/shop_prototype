@@ -4,37 +4,22 @@ namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
 use yii\web\User;
-use yii\helpers\Url;
-use app\handlers\AbstractBaseHandler;
+use app\handlers\BaseFrontendHandlerTrait;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{BrandsFixture,
-    CategoriesFixture,
-    CurrencyFixture,
-    ProductsColorsFixture,
-    ProductsSizesFixture,
-    ProductsFixture,
-    SizesFixture,
-    SubcategoryFixture};
-use app\models\{CategoriesModel,
-    CurrencyInterface,
-    CurrencyModel,
-    SubcategoryModel};
+use app\tests\sources\fixtures\{CategoriesFixture,
+    CurrencyFixture};
+use app\models\{CurrencyInterface,
+    CurrencyModel};
 use app\collections\{CollectionInterface,
-    LightPagination,
-    PaginationInterface,
-    ProductsCollection,
     PurchasesCollectionInterface};
-use app\forms\{ChangeCurrencyForm,
-    FiltersForm};
+use app\forms\ChangeCurrencyForm;
 use app\controllers\ProductsListController;
-use app\filters\{ProductsFilters,
-    ProductsFiltersInterface};
-use app\helpers\HashHelper;
+use app\exceptions\ExceptionsTrait;
 
 /**
- * Тестирует класс AbstractBaseHandler
+ * Тестирует класс BaseFrontendHandlerTrait
  */
-class AbstractBaseHandlerTests extends TestCase
+class BaseFrontendHandlerTraitTests extends TestCase
 {
     private static $dbClass;
     private $handler;
@@ -43,13 +28,8 @@ class AbstractBaseHandlerTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'products'=>ProductsFixture::class,
                 'currency'=>CurrencyFixture::class,
                 'categories'=>CategoriesFixture::class,
-                'subcategory'=>SubcategoryFixture::class,
-                'products_colors'=>ProductsColorsFixture::class,
-                'products_sizes'=>ProductsSizesFixture::class,
-                'brands'=>BrandsFixture::class
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -60,13 +40,14 @@ class AbstractBaseHandlerTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
-        $this->handler = new class() extends AbstractBaseHandler {
-            public function handle($data) {}
+        
+        $this->handler = new class() {
+            use BaseFrontendHandlerTrait, ExceptionsTrait;
         };
     }
     
     /**
-     * Тестирует метод AbstractBaseHandler::getCurrentCurrency
+     * Тестирует метод BaseFrontendHandlerTrait::getCurrentCurrency
      */
     public function testGetCurrentCurrency()
     {
@@ -78,19 +59,7 @@ class AbstractBaseHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AbstractBaseHandler::getProductsFilters
-     */
-    public function testGetProductsFilters()
-    {
-        $reflection = new \ReflectionMethod($this->handler, 'getProductsFilters');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler);
-        
-        $this->assertInstanceOf(ProductsFiltersInterface::class, $result);
-    }
-    
-    /**
-     * Тестирует метод AbstractBaseHandler::userInfoWidgetConfig
+     * Тестирует метод BaseFrontendHandlerTrait::userInfoWidgetConfig
      */
     public function testUserInfoWidgetConfig()
     {
@@ -108,7 +77,7 @@ class AbstractBaseHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AbstractBaseHandler::shortCartWidgetConfig
+     * Тестирует метод BaseFrontendHandlerTrait::shortCartWidgetConfig
      */
     public function testShortCartWidgetConfig()
     {
@@ -130,7 +99,7 @@ class AbstractBaseHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AbstractBaseHandler::currencyWidgetConfig
+     * Тестирует метод BaseFrontendHandlerTrait::currencyWidgetConfig
      */
     public function testCurrencyWidgetConfig()
     {
@@ -154,7 +123,7 @@ class AbstractBaseHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AbstractBaseHandler::searchWidgetConfig
+     * Тестирует метод BaseFrontendHandlerTrait::searchWidgetConfig
      */
     public function testSearchWidgetConfig()
     {
@@ -172,7 +141,7 @@ class AbstractBaseHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AbstractBaseHandler::categoriesMenuWidgetConfig
+     * Тестирует метод BaseFrontendHandlerTrait::categoriesMenuWidgetConfig
      */
     public function testCategoriesMenuWidgetConfig()
     {
@@ -184,70 +153,6 @@ class AbstractBaseHandlerTests extends TestCase
         
         $this->assertArrayHasKey('categories', $result);
         $this->assertInternalType('array', $result['categories']);
-    }
-    
-    /**
-     * Тестирует метод AbstractBaseHandler::emptyProductsWidgetConfig
-     */
-    public function testEmptyProductsWidgetConfig()
-    {
-        $reflection = new \ReflectionMethod($this->handler, 'emptyProductsWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('template', $result);
-        $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод AbstractBaseHandler::productsWidgetConfig
-     */
-    public function testProductsWidgetConfig()
-    {
-        $productsCollection = new class() extends ProductsCollection {};
-        $currencyModel = new class() extends CurrencyModel {};
-        
-        $reflection = new \ReflectionMethod($this->handler, 'productsWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $productsCollection, $currencyModel);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('products', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('template', $result);
-        
-        $this->assertInstanceOf(CollectionInterface::class, $result['products']);
-        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
-        $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод AbstractBaseHandler::paginationWidgetConfig
-     */
-    public function testPaginationWidgetConfig()
-    {
-        $productsCollection = new class() extends ProductsCollection {
-            public $pagination;
-            public function __construct()
-            {
-                $this->pagination = new LightPagination();
-            }
-        };
-        
-        $reflection = new \ReflectionMethod($this->handler, 'paginationWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $productsCollection);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('pagination', $result);
-        $this->assertArrayHasKey('template', $result);
-        
-        $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
-        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()
