@@ -1,28 +1,28 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
-use app\services\AbstractBaseService;
+use app\handlers\AbstractBaseHandler;
+use app\forms\FiltersForm;
 use app\helpers\{HashHelper,
     StringHelper};
 use app\cleaners\SessionCleaner;
-use app\forms\AdminProductsFiltersForm;
 
 /**
- * Обнуляет фильтры заказов админ раздела
+ * Очищает фильтры каталога товаров
  */
-class FiltersAdminProductsUnsetService extends AbstractBaseService
+class FiltersUnsetRequestHandler extends AbstractBaseHandler
 {
     /**
-     * Обрабатывает запрос на обнуление фильтров заказов
+     * Обрабатывает запрос на обнуление товарных фильтров
      * @param array $request
      * @return string URL
      */
     public function handle($request): string
     {
         try {
-            $form = new AdminProductsFiltersForm(['scenario'=>AdminProductsFiltersForm::CLEAN]);
+            $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
             
             if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('request'));
@@ -32,7 +32,7 @@ class FiltersAdminProductsUnsetService extends AbstractBaseService
             }
             
             $cleaner = new SessionCleaner([
-                'keys'=>[HashHelper::createHash([\Yii::$app->params['adminProductsFilters']])],
+                'keys'=>[HashHelper::createFiltersKey($form->url)],
             ]);
             $cleaner->clean();
             

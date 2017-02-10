@@ -1,18 +1,27 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FiltersOrdersUnsetService;
+use app\handlers\FiltersOrdersUnsetRequestHandler;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс FiltersOrdersUnsetService
+ * Тестирует класс FiltersOrdersUnsetRequestHandler
  */
-class FiltersOrdersUnsetServiceTests extends TestCase
+class FiltersOrdersUnsetRequestHandlerTests extends TestCase
 {
+    private $handler;
+    
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+        
+        $this->handler = new FiltersOrdersUnsetRequestHandler();
+    }
+    
     /**
-     * Тестирует метод FiltersOrdersUnsetService::handle
+     * Тестирует метод FiltersOrdersUnsetRequestHandler::handle
      */
     public function testHandle()
     {
@@ -37,8 +46,7 @@ class FiltersOrdersUnsetServiceTests extends TestCase
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         
-        $filter = new FiltersOrdersUnsetService();
-        $result = $filter->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertEquals('https://shop.com', $result);
         

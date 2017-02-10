@@ -1,18 +1,27 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FiltersOrdersSetService;
+use app\handlers\FiltersOrdersSetRequestHandler;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс FiltersOrdersSetService
+ * Тестирует класс FiltersOrdersSetRequestHandler
  */
-class FiltersOrdersSetServiceTests extends TestCase
+class FiltersOrdersSetRequestHandlerTests extends TestCase
 {
+    private $handler;
+    
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+        
+        $this->handler = new FiltersOrdersSetRequestHandler();
+    }
+    
     /**
-     * Тестирует метод FiltersOrdersSetService::handle
+     * Тестирует метод FiltersOrdersSetRequestHandler::handle
      */
     public function testHandle()
     {
@@ -31,8 +40,7 @@ class FiltersOrdersSetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersOrdersSetService();
-        $result = $filter->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertEquals('https://shop.com', $result);
         

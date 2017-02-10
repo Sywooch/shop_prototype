@@ -1,21 +1,29 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FiltersUnsetService;
+use app\handlers\FiltersUnsetRequestHandler;
 use app\helpers\HashHelper;
 use yii\helpers\Url;
 use app\controllers\ProductsListController;
-use yii\web\Request;
 
 /**
- * Тестирует класс FiltersUnsetService
+ * Тестирует класс FiltersUnsetRequestHandler
  */
-class FiltersUnsetServiceTests extends TestCase
+class FiltersUnsetRequestHandlerTests extends TestCase
 {
+    private $handler;
+    
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+        
+        $this->handler = new FiltersUnsetRequestHandler();
+    }
+    
     /**
-     * Тестирует метод FiltersUnsetService::handle
+     * Тестирует метод FiltersUnsetRequestHandler::handle
      */
     public function testHandle()
     {
@@ -33,7 +41,7 @@ class FiltersUnsetServiceTests extends TestCase
         
         $this->assertSame(['a'=>1, 'b'=>'cdef', 'c'=>23], $result);
         
-        $request = new class() extends Request {
+        $request = new class() {
             public function post($name = null, $defaultValue = null)
             {
                 return [
@@ -44,8 +52,7 @@ class FiltersUnsetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersUnsetService();
-        $result = $filter->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertSame($url, $result);
         

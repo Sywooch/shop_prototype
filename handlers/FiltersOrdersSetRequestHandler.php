@@ -1,19 +1,19 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
-use app\services\AbstractBaseService;
-use app\forms\AdminProductsFiltersForm;
+use app\handlers\AbstractBaseHandler;
+use app\forms\OrdersFiltersForm;
 use app\helpers\{HashHelper,
     StringHelper};
 use app\savers\SessionModelSaver;
-use app\filters\AdminProductsFilters;
+use app\filters\OrdersFilters;
 
 /**
  * Сохраняет фильтры каталога товаров
  */
-class FiltersAdminProductsSetService extends AbstractBaseService
+class FiltersOrdersSetRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на сохранение товарных фильтров
@@ -23,7 +23,7 @@ class FiltersAdminProductsSetService extends AbstractBaseService
     public function handle($request): string
     {
         try {
-            $form = new AdminProductsFiltersForm(['scenario'=>AdminProductsFiltersForm::SAVE]);
+            $form = new OrdersFiltersForm(['scenario'=>OrdersFiltersForm::SAVE]);
             
             if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('request'));
@@ -32,21 +32,17 @@ class FiltersAdminProductsSetService extends AbstractBaseService
                 throw new ErrorException($this->modelError($form->errors));
             }
             
-            $model = new AdminProductsFilters(['scenario'=>AdminProductsFilters::SESSION]);
-            $model->sortingField = $form->sortingField;
+            $model = new OrdersFilters(['scenario'=>OrdersFilters::SESSION]);
             $model->sortingType = $form->sortingType;
-            $model->colors = $form->colors;
-            $model->sizes = $form->sizes;
-            $model->brands = $form->brands;
-            $model->category = $form->category;
-            $model->subcategory = $form->subcategory;
-            $model->active = $form->active;
+            $model->status = $form->status;
+            $model->dateFrom = $form->dateFrom;
+            $model->dateTo = $form->dateTo;
             if ($model->validate() === false) {
                 throw new ErrorException($this->modelError($model->errors));
             }
             
             $saver = new SessionModelSaver([
-                'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]),
+                'key'=>HashHelper::createHash([\Yii::$app->params['ordersFilters']]),
                 'model'=>$model
             ]);
             $saver->save();

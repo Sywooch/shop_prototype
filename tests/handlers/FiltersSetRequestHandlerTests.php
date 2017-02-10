@@ -1,19 +1,37 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FiltersSetService;
-use app\helpers\HashHelper;
 use yii\helpers\Url;
+use app\handlers\FiltersSetRequestHandler;
 use app\controllers\ProductsListController;
-use yii\web\Request;
+use app\helpers\HashHelper;
 
 /**
- * Тестирует класс FiltersSetService
+ * Тестирует класс FiltersSetRequestHandler
  */
-class FiltersSetServiceTests extends TestCase
+class FiltersSetRequestHandlerTests extends TestCase
 {
+    private $handler;
+    
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+        
+        $this->handler = new FiltersSetRequestHandler();
+    }
+    
+    /**
+     * Тестирует метод FiltersSetService::handle
+     * пуст request
+     * @expectedException ErrorException
+     */
+    public function testHandleError()
+    {
+        $this->handler->handle();
+    }
+    
     /**
      * Тестирует метод FiltersSetService::handle
      */
@@ -23,7 +41,7 @@ class FiltersSetServiceTests extends TestCase
         
         $url = Url::current();
         
-        $request = new class() extends Request {
+        $request = new class() {
             public function post($name = null, $defaultValue = null)
             {
                 return [
@@ -39,8 +57,7 @@ class FiltersSetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersSetService();
-        $result = $filter->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertSame($url, $result);
         

@@ -6,12 +6,12 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     RedirectAction};
-use app\services\{FiltersOrdersSetService,
-    FiltersOrdersUnsetService,
-    FiltersAdminProductsSetService,
-    FiltersAdminProductsUnsetService,
-    FiltersSetService,
-    FiltersUnsetService};
+use app\handlers\{FiltersAdminProductsSetRequestHandler,
+    FiltersAdminProductsUnsetRequestHandler,
+    FiltersOrdersSetRequestHandler,
+    FiltersOrdersUnsetRequestHandler,
+    FiltersSetRequestHandler,
+    FiltersUnsetRequestHandler};
 
 /**
  * Обрабатывает запросы, связанные с применением фильтров
@@ -23,27 +23,27 @@ class FiltersController extends Controller
         return [
             'set'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new FiltersSetService()
+                'handler'=>new FiltersSetRequestHandler()
             ],
             'unset'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new FiltersUnsetService()
+                'handler'=>new FiltersUnsetRequestHandler()
             ],
             'orders-set'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new FiltersOrdersSetService()
+                'handler'=>new FiltersOrdersSetRequestHandler()
             ],
             'orders-unset'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new FiltersOrdersUnsetService()
+                'handler'=>new FiltersOrdersUnsetRequestHandler()
             ],
             'admin-products-set'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new FiltersAdminProductsSetService()
+                'handler'=>new FiltersAdminProductsSetRequestHandler()
             ],
             'admin-products-unset'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new FiltersAdminProductsUnsetService()
+                'handler'=>new FiltersAdminProductsUnsetRequestHandler()
             ],
         ];
     }

@@ -1,9 +1,9 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
-use app\services\AbstractBaseService;
+use app\handlers\AbstractBaseHandler;
 use app\helpers\{HashHelper,
     StringHelper};
 use app\cleaners\SessionCleaner;
@@ -12,7 +12,7 @@ use app\forms\OrdersFiltersForm;
 /**
  * Обнуляет фильтры заказов админ раздела
  */
-class FiltersOrdersUnsetService extends AbstractBaseService
+class FiltersOrdersUnsetRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на обнуление фильтров заказов

@@ -1,18 +1,27 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\FiltersAdminProductsSetService;
+use app\handlers\FiltersAdminProductsSetRequestHandler;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс FiltersAdminProductsSetService
+ * Тестирует класс FiltersAdminProductsSetRequestHandler
  */
-class FiltersAdminProductsSetServiceTests extends TestCase
+class FiltersAdminProductsSetRequestHandlerTests extends TestCase
 {
+    private $handler;
+    
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+        
+        $this->handler = new FiltersAdminProductsSetRequestHandler();
+    }
+    
     /**
-     * Тестирует метод FiltersAdminProductsSetService::handle
+     * Тестирует метод FiltersAdminProductsSetRequestHandler::handle
      * если не загрузилась форма
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: request
@@ -26,12 +35,11 @@ class FiltersAdminProductsSetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersAdminProductsSetService();
-        $result = $filter->handle($request);
+        $result = $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод FiltersAdminProductsSetService::handle
+     * Тестирует метод FiltersAdminProductsSetRequestHandler::handle
      * если не валидны
      * @expectedException ErrorException
      * @expectedExceptionMessage Необходимо заполнить «Url».
@@ -49,12 +57,11 @@ class FiltersAdminProductsSetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersAdminProductsSetService();
-        $result = $filter->handle($request);
+        $result = $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод FiltersAdminProductsSetService::handle
+     * Тестирует метод FiltersAdminProductsSetRequestHandler::handle
      */
     public function testHandle()
     {
@@ -77,8 +84,7 @@ class FiltersAdminProductsSetServiceTests extends TestCase
             }
         };
         
-        $filter = new FiltersAdminProductsSetService();
-        $result = $filter->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertEquals('https://shop.com', $result);
         

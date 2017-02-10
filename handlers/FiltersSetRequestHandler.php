@@ -1,19 +1,19 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
-use app\services\AbstractBaseService;
-use app\forms\OrdersFiltersForm;
+use app\handlers\AbstractBaseHandler;
+use app\forms\FiltersForm;
 use app\helpers\{HashHelper,
     StringHelper};
 use app\savers\SessionModelSaver;
-use app\filters\OrdersFilters;
+use app\filters\ProductsFilters;
 
 /**
  * Сохраняет фильтры каталога товаров
  */
-class FiltersOrdersSetService extends AbstractBaseService
+class FiltersSetRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на сохранение товарных фильтров
@@ -23,7 +23,7 @@ class FiltersOrdersSetService extends AbstractBaseService
     public function handle($request): string
     {
         try {
-            $form = new OrdersFiltersForm(['scenario'=>OrdersFiltersForm::SAVE]);
+            $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
             
             if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('request'));
@@ -32,17 +32,18 @@ class FiltersOrdersSetService extends AbstractBaseService
                 throw new ErrorException($this->modelError($form->errors));
             }
             
-            $model = new OrdersFilters(['scenario'=>OrdersFilters::SESSION]);
+            $model = new ProductsFilters(['scenario'=>ProductsFilters::SESSION]);
+            $model->sortingField = $form->sortingField;
             $model->sortingType = $form->sortingType;
-            $model->status = $form->status;
-            $model->dateFrom = $form->dateFrom;
-            $model->dateTo = $form->dateTo;
+            $model->colors = $form->colors;
+            $model->sizes = $form->sizes;
+            $model->brands = $form->brands;
             if ($model->validate() === false) {
                 throw new ErrorException($this->modelError($model->errors));
             }
             
             $saver = new SessionModelSaver([
-                'key'=>HashHelper::createHash([\Yii::$app->params['ordersFilters']]),
+                'key'=>HashHelper::createFiltersKey($form->url),
                 'model'=>$model
             ]);
             $saver->save();
