@@ -6,6 +6,7 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
 use app\handlers\{AbstractBaseHandler,
+    BaseHandlerTrait,
     BaseFrontendHandlerTrait};
 use app\models\{CurrencyInterface,
     ProductsModel};
@@ -22,7 +23,7 @@ use app\forms\{CommentForm,
  */
 class ProductDetailIndexRequestHandler extends AbstractBaseHandler
 {
-    use BaseFrontendHandlerTrait;
+    use BaseHandlerTrait, BaseFrontendHandlerTrait;
     
     /**
      * @var array массив данных для рендеринга

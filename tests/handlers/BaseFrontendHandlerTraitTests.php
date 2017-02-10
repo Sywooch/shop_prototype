@@ -47,18 +47,6 @@ class BaseFrontendHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод BaseFrontendHandlerTrait::getCurrentCurrency
-     */
-    public function testGetCurrentCurrency()
-    {
-        $reflection = new \ReflectionMethod($this->handler, 'getCurrentCurrency');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler);
-        
-        $this->assertInstanceOf(CurrencyInterface::class, $result);
-    }
-    
-    /**
      * Тестирует метод BaseFrontendHandlerTrait::userInfoWidgetConfig
      */
     public function testUserInfoWidgetConfig()

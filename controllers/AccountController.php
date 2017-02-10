@@ -11,11 +11,11 @@ use app\services\{AccountChangeDataPostService,
     AccountChangePasswordPostService,
     AccountChangePasswordService,
     AccountChangeSubscriptionsService,
-    AccountIndexService,
     AccountOrdersCancelService,
-    AccountOrdersService,
     AccountSubscriptionsAddService,
     AccountSubscriptionsCancelService};
+use app\handlers\{AccountIndexRequestHandler,
+    AccountOrdersRequestHandler};
 
 /**
  * Обрабатывает запросы к настройкам аккаунта
@@ -27,15 +27,15 @@ class AccountController extends Controller
         return [
             'index'=>[
                 'class'=>GetAction::class,
-                'service'=>new AccountIndexService(),
+                'handler'=>new AccountIndexRequestHandler(),
                 'view'=>'index.twig',
             ],
             'orders'=>[
                 'class'=>GetAction::class,
-                'service'=>new AccountOrdersService(),
+                'handler'=>new AccountOrdersRequestHandler(),
                 'view'=>'orders.twig',
             ],
-            'order-cancel'=>[
+            /*'order-cancel'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AccountOrdersCancelService(),
             ],
@@ -69,7 +69,7 @@ class AccountController extends Controller
             'subscriptions-add'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new AccountSubscriptionsAddService(),
-            ],
+            ],*/
         ];
     }
     
