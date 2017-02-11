@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
-    AccountSubscriptionsHandlerTrait};
+    AccountHandlerTrait};
 use app\forms\MailingForm;
 use app\savers\ModelSaver;
 use app\widgets\{AccountMailingsFormWidget,
@@ -18,7 +18,7 @@ use app\models\EmailsMailingsModel;
  */
 class AccountSubscriptionsAddRequestHandler extends AbstractBaseHandler
 {
-    use AccountSubscriptionsHandlerTrait;
+    use AccountHandlerTrait;
     
     /**
      * @param $request
@@ -56,11 +56,11 @@ class AccountSubscriptionsAddRequestHandler extends AbstractBaseHandler
                         
                         $dataArray = [];
                         
-                        $unsubscribe = $this->unsubscribe($email);
-                        $dataArray['unsubscribe'] = AccountMailingsUnsubscribeWidget::widget($unsubscribe);
+                        $accountMailingsUnsubscribeWidgetConfig = $this->accountMailingsUnsubscribeWidgetConfig($email);
+                        $dataArray['unsubscribe'] = AccountMailingsUnsubscribeWidget::widget($accountMailingsUnsubscribeWidgetConfig);
                         
-                        $subscribe = $this->subscribe($email);
-                        $dataArray['subscribe'] = AccountMailingsFormWidget::widget($subscribe);
+                        $accountMailingsFormWidgetConfig = $this->accountMailingsFormWidgetConfig($email);
+                        $dataArray['subscribe'] = AccountMailingsFormWidget::widget($accountMailingsFormWidgetConfig);
                         
                         $transaction->commit();
                         

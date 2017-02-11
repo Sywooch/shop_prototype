@@ -3,7 +3,7 @@
 namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\handlers\AccountSubscriptionsHandlerTrait;
+use app\handlers\AccountHandlerTrait;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{EmailsFixture,
     EmailsMailingsFixture,
@@ -11,9 +11,9 @@ use app\tests\sources\fixtures\{EmailsFixture,
 use app\forms\MailingForm;
 
 /**
- * Тестирует класс AccountSubscriptionsHandlerTrait
+ * Тестирует класс AccountHandlerTrait
  */
-class AccountSubscriptionsHandlerTraitTests extends TestCase
+class AccountHandlerTraitTests extends TestCase
 {
     private static $dbClass;
     private $handler;
@@ -35,17 +35,17 @@ class AccountSubscriptionsHandlerTraitTests extends TestCase
         \Yii::$app->registry->clean();
         
         $this->handler = new class() {
-            use AccountSubscriptionsHandlerTrait;
+            use AccountHandlerTrait;
         };
     }
     
     /**
-     * Тестирует метод AccountSubscriptionsHandlerTrait::unsubscribe
+     * Тестирует метод AccountHandlerTrait::accountMailingsUnsubscribeWidgetConfig
      * если запрос с ошибками
      */
-    public function testUnsubscribe()
+    public function testAccountMailingsUnsubscribeWidgetConfig()
     {
-        $reflection = new \ReflectionMethod($this->handler, 'unsubscribe');
+        $reflection = new \ReflectionMethod($this->handler, 'accountMailingsUnsubscribeWidgetConfig');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($this->handler, self::$dbClass->emails['email_1']['email']);
         
@@ -63,12 +63,12 @@ class AccountSubscriptionsHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountSubscriptionsHandlerTrait::subscribe
+     * Тестирует метод AccountHandlerTrait::accountMailingsFormWidgetConfig
      * если запрос с ошибками
      */
-    public function testSubscribe()
+    public function testAccountMailingsFormWidgetConfig()
     {
-        $reflection = new \ReflectionMethod($this->handler, 'subscribe');
+        $reflection = new \ReflectionMethod($this->handler, 'accountMailingsFormWidgetConfig');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($this->handler, self::$dbClass->emails['email_1']['email']);
         

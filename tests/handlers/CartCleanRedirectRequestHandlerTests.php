@@ -1,34 +1,27 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CartCleanRedirectService;
+use app\handlers\CartCleanRedirectRequestHandler;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс CartCleanRedirectService
+ * Тестирует класс CartCleanRedirectRequestHandler
  */
-class CartCleanRedirectServiceTests extends TestCase
+class CartCleanRedirectRequestHandlerTests extends TestCase
 {
+    private $handler;
+    
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new CartCleanRedirectRequestHandler();
     }
     
     /**
-     * Тестирует метод CartCleanRedirectService::handle
-     * если не переад $request
-     * @expectedException ErrorException
-     */
-    public function testHandleRequestError()
-    {
-        $service = new CartCleanRedirectService();
-        $service->handle();
-    }
-    
-    /**
-     * Тестирует метод CartCleanRedirectService::handle
+     * Тестирует метод CartCleanRedirectRequestHandler::handle
      */
     public function testHandle()
     {
@@ -55,8 +48,7 @@ class CartCleanRedirectServiceTests extends TestCase
             public $isPost = true;
         };
         
-        $service = new CartCleanRedirectService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertFalse($session->has(HashHelper::createCartKey()));
         $this->assertFalse($session->has(HashHelper::createCartCustomerKey()));

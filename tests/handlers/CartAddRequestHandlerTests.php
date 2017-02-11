@@ -1,23 +1,21 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CartAddService;
+use app\handlers\CartAddRequestHandler;
 use yii\web\Request;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     ProductsFixture};
-use app\forms\PurchaseForm;
-use app\models\ProductsModel;
-use app\helpers\HashHelper;
 
 /**
- * Тестирует класс CartAddService
+ * Тестирует класс CartAddRequestHandler
  */
-class CartAddServiceTests extends TestCase
+class CartAddRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -33,10 +31,12 @@ class CartAddServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new CartAddRequestHandler();
     }
     
     /**
-     * Тестирует метод CartAddService::handle
+     * Тестирует метод CartAddRequestHandler::handle
      * если запрос с ошибками
      */
     public function testHandleErrors()
@@ -57,9 +57,7 @@ class CartAddServiceTests extends TestCase
             }
         };
         
-        $service = new CartAddService();
-        
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
@@ -67,7 +65,7 @@ class CartAddServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CartAddService::handle
+     * Тестирует метод CartAddRequestHandler::handle
      */
     public function testHandle()
     {
@@ -87,16 +85,7 @@ class CartAddServiceTests extends TestCase
             }
         };
         
-        $service = new CartAddService();
-        
-        $result = $service->handle($request);
-        
-        /*$this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('successInfo', $result);
-        $this->assertArrayHasKey('shortCart', $result);
-        $this->assertInternalType('string', $result['successInfo']);
-        $this->assertInternalType('string', $result['shortCart']);*/
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);

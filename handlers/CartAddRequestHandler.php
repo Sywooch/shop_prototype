@@ -1,25 +1,27 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\{AbstractBaseService,
-    GetShortCartWidgetAjaxConfigService};
+use app\handlers\{AbstractBaseHandler,
+    BaseHandlerTrait,
+    CartHandlerTrait};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
 use app\finders\PurchasesSessionFinder;
-use app\widgets\{PurchaseSaveInfoWidget,
-    ShortCartWidget};
+use app\widgets\ShortCartWidget;
 use app\models\PurchasesModel;
 
 /**
- * Сохраняет новую покупку в корзине
+ * Обрабатывает запрос на добавление покупки в корзину
  */
-class CartAddService extends AbstractBaseService
+class CartAddRequestHandler extends AbstractBaseHandler
 {
+    use BaseHandlerTrait, CartHandlerTrait;
+    
     /**
      * Обрабатывает запрос на сохранение новой покупки в корзине
      * @param $request
@@ -38,9 +40,12 @@ class CartAddService extends AbstractBaseService
                         return $errors;
                     }
                     
+                    $currentCurrencyModel = $this->getCurrentCurrency();
                     $key = HashHelper::createCartKey();
                     
-                    $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, ['key'=>$key]);
+                    $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
+                        'key'=>$key
+                    ]);
                     $purchasesCollection = $finder->find();
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
@@ -61,11 +66,7 @@ class CartAddService extends AbstractBaseService
                     ]);
                     $saver->save();
                     
-                    $dataArray = [];
-                    
-                    $service = \Yii::$app->registry->get(GetShortCartWidgetAjaxConfigService::class);
-                    $shortCartWidgetAjaxConfig = $service->handle();
-                    
+                    $shortCartWidgetAjaxConfig = $this->shortCartWidgetAjaxConfig($purchasesCollection, $currentCurrencyModel);
                     return ShortCartWidget::widget($shortCartWidgetAjaxConfig);
                 }
             }

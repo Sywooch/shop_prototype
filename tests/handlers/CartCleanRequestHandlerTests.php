@@ -1,20 +1,21 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CartCleanService;
+use app\handlers\CartCleanRequestHandler;
 use app\helpers\HashHelper;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     ProductsFixture};
 
 /**
- * Тестирует класс CartCleanService
+ * Тестирует класс CartCleanRequestHandler
  */
-class CartCleanServiceTests extends TestCase
+class CartCleanRequestHandlerTests extends TestCase
 {
      private static $dbClass;
+     private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -30,21 +31,12 @@ class CartCleanServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new CartCleanRequestHandler();
     }
     
     /**
-     * Тестирует метод CartCleanService::handle
-     * если не переад $request
-     * @expectedException ErrorException
-     */
-    public function testHandleRequestError()
-    {
-        $service = new CartCleanService();
-        $service->handle();
-    }
-    
-    /**
-     * Тестирует метод CartCleanService::handle
+     * Тестирует метод CartCleanRequestHandler::handle
      */
     public function testHandle()
     {
@@ -71,8 +63,7 @@ class CartCleanServiceTests extends TestCase
             public $isAjax = true;
         };
         
-        $service = new CartCleanService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertFalse($session->has(HashHelper::createCartKey()));
         $this->assertFalse($session->has(HashHelper::createCartCustomerKey()));

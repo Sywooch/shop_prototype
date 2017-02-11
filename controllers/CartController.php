@@ -7,14 +7,15 @@ use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
-use app\services\{CartAddService,
-    CartCheckoutAjaxFormService,
+use app\services\{CartCheckoutAjaxFormService,
     CartCheckoutAjaxService,
-    CartCleanRedirectService,
-    CartCleanService,
     CartDeleteService,
     CartIndexService,
     CartUpdateService};
+use app\handlers\{CartAddRequestHandler,
+    CartCleanRequestHandler,
+    CartCleanRedirectRequestHandler,
+    CartUpdateRequestHandler};
 
 /**
  * Обрабатывает запросы, касающиеся комментариев к товарам
@@ -26,21 +27,22 @@ class CartController extends Controller
         return [
             'add'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CartAddService(),
+                'handler'=>new CartAddRequestHandler(),
             ],
             'clean'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CartCleanService(),
+                'handler'=>new CartCleanRequestHandler(),
             ],
             'clean-redirect'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new CartCleanRedirectService(),
+                'handler'=>new CartCleanRedirectRequestHandler(),
             ],
             'update'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CartUpdateService(),
+                //'service'=>new CartUpdateService(),
+                'handler'=>new CartUpdateRequestHandler(),
             ],
-            'delete'=>[
+            /*'delete'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new CartDeleteService(),
             ],
@@ -56,7 +58,7 @@ class CartController extends Controller
             'сheckout-ajax'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new CartCheckoutAjaxService(),
-            ],
+            ],*/
         ];
     }
     

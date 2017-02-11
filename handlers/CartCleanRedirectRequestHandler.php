@@ -1,20 +1,20 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\helpers\Url;
-use app\services\AbstractBaseService;
+use app\handlers\AbstractBaseHandler;
 use app\helpers\HashHelper;
 use app\cleaners\SessionCleaner;
 
 /**
- * Очищает корзину и возвращает URL для редиректа
+ * Обрабатывает запрос на удаление покупок из корзины, 
+ * возвращает URL для редиректа
  */
-class CartCleanRedirectService extends AbstractBaseService
+class CartCleanRedirectRequestHandler extends AbstractBaseHandler
 {
     /**
-     * Обрабатывает запрос на обнуление корзины
      * @param $request
      * @return mixed
      */

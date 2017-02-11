@@ -41,7 +41,7 @@ trait ProductsListHandlerTrait
      * Возвращает массив конфигурации для виджета EmptyProductsWidget
      * @return array
      */
-    protected function emptyProductsWidgetConfig(): array
+    private function emptyProductsWidgetConfig(): array
     {
         try {
             $dataArray = [];
@@ -60,7 +60,7 @@ trait ProductsListHandlerTrait
      * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
      * @return array
      */
-    protected function productsWidgetConfig(CollectionInterface $productsCollection, CurrencyInterface $currentCurrencyModel): array
+    private function productsWidgetConfig(CollectionInterface $productsCollection, CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
@@ -80,7 +80,7 @@ trait ProductsListHandlerTrait
      * @param CollectionInterface $productsCollection
      * @return array
      */
-    protected function paginationWidgetConfig(CollectionInterface $productsCollection): array
+    private function paginationWidgetConfig(CollectionInterface $productsCollection): array
     {
         try {
             $dataArray = [];

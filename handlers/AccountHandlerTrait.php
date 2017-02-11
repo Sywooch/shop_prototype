@@ -10,14 +10,14 @@ use app\forms\MailingForm;
 /**
  * Коллекция базовых методов
  */
-trait AccountSubscriptionsHandlerTrait
+trait AccountHandlerTrait
 {
     /**
      * Возвращает массив конфигурации для виджета AccountMailingsUnsubscribeWidget
      * @param string $email
      * @return array
      */
-    private function unsubscribe(string $email): array
+    private function accountMailingsUnsubscribeWidgetConfig(string $email): array
     {
         try {
             $dataArray = [];
@@ -42,7 +42,7 @@ trait AccountSubscriptionsHandlerTrait
      * @param string $email
      * @return array
      */
-    private function subscribe(string $email): array
+    private function accountMailingsFormWidgetConfig(string $email): array
     {
         try {
             $dataArray = [];
