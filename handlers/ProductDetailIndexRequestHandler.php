@@ -45,6 +45,8 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                 }
                 
                 $currentCurrencyModel = $this->getCurrentCurrency();
+                $ordersCollection = $this->getOrdersSessionCollection();
+                $categoriesModelArray = $this->getCategoriesModelArray();
                 
                 $finder = \Yii::$app->registry->get(ProductDetailFinder::class, [
                     'seocode'=>$seocode
@@ -58,10 +60,10 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                 $dataArray = [];
                 
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig();
-                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($currentCurrencyModel);
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
-                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig();
+                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
                 $dataArray['productDetailWidgetConfig'] = $this->productDetailWidgetConfig($productsModel, $currentCurrencyModel);
                 $dataArray['purchaseFormWidgetConfig'] = $this->purchaseFormWidgetConfig($productsModel);
                 $dataArray['productBreadcrumbsWidget'] = $this->productBreadcrumbsWidget($productsModel);

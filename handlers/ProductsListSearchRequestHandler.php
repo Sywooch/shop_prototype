@@ -50,6 +50,7 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                 
                 $currentCurrencyModel = $this->getCurrentCurrency();
                 $filtersModel = $this->getProductsFilters();
+                $ordersCollection = $this->getOrdersSessionCollection();
                 
                 $finder = \Yii::$app->registry->get(SphinxFinder::class, [
                     'search'=>$searchText
@@ -60,7 +61,7 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                 $dataArray = [];
                 
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig();
-                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($currentCurrencyModel);
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig($searchText);
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig();

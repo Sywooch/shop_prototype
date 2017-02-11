@@ -14,8 +14,7 @@ use app\helpers\HashHelper;
 use app\finders\PurchasesSessionFinder;
 use app\widgets\{CartWidget,
     ShortCartRedirectWidget};
-use app\models\{CurrencyInterface,
-    PurchasesModel};
+use app\models\PurchasesModel;
 
 /**
  * Обрабатывает запрос на обновление данных покупки
@@ -69,15 +68,9 @@ class CartUpdateRequestHandler extends AbstractBaseHandler
                     
                     $dataArray = [];
                     
-                    /*$service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
-                    $cartWidgetConfig = $service->handle();
-                    $dataArray['items'] = CartWidget::widget($cartWidgetConfig);*/
                     $cartWidgetConfig = $this->cartWidgetConfig($purchasesCollection, $currentCurrencyModel);
                     $dataArray['items'] = CartWidget::widget($cartWidgetConfig);
                     
-                    /*$service = \Yii::$app->registry->get(GetShortCartWidgetConfigRedirectService::class);
-                    $shortCartRedirectWidgetConfig = $service->handle();
-                    $dataArray['shortCart'] = ShortCartRedirectWidget::widget($shortCartRedirectWidgetConfig);*/
                     $shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($purchasesCollection, $currentCurrencyModel);
                     $dataArray['shortCart'] = ShortCartRedirectWidget::widget($shortCartRedirectWidgetConfig);
                     

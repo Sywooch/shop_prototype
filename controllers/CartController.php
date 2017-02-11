@@ -8,13 +8,12 @@ use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
 use app\services\{CartCheckoutAjaxFormService,
-    CartCheckoutAjaxService,
-    CartDeleteService,
-    CartIndexService,
-    CartUpdateService};
+    CartCheckoutAjaxService};
 use app\handlers\{CartAddRequestHandler,
     CartCleanRequestHandler,
     CartCleanRedirectRequestHandler,
+    CartDeleteRequestHandler,
+    CartIndexRequestHandler,
     CartUpdateRequestHandler};
 
 /**
@@ -39,19 +38,18 @@ class CartController extends Controller
             ],
             'update'=>[
                 'class'=>AjaxAction::class,
-                //'service'=>new CartUpdateService(),
                 'handler'=>new CartUpdateRequestHandler(),
             ],
-            /*'delete'=>[
+            'delete'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CartDeleteService(),
+                'handler'=>new CartDeleteRequestHandler(),
             ],
             'index'=>[
                 'class'=>GetAction::class,
-                'service'=>new CartIndexService(),
+                'handler'=>new CartIndexRequestHandler(),
                 'view'=>'cart.twig'
             ],
-            'сheckout-ajax-form'=>[
+            /*'сheckout-ajax-form'=>[
                 'class'=>AjaxAction::class,
                 'service'=>new CartCheckoutAjaxFormService(),
             ],

@@ -49,6 +49,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 
                 $currentCurrencyModel = $this->getCurrentCurrency();
                 $filtersModel = $this->getProductsFilters();
+                $ordersCollection = $this->getOrdersSessionCollection();
                 
                 $finder = \Yii::$app->registry->get(ProductsFinder::class, [
                     'category'=>$category,
@@ -61,7 +62,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 $dataArray = [];
                 
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig();
-                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($currentCurrencyModel);
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig();

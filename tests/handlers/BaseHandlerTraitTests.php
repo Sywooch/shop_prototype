@@ -8,6 +8,7 @@ use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
 use app\models\CurrencyInterface;
 use app\exceptions\ExceptionsTrait;
+use app\collections\PurchasesCollectionInterface;
 
 /**
  * Тестирует класс BaseHandlerTrait
@@ -46,6 +47,18 @@ class BaseHandlerTraitTests extends TestCase
         $result = $reflection->invoke($this->handler);
         
         $this->assertInstanceOf(CurrencyInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод BaseHandlerTrait::getOrdersSessionCollection
+     */
+    public function testGetOrdersSessionCollection()
+    {
+        $reflection = new \ReflectionMethod($this->handler, 'getOrdersSessionCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler);
+        
+        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result);
     }
     
     public static function tearDownAfterClass()

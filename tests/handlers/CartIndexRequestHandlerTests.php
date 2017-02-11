@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CartIndexService;
+use app\handlers\CartIndexRequestHandler;
 use app\helpers\HashHelper;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
@@ -11,11 +11,12 @@ use app\tests\sources\fixtures\{CurrencyFixture,
 use app\controllers\CartController;
 
 /**
- * Тестирует класс CartIndexService
+ * Тестирует класс CartIndexRequestHandler
  */
-class CartIndexServiceTests extends TestCase
+class CartIndexRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -31,10 +32,27 @@ class CartIndexServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new CartIndexRequestHandler();
     }
     
     /**
-     * Тестирует метод CartIndexService::handle
+     * Тестирует метод CartIndexRequestHandler::cartCheckoutLinkWidgetConfig
+     */
+    public function testCartCheckoutLinkWidgetConfig()
+    {
+        $reflection = new \ReflectionMethod($this->handler, 'cartCheckoutLinkWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('template', $result);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод CartIndexRequestHandler::handle
      */
     public function testHandle()
     {
@@ -53,8 +71,7 @@ class CartIndexServiceTests extends TestCase
             }
         };
         
-        $service = new CartIndexService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);

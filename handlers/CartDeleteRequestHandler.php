@@ -1,14 +1,14 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
-use app\services\{AbstractBaseService,
-    GetCartWidgetConfigService,
-    GetShortCartWidgetConfigRedirectService};
+use app\handlers\{AbstractBaseHandler,
+    BaseHandlerTrait,
+    CartHandlerTrait};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
@@ -19,12 +19,13 @@ use app\models\PurchasesModel;
 use app\cleaners\SessionCleaner;
 
 /**
- * Сохраняет новую покупку в корзине
+ * Обрабатывает запрос на удаление покупки
  */
-class CartDeleteService extends AbstractBaseService
+class CartDeleteRequestHandler extends AbstractBaseHandler
 {
+    use BaseHandlerTrait, CartHandlerTrait;
+    
     /**
-     * Обрабатывает запрос на сохранение новой покупки в корзине
      * @param $request
      * @return mixed
      */
@@ -42,8 +43,11 @@ class CartDeleteService extends AbstractBaseService
                     }
                     
                     $key = HashHelper::createCartKey();
+                    $currentCurrencyModel = $this->getCurrentCurrency();
                     
-                    $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, ['key'=>$key]);
+                    $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
+                        'key'=>$key
+                    ]);
                     $purchasesCollection = $finder->find();
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::DELETE]);
@@ -70,12 +74,10 @@ class CartDeleteService extends AbstractBaseService
                         
                         $dataArray = [];
                         
-                        $service = \Yii::$app->registry->get(GetCartWidgetConfigService::class);
-                        $cartWidgetConfig = $service->handle();
+                        $cartWidgetConfig = $this->cartWidgetConfig($purchasesCollection, $currentCurrencyModel);
                         $dataArray['items'] = CartWidget::widget($cartWidgetConfig);
                         
-                        $service = \Yii::$app->registry->get(GetShortCartWidgetConfigRedirectService::class);
-                        $shortCartRedirectWidgetConfig = $service->handle();
+                        $shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($purchasesCollection, $currentCurrencyModel);
                         $dataArray['shortCart'] = ShortCartRedirectWidget::widget($shortCartRedirectWidgetConfig);
                         
                         return $dataArray;

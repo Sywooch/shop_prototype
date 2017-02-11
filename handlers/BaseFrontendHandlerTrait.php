@@ -8,9 +8,9 @@ use yii\helpers\{ArrayHelper,
 use app\helpers\HashHelper;
 use app\models\CurrencyInterface;
 use app\finders\{CategoriesFinder,
-    CurrencyFinder,
-    PurchasesSessionFinder};
+    CurrencyFinder};
 use app\forms\ChangeCurrencyForm;
+use app\collections\PurchasesCollectionInterface;
 
 /**
  * Коллекция базовых методов
@@ -37,18 +37,14 @@ trait BaseFrontendHandlerTrait
     
     /**
      * Возвращает массив конфигурации для виджета ShortCartWidget
+     * @patram PurchasesCollectionInterface $ordersCollection
      * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
      * @return array
      */
-    private function shortCartWidgetConfig(CurrencyInterface $currentCurrencyModel): array
+    private function shortCartWidgetConfig(PurchasesCollectionInterface $ordersCollection, CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
-            
-            $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
-                'key'=>HashHelper::createCartKey()
-            ]);
-            $ordersCollection = $finder->find();
             
             $dataArray['purchases'] = $ordersCollection;
             $dataArray['currency'] = $currentCurrencyModel;
@@ -116,19 +112,19 @@ trait BaseFrontendHandlerTrait
      * Возвращает массив конфигурации для виджета CategoriesMenuWidget
      * @return array
      */
-    private function categoriesMenuWidgetConfig(): array
+    private function categoriesMenuWidgetConfig($categoriesModelArray): array
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+            /*$finder = \Yii::$app->registry->get(CategoriesFinder::class);
             $categoriesArray = $finder->find();
             
             if (empty($categoriesArray)) {
                 throw new ErrorException($this->emptyError('categoriesArray'));
-            }
+            }*/
             
-            $dataArray['categories'] = $categoriesArray;
+            $dataArray['categories'] = $categoriesModelArray;
             
             return $dataArray;
         } catch (\Throwable $t) {
