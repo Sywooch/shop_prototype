@@ -11,6 +11,11 @@ use app\exceptions\ExceptionsTrait;
 class AddressModel extends AbstractBaseModel
 {
     /**
+     * Сценарий вставки записи
+     */
+    const SAVE = 'save';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -21,5 +26,12 @@ class AddressModel extends AbstractBaseModel
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
+    }
+    
+    public function rules()
+    {
+        return [
+            [['address'], 'required', 'on'=>self::SAVE],
+        ];
     }
 }

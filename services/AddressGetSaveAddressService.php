@@ -40,8 +40,12 @@ class AddressGetSaveAddressService extends AbstractBaseService
                 $addressModel = $this->getAddress();
                 
                 if ($addressModel === null) {
-                    $rawAddressModel = new AddressModel();
+                    $rawAddressModel = new AddressModel(['scenario'=>AddressModel::SAVE]);
                     $rawAddressModel->address = $this->address;
+                    if ($rawAddressModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawAddressModel->errors));
+                    }
+                    
                     $saver = new ModelSaver([
                         'model'=>$rawAddressModel
                     ]);

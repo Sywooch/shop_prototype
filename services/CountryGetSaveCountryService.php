@@ -40,10 +40,14 @@ class CountryGetSaveCountryService extends AbstractBaseService
                 $countriesModel = $this->getCountry();
                 
                 if ($countriesModel === null) {
-                    $rawCityModel = new CountriesModel();
-                    $rawCityModel->country = $this->country;
+                    $rawCountriesModel = new CountriesModel(['scenario'=>CountriesModel::SAVE]);
+                    $rawCountriesModel->country = $this->country;
+                    if ($rawCountriesModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawCountriesModel->errors));
+                    }
+                    
                     $saver = new ModelSaver([
-                        'model'=>$rawCityModel
+                        'model'=>$rawCountriesModel
                     ]);
                     $saver->save();
                     
@@ -70,7 +74,9 @@ class CountryGetSaveCountryService extends AbstractBaseService
     private function getCountry()
     {
         try {
-            $finder = \Yii::$app->registry->get(CountryCountryFinder::class, ['country'=>$this->country]);
+            $finder = \Yii::$app->registry->get(CountryCountryFinder::class, [
+                'country'=>$this->country
+            ]);
             $countriesModel = $finder->find();
             
             return $countriesModel;

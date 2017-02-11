@@ -1,19 +1,20 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AccountChangePasswordService;
+use app\handlers\AccountChangePasswordRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\UsersFixture;
 use app\models\UsersModel;
 
 /**
- * Тестирует класс AccountChangePasswordService
+ * Тестирует класс AccountChangePasswordRequestHandler
  */
-class AccountChangePasswordServiceTests extends TestCase
+class AccountChangePasswordRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -28,20 +29,22 @@ class AccountChangePasswordServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AccountChangePasswordRequestHandler();
     }
     
     /**
-     * Тестирует свойства AccountChangePasswordService
+     * Тестирует свойства AccountChangePasswordRequestHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AccountChangePasswordService::class);
+        $reflection = new \ReflectionClass(AccountChangePasswordRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод AccountChangePasswordService::handle
+     * Тестирует метод AccountChangePasswordRequestHandler::handle
      */
     public function testHandle()
     {
@@ -50,8 +53,7 @@ class AccountChangePasswordServiceTests extends TestCase
         $user = UsersModel::findOne(1);
         \Yii::$app->user->login($user);
         
-        $service = new AccountChangePasswordService();
-        $result = $service->handle();
+        $result = $this->handler->handle(new class() {});
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);

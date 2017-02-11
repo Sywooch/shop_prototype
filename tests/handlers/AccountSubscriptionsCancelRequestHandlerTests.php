@@ -1,20 +1,23 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AccountSubscriptionsAddService;
+use app\handlers\AccountSubscriptionsCancelRequestHandler;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{EmailsMailingsFixture,
+use app\tests\sources\fixtures\{EmailsFixture,
+    EmailsMailingsFixture,
     UsersFixture};
 use app\models\UsersModel;
+use app\forms\MailingForm;
 
 /**
- * Тестирует класс AccountSubscriptionsAddService
+ * Тестирует класс AccountSubscriptionsCancelRequestHandler
  */
-class AccountSubscriptionsAddServiceTests extends TestCase
+class AccountSubscriptionsCancelRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -22,6 +25,7 @@ class AccountSubscriptionsAddServiceTests extends TestCase
             'fixtures'=>[
                 'emails_mailings'=>EmailsMailingsFixture::class,
                 'users'=>UsersFixture::class,
+                'emails'=>EmailsFixture::class,
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -30,10 +34,12 @@ class AccountSubscriptionsAddServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AccountSubscriptionsCancelRequestHandler();
     }
     
     /**
-     * Тестирует метод AccountSubscriptionsAddService::handle
+     * Тестирует метод AccountSubscriptionsCancelRequestHandler::handle
      * если запрос с ошибками
      */
     public function testHandleErrors()
@@ -53,26 +59,22 @@ class AccountSubscriptionsAddServiceTests extends TestCase
             }
         };
         
-        $service = new AccountSubscriptionsAddService();
-        
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
     }
     
     /**
-     * Тестирует метод AccountSubscriptionsAddService::handle
+     * Тестирует метод AccountSubscriptionsCancelRequestHandler::handle
      */
     public function testHandle()
     {
         $user = UsersModel::findOne(1);
         \Yii::$app->user->login($user);
         
-        \Yii::$app->db->createCommand('DELETE FROM {{emails_mailings}} WHERE [[id_mailing]]=:id_mailing')->bindValue(':id_mailing', 1)->execute();
-        
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailings}} WHERE [[id_email]]=:id_email')->bindValue(':id_email', $user->id_email)->queryAll();
-        $this->assertCount(1, $result);
+        $this->assertCount(2, $result);
         
         $request = new class() {
             public $isAjax = true;
@@ -86,8 +88,7 @@ class AccountSubscriptionsAddServiceTests extends TestCase
             }
         };
         
-        $service = new AccountSubscriptionsAddService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
@@ -99,7 +100,7 @@ class AccountSubscriptionsAddServiceTests extends TestCase
         $this->assertNotEmpty($result['subscribe']);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailings}} WHERE [[id_email]]=:id_email')->bindValue(':id_email', $user->id_email)->queryAll();
-        $this->assertCount(2, $result);
+        $this->assertCount(1, $result);
     }
     
     public static function tearDownAfterClass()

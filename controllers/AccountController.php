@@ -6,16 +6,16 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction};
-use app\services\{AccountChangeDataPostService,
-    AccountChangePasswordPostService,
-    AccountChangePasswordService,
-    AccountChangeSubscriptionsService,
-    AccountSubscriptionsAddService,
-    AccountSubscriptionsCancelService};
-use app\handlers\{AccountChangeDataRequestHandler,
+use app\handlers\{AccountChangeDataPostRequestHandler,
+    AccountChangeDataRequestHandler,
+    AccountChangePasswordPostRequestHandler,
+    AccountChangePasswordRequestHandler,
+    AccountChangeSubscriptionsRequestHandler,
     AccountIndexRequestHandler,
     AccountOrdersCancelRequestHandler,
-    AccountOrdersRequestHandler};
+    AccountOrdersRequestHandler,
+    AccountSubscriptionsAddRequestHandler,
+    AccountSubscriptionsCancelRequestHandler};
 
 /**
  * Обрабатывает запросы к настройкам аккаунта
@@ -44,32 +44,32 @@ class AccountController extends Controller
                 'handler'=>new AccountChangeDataRequestHandler(),
                 'view'=>'change-data.twig',
             ],
-            /*'change-data-post'=>[
+            'change-data-post'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AccountChangeDataPostService(),
+                'handler'=>new AccountChangeDataPostRequestHandler(),
             ],
             'password'=>[
                 'class'=>GetAction::class,
-                'service'=>new AccountChangePasswordService(),
+                'handler'=>new AccountChangePasswordRequestHandler(),
                 'view'=>'change-password.twig',
             ],
             'change-password-post'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AccountChangePasswordPostService(),
+                'handler'=>new AccountChangePasswordPostRequestHandler(),
             ],
             'subscriptions'=>[
                 'class'=>GetAction::class,
-                'service'=>new AccountChangeSubscriptionsService(),
+                'handler'=>new AccountChangeSubscriptionsRequestHandler(),
                 'view'=>'change-subscriptions.twig',
             ],
             'subscriptions-cancel'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AccountSubscriptionsCancelService(),
+                'handler'=>new AccountSubscriptionsCancelRequestHandler(),
             ],
             'subscriptions-add'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new AccountSubscriptionsAddService(),
-            ],*/
+                'handler'=>new AccountSubscriptionsAddRequestHandler(),
+            ],
         ];
     }
     

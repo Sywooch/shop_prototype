@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AccountChangeDataPostService;
+use app\handlers\AccountChangeDataPostRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{AddressFixture,
     CitiesFixture,
@@ -17,11 +17,12 @@ use app\helpers\HashHelper;
 use app\models\UsersModel;
 
 /**
- * Тестирует класс AccountChangeDataPostService
+ * Тестирует класс AccountChangeDataPostRequestHandler
  */
 class AccountChangeDataPostServiceTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -43,10 +44,12 @@ class AccountChangeDataPostServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AccountChangeDataPostRequestHandler();
     }
     
     /**
-     * Тестирует метод AccountChangeDataPostService::handle
+     * Тестирует метод AccountChangeDataPostRequestHandler::handle
      * если запрос с ошибками
      */
     public function testHandleErrors()
@@ -69,16 +72,14 @@ class AccountChangeDataPostServiceTests extends TestCase
             }
         };
         
-        $service = new AccountChangeDataPostService();
-        
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
     }
     
     /**
-     * Тестирует метод AccountChangeDataPostService::handle
+     * Тестирует метод AccountChangeDataPostRequestHandler::handle
      */
     public function testHandle()
     {
@@ -106,8 +107,7 @@ class AccountChangeDataPostServiceTests extends TestCase
             }
         };
         
-        $service = new AccountChangeDataPostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);

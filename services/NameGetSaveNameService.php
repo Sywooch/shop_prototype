@@ -39,8 +39,12 @@ class NameGetSaveNameService extends AbstractBaseService
                 $namesModel = $this->getName();
                 
                 if ($namesModel === null) {
-                    $rawNamesModel = new NamesModel();
+                    $rawNamesModel = new NamesModel(['scenario'=>NamesModel::SAVE]);
                     $rawNamesModel->name = $this->name;
+                    if ($rawNamesModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawNamesModel->errors));
+                    }
+                    
                     $saver = new ModelSaver([
                         'model'=>$rawNamesModel
                     ]);

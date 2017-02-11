@@ -5,7 +5,7 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\AjaxAction;
-use app\services\CalendarGetService;
+use app\handlers\CalendarGetRequestHandler;
 
 /**
  * Обрабатывает запросы, связанные с календарем
@@ -17,7 +17,7 @@ class CalendarController extends Controller
         return [
             'get'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CalendarGetService()
+                'handler'=>new CalendarGetRequestHandler()
             ],
         ];
     }

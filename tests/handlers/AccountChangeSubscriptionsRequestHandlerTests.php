@@ -1,20 +1,21 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AccountChangeSubscriptionsService;
+use app\handlers\AccountChangeSubscriptionsRequestHandler;
 use app\models\UsersModel;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{MailingsFixture,
     UsersFixture};
 
 /**
- * Тестирует класс AccountChangeSubscriptionsService
+ * Тестирует класс AccountChangeSubscriptionsRequestHandler
  */
-class AccountChangeSubscriptionsServiceTests extends TestCase
+class AccountChangeSubscriptionsRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -30,20 +31,22 @@ class AccountChangeSubscriptionsServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AccountChangeSubscriptionsRequestHandler();
     }
     
     /**
-     * Тестирует свойства AccountChangeSubscriptionsService
+     * Тестирует свойства AccountChangeSubscriptionsRequestHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AccountChangeSubscriptionsService::class);
+        $reflection = new \ReflectionClass(AccountChangeSubscriptionsRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод AccountChangeSubscriptionsService::handle
+     * Тестирует метод AccountChangeSubscriptionsRequestHandler::handle
      */
     public function testHandle()
     {
@@ -52,8 +55,7 @@ class AccountChangeSubscriptionsServiceTests extends TestCase
         $user = UsersModel::findOne(1);
         \Yii::$app->user->login($user);
         
-        $service = new AccountChangeSubscriptionsService();
-        $result = $service->handle();
+        $result = $this->handler->handle(new class() {});
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);

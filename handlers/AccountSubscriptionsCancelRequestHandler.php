@@ -1,13 +1,12 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\{AbstractBaseService,
-    GetAccountMailingsFormWidgetConfigService,
-    GetAccountMailingsUnsubscribeWidgetConfigService};
+use app\handlers\{AbstractBaseHandler,
+    AccountSubscriptionsHandlerTrait};
 use app\forms\MailingForm;
 use app\removers\EmailsMailingsModelRemover;
 use app\widgets\{AccountMailingsFormWidget,
@@ -15,10 +14,12 @@ use app\widgets\{AccountMailingsFormWidget,
 use app\models\EmailsMailingsModel;
 
 /**
- * Отменяет подписку
+ * Обрабатывает запрос на отмену подписки
  */
-class AccountSubscriptionsCancelService extends AbstractBaseService
+class AccountSubscriptionsCancelRequestHandler extends AbstractBaseHandler
 {
+    use AccountSubscriptionsHandlerTrait;
+    
     /**
      * Обрабатывает запрос на отмену подписки
      * @param $request
@@ -27,11 +28,9 @@ class AccountSubscriptionsCancelService extends AbstractBaseService
     public function handle($request)
     {
         try {
-            if (\Yii::$app->user->isGuest === true) {
-                throw new ErrorException($this->emptyError('user'));
-            }
-            
             $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE_ACC]);
+            $usersModel = \Yii::$app->user->identity;
+            $email = $usersModel->email->email;
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {
@@ -44,11 +43,9 @@ class AccountSubscriptionsCancelService extends AbstractBaseService
                     $transaction = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $user = \Yii::$app->user->identity;
-                        
                         $emailsMailingsModel = new EmailsMailingsModel(['scenario'=>EmailsMailingsModel::DELETE]);
                         $emailsMailingsModel->id_mailing = $form->id;
-                        $emailsMailingsModel->id_email = $user->id_email;
+                        $emailsMailingsModel->id_email = $usersModel->id_email;
                         if ($emailsMailingsModel->validate() === false) {
                             throw new ErrorException($this->modelError($emailsMailingsModel->errors));
                         }
@@ -60,13 +57,11 @@ class AccountSubscriptionsCancelService extends AbstractBaseService
                         
                         $dataArray = [];
                         
-                        $service = \Yii::$app->registry->get(GetAccountMailingsUnsubscribeWidgetConfigService::class);
-                        $accountMailingsUnsubscribeWidgetConfig = $service->handle();
-                        $dataArray['unsubscribe'] = AccountMailingsUnsubscribeWidget::widget($accountMailingsUnsubscribeWidgetConfig);
+                        $unsubscribe = $this->unsubscribe($email);
+                        $dataArray['unsubscribe'] = AccountMailingsUnsubscribeWidget::widget($unsubscribe);
                         
-                        $service = \Yii::$app->registry->get(GetAccountMailingsFormWidgetConfigService::class);
-                        $accountMailingsFormWidgetConfig = $service->handle();
-                        $dataArray['subscribe'] = AccountMailingsFormWidget::widget($accountMailingsFormWidgetConfig);
+                        $subscribe = $this->subscribe($email);
+                        $dataArray['subscribe'] = AccountMailingsFormWidget::widget($subscribe);
                         
                         $transaction->commit();
                         

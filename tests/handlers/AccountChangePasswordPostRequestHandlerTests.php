@@ -1,19 +1,20 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\AccountChangePasswordPostService;
+use app\handlers\AccountChangePasswordPostRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\UsersFixture;
 use app\models\UsersModel;
 
 /**
- * Тестирует класс AccountChangePasswordPostService
+ * Тестирует класс AccountChangePasswordPostRequestHandler
  */
-class AccountChangePasswordPostServiceTests extends TestCase
+class AccountChangePasswordPostRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -29,10 +30,12 @@ class AccountChangePasswordPostServiceTests extends TestCase
     {
         \Yii::$app->registry->clean();
         \Yii::$app->user->logout();
+        
+        $this->handler = new AccountChangePasswordPostRequestHandler();
     }
     
     /**
-     * Тестирует метод AccountChangePasswordPostService::handle
+     * Тестирует метод AccountChangePasswordPostRequestHandler::handle
      * если запрос с ошибками
      */
     public function testHandleErrors()
@@ -54,16 +57,14 @@ class AccountChangePasswordPostServiceTests extends TestCase
             }
         };
         
-        $service = new AccountChangePasswordPostService();
-        
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
     }
     
     /**
-     * Тестирует метод AccountChangePasswordPostService::handle
+     * Тестирует метод AccountChangePasswordPostRequestHandler::handle
      */
     public function testHandle()
     {
@@ -92,8 +93,7 @@ class AccountChangePasswordPostServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'currentPassword');
         $reflection->setValue($request, $rawPassword);
         
-        $service = new AccountChangePasswordPostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);

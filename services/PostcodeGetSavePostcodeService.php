@@ -40,10 +40,14 @@ class PostcodeGetSavePostcodeService extends AbstractBaseService
                 $postcodesModel = $this->getPostcode();
                 
                 if ($postcodesModel === null) {
-                    $rawCityModel = new PostcodesModel();
-                    $rawCityModel->postcode = $this->postcode;
+                    $rawPostcodesModel = new PostcodesModel(['scenario'=>PostcodesModel::SAVE]);
+                    $rawPostcodesModel->postcode = $this->postcode;
+                    if ($rawPostcodesModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawPostcodesModel->errors));
+                    }
+                    
                     $saver = new ModelSaver([
-                        'model'=>$rawCityModel
+                        'model'=>$rawPostcodesModel
                     ]);
                     $saver->save();
                     
@@ -70,7 +74,9 @@ class PostcodeGetSavePostcodeService extends AbstractBaseService
     private function getPostcode()
     {
         try {
-            $finder = \Yii::$app->registry->get(PostcodePostcodeFinder::class, ['postcode'=>$this->postcode]);
+            $finder = \Yii::$app->registry->get(PostcodePostcodeFinder::class, [
+                'postcode'=>$this->postcode
+            ]);
             $postcodesModel = $finder->find();
             
             return $postcodesModel;

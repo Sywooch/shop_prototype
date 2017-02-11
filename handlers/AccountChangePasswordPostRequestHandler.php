@@ -1,20 +1,21 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\AbstractBaseService;
+use app\handlers\AbstractBaseHandler;
 use app\forms\UserChangePasswordForm;
 use app\models\UsersModel;
 use app\widgets\AccountChangePasswordSuccessWidget;
 use app\savers\ModelSaver;
 
 /**
- * Обновляет пароль пользователя
+ * Обрабатывает запрос 
+ * на обновление пароля пользователя
  */
-class AccountChangePasswordPostService extends AbstractBaseService
+class AccountChangePasswordPostRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на обновление данных пользователя
@@ -25,6 +26,7 @@ class AccountChangePasswordPostService extends AbstractBaseService
     {
         try {
             $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
+            $usersModel = \Yii::$app->user->identity;
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {
@@ -37,8 +39,9 @@ class AccountChangePasswordPostService extends AbstractBaseService
                     $transaction = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $rawUsersModel = \Yii::$app->user->identity;
+                        $rawUsersModel = $usersModel;
                         $rawUsersModel->scenario = UsersModel::UPDATE_PASSW;
+                        
                         $rawUsersModel->password = password_hash($form->password, PASSWORD_DEFAULT);
                         if ($rawUsersModel->validate() === false) {
                             throw new ErrorException($this->modelError($rawUsersModel->errors));
@@ -49,9 +52,11 @@ class AccountChangePasswordPostService extends AbstractBaseService
                         ]);
                         $saver->save();
                         
+                        $response = AccountChangePasswordSuccessWidget::widget(['template'=>'account-change-password-success.twig']);
+                        
                         $transaction->commit();
                         
-                        return AccountChangePasswordSuccessWidget::widget(['template'=>'account-change-password-success.twig']);
+                        return $response;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

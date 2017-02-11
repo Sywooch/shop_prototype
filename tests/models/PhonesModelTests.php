@@ -15,6 +15,10 @@ class PhonesModelTests extends TestCase
      */
     public function testProperties()
     {
+        $reflection = new \ReflectionClass(PhonesModel::class);
+        
+        $this->assertTrue($reflection->hasConstant('SAVE'));
+        
         $model = new PhonesModel();
         
         $this->assertArrayHasKey('id', $model->attributes);
@@ -29,5 +33,27 @@ class PhonesModelTests extends TestCase
         $result = PhonesModel::tableName();
         
         $this->assertSame('phones', $result);
+    }
+    
+    /**
+     * Тестирует метод PhonesModel::rules
+     */
+    public function testRules()
+    {
+        $model = new PhonesModel(['scenario'=>PhonesModel::SAVE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(1, $model->errors);
+        
+        $model = new PhonesModel(['scenario'=>PhonesModel::SAVE]);
+        $model->attributes = [
+            'phone'=>'phone'
+        ];
+        
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
 }

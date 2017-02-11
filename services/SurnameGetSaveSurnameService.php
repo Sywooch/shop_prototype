@@ -39,8 +39,12 @@ class SurnameGetSaveSurnameService extends AbstractBaseService
                 $surnamesModel = $this->getSurname();
                 
                 if ($surnamesModel === null) {
-                    $rawSurnamesModel = new SurnamesModel();
+                    $rawSurnamesModel = new SurnamesModel(['scenario'=>SurnamesModel::SAVE]);
                     $rawSurnamesModel->surname = $this->surname;
+                    if ($rawSurnamesModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawSurnamesModel->errors));
+                    }
+                    
                     $saver = new ModelSaver([
                         'model'=>$rawSurnamesModel
                     ]);

@@ -1,12 +1,12 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\{AbstractBaseService,
-    AddressGetSaveAddressService,
+use app\handlers\AbstractBaseHandler;
+use app\services\{AddressGetSaveAddressService,
     CityGetSaveCityService,
     CountryGetSaveCountryService,
     EmailGetSaveEmailService,
@@ -20,9 +20,10 @@ use app\savers\ModelSaver;
 use app\widgets\AccountChangeDataSuccessWidget;
 
 /**
- * Обновляет данные пользователя
+ * Обрабатывает запрос, 
+ * обновляющий данные пользователя
  */
-class AccountChangeDataPostService extends AbstractBaseService
+class AccountChangeDataPostRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на обновление данных пользователя
@@ -33,6 +34,7 @@ class AccountChangeDataPostService extends AbstractBaseService
     {
         try {
             $form = new UserUpdateForm(['scenario'=>UserUpdateForm::UPDATE]);
+            $usersModel = \Yii::$app->user->identity;
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {
@@ -45,29 +47,44 @@ class AccountChangeDataPostService extends AbstractBaseService
                     $transaction = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $service = \Yii::$app->registry->get(NameGetSaveNameService::class);
-                        $namesModel = $service->handle(['name'=>$form->name]);
+                        $service = \Yii::$app->registry->get(NameGetSaveNameService::class, [
+                            'name'=>$form->name
+                        ]);
+                        $namesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(SurnameGetSaveSurnameService::class);
-                        $surnamesModel = $service->handle(['surname'=>$form->surname]);
+                        $service = \Yii::$app->registry->get(SurnameGetSaveSurnameService::class, [
+                            'surname'=>$form->surname
+                        ]);
+                        $surnamesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(PhoneGetSavePhoneService::class);
-                        $phonesModel = $service->handle(['phone'=>$form->phone]);
+                        $service = \Yii::$app->registry->get(PhoneGetSavePhoneService::class, [
+                            'phone'=>$form->phone
+                        ]);
+                        $phonesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(AddressGetSaveAddressService::class);
-                        $addressModel = $service->handle(['address'=>$form->address]);
+                        $service = \Yii::$app->registry->get(AddressGetSaveAddressService::class, [
+                            'address'=>$form->address
+                        ]);
+                        $addressModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(CityGetSaveCityService::class);
-                        $citiesModel = $service->handle(['city'=>$form->city]);
+                        $service = \Yii::$app->registry->get(CityGetSaveCityService::class, [
+                            'city'=>$form->city
+                        ]);
+                        $citiesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(CountryGetSaveCountryService::class);
-                        $countriesModel = $service->handle(['country'=>$form->country]);
+                        $service = \Yii::$app->registry->get(CountryGetSaveCountryService::class, [
+                            'country'=>$form->country
+                        ]);
+                        $countriesModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(PostcodeGetSavePostcodeService::class);
-                        $postcodesModel = $service->handle(['postcode'=>$form->postcode]);
+                        $service = \Yii::$app->registry->get(PostcodeGetSavePostcodeService::class, [
+                            'postcode'=>$form->postcode
+                        ]);
+                        $postcodesModel = $service->get();
                         
-                        $rawUsersModel = \Yii::$app->user->identity;
+                        $rawUsersModel = $usersModel;
                         $rawUsersModel->scenario = UsersModel::UPDATE;
+                        
                         $rawUsersModel->id_name = $namesModel->id;
                         $rawUsersModel->id_surname = $surnamesModel->id;
                         $rawUsersModel->id_phone = $phonesModel->id;
@@ -84,9 +101,11 @@ class AccountChangeDataPostService extends AbstractBaseService
                         ]);
                         $saver->save();
                         
+                        $response = AccountChangeDataSuccessWidget::widget(['template'=>'account-change-data-success.twig']);
+                        
                         $transaction->commit();
                         
-                        return AccountChangeDataSuccessWidget::widget(['template'=>'account-change-data-success.twig']);
+                        return $response;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

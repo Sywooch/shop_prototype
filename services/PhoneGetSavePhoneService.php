@@ -40,8 +40,12 @@ class PhoneGetSavePhoneService extends AbstractBaseService
                 $phonesModel = $this->getPhone();
                 
                 if ($phonesModel === null) {
-                    $rawPhonesModel = new PhonesModel();
+                    $rawPhonesModel = new PhonesModel(['scenario'=>PhonesModel::SAVE]);
                     $rawPhonesModel->phone = $this->phone;
+                    if ($rawPhonesModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawPhonesModel->errors));
+                    }
+                    
                     $saver = new ModelSaver([
                         'model'=>$rawPhonesModel
                     ]);

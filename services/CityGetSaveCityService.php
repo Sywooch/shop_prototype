@@ -40,8 +40,12 @@ class CityGetSaveCityService extends AbstractBaseService
                 $citiesModel = $this->getCity();
                 
                 if ($citiesModel === null) {
-                    $rawCityModel = new CitiesModel();
+                    $rawCityModel = new CitiesModel(['scenario'=>CitiesModel::SAVE]);
                     $rawCityModel->city = $this->city;
+                    if ($rawCityModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawCityModel->errors));
+                    }
+                    
                     $saver = new ModelSaver([
                         'model'=>$rawCityModel
                     ]);
