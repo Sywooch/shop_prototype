@@ -14,9 +14,11 @@ use app\services\{AddressGetSaveAddressService,
     PhoneGetSavePhoneService,
     PostcodeGetSavePostcodeService,
     SurnameGetSaveSurnameService};
-use app\forms\AdminChangeOrderForm;
+use app\forms\{AbstractBaseForm,
+    AdminChangeOrderForm};
 use app\savers\ModelSaver;
-use app\models\PurchasesModel;
+use app\models\{CurrencyInterface,
+    PurchasesModel};
 use app\finders\PurchaseIdFinder;
 use app\widgets\AdminOrderDataWidget;
 use app\helpers\HashHelper;
@@ -51,7 +53,6 @@ class AdminOrderDetailChangeRequestHandler extends AbstractBaseHandler
                             'id'=>$form->id
                         ]);
                         $purchasesModel = $finder->find();
-                        
                         if (empty($purchasesModel)) {
                             throw new ErrorException($this->emptyError('purchasesModel'));
                         }
@@ -126,7 +127,17 @@ class AdminOrderDetailChangeRequestHandler extends AbstractBaseHandler
                         ]);
                         $saver->save();
                         
-                        $adminOrderDataWidgetConfig = $this->adminOrderDataWidgetConfig($purchasesModel);
+                        $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                            'key'=>HashHelper::createCurrencyKey()
+                        ]);
+                        $currentCurrencyModel = $service->get();
+                        if (empty($currentCurrencyModel)) {
+                            throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                        }
+                        
+                        $adminChangeOrderForm = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
+                        
+                        $adminOrderDataWidgetConfig = $this->adminOrderDataWidgetConfig($purchasesModel, $currentCurrencyModel, $adminChangeOrderForm);
                         $response = AdminOrderDataWidget::widget($adminOrderDataWidgetConfig);
                         
                         $transaction->commit();
@@ -148,19 +159,14 @@ class AdminOrderDetailChangeRequestHandler extends AbstractBaseHandler
      * @params PurchasesModel $purchasesModel
      * @return array
      */
-    private function adminOrderDataWidgetConfig(PurchasesModel $purchasesModel)
+    private function adminOrderDataWidgetConfig(PurchasesModel $purchasesModel, CurrencyInterface $currentCurrencyModel, AbstractBaseForm $adminChangeOrderForm)
     {
         try {
             $dataArray = [];
             
             $dataArray['purchase'] = $purchasesModel;
-            
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
-                'key'=>HashHelper::createCurrencyKey()
-            ]);
-            $dataArray['currency'] = $service->get();
-            
-            $dataArray['form'] = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['form'] = $adminChangeOrderForm;
             $dataArray['template'] = 'admin-order-data.twig';
             
             return $dataArray;

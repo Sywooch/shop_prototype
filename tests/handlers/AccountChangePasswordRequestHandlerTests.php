@@ -7,6 +7,7 @@ use app\handlers\AccountChangePasswordRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\UsersFixture;
 use app\models\UsersModel;
+use app\forms\AbstractBaseForm;
 
 /**
  * Тестирует класс AccountChangePasswordRequestHandler
@@ -41,6 +42,28 @@ class AccountChangePasswordRequestHandlerTests extends TestCase
         $reflection = new \ReflectionClass(AccountChangePasswordRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
+    }
+    
+    /**
+     * Тестирует метод AccountChangePasswordRequestHandler::accountChangePasswordWidgetConfig
+     */
+    public function testAccountChangePasswordWidgetConfig()
+    {
+        $userChangePasswordForm = new class() extends AbstractBaseForm{};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'accountChangePasswordWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $userChangePasswordForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('form', $result);
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     /**

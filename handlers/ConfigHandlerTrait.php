@@ -3,30 +3,28 @@
 namespace app\handlers;
 
 use yii\base\ErrorException;
-use yii\helpers\{ArrayHelper,
-    Url};
-use app\helpers\HashHelper;
+use yii\helpers\ArrayHelper;
+use yii\web\User;
 use app\models\CurrencyInterface;
-use app\finders\{CategoriesFinder,
-    CurrencyFinder};
-use app\forms\ChangeCurrencyForm;
+use app\forms\AbstractBaseForm;
 use app\collections\PurchasesCollectionInterface;
 
 /**
  * Коллекция базовых методов
  */
-trait BaseFrontendHandlerTrait
+trait ConfigHandlerTrait
 {
     /**
      * Возвращает массив конфигурации для виджета UserInfoWidget
+     * @param yii\web\User $user
      * @return array
      */
-    private function userInfoWidgetConfig(): array
+    private function userInfoWidgetConfig(User $webUser): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['user'] = \Yii::$app->user;
+            $dataArray['user'] = $webUser;
             $dataArray['template'] = 'user-info.twig';
             
             return $dataArray;
@@ -58,28 +56,19 @@ trait BaseFrontendHandlerTrait
     
     /**
      * Возвращает массив конфигурации для виджета CurrencyWidget
-     * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
+     * @param array $currencyArray массив доступных валют
+     * @param AbstractBaseForm $changeCurrencyForm
      * @return array
      */
-    private function currencyWidgetConfig(CurrencyInterface $currentCurrencyModel): array
+    private function currencyWidgetConfig(array $currencyArray, AbstractBaseForm $changeCurrencyForm): array
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(CurrencyFinder::class);
-            $currencyArray = $finder->find();
-            if (empty($currencyArray)) {
-                throw new ErrorException($this->emptyError('currencyArray'));
-            }
             ArrayHelper::multisort($currencyArray, 'code');
             $dataArray['currency'] = ArrayHelper::map($currencyArray, 'id', 'code');
             
-            $dataArray['form'] = new ChangeCurrencyForm([
-                'scenario'=>ChangeCurrencyForm::SET,
-                'id'=>$currentCurrencyModel->id,
-                'url'=>Url::current()
-            ]);
-            
+            $dataArray['form'] = $changeCurrencyForm;
             $dataArray['header'] = \Yii::t('base', 'Currency');
             $dataArray['template'] = 'currency-form.twig';
             
@@ -110,21 +99,59 @@ trait BaseFrontendHandlerTrait
     
     /**
      * Возвращает массив конфигурации для виджета CategoriesMenuWidget
+     * @param array $categoriesModelArray
      * @return array
      */
-    private function categoriesMenuWidgetConfig($categoriesModelArray): array
+    private function categoriesMenuWidgetConfig(array $categoriesModelArray): array
     {
         try {
             $dataArray = [];
             
-            /*$finder = \Yii::$app->registry->get(CategoriesFinder::class);
-            $categoriesArray = $finder->find();
-            
-            if (empty($categoriesArray)) {
-                throw new ErrorException($this->emptyError('categoriesArray'));
-            }*/
-            
             $dataArray['categories'] = $categoriesModelArray;
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AccountMailingsUnsubscribeWidget
+     * @param array $mailingsArray
+     * @param AbstractBaseForm $mailingForm
+     * @return array
+     */
+    private function accountMailingsUnsubscribeWidgetConfig(array $mailingsArray, AbstractBaseForm $mailingForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['mailings'] = $mailingsArray;
+            $dataArray['form'] = $mailingForm;
+            $dataArray['header'] = \Yii::t('base', 'Current subscriptions');
+            $dataArray['template'] = 'account-mailings-unsubscribe.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AccountMailingsFormWidget
+     * @param array $mailingsArray
+     * @param AbstractBaseForm $mailingForm
+     * @return array
+     */
+    private function accountMailingsFormWidgetConfig(array $mailingsArray, AbstractBaseForm $mailingForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['mailings'] = $mailingsArray;
+            $dataArray['form'] = $mailingForm;
+            $dataArray['header'] = \Yii::t('base', 'Sign up now!');
+            $dataArray['template'] = 'account-mailings-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

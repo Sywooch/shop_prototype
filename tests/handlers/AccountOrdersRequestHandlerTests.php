@@ -9,7 +9,8 @@ use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture,
     UsersFixture};
 use app\filters\OrdersFilters;
-use app\forms\{OrdersFiltersForm,
+use app\forms\{AbstractBaseForm,
+    OrdersFiltersForm,
     PurchaseForm};
 use app\controllers\AccountController;
 use app\models\{CurrencyInterface,
@@ -65,11 +66,18 @@ class AccountOrdersRequestHandlerTests extends TestCase
      */
     public function testOrdersFiltersWidgetConfig()
     {
-        $filtersModel = new class() extends OrdersFilters {};
+        $sortingTypesArray = [new class() {}];
+        $statusesArray = [new class() {}];
+        $ordersFiltersForm = new class() extends AbstractBaseForm {
+            public $sortingType;
+            public $dateFrom;
+            public $dateTo;
+            public $url;
+        };
         
         $reflection = new \ReflectionMethod($this->handler, 'оrdersFiltersWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $filtersModel);
+        $result = $reflection->invoke($this->handler, $sortingTypesArray, $statusesArray, $ordersFiltersForm);
         
         $this->assertInternalType('array', $result);
         
@@ -81,7 +89,7 @@ class AccountOrdersRequestHandlerTests extends TestCase
         
         $this->assertInternalType('array', $result['sortingTypes']);
         $this->assertInternalType('array', $result['statuses']);
-        $this->assertInstanceOf(OrdersFiltersForm::class, $result['form']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
     }
@@ -93,10 +101,11 @@ class AccountOrdersRequestHandlerTests extends TestCase
     {
         $ordersArray = [new class() {}];
         $currentCurrencyModel = new class() extends CurrencyModel {};
+        $purchaseForm = new class() extends AbstractBaseForm {};
         
         $reflection = new \ReflectionMethod($this->handler, 'accountOrdersWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $ordersArray, $currentCurrencyModel);
+        $result = $reflection->invoke($this->handler, $ordersArray, $purchaseForm, $currentCurrencyModel);
         
         $this->assertInternalType('array', $result);
         
@@ -109,7 +118,7 @@ class AccountOrdersRequestHandlerTests extends TestCase
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('array', $result['purchases']);
         $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
-        $this->assertInstanceOf(PurchaseForm::class, $result['form']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
     }
     

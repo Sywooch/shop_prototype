@@ -18,6 +18,7 @@ use app\models\CurrencyModel;
 class AdminIndexRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -34,6 +35,8 @@ class AdminIndexRequestHandlerTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AdminIndexRequestHandler();
     }
     
     /**
@@ -51,11 +54,9 @@ class AdminIndexRequestHandlerTests extends TestCase
      */
     public function testAdminTodayOrdersMinimalWidgetConfig()
     {
-        $handler = new AdminIndexRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'adminTodayOrdersMinimalWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'adminTodayOrdersMinimalWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, 2);
+        $result = $reflection->invoke($this->handler, 106);
         
         $this->assertInternalType('array', $result);
         
@@ -71,11 +72,9 @@ class AdminIndexRequestHandlerTests extends TestCase
      */
     public function testVisitsMinimalWidgetConfig()
     {
-        $handler = new AdminIndexRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'visitsMinimalWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'visitsMinimalWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, 2);
+        $result = $reflection->invoke($this->handler, 2);
         
         $this->assertInternalType('array', $result);
         
@@ -91,11 +90,9 @@ class AdminIndexRequestHandlerTests extends TestCase
      */
     public function testConversionWidgetConfig()
     {
-        $handler = new AdminIndexRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'conversionWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'conversionWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, 2, 105);
+        $result = $reflection->invoke($this->handler, 2, 105);
         
         $this->assertInternalType('array', $result);
         
@@ -114,12 +111,11 @@ class AdminIndexRequestHandlerTests extends TestCase
     public function testAverageBillWidgetConfig()
     {
         $collection = new class() extends PurchasesCollection {};
+        $currentCurrencyModel = new class() extends CurrencyModel {};
         
-        $handler = new AdminIndexRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'averageBillWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'averageBillWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $collection);
+        $result = $reflection->invoke($this->handler, $collection, $currentCurrencyModel);
         
         $this->assertInternalType('array', $result);
         
@@ -135,15 +131,15 @@ class AdminIndexRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminIndexRequestHandler::popularGoodsWidgetConfig
+     * Тестирует метод AdminIndexRequestHandler::popularProductsWidgetConfig
      */
-    public function testPopularGoodsWidgetConfig()
+    public function testPopularProductsWidgetConfig()
     {
-        $handler = new AdminIndexRequestHandler();
+        $popularProductsArray = [new class() {}];
         
-        $reflection = new \ReflectionMethod($handler, 'popularGoodsWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'popularProductsWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler);
+        $result = $reflection->invoke($this->handler, $popularProductsArray);
         
         $this->assertInternalType('array', $result);
         

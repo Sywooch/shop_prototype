@@ -7,7 +7,8 @@ use app\handlers\AccountChangeDataRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\UsersFixture;
 use app\models\UsersModel;
-use app\forms\UserUpdateForm;
+use app\forms\{AbstractBaseForm,
+    UserUpdateForm};
 
 /**
  * Тестирует класс AccountChangeDataRequestHandler
@@ -49,11 +50,12 @@ class AccountChangeDataRequestHandlerTests extends TestCase
      */
     public function testAccountChangeDataWidgetConfig()
     {
+        $userUpdateForm = new class() extends UserUpdateForm {};
         $usersModel = UsersModel::findOne(1);
         
         $reflection = new \ReflectionMethod($this->handler, 'accountChangeDataWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $usersModel);
+        $result = $reflection->invoke($this->handler, $userUpdateForm, $usersModel);
         
         $this->assertInternalType('array', $result);
         
@@ -61,7 +63,7 @@ class AccountChangeDataRequestHandlerTests extends TestCase
         $this->assertArrayhasKey('header', $result);
         $this->assertArrayhasKey('template', $result);
         
-        $this->assertInstanceOf(UserUpdateForm::class, $result['form']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
     }

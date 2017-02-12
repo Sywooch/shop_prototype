@@ -4,18 +4,25 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
-use yii\helpers\ArrayHelper;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait,
-    BaseFrontendHandlerTrait};
+    ConfigHandlerTrait};
 use app\models\{CurrencyInterface,
     ProductsModel};
-use app\finders\{CommentsProductFinder,
+use app\finders\{CategoriesFinder,
+    CommentsProductFinder,
+    CurrencyFinder,
     ProductDetailFinder,
+    PurchasesSessionFinder,
     RelatedFinder,
     SimilarFinder};
-use app\forms\{CommentForm,
+use app\forms\{AbstractBaseForm,
+    CommentForm,
+    ChangeCurrencyForm,
     PurchaseForm};
+use app\helpers\HashHelper;
+use app\services\GetCurrentCurrencyModelService;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -23,7 +30,7 @@ use app\forms\{CommentForm,
  */
 class ProductDetailIndexRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait, BaseFrontendHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * @var array массив данных для рендеринга
@@ -44,33 +51,83 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('seocode'));
                 }
                 
-                $currentCurrencyModel = $this->getCurrentCurrency();
-                $ordersCollection = $this->getOrdersSessionCollection();
-                $categoriesModelArray = $this->getCategoriesModelArray();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
+                $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
+                    'key'=>HashHelper::createCartKey()
+                ]);
+                $ordersCollection = $finder->find();
+                
+                $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+                $categoriesModelArray = $finder->find();
+                if (empty($categoriesModelArray)) {
+                    throw new ErrorException($this->emptyError('categoriesModelArray'));
+                }
                 
                 $finder = \Yii::$app->registry->get(ProductDetailFinder::class, [
                     'seocode'=>$seocode
                 ]);
                 $productsModel = $finder->find();
-                
                 if (empty($productsModel)) {
                     throw new NotFoundHttpException($this->error404());
                 }
                 
+                $finder = \Yii::$app->registry->get(SimilarFinder::class, [
+                    'product'=>$productsModel
+                ]);
+                $similarArray = $finder->find();
+                
+                $finder = \Yii::$app->registry->get(RelatedFinder::class, [
+                    'product'=>$productsModel
+                ]);
+                $relatedArray = $finder->find();
+                
+                $finder = \Yii::$app->registry->get(CommentsProductFinder::class, [
+                    'product'=>$productsModel
+                ]);
+                $commentsArray = $finder->find();
+                
+                $finder = \Yii::$app->registry->get(CurrencyFinder::class);
+                $currencyArray = $finder->find();
+                if (empty($currencyArray)) {
+                    throw new ErrorException($this->emptyError('currencyArray'));
+                }
+                
+                $purchaseForm = new PurchaseForm(['scenario'=>PurchaseForm::SAVE, 'quantity'=>1]);
+                
+                $commentForm = new CommentForm([
+                    'scenario'=>CommentForm::SAVE,
+                    'id_product'=>$productsModel->id,
+                ]);
+                
+                $changeCurrencyForm = new ChangeCurrencyForm([
+                    'scenario'=>ChangeCurrencyForm::SET,
+                    'id'=>$currentCurrencyModel->id,
+                    'url'=>Url::current()
+                ]);
+                
+                $webUser = \Yii::$app->user;
+                
                 $dataArray = [];
                 
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig();
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig($webUser);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
-                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
                 $dataArray['productDetailWidgetConfig'] = $this->productDetailWidgetConfig($productsModel, $currentCurrencyModel);
-                $dataArray['purchaseFormWidgetConfig'] = $this->purchaseFormWidgetConfig($productsModel);
+                $dataArray['purchaseFormWidgetConfig'] = $this->purchaseFormWidgetConfig($productsModel, $purchaseForm);
                 $dataArray['productBreadcrumbsWidget'] = $this->productBreadcrumbsWidget($productsModel);
-                $dataArray['seeAlsoWidgetSimilarConfig'] = $this->seeAlsoWidgetSimilarConfig($productsModel, $currentCurrencyModel);
-                $dataArray['seeAlsoWidgetRelatedConfig'] = $this->seeAlsoWidgetRelatedConfig($productsModel, $currentCurrencyModel);
-                $dataArray['commentsWidgetConfig'] = $this->commentsWidgetConfig($productsModel);
-                $dataArray['сommentFormWidgetConfig'] = $this->сommentFormWidgetConfig($productsModel->id);
+                $dataArray['seeAlsoWidgetSimilarConfig'] = $this->seeAlsoWidgetSimilarConfig($similarArray, $currentCurrencyModel);
+                $dataArray['seeAlsoWidgetRelatedConfig'] = $this->seeAlsoWidgetRelatedConfig($relatedArray, $currentCurrencyModel);
+                $dataArray['commentsWidgetConfig'] = $this->commentsWidgetConfig($commentsArray);
+                $dataArray['сommentFormWidgetConfig'] = $this->сommentFormWidgetConfig($commentForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -107,15 +164,16 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
     /**
      * Возвращает массив конфигурации для виджета PurchaseFormWidget
      * @param ProductsModel $productsModel объект товара
+     * @param AbstractBaseForm $purchaseForm
      * @return array
      */
-    private function purchaseFormWidgetConfig(ProductsModel $productsModel): array
+    private function purchaseFormWidgetConfig(ProductsModel $productsModel, AbstractBaseForm $purchaseForm): array
     {
         try {
             $dataArray = [];
             
             $dataArray['product'] = $productsModel;
-            $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::SAVE, 'quantity'=>1]);
+            $dataArray['form'] = $purchaseForm;
             $dataArray['template'] = 'purchase-form.twig';
             
             return $dataArray;
@@ -144,19 +202,14 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета SeeAlsoWidget (Similar)
-     * @param ProductsModel $productsModel объект товара
+     * @param array $similarArray массив похожих товаров
      * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
      * @return array
      */
-    private function seeAlsoWidgetSimilarConfig(ProductsModel $productsModel, CurrencyInterface $currentCurrencyModel): array
+    private function seeAlsoWidgetSimilarConfig(array $similarArray, CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
-            
-            $finder = \Yii::$app->registry->get(SimilarFinder::class, [
-                'product'=>$productsModel
-            ]);
-            $similarArray = $finder->find();
             
             $dataArray['products'] = $similarArray;
             $dataArray['currency'] = $currentCurrencyModel;
@@ -171,19 +224,14 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета SeeAlsoWidget (Related)
-     * @param ProductsModel $productsModel объект товара
+     * @param array $relatedArray массив связанных товаров
      * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
      * @return array
      */
-    private function seeAlsoWidgetRelatedConfig(ProductsModel $productsModel, CurrencyInterface $currentCurrencyModel): array
+    private function seeAlsoWidgetRelatedConfig(array $relatedArray, CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
-            
-            $finder = \Yii::$app->registry->get(RelatedFinder::class, [
-                'product'=>$productsModel
-            ]);
-            $relatedArray = $finder->find();
             
             $dataArray['products'] = $relatedArray;
             $dataArray['currency'] = $currentCurrencyModel;
@@ -198,18 +246,13 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета CommentsWidget
-     * @param ProductsModel $productsModel объект товара
+     * @param array $commentsArray массив комментариев
      * @return array
      */
-    private function commentsWidgetConfig(ProductsModel $productsModel): array
+    private function commentsWidgetConfig(array $commentsArray): array
     {
         try {
             $dataArray = [];
-            
-            $finder = \Yii::$app->registry->get(CommentsProductFinder::class, [
-                'product'=>$productsModel
-            ]);
-            $commentsArray = $finder->find();
             
             if (!empty($commentsArray)) {
                 ArrayHelper::multisort($commentsArray, 'date', SORT_DESC);
@@ -226,18 +269,15 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета CommentFormWidget
-     * @param int $id товара
+     * @param AbstractBaseForm $commentForm
      * @return array
      */
-    private function сommentFormWidgetConfig(int $id): array
+    private function сommentFormWidgetConfig(AbstractBaseForm $commentForm): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['form'] = new CommentForm([
-                'scenario'=>CommentForm::SAVE,
-                'id_product'=>$id,
-            ]);
+            $dataArray['form'] = $commentForm;
             $dataArray['template'] = 'comment-form.twig';
             
             return $dataArray;

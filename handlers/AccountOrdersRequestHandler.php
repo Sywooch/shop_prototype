@@ -6,17 +6,18 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\Url;
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait};
+    ConfigHandlerTrait};
 use app\finders\{AccountOrdersFinder,
     OrdersFiltersSessionFinder,
     OrderStatusesFinder,
     SortingTypesFinder};
-use app\forms\{OrdersFiltersForm,
+use app\forms\{AbstractBaseForm,
+    OrdersFiltersForm,
     PurchaseForm};
 use app\helpers\{DateHelper,
     HashHelper};
-use app\filters\OrdersFiltersInterface;
 use app\collections\PaginationInterface;
+use app\services\GetCurrentCurrencyModelService;
 use app\models\CurrencyInterface;
 
 /**
@@ -25,7 +26,7 @@ use app\models\CurrencyInterface;
  */
 class AccountOrdersRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * @var array массив данных для рендеринга
@@ -44,7 +45,13 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
                 $usersModel = \Yii::$app->user->identity;
                 
-                $currentCurrencyModel = $this->getCurrentCurrency();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
                 
                 $finder = \Yii::$app->registry->get(OrdersFiltersSessionFinder::class, [
                     'key'=>HashHelper::createHash([\Yii::$app->params['ordersFilters']])
@@ -64,10 +71,25 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
                     }
                 }
                 
+                $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
+                $sortingTypesArray = $finder->find();
+                if (empty($sortingTypesArray)) {
+                    throw new ErrorException($this->emptyError('sortingTypesArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
+                $statusesArray = $finder->find();
+                if (empty($statusesArray)) {
+                    throw new ErrorException($this->emptyError('statusesArray'));
+                }
+                
+                $ordersFiltersForm = new OrdersFiltersForm(array_filter($filtersModel->toArray()));
+                $purchaseForm = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
+                
                 $dataArray = [];
                 
-                $dataArray['оrdersFiltersWidgetConfig'] = $this->оrdersFiltersWidgetConfig($filtersModel);
-                $dataArray['accountOrdersWidgetConfig'] = $this->accountOrdersWidgetConfig($purchasesCollection->asArray(), $currentCurrencyModel);
+                $dataArray['оrdersFiltersWidgetConfig'] = $this->оrdersFiltersWidgetConfig($sortingTypesArray, $statusesArray, $ordersFiltersForm);
+                $dataArray['accountOrdersWidgetConfig'] = $this->accountOrdersWidgetConfig($purchasesCollection->asArray(), $purchaseForm, $currentCurrencyModel);
                 $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($purchasesCollection->pagination);
                 
                 $this->dataArray = $dataArray;
@@ -83,47 +105,40 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета OrdersFiltersWidget
-     * @param OrdersFiltersInterface $filtersModel
+     * @param array $sortingTypesArray
+     * @param array $statusesArray
+     * @param AbstractBaseForm $ordersFiltersForm
      * @return array
      */
-    private function оrdersFiltersWidgetConfig(OrdersFiltersInterface $filtersModel): array
+    private function оrdersFiltersWidgetConfig(array $sortingTypesArray, array $statusesArray, AbstractBaseForm $ordersFiltersForm): array
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
-            $sortingTypesArray = $finder->find();
-            if (empty($sortingTypesArray)) {
-                throw new ErrorException($this->emptyError('sortingTypesArray'));
-            }
             asort($sortingTypesArray, SORT_STRING);
             $dataArray['sortingTypes'] = $sortingTypesArray;
             
-            $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
-            $statusesArray = $finder->find();
             asort($statusesArray,SORT_STRING);
             array_unshift($statusesArray, \Yii::$app->params['formFiller']);
             $dataArray['statuses'] = $statusesArray;
             
-            $form = new OrdersFiltersForm(array_filter($filtersModel->toArray()));
-            
-            if (empty($form->sortingType)) {
+            if (empty($ordersFiltersForm->sortingType)) {
                 foreach ($sortingTypesArray as $key=>$val) {
                     if ($key === \Yii::$app->params['sortingType']) {
-                        $form->sortingType = $key;
+                        $ordersFiltersForm->sortingType = $key;
                     }
                 }
             }
-            if (empty($form->dateFrom)) {
-                $form->dateFrom = DateHelper::getToday00();
+            if (empty($ordersFiltersForm->dateFrom)) {
+                $ordersFiltersForm->dateFrom = DateHelper::getToday00();
             }
-            if (empty($form->dateTo)) {
-                $form->dateTo = DateHelper::getToday00();
+            if (empty($ordersFiltersForm->dateTo)) {
+                $ordersFiltersForm->dateTo = DateHelper::getToday00();
             }
             
-            $form->url = Url::current();
+            $ordersFiltersForm->url = Url::current();
             
-            $dataArray['form'] = $form;
+            $dataArray['form'] = $ordersFiltersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'orders-filters.twig';
             
@@ -136,10 +151,10 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
     /**
      * Возвращает массив конфигурации для виджета AccountOrdersWidget
      * @param array $ordersArray массив PurchasesModel
-     * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
+     * @patram AbstractBaseForm $purchaseForm
      * @return array
      */
-    private function accountOrdersWidgetConfig(array $ordersArray, CurrencyInterface $currentCurrencyModel): array
+    private function accountOrdersWidgetConfig(array $ordersArray, AbstractBaseForm $purchaseForm, CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
@@ -147,7 +162,7 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
             $dataArray['header'] = \Yii::t('base', 'Orders');
             $dataArray['purchases'] = $ordersArray;
             $dataArray['currency'] = $currentCurrencyModel;
-            $dataArray['form'] = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
+            $dataArray['form'] = $purchaseForm;
             $dataArray['template'] = 'account-orders.twig';
             
             return $dataArray;

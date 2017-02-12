@@ -12,7 +12,7 @@ use app\controllers\ProductDetailController;
 use app\models\{CurrencyInterface,
     CurrencyModel,
     ProductsModel};
-use app\forms\PurchaseForm;
+use app\forms\AbstractBaseForm;
 
 /**
  * Тестирует класс ProductDetailIndexRequestHandler
@@ -82,10 +82,11 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
     public function testPurchaseFormWidgetConfig()
     {
         $productsModel = new class() extends ProductsModel {};
+        $purchaseForm = new class() extends AbstractBaseForm {};
         
         $reflection = new \ReflectionMethod($this->handler, 'purchaseFormWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $productsModel);
+        $result = $reflection->invoke($this->handler, $productsModel, $purchaseForm);
         
         $this->assertInternalType('array', $result);
         
@@ -94,7 +95,7 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
         $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(ProductsModel::class, $result['product']);
-        $this->assertInstanceOf(PurchaseForm::class, $result['form']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
     }
     
@@ -120,12 +121,12 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
      */
     public function testSeeAlsoWidgetSimilarConfig()
     {
-        $productsModel = new ProductsModel();
+        $similarArray = [new class() extends ProductsModel {}];
         $currencyModel = new class() extends CurrencyModel {};
         
         $reflection = new \ReflectionMethod($this->handler, 'seeAlsoWidgetSimilarConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $productsModel, $currencyModel);
+        $result = $reflection->invoke($this->handler, $similarArray, $currencyModel);
         
         $this->assertInternalType('array', $result);
         
@@ -145,12 +146,12 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
      */
     public function testSeeAlsoWidgetRelatedConfig()
     {
-        $productsModel = new ProductsModel();
+        $relatedArray = [new class() extends ProductsModel {}];
         $currencyModel = new class() extends CurrencyModel {};
         
         $reflection = new \ReflectionMethod($this->handler, 'seeAlsoWidgetRelatedConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $productsModel, $currencyModel);
+        $result = $reflection->invoke($this->handler, $relatedArray, $currencyModel);
         
         $this->assertInternalType('array', $result);
         
@@ -170,12 +171,13 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
      */
     public function testCommentsWidgetConfig()
     {
-        $productsModel = new ProductsModel();
-        $productsModel->id = 1;
+        $commentsArray = [new class() extends ProductsModel {
+            public $id = 1;
+        }];
         
         $reflection = new \ReflectionMethod($this->handler, 'commentsWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $productsModel);
+        $result = $reflection->invoke($this->handler, $commentsArray);
         
         $this->assertInternalType('array', $result);
         
@@ -191,24 +193,16 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
      */
     public function testCommentFormWidgetConfig()
     {
+        $commentForm = new class() extends AbstractBaseForm {};
+        
         $reflection = new \ReflectionMethod($this->handler, 'сommentFormWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, 1);
+        $result = $reflection->invoke($this->handler, $commentForm);
         
         $this->assertInternalType('array', $result);
         
         $this->assertArrayHasKey('template', $result);
         $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод ProductDetailIndexRequestHandler::handle
-     * если отсутствует request
-     * @expectedException ErrorException
-     */
-    public function testHandleError()
-    {
-        $this->handler->handle();
     }
     
     /**

@@ -4,11 +4,13 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait};
+    ConfigHandlerTrait};
 use app\finders\{MailingsEmailFinder,
     PurchasesIdUserFinder};
 use app\models\{CurrencyInterface,
     UsersModel};
+use app\services\GetCurrentCurrencyModelService;
+use app\helpers\HashHelper;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -16,7 +18,7 @@ use app\models\{CurrencyInterface,
  */
 class AccountIndexRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * @var array массив данных для рендеринга
@@ -33,13 +35,30 @@ class AccountIndexRequestHandler extends AbstractBaseHandler
         try {
             if (empty($this->dataArray)) {
                 $usersModel = \Yii::$app->user->identity;
-                $currentCurrencyModel = $this->getCurrentCurrency();
+                
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
+                $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, [
+                    'id_user'=>$usersModel->id
+                ]);
+                $purchasesArray = $finder->find();
+                
+                $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, [
+                    'email'=>$usersModel->email->email
+                ]);
+                $mailingsArray = $finder->find();
                 
                 $dataArray = [];
                 
                 $dataArray['accountContactsWidgetConfig'] = $this->accountContactsWidgetConfig($usersModel);
-                $dataArray['accountCurrentOrdersWidgetConfig'] = $this->accountCurrentOrdersWidgetConfig($usersModel->id, $currentCurrencyModel);
-                $dataArray['accountMailingsWidgetConfig'] = $this->accountMailingsWidgetConfig($usersModel->email->email);
+                $dataArray['accountCurrentOrdersWidgetConfig'] = $this->accountCurrentOrdersWidgetConfig($purchasesArray, $currentCurrencyModel);
+                $dataArray['accountMailingsWidgetConfig'] = $this->accountMailingsWidgetConfig($mailingsArray);
                 
                 $this->dataArray = $dataArray;
             }
@@ -72,22 +91,17 @@ class AccountIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AccountCurrentOrdersWidget
-     * @param int $id пользователя
+     * @param array $purchasesArray
      * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
      * @return array
      */
-    private function accountCurrentOrdersWidgetConfig(int $id, CurrencyInterface $currentCurrencyModel): array
+    private function accountCurrentOrdersWidgetConfig(array $purchasesArray, CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Current orders');
-            
-            $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, [
-                'id_user'=>$id
-            ]);
-            $dataArray['purchases'] = $finder->find();
-            
+            $dataArray['purchases'] = $purchasesArray;
             $dataArray['currency'] = $currentCurrencyModel;
             $dataArray['template'] = 'account-current-orders.twig';
             
@@ -99,19 +113,15 @@ class AccountIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета MailingsWidget
-     * @param string $email пользователя
+     * @param array $mailingsArray
      * @return array
      */
-    private function accountMailingsWidgetConfig(string $email): array
+    private function accountMailingsWidgetConfig(array $mailingsArray): array
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, [
-                'email'=>$email
-            ]);
-            $dataArray['mailings'] = $finder->find();
-            
+            $dataArray['mailings'] = $mailingsArray;
             $dataArray['header'] = \Yii::t('base', 'Current subscriptions');
             $dataArray['template'] = 'mailings.twig';
             

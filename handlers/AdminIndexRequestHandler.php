@@ -11,6 +11,7 @@ use app\finders\{PopularProductsFinder,
 use app\helpers\{DateHelper,
     HashHelper};
 use app\collections\PurchasesCollectionInterface;
+use app\models\CurrencyInterface;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -34,6 +35,7 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
             if (empty($this->dataArray)) {
                 $finder = \Yii::$app->registry->get(PurchasesTodayFinder::class);
                 $ordersCollection = $finder->find();
+                
                 $numberOrders = $ordersCollection->count();
                 
                 $finder = \Yii::$app->registry->get(VisitorsCounterDateFinder::class, [
@@ -42,13 +44,27 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
                 $visitorsCounterModel = $finder->find();
                 $numberVisits = !empty($visitorsCounterModel) ? $visitorsCounterModel->counter : 0;
                 
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
+                $finder = \Yii::$app->registry->get(PopularProductsFinder::class);
+                $popularProductsArray = $finder->find();
+                if (empty($popularProductsArray)) {
+                    throw new ErrorException($this->emptyError('popularProductsArray'));
+                }
+                
                 $dataArray = [];
                 
                 $dataArray['adminTodayOrdersMinimalWidgetConfig'] = $this->adminTodayOrdersMinimalWidgetConfig($numberOrders);
                 $dataArray['visitsMinimalWidgetConfig'] = $this->visitsMinimalWidgetConfig($numberVisits);
                 $dataArray['conversionWidgetConfig'] = $this->conversionWidgetConfig($numberOrders, $numberVisits);
-                $dataArray['averageBillWidgetConfig'] = $this->averageBillWidgetConfig($ordersCollection);
-                $dataArray['popularGoodsWidgetConfig'] = $this->popularGoodsWidgetConfig();
+                $dataArray['averageBillWidgetConfig'] = $this->averageBillWidgetConfig($ordersCollection, $currentCurrencyModel);
+                $dataArray['popularGoodsWidgetConfig'] = $this->popularProductsWidgetConfig($popularProductsArray);
                 
                 $this->dataArray = $dataArray;
             }
@@ -69,6 +85,7 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
         try {
             $dataArray = [];
             
+            $dataArray['orders'] = $numberOrders;
             $dataArray['header'] = \Yii::t('base', 'Orders');
             $dataArray['template'] = 'admin-today-orders-minimal.twig';
             
@@ -121,20 +138,17 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
     /**
      * Возвращает массив конфигурации для виджета AverageBillWidget
      * @param PurchasesCollectionInterface $ordersCollection коллекция заказов
+     * @param CurrencyInterface $currentCurrencyModel
      * @return array
      */
-    private function averageBillWidgetConfig(PurchasesCollectionInterface $ordersCollection): array
+    private function averageBillWidgetConfig(PurchasesCollectionInterface $ordersCollection, CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
             
             $dataArray['purchases'] = $ordersCollection;
             
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
-                'key'=>HashHelper::createCurrencyKey()
-            ]);
-            $dataArray['currency'] = $service->get();
-               
+            $dataArray['currency'] = $currentCurrencyModel;
             $dataArray['header'] = \Yii::t('base', 'Average bill');
             $dataArray['template'] = 'average-bill.twig';
             
@@ -146,18 +160,16 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета PopularGoodsWidget
+     * @param array $popularProductsArray
      * @return array
      */
-    private function popularGoodsWidgetConfig(): array
+    private function popularProductsWidgetConfig(array $popularProductsArray): array
     {
         try {
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Popular goods');
-            
-            $finder = \Yii::$app->registry->get(PopularProductsFinder::class);
-            $dataArray['goods'] = $finder->find();
-            
+            $dataArray['goods'] = $popularProductsArray;
             $dataArray['template'] = 'popular-goods.twig';
             
             return $dataArray;

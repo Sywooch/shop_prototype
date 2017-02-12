@@ -4,7 +4,8 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use app\handlers\AbstractBaseHandler;
-use app\forms\UserChangePasswordForm;
+use app\forms\{AbstractBaseForm,
+    UserChangePasswordForm};
 
 /**
  * Обрабатывает запрос данных 
@@ -27,7 +28,9 @@ class AccountChangePasswordRequestHandler extends AbstractBaseHandler
             if (empty($this->dataArray)) {
                 $dataArray = [];
                 
-                $dataArray['accountChangePasswordWidgetConfig'] = $this->accountChangePasswordWidgetConfig();
+                $userChangePasswordForm = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
+                
+                $dataArray['accountChangePasswordWidgetConfig'] = $this->accountChangePasswordWidgetConfig($userChangePasswordForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -40,15 +43,16 @@ class AccountChangePasswordRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AccountChangePasswordWidget
+     * @param AbstractBaseForm $userChangePasswordForm
      * @return array
      */
-    private function accountChangePasswordWidgetConfig()
+    private function accountChangePasswordWidgetConfig(AbstractBaseForm $userChangePasswordForm)
     {
         try {
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Change password');
-            $dataArray['form'] = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
+            $dataArray['form'] = $userChangePasswordForm;
             $dataArray['template'] = 'account-change-password-form.twig';
             
             return $dataArray;

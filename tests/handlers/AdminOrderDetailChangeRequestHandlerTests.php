@@ -7,9 +7,11 @@ use app\handlers\AdminOrderDetailChangeRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture};
-use app\models\{CurrencyModel,
+use app\models\{CurrencyInterface,
+    CurrencyModel,
     PurchasesModel};
-use app\forms\AdminChangeOrderForm;
+use app\forms\{AbstractBaseForm,
+    AdminChangeOrderForm};
 
 /**
  * Тестирует класс AdminOrderDetailChangeRequestHandler
@@ -17,6 +19,7 @@ use app\forms\AdminChangeOrderForm;
 class AdminOrderDetailChangeRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -32,6 +35,8 @@ class AdminOrderDetailChangeRequestHandlerTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AdminOrderDetailChangeRequestHandler();
     }
     
     /**
@@ -40,30 +45,19 @@ class AdminOrderDetailChangeRequestHandlerTests extends TestCase
     public function testAdminOrderDataWidgetConfig()
     {
         $purchasesModel = new class() extends PurchasesModel {};
+        $currentCurrencyModel = new class() extends CurrencyModel {};
+        $adminChangeOrderForm = new class() extends AbstractBaseForm{};
         
-        $service = new AdminOrderDetailChangeRequestHandler();
-        
-        $reflection = new \ReflectionMethod($service, 'adminOrderDataWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'adminOrderDataWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, $purchasesModel);
+        $result = $reflection->invoke($this->handler, $purchasesModel, $currentCurrencyModel, $adminChangeOrderForm);
         
         $this->assertInternalType('array', $result);
         
         $this->assertInstanceOf(PurchasesModel::class, $result['purchase']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInstanceOf(AdminChangeOrderForm::class, $result['form']);
+        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод AdminOrderDetailChangeRequestHandler::handle
-     * если отсутствует параметр $request
-     * @expectedException ErrorException
-     */
-    public function testHandleEmptyRequest()
-    {
-        $service = new AdminOrderDetailChangeRequestHandler();
-        $service->handle();
     }
     
     /**
@@ -84,8 +78,7 @@ class AdminOrderDetailChangeRequestHandlerTests extends TestCase
             }
         };
         
-        $service = new AdminOrderDetailChangeRequestHandler();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
     }
@@ -123,8 +116,7 @@ class AdminOrderDetailChangeRequestHandlerTests extends TestCase
             }
         };
         
-        $service = new AdminOrderDetailChangeRequestHandler();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
 
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);

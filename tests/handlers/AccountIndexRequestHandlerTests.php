@@ -78,11 +78,12 @@ class AccountIndexRequestHandlerTests extends TestCase
      */
     public function testAccountCurrentOrdersWidgetConfig()
     {
+        $purchasesArray = [new class() {}];
         $currencyModel = new class() extends CurrencyModel {};
         
         $reflection = new \ReflectionMethod($this->handler, 'accountCurrentOrdersWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, 1, $currencyModel);
+        $result = $reflection->invoke($this->handler, $purchasesArray, $currencyModel);
         
         $this->assertInternalType('array', $result);
         
@@ -102,11 +103,11 @@ class AccountIndexRequestHandlerTests extends TestCase
      */
     public function testAccountMailingsWidgetConfig()
     {
-        $email = UsersModel::findOne(1)->email->email;
+        $mailingsArray = [new class() {}];
         
         $reflection = new \ReflectionMethod($this->handler, 'accountMailingsWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $email);
+        $result = $reflection->invoke($this->handler, $mailingsArray);
         
         $this->assertInternalType('array', $result);
         

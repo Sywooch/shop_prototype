@@ -6,19 +6,21 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
-    AccountHandlerTrait};
+    ConfigHandlerTrait};
 use app\forms\MailingForm;
 use app\savers\ModelSaver;
 use app\widgets\{AccountMailingsFormWidget,
     AccountMailingsUnsubscribeWidget};
 use app\models\EmailsMailingsModel;
+use app\finders\{MailingsEmailFinder,
+    MailingsNotEmailFinder};
 
 /**
  * Обрабатывает запрос на добавление подписки
  */
 class AccountSubscriptionsAddRequestHandler extends AbstractBaseHandler
 {
-    use AccountHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * @param $request
@@ -54,12 +56,25 @@ class AccountSubscriptionsAddRequestHandler extends AbstractBaseHandler
                         ]);
                         $saver->save();
                         
+                        $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, [
+                            'email'=>$email
+                        ]);
+                        $mailingsArray = $finder->find();
+                        
+                        $finder = \Yii::$app->registry->get(MailingsNotEmailFinder::class, [
+                            'email'=>$email
+                        ]);
+                        $notMailingsArray = $finder->find();
+                        
+                        $mailingForm = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE_ACC]);
+                        $notMailingForm = new MailingForm(['scenario'=>MailingForm::SAVE_ACC]);
+                        
                         $dataArray = [];
                         
-                        $accountMailingsUnsubscribeWidgetConfig = $this->accountMailingsUnsubscribeWidgetConfig($email);
+                        $accountMailingsUnsubscribeWidgetConfig = $this->accountMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
                         $dataArray['unsubscribe'] = AccountMailingsUnsubscribeWidget::widget($accountMailingsUnsubscribeWidgetConfig);
                         
-                        $accountMailingsFormWidgetConfig = $this->accountMailingsFormWidgetConfig($email);
+                        $accountMailingsFormWidgetConfig = $this->accountMailingsFormWidgetConfig($notMailingsArray, $notMailingForm);
                         $dataArray['subscribe'] = AccountMailingsFormWidget::widget($accountMailingsFormWidgetConfig);
                         
                         $transaction->commit();

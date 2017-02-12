@@ -11,9 +11,11 @@ use app\tests\sources\fixtures\{ColorsFixture,
     ProductsSizesFixture,
     PurchasesFixture,
     SizesFixture};
-use app\models\{CurrencyModel,
+use app\models\{CurrencyInterface,
+    CurrencyModel,
     PurchasesModel};
-use app\forms\AdminChangeOrderForm;
+use app\forms\{AbstractBaseForm,
+    AdminChangeOrderForm};
 
 /**
  * Тестирует класс AdminOrderDetailFormRequestHandler
@@ -21,6 +23,7 @@ use app\forms\AdminChangeOrderForm;
 class AdminOrderDetailFormRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -40,6 +43,8 @@ class AdminOrderDetailFormRequestHandlerTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AdminOrderDetailFormRequestHandler();
     }
     
     /**
@@ -57,11 +62,30 @@ class AdminOrderDetailFormRequestHandlerTests extends TestCase
      */
     public function testAdminOrderDetailFormWidgetConfig()
     {
-        $handler = new AdminOrderDetailFormRequestHandler();
+        $currentCurrencyModel = new class() extends CurrencyModel {};
+        $purchasesModel = new class() extends PurchasesModel {};
+        $statusesArray = [new class() {}];
+        $colorsArray = [new class() {
+            public $id = 1;
+            public $color = 'grey';
+        }];
+        $sizesArray = [new class() {
+            public $id = 1;
+            public $size = 46;
+        }];
+        $deliveriesArray = [new class() {
+            public $id = 1;
+            public $description = 'description';
+        }];
+        $paymentsArray = [new class() {
+            public $id = 1;
+            public $description = 'description';
+        }];
+        $adminChangeOrderForm = new class() extends AbstractBaseForm {};
         
-        $reflection = new \ReflectionMethod($handler, 'adminOrderDetailFormWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'adminOrderDetailFormWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, 1);
+        $result = $reflection->invoke($this->handler, $currentCurrencyModel, $purchasesModel, $statusesArray, $colorsArray, $sizesArray, $deliveriesArray, $paymentsArray, $adminChangeOrderForm);
         
         $this->assertInternalType('array', $result);
         
@@ -76,25 +100,14 @@ class AdminOrderDetailFormRequestHandlerTests extends TestCase
         $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(PurchasesModel::class, $result['purchase']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
         $this->assertInternalType('array', $result['statuses']);
-        $this->assertInstanceOf(AdminChangeOrderForm::class, $result['form']);
         $this->assertInternalType('array', $result['colors']);
         $this->assertInternalType('array', $result['sizes']);
         $this->assertInternalType('array', $result['deliveries']);
         $this->assertInternalType('array', $result['payments']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод AdminOrderDetailFormRequestHandler::handle
-     * если не передан request
-     * @expectedException ErrorException
-     */
-    public function testHandleEmptyRequest()
-    {
-        $handler = new AdminOrderDetailFormRequestHandler();
-        $handler->handle();
     }
     
     /**
@@ -116,8 +129,7 @@ class AdminOrderDetailFormRequestHandlerTests extends TestCase
             }
         };
         
-        $handler = new AdminOrderDetailFormRequestHandler();
-        $reqult = $handler->handle($request);
+        $reqult = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
@@ -140,8 +152,7 @@ class AdminOrderDetailFormRequestHandlerTests extends TestCase
             }
         };
         
-        $handler = new AdminOrderDetailFormRequestHandler();
-        $result = $handler->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
