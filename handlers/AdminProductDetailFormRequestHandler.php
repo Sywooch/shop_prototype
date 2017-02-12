@@ -16,6 +16,7 @@ use app\finders\{BrandsFinder,
     SubcategoryIdCategoryFinder,
     ProductIdFinder,
     SizesFinder};
+use app\models\ProductsModel;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -88,7 +89,7 @@ class AdminProductDetailFormRequestHandler extends AbstractBaseHandler
                     
                     $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
                     
-                    $adminProductDetailFormWidgetConfig = $this->adminProductDetailFormWidgetConfig(ProductsModel $productsModel, $categoriesArray, $subcategoryArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
+                    $adminProductDetailFormWidgetConfig = $this->adminProductDetailFormWidgetConfig($productsModel, $categoriesArray, $subcategoryArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
                     
                     return AdminProductDetailFormWidget::widget($adminProductDetailFormWidgetConfig);
                 }

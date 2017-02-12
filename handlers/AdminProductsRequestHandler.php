@@ -6,10 +6,11 @@ use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
-use app\handlers\AbstractBaseHandler;
-use app\services\{AdminProductsCollectionService,
-    GetCurrentCurrencyModelService};
+use app\handlers\{AbstractBaseHandler,
+    ConfigHandlerTrait};
+use app\services\GetCurrentCurrencyModelService;
 use app\finders\{ActiveStatusesFinder,
+    AdminProductsFinder,
     AdminProductsFiltersSessionFinder,
     BrandsFinder,
     CategoriesFinder,
@@ -19,9 +20,10 @@ use app\finders\{ActiveStatusesFinder,
     SortingTypesFinder,
     SubcategoryIdCategoryFinder};
 use app\helpers\HashHelper;
-use app\forms\{AdminProductForm,
+use app\forms\{AbstractBaseForm,
+    AdminProductForm,
     AdminProductsFiltersForm};
-use app\collections\CollectionInterface;
+use app\models\CurrencyInterface;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -29,6 +31,8 @@ use app\collections\CollectionInterface;
  */
 class AdminProductsRequestHandler extends AbstractBaseHandler
 {
+    use ConfigHandlerTrait;
+    
     /**
      * @var array массив данных для рендеринга
      */
@@ -43,18 +47,97 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
     {
         try {
             if (empty($this->dataArray)) {
-                $service = \Yii::$app->registry->get(AdminProductsCollectionService::class, [
-                    'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]),
-                    'page'=>$request->get(\Yii::$app->params['pagePointer']) ?? 0
+                $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
+                
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
                 ]);
-                $productsCollection = $service->get();
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
+                $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
+                    'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']])
+                ]);
+                $filtersModel = $finder->find();
+                if (empty($filtersModel)) {
+                    throw new ErrorException($this->emptyError('filtersModel'));
+                }
+                
+                $finder = \Yii::$app->registry->get(AdminProductsFinder::class, [
+                    'page'=>$page,
+                    'filters'=>$filtersModel
+                ]);
+                $productsCollection = $finder->find();
+                
+                if ($productsCollection->isEmpty() === true) {
+                    if ($productsCollection->pagination->totalCount > 0) {
+                        throw new NotFoundHttpException($this->error404());
+                    }
+                }
+                
+                $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
+                $sortingFieldsArray = $finder->find();
+                if (empty($sortingFieldsArray)) {
+                    throw new ErrorException($this->emptyError('sortingFieldsArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
+                $sortingTypesArray = $finder->find();
+                if (empty($sortingTypesArray)) {
+                    throw new ErrorException($this->emptyError('sortingTypesArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(ColorsFinder::class);
+                $colorsArray = $finder->find();
+                if (empty($colorsArray)) {
+                    throw new ErrorException($this->emptyError('colorsArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(SizesFinder::class);
+                $sizesArray = $finder->find();
+                if (empty($sizesArray)) {
+                    throw new ErrorException($this->emptyError('sizesArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(BrandsFinder::class);
+                $brandsArray = $finder->find();
+                if (empty($brandsArray)) {
+                    throw new ErrorException($this->emptyError('brandsArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+                $categoriesArray = $finder->find();
+                if (empty($categoriesArray)) {
+                    throw new ErrorException($this->emptyError('categoriesArray'));
+                }
+                
+                if (!empty($filtersModel->category)) {
+                    $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, [
+                        'id_category'=>$filtersModel->category
+                    ]);
+                    $subcategoryArray = $finder->find();
+                    if (empty($subcategoryArray)) {
+                        throw new ErrorException($this->emptyError('subcategoryArray'));
+                    }
+                }
+                
+                $finder = \Yii::$app->registry->get(ActiveStatusesFinder::class);
+                $activeStatusesArray = $finder->find();
+                if (empty($activeStatusesArray)) {
+                    throw new ErrorException($this->emptyError('activeStatusesArray'));
+                }
+                
+                $adminProductsFiltersForm = new AdminProductsFiltersForm($filtersModel->toArray());
+                $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
                 
                 $dataArray = [];
                 
-                $dataArray['adminProductsFiltersWidgetConfig'] = $this->adminProductsFiltersWidgetConfig();
-                $dataArray['adminProductsWidgetConfig'] = $this->adminProductsWidgetConfig($productsCollection);
-                $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection);
-                $dataArray['adminCsvProductsFormWidgetConfig'] = $this->adminCsvProductsFormWidgetConfig($productsCollection);
+                $dataArray['adminProductsFiltersWidgetConfig'] = $this->adminProductsFiltersWidgetConfig($sortingFieldsArray, $sortingTypesArray, $colorsArray, $sizesArray, $brandsArray, $categoriesArray, $subcategoryArray ?? [], $activeStatusesArray, $adminProductsFiltersForm);
+                $dataArray['adminProductsWidgetConfig'] = $this->adminProductsWidgetConfig($productsCollection->asArray(), $currentCurrencyModel, $adminProductForm);
+                $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection->pagination);
+                $dataArray['adminCsvProductsFormWidgetConfig'] = $this->adminCsvProductsFormWidgetConfig($productsCollection->isEmpty() ? false : true);
                 
                 $this->dataArray = $dataArray;
             }
@@ -69,107 +152,68 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AdminProductsFiltersWidget
+     * @param array $sortingFieldsArray
+     * @param array $sortingTypesArray
+     * @param array $colorsArray
+     * @param array $sizesArray
+     * @param array $brandsArray
+     * @param array $subcategoryArray
+     * @param array $activeStatusesArray
+     * @param AbstractBaseForm $adminProductsFiltersForm
      * @return array
      */
-    private function adminProductsFiltersWidgetConfig(): array
+    private function adminProductsFiltersWidgetConfig(array $sortingFieldsArray, array $sortingTypesArray, array $colorsArray, array $sizesArray, array $brandsArray, array $categoriesArray, array $subcategoryArray, array $activeStatusesArray, AbstractBaseForm $adminProductsFiltersForm): array
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
-                'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']])
-            ]);
-            $filtersModel = $finder->find();
-            
-            $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
-            $sortingFieldsArray = $finder->find();
-            if (empty($sortingFieldsArray)) {
-                throw new ErrorException($this->emptyError('sortingFieldsArray'));
-            }
             asort($sortingFieldsArray, SORT_STRING);
             $dataArray['sortingFields'] = $sortingFieldsArray;
             
-            $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
-            $sortingTypesArray = $finder->find();
-            if (empty($sortingTypesArray)) {
-                throw new ErrorException($this->emptyError('sortingTypesArray'));
-            }
             asort($sortingTypesArray, SORT_STRING);
             $dataArray['sortingTypes'] = $sortingTypesArray;
             
-            $finder = \Yii::$app->registry->get(ColorsFinder::class);
-            $colorsArray = $finder->find();
-            if (empty($colorsArray)) {
-                throw new ErrorException($this->emptyError('colorsArray'));
-            }
             ArrayHelper::multisort($colorsArray, 'color');
             $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
             
-            $finder = \Yii::$app->registry->get(SizesFinder::class);
-            $sizesArray = $finder->find();
-            if (empty($sizesArray)) {
-                throw new ErrorException($this->emptyError('sizesArray'));
-            }
             ArrayHelper::multisort($sizesArray, 'size');
             $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
-            $finder = \Yii::$app->registry->get(BrandsFinder::class);
-            $brandsArray = $finder->find();
-            if (empty($brandsArray)) {
-                throw new ErrorException($this->emptyError('brandsArray'));
-            }
             ArrayHelper::multisort($brandsArray, 'brand');
             $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
             
-            $finder = \Yii::$app->registry->get(CategoriesFinder::class);
-            $categoriesArray = $finder->find();
-            if (empty($categoriesArray)) {
-                throw new ErrorException($this->emptyError('categoriesArray'));
-            }
             ArrayHelper::multisort($categoriesArray, 'name');
             $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
             $dataArray['categories'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
             
-            $dataArray['subcategory'] = [\Yii::$app->params['formFiller']];
-            if (!empty($filtersModel->category)) {
-                $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, ['id_category'=>$filtersModel->category]);
-                $subcategoryArray = $finder->find();
-                if (empty($subcategoryArray)) {
-                    throw new ErrorException($this->emptyError('subcategoryArray'));
-                }
+            if (!empty($subcategoryArray)) {
+                ArrayHelper::multisort($subcategoryArray, 'name');
                 $subcategoryArray = ArrayHelper::map($subcategoryArray, 'id', 'name');
-                $dataArray['subcategory'] = ArrayHelper::merge($dataArray['subcategory'], $subcategoryArray);
             }
+            $dataArray['subcategory'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $subcategoryArray);
             
-            $finder = \Yii::$app->registry->get(ActiveStatusesFinder::class);
-            $activeStatusesArray = $finder->find();
-            if (empty($activeStatusesArray)) {
-                throw new ErrorException($this->emptyError('activeStatusesArray'));
-            }
             asort($activeStatusesArray, SORT_STRING);
             $dataArray['activeStatuses'] = $activeStatusesArray;
             
-            $form = new AdminProductsFiltersForm($filtersModel->toArray());
-            
-            if (empty($form->sortingField)) {
+            if (empty($adminProductsFiltersForm->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {
                     if ($key === \Yii::$app->params['sortingField']) {
-                        $form->sortingField = $key;
+                        $adminProductsFiltersForm->sortingField = $key;
                     }
                 }
             }
             
-            if (empty($form->sortingType)) {
+            if (empty($adminProductsFiltersForm->sortingType)) {
                 foreach ($sortingTypesArray as $key=>$val) {
                     if ($key === \Yii::$app->params['sortingType']) {
-                        $form->sortingType = $key;
+                        $adminProductsFiltersForm->sortingType = $key;
                     }
                 }
             }
             
-            $form->url = Url::current();
+            $adminProductsFiltersForm->url = Url::current();
             
-            $dataArray['form'] = $form;
+            $dataArray['form'] = $adminProductsFiltersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'admin-products-filters.twig';
             
@@ -181,58 +225,21 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AdminProductsWidget
-     * @param CollectionInterface $productsCollection
+     * @param array $productsArray
+     * @param CurrencyInterface $currentCurrencyModel
+     * @param AbstractBaseForm $adminProductForm
      * @return array
      */
-    private function adminProductsWidgetConfig(CollectionInterface $productsCollection): array
+    private function adminProductsWidgetConfig(array $productsArray, CurrencyInterface $currentCurrencyModel, AbstractBaseForm $adminProductForm): array
     {
         try {
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Products');
-            
-            if ($productsCollection->isEmpty() === true) {
-                if ($productsCollection->pagination->totalCount > 0) {
-                    throw new NotFoundHttpException($this->error404());
-                }
-            }
-            
-            $dataArray['products'] = $productsCollection->asArray();
-            
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
-                'key'=>HashHelper::createCurrencyKey()
-            ]);
-            $dataArray['currency'] = $service->get();
-            
-            $dataArray['form'] = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+            $dataArray['products'] = $productsArray;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['form'] = $adminProductForm;
             $dataArray['template'] = 'admin-products.twig';
-            
-            return $dataArray;
-        } catch (NotFoundHttpException $e) {
-            throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета PaginationWidget
-     * @param CollectionInterface $productsCollection
-     * @return array
-     */
-    private function paginationWidgetConfig(CollectionInterface $productsCollection): array
-    {
-        try {
-            $dataArray = [];
-            
-            $pagination = $productsCollection->pagination;
-            
-            if (empty($pagination)) {
-                throw new ErrorException($this->emptyError('pagination'));
-            }
-            
-            $dataArray['pagination'] = $pagination;
-            $dataArray['template'] = 'pagination.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -242,17 +249,17 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AdminCsvProductsFormWidget
-     * @param CollectionInterface $productsCollection
+     * @param bool $isAllowed
      * @return array
      */
-    private function adminCsvProductsFormWidgetConfig(CollectionInterface $productsCollection): array
+    private function adminCsvProductsFormWidgetConfig(bool $isAllowed): array
     {
         try {
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Download selected products in csv format');
             $dataArray['template'] = 'admin-csv-products-form.twig';
-            $dataArray['isAllowed'] = $productsCollection->isEmpty() ? false : true;
+            $dataArray['isAllowed'] = $isAllowed;
             
             return $dataArray;
         } catch (\Throwable $t) {

@@ -14,7 +14,8 @@ use app\tests\sources\fixtures\{BrandsFixture,
     SizesFixture,
     SubcategoryFixture};
 use app\models\ProductsModel;
-use app\forms\AdminProductForm;
+use app\forms\{AbstractBaseForm,
+    AdminProductForm};
 
 /**
  * Тестирует класс AdminProductDetailFormRequestHandler
@@ -22,6 +23,7 @@ use app\forms\AdminProductForm;
 class AdminProductDetailFormRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -43,6 +45,8 @@ class AdminProductDetailFormRequestHandlerTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AdminProductDetailFormRequestHandler();
     }
     
     /**
@@ -60,11 +64,32 @@ class AdminProductDetailFormRequestHandlerTests extends TestCase
      */
     public function testAdminProductDetailFormWidgetConfig()
     {
-        $handler = new AdminProductDetailFormRequestHandler();
+        $productsModel = new class() extends ProductsModel {};
+        $categoriesArray = [new class() {
+            public $id = 1;
+            public $name = 'category';
+        }];
+        $subcategoryArray = [new class() {
+            public $id = 1;
+            public $name = 'subcategory';
+        }];
+        $colorsArray = [new class() {
+            public $id = 1;
+            public $color = 'color';
+        }];
+        $sizesArray = [new class() {
+            public $id = 1;
+            public $size = 'size';
+        }];
+        $brandsArray = [new class() {
+            public $id = 1;
+            public $brand = 'brand';
+        }];
+        $adminProductForm = new class() extends AbstractBaseForm {};
         
-        $reflection = new \ReflectionMethod($handler, 'adminProductDetailFormWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'adminProductDetailFormWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, 1);
+        $result = $reflection->invoke($this->handler, $productsModel, $categoriesArray, $subcategoryArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
         
         $this->assertInternalType('array', $result);
         
@@ -83,25 +108,13 @@ class AdminProductDetailFormRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['colors']);
         $this->assertInternalType('array', $result['sizes']);
         $this->assertInternalType('array', $result['brands']);
-        $this->assertInstanceOf(AdminProductForm::class, $result['form']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
     }
     
     /**
      * Тестирует метод AdminProductDetailFormRequestHandler::handle
-     * если не передан request
-     * @expectedException ErrorException
-     */
-    public function testHandleEmptyRequest()
-    {
-        $handler = new AdminProductDetailFormRequestHandler();
-        $handler->handle();
-    }
-    
-    /**
-     * Тестирует метод AdminProductDetailFormRequestHandler::handle
      * если пуста форма
-     * @expectedException ErrorException
      */
     public function testHandleEmptyForm()
     {
@@ -117,8 +130,7 @@ class AdminProductDetailFormRequestHandlerTests extends TestCase
             }
         };
         
-        $handler = new AdminProductDetailFormRequestHandler();
-        $reqult = $handler->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
@@ -141,8 +153,7 @@ class AdminProductDetailFormRequestHandlerTests extends TestCase
             }
         };
         
-        $handler = new AdminProductDetailFormRequestHandler();
-        $result = $handler->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
