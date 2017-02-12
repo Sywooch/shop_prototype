@@ -7,7 +7,8 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\handlers\AbstractBaseHandler;
-use app\forms\AdminProductForm;
+use app\forms\{AbstractBaseForm,
+    AdminProductForm};
 use app\widgets\AdminProductDetailFormWidget;
 use app\finders\{BrandsFinder,
     CategoriesFinder,
@@ -45,7 +46,49 @@ class AdminProductDetailFormRequestHandler extends AbstractBaseHandler
                         return $errors;
                     }
                     
-                    $adminProductDetailFormWidgetConfig = $this->adminProductDetailFormWidgetConfig($form->id);
+                    $finder = \Yii::$app->registry->get(ProductIdFinder::class, [
+                        'id'=>$form->id
+                    ]);
+                    $productsModel = $finder->find();
+                    if (empty($productsModel)) {
+                        throw new ErrorException($this->emptyError('productsModel'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+                    $categoriesArray = $finder->find();
+                    if (empty($categoriesArray)) {
+                        throw new ErrorException($this->emptyError('categoriesArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, [
+                        'id_category'=>$productsModel->id_category
+                    ]);
+                    $subcategoryArray = $finder->find();
+                    if (empty($subcategoryArray)) {
+                        throw new ErrorException($this->emptyError('subcategoryArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(ColorsFinder::class);
+                    $colorsArray = $finder->find();
+                    if (empty($colorsArray)) {
+                        throw new ErrorException($this->emptyError('colorsArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(SizesFinder::class);
+                    $sizesArray = $finder->find();
+                    if (empty($sizesArray)) {
+                        throw new ErrorException($this->emptyError('sizesArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(BrandsFinder::class);
+                    $brandsArray = $finder->find();
+                    if (empty($brandsArray)) {
+                        throw new ErrorException($this->emptyError('brandsArray'));
+                    }
+                    
+                    $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
+                    
+                    $adminProductDetailFormWidgetConfig = $this->adminProductDetailFormWidgetConfig(ProductsModel $productsModel, $categoriesArray, $subcategoryArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
                     
                     return AdminProductDetailFormWidget::widget($adminProductDetailFormWidgetConfig);
                 }
@@ -57,67 +100,39 @@ class AdminProductDetailFormRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AdminProductDetailFormWidget
-     * @param int $id товар, для которого надо вернуть форму редактирования
+     * @param ProductsModel $productsModel
+     * @param array $categoriesArray
+     * @param array $subcategoryArray
+     * @param array $colorsArray
+     * @param array $sizesArray
+     * @param array $brandsArray
+     * @param AbstractBaseForm $adminProductForm
      * @return array
      */
-    private function adminProductDetailFormWidgetConfig(int $id)
+    private function adminProductDetailFormWidgetConfig(ProductsModel $productsModel, array $categoriesArray, array $subcategoryArray, array $colorsArray, array $sizesArray, array $brandsArray, AbstractBaseForm $adminProductForm)
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(ProductIdFinder::class, [
-                'id'=>$id
-            ]);
-            $productsModel = $finder->find();
-            if (empty($productsModel)) {
-                throw new ErrorException($this->emptyError('productsModel'));
-            }
             $dataArray['product'] = $productsModel;
             
-            $finder = \Yii::$app->registry->get(CategoriesFinder::class);
-            $categoriesArray = $finder->find();
-            if (empty($categoriesArray)) {
-                throw new ErrorException($this->emptyError('categoriesArray'));
-            }
             ArrayHelper::multisort($categoriesArray, 'name');
             $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
             $dataArray['categories'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
             
-            $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, [
-                'id_category'=>$productsModel->id_category
-            ]);
-            $subcategoryArray = $finder->find();
-            if (empty($subcategoryArray)) {
-                throw new ErrorException($this->emptyError('subcategoryArray'));
-            }
             $subcategoryArray = ArrayHelper::map($subcategoryArray, 'id', 'name');
             $dataArray['subcategory'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $subcategoryArray);
             
-            $finder = \Yii::$app->registry->get(ColorsFinder::class);
-            $colorsArray = $finder->find();
-            if (empty($colorsArray)) {
-                throw new ErrorException($this->emptyError('colorsArray'));
-            }
             ArrayHelper::multisort($colorsArray, 'color');
             $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
             
-            $finder = \Yii::$app->registry->get(SizesFinder::class);
-            $sizesArray = $finder->find();
-            if (empty($sizesArray)) {
-                throw new ErrorException($this->emptyError('sizesArray'));
-            }
             ArrayHelper::multisort($sizesArray, 'size');
             $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
-            $finder = \Yii::$app->registry->get(BrandsFinder::class);
-            $brandsArray = $finder->find();
-            if (empty($brandsArray)) {
-                throw new ErrorException($this->emptyError('brandsArray'));
-            }
             ArrayHelper::multisort($brandsArray, 'brand');
             $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
             
-            $dataArray['form'] = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
+            $dataArray['form'] = $adminProductForm;
             $dataArray['template'] = 'admin-product-detail-form.twig';
             
             return $dataArray;

@@ -4,7 +4,6 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
-use yii\helpers\Url;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
 use app\finders\{AccountOrdersFinder,
@@ -14,9 +13,7 @@ use app\finders\{AccountOrdersFinder,
 use app\forms\{AbstractBaseForm,
     OrdersFiltersForm,
     PurchaseForm};
-use app\helpers\{DateHelper,
-    HashHelper};
-use app\collections\PaginationInterface;
+use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
 use app\models\CurrencyInterface;
 
@@ -63,10 +60,10 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
                     'page'=>$page,
                     'filters'=>$filtersModel
                 ]);
-                $purchasesCollection = $finder->find();
+                $ordersCollection = $finder->find();
                 
-                if ($purchasesCollection->isEmpty() === true) {
-                    if ($purchasesCollection->pagination->totalCount > 0) {
+                if ($ordersCollection->isEmpty() === true) {
+                    if ($ordersCollection->pagination->totalCount > 0) {
                         throw new NotFoundHttpException($this->error404());
                     }
                 }
@@ -89,8 +86,8 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
                 $dataArray = [];
                 
                 $dataArray['оrdersFiltersWidgetConfig'] = $this->оrdersFiltersWidgetConfig($sortingTypesArray, $statusesArray, $ordersFiltersForm);
-                $dataArray['accountOrdersWidgetConfig'] = $this->accountOrdersWidgetConfig($purchasesCollection->asArray(), $purchaseForm, $currentCurrencyModel);
-                $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($purchasesCollection->pagination);
+                $dataArray['accountOrdersWidgetConfig'] = $this->accountOrdersWidgetConfig($ordersCollection->asArray(), $purchaseForm, $currentCurrencyModel);
+                $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($ordersCollection->pagination);
                 
                 $this->dataArray = $dataArray;
             }
@@ -104,54 +101,10 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Возвращает массив конфигурации для виджета OrdersFiltersWidget
-     * @param array $sortingTypesArray
-     * @param array $statusesArray
-     * @param AbstractBaseForm $ordersFiltersForm
-     * @return array
-     */
-    private function оrdersFiltersWidgetConfig(array $sortingTypesArray, array $statusesArray, AbstractBaseForm $ordersFiltersForm): array
-    {
-        try {
-            $dataArray = [];
-            
-            asort($sortingTypesArray, SORT_STRING);
-            $dataArray['sortingTypes'] = $sortingTypesArray;
-            
-            asort($statusesArray,SORT_STRING);
-            array_unshift($statusesArray, \Yii::$app->params['formFiller']);
-            $dataArray['statuses'] = $statusesArray;
-            
-            if (empty($ordersFiltersForm->sortingType)) {
-                foreach ($sortingTypesArray as $key=>$val) {
-                    if ($key === \Yii::$app->params['sortingType']) {
-                        $ordersFiltersForm->sortingType = $key;
-                    }
-                }
-            }
-            if (empty($ordersFiltersForm->dateFrom)) {
-                $ordersFiltersForm->dateFrom = DateHelper::getToday00();
-            }
-            if (empty($ordersFiltersForm->dateTo)) {
-                $ordersFiltersForm->dateTo = DateHelper::getToday00();
-            }
-            
-            $ordersFiltersForm->url = Url::current();
-            
-            $dataArray['form'] = $ordersFiltersForm;
-            $dataArray['header'] = \Yii::t('base', 'Filters');
-            $dataArray['template'] = 'orders-filters.twig';
-            
-            return $dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Возвращает массив конфигурации для виджета AccountOrdersWidget
      * @param array $ordersArray массив PurchasesModel
      * @patram AbstractBaseForm $purchaseForm
+     * @param CurrencyInterface $currentCurrencyModel
      * @return array
      */
     private function accountOrdersWidgetConfig(array $ordersArray, AbstractBaseForm $purchaseForm, CurrencyInterface $currentCurrencyModel): array
@@ -164,25 +117,6 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
             $dataArray['currency'] = $currentCurrencyModel;
             $dataArray['form'] = $purchaseForm;
             $dataArray['template'] = 'account-orders.twig';
-            
-            return $dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета PaginationWidget
-     * @param PaginationInterface $pagination
-     * @return array
-     */
-    private function paginationWidgetConfig(PaginationInterface $pagination): array
-    {
-        try {
-            $dataArray = [];
-            
-            $dataArray['pagination'] = $pagination;
-            $dataArray['template'] = 'pagination.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

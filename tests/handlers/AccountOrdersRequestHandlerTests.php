@@ -62,39 +62,6 @@ class AccountOrdersRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountOrdersRequestHandler::оrdersFiltersWidgetConfig
-     */
-    public function testOrdersFiltersWidgetConfig()
-    {
-        $sortingTypesArray = [new class() {}];
-        $statusesArray = [new class() {}];
-        $ordersFiltersForm = new class() extends AbstractBaseForm {
-            public $sortingType;
-            public $dateFrom;
-            public $dateTo;
-            public $url;
-        };
-        
-        $reflection = new \ReflectionMethod($this->handler, 'оrdersFiltersWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $sortingTypesArray, $statusesArray, $ordersFiltersForm);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayhasKey('sortingTypes', $result);
-        $this->assertArrayhasKey('statuses', $result);
-        $this->assertArrayhasKey('form', $result);
-        $this->assertArrayhasKey('header', $result);
-        $this->assertArrayhasKey('template', $result);
-        
-        $this->assertInternalType('array', $result['sortingTypes']);
-        $this->assertInternalType('array', $result['statuses']);
-        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
-        $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
      * Тестирует метод AccountOrdersRequestHandler::accountOrdersWidgetConfig
      */
     public function testAccountOrdersWidgetConfig()
@@ -119,26 +86,6 @@ class AccountOrdersRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['purchases']);
         $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
         $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
-        $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод AccountOrdersRequestHandler::paginationWidgetConfig
-     */
-    public function testPaginationWidgetConfig()
-    {
-        $pagination = new class extends LightPagination {};
-        
-        $reflection = new \ReflectionMethod($this->handler, 'paginationWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $pagination);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayhasKey('pagination', $result);
-        $this->assertArrayhasKey('template', $result);
-        
-        $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
         $this->assertInternalType('string', $result['template']);
     }
     

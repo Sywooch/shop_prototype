@@ -12,6 +12,8 @@ use app\models\{CategoriesModel,
     CurrencyInterface,
     CurrencyModel};
 use app\collections\{CollectionInterface,
+    LightPagination,
+    PaginationInterface,
     PurchasesCollection,
     PurchasesCollectionInterface};
 use app\forms\AbstractBaseForm;
@@ -196,6 +198,59 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('array', $result['mailings']);
         $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersRequestHandler::оrdersFiltersWidgetConfig
+     */
+    public function testOrdersFiltersWidgetConfig()
+    {
+        $sortingTypesArray = [new class() {}];
+        $statusesArray = [new class() {}];
+        $ordersFiltersForm = new class() extends AbstractBaseForm {
+            public $sortingType;
+            public $dateFrom;
+            public $dateTo;
+            public $url;
+        };
+        
+        $reflection = new \ReflectionMethod($this->handler, 'оrdersFiltersWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $sortingTypesArray, $statusesArray, $ordersFiltersForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('sortingTypes', $result);
+        $this->assertArrayhasKey('statuses', $result);
+        $this->assertArrayhasKey('form', $result);
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['sortingTypes']);
+        $this->assertInternalType('array', $result['statuses']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersRequestHandler::paginationWidgetConfig
+     */
+    public function testPaginationWidgetConfig()
+    {
+        $pagination = new class() extends LightPagination {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'paginationWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $pagination);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('pagination', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
         $this->assertInternalType('string', $result['template']);
     }
     

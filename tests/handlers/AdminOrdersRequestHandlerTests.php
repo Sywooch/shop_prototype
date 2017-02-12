@@ -7,14 +7,16 @@ use app\handlers\AdminOrdersRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     PurchasesFixture};
-use app\forms\{AdminChangeOrderForm,
+use app\forms\{AbstractBaseForm,
+    AdminChangeOrderForm,
     OrdersFiltersForm};
 use app\filters\OrdersFilters;
 use app\controllers\AdminController;
 use app\collections\{LightPagination,
     PaginationInterface,
     PurchasesCollection};
-use app\models\CurrencyModel;
+use app\models\{CurrencyInterface,
+    CurrencyModel};
 
 /**
  * Тестирует класс AdminOrdersRequestHandler
@@ -22,6 +24,7 @@ use app\models\CurrencyModel;
 class AdminOrdersRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -39,6 +42,8 @@ class AdminOrdersRequestHandlerTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new AdminOrdersRequestHandler();
     }
     
     /**
@@ -51,127 +56,15 @@ class AdminOrdersRequestHandlerTests extends TestCase
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
-    /**
-     * Тестирует метод AdminOrdersRequestHandler::оrdersFiltersWidgetConfig
-     */
-    public function testOrdersFiltersWidgetConfig()
-    {
-        $filters = new class() extends OrdersFilters {};
-        
-        $handler = new AdminOrdersRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'оrdersFiltersWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $filters);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('sortingTypes', $result);
-        $this->assertArrayHasKey('statuses', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('template', $result);
-        
-        $this->assertInternalType('array', $result['sortingTypes']);
-        $this->assertInternalType('array', $result['statuses']);
-        $this->assertInstanceOf(OrdersFiltersForm::class, $result['form']);
-        $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод AdminOrdersRequestHandler::adminOrdersWidgetConfig
-     * если заказов нет
-     */
-    public function testAdminOrdersWidgetConfigEmptyOrders()
-    {
-        $collection = new class() extends PurchasesCollection {
-            public $pagination;
-            public function __construct()
-            {
-                $this->pagination = new class() {
-                    public $totalCount = 0;
-                };
-            }
-            public function isEmpty()
-            {
-                return true;
-            }
-        };
-        
-        $handler = new AdminOrdersRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'adminOrdersWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $collection);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('purchases', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('template', $result);
-        
-        $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('array', $result['purchases']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInstanceOf(AdminChangeOrderForm::class, $result['form']);
-        $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод AdminOrdersRequestHandler::adminOrdersWidgetConfig
-     * если передана несуществующая страница
-     * @expectedException yii\web\NotFoundHttpException
-     */
-    public function testAdminOrdersWidgetConfigNotPage()
-    {
-        $collection = new class() extends PurchasesCollection {
-            public $pagination;
-            public function __construct()
-            {
-                $this->pagination = new class() {
-                    public $totalCount = 10;
-                };
-            }
-            public function isEmpty()
-            {
-                return true;
-            }
-        };
-        
-        $handler = new AdminOrdersRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'adminOrdersWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $collection);
-    }
-    
-    /**
-     * Тестирует метод AdminOrdersRequestHandler::adminOrdersWidgetConfig
-     */
     public function testAdminOrdersWidgetConfig()
     {
-        $collection = new class() extends PurchasesCollection {
-            public $pagination;
-            public function __construct()
-            {
-                $this->pagination = new class() {
-                    public $totalCount = 2;
-                };
-            }
-            public function isEmpty()
-            {
-                return false;
-            }
-        };
+        $ordersArray = [new class() {}];
+        $adminChangeOrderForm = new class() extends AbstractBaseForm {};
+        $currentCurrencyModel = new class() extends CurrencyModel {};
         
-        $handler = new AdminOrdersRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'adminOrdersWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'adminOrdersWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $collection);
+        $result = $reflection->invoke($this->handler, $ordersArray, $adminChangeOrderForm, $currentCurrencyModel);
         
         $this->assertInternalType('array', $result);
         
@@ -183,30 +76,8 @@ class AdminOrdersRequestHandlerTests extends TestCase
         
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('array', $result['purchases']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInstanceOf(AdminChangeOrderForm::class, $result['form']);
-        $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод AdminOrdersRequestHandler::paginationWidgetConfig
-     */
-    public function testPaginationWidgetConfig()
-    {
-        $pagination = new class() extends LightPagination {};
-        
-        $handler = new AdminOrdersRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'paginationWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $pagination);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('pagination', $result);
-        $this->assertArrayHasKey('template', $result);
-        
-        $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
+        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
     }
     
@@ -215,11 +86,9 @@ class AdminOrdersRequestHandlerTests extends TestCase
      */
     public function testAdminCsvOrdersFormWidgetConfig()
     {
-        $handler = new AdminOrdersRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'adminCsvOrdersFormWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'adminCsvOrdersFormWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler);
+        $result = $reflection->invoke($this->handler);
         
         $this->assertInternalType('array', $result);
         
@@ -228,6 +97,33 @@ class AdminOrdersRequestHandlerTests extends TestCase
         
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод AdminOrdersRequestHandler::handle
+     */
+    public function testHandle()
+    {
+        $request = new class() {
+            public function get($name=null, $defaultValue=null)
+            {
+                return null;
+            }
+        };
+        
+        $result = $this->handler->handle($request);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('оrdersFiltersWidgetConfig', $result);
+        $this->assertArrayHasKey('adminOrdersWidgetConfig', $result);
+        $this->assertArrayHasKey('paginationWidgetConfig', $result);
+        $this->assertArrayHasKey('adminCsvOrdersFormWidgetConfig', $result);
+        
+        $this->assertInternalType('array', $result['оrdersFiltersWidgetConfig']);
+        $this->assertInternalType('array', $result['adminOrdersWidgetConfig']);
+        $this->assertInternalType('array', $result['paginationWidgetConfig']);
+        $this->assertInternalType('array', $result['adminCsvOrdersFormWidgetConfig']);
     }
     
     public static function tearDownAfterClass()
