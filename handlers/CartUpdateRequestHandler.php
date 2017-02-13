@@ -6,8 +6,7 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait,
-    CartHandlerTrait};
+    ConfigHandlerTrait};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
@@ -15,13 +14,14 @@ use app\finders\PurchasesSessionFinder;
 use app\widgets\{CartWidget,
     ShortCartRedirectWidget};
 use app\models\PurchasesModel;
+use app\services\GetCurrentCurrencyModelService;
 
 /**
  * Обрабатывает запрос на обновление данных покупки
  */
 class CartUpdateRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait, CartHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * Обрабатывает запрос на сохранение новой покупки в корзине
@@ -41,13 +41,20 @@ class CartUpdateRequestHandler extends AbstractBaseHandler
                         return $errors;
                     }
                     
+                    $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                        'key'=>HashHelper::createCurrencyKey()
+                    ]);
+                    $currentCurrencyModel = $service->get();
+                    if (empty($currentCurrencyModel)) {
+                        throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                    }
+                    
                     $key = HashHelper::createCartKey();
-                    $currentCurrencyModel = $this->getCurrentCurrency();
                     
                     $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
                         'key'=>$key
                     ]);
-                    $purchasesCollection = $finder->find();
+                    $ordersCollection = $finder->find();
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE]);
                     $rawPurchasesModel->quantity = $form->quantity;
@@ -58,20 +65,23 @@ class CartUpdateRequestHandler extends AbstractBaseHandler
                         throw new ErrorException($this->modelError($rawPurchasesModel->errors));
                     }
                     
-                    $purchasesCollection->update($rawPurchasesModel);
+                    $ordersCollection->update($rawPurchasesModel);
                     
                     $saver = new SessionArraySaver([
                         'key'=>$key,
-                        'models'=>$purchasesCollection->asArray()
+                        'models'=>$ordersCollection->asArray()
                     ]);
                     $saver->save();
                     
+                    $updateForm = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]);
+                    $deleteForm = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
+                    
                     $dataArray = [];
                     
-                    $cartWidgetConfig = $this->cartWidgetConfig($purchasesCollection, $currentCurrencyModel);
+                    $cartWidgetConfig = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $updateForm, $deleteForm);
                     $dataArray['items'] = CartWidget::widget($cartWidgetConfig);
                     
-                    $shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($purchasesCollection, $currentCurrencyModel);
+                    $shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
                     $dataArray['shortCart'] = ShortCartRedirectWidget::widget($shortCartRedirectWidgetConfig);
                     
                     return $dataArray;

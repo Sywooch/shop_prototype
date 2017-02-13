@@ -77,14 +77,14 @@ class ProductDetailIndexRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод ProductDetailIndexRequestHandler::purchaseFormWidgetConfig
+     * Тестирует метод ProductDetailIndexRequestHandler::orderFormWidgetConfig
      */
-    public function testPurchaseFormWidgetConfig()
+    public function testOrderFormWidgetConfig()
     {
         $productsModel = new class() extends ProductsModel {};
         $purchaseForm = new class() extends AbstractBaseForm {};
         
-        $reflection = new \ReflectionMethod($this->handler, 'purchaseFormWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'orderFormWidgetConfig');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($this->handler, $productsModel, $purchaseForm);
         

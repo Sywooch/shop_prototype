@@ -7,19 +7,24 @@ use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait,
-    BaseFrontendHandlerTrait,
-    ProductsListHandlerTrait};
+    ConfigHandlerTrait};
 use app\finders\{BrandsFilterFinder,
+    CategoriesFinder,
     CategorySeocodeFinder,
     ColorsFilterFinder,
+    CurrencyFinder,
     ProductsFinder,
+    ProductsFiltersSessionFinder,
+    PurchasesSessionFinder,
     SizesFilterFinder,
     SortingFieldsFinder,
     SortingTypesFinder,
     SubcategorySeocodeFinder};
-use app\forms\FiltersForm;
-use app\filters\ProductsFiltersInterface;
+use app\forms\{AbstractBaseForm,
+    ChangeCurrencyForm,
+    FiltersForm};
+use app\services\GetCurrentCurrencyModelService;
+use app\helpers\HashHelper;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -27,7 +32,7 @@ use app\filters\ProductsFiltersInterface;
  */
 class ProductsListIndexRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait, BaseFrontendHandlerTrait, ProductsListHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * @var array массив данных для рендеринга
@@ -47,9 +52,23 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 $subcategory = $request->get(\Yii::$app->params['subcategoryKey']) ?? '';
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
                 
-                $currentCurrencyModel = $this->getCurrentCurrency();
-                $filtersModel = $this->getProductsFilters();
-                $ordersCollection = $this->getOrdersSessionCollection();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
+                $finder = \Yii::$app->registry->get(ProductsFiltersSessionFinder::class, [
+                    'key'=>HashHelper::createFiltersKey(Url::current())
+                ]);
+                $filtersModel = $finder->find();
+                
+                $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
+                    'key'=>HashHelper::createCartKey()
+                ]);
+                $ordersCollection = $finder->find();
                 
                 $finder = \Yii::$app->registry->get(ProductsFinder::class, [
                     'category'=>$category,
@@ -59,15 +78,91 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 ]);
                 $productsCollection = $finder->find();
                 
-                $dataArray = [];
+                $finder = \Yii::$app->registry->get(CurrencyFinder::class);
+                $currencyArray = $finder->find();
+                if (empty($currencyArray)) {
+                    throw new ErrorException($this->emptyError('currencyArray'));
+                }
                 
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig();
-                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
-                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
-                $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
-                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig();
-                $dataArray['categoriesBreadcrumbsWidgetConfig'] = $this->categoriesBreadcrumbsWidgetConfig($category, $subcategory);
-                $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($category, $subcategory, $filtersModel);
+                $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+                $categoriesModelArray = $finder->find();
+                if (empty($categoriesModelArray)) {
+                    throw new ErrorException($this->emptyError('categoriesModelArray'));
+                }
+                
+                if (!empty($category)) {
+                    $finder = \Yii::$app->registry->get(CategorySeocodeFinder::class, [
+                        'seocode'=>$category
+                    ]);
+                    $categoriesModel = $finder->find();
+                    if (empty($categoriesModel)) {
+                        throw new ErrorException($this->emptyError('categoriesModel'));
+                    }
+                    if (!empty($subcategory)) {
+                        $finder = \Yii::$app->registry->get(SubcategorySeocodeFinder::class, [
+                            'seocode'=>$subcategory
+                        ]);
+                        $subcategoryModel = $finder->find();
+                        if (empty($subcategoryModel)) {
+                            throw new ErrorException($this->emptyError('subcategoryModel'));
+                        }
+                    }
+                }
+                
+                $finder = \Yii::$app->registry->get(ColorsFilterFinder::class, [
+                    'category'=>$category, 
+                    'subcategory'=>$subcategory
+                ]);
+                $colorsArray = $finder->find();
+                if (empty($colorsArray)) {
+                    throw new ErrorException($this->emptyError('colorsArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(SizesFilterFinder::class, [
+                    'category'=>$category, 
+                    'subcategory'=>$subcategory
+                ]);
+                $sizesArray = $finder->find();
+                if (empty($sizesArray)) {
+                    throw new ErrorException($this->emptyError('sizesArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(BrandsFilterFinder::class, [
+                    'category'=>$category, 
+                    'subcategory'=>$subcategory
+                ]);
+                $brandsArray = $finder->find();
+                if (empty($brandsArray)) {
+                    throw new ErrorException($this->emptyError('brandsArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
+                $sortingFieldsArray = $finder->find();
+                if (empty($sortingFieldsArray)) {
+                    throw new ErrorException($this->emptyError('sortingFieldsArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
+                $sortingTypesArray = $finder->find();
+                if (empty($sortingTypesArray)) {
+                    throw new ErrorException($this->emptyError('sortingTypesArray'));
+                }
+                
+                $filtersFormConfig = [
+                    'scenario'=>FiltersForm::SAVE, 
+                    'url'=>Url::current(),
+                    'category'=>$category,
+                    'subcategory'=>$subcategory
+                ];
+                $filtersForm = new FiltersForm(array_merge($filtersFormConfig, array_filter($filtersModel->toArray())));
+                
+                $changeCurrencyForm = new ChangeCurrencyForm([
+                    'scenario'=>ChangeCurrencyForm::SET,
+                    'id'=>$currentCurrencyModel->id,
+                    'url'=>Url::current()
+                ]);
+                
+                $dataArray = [];
                 
                 if ($productsCollection->isEmpty() === true) {
                     if ($productsCollection->pagination->totalCount > 0) {
@@ -76,8 +171,16 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     $dataArray['emptyProductsWidgetConfig'] = $this->emptyProductsWidgetConfig();
                 } else {
                     $dataArray['productsWidgetConfig'] = $this->productsWidgetConfig($productsCollection, $currentCurrencyModel);
-                    $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection);
+                    $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection->pagination);
                 }
+                
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
+                $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
+                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
+                $dataArray['categoriesBreadcrumbsWidgetConfig'] = $this->categoriesBreadcrumbsWidgetConfig($categoriesModel ?? null, $subcategoryModel ?? null);
+                $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($colorsArray, $sizesArray, $brandsArray, $sortingFieldsArray, $sortingTypesArray, $filtersForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -92,35 +195,21 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета CategoriesBreadcrumbsWidget
-     * @param string $category сеокод категории
-     * @param string $subcategory сеокод подкатегории
+     * @param mixed $categoriesModel
+     * @param mixed $subcategoryModel
      * @return array
      */
-    private function categoriesBreadcrumbsWidgetConfig(string $category='', string $subcategory=''): array
+    private function categoriesBreadcrumbsWidgetConfig($categoriesModel, $subcategoryModel): array
     {
         try {
             $dataArray = [];
             
-            if (!empty($category)) {
-                $finder = \Yii::$app->registry->get(CategorySeocodeFinder::class, [
-                    'seocode'=>$category
-                ]);
-                $categoryModel = $finder->find();
-                if (empty($categoryModel)) {
-                    throw new ErrorException($this->emptyError('categoryModel'));
-                }
-                $dataArray['category'] = $categoryModel;
-                
-                if (!empty($subcategory)) {
-                    $finder = \Yii::$app->registry->get(SubcategorySeocodeFinder::class, [
-                        'seocode'=>$subcategory
-                    ]);
-                    $subcategoryModel = $finder->find();
-                    if (empty($subcategoryModel)) {
-                        throw new ErrorException($this->emptyError('subcategoryModel'));
-                    }
-                    $dataArray['subcategory'] = $subcategoryModel;
-                }
+            if (!empty($categoriesModel)) {
+                $dataArray['category'] = $categoriesModel;
+            }
+            
+            if (!empty($subcategoryModel)) {
+                $dataArray['subcategory'] = $subcategoryModel;
             }
             
             return $dataArray;
@@ -131,90 +220,50 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета FiltersWidget
-     * @param string $category сеокод категории
-     * @param string $subcategory сеокод подкатегории
-     * @param ProductsFiltersInterface $filtersModel
+     * @param array $colorsArray
+     * @param array $sizesArray
+     * @param array $brandsArray
+     * @param array $sortingFieldsArray
+     * @param array $sortingTypesArray
+     * @param AbstractBaseForm $filtersForm
      * @return array
      */
-    private function filtersWidgetConfig(string $category='', string $subcategory='', ProductsFiltersInterface $filtersModel): array
+    private function filtersWidgetConfig(array $colorsArray, array $sizesArray, array $brandsArray, array $sortingFieldsArray, array $sortingTypesArray, AbstractBaseForm $filtersForm): array
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(ColorsFilterFinder::class, [
-                'category'=>$category, 
-                'subcategory'=>$subcategory
-            ]);
-            $colorsArray = $finder->find();
-            if (empty($colorsArray)) {
-                throw new ErrorException($this->emptyError('colorsArray'));
-            }
             ArrayHelper::multisort($colorsArray, 'color');
             $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
             
-            $finder = \Yii::$app->registry->get(SizesFilterFinder::class, [
-                'category'=>$category, 
-                'subcategory'=>$subcategory
-            ]);
-            $sizesArray = $finder->find();
-            if (empty($sizesArray)) {
-                throw new ErrorException($this->emptyError('sizesArray'));
-            }
             ArrayHelper::multisort($sizesArray, 'size');
             $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
-            $finder = \Yii::$app->registry->get(BrandsFilterFinder::class, [
-                'category'=>$category, 
-                'subcategory'=>$subcategory
-            ]);
-            $brandsArray = $finder->find();
-            if (empty($brandsArray)) {
-                throw new ErrorException($this->emptyError('brandsArray'));
-            }
             ArrayHelper::multisort($brandsArray, 'brand');
             $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
             
-            $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
-            $sortingFieldsArray = $finder->find();
-            if (empty($sortingFieldsArray)) {
-                throw new ErrorException($this->emptyError('sortingFieldsArray'));
-            }
             asort($sortingFieldsArray, SORT_STRING);
             $dataArray['sortingFields'] = $sortingFieldsArray;
             
-            $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
-            $sortingTypesArray = $finder->find();
-            if (empty($sortingTypesArray)) {
-                throw new ErrorException($this->emptyError('sortingTypesArray'));
-            }
             asort($sortingTypesArray, SORT_STRING);
             $dataArray['sortingTypes'] = $sortingTypesArray;
             
-            $filtersFormConfig = [
-                'scenario'=>FiltersForm::SAVE, 
-                'url'=>Url::current(),
-                'category'=>$category,
-                'subcategory'=>$subcategory
-            ];
-            $form = new FiltersForm(array_merge($filtersFormConfig, array_filter($filtersModel->toArray())));
-            
-            if (empty($form->sortingField)) {
+            if (empty($filtersForm->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {
                     if ($key === \Yii::$app->params['sortingField']) {
-                        $form->sortingField = $key;
+                        $filtersForm->sortingField = $key;
                     }
                 }
             }
-            
-            if (empty($form->sortingType)) {
+            if (empty($filtersForm->sortingType)) {
                 foreach ($sortingTypesArray as $key=>$val) {
                     if ($key === \Yii::$app->params['sortingType']) {
-                        $form->sortingType = $key;
+                        $filtersForm->sortingType = $key;
                     }
                 }
             }
             
-            $dataArray['form'] = $form;
+            $dataArray['form'] = $filtersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'products-filters.twig';
             

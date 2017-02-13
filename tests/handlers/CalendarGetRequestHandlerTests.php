@@ -24,9 +24,11 @@ class CalendarGetRequestHandlerTests extends TestCase
      */
     public function testCalendarWidgetConfig()
     {
+        $dateTime = new \DateTime();
+        
         $reflection = new \ReflectionMethod($this->handler, 'calendarWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, time());
+        $result = $reflection->invoke($this->handler, $dateTime);
         
         $this->assertInternalType('array', $result);
         

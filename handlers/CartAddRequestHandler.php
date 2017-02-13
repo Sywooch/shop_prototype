@@ -6,21 +6,21 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait,
-    CartHandlerTrait};
+    ConfigHandlerTrait};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
 use app\finders\PurchasesSessionFinder;
 use app\widgets\ShortCartWidget;
 use app\models\PurchasesModel;
+use app\services\GetCurrentCurrencyModelService;
 
 /**
  * Обрабатывает запрос на добавление покупки в корзину
  */
 class CartAddRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait, CartHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * Обрабатывает запрос на сохранение новой покупки в корзине
@@ -40,7 +40,14 @@ class CartAddRequestHandler extends AbstractBaseHandler
                         return $errors;
                     }
                     
-                    $currentCurrencyModel = $this->getCurrentCurrency();
+                    $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                        'key'=>HashHelper::createCurrencyKey()
+                    ]);
+                    $currentCurrencyModel = $service->get();
+                    if (empty($currentCurrencyModel)) {
+                        throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                    }
+                    
                     $key = HashHelper::createCartKey();
                     
                     $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [

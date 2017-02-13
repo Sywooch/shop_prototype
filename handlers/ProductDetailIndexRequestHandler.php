@@ -112,17 +112,15 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                     'url'=>Url::current()
                 ]);
                 
-                $webUser = \Yii::$app->user;
-                
                 $dataArray = [];
                 
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig($webUser);
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
                 $dataArray['productDetailWidgetConfig'] = $this->productDetailWidgetConfig($productsModel, $currentCurrencyModel);
-                $dataArray['purchaseFormWidgetConfig'] = $this->purchaseFormWidgetConfig($productsModel, $purchaseForm);
+                $dataArray['purchaseFormWidgetConfig'] = $this->orderFormWidgetConfig($productsModel, $purchaseForm);
                 $dataArray['productBreadcrumbsWidget'] = $this->productBreadcrumbsWidget($productsModel);
                 $dataArray['seeAlsoWidgetSimilarConfig'] = $this->seeAlsoWidgetSimilarConfig($similarArray, $currentCurrencyModel);
                 $dataArray['seeAlsoWidgetRelatedConfig'] = $this->seeAlsoWidgetRelatedConfig($relatedArray, $currentCurrencyModel);
@@ -167,7 +165,7 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
      * @param AbstractBaseForm $purchaseForm
      * @return array
      */
-    private function purchaseFormWidgetConfig(ProductsModel $productsModel, AbstractBaseForm $purchaseForm): array
+    private function orderFormWidgetConfig(ProductsModel $productsModel, AbstractBaseForm $purchaseForm): array
     {
         try {
             $dataArray = [];

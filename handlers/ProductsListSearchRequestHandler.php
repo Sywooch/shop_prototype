@@ -7,18 +7,23 @@ use yii\web\NotFoundHttpException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait,
-    BaseFrontendHandlerTrait,
-    ProductsListHandlerTrait};
+    ConfigHandlerTrait};
 use app\finders\{BrandsFilterSphinxFinder,
+    CategoriesFinder,
     ColorsFilterSphinxFinder,
+    CurrencyFinder,
+    ProductsFiltersSessionFinder,
     ProductsSphinxFinder,
+    PurchasesSessionFinder,
     SizesFilterSphinxFinder,
     SortingFieldsFinder,
     SortingTypesFinder,
     SphinxFinder};
-use app\forms\FiltersForm;
-use app\filters\ProductsFiltersInterface;
+use app\forms\{AbstractBaseForm,
+    ChangeCurrencyForm,
+    FiltersForm};
+use app\services\GetCurrentCurrencyModelService;
+use app\helpers\HashHelper;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -26,7 +31,7 @@ use app\filters\ProductsFiltersInterface;
  */
 class ProductsListSearchRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait, BaseFrontendHandlerTrait, ProductsListHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * @var array массив данных для рендеринга
@@ -48,9 +53,18 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                 }
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
                 
-                $currentCurrencyModel = $this->getCurrentCurrency();
-                $filtersModel = $this->getProductsFilters();
-                $ordersCollection = $this->getOrdersSessionCollection();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
+                $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
+                    'key'=>HashHelper::createCartKey()
+                ]);
+                $ordersCollection = $finder->find();
                 
                 $finder = \Yii::$app->registry->get(SphinxFinder::class, [
                     'search'=>$searchText
@@ -58,18 +72,34 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                 $sphinxArray = $finder->find();
                 $sphinxArray = ArrayHelper::getColumn($sphinxArray, 'id');
                 
-                $dataArray = [];
+                $finder = \Yii::$app->registry->get(CurrencyFinder::class);
+                $currencyArray = $finder->find();
+                if (empty($currencyArray)) {
+                    throw new ErrorException($this->emptyError('currencyArray'));
+                }
                 
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig();
-                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
-                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currentCurrencyModel);
-                $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig($searchText);
-                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig();
-                $dataArray['searchBreadcrumbsWidgetConfig'] = $this->searchBreadcrumbsWidgetConfig($searchText);
+                $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+                $categoriesModelArray = $finder->find();
+                if (empty($categoriesModelArray)) {
+                    throw new ErrorException($this->emptyError('categoriesModelArray'));
+                }
+                
+                $changeCurrencyForm = new ChangeCurrencyForm([
+                    'scenario'=>ChangeCurrencyForm::SET,
+                    'id'=>$currentCurrencyModel->id,
+                    'url'=>Url::current()
+                ]);
+                
+                $dataArray = [];
                 
                 if (empty($sphinxArray)) {
                     $dataArray['emptySphinxWidgetConfig'] = $this->emptySphinxWidgetConfig();
                 } else {
+                    $finder = \Yii::$app->registry->get(ProductsFiltersSessionFinder::class, [
+                        'key'=>HashHelper::createFiltersKey(Url::current())
+                    ]);
+                    $filtersModel = $finder->find();
+                    
                     $finder = \Yii::$app->registry->get(ProductsSphinxFinder::class, [
                         'sphinx'=>$sphinxArray,
                         'page'=>$page,
@@ -85,10 +115,56 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                         $dataArray['emptyProductsWidgetConfig'] = $this->emptyProductsWidgetConfig();
                     } else {
                         $dataArray['productsWidgetConfig'] = $this->productsWidgetConfig($productsCollection, $currentCurrencyModel);
-                        $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection);
+                        $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection->pagination);
                     }
-                    $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($sphinxArray, $filtersModel);
+                    
+                    $finder = \Yii::$app->registry->get(ColorsFilterSphinxFinder::class, [
+                        'sphinx'=>$sphinxArray
+                    ]);
+                    $colorsArray = $finder->find();
+                    if (empty($colorsArray)) {
+                        throw new ErrorException($this->emptyError('colorsArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(SizesFilterSphinxFinder::class, [
+                        'sphinx'=>$sphinxArray
+                    ]);
+                    $sizesArray = $finder->find();
+                    if (empty($sizesArray)) {
+                        throw new ErrorException($this->emptyError('sizesArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(BrandsFilterSphinxFinder::class, [
+                        'sphinx'=>$sphinxArray
+                    ]);
+                    $brandsArray = $finder->find();
+                    if (empty($brandsArray)) {
+                        throw new ErrorException($this->emptyError('brandsArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
+                    $sortingFieldsArray = $finder->find();
+                    if (empty($sortingFieldsArray)) {
+                        throw new ErrorException($this->emptyError('sortingFieldsArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
+                    $sortingTypesArray = $finder->find();
+                    if (empty($sortingTypesArray)) {
+                        throw new ErrorException($this->emptyError('sortingTypesArray'));
+                    }
+                    
+                    $filtersForm = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel ->toArray())));
+                    
+                    $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($colorsArray, $sizesArray, $brandsArray, $sortingFieldsArray, $sortingTypesArray, $filtersForm);
                 }
+                
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
+                $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
+                $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig($searchText);
+                $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
+                $dataArray['searchBreadcrumbsWidgetConfig'] = $this->searchBreadcrumbsWidgetConfig($searchText);
                 
                 $this->dataArray = $dataArray;
             }
@@ -120,80 +196,50 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета FiltersWidget
-     * @param array $sphinxArray массив ID найденных записей
-     * @param ProductsFiltersInterface $filtersModel
+     * @param array $colorsArray
+     * @param array $sizesArray
+     * @param array $brandsArray
+     * @param array $sortingFieldsArray
+     * @param array $sortingTypesArray
+     * @param AbstractBaseForm $filtersForm
      * @return array
      */
-    private function filtersWidgetConfig(array $sphinxArray, ProductsFiltersInterface $filtersModel): array
+    private function filtersWidgetConfig(array $colorsArray, array $sizesArray, array $brandsArray, array $sortingFieldsArray, array $sortingTypesArray, AbstractBaseForm $filtersForm): array
     {
         try {
             $dataArray = [];
             
-            $finder = \Yii::$app->registry->get(ColorsFilterSphinxFinder::class, [
-                'sphinx'=>$sphinxArray
-            ]);
-            $colorsArray = $finder->find();
-            if (empty($colorsArray)) {
-                throw new ErrorException($this->emptyError('colorsArray'));
-            }
             ArrayHelper::multisort($colorsArray, 'color');
             $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
             
-            $finder = \Yii::$app->registry->get(SizesFilterSphinxFinder::class, [
-                'sphinx'=>$sphinxArray
-            ]);
-            $sizesArray = $finder->find();
-            if (empty($sizesArray)) {
-                throw new ErrorException($this->emptyError('sizesArray'));
-            }
             ArrayHelper::multisort($sizesArray, 'size');
             $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
-            $finder = \Yii::$app->registry->get(BrandsFilterSphinxFinder::class, [
-                'sphinx'=>$sphinxArray
-            ]);
-            $brandsArray = $finder->find();
-            if (empty($brandsArray)) {
-                throw new ErrorException($this->emptyError('brandsArray'));
-            }
             ArrayHelper::multisort($brandsArray, 'brand');
             $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
             
-            $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
-            $sortingFieldsArray = $finder->find();
-            if (empty($sortingFieldsArray)) {
-                throw new ErrorException($this->emptyError('sortingFieldsArray'));
-            }
             asort($sortingFieldsArray, SORT_STRING);
             $dataArray['sortingFields'] = $sortingFieldsArray;
             
-            $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
-            $sortingTypesArray = $finder->find();
-            if (empty($sortingTypesArray)) {
-                throw new ErrorException($this->emptyError('sortingTypesArray'));
-            }
             asort($sortingTypesArray, SORT_STRING);
             $dataArray['sortingTypes'] = $sortingTypesArray;
             
-            $form = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel ->toArray())));
-            
-            if (empty($form->sortingField)) {
+            if (empty($filtersForm->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {
                     if ($key === \Yii::$app->params['sortingField']) {
-                        $form->sortingField = $key;
+                        $filtersForm->sortingField = $key;
                     }
                 }
             }
-            
-            if (empty($form->sortingType)) {
+            if (empty($filtersForm->sortingType)) {
                 foreach ($sortingTypesArray as $key=>$val) {
                     if ($key === \Yii::$app->params['sortingType']) {
-                        $form->sortingType = $key;
+                        $filtersForm->sortingType = $key;
                     }
                 }
             }
             
-            $dataArray['form'] = $form;
+            $dataArray['form'] = $filtersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'products-filters.twig';
             

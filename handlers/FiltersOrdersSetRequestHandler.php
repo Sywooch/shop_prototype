@@ -11,12 +11,11 @@ use app\savers\SessionModelSaver;
 use app\filters\OrdersFilters;
 
 /**
- * Сохраняет фильтры каталога товаров
+ * Обрабатывает запрос, сохраняя фильтры каталога товаров
  */
 class FiltersOrdersSetRequestHandler extends AbstractBaseHandler
 {
     /**
-     * Обрабатывает запрос на сохранение товарных фильтров
      * @param array $request
      * @return string URL
      */

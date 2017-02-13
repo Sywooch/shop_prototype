@@ -158,126 +158,14 @@ class AdminProductsRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminProductsRequestHandler::adminProductsWidgetConfig
-     * если зарпосил несуществующую страницу
-     * @expectedException yii\web\NotFoundHttpException
-     */
-    /*public function testAdminProductsWidgetConfigNotPage()
-    {
-        $collection = new class() extends AbstractBaseCollection {
-            public $pagination;
-            public function __construct()
-            {
-                $this->pagination = new class() {
-                    public $totalCount = 10;
-                };
-            }
-            public function isEmpty()
-            {
-                return true;
-            }
-            public function asArray()
-            {
-                return [];
-            }
-        };
-        
-        $handler = new AdminProductsRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'adminProductsWidgetConfig');
-        $reflection->setAccessible(true);
-        $reflection->invoke($handler, $collection);
-    }*/
-    
-    /**
-     * Тестирует метод AdminProductsRequestHandler::adminProductsWidgetConfig
-     */
-    /*public function testAdminProductsWidget()
-    {
-        $collection = new class() extends AbstractBaseCollection {
-            public $pagination;
-            public function __construct()
-            {
-                $this->pagination = new class() {
-                    public $totalCount = 2;
-                };
-            }
-            public function isEmpty()
-            {
-                return false;
-            }
-            public function asArray()
-            {
-                return [];
-            }
-        };
-        
-        $handler = new AdminProductsRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'adminProductsWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $collection);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('products', $result);
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('template', $result);
-        
-        $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('array', $result['products']);
-        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
-        $this->assertInstanceOf(AdminProductForm::class, $result['form']);
-        $this->assertInternalType('string', $result['template']);
-    }*/
-    
-    /**
-     * Тестирует метод AdminProductsRequestHandler::paginationWidgetConfig
-     */
-    /*public function testPaginationWidgetConfig()
-    {
-        $collection = new class() extends AbstractBaseCollection {
-            public $pagination;
-            public function __construct()
-            {
-                $this->pagination = new class() extends LightPagination {};
-            }
-        };
-        
-        $handler = new AdminProductsRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'paginationWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $collection);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('pagination', $result);
-        $this->assertArrayHasKey('template', $result);
-        
-        $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
-        $this->assertInternalType('string', $result['template']);
-    }*/
-    
-    /**
      * Тестирует метод AdminProductsRequestHandler::adminCsvProductsFormWidgetConfig
      */
-    /*public function testAdminCsvProductsFormWidgetConfig()
+    public function testAdminCsvProductsFormWidgetConfig()
     {
-        $collection = new class() extends AbstractBaseCollection {
-            public function isEmpty()
-            {
-                return false;
-            }
-        };
         
-        $handler = new AdminProductsRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'adminCsvProductsFormWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'adminCsvProductsFormWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $collection);
+        $result = $reflection->invoke($this->handler, true);
         
         $this->assertInternalType('array', $result);
         
@@ -288,23 +176,12 @@ class AdminProductsRequestHandlerTests extends TestCase
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
         $this->assertInternalType('boolean', $result['isAllowed']);
-    }*/
-    
-    /**
-     * Тестирует метод AdminProductsRequestHandler::handle
-     * если отсутствует параметр $request
-     * @expectedException ErrorException
-     */
-    /*public function testHandleEmptyRequest()
-    {
-        $service = new AdminProductsRequestHandler();
-        $service->handle();
-    }*/
+    }
     
     /**
      * Тестирует метод AdminProductsRequestHandler::handle
      */
-    /*public function testHandle()
+    public function testHandle()
     {
         $request = new class() {
             public function get($name = null, $defaultValue = null)
@@ -313,8 +190,7 @@ class AdminProductsRequestHandlerTests extends TestCase
             }
         };
         
-        $service = new AdminProductsRequestHandler();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
 
         $this->assertInternalType('array', $result);
         
@@ -327,7 +203,24 @@ class AdminProductsRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['adminProductsWidgetConfig']);
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
         $this->assertInternalType('array', $result['adminCsvProductsFormWidgetConfig']);
-    }*/
+    }
+    
+    /**
+     * Тестирует метод AdminProductsRequestHandler::handle
+     * не существующая страница
+     * @expectedException yii\web\NotFoundHttpException
+     */
+    public function testHandleNotPage()
+    {
+        $request = new class() {
+            public function get($name = null, $defaultValue = null)
+            {
+                return 500;
+            }
+        };
+        
+        $this->handler->handle($request);
+    }
     
     public static function tearDownAfterClass()
     {

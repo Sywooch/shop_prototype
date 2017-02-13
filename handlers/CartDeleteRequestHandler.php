@@ -7,8 +7,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait,
-    CartHandlerTrait};
+    ConfigHandlerTrait};
 use app\forms\PurchaseForm;
 use app\savers\SessionArraySaver;
 use app\helpers\HashHelper;
@@ -17,13 +16,14 @@ use app\widgets\{CartWidget,
     ShortCartRedirectWidget};
 use app\models\PurchasesModel;
 use app\cleaners\SessionCleaner;
+use app\services\GetCurrentCurrencyModelService;
 
 /**
  * Обрабатывает запрос на удаление покупки
  */
 class CartDeleteRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait, CartHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * @param $request
@@ -42,13 +42,20 @@ class CartDeleteRequestHandler extends AbstractBaseHandler
                         return $errors;
                     }
                     
+                    $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                        'key'=>HashHelper::createCurrencyKey()
+                    ]);
+                    $currentCurrencyModel = $service->get();
+                    if (empty($currentCurrencyModel)) {
+                        throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                    }
+                    
                     $key = HashHelper::createCartKey();
-                    $currentCurrencyModel = $this->getCurrentCurrency();
                     
                     $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
                         'key'=>$key
                     ]);
-                    $purchasesCollection = $finder->find();
+                    $ordersCollection = $finder->find();
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::DELETE]);
                     $rawPurchasesModel->id_product = $form->id_product;
@@ -56,9 +63,9 @@ class CartDeleteRequestHandler extends AbstractBaseHandler
                         throw new ErrorException($this->modelError($rawPurchasesModel->errors));
                     }
                     
-                    $purchasesCollection->delete($rawPurchasesModel);
+                    $ordersCollection->delete($rawPurchasesModel);
                     
-                    if ($purchasesCollection->isEmpty() === true) {
+                    if ($ordersCollection->isEmpty() === true) {
                         $cleaner = new SessionCleaner([
                             'keys'=>[$key],
                         ]);
@@ -68,16 +75,19 @@ class CartDeleteRequestHandler extends AbstractBaseHandler
                     } else {
                         $saver = new SessionArraySaver([
                             'key'=>$key,
-                            'models'=>$purchasesCollection->asArray()
+                            'models'=>$ordersCollection->asArray()
                         ]);
                         $saver->save();
                         
+                        $updateForm = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]);
+                        $deleteForm = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
+                        
                         $dataArray = [];
                         
-                        $cartWidgetConfig = $this->cartWidgetConfig($purchasesCollection, $currentCurrencyModel);
+                        $cartWidgetConfig = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $updateForm, $deleteForm);
                         $dataArray['items'] = CartWidget::widget($cartWidgetConfig);
                         
-                        $shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($purchasesCollection, $currentCurrencyModel);
+                        $shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
                         $dataArray['shortCart'] = ShortCartRedirectWidget::widget($shortCartRedirectWidgetConfig);
                         
                         return $dataArray;

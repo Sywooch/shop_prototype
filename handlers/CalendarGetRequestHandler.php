@@ -22,12 +22,15 @@ class CalendarGetRequestHandler extends AbstractBaseHandler
             if ($request->isAjax === true) {
                 \Yii::$app->response->format = Response::FORMAT_JSON;
                 
-                $timestamp = $request->post('timestamp');
+                $timestamp = $request->post('timestamp') ?? null;
                 if (empty($timestamp)) {
                     throw new ErrorException($this->emptyError('timestamp'));
                 }
                 
-                $calendarWidgetConfig = $this->calendarWidgetConfig($timestamp);
+                $dateTime = new \DateTime();
+                $dateTime->setTimestamp($timestamp);
+                
+                $calendarWidgetConfig = $this->calendarWidgetConfig($dateTime);
                 return CalendarWidget::widget($calendarWidgetConfig);
             }
         } catch (\Throwable $t) {
@@ -37,16 +40,13 @@ class CalendarGetRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета CalendarWidget
-     * @param int $timestamp Unix Timestamp
+     * @param DateTime $dateTime
      * @return array
      */
-    private function calendarWidgetConfig(int $timestamp): array
+    private function calendarWidgetConfig(\DateTime $dateTime): array
     {
         try {
             $dataArray = [];
-            
-            $dateTime = new \DateTime();
-            $dateTime->setTimestamp($timestamp);
             
             $dataArray['period'] = new \DateTime(sprintf('%s-%s-1', $dateTime->format('Y'), $dateTime->format('m')));
             $dataArray['template'] = 'calendar.twig';

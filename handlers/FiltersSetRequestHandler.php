@@ -11,7 +11,7 @@ use app\savers\SessionModelSaver;
 use app\filters\ProductsFilters;
 
 /**
- * Сохраняет фильтры каталога товаров
+ * Обрабатывает запрос, сохраняя фильтры каталога товаров
  */
 class FiltersSetRequestHandler extends AbstractBaseHandler
 {

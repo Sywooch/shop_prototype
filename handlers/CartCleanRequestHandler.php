@@ -5,19 +5,19 @@ namespace app\handlers;
 use yii\base\ErrorException;
 use yii\web\Response;
 use app\handlers\{AbstractBaseHandler,
-    BaseHandlerTrait,
-    CartHandlerTrait};
+    ConfigHandlerTrait};
 use app\helpers\HashHelper;
 use app\cleaners\SessionCleaner;
 use app\widgets\ShortCartWidget;
 use app\finders\PurchasesSessionFinder;
+use app\services\GetCurrentCurrencyModelService;
 
 /**
  * Обрабатывает запрос на удаление покупок из корзины
  */
 class CartCleanRequestHandler extends AbstractBaseHandler
 {
-    use BaseHandlerTrait, CartHandlerTrait;
+    use ConfigHandlerTrait;
     
     /**
      * @param $request
@@ -29,19 +29,25 @@ class CartCleanRequestHandler extends AbstractBaseHandler
             if ($request->isAjax === true) {
                 \Yii::$app->response->format = Response::FORMAT_JSON;
                 
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
                 $cleaner = new SessionCleaner([
                     'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],
                 ]);
                 $cleaner->clean();
                 
-                $currentCurrencyModel = $this->getCurrentCurrency();
-                
                 $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
                     'key'=>HashHelper::createCartKey()
                 ]);
-                $purchasesCollection = $finder->find();
+                $ordersCollection = $finder->find();
                 
-                $shortCartWidgetAjaxConfig = $this->shortCartWidgetAjaxConfig($purchasesCollection, $currentCurrencyModel);
+                $shortCartWidgetAjaxConfig = $this->shortCartWidgetAjaxConfig($ordersCollection, $currentCurrencyModel);
                 return ShortCartWidget::widget($shortCartWidgetAjaxConfig);
             }
         } catch (\Throwable $t) {

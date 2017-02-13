@@ -16,7 +16,8 @@ use app\tests\sources\fixtures\{BrandsFixture,
     SubcategoryFixture};
 use app\models\{CategoriesModel,
     SubcategoryModel};
-use app\forms\FiltersForm;
+use app\forms\{AbstractBaseForm,
+    FiltersForm};
 use app\controllers\ProductsListController;
 use app\filters\ProductsFilters;
 use app\helpers\HashHelper;
@@ -27,6 +28,7 @@ use app\helpers\HashHelper;
 class ProductsListIndexRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -49,6 +51,8 @@ class ProductsListIndexRequestHandlerTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new ProductsListIndexRequestHandler();
     }
     
     /**
@@ -66,14 +70,12 @@ class ProductsListIndexRequestHandlerTests extends TestCase
      */
     public function testCategoriesBreadcrumbsWidgetConfig()
     {
-        $category = self::$dbClass->categories['category_1']['seocode'];
-        $subcategory = self::$dbClass->subcategory['subcategory_1']['seocode'];
+        $categoriesModel = new class() extends CategoriesModel {};
+        $subcategoryModel = new class() extends SubcategoryModel {};
         
-        $handler = new ProductsListIndexRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'categoriesBreadcrumbsWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'categoriesBreadcrumbsWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $category, $subcategory);
+        $result = $reflection->invoke($this->handler, $categoriesModel, $subcategoryModel);
         
         $this->assertInternalType('array', $result);
         
@@ -89,15 +91,25 @@ class ProductsListIndexRequestHandlerTests extends TestCase
      */
     public function testFiltersWidgetConfig()
     {
-        $category = self::$dbClass->categories['category_1']['seocode'];
-        $subcategory = self::$dbClass->subcategory['subcategory_2']['seocode'];
-        $filtersModel = new class() extends ProductsFilters {};
+        $colorsArray = [new class() {
+            public $id = 1;
+            public $color = 'color';
+        }];
+        $sizesArray = [new class() {
+            public $id = 1;
+            public $size = 'size';
+        }];
+        $brandsArray = [new class() {
+            public $id = 1;
+            public $brand = 'brand';
+        }];
+        $sortingFieldsArray = [new class() {}];
+        $sortingTypesArray = [new class() {}];
+        $filtersForm = new class() extends AbstractBaseForm {};
         
-        $handler = new ProductsListIndexRequestHandler();
-        
-        $reflection = new \ReflectionMethod($handler, 'filtersWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'filtersWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($handler, $category, $subcategory, $filtersModel);
+        $result = $reflection->invoke($this->handler, $colorsArray, $sizesArray, $brandsArray, $sortingFieldsArray, $sortingTypesArray, $filtersForm);
         
         $this->assertInternalType('array', $result);
         
@@ -115,20 +127,9 @@ class ProductsListIndexRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['brands']);
         $this->assertInternalType('array', $result['sortingFields']);
         $this->assertInternalType('array', $result['sortingTypes']);
-        $this->assertInstanceOf(FiltersForm::class, $result['form']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
-     * Тестирует метод ProductsListIndexRequestHandler::handle
-     * если пуст request
-     * @expectedException ErrorException
-     */
-    public function testHandleEmptyRequest()
-    {
-        $handler = new ProductsListIndexRequestHandler();
-        $handler->handle();
     }
     
     /**
@@ -161,8 +162,7 @@ class ProductsListIndexRequestHandlerTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($request, self::$dbClass->subcategory['subcategory_2']['seocode']);
         
-        $handler = new ProductsListIndexRequestHandler();
-        $result = $handler->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         
@@ -209,8 +209,7 @@ class ProductsListIndexRequestHandlerTests extends TestCase
             }
         };
         
-        $handler = new ProductsListIndexRequestHandler();
-        $result = $handler->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         
@@ -256,8 +255,7 @@ class ProductsListIndexRequestHandlerTests extends TestCase
             }
         };
         
-        $handler = new ProductsListIndexRequestHandler();
-        $result = $handler->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
@@ -278,8 +276,7 @@ class ProductsListIndexRequestHandlerTests extends TestCase
             }
         };
         
-        $handler = new ProductsListIndexRequestHandler();
-        $result = $handler->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         

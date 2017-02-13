@@ -14,6 +14,7 @@ use app\models\{CategoriesModel,
 use app\collections\{CollectionInterface,
     LightPagination,
     PaginationInterface,
+    ProductsCollection,
     PurchasesCollection,
     PurchasesCollectionInterface};
 use app\forms\AbstractBaseForm;
@@ -251,6 +252,124 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertArrayhasKey('template', $result);
         
         $this->assertInstanceOf(PaginationInterface::class, $result['pagination']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::shortCartWidgetAjaxConfig
+     * если запрос с ошибками
+     */
+    public function testShortCartWidgetAjaxConfig()
+    {
+        $purchasesCollection = new class() extends PurchasesCollection {};
+        $currentCurrencyModel = new class() extends CurrencyModel {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'shortCartWidgetAjaxConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $purchasesCollection, $currentCurrencyModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('purchases', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::cartWidgetConfig
+     * если запрос с ошибками
+     */
+    public function testCartWidgetConfig()
+    {
+        $purchasesCollection = new class() extends PurchasesCollection {};
+        $currentCurrencyModel = new class() extends CurrencyModel {};
+        $updateForm = new class() extends AbstractBaseForm {};
+        $deleteForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'cartWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $purchasesCollection, $currentCurrencyModel, $updateForm, $deleteForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('purchases', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('updateForm', $result);
+        $this->assertArrayHasKey('deleteForm', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
+        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['updateForm']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['deleteForm']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::shortCartRedirectWidgetConfig
+     * если запрос с ошибками
+     */
+    public function testShortCartRedirectWidgetConfig()
+    {
+        $purchasesCollection = new class() extends PurchasesCollection {};
+        $currentCurrencyModel = new class() extends CurrencyModel {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'shortCartRedirectWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $purchasesCollection, $currentCurrencyModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('purchases', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
+        $this->assertInstanceOf(CurrencyModel::class, $result['currency']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::emptyProductsWidgetConfig
+     */
+    public function testEmptyProductsWidgetConfig()
+    {
+        $reflection = new \ReflectionMethod($this->handler, 'emptyProductsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('template', $result);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::productsWidgetConfig
+     */
+    public function testProductsWidgetConfig()
+    {
+        $productsCollection = new class() extends ProductsCollection {};
+        $currencyModel = new class() extends CurrencyModel {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'productsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $productsCollection, $currencyModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('products', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInstanceOf(CollectionInterface::class, $result['products']);
+        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
         $this->assertInternalType('string', $result['template']);
     }
     

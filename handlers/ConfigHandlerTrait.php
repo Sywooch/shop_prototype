@@ -8,7 +8,8 @@ use yii\helpers\{ArrayHelper,
 use yii\web\User;
 use app\models\CurrencyInterface;
 use app\forms\AbstractBaseForm;
-use app\collections\{PaginationInterface,
+use app\collections\{CollectionInterface,
+    PaginationInterface,
     PurchasesCollectionInterface};
 use app\helpers\DateHelper;
 
@@ -188,11 +189,14 @@ trait ConfigHandlerTrait
                     }
                 }
             }
+            
+            $todayDate = DateHelper::getToday00();
+            
             if (empty($ordersFiltersForm->dateFrom)) {
-                $ordersFiltersForm->dateFrom = DateHelper::getToday00();
+                $ordersFiltersForm->dateFrom = $todayDate;
             }
             if (empty($ordersFiltersForm->dateTo)) {
-                $ordersFiltersForm->dateTo = DateHelper::getToday00();
+                $ordersFiltersForm->dateTo = $todayDate;
             }
             
             $ordersFiltersForm->url = Url::current();
@@ -219,6 +223,114 @@ trait ConfigHandlerTrait
             
             $dataArray['pagination'] = $pagination;
             $dataArray['template'] = 'pagination.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета ShortCartWidget
+     * @param PurchasesCollectionInterface $ordersCollection
+     * @param CurrencyInterface $currentCurrencyModel
+     * @return array
+     */
+    private function shortCartWidgetAjaxConfig(PurchasesCollectionInterface $ordersCollection, CurrencyInterface $currentCurrencyModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['purchases'] = $ordersCollection;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['template'] = 'short-cart-ajax.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета CartWidget
+     * @param PurchasesCollectionInterface $ordersCollection
+     * @param CurrencyInterface $currentCurrencyModel
+     * @param AbstractBaseForm $updateForm
+     * @param AbstractBaseForm $deleteForm
+     * @return array
+     */
+    private function cartWidgetConfig(PurchasesCollectionInterface $ordersCollection, CurrencyInterface $currentCurrencyModel, AbstractBaseForm $updateForm, AbstractBaseForm $deleteForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['purchases'] = $ordersCollection;
+            $dataArray['currency'] = $currentCurrencyModel;
+            //$dataArray['updateForm'] = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]); # !!!
+            //$dataArray['deleteForm'] = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]); # !!!
+            $dataArray['updateForm'] = $updateForm;
+            $dataArray['deleteForm'] = $deleteForm;
+            $dataArray['header'] = \Yii::t('base', 'Selected products');
+            $dataArray['template'] = 'cart.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета ShortCartRedirectWidget
+     * @param PurchasesCollectionInterface $purchasesCollection
+     * @param CurrencyInterface $currentCurrencyModel
+     * @return array
+     */
+    private function shortCartRedirectWidgetConfig(PurchasesCollectionInterface $purchasesCollection, CurrencyInterface $currentCurrencyModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['purchases'] = $purchasesCollection;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['template'] = 'short-cart-redirect.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета EmptyProductsWidget
+     * @return array
+     */
+    private function emptyProductsWidgetConfig(): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['template'] = 'empty-products.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета ProductsWidget
+     * @param CollectionInterface $productsCollection
+     * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
+     * @return array
+     */
+    private function productsWidgetConfig(CollectionInterface $productsCollection, CurrencyInterface $currentCurrencyModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['products'] = $productsCollection;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['template'] = 'products-list.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
