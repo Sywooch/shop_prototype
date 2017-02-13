@@ -11,6 +11,7 @@ use app\services\{AddressGetSaveAddressService,
     CityGetSaveCityService,
     CountryGetSaveCountryService,
     EmailGetSaveEmailService,
+    GetCurrentCurrencyModelService,
     NameGetSaveNameService,
     PhoneGetSavePhoneService,
     PostcodeGetSavePostcodeService,
@@ -24,8 +25,7 @@ use app\finders\{PurchasesSessionFinder,
     UserEmailFinder};
 use app\helpers\HashHelper;
 use app\savers\{ModelSaver,
-    PurchasesArraySaver,
-    SessionModelSaver};
+    PurchasesArraySaver};
 use app\cleaners\SessionCleaner;
 
 /**
@@ -49,12 +49,6 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                     if (!empty($errors)) {
                         return $errors;
                     }
-                    
-                    $saver = new SessionModelSaver([
-                        'key'=>HashHelper::createCartCustomerKey(),
-                        'model'=>$form
-                    ]);
-                    $saver->save();
                     
                     $transaction = \Yii::$app->db->beginTransaction();
                     
@@ -119,18 +113,20 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                             ]);
                             $saver->save();
                             
-                            $mailService = new RegistrationEmailService();
-                            $mailService->handle(['email'=>$form->email]);
+                            $mailService = new RegistrationEmailService([
+                                'email'=>$form->email
+                            ]);
+                            $mailService->get();
                             
                             $finder = \Yii::$app->registry->get(UserEmailFinder::class, [
                                 'email'=>$form->email
                             ]);
-                            $usersModel = $finder->find();
+                            $newUsersModel = $finder->find();
                         }
                         
                         if ((bool) $form->change === true) {
-                            if (\Yii::$app->usersModel->isGuest === false) {
-                                $usersModel = \Yii::$app->usersModel->identity;
+                            if (\Yii::$app->user->isGuest === false) {
+                                $usersModel = \Yii::$app->user->identity;
                                 $usersModel->scenario = UsersModel::UPDATE;
                                 $usersModel->id_name = $namesModel->id;
                                 $usersModel->id_surname = $surnamesModel->id;
@@ -159,9 +155,9 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                         
                         $rawPurchasesModelArray = [];
                         
-                        foreach ($ordersCollection as $purchases) {
+                        foreach ($ordersCollection as $order) {
                             $cloneRawPurchasesModel = clone $rawPurchasesModel;
-                            $cloneRawPurchasesModel->id_user = \Yii::$app->user->id ?? $user->id ?? 0;
+                            $cloneRawPurchasesModel->id_user = \Yii::$app->user->id ?? $newUsersModel->id ?? 0;
                             $cloneRawPurchasesModel->id_name = $namesModel->id;
                             $cloneRawPurchasesModel->id_surname = $surnamesModel->id;
                             $cloneRawPurchasesModel->id_email = $emailsModel->id;
@@ -170,11 +166,11 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                             $cloneRawPurchasesModel->id_city = $citiesModel->id;
                             $cloneRawPurchasesModel->id_country = $countriesModel->id;
                             $cloneRawPurchasesModel->id_postcode = $postcodesModel->id;
-                            $cloneRawPurchasesModel->id_product = $purchases->id_product;
-                            $cloneRawPurchasesModel->quantity = $purchases->quantity;
-                            $cloneRawPurchasesModel->id_color = $purchases->id_color;
-                            $cloneRawPurchasesModel->id_size = $purchases->id_size;
-                            $cloneRawPurchasesModel->price = $purchases->price;
+                            $cloneRawPurchasesModel->id_product = $order->id_product;
+                            $cloneRawPurchasesModel->quantity = $order->quantity;
+                            $cloneRawPurchasesModel->id_color = $order->id_color;
+                            $cloneRawPurchasesModel->id_size = $order->id_size;
+                            $cloneRawPurchasesModel->price = $order->price;
                             $cloneRawPurchasesModel->id_delivery = $form->id_delivery;
                             $cloneRawPurchasesModel->id_payment = $form->id_payment;
                             $cloneRawPurchasesModel->received = true;
@@ -190,8 +186,21 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                         ]);
                         $saver->save();
                         
-                        $mailService = new ReceivedOrderEmailService();
-                        $mailService->handle(['email'=>$form->email]);
+                        $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                            'key'=>HashHelper::createCurrencyKey()
+                        ]);
+                        $currentCurrencyModel = $service->get();
+                        if (empty($currentCurrencyModel)) {
+                            throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                        }
+                        
+                        $mailService = new ReceivedOrderEmailService([
+                            'email'=>$form->email,
+                            'ordersCollection'=>$ordersCollection,
+                            'customerInfoForm'=>$form,
+                            'currentCurrencyModel'=>$currentCurrencyModel
+                        ]);
+                        $mailService->get();
                         
                         $cleaner = new SessionCleaner([
                             'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],

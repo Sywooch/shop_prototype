@@ -3,8 +3,7 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use app\services\{AbstractBaseService,
-    GetEmailRegistrationWidgetConfigService};
+use app\services\AbstractBaseService;
 use app\helpers\MailHelper;
 use app\widgets\EmailRegistrationWidget;
 
@@ -14,30 +13,32 @@ use app\widgets\EmailRegistrationWidget;
 class RegistrationEmailService extends AbstractBaseService
 {
     /**
-     * Обрабатывает запрос на отправку сообщения
-     * @param array $request
+     * @var string email для отправки сообщения
      */
-    public function handle($request)
+    private $email;
+    
+    /**
+     * Обрабатывает запрос на отправку сообщения
+     */
+    public function get()
     {
         try {
-            $email = $request['email'] ?? null;
-            
-            if (empty($email)) {
+            if (empty($this->email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
             
-            $service = \Yii::$app->registry->get(GetEmailRegistrationWidgetConfigService::class);
-            $emailRegistrationWidgetArray = $service->handle([
-                'email'=>$email
+            $html = EmailRegistrationWidget::widget([
+                'email'=>$this->email, 
+                'template'=>'registration-mail.twig'
             ]);
             
             $mailHelper = new MailHelper([
                 [
                     'from'=>['admin@shop.com'=>'Shop.com'], 
-                    //'to'=>$email,
+                    //'to'=>$this->email,
                     'to'=>'timofey@localhost',
                     'subject'=>\Yii::t('base', 'Registration on shop.com'),
-                    'html'=>EmailRegistrationWidget::widget($emailRegistrationWidgetArray)
+                    'html'=>$html
                 ]
             ]);
             $sent = $mailHelper->send();
@@ -46,6 +47,19 @@ class RegistrationEmailService extends AbstractBaseService
                 throw new ErrorException($this->methodError('sendEmail'));
             }
             
+            return $sent;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение RegistrationEmailService::email
+     */
+    public function setEmail(string $email)
+    {
+        try {
+            $this->email = $email;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

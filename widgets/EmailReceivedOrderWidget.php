@@ -7,7 +7,8 @@ use yii\helpers\{Html,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\collections\PurchasesCollectionInterface;
-use app\forms\CustomerInfoForm;
+use app\forms\{AbstractBaseForm,
+    CustomerInfoForm};
 use app\finders\{DeliveryIdFinder,
     PaymentIdFinder};
 use app\models\CurrencyInterface;
@@ -22,7 +23,7 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
      */
     private $purchases;
     /**
-     * @var CustomerInfoForm
+     * @var AbstractBaseForm
      */
     private $form;
     /**
@@ -118,10 +119,10 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CustomerInfoForm свойству EmailReceivedOrderWidget::form
-     * @param CustomerInfoForm $form
+     * Присваивает AbstractBaseForm свойству EmailReceivedOrderWidget::form
+     * @param AbstractBaseForm $form
      */
-    public function setForm(CustomerInfoForm $form)
+    public function setForm(AbstractBaseForm $form)
     {
         try {
             $this->form = $form;

@@ -13,6 +13,11 @@ use app\tests\sources\fixtures\{ColorsFixture,
     ProductsFixture,
     ProductsSizesFixture};
 use app\helpers\HashHelper;
+use app\collections\{PurchasesCollection,
+    PurchasesCollectionInterface};
+use app\forms\AbstractBaseForm;
+use app\models\{CurrencyInterface,
+    CurrencyModel};
 
 /**
  * Тестирует класс ReceivedOrderEmailService
@@ -20,6 +25,7 @@ use app\helpers\HashHelper;
 class ReceivedOrderEmailServiceTests extends TestCase
 {
     private static $dbClass;
+    private $service;
     
     public static function setUpBeforeClass()
     {
@@ -39,62 +45,224 @@ class ReceivedOrderEmailServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->service = new ReceivedOrderEmailService();
     }
     
     /**
-     * Тестирует метод ReceivedOrderEmailService::handle
+     * Тестирует метод ReceivedOrderEmailService::setEmail
+     */
+    public function testSetEmail()
+    {
+        $this->service->setEmail('mail@email.com');
+        
+        $reflection = new \ReflectionProperty($this->service, 'email');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->service);
+        
+        $this->assertEquals('mail@email.com', $result);
+    }
+    
+    /**
+     * Тестирует метод ReceivedOrderEmailService::setOrdersCollection
+     */
+    public function testSetOrdersCollection()
+    {
+        $this->service->setOrdersCollection(new class() extends PurchasesCollection {});
+        
+        $reflection = new \ReflectionProperty($this->service, 'ordersCollection');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->service);
+        
+        $this->assertInstanceOf(PurchasesCollectionInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод ReceivedOrderEmailService::setCustomerInfoForm
+     */
+    public function testSetCustomerInfoForm()
+    {
+        $this->service->setCustomerInfoForm(new class() extends AbstractBaseForm {});
+        
+        $reflection = new \ReflectionProperty($this->service, 'customerInfoForm');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->service);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result);
+    }
+    
+    /**
+     * Тестирует метод ReceivedOrderEmailService::setCurrentCurrencyModel
+     */
+    public function testSetCurrentCurrencyModel()
+    {
+        $this->service->setCurrentCurrencyModel(new class() extends CurrencyModel {});
+        
+        $reflection = new \ReflectionProperty($this->service, 'currentCurrencyModel');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->service);
+        
+        $this->assertInstanceOf(CurrencyInterface::class, $result);
+    }
+    
+    /**
+     * Тестирует метод ReceivedOrderEmailService::get
      * если пуст ReceivedOrderEmailService::email
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testHandleEmptyEmail()
     {
-        $request = [];
-        
-        $service = new ReceivedOrderEmailService();
-        $service->handle($request);
+        $this->service->get();
     }
     
     /**
-     * Тестирует метод ReceivedOrderEmailService::handle
+     * Тестирует метод ReceivedOrderEmailService::get
+     * если пуст ReceivedOrderEmailService::ordersCollection
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: ordersCollection
      */
-    public function testHandle()
+    public function testHandleEmptyOrdersCollection()
     {
-        $session = \Yii::$app->session;
-        $session->open();
+        $mock = new class() {};
         
-        $session->set(HashHelper::createCartKey(), [['quantity'=>2, 'id_color'=>2, 'id_size'=>2, 'id_product'=>1, 'price'=>268.78]]);
-        $session->set(HashHelper::createCartCustomerKey(), [
-            'name'=>'John',
-            'surname'=>'Doe',
-            'email'=>'jahn@com.com',
-            'phone'=>'+387968965',
-            'address'=>'ул. Черноозерная, 1',
-            'city'=>'Каркоза',
-            'country'=>'Гиады',
-            'postcode'=>'08789',
-            'id_delivery'=>1,
-            'id_payment'=>1,
-        ]);
+        $reflection = new \ReflectionProperty($this->service, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $mock);
+        
+        $this->service->get();
+    }
+    
+    /**
+     * Тестирует метод ReceivedOrderEmailService::get
+     * если пуст ReceivedOrderEmailService::customerInfoForm
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: customerInfoForm
+     */
+    public function testHandleEmptyCustomerInfoForm()
+    {
+        $mock = new class() {};
+        
+        $reflection = new \ReflectionProperty($this->service, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $mock);
+        
+        $reflection = new \ReflectionProperty($this->service, 'ordersCollection');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $mock);
+        
+        $this->service->get();
+    }
+    
+    /**
+     * Тестирует метод ReceivedOrderEmailService::get
+     * если пуст ReceivedOrderEmailService::currentCurrencyModel
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: currentCurrencyModel
+     */
+    public function testHandleEmptyCurrentCurrencyModel()
+    {
+        $mock = new class() {};
+        
+        $reflection = new \ReflectionProperty($this->service, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $mock);
+        
+        $reflection = new \ReflectionProperty($this->service, 'ordersCollection');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $mock);
+        
+        $reflection = new \ReflectionProperty($this->service, 'customerInfoForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $mock);
+        
+        $this->service->get();
+    }
+    
+    /**
+     * Тестирует метод ReceivedOrderEmailService::get
+     */
+    public function testGet()
+    {
+        $items = [
+            new class() {
+                public $product;
+                public $color;
+                public $size;
+                public $quantity = 2;
+                public $id_color = 1;
+                public $id_size = 2;
+                public $id_product = 1;
+                public $price = 268.78;
+                public function __construct()
+                {
+                    $this->product = new class() {
+                        public $seocode = 'seocode';
+                        public $name = 'name';
+                        public $short_description = 'short_description';
+                    };
+                    $this->color = new class() {
+                        public $color = 'color';
+                    };
+                    $this->size = new class() {
+                        public $size = 'size';
+                    };
+                }
+            },
+        ];
+        
+        $ordersCollection = new class() extends PurchasesCollection {
+            public $items = [];
+        };
+        $reflection = new \ReflectionProperty($ordersCollection, 'items');
+        $reflection->setAccessible(true);
+        $reflection->setValue($ordersCollection, $items);
+        
+        $customerInfoForm = new class() extends AbstractBaseForm {
+            public $name = 'John';
+            public $surname = 'Doe';
+            public $email = 'jahn@com.com';
+            public $phone = '+387968965';
+            public $address = 'ул. Черноозерная; 1';
+            public $city = 'Каркоза';
+            public $country = 'Гиады';
+            public $postcode = '08789';
+            public $id_delivery = 1;
+            public $id_payment = 1;
+        };
+        
+        $currentCurrencyModel = new class() extends CurrencyModel {
+            public $exchange_rate = 1.034;
+            public $code = 'MONEY';
+            
+        };
         
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');
-        
         $this->assertEmpty($files);
         
-        $request = ['email'=>'some@some.com'];
+        $reflection = new \ReflectionProperty($this->service, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, 'mail@mail.com');
         
-        $service = new ReceivedOrderEmailService();
-        $service->handle($request);
+        $reflection = new \ReflectionProperty($this->service, 'ordersCollection');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $ordersCollection);
+        
+        $reflection = new \ReflectionProperty($this->service, 'customerInfoForm');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $customerInfoForm);
+        
+        $reflection = new \ReflectionProperty($this->service, 'currentCurrencyModel');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, $currentCurrencyModel);
+        
+        $this->service->get();
         
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');
         
         $this->assertNotEmpty($files);
-        
-        $session->remove(HashHelper::createCartKey());
-        $session->remove(HashHelper::createCartCustomerKey());
-        $session->close();
     }
     
     public static function tearDownAfterClass()
