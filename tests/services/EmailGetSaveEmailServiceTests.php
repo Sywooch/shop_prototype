@@ -55,17 +55,41 @@ class EmailGetSaveEmailServiceTests extends TestCase
     }
     
     /**
+     * Тестирует метод EmailGetSaveEmailService::setEmail
+     * передаю неверный тип параметра
+     * @expectedException TypeError
+     */
+    public function testSetEmailError()
+    {
+        $service = new EmailGetSaveEmailService();
+        $service->setEmail([]);
+    }
+    
+    /**
+     * Тестирует метод EmailGetSaveEmailService::setEmail
+     */
+    public function testSetEmail()
+    {
+        $service = new EmailGetSaveEmailService();
+        $service->setEmail('email@mail.net');
+        
+        $reflection = new \ReflectionProperty($service, 'email');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($service);
+        
+        $this->assertEquals('email@mail.net', $result);
+    }
+    
+    /**
      * Тестирует метод EmailGetSaveEmailService::handle
      * если пуст EmailGetSaveEmailService::email
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: request
+     * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
     public function testHandleEmptyEmail()
     {
-        $request = [];
-        
         $service = new EmailGetSaveEmailService();
-        $service->handle($request);
+        $service->get();
     }
     
     /**
@@ -74,10 +98,13 @@ class EmailGetSaveEmailServiceTests extends TestCase
      */
     public function testHandleExistsEmail()
     {
-        $request = ['email'=>self::$dbClass->emails['email_1']['email']];
-        
         $service = new EmailGetSaveEmailService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, self::$dbClass->emails['email_1']['email']);
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(EmailsModel::class, $result);
     }
@@ -88,14 +115,17 @@ class EmailGetSaveEmailServiceTests extends TestCase
      */
     public function testHandleNotExistsEmail()
     {
-        $request = ['email'=>'new@email.com'];
-        
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails}} WHERE [[email]]=:email')->bindValue(':email', 'new@email.com')->queryOne();
         
         $this->assertEmpty($result);
         
         $service = new EmailGetSaveEmailService();
-        $result = $service->handle($request);
+        
+        $reflection = new \ReflectionProperty($service, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($service, 'new@email.com');
+        
+        $result = $service->get();
         
         $this->assertInstanceOf(EmailsModel::class, $result);
         

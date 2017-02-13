@@ -7,9 +7,9 @@ use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
-use app\services\{CartCheckoutAjaxFormService,
-    CartCheckoutAjaxService};
+use app\services\CartCheckoutAjaxService;
 use app\handlers\{CartAddRequestHandler,
+    CartCheckoutAjaxFormRequestHandler,
     CartCleanRequestHandler,
     CartCleanRedirectRequestHandler,
     CartDeleteRequestHandler,
@@ -49,14 +49,15 @@ class CartController extends Controller
                 'handler'=>new CartIndexRequestHandler(),
                 'view'=>'cart.twig'
             ],
-            /*'сheckout-ajax-form'=>[
+            'сheckout-ajax-form'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CartCheckoutAjaxFormService(),
+                'handler'=>new CartCheckoutAjaxFormRequestHandler(),
             ],
             'сheckout-ajax'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CartCheckoutAjaxService(),
-            ],*/
+                //'service'=>new CartCheckoutAjaxService(),
+                'handler'=>new CartCheckoutAjaxRequestHandler(),
+            ],
         ];
     }
     

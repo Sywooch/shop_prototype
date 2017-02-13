@@ -15,6 +15,10 @@ class EmailsModelTests extends TestCase
      */
     public function testProperties()
     {
+        $reflection = new \ReflectionClass(EmailsModel::class);
+        
+        $this->assertTrue($reflection->hasConstant('SAVE'));
+        
         $model = new EmailsModel();
         
         $this->assertArrayHasKey('id', $model->attributes);
@@ -29,5 +33,27 @@ class EmailsModelTests extends TestCase
         $result = EmailsModel::tableName();
         
         $this->assertSame('emails', $result);
+    }
+    
+    /**
+     * Тестирует метод EmailsModel::rules
+     */
+    public function testRules()
+    {
+        $model = new EmailsModel(['scenario'=>EmailsModel::SAVE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(1, $model->errors);
+        
+        $model = new EmailsModel(['scenario'=>EmailsModel::SAVE]);
+        $model->attributes = [
+            'email'=>'email'
+        ];
+        
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
 }

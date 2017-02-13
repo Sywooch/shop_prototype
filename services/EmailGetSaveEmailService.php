@@ -27,24 +27,25 @@ class EmailGetSaveEmailService extends AbstractBaseService
      * Возвращает EmailsModel по email
      * Первый запрос отправляет в СУБД, 
      * если данных нет, конструирует и сохраняет новый объект
-     * @param array $request
      * @return EmailsModel
      */
-    public function handle($request): EmailsModel
+    public function get(): EmailsModel
     {
         try {
-            if (empty($request['email'])) {
-                throw new ErrorException($this->emptyError('request'));
+            if (empty($this->email)) {
+                throw new ErrorException($this->emptyError('email'));
             }
             
             if (empty($this->emailsModel)) {
-                $this->email = $request['email'];
-                
                 $emailsModel = $this->getEmail();
                 
                 if ($emailsModel === null) {
-                    $rawEmailsModel = new EmailsModel();
+                    $rawEmailsModel = new EmailsModel(['scenario'=>EmailsModel::SAVE]);
                     $rawEmailsModel->email = $this->email;
+                    if ($rawEmailsModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawEmailsModel->errors));
+                    }
+                    
                     $saver = new ModelSaver([
                         'model'=>$rawEmailsModel
                     ]);
@@ -73,10 +74,25 @@ class EmailGetSaveEmailService extends AbstractBaseService
     private function getEmail()
     {
         try {
-            $finder = \Yii::$app->registry->get(EmailEmailFinder::class, ['email'=>$this->email]);
+            $finder = \Yii::$app->registry->get(EmailEmailFinder::class, [
+                'email'=>$this->email
+            ]);
             $emailsModel = $finder->find();
             
             return $emailsModel;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение EmailGetSaveEmailService::email
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        try {
+            $this->email = $email;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
