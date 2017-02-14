@@ -5,8 +5,8 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\AjaxAction;
-use app\services\CsvGetProductsService;
-use app\handlers\CsvGetOrdersRequestHandler;
+use app\handlers\{CsvGetOrdersRequestHandler,
+    CsvGetProductsRequestHandler};
 
 /**
  * Обрабатывает запросы на обработку данных с применением csv
@@ -20,10 +20,10 @@ class CsvController extends Controller
                 'class'=>AjaxAction::class,
                 'handler'=>new CsvGetOrdersRequestHandler(),
             ],
-            /*'get-products'=>[
+            'get-products'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CsvGetProductsService(),
-            ],*/
+                'handler'=>new CsvGetProductsRequestHandler(),
+            ],
         ];
     }
     

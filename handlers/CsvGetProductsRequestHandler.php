@@ -1,6 +1,6 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
@@ -9,14 +9,16 @@ use yii\db\ActiveRecord;
 use yii\helpers\{ArrayHelper,
     Html,
     Url};
-use app\services\{AbstractBaseService,
-    AdminProductsCsvArrayService,
-    GetCurrentCurrencyModelService};
+use app\handlers\AbstractBaseHandler;
+use app\finders\{AdminProductsCsvFinder,
+    AdminProductsFiltersSessionFinder};
+use app\models\CurrencyInterface;
+use app\helpers\HashHelper;
 
 /**
  * Обрабатывает запрос на сохранение заказов в формате csv
  */
-class CsvGetProductsService extends AbstractBaseService
+class CsvGetProductsRequestHandler extends AbstractBaseHandler
 {
     /**
      * @var string путь к файлу
@@ -41,13 +43,20 @@ class CsvGetProductsService extends AbstractBaseService
                 $this->path = \Yii::getAlias(sprintf('%s/products/%s', '@csvroot', $filename));
                 $this->file = fopen($this->path, 'w');
                 
-                $service = \Yii::$app->registry->get(AdminProductsCsvArrayService::class);
-                $productsQuery = $service->handle();
+                $finder = \Yii::$app->registry->get(AdminProductsFiltersSessionFinder::class, [
+                    'key'=>HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]),
+                ]);
+                $filtersModel = $finder->find();
+                
+                $finder = \Yii::$app->registry->get(AdminProductsCsvFinder::class, [
+                    'filters'=>$filtersModel
+                ]);
+                $productsQuery = $finder->find();
                 
                 $this->writeHeaders();
                 
                 foreach ($productsQuery->each(10) as $product) {
-                    $this->writeOrder($product);
+                    $this->writeProduct($product);
                 }
                 
                 fclose($this->file);
@@ -96,12 +105,9 @@ class CsvGetProductsService extends AbstractBaseService
      * Пишет данные заказов
      * @param ActiveRecord $product
      */
-    private function writeOrder(ActiveRecord $product)
+    private function writeProduct(ActiveRecord $product)
     {
         try {
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
-            $currencyModel = $service->handle();
-            
             $array = [];
             
             $array[] = $product->id;
@@ -114,15 +120,13 @@ class CsvGetProductsService extends AbstractBaseService
             $array[] = $product->images;
             $array[] = $product->category->name;
             $array[] = $product->subcategory->name;
-            
             $array[] = implode(', ', ArrayHelper::getColumn($product->colors, 'color'));
             $array[] = implode(', ', ArrayHelper::getColumn($product->sizes, 'size'));
-            
             $array[] = $product->brand->brand;
             $array[] = $product->active;
             $array[] = $product->total_products;
             $array[] = $product->seocode;
-            $array[] = $product-> 	views;
+            $array[] = $product->views;
             
             $this->write($array);
         } catch (\Throwable $t) {

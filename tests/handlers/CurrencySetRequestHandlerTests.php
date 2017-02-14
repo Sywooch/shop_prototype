@@ -1,18 +1,20 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CurrencySetService;
+use app\handlers\CurrencySetRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
+use app\helpers\HashHelper;
 
 /**
- * Тестирует класс CurrencySetService
+ * Тестирует класс CurrencySetRequestHandler
  */
-class CurrencySetServiceTests extends TestCase
+class CurrencySetRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -24,8 +26,13 @@ class CurrencySetServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        $this->handler = new CurrencySetRequestHandler();
+    }
+    
     /**
-     * Тестирует метод CurrencySetService::handle
+     * Тестирует метод CurrencySetRequestHandler::handle
      * если не POST
      * @expectedException ErrorException
      * @expectedExceptionMessage Получен неверный тип данных вместо: POST
@@ -36,12 +43,11 @@ class CurrencySetServiceTests extends TestCase
             public $isPost = false;
         };
         
-        $service = new CurrencySetService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод CurrencySetService::handle
+     * Тестирует метод CurrencySetRequestHandler::handle
      * если POST пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: POST
@@ -56,12 +62,11 @@ class CurrencySetServiceTests extends TestCase
             }
         };
         
-        $service = new CurrencySetService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод CurrencySetService::handle
+     * Тестирует метод CurrencySetRequestHandler::handle
      * если данные не валидны
      * @expectedException ErrorException
      * @expectedExceptionMessage Необходимо заполнить «Url»
@@ -81,15 +86,20 @@ class CurrencySetServiceTests extends TestCase
             }
         };
         
-        $service = new CurrencySetService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод CurrencySetService::handle
+     * Тестирует метод CurrencySetRequestHandler::handle
      */
     public function testHandle()
     {
+        $key = HashHelper::createCurrencyKey();
+        
+        $session = \Yii::$app->session;
+        $session->open();
+        $this->assertFalse($session->has($key));
+        
         $request = new class() {
             public $isPost = true;
             public function post($name = null, $defaultValue = null)
@@ -103,11 +113,15 @@ class CurrencySetServiceTests extends TestCase
             }
         };
         
-        $service = new CurrencySetService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertEquals('https://shop.com', $result);
+        
+        $this->assertTrue($session->has($key));
+        
+        $session->remove($key);
+        $session->close();
     }
     
     public static function tearDownAfterClass()

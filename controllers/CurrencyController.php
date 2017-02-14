@@ -5,7 +5,7 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\RedirectAction;
-use app\services\CurrencySetService;
+use app\handlers\CurrencySetRequestHandler;
 
 /**
  * Обрабатывает запросы на изменение текущей валюты
@@ -17,7 +17,7 @@ class CurrencyController extends Controller
         return [
             'set'=>[
                 'class'=>RedirectAction::class,
-                'service'=>new CurrencySetService()
+                'handler'=>new CurrencySetRequestHandler()
             ],
         ];
     }

@@ -9,6 +9,7 @@ use app\actions\{AjaxAction,
     RedirectAction};
 use app\handlers\{CartAddRequestHandler,
     CartCheckoutAjaxFormRequestHandler,
+    CartCheckoutAjaxRequestHandler,
     CartCleanRequestHandler,
     CartCleanRedirectRequestHandler,
     CartDeleteRequestHandler,

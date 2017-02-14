@@ -1,9 +1,9 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
-use app\services\AbstractBaseService;
+use app\handlers\AbstractBaseHandler;
 use app\forms\ChangeCurrencyForm;
 use app\helpers\HashHelper;
 use app\savers\SessionModelSaver;
@@ -12,7 +12,7 @@ use app\finders\CurrencyIdFinder;
 /**
  * Обновляет текущую валюту
  */
-class CurrencySetService extends AbstractBaseService
+class CurrencySetRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на изменение текущей валюты
@@ -34,9 +34,10 @@ class CurrencySetService extends AbstractBaseService
                 throw new ErrorException($this->modelError($form->errors));
             }
             
-            $finder = \Yii::$app->registry->get(CurrencyIdFinder::class, ['id'=>$form->id]);
+            $finder = \Yii::$app->registry->get(CurrencyIdFinder::class, [
+                'id'=>$form->id
+            ]);
             $currencyModel = $finder->find();
-            
             if (empty($currencyModel)) {
                 throw new ErrorException($this->emptyError('currencyModel'));
             }

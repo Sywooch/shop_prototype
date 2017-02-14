@@ -1,20 +1,21 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CsvGetProductsService;
+use app\handlers\CsvGetProductsRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     ProductsFixture};
 use app\models\ProductsModel;
 
 /**
- * Тестирует класс CsvGetProductsService
+ * Тестирует класс CsvGetProductsRequestHandler
  */
-class CsvGetProductsServiceTests extends TestCase
+class CsvGetProductsRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -27,84 +28,81 @@ class CsvGetProductsServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        $this->handler = new CsvGetProductsRequestHandler();
+    }
+    
     /**
-     * Тестирует свойства CsvGetProductsService
+     * Тестирует свойства CsvGetProductsRequestHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(CsvGetProductsService::class);
+        $reflection = new \ReflectionClass(CsvGetProductsRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('path'));
         $this->assertTrue($reflection->hasProperty('file'));
     }
     
     /**
-     * Тестирует метод CsvGetProductsService::writeHeaders
+     * Тестирует метод CsvGetProductsRequestHandler::writeHeaders
      */
     public function testWriteHeaders()
     {
-        $service = new CsvGetProductsService();
-        
-        $reflection = new \ReflectionProperty($service, 'file');
+        $reflection = new \ReflectionProperty($this->handler, 'file');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, fopen(\Yii::getAlias('@csvroot/products/test.csv'), 'w'));
+        $reflection->setValue($this->handler, fopen(\Yii::getAlias('@csvroot/products/test.csv'), 'w'));
         
-        $reflection = new \ReflectionMethod($service, 'writeHeaders');
+        $reflection = new \ReflectionMethod($this->handler, 'writeHeaders');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
+        $result = $reflection->invoke($this->handler);
         
         $files = glob(\Yii::getAlias('@csvroot/products/*.csv'));
         $this->assertNotEmpty($files);
     }
     
     /**
-     * Тестирует метод CsvGetProductsService::writeOrder
+     * Тестирует метод CsvGetProductsRequestHandler::writeProduct
      */
-    public function testWriteOrder()
+    public function testWriteProduct()
     {
-        $service = new CsvGetProductsService();
-        
-        $reflection = new \ReflectionProperty($service, 'file');
+        $reflection = new \ReflectionProperty($this->handler, 'file');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, fopen(\Yii::getAlias('@csvroot/products/test.csv'), 'w'));
+        $reflection->setValue($this->handler, fopen(\Yii::getAlias('@csvroot/products/test.csv'), 'w'));
         
-        $reflection = new \ReflectionMethod($service, 'writeOrder');
+        $reflection = new \ReflectionMethod($this->handler, 'writeProduct');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, ProductsModel::findOne(1));
+        $result = $reflection->invoke($this->handler, ProductsModel::findOne(1));
         
         $files = glob(\Yii::getAlias('@csvroot/products/*.csv'));
         $this->assertNotEmpty($files);
     }
     
     /**
-     * Тестирует метод CsvGetProductsService::write
+     * Тестирует метод CsvGetProductsRequestHandler::write
      */
     public function testWrite()
     {
-        $service = new CsvGetProductsService();
-        
-        $reflection = new \ReflectionProperty($service, 'file');
+        $reflection = new \ReflectionProperty($this->handler, 'file');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, fopen(\Yii::getAlias('@csvroot/products/test.csv'), 'w'));
+        $reflection->setValue($this->handler, fopen(\Yii::getAlias('@csvroot/products/test.csv'), 'w'));
         
-        $reflection = new \ReflectionMethod($service, 'write');
+        $reflection = new \ReflectionMethod($this->handler, 'write');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($service, ['One', 2, 'Two']);
+        $result = $reflection->invoke($this->handler, ['One', 2, 'Two']);
         
         $files = glob(\Yii::getAlias('@csvroot/products/*.csv'));
         $this->assertNotEmpty($files);
     }
     
     /**
-     * Тестирует метод CsvGetProductsService::cleanCsv
+     * Тестирует метод CsvGetProductsRequestHandler::cleanCsv
      */
     public function testCleanCsv()
     {
-        $service = new CsvGetProductsService();
-        
-        $reflection = new \ReflectionProperty($service, 'path');
+        $reflection = new \ReflectionProperty($this->handler, 'path');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, \Yii::getAlias('@csvroot/products/test.csv'));
+        $reflection->setValue($this->handler, \Yii::getAlias('@csvroot/products/test.csv'));
         
         $file = fopen(\Yii::getAlias('@csvroot/products/test.csv'), 'w');
         fclose($file);
@@ -112,16 +110,16 @@ class CsvGetProductsServiceTests extends TestCase
         $files = glob(\Yii::getAlias('@csvroot/products/*.csv'));
         $this->assertNotEmpty($files);
         
-        $reflection = new \ReflectionMethod($service, 'cleanCsv');
+        $reflection = new \ReflectionMethod($this->handler, 'cleanCsv');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($service);
+        $result = $reflection->invoke($this->handler);
         
         $files = glob(\Yii::getAlias('@csvroot/products/*.csv'));
         $this->assertEmpty($files);
     }
     
     /**
-     * Тестирует метод CsvGetProductsService::handle
+     * Тестирует метод CsvGetProductsRequestHandler::handle
      */
     public function testHandle()
     {
@@ -129,8 +127,7 @@ class CsvGetProductsServiceTests extends TestCase
             public $isAjax = true;
         };
         
-        $service = new CsvGetProductsService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertRegExp('#<a href=".+\.csv">.+\.csv</a>#', $result);
