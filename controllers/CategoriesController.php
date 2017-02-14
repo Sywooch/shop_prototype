@@ -5,7 +5,7 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\AjaxAction;
-use app\services\CategoriesGetSubcategoryService;
+use app\handlers\CategoriesGetSubcategoryRequestHandler;
 
 /**
  * Обрабатывает запросы, связанные с категориями товаров
@@ -17,7 +17,7 @@ class CategoriesController extends Controller
         return [
             'get-subcategory'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new CategoriesGetSubcategoryService(),
+                'handler'=>new CategoriesGetSubcategoryRequestHandler(),
             ],
         ];
     }

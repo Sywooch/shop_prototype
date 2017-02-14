@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CartCheckoutAjaxService;
+use app\handlers\CartCheckoutAjaxRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{AddressFixture,
     CitiesFixture,
@@ -27,11 +27,12 @@ use app\helpers\HashHelper;
 use app\models\UsersModel;
 
 /**
- * Тестирует класс CartCheckoutAjaxService
+ * Тестирует класс CartCheckoutAjaxRequestHandler
  */
-class CartCheckoutAjaxServiceTests extends TestCase
+class CartCheckoutAjaxRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -63,10 +64,12 @@ class CartCheckoutAjaxServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new CartCheckoutAjaxRequestHandler();
     }
     
     /**
-     * Тестирует метод CartCheckoutAjaxService::handle
+     * Тестирует метод CartCheckoutAjaxRequestHandler::handle
      * если запрос с ошибками
      */
     public function testHandleErrors()
@@ -92,17 +95,14 @@ class CartCheckoutAjaxServiceTests extends TestCase
             }
         };
         
-        $service = new CartCheckoutAjaxService();
-        
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('customerinfoform-name', $result);
     }
     
     /**
-     * Тестирует метод CartCheckoutAjaxService::handle
+     * Тестирует метод CartCheckoutAjaxRequestHandler::handle
      * если данные уже в СУБД
      */
     public function testHandleExists()
@@ -168,8 +168,7 @@ class CartCheckoutAjaxServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'id_payment');
         $reflection->setValue($request, self::$dbClass->payments['payment_1']['id']);
         
-        $service = new CartCheckoutAjaxService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
@@ -189,7 +188,7 @@ class CartCheckoutAjaxServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CartCheckoutAjaxService::handle
+     * Тестирует метод CartCheckoutAjaxRequestHandler::handle
      * если входящие данные новые
      */
     public function testHandleNotExists()
@@ -225,8 +224,7 @@ class CartCheckoutAjaxServiceTests extends TestCase
             }
         };
         
-        $service = new CartCheckoutAjaxService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
@@ -246,7 +244,7 @@ class CartCheckoutAjaxServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CartCheckoutAjaxService::handle
+     * Тестирует метод CartCheckoutAjaxRequestHandler::handle
      * если одновременно создаю пользователя
      */
     public function testHandleWithUser()
@@ -285,8 +283,7 @@ class CartCheckoutAjaxServiceTests extends TestCase
             }
         };
         
-        $service = new CartCheckoutAjaxService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
@@ -307,7 +304,7 @@ class CartCheckoutAjaxServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CartCheckoutAjaxService::handle
+     * Тестирует метод CartCheckoutAjaxRequestHandler::handle
      * если одновременно обновляю данные пользователя
      * @depends testHandleWithUser
      */
@@ -359,8 +356,7 @@ class CartCheckoutAjaxServiceTests extends TestCase
             }
         };
         
-        $service = new CartCheckoutAjaxService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);

@@ -93,7 +93,7 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                         ]);
                         $postcodesModel = $service->get();
                         
-                        if ((bool) $form->create === true) {
+                        if ((bool) $form->create === true && \Yii::$app->user->isGuest === true) {
                             $rawUsersModel = new UsersModel(['scenario'=>UsersModel::SAVE]);
                             $rawUsersModel->id_email = $emailsModel->id;
                             $rawUsersModel->password = password_hash($form->password, PASSWORD_DEFAULT);
@@ -124,26 +124,24 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                             $newUsersModel = $finder->find();
                         }
                         
-                        if ((bool) $form->change === true) {
-                            if (\Yii::$app->user->isGuest === false) {
-                                $usersModel = \Yii::$app->user->identity;
-                                $usersModel->scenario = UsersModel::UPDATE;
-                                $usersModel->id_name = $namesModel->id;
-                                $usersModel->id_surname = $surnamesModel->id;
-                                $usersModel->id_phone = $phonesModel->id;
-                                $usersModel->id_address = $addressModel->id;
-                                $usersModel->id_city = $citiesModel->id;
-                                $usersModel->id_country = $countriesModel->id;
-                                $usersModel->id_postcode = $postcodesModel->id;
-                                if ($usersModel->validate() === false) {
-                                    throw new ErrorException($this->modelError($usersModel->errors));
-                                }
-                                
-                                $saver = new ModelSaver([
-                                    'model'=>$usersModel
-                                ]);
-                                $saver->save();
+                        if ((bool) $form->change === true && \Yii::$app->user->isGuest === false) {
+                            $usersModel = \Yii::$app->user->identity;
+                            $usersModel->scenario = UsersModel::UPDATE;
+                            $usersModel->id_name = $namesModel->id;
+                            $usersModel->id_surname = $surnamesModel->id;
+                            $usersModel->id_phone = $phonesModel->id;
+                            $usersModel->id_address = $addressModel->id;
+                            $usersModel->id_city = $citiesModel->id;
+                            $usersModel->id_country = $countriesModel->id;
+                            $usersModel->id_postcode = $postcodesModel->id;
+                            if ($usersModel->validate() === false) {
+                                throw new ErrorException($this->modelError($usersModel->errors));
                             }
+                            
+                            $saver = new ModelSaver([
+                                'model'=>$usersModel
+                            ]);
+                            $saver->save();
                         }
                         
                         $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [

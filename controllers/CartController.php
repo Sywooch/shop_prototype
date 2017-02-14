@@ -7,7 +7,6 @@ use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
-use app\services\CartCheckoutAjaxService;
 use app\handlers\{CartAddRequestHandler,
     CartCheckoutAjaxFormRequestHandler,
     CartCleanRequestHandler,
@@ -55,7 +54,6 @@ class CartController extends Controller
             ],
             'сheckout-ajax'=>[
                 'class'=>AjaxAction::class,
-                //'service'=>new CartCheckoutAjaxService(),
                 'handler'=>new CartCheckoutAjaxRequestHandler(),
             ],
         ];
