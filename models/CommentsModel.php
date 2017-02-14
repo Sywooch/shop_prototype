@@ -12,6 +12,11 @@ use app\models\NamesModel;
 class CommentsModel extends AbstractBaseModel
 {
     /**
+     * Сценарий сохранения нового комментария
+     */
+    const SAVE = 'save';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -22,6 +27,20 @@ class CommentsModel extends AbstractBaseModel
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
+    }
+    
+    public function scenarios()
+    {
+        return [
+            self::SAVE=>['date', 'text', 'id_name', 'id_email', 'id_product'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['date', 'text', 'id_name', 'id_email', 'id_product'], 'required', 'on'=>self::SAVE],
+        ];
     }
     
     /**

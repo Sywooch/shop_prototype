@@ -88,15 +88,17 @@ class AdminOrdersRequestHandlerTests extends TestCase
     {
         $reflection = new \ReflectionMethod($this->handler, 'adminCsvOrdersFormWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler);
+        $result = $reflection->invoke($this->handler, true);
         
         $this->assertInternalType('array', $result);
         
         $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('template', $result);
+        $this->assertArrayHasKey('isAllowed', $result);
         
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
+        $this->assertInternalType('bool', $result['isAllowed']);
     }
     
     /**

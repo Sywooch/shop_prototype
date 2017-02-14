@@ -30,6 +30,10 @@ class CommentsModelTests extends TestCase
      */
     public function testProperties()
     {
+        $reflection = new \ReflectionClass(CommentsModel::class);
+        
+        $this->assertTrue($reflection->hasConstant('SAVE'));
+        
         $model = new CommentsModel();
         
         $this->assertArrayHasKey('id', $model->attributes);
@@ -52,9 +56,55 @@ class CommentsModelTests extends TestCase
     }
     
     /**
+     * Тестирует метод CommentsModel::scenarios
+     */
+    public function testScenarios()
+    {
+        $model = new CommentsModel(['scenario'=>CommentsModel::SAVE]);
+        $model->attributes = [
+            'date'=>time(), 
+            'text'=>'text', 
+            'id_name'=>1, 
+            'id_email'=>1, 
+            'id_product'=>1
+        ];
+        
+        $this->assertEquals(time(), $model->date);
+        $this->assertEquals('text', $model->text);
+        $this->assertEquals(1, $model->id_name);
+        $this->assertEquals(1, $model->id_email);
+        $this->assertEquals(1, $model->id_product);
+    }
+    
+    /**
+     * Тестирует метод CommentsModel::rules
+     */
+    public function testRules()
+    {
+        $model = new CommentsModel(['scenario'=>CommentsModel::SAVE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertNotEmpty($model->errors);
+        $this->assertCount(5, $model->errors);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::SAVE]);
+        $model->attributes = [
+            'date'=>time(), 
+            'text'=>'text', 
+            'id_name'=>1, 
+            'id_email'=>1, 
+            'id_product'=>1
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+    }
+    
+    /**
      * Тестирует метод CommentsModel::getName
      */
-    public function testGetColors()
+    public function testGetName()
     {
         $model = new CommentsModel();
         $model->id_name = 1;

@@ -84,7 +84,7 @@ class AdminOrdersRequestHandler extends AbstractBaseHandler
                 $dataArray['оrdersFiltersWidgetConfig'] = $this->оrdersFiltersWidgetConfig($sortingTypesArray, $statusesArray, $ordersFiltersForm);
                 $dataArray['adminOrdersWidgetConfig'] = $this->adminOrdersWidgetConfig($ordersCollection->asArray(), $adminChangeOrderForm, $currentCurrencyModel);
                 $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($ordersCollection->pagination);
-                $dataArray['adminCsvOrdersFormWidgetConfig'] = $this->adminCsvOrdersFormWidgetConfig();
+                $dataArray['adminCsvOrdersFormWidgetConfig'] = $this->adminCsvOrdersFormWidgetConfig($ordersCollection->isEmpty() ? false : true);
                 
                 $this->dataArray = $dataArray;
             }
@@ -123,15 +123,17 @@ class AdminOrdersRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AdminCsvOrdersFormWidget
+     * @param bool $isAllowed
      * @return array
      */
-    private function adminCsvOrdersFormWidgetConfig(): array
+    private function adminCsvOrdersFormWidgetConfig(bool $isAllowed): array
     {
         try {
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Download selected orders in csv format');
             $dataArray['template'] = 'admin-csv-orders-form.twig';
+            $dataArray['isAllowed'] = $isAllowed;
             
             return $dataArray;
         } catch (\Throwable $t) {

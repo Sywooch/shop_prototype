@@ -1,12 +1,12 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
-use app\services\{AbstractBaseService,
-    EmailGetSaveEmailService,
+use app\handlers\AbstractBaseHandler;
+use app\services\{EmailGetSaveEmailService,
     NameGetSaveNameService};
 use app\forms\CommentForm;
 use app\savers\ModelSaver;
@@ -16,7 +16,7 @@ use app\models\CommentsModel;
 /**
  * Сохраняет новый комментарий
  */
-class CommentSaveService extends AbstractBaseService
+class CommentSaveRequestHandler extends AbstractBaseHandler
 {
     /**
      * Обрабатывает запрос на сохранение нового комментария
@@ -39,27 +39,36 @@ class CommentSaveService extends AbstractBaseService
                     $transaction  = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $service = \Yii::$app->registry->get(EmailGetSaveEmailService::class);
-                        $emailsModel = $service->handle(['email'=>$form->email]);
+                        $service = \Yii::$app->registry->get(EmailGetSaveEmailService::class, [
+                            'email'=>$form->email
+                        ]);
+                        $emailsModel = $service->get();
                         
-                        $service = \Yii::$app->registry->get(NameGetSaveNameService::class);
-                        $namesModel = $service->handle(['name'=>$form->name]);
+                        $service = \Yii::$app->registry->get(NameGetSaveNameService::class, [
+                            'name'=>$form->name
+                        ]);
+                        $namesModel = $service->get();
                         
-                        $rawCommentsModel = new CommentsModel();
+                        $rawCommentsModel = new CommentsModel(['scenario'=>CommentsModel::SAVE]);
                         $rawCommentsModel->date = time();
                         $rawCommentsModel->text = $form->text;
                         $rawCommentsModel->id_name = $namesModel->id;
                         $rawCommentsModel->id_email = $emailsModel->id;
                         $rawCommentsModel->id_product = $form->id_product;
+                        if ($rawCommentsModel->validate() === false) {
+                            throw new ErrorException($this->modelError($rawCommentsModel->errors));
+                        }
                         
                         $saver = new ModelSaver([
                             'model'=>$rawCommentsModel
                         ]);
                         $saver->save();
                         
+                        $response = CommentSaveSuccessWidget::widget(['template'=>'comment-save-success.twig']);
+                        
                         $transaction->commit();
                         
-                        return CommentSaveSuccessWidget::widget(['template'=>'comment-save-success.twig']);
+                        return $response;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

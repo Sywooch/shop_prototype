@@ -1,21 +1,23 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
-use yii\widgets\ActiveForm;
 use yii\db\ActiveRecord;
 use yii\helpers\{Html,
     Url};
-use app\services\{AbstractBaseService,
-    AdminOrdersCsvArrayService,
-    GetCurrentCurrencyModelService};
+use app\handlers\AbstractBaseHandler;
+use app\services\GetCurrentCurrencyModelService;
+use app\helpers\HashHelper;
+use app\finders\{AdminOrdersCsvFinder,
+    OrdersFiltersSessionFinder};
+use app\models\CurrencyInterface;
 
 /**
  * Обрабатывает запрос на сохранение заказов в формате csv
  */
-class CsvGetOrdersService extends AbstractBaseService
+class CsvGetOrdersRequestHandler extends AbstractBaseHandler
 {
     /**
      * @var string путь к файлу
@@ -40,13 +42,28 @@ class CsvGetOrdersService extends AbstractBaseService
                 $this->path = \Yii::getAlias(sprintf('%s/orders/%s', '@csvroot', $filename));
                 $this->file = fopen($this->path, 'w');
                 
-                $service = \Yii::$app->registry->get(AdminOrdersCsvArrayService::class);
-                $ordersQuery = $service->handle();
+                $finder = \Yii::$app->registry->get(OrdersFiltersSessionFinder::class, [
+                    'key'=>HashHelper::createHash([\Yii::$app->params['ordersFilters']])
+                ]);
+                $filtersModel = $finder->find();
+                
+                $finder = \Yii::$app->registry->get(AdminOrdersCsvFinder::class, [
+                    'filters'=>$filtersModel
+                ]);
+                $ordersQuery = $finder->find();
+                
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
                 
                 $this->writeHeaders();
                 
                 foreach ($ordersQuery->each(10) as $order) {
-                    $this->writeOrder($order);
+                    $this->writeOrder($order, $currentCurrencyModel);
                 }
                 
                 fclose($this->file);
@@ -100,13 +117,11 @@ class CsvGetOrdersService extends AbstractBaseService
     /**
      * Пишет данные заказов
      * @param ActiveRecord $order
+     * @param CurrencyInterface $currentCurrencyModel
      */
-    private function writeOrder(ActiveRecord $order)
+    private function writeOrder(ActiveRecord $order, CurrencyInterface $currentCurrencyModel)
     {
         try {
-            $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class);
-            $currencyModel = $service->handle();
-            
             $array = [];
             
             $array[] = $order->id;
@@ -121,8 +136,8 @@ class CsvGetOrdersService extends AbstractBaseService
             $array[] = $order->postcode->postcode;
             $array[] = $order->id_product;
             $array[] = $order->quantity;
-            $array[] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($order->price * $currencyModel->exchangeRate(), 2), $currencyModel->code());
-            $array[] = sprintf('%s %s', \Yii::$app->formatter->asDecimal(($order->price * $order->quantity) * $currencyModel->exchangeRate(), 2), $currencyModel->code());
+            $array[] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($order->price * $currentCurrencyModel->exchangeRate(), 2), $currentCurrencyModel->code());
+            $array[] = sprintf('%s %s', \Yii::$app->formatter->asDecimal(($order->price * $order->quantity) * $currentCurrencyModel->exchangeRate(), 2), $currentCurrencyModel->code());
             $array[] = $order->color->color;
             $array[] = $order->size->size;
             $array[] = $order->delivery->description;

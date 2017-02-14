@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\CommentSaveService;
+use app\handlers\CommentSaveRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CommentsFixture,
     EmailsFixture,
@@ -12,11 +12,12 @@ use app\tests\sources\fixtures\{CommentsFixture,
 use app\forms\CommentForm;
 
 /**
- * Тестирует класс CommentSaveService
+ * Тестирует класс CommentSaveRequestHandler
  */
-class CommentSaveServiceTests extends TestCase
+class CommentSaveRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -31,8 +32,13 @@ class CommentSaveServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        $this->handler = new CommentSaveRequestHandler();
+    }
+    
     /**
-     * Тестирует метод CommentSaveService::handle
+     * Тестирует метод CommentSaveRequestHandler::handle
      * если запрос AJAX с ошибками
      */
     public function testHandleAjaxErrors()
@@ -62,9 +68,7 @@ class CommentSaveServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
-        $service = new CommentSaveService();
-        
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
@@ -72,7 +76,7 @@ class CommentSaveServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод CommentSaveService::handle
+     * Тестирует метод CommentSaveRequestHandler::handle
      * если запрос AJAX
      */
     public function testHandleAjax()
@@ -102,9 +106,7 @@ class CommentSaveServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
-        $service = new CommentSaveService();
-        
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertEquals('<p>Комментарий сохранен и будет доступен после проверки модератором. Спасибо!</p>', trim($result));
