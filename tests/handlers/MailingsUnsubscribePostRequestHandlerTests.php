@@ -1,20 +1,21 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\MailingsUnsubscribePostService;
+use app\handlers\MailingsUnsubscribePostRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{EmailsFixture,
     EmailsMailingsFixture};
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс MailingsUnsubscribePostService
+ * Тестирует класс MailingsUnsubscribePostRequestHandler
  */
-class MailingsUnsubscribePostServiceTests extends TestCase
+class MailingsUnsubscribePostRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -27,8 +28,33 @@ class MailingsUnsubscribePostServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        $this->handler = new MailingsUnsubscribePostRequestHandler();
+    }
+    
     /**
-     * Тестирует метод MailingsUnsubscribePostService::handle
+     * Тестирует метод MailingsUnsubscribePostRequestHandler::unsubscribeSuccessWidgetConfig
+     */
+    public function testUnsubscribeSuccessWidgetConfig()
+    {
+        $mailingsArray = [new class() {}];
+        
+        $reflection = new \ReflectionMethod($this->handler, 'unsubscribeSuccessWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $mailingsArray);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('mailings', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['mailings']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод MailingsUnsubscribePostRequestHandler::handle
      * если запрос AJAX с ошибками
      */
     public function testHandleAjaxErrors()
@@ -47,16 +73,14 @@ class MailingsUnsubscribePostServiceTests extends TestCase
             }
         };
         
-        $service = new MailingsUnsubscribePostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('mailingform-email', $result);
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribePostService::handle
+     * Тестирует метод MailingsUnsubscribePostRequestHandler::handle
      * если ключи не совпали
      */
     public function testHandleNotSameKeys()
@@ -75,15 +99,14 @@ class MailingsUnsubscribePostServiceTests extends TestCase
             }
         };
         
-        $service = new MailingsUnsubscribePostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribePostService::handle
+     * Тестирует метод MailingsUnsubscribePostRequestHandler::handle
      */
     public function testHandle()
     {
@@ -110,8 +133,7 @@ class MailingsUnsubscribePostServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'key');
         $reflection->setValue($request, HashHelper::createHash([self::$dbClass->emails['email_1']['email']]));
         
-        $service = new MailingsUnsubscribePostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);

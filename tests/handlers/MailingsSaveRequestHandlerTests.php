@@ -1,19 +1,20 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\MailingsSaveService;
+use app\handlers\MailingsSaveRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{EmailsFixture,
     EmailsMailingsFixture};
 
 /**
- * Тестирует класс MailingsSaveService
+ * Тестирует класс MailingsSaveRequestHandler
  */
-class MailingsSaveServiceTests extends TestCase
+class MailingsSaveRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -26,8 +27,33 @@ class MailingsSaveServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        $this->handler = new MailingsSaveRequestHandler();
+    }
+    
     /**
-     * Тестирует метод MailingsSaveService::handle
+     * Тестирует метод MailingsSaveRequestHandler::mailingsSuccessWidgetConfig
+     */
+    public function testMailingsSuccessWidgetConfig()
+    {
+        $mailingsArray = [new class() {}];
+        
+        $reflection = new \ReflectionMethod($this->handler, 'mailingsSuccessWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $mailingsArray);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('mailings', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['mailings']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод MailingsSaveRequestHandler::handle
      * если запрос AJAX с ошибками
      */
     public function testHandleAjaxErrors()
@@ -45,24 +71,19 @@ class MailingsSaveServiceTests extends TestCase
             }
         };
         
-        $service = new MailingsSaveService();
-        
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        
-        $this->assertArrayHasKey('mailingform-id', $result);
     }
     
     /**
-     * Тестирует метод MailingsSaveService::handle
+     * Тестирует метод MailingsSaveRequestHandler::handle
      */
     public function testHandleAjax()
     {
         \Yii::$app->db->createCommand('DELETE FROM {{emails_mailings}}')->execute();
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails_mailings}}')->queryAll();
-        
         $this->assertEmpty($result);
         
         $request = new class() {
@@ -81,8 +102,7 @@ class MailingsSaveServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
-        $service = new MailingsSaveService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);

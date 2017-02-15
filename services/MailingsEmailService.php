@@ -3,9 +3,9 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use app\services\{AbstractBaseService,
-    GetEmailMailingWidgetConfigService};
-use app\helpers\MailHelper;
+use app\services\AbstractBaseService;
+use app\helpers\{HashHelper,
+    MailHelper};
 use app\widgets\EmailMailingWidget;
 
 /**
@@ -14,26 +14,32 @@ use app\widgets\EmailMailingWidget;
 class MailingsEmailService extends AbstractBaseService
 {
     /**
-     * Обрабатывает запрос на отправку сообщения
-     * @param array $request
+     * @var string email для отправки сообщения
      */
-    public function handle($request)
+    private $email;
+    /**
+     * @var array MailingsModel
+     */
+    private $mailingsArray;
+    
+    /**
+     * Обрабатывает запрос на отправку сообщения
+     */
+    public function get()
     {
         try {
-            $email = $request['email'] ?? null;
-            $diffIdArray = $request['diffIdArray'] ?? null;
-            
-            if (empty($email)) {
+            if (empty($this->email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
-            if (empty($diffIdArray)) {
-                throw new ErrorException($this->emptyError('diffIdArray'));
+            if (empty($this->mailingsArray)) {
+                throw new ErrorException($this->emptyError('mailingsArray'));
             }
             
-            $service = \Yii::$app->registry->get(GetEmailMailingWidgetConfigService::class);
-            $emailMailingWidgetArray = $service->handle([
-                'diffIdArray'=>$diffIdArray,
-                'email'=>$email
+            $html = EmailMailingWidget::widget([
+                'mailings'=>$this->mailingsArray,
+                'email'=>$this->email,
+                'key'=>HashHelper::createHash([$this->email]),
+                'template'=>'email-mailings-subscribe-success.twig'
             ]);
             
             $mailHelper = new MailHelper([
@@ -42,7 +48,7 @@ class MailingsEmailService extends AbstractBaseService
                     //'to'=>$email,
                     'to'=>'timofey@localhost',
                     'subject'=>\Yii::t('base', 'Your subscription to shop.com'),
-                    'html'=>EmailMailingWidget::widget($emailMailingWidgetArray)
+                    'html'=>$html
                 ]
             ]);
             $sent = $mailHelper->send();
@@ -51,6 +57,33 @@ class MailingsEmailService extends AbstractBaseService
                 throw new ErrorException($this->methodError('sendEmail'));
             }
             
+            return $sent;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение MailingsEmailService::email
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        try {
+            $this->email = $email;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение MailingsEmailService::mailingsArray
+     * @param array $mailingsArray
+     */
+    public function setMailingsArray(array $mailingsArray)
+    {
+        try {
+            $this->mailingsArray = $mailingsArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

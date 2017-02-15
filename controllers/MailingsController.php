@@ -6,10 +6,10 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction};
-use app\services\{MailingsSaveService,
-    MailingsUnsubscribeService,
-    MailingsUnsubscribePostService};
-use app\handlers\MailingsIndexRequestHandler;
+use app\handlers\{MailingsIndexRequestHandler,
+    MailingsSaveRequestHandler,
+    MailingsUnsubscribePostRequestHandler,
+    MailingsUnsubscribeRequestHandler};
 
 /**
  * Обрабатывает запросы к настройкам аккаунта
@@ -24,19 +24,19 @@ class MailingsController extends Controller
                 'handler'=>new MailingsIndexRequestHandler(),
                 'view'=>'index.twig',
             ],
-            /*'save'=>[
+            'save'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new MailingsSaveService(),
+                'handler'=>new MailingsSaveRequestHandler(),
             ],
             'unsubscribe'=>[
                 'class'=>GetAction::class,
-                'service'=>new MailingsUnsubscribeService(),
+                'handler'=>new MailingsUnsubscribeRequestHandler(),
                 'view'=>'unsubscribe.twig',
             ],
             'unsubscribe-post'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new MailingsUnsubscribePostService(),
-            ],*/
+                'handler'=>new MailingsUnsubscribePostRequestHandler(),
+            ],
         ];
     }
     

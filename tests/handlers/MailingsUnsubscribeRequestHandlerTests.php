@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\MailingsUnsubscribeService;
+use app\handlers\MailingsUnsubscribeRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     EmailsFixture,
@@ -12,13 +12,15 @@ use app\tests\sources\fixtures\{CategoriesFixture,
     MailingsFixture};
 use app\helpers\HashHelper;
 use app\controllers\MailingsController;
+use app\forms\AbstractBaseForm;
 
 /**
- * Тестирует класс MailingsUnsubscribeService
+ * Тестирует класс MailingsUnsubscribeRequestHandler
  */
-class MailingsUnsubscribeServiceTests extends TestCase
+class MailingsUnsubscribeRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -37,11 +39,36 @@ class MailingsUnsubscribeServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->handler = new MailingsUnsubscribeRequestHandler();
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeService::handle
-     * если пуст $request[unsubscribeKey]
+     * Тестирует метод MailingsUnsubscribeRequestHandler::unsubscribeFormWidgetConfig
+     */
+    public function testUnsubscribeFormWidgetConfig()
+    {
+        $mailingForm = new class() extends AbstractBaseForm {};
+        $mailingsModelArray = [new class() {}];
+        
+        $reflection = new \ReflectionMethod($this->handler, 'unsubscribeFormWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $mailingForm, $mailingsModelArray);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('mailings', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('array', $result['mailings']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод MailingsUnsubscribeRequestHandler::handle
+     * если пуст MailingsUnsubscribeRequestHandler::unsubscribeKey
      * @expectedException yii\web\NotFoundHttpException
      */
     public function testHandleEmptyUnsubscribeKey()
@@ -53,13 +80,12 @@ class MailingsUnsubscribeServiceTests extends TestCase
             }
         };
         
-        $service = new MailingsUnsubscribeService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeService::handle
-     * если пуст $request[email]
+     * Тестирует метод MailingsUnsubscribeRequestHandler::handle
+     * если пуст MailingsUnsubscribeRequestHandler::email
      * @expectedException yii\web\NotFoundHttpException
      */
     public function testHandleEmptyEmail()
@@ -75,12 +101,11 @@ class MailingsUnsubscribeServiceTests extends TestCase
             }
         };
         
-        $service = new MailingsUnsubscribeService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeService::handle
+     * Тестирует метод MailingsUnsubscribeRequestHandler::handle
      * если ключи не совпадают
      * @expectedException yii\web\NotFoundHttpException
      */
@@ -97,12 +122,11 @@ class MailingsUnsubscribeServiceTests extends TestCase
             }
         };
         
-        $service = new MailingsUnsubscribeService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeService::handle
+     * Тестирует метод MailingsUnsubscribeRequestHandler::handle
      * если нет подписок, связанных с переданным email
      */
     public function testHandleNotMailings()
@@ -120,13 +144,12 @@ class MailingsUnsubscribeServiceTests extends TestCase
             }
         };
         
-        $service = new MailingsUnsubscribeService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
         
-        $this->assertArrayHasKey('mailingsUnsubscribeEmptyWidgetConfig', $result);
+        $this->assertArrayHasKey('unsubscribeEmptyWidgetConfig', $result);
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
         $this->assertArrayHasKey('shortCartWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
@@ -137,7 +160,7 @@ class MailingsUnsubscribeServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeService::handle
+     * Тестирует метод MailingsUnsubscribeRequestHandler::handle
      */
     public function testHandle()
     {
@@ -160,8 +183,7 @@ class MailingsUnsubscribeServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
-        $service = new MailingsUnsubscribeService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
@@ -173,7 +195,7 @@ class MailingsUnsubscribeServiceTests extends TestCase
         $this->assertArrayHasKey('searchWidgetConfig', $result);
         $this->assertArrayHasKey('categoriesMenuWidgetConfig', $result);
         
-        $this->assertArrayNotHasKey('mailingsUnsubscribeEmptyWidgetConfig', $result);
+        $this->assertArrayNotHasKey('unsubscribeEmptyWidgetConfig', $result);
     }
     
     public static function tearDownAfterClass()

@@ -6,12 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\services\{GetCategoriesMenuWidgetConfigService,
-    GetCurrentCurrencyModelService,
-    GetCurrencyWidgetConfigService,
-    GetMailingsFormWidgetConfigService,
-    GetSearchWidgetConfigService,
-    GetShortCartWidgetConfigService};
+use app\services\GetCurrentCurrencyModelService;
 use app\finders\{CategoriesFinder,
     CurrencyFinder,
     MailingsFinder,
@@ -82,29 +77,11 @@ class MailingsIndexRequestHandler extends AbstractBaseHandler
                 $dataArray = [];
                 
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
-                
-                /*$service = \Yii::$app->registry->get(GetShortCartWidgetConfigService::class);
-                $dataArray['shortCartWidgetConfig'] = $service->handle();*/
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
-                
-                /*$service = \Yii::$app->registry->get(GetCurrencyWidgetConfigService::class);
-                $dataArray['currencyWidgetConfig'] = $service->handle();*/
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
-                
-                /*$service = \Yii::$app->registry->get(GetSearchWidgetConfigService::class);
-                $dataArray['searchWidgetConfig'] = $service->handle($request);*/
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
-                
-                /*$service = \Yii::$app->registry->get(GetCategoriesMenuWidgetConfigService::class);
-                $dataArray['categoriesMenuWidgetConfig'] = $service->handle();*/
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
-                
-                /*$service = \Yii::$app->registry->get(GetMailingsWidgetConfigService::class);
-                $dataArray['mailingsWidgetConfig'] = $service->handle();*/
                 $dataArray['mailingsWidgetConfig'] = $this->mailingsWidgetConfig($mailingsArray);
-                
-                /*$service = \Yii::$app->registry->get(GetMailingsFormWidgetConfigService::class);
-                $dataArray['mailingsFormWidgetConfig'] = $service->handle();*/
                 $dataArray['mailingsFormWidgetConfig'] = $this->mailingsFormWidgetConfig($mailingsArray, $mailingForm);
                 
                 $this->dataArray = $dataArray;

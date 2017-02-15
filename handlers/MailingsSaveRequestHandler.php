@@ -1,28 +1,28 @@
 <?php
 
-namespace app\services;
+namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
-use app\services\{AbstractBaseService,
-    EmailGetSaveEmailService,
-    GetMailingsSuccessWidgetConfigService,
+use app\handlers\AbstractBaseHandler;
+use app\services\{EmailGetSaveEmailService,
     MailingsEmailService};
 use app\forms\MailingForm;
 use app\savers\EmailsMailingsArraySaver;
-use app\finders\EmailsMailingsEmailFinder;
+use app\finders\{EmailsMailingsEmailFinder,
+    MailingsIdFinder};
 use app\models\EmailsMailingsModel;
 use app\widgets\MailingsSuccessWidget;
 
 /**
- * Сохраняет новый комментарий
+ * Обрабатывает запрос на сохранение нового комментария
  */
-class MailingsSaveService extends AbstractBaseService
+class MailingsSaveRequestHandler extends AbstractBaseHandler
 {
     /**
-     * Обрабатывает запрос на сохранение нового комментария
+     * Сохраняет новый комментарий
      * @param $request
      * @return mixed
      */
@@ -42,18 +42,24 @@ class MailingsSaveService extends AbstractBaseService
                     $transaction  = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $service = \Yii::$app->registry->get(EmailGetSaveEmailService::class);
-                        $emailsModel = $service->handle(['email'=>$form->email]);
+                        $service = \Yii::$app->registry->get(EmailGetSaveEmailService::class, [
+                            'email'=>$form->email
+                        ]);
+                        $emailsModel = $service->get();
                         
-                        $finder = \Yii::$app->registry->get(EmailsMailingsEmailFinder::class, ['email'=>$form->email]);
+                        $finder = \Yii::$app->registry->get(EmailsMailingsEmailFinder::class, [
+                            'email'=>$form->email
+                        ]);
                         $emailsMailingsModelArray = $finder->find();
                         
                         $diffIdArray = array_diff($form->id, ArrayHelper::getColumn($emailsMailingsModelArray, 'id_mailing'));
                         
+                        $emailsMailingsModel = new EmailsMailingsModel(['scenario'=>EmailsMailingsModel::SAVE]);
+                        
                         $rawEmailsMailingsModelArray = [];
                         
                         foreach ($diffIdArray as $id) {
-                            $rawEmailsMailingsModel = new EmailsMailingsModel(['scenario'=>EmailsMailingsModel::SAVE]);
+                            $rawEmailsMailingsModel = clone $emailsMailingsModel;
                             $rawEmailsMailingsModel->id_email = $emailsModel->id;
                             $rawEmailsMailingsModel->id_mailing = $id;
                             if ($rawEmailsMailingsModel->validate() === false) {
@@ -67,24 +73,47 @@ class MailingsSaveService extends AbstractBaseService
                         ]);
                         $saver->save();
                         
-                        $mailService = new MailingsEmailService();
-                        $mailService->handle([
-                            'email'=>$form->email,
-                            'diffIdArray'=>$diffIdArray
+                        $finder = \Yii::$app->registry->get(MailingsIdFinder::class, [
+                            'id'=>$diffIdArray
                         ]);
+                        $mailingsArray = $finder->find();
                         
-                        $service = \Yii::$app->registry->get(GetMailingsSuccessWidgetConfigService::class);
-                        $mailingsSuccessWidgetArray = $service->handle(['diffIdArray'=>$diffIdArray]);
+                        $mailService = new MailingsEmailService([
+                            'email'=>$form->email,
+                            'mailingsArray'=>$mailingsArray
+                        ]);
+                        $mailService->get();
+                        
+                        $mailingsSuccessWidgetConfig = $this->mailingsSuccessWidgetConfig($mailingsArray);
+                        $response = MailingsSuccessWidget::widget($mailingsSuccessWidgetConfig);
                         
                         $transaction->commit();
                         
-                        return MailingsSuccessWidget::widget($mailingsSuccessWidgetArray);
+                        return $response;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;
                     }
                 }
             }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета MailingsSuccessWidget
+     * @param array $mailingsArray
+     */
+    private function mailingsSuccessWidgetConfig(array $mailingsArray)
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['mailings'] = $mailingsArray;
+            $dataArray['template'] = 'mailings-success.twig';
+            
+            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

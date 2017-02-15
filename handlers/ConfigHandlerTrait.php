@@ -337,4 +337,23 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета UnsubscribeEmptyWidget
+     * @param string $email
+     * @return array
+     */
+    private function unsubscribeEmptyWidgetConfig(string $email): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['email'] = $email;
+            $dataArray['template'] = 'unsubscribe-empty.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

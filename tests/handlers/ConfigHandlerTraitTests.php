@@ -373,6 +373,26 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('string', $result['template']);
     }
     
+    /**
+     * Тестирует метод MailingsUnsubscribeRequestHandler::unsubscribeEmptyWidgetConfig
+     */
+    public function testUnsubscribeEmptyWidgetConfig()
+    {
+        $email = 'mail@mail.com';
+        
+        $reflection = new \ReflectionMethod($this->handler, 'unsubscribeEmptyWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $email);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('email', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('string', $result['email']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
