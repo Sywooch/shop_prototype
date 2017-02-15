@@ -7,14 +7,14 @@ use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
-use app\services\{UserLoginPostService,
-    UserLoginService,
-    UserGenerateService,
-    UserLogoutService,
+use app\services\{UserGenerateService,
     UserRecoveryService,
     UserRecoveryPostService,
     UserRegistrationService,
     UserRegistrationPostService};
+use app\handlers\{UserLoginPostRequestHandler,
+    UserLoginRequestHandler,
+    UserLogoutRequestHandler};
 
 /**
  * Обрабатывает запросы на аутентификацию пользователя
@@ -26,18 +26,18 @@ class UserController extends Controller
         return [
             'login'=>[
                 'class'=>GetAction::class,
-                'service'=>new UserLoginService(),
+                'handler'=>new UserLoginRequestHandler(),
                 'view'=>'login-form.twig',
             ],
             'login-post'=>[
-                'class'=>RedirectAction::class,
-                'service'=>new UserLoginPostService(),
+                'class'=>AjaxAction::class,
+                'handler'=>new UserLoginPostRequestHandler(),
             ],
             'logout'=>[
-                'class'=>RedirectAction::class,
-                'service'=>new UserLogoutService(),
+                'class'=>AjaxAction::class,
+                'handler'=>new UserLogoutRequestHandler(),
             ],
-            'registration'=>[
+            /*'registration'=>[
                 'class'=>GetAction::class,
                 'service'=>new UserRegistrationService(),
                 'view'=>'registration-form.twig',
@@ -59,7 +59,7 @@ class UserController extends Controller
                 'class'=>GetAction::class,
                 'service'=>new UserGenerateService(),
                 'view'=>'generate.twig',
-            ],
+            ],*/
         ];
     }
     

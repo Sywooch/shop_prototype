@@ -50,6 +50,9 @@ class MailingsIndexRequestHandler extends AbstractBaseHandler
                     'key'=>HashHelper::createCartKey()
                 ]);
                 $ordersCollection = $finder->find();
+                if (empty($ordersCollection)) {
+                    throw new ErrorException($this->emptyError('ordersCollection'));
+                }
                 
                 $finder = \Yii::$app->registry->get(CurrencyFinder::class);
                 $currencyArray = $finder->find();

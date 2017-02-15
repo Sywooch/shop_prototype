@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\UserLoginPostService;
+use app\handlers\UserLoginPostRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{EmailsFixture,
     UsersFixture};
@@ -11,11 +11,12 @@ use app\controllers\ProductsListController;
 use yii\helpers\Url;
 
 /**
- * Тестирует класс UserLoginPostService
+ * Тестирует класс UserLoginPostRequestHandler
  */
-class UserLoginPostServiceTests extends TestCase
+class UserLoginPostRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -28,20 +29,23 @@ class UserLoginPostServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
-    /**
-     * Тестирует метод UserLoginPostService::handle
-     * если AJAX
-     */
-    public function testHandleAjax()
+    public function setUp()
     {
         \Yii::$app->registry->clean();
-        
+        $this->handler = new UserLoginPostRequestHandler();
+    }
+    
+    /**
+     * Тестирует метод UserLoginPostRequestHandler::handle
+     * если данные неверны
+     */
+    public function testHandleWrong()
+    {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
         $request = new class() {
             public $isAjax = true;
             public $email;
-            public $password;
             public function post()
             {
                 return [
@@ -55,18 +59,16 @@ class UserLoginPostServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
-        $service = new UserLoginPostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
     }
     
     /**
-     * Тестирует метод UserLoginPostService::handle
-     * если POST
+     * Тестирует метод UserLoginPostRequestHandler::handle
      */
-    public function testHandlePost()
+    public function testHandle()
     {
         \Yii::$app->registry->clean();
         
@@ -75,8 +77,7 @@ class UserLoginPostServiceTests extends TestCase
         \Yii::$app->db->createCommand('UPDATE {{users}} SET [[password]]=:password WHERE [[id]]=:id')->bindValues([':password'=>password_hash(self::$dbClass->users['user_1']['password'], PASSWORD_DEFAULT), ':id'=>self::$dbClass->users['user_1']['id']])->execute();
         
         $request = new class() {
-            public $isPost = true;
-            public $isAjax = false;
+            public $isAjax = true;
             public $email;
             public $password;
             public function post()
@@ -94,8 +95,7 @@ class UserLoginPostServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'password');
         $reflection->setValue($request, self::$dbClass->users['user_1']['password']);
         
-        $service = new UserLoginPostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
@@ -105,6 +105,5 @@ class UserLoginPostServiceTests extends TestCase
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
-        \Yii::$app->registry->clean();
     }
 }

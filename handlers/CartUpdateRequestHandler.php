@@ -55,6 +55,9 @@ class CartUpdateRequestHandler extends AbstractBaseHandler
                         'key'=>$key
                     ]);
                     $ordersCollection = $finder->find();
+                    if (empty($ordersCollection)) {
+                        throw new ErrorException($this->emptyError('ordersCollection'));
+                    }
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::UPDATE]);
                     $rawPurchasesModel->quantity = $form->quantity;

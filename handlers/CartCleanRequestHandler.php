@@ -46,6 +46,9 @@ class CartCleanRequestHandler extends AbstractBaseHandler
                     'key'=>HashHelper::createCartKey()
                 ]);
                 $ordersCollection = $finder->find();
+                if (empty($ordersCollection)) {
+                    throw new ErrorException($this->emptyError('ordersCollection'));
+                }
                 
                 $shortCartWidgetAjaxConfig = $this->shortCartWidgetAjaxConfig($ordersCollection, $currentCurrencyModel);
                 return ShortCartWidget::widget($shortCartWidgetAjaxConfig);

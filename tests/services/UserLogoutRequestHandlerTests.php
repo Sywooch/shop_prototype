@@ -1,18 +1,19 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\UserLogoutService;
-use yii\web\{IdentityInterface,
-    Request};
+use app\handlers\UserLogoutRequestHandler;
+use yii\web\IdentityInterface;
 use yii\helpers\Url;
 
 /**
- * Тестирует класс UserLogoutService
+ * Тестирует класс UserLogoutRequestHandler
  */
-class UserLogoutServiceTests extends TestCase
+class UserLogoutRequestHandlerTests extends TestCase
 {
+    private $handler;
+    
     public static function setUpBeforeClass()
     {
         $model = new class() implements IdentityInterface {
@@ -33,30 +34,20 @@ class UserLogoutServiceTests extends TestCase
         \Yii::$app->user->login($model);
     }
     
-    /**
-     * Тестирует метод UserLogoutService::handle
-     * если пуст UserLogoutService::request
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: request
-     */
-    public function testHandleEmptyRequest()
+    public function setUp()
     {
-        $this->assertFalse(\Yii::$app->user->isGuest);
-        
-        $request = new class() extends Request {};
-        
-        $service = new UserLogoutService();
-        $result = $service->handle($request);
+        $this->handler = new UserLogoutRequestHandler();
     }
     
     /**
-     * Тестирует метод UserLogoutService::handle
+     * Тестирует метод UserLogoutRequestHandler::handle
      */
     public function testHandle()
     {
         $this->assertFalse(\Yii::$app->user->isGuest);
         
-        $request = new class() extends Request {
+        $request = new class() {
+            public $isAjax = true;
             public function post($name = null, $defaultValue = null)
             {
                 return [
@@ -67,11 +58,9 @@ class UserLogoutServiceTests extends TestCase
             }
         };
         
-        $service = new UserLogoutService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertSame(Url::to(['/products-list/index']), $result);
-        
         $this->assertTrue(\Yii::$app->user->isGuest);
     }
 }

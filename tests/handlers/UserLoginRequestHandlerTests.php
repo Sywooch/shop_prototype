@@ -1,20 +1,22 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\UserLoginService;
+use app\handlers\UserLoginRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture};
 use app\controllers\ProductsListController;
+use app\forms\AbstractBaseForm;
 
 /**
- * Тестирует класс UserLoginService
+ * Тестирует класс UserLoginRequestHandler
  */
-class UserLoginServiceTests extends TestCase
+class UserLoginRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -27,18 +29,43 @@ class UserLoginServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        $this->handler = new UserLoginRequestHandler();
+    }
+    
     /**
-     * Тестирует свойства UserLoginService
+     * Тестирует свойства UserLoginRequestHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(UserLoginService::class);
+        $reflection = new \ReflectionClass(UserLoginRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод UserLoginService::handle
+     * Тестирует метод UserLoginRequestHandler::userLoginWidgetConfig
+     */
+    public function testUserLoginWidgetConfig()
+    {
+        $userLoginForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'userLoginWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $userLoginForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод UserLoginRequestHandler::handle
      */
     public function testHandle()
     {
@@ -51,8 +78,7 @@ class UserLoginServiceTests extends TestCase
             }
         };
         
-        $service = new UserLoginService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);

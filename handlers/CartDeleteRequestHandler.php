@@ -56,6 +56,9 @@ class CartDeleteRequestHandler extends AbstractBaseHandler
                         'key'=>$key
                     ]);
                     $ordersCollection = $finder->find();
+                    if (empty($ordersCollection)) {
+                        throw new ErrorException($this->emptyError('ordersCollection'));
+                    }
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::DELETE]);
                     $rawPurchasesModel->id_product = $form->id_product;

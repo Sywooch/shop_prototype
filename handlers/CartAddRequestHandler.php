@@ -54,6 +54,9 @@ class CartAddRequestHandler extends AbstractBaseHandler
                         'key'=>$key
                     ]);
                     $purchasesCollection = $finder->find();
+                    if (empty($purchasesCollection)) {
+                        throw new ErrorException($this->emptyError('purchasesCollection'));
+                    }
                     
                     $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SESSION]);
                     $rawPurchasesModel->quantity = $form->quantity;

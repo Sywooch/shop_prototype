@@ -63,6 +63,9 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                     'key'=>HashHelper::createCartKey()
                 ]);
                 $ordersCollection = $finder->find();
+                if (empty($ordersCollection)) {
+                    throw new ErrorException($this->emptyError('ordersCollection'));
+                }
                 
                 $finder = \Yii::$app->registry->get(CategoriesFinder::class);
                 $categoriesModelArray = $finder->find();

@@ -23,7 +23,7 @@ class RedirectAction extends AbstractBaseAction
                 throw new ErrorException($this->emptyError('handler'));
             }
             if (\Yii::$app->request->isGet === true) {
-                throw new ErrorException($this->invalidError('POST'));
+                throw new ErrorException($this->invalidError('request'));
             }
             
             $result = $this->handler->handle(\Yii::$app->request);

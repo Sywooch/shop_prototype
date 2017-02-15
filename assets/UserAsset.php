@@ -3,7 +3,6 @@
 namespace app\assets;
 
 use app\assets\{AbstractAsset,
-    AbstractSendFormAsset,
     MainAsset};
 
 /**
@@ -16,13 +15,12 @@ class UserAsset extends AbstractAsset
      * содержащиеся в данном комплекте
      */
     public $js = [
-        'js/sendCleanCart.js',
+        'js/sendLoginForm.js'
     ];
     /**
      * @var array зависимости пакета
      */
     public $depends = [
         MainAsset::class,
-        AbstractSendFormAsset::class,
     ];
 }

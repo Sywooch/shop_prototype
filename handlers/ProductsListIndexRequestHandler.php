@@ -64,11 +64,17 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     'key'=>HashHelper::createFiltersKey(Url::current())
                 ]);
                 $filtersModel = $finder->find();
+                if (empty($filtersModel)) {
+                    throw new ErrorException($this->emptyError('filtersModel'));
+                }
                 
                 $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
                     'key'=>HashHelper::createCartKey()
                 ]);
                 $ordersCollection = $finder->find();
+                if (empty($ordersCollection)) {
+                    throw new ErrorException($this->emptyError('ordersCollection'));
+                }
                 
                 $finder = \Yii::$app->registry->get(ProductsFinder::class, [
                     'category'=>$category,

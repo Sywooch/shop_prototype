@@ -148,6 +148,9 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                             'key'=>HashHelper::createCartKey()
                         ]);
                         $ordersCollection = $finder->find();
+                        if (empty($ordersCollection)) {
+                            throw new ErrorException($this->emptyError('ordersCollection'));
+                        }
                         
                         $rawPurchasesModel = new PurchasesModel(['scenario'=>PurchasesModel::SAVE]);
                         

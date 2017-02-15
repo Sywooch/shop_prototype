@@ -3,7 +3,6 @@
 namespace app\assets;
 
 use app\assets\{AbstractAsset,
-    AbstractSendFormAsset,
     MainAsset};
 
 /**
@@ -24,6 +23,5 @@ class AccountOrdersAsset extends AbstractAsset
      */
     public $depends = [
         MainAsset::class,
-        AbstractSendFormAsset::class,
     ];
 }

@@ -6,18 +6,19 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
 use app\finders\{CategoriesFinder,
     CurrencyFinder,
     PurchasesSessionFinder};
-use app\forms\{ChangeCurrencyForm,
-    PurchaseForm};
+use app\forms\{AbstractBaseForm,
+    ChangeCurrencyForm,
+    UserLoginForm};
+use app\helpers\HashHelper;
 
 /**
- * Обрабатывает запрос данных для рендеринга корзины покупок
+ * Обрабатывает запрос к форме аутентификации
  */
-class CartIndexRequestHandler extends AbstractBaseHandler
+class UserLoginRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
@@ -27,28 +28,27 @@ class CartIndexRequestHandler extends AbstractBaseHandler
     private $dataArray = [];
     
     /**
-     * Обрабатывает запрос на поиск данных для 
-     * формирования HTML корзины покупок
+     * Обрабатывает запрос к форме аутентификации
      * @param array $request
      */
     public function handle($request)
     {
         try {
             if (empty($this->dataArray)) {
+                $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
+                    'key'=>HashHelper::createCartKey()
+                ]);
+                $ordersCollection = $finder->find();
+                if (empty($ordersCollection)) {
+                    throw new ErrorException($this->emptyError('ordersCollection'));
+                }
+                
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
                     'key'=>HashHelper::createCurrencyKey()
                 ]);
                 $currentCurrencyModel = $service->get();
                 if (empty($currentCurrencyModel)) {
                     throw new ErrorException($this->emptyError('currentCurrencyModel'));
-                }
-                
-               $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
-                    'key'=>HashHelper::createCartKey()
-                ]);
-                $ordersCollection = $finder->find();
-                if (empty($ordersCollection)) {
-                    throw new ErrorException($this->emptyError('ordersCollection'));
                 }
                 
                 $finder = \Yii::$app->registry->get(CurrencyFinder::class);
@@ -69,18 +69,16 @@ class CartIndexRequestHandler extends AbstractBaseHandler
                     'url'=>Url::current()
                 ]);
                 
-                $updateForm = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]);
-                $deleteForm = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
+                $userLoginForm = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
                 
                 $dataArray = [];
                 
-                $dataArray['cartWidgetConfig'] = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $updateForm, $deleteForm);
+                $dataArray['userLoginWidgetConfig'] = $this->userLoginWidgetConfig($userLoginForm);
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
-                $dataArray['shortCartRedirectWidgetConfig'] = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
+                $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
-                $dataArray['cartCheckoutLinkWidgetConfig'] = $this->cartCheckoutLinkWidgetConfig();
                 
                 $this->dataArray = $dataArray;
             }
@@ -92,15 +90,16 @@ class CartIndexRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Возвращает массив конфигурации для виджета CartCheckoutLinkWidget
-     * @return array
+     * Возвращает массив конфигурации для виджета UserLoginWidget
+     * @param AbstractBaseForm $userLoginForm
      */
-    private function cartCheckoutLinkWidgetConfig(): array
+    public function userLoginWidgetConfig(AbstractBaseForm $userLoginForm): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['template'] = 'cart-checkout-link.twig';
+            $dataArray['form'] = $userLoginForm;
+            $dataArray['template'] = 'login-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
