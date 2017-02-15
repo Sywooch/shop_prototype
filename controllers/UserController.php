@@ -8,13 +8,13 @@ use app\actions\{AjaxAction,
     GetAction,
     RedirectAction};
 use app\services\{UserGenerateService,
-    UserRecoveryService,
-    UserRecoveryPostService,
-    UserRegistrationService,
-    UserRegistrationPostService};
+    UserRecoveryPostService};
 use app\handlers\{UserLoginPostRequestHandler,
     UserLoginRequestHandler,
-    UserLogoutRequestHandler};
+    UserLogoutRequestHandler,
+    UserRecoveryRequestHandler,
+    UserRegistrationPostRequestHandler,
+    UserRegistrationRequestHandler};
 
 /**
  * Обрабатывает запросы на аутентификацию пользователя
@@ -37,25 +37,26 @@ class UserController extends Controller
                 'class'=>AjaxAction::class,
                 'handler'=>new UserLogoutRequestHandler(),
             ],
-            /*'registration'=>[
+            'registration'=>[
                 'class'=>GetAction::class,
-                'service'=>new UserRegistrationService(),
+                'handler'=>new UserRegistrationRequestHandler(),
                 'view'=>'registration-form.twig',
             ],
             'registration-post'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new UserRegistrationPostService(),
+                'handler'=>new UserRegistrationPostRequestHandler(),
             ],
             'recovery'=>[
                 'class'=>GetAction::class,
-                'service'=>new UserRecoveryService(),
+                'handler'=>new UserRecoveryRequestHandler(),
                 'view'=>'recovery-form.twig',
             ],
             'recovery-post'=>[
                 'class'=>AjaxAction::class,
-                'service'=>new UserRecoveryPostService(),
+                //'service'=>new UserRecoveryPostService(),
+                'handler'=>new UserRecoveryPostRequestHandler(),
             ],
-            'generate'=>[
+            /*'generate'=>[
                 'class'=>GetAction::class,
                 'service'=>new UserGenerateService(),
                 'view'=>'generate.twig',

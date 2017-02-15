@@ -10,6 +10,13 @@ use app\services\RecoveryEmailService;
  */
 class RecoveryEmailServiceTests extends TestCase
 {
+    private $service;
+    
+    public function setUp()
+    {
+        $this->service = new RecoveryEmailService();
+    }
+    
     /**
      * Тестирует свойства RecoveryEmailService
      */
@@ -22,49 +29,98 @@ class RecoveryEmailServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод RecoveryEmailService::handle
+     * Тестирует метод RecoveryEmailService::setKey
+     * переметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetKeyError()
+    {
+        $this->service->setKey([]);
+    }
+    
+    /**
+     * Тестирует метод RecoveryEmailService::setKey
+     */
+    public function testSetKey()
+    {
+        $this->service->setKey('key');
+        
+        $reflection = new \ReflectionProperty($this->service, 'key');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->service);
+        
+        $this->assertEquals('key', $result);
+    }
+    
+    /**
+     * Тестирует метод RecoveryEmailService::setEmail
+     * переметр неверного типа
+     * @expectedException TypeError
+     */
+    public function testSetEmailError()
+    {
+        $this->service->setEmail([]);
+    }
+    
+    /**
+     * Тестирует метод RecoveryEmailService::setEmail
+     */
+    public function testSetEmail()
+    {
+        $this->service->setEmail('mail@email.com');
+        
+        $reflection = new \ReflectionProperty($this->service, 'email');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->service);
+        
+        $this->assertEquals('mail@email.com', $result);
+    }
+    
+    /**
+     * Тестирует метод RecoveryEmailService::get
      * если пуст RecoveryEmailService::key
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: key
      */
-    public function testHandleEmptyKey()
+    public function testGetEmptyKey()
     {
-        $request = [];
-        
-        $service = new RecoveryEmailService();
-        $service->handle($request);
+        $this->service->get();
     }
     
     /**
-     * Тестирует метод RecoveryEmailService::handle
+     * Тестирует метод RecoveryEmailService::get
      * если пуст RecoveryEmailService::email
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
-    public function testHandleEmptyEmail()
+    public function testGetEmptyEmail()
     {
-        $request = ['key'=>sha1('some key')];
+        $reflection = new \ReflectionProperty($this->service, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, 'key');
         
-        $service = new RecoveryEmailService();
-        $service->handle($request);
+        $this->service->get();
     }
     
     /**
-     * Тестирует метод RecoveryEmailService::handle
+     * Тестирует метод RecoveryEmailService::get
      */
-    public function testHandle()
+    public function testGet()
     {
         $key = sha1('some key');
-        
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');
-        
         $this->assertEmpty($files);
         
-        $request = ['key'=>$key, 'email'=>'some@some.com'];
+        $reflection = new \ReflectionProperty($this->service, 'key');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, 'key');
         
-        $service = new RecoveryEmailService();
-        $service->handle($request);
+        $reflection = new \ReflectionProperty($this->service, 'email');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->service, 'some@some.com');
+        
+        $this->service->get();
         
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');

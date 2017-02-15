@@ -24,25 +24,27 @@ class RecoveryEmailService extends AbstractBaseService
     
     /**
      * Обрабатывает запрос на отправку сообщения
-     * @param array $request
      */
-    public function handle($request)
+    public function get()
     {
         try {
-            $key = $request['key'] ?? null;
-            $email = $request['email'] ?? null;
-            
-            if (empty($key)) {
+            if (empty($this->key)) {
                 throw new ErrorException($this->emptyError('key'));
             }
-            if (empty($email)) {
+            if (empty($this->email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
             
-            $service = \Yii::$app->registry->get(GetEmailRecoveryWidgetConfigService::class);
+            /*$service = \Yii::$app->registry->get(GetEmailRecoveryWidgetConfigService::class);
             $emailRecoveryWidgetConfig = $service->handle([
                 'key'=>$key,
                 'email'=>$email
+            ]);*/
+            
+            $html = EmailRecoveryWidget::widget([
+                'key'=>$this->key,
+                'email'=>$this->email, 
+                'template'=>'recovery-mail.twig'
             ]);
             
             $mailHelper = new MailHelper([
@@ -51,7 +53,7 @@ class RecoveryEmailService extends AbstractBaseService
                     //'to'=>$email,
                     'to'=>'timofey@localhost',
                     'subject'=>\Yii::t('base', 'Password recovery from shop.com'), 
-                    'html'=>EmailRecoveryWidget::widget($emailRecoveryWidgetConfig)
+                    'html'=>$html
                 ]
             ]);
             $sent = $mailHelper->send();
@@ -60,6 +62,33 @@ class RecoveryEmailService extends AbstractBaseService
                 throw new ErrorException($this->methodError('sendEmail'));
             }
             
+            return $sent;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение RecoveryEmailService::key
+     * @param string $key
+     */
+    public function setKey(string $key)
+    {
+        try {
+            $this->key = $key;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение RecoveryEmailService::email
+     * @param string $email
+     */
+    public function setEmail(string $email)
+    {
+        try {
+            $this->email = $email;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
