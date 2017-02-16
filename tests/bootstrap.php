@@ -20,4 +20,3 @@ $config['aliases']['@imagestemp'] = '@app/tests/sources/images/temp';
 $config['aliases']['@csvroot'] = '@app/tests/sources/csv';
 
 (new yii\web\Application($config));
-

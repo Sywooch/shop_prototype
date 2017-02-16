@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Представляет данные формы добавления коментария
@@ -48,7 +49,7 @@ class AdminProductForm extends AbstractBaseForm
      */
     public $price;
     /**
-     * @var string имя каталога с изображениями
+     * @var mixed имя каталога с изображениями / загружаемые изображения
      */
     public $images;
     /**
@@ -102,7 +103,9 @@ class AdminProductForm extends AbstractBaseForm
         return [
             [['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode'], 'required', 'on'=>self::CREATE],
             [['id'], 'required', 'on'=>self::EDIT],
+            [['images'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'maxWidth'=>800, 'maxHeight'=>600, 'maxFiles'=>5, 'on'=>self::EDIT],
             [['id'], 'required', 'on'=>self::GET],
+            [['code', 'name', 'short_description', 'description', 'total_products', 'seocode'], StripTagsValidator::class],
         ];
     }
 }

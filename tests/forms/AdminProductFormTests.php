@@ -4,6 +4,7 @@ namespace app\tests\forms;
 
 use PHPUnit\Framework\TestCase;
 use app\forms\AdminProductForm;
+use yii\web\UploadedFile;
 
 /**
  * Тестирует класс AdminProductForm
@@ -221,10 +222,110 @@ class AdminProductFormTests extends TestCase
         $this->assertNotEmpty($form->errors);
         $this->assertCount(1, $form->errors);
         
-        $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
         $form->attributes = [
             'id'=>1, 
         ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $filesArray = [
+            'AdminProductForm' => [
+                'name' => [
+                    'images'=>[
+                        0=>'1.jpg', 
+                        1=>'3.jpg'
+                    ]
+                ],
+                'type' => [
+                    'images'=>[
+                        0=>'image/jpeg', 
+                        1=>'image/jpeg'
+                    ]
+                ],
+                'tmp_name' => [
+                    'images'=>[
+                        0=>'/var/www/html/shop/tests/sources/images/1.jpg', 
+                        1=>'/var/www/html/shop/tests/sources/images/3.jpg'
+                    ]
+                ],
+                'size' => [
+                    'images' => [
+                        0=>11037,
+                        1=>(1024*1024)*2
+                    ]
+                ],
+                'error' => [
+                    'images' => [
+                        0=>0,
+                        1=>0,
+                    ]
+                ],
+            ],
+        ];
+        
+        $_FILES = $filesArray;
+        $imagesToLoad = UploadedFile::getInstancesByName('AdminProductForm[images]');
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
+        $form->attributes = [
+            'id'=>1,
+            'images'=>$imagesToLoad
+        ];
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        
+        $filesArray = [
+            'AdminProductForm' => [
+                'name' => [
+                    'images'=>[
+                        0=>'m1.jpg', 
+                        1=>'m2.jpg'
+                    ]
+                ],
+                'type' => [
+                    'images'=>[
+                        0=>'image/jpeg', 
+                        1=>'image/jpeg'
+                    ]
+                ],
+                'tmp_name' => [
+                    'images'=>[
+                        0=>'/var/www/html/shop/tests/sources/images/m1.jpg', 
+                        1=>'/var/www/html/shop/tests/sources/images/m2.jpg'
+                    ]
+                ],
+                'size' => [
+                    'images' => [
+                        0=>11037,
+                        1=>(1024*1024)*2
+                    ]
+                ],
+                'error' => [
+                    'images' => [
+                        0=>0,
+                        1=>0,
+                    ]
+                ],
+            ],
+        ];
+        
+        $reflection = new \ReflectionProperty(UploadedFile::class, '_files');
+        $reflection->setAccessible(true);
+        $reflection->setValue(null);
+        
+        $_FILES = $filesArray;
+        $imagesToLoad = UploadedFile::getInstancesByName('AdminProductForm[images]');
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
+        $form->attributes = [
+            'id'=>1,
+            'images'=>$imagesToLoad
+        ];
+        $form->validate();
         
         $this->assertEmpty($form->errors);
         

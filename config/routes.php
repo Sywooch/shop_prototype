@@ -77,6 +77,7 @@ $routes = [
     'admin-products-<page:\d{1,3}>'=>'admin/products',
     'admin-products'=>'admin/products',
     'admin-product-detail-form'=>'admin/product-detail-form',
+    'admin-product-detail-change'=>'admin/product-detail-change',
     
     # Календарь
     'calendar-get'=>'calendar/get',

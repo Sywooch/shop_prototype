@@ -19,7 +19,7 @@ class StripTagsValidator extends Validator
     public $allowable_tags = '';
     /**
      * @var array массив имен свойств, к значениям которых применяются исключения при очистке от тегов, 
-     * в полностью определенном формате app\some\ClassName::propertyName
+     * в полностью определенном формате ClassName::propertyName
      */
     public $exceptProperties = [];
     

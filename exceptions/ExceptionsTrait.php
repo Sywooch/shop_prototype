@@ -74,6 +74,15 @@ trait ExceptionsTrait
     }
     
     /**
+     * Конструирует строку сообщения об ошибке "Ошибка при вызове метода"
+     * @return string
+     */
+    public static function staticMethodError(string $placeholder): string
+    {
+        return \Yii::t('base/errors', 'Method error {placeholder}', ['placeholder'=>$placeholder]);
+    }
+    
+    /**
      * Конструирует строку сообщения об ошибке "Отсутствуют необходимые данные"
      * @return string
      */

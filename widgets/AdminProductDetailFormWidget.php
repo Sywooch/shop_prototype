@@ -118,6 +118,10 @@ class AdminProductDetailFormWidget extends AbstractBaseWidget
             $renderArray['button'] = \Yii::t('base', 'Save');
             $renderArray['buttonCancel'] = \Yii::t('base', 'Cancel');
             
+            $renderArray['categoriesHref'] = Url::to(['/categories/get-subcategory']);
+            $renderArray['cols'] = 30;
+            $renderArray['rows'] = 10;
+            
             $renderArray['categories'] = $this->categories;
             $renderArray['subcategory'] = $this->subcategory;
             $renderArray['colors'] = $this->colors;

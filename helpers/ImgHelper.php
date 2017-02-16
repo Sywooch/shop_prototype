@@ -2,8 +2,10 @@
 
 namespace app\helpers;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use yii\helpers\Html;
+use yii\web\UploadedFile;
 use app\exceptions\ExceptionsTrait;
 
 /**
@@ -52,6 +54,48 @@ class ImgHelper
             }
             
             return implode('', $imgArray);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Загружает изображения, возвращая имя каталога, 
+     * в который они были загружены
+     * @param Model $model
+     * @param string $attribute
+     * @return string
+     */
+    public static function saveImages(Model $model, string $attribute): string
+    {
+        try {
+            $uploadedFiles = UploadedFile::getInstances($model, $attribute);
+            if (empty($uploadedFiles)) {
+                throw new ErrorException(ExceptionsTrait::staticEmptyError('uploadedFiles'));
+            }
+            
+            $catalog = time();
+            $path = \Yii::getAlias(sprintf('@imagesroot/%s', $catalog));
+            
+            if (mkdir($path) === false) {
+                throw new ErrorException(ExceptionsTrait::staticMethodError('mkdir'));
+            }
+            
+            foreach ($uploadedFiles as $file) {
+                $result = $file->saveAs(sprintf('%s/%s.%s', $path, $file->getBaseName(), $file->getExtension()));
+                if ($result === false) {
+                    $filesArray = glob(sprintf('%/*.{jpg,png,gif}', $path), GLOB_BRACE);
+                    if (!empty($filesArray)) {
+                        foreach ($filesArray as $file) {
+                            unlink($file);
+                        }
+                    }
+                    rmdir($path);
+                    throw new ErrorException(ExceptionsTrait::staticMethodError('saveAs'));
+                }
+            }
+            
+            return $catalog;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

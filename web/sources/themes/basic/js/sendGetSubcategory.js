@@ -3,7 +3,6 @@ $(function() {
     function SendGetSubcategory() {
         var self = this;
         self.target;
-        self.place = $('.calendar-place');
         self.error = function(jqXHR, status, errorThrown)
         {
             alert(status + ' ' + jqXHR.responseText);
@@ -11,7 +10,12 @@ $(function() {
         self.success = function(data, status, jqXHR)
         {
             if (typeof data == 'string') {
-                $('#adminproductsfiltersform-subcategory').html(data);
+                var id = self.target.attr('id');
+                if (id == 'adminproductsfiltersform-category') {
+                    $('#adminproductsfiltersform-subcategory').html(data);
+                } else if (id == 'adminproductform-id_category') {
+                    $('#adminproductform-id_subcategory').html(data);
+                }
             }
         };
         self.send = function(event) 
@@ -31,7 +35,7 @@ $(function() {
         };
     };
     
-    $('#adminproductsfiltersform-category').on('change', function(event) {
+    $('body').on('change', '#adminproductsfiltersform-category, #adminproductform-id_category', function(event) {
         (new SendGetSubcategory()).send(event);
         event.preventDefault();
     });

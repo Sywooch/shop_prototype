@@ -10,6 +10,7 @@ use app\handlers\{AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
     AdminOrdersRequestHandler,
+    AdminProductDetailChangeRequestHandler,
     AdminProductDetailFormRequestHandler,
     AdminProductsRequestHandler};
 
@@ -47,6 +48,10 @@ class AdminController extends Controller
             'product-detail-form'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminProductDetailFormRequestHandler(),
+            ],
+            'product-detail-change'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminProductDetailChangeRequestHandler(),
             ],
         ];
     }

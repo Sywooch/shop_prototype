@@ -11,6 +11,11 @@ use app\exceptions\ExceptionsTrait;
 class ProductsColorsModel extends AbstractBaseModel
 {
     /**
+     * Сценарий сохранения данных
+     */
+    const SAVE = 'save';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -21,5 +26,19 @@ class ProductsColorsModel extends AbstractBaseModel
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
+    }
+    
+    public function scenarios()
+    {
+        return [
+            self::SAVE=>['id_product', 'id_color'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['id_product', 'id_color'], 'required', 'on'=>self::SAVE],
+        ];
     }
 }

@@ -51,6 +51,7 @@ class ProductsModelTests extends TestCase
         $reflection = new \ReflectionClass(ProductsModel::class);
         
         $this->assertTrue($reflection->hasConstant('VIEWS'));
+        $this->assertTrue($reflection->hasConstant('SAVE'));
         
         $model = new ProductsModel();
         
@@ -82,6 +83,40 @@ class ProductsModelTests extends TestCase
         ];
         
         $this->assertEquals(12, $model->views);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::SAVE]);
+        $model->attributes = [
+            'id'=>1,
+            'date'=>time(),
+            'code'=>'FJHERJ',
+            'name'=>'Mock',
+            'description'=>'Mock',
+            'short_description'=>'Mock',
+            'price'=>15.78,
+            'images'=>'test',
+            'id_category'=>1,
+            'id_subcategory'=>1,
+            'id_brand'=>1,
+            'active'=>true,
+            'total_products'=>12,
+            'seocode'=>'mock',
+            'views'=>12,
+        ];
+        
+        $this->assertEquals(1, $model->id);
+        $this->assertEquals(time(), $model->date);
+        $this->assertEquals('FJHERJ', $model->code);
+        $this->assertEquals('Mock', $model->name);
+        $this->assertEquals('Mock', $model->short_description);
+        $this->assertEquals(15.78, $model->price);
+        $this->assertEquals('test', $model->images);
+        $this->assertEquals(1, $model->id_category);
+        $this->assertEquals(1, $model->id_subcategory);
+        $this->assertEquals(1, $model->id_brand);
+        $this->assertEquals(true, $model->active);
+        $this->assertEquals(12, $model->total_products);
+        $this->assertEquals('mock', $model->seocode);
+        $this->assertEquals(12, $model->views);
     }
     
     /**
@@ -94,11 +129,38 @@ class ProductsModelTests extends TestCase
         $model->validate();
         
         $this->assertCount(1, $model->errors);
-        $this->assertArrayHasKey('views', $model->errors);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::VIEWS]);
         $model->attributes = [
             'views'=>12
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::SAVE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(15, $model->errors);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::SAVE]);
+        $model->attributes = [
+            'id'=>1,
+            'date'=>time(),
+            'code'=>'FJHERJ',
+            'name'=>'Mock',
+            'description'=>'Mock',
+            'short_description'=>'Mock',
+            'price'=>15.78,
+            'images'=>'test',
+            'id_category'=>1,
+            'id_subcategory'=>1,
+            'id_brand'=>1,
+            'active'=>true,
+            'total_products'=>12,
+            'seocode'=>'mock',
+            'views'=>12,
         ];
         $model->validate();
         
