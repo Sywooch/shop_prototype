@@ -33,8 +33,6 @@ class VisitorsCounterGetSaveDateService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('date'));
             }
             
-            //$date = DateHelper::getToday00();
-            
             $finder = \Yii::$app->registry->get(VisitorsCounterDateFinder::class, [
                 'date'=>$this->date
             ]);
@@ -47,7 +45,6 @@ class VisitorsCounterGetSaveDateService extends AbstractBaseService
             
             $visitorsCounterModel->scenario = VisitorsCounterModel::SAVE;
             $visitorsCounterModel->counter++;
-            
             if ($visitorsCounterModel->validate() === false) {
                 throw new ErrorException($this->modelError($visitorsCounterModel->errors));
             }

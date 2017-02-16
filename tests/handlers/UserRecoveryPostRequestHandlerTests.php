@@ -1,20 +1,21 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\UserRecoveryPostService;
+use app\handlers\UserRecoveryPostRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{EmailsFixture,
     UsersFixture};
 use app\controllers\UserController;
 
 /**
- * Тестирует класс UserRecoveryPostService
+ * Тестирует класс UserRecoveryPostRequestHandler
  */
-class UserRecoveryPostServiceTests extends TestCase
+class UserRecoveryPostRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -27,8 +28,35 @@ class UserRecoveryPostServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        $this->handler = new UserRecoveryPostRequestHandler();
+    }
+    
     /**
-     * Тестирует метод UserRecoveryPostService::handle
+     * Тестирует метод UserRecoveryPostRequestHandler::userRecoverySuccessWidgetConfig
+     */
+    public function testUserRecoverySuccessWidgetConfig()
+    {
+        $email = 'mail@mail.com';
+        
+        $reflection = new \ReflectionMethod($this->handler, 'userRecoverySuccessWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $email);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('email', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('string', $result['email']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод UserRecoveryPostRequestHandler::handle
      * если ошибки валидации
      */
     public function testHandleErrors()
@@ -47,15 +75,14 @@ class UserRecoveryPostServiceTests extends TestCase
             }
         };
         
-        $service = new UserRecoveryPostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
     }
     
     /**
-     * Тестирует метод UserRecoveryPostService::handle
+     * Тестирует метод UserRecoveryPostRequestHandler::handle
      */
     public function testHandle()
     {
@@ -76,8 +103,7 @@ class UserRecoveryPostServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
-        $service = new UserRecoveryPostService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);

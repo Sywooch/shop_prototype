@@ -400,7 +400,7 @@ class AdminProductsWidgetTests extends TestCase
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<ol class="admin-products">#', $result);
-        $this->assertRegExp('#<div class="admin-products-previous-data">#', $result);
+        $this->assertRegExp('#<div class="admin-product-previous-data">#', $result);
         $this->assertRegExp('#<a href=".+">Product [0-9]{1}</a>#', $result);
         $this->assertRegExp('#Краткое описание:  Short description 3#', $result);
         $this->assertRegExp('#<img src=".+" height="200" alt="">#', $result);

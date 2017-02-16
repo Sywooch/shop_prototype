@@ -98,6 +98,7 @@ class CurrencySetRequestHandlerTests extends TestCase
         
         $session = \Yii::$app->session;
         $session->open();
+        $session->remove($key);
         $this->assertFalse($session->has($key));
         
         $request = new class() {

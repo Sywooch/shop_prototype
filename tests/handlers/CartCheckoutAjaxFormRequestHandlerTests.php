@@ -36,6 +36,7 @@ class CartCheckoutAjaxFormRequestHandlerTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        \Yii::$app->user->logout();
         
         $this->handler = new CartCheckoutAjaxFormRequestHandler();
     }

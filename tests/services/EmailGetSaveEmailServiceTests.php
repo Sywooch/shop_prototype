@@ -25,6 +25,11 @@ class EmailGetSaveEmailServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
+    }
+    
     /**
      * Тестирует свойства EmailGetSaveEmailService
      */
@@ -81,22 +86,22 @@ class EmailGetSaveEmailServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод EmailGetSaveEmailService::handle
+     * Тестирует метод EmailGetSaveEmailService::get
      * если пуст EmailGetSaveEmailService::email
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: email
      */
-    public function testHandleEmptyEmail()
+    public function testGetEmptyEmail()
     {
         $service = new EmailGetSaveEmailService();
         $service->get();
     }
     
     /**
-     * Тестирует метод EmailGetSaveEmailService::handle
+     * Тестирует метод EmailGetSaveEmailService::get
      * если email уже в СУБД
      */
-    public function testHandleExistsEmail()
+    public function testGetExistsEmail()
     {
         $service = new EmailGetSaveEmailService();
         
@@ -110,13 +115,12 @@ class EmailGetSaveEmailServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод EmailGetSaveEmailService::handle
+     * Тестирует метод EmailGetSaveEmailService::get
      * если email еще не в СУБД
      */
-    public function testHandleNotExistsEmail()
+    public function testGetNotExistsEmail()
     {
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{emails}} WHERE [[email]]=:email')->bindValue(':email', 'new@email.com')->queryOne();
-        
         $this->assertEmpty($result);
         
         $service = new EmailGetSaveEmailService();

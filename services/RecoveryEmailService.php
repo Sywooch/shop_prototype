@@ -3,8 +3,7 @@
 namespace app\services;
 
 use yii\base\ErrorException;
-use app\services\{AbstractBaseService,
-    GetEmailRecoveryWidgetConfigService};
+use app\services\AbstractBaseService;
 use app\helpers\MailHelper;
 use app\widgets\EmailRecoveryWidget;
 
@@ -34,12 +33,6 @@ class RecoveryEmailService extends AbstractBaseService
             if (empty($this->email)) {
                 throw new ErrorException($this->emptyError('email'));
             }
-            
-            /*$service = \Yii::$app->registry->get(GetEmailRecoveryWidgetConfigService::class);
-            $emailRecoveryWidgetConfig = $service->handle([
-                'key'=>$key,
-                'email'=>$email
-            ]);*/
             
             $html = EmailRecoveryWidget::widget([
                 'key'=>$this->key,

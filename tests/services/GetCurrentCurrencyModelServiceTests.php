@@ -92,6 +92,7 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
         $key = HashHelper::createCurrencyKey();
         
         self::$session->open();
+        self::$session->remove($key);
         $this->assertFalse(self::$session->has($key));
         
         $service = new GetCurrentCurrencyModelService();

@@ -5,13 +5,12 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
-    GetAction,
-    RedirectAction};
-use app\services\{UserGenerateService,
-    UserRecoveryPostService};
-use app\handlers\{UserLoginPostRequestHandler,
+    GetAction};
+use app\handlers\{UserGenerateRequestHandler,
+    UserLoginPostRequestHandler,
     UserLoginRequestHandler,
     UserLogoutRequestHandler,
+    UserRecoveryPostRequestHandler,
     UserRecoveryRequestHandler,
     UserRegistrationPostRequestHandler,
     UserRegistrationRequestHandler};
@@ -53,14 +52,13 @@ class UserController extends Controller
             ],
             'recovery-post'=>[
                 'class'=>AjaxAction::class,
-                //'service'=>new UserRecoveryPostService(),
                 'handler'=>new UserRecoveryPostRequestHandler(),
             ],
-            /*'generate'=>[
+            'generate'=>[
                 'class'=>GetAction::class,
-                'service'=>new UserGenerateService(),
+                'handler'=>new UserGenerateRequestHandler(),
                 'view'=>'generate.twig',
-            ],*/
+            ],
         ];
     }
     

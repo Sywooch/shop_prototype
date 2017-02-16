@@ -6,8 +6,7 @@ use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\AbstractBaseHandler;
-use app\services\{GetUserRecoverySuccessWidgetConfigService,
-    RecoveryEmailService};
+use app\services\RecoveryEmailService;
 use app\forms\RecoveryPasswordForm;
 use app\helpers\HashHelper;
 use app\savers\SessionModelSaver;
@@ -52,18 +51,36 @@ class UserRecoveryPostRequestHandler extends AbstractBaseHandler
                     ]);
                     $saver->save();
                     
-                    $mailService = new RecoveryEmailService();
-                    $mailService->handle([
+                    $mailService = new RecoveryEmailService([
                         'key'=>$key,
                         'email'=>$form->email
                     ]);
+                    $mailService->get();
                     
-                    $service = \Yii::$app->registry->get(GetUserRecoverySuccessWidgetConfigService::class);
-                    $userRecoverySuccessWidgetConfig = $service->handle(['email'=>$form->email]);
-                    
+                    $userRecoverySuccessWidgetConfig = $this->userRecoverySuccessWidgetConfig($form->email);
                     return UserRecoverySuccessWidget::widget($userRecoverySuccessWidgetConfig);
                 }
             }
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив настроек для виджета UserRecoverySuccessWidget
+     * @param string $email
+     * @return array
+     */
+    private function userRecoverySuccessWidgetConfig(string $email): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['email'] = $email;
+            $dataArray['header'] = \Yii::t('base', 'Password recovery');
+            $dataArray['template'] = 'recovery-success.twig';
+            
+            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

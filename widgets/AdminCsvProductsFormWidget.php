@@ -5,7 +5,6 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
-use app\services\AdminProductsCollectionService;
 
 /**
  * Формирует HTML запроса данных в формате csv

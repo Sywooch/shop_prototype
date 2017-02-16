@@ -1,9 +1,9 @@
 <?php
 
-namespace app\tests\services;
+namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\services\UserGenerateService;
+use app\handlers\UserGenerateRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture,
@@ -13,11 +13,12 @@ use app\controllers\UserController;
 use yii\web\Request;
 
 /**
- * Тестирует класс UserGenerateService
+ * Тестирует класс UserGenerateRequestHandler
  */
-class UserGenerateServiceTests extends TestCase
+class UserGenerateRequestHandlerTests extends TestCase
 {
     private static $dbClass;
+    private $handler;
     
     public static function setUpBeforeClass()
     {
@@ -32,8 +33,51 @@ class UserGenerateServiceTests extends TestCase
         self::$dbClass->loadFixtures();
     }
     
+    public function setUp()
+    {
+        $this->handler = new UserGenerateRequestHandler();
+    }
+    
     /**
-     * Тестирует метод UserGenerateService::handle
+     * Тестирует метод UserGenerateRequestHandler::passwordGenerateEmptyWidgetConfig
+     */
+    public function testPasswordGenerateEmptyWidgetConfig()
+    {
+        $reflection = new \ReflectionMethod($this->handler, 'passwordGenerateEmptyWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод UserGenerateRequestHandler::passwordGenerateSuccessWidgetConfig
+     */
+    public function testPasswordGenerateSuccessWidgetConfig()
+    {
+        $reflection = new \ReflectionMethod($this->handler, 'passwordGenerateSuccessWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, 'j9Ij0Oij&jcfL');
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('tempPassword', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('string', $result['tempPassword']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод UserGenerateRequestHandler::handle
      * если пуст $request
      * @expectedException yii\web\NotFoundHttpException
      */
@@ -46,13 +90,12 @@ class UserGenerateServiceTests extends TestCase
             }
         };
         
-        $service = new UserGenerateService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод UserGenerateService::handle
-     * если пуст $request[recoveryKey]
+     * Тестирует метод UserGenerateRequestHandler::handle
+     * если пуст $key
      * @expectedException yii\web\NotFoundHttpException
      */
     public function testHandleEmptyRecoveryKey()
@@ -69,13 +112,12 @@ class UserGenerateServiceTests extends TestCase
             }
         };
         
-        $service = new UserGenerateService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод UserGenerateService::handle
-     * если пуст $request[emailKey]
+     * Тестирует метод UserGenerateRequestHandler::handle
+     * если пуст $email
      * @expectedException yii\web\NotFoundHttpException
      */
     public function testHandleEmptyEmailKey()
@@ -92,13 +134,12 @@ class UserGenerateServiceTests extends TestCase
             }
         };
         
-        $service = new UserGenerateService();
-        $service->handle($request);
+        $this->handler->handle($request);
     }
     
     /**
-     * Тестирует метод UserGenerateService::handle
-     * если recoveryModel->email !== emailKey
+     * Тестирует метод UserGenerateRequestHandler::handle
+     * если recoveryModel->email !== $email
      */
     public function testHandleNotEqualsEmail()
     {
@@ -121,11 +162,11 @@ class UserGenerateServiceTests extends TestCase
             }
         };
         
-        $service = new UserGenerateService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
+        
         $this->assertArrayHasKey('userInfoWidgetConfig', $result);
         $this->assertArrayHasKey('shortCartWidgetConfig', $result);
         $this->assertArrayHasKey('currencyWidgetConfig', $result);
@@ -147,7 +188,7 @@ class UserGenerateServiceTests extends TestCase
     }
     
     /**
-     * Тестирует метод UserGenerateService::handle
+     * Тестирует метод UserGenerateRequestHandler::handle
      */
     public function testHandle()
     {
@@ -176,8 +217,7 @@ class UserGenerateServiceTests extends TestCase
         $reflection = new \ReflectionProperty($request, 'key');
         $reflection->setValue($request, $key);
         
-        $service = new UserGenerateService();
-        $result = $service->handle($request);
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
