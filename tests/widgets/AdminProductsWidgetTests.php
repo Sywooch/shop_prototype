@@ -21,7 +21,7 @@ class AdminProductsWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('products'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        //$this->assertTrue($reflection->hasProperty('form'));
+        $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
     }
@@ -91,18 +91,18 @@ class AdminProductsWidgetTests extends TestCase
      * если передан параметр неверного типа
      * @expectedException TypeError
      */
-    /*public function testSetFormError()
+    public function testSetFormError()
     {
         $form = new class() {};
         
         $widget = new AdminProductsWidget();
         $widget->setForm($form);
-    }*/
+    }
     
     /**
      * Тестирует метод AdminProductsWidget::setForm
      */
-    /*public function testSetForm()
+    public function testSetForm()
     {
         $form = new class() extends AdminProductForm {};
         
@@ -114,7 +114,7 @@ class AdminProductsWidgetTests extends TestCase
         $result = $reflection->getValue($widget);
         
         $this->assertInstanceOf(AdminProductForm::class, $result);
-    }*/
+    }
     
     /**
      * Тестирует метод AdminProductsWidget::setHeader
@@ -194,7 +194,7 @@ class AdminProductsWidgetTests extends TestCase
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
-    /*public function testRunEmptyForm()
+    public function testRunEmptyForm()
     {
         $mock = new class() {};
         
@@ -205,7 +205,7 @@ class AdminProductsWidgetTests extends TestCase
         $reflection->setValue($widget, $mock);
         
         $widget->run();
-    }*/
+    }
     
     /**
      * Тестирует метод AdminProductsWidget::run
@@ -223,9 +223,9 @@ class AdminProductsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
         
-        /*$reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);*/
+        $reflection->setValue($widget, $mock);
         
         
         $widget->run();
@@ -247,9 +247,9 @@ class AdminProductsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $mock);
         
-        /*$reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);*/
+        $reflection->setValue($widget, $mock);
         
         $reflection = new \ReflectionProperty($widget, 'header');
         $reflection->setAccessible(true);
@@ -277,9 +277,9 @@ class AdminProductsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        /*$reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);*/
+        $reflection->setValue($widget, $form);
         
         $reflection = new \ReflectionProperty($widget, 'header');
         $reflection->setAccessible(true);
@@ -305,7 +305,7 @@ class AdminProductsWidgetTests extends TestCase
             public $code = 'MONEY';
         };
         
-        //$form = new class() extends AdminProductForm {};
+        $form = new class() extends AdminProductForm {};
         
         $products = [
             new class() {
@@ -384,9 +384,9 @@ class AdminProductsWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        /*$reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);*/
+        $reflection->setValue($widget, $form);
         
         $reflection = new \ReflectionProperty($widget, 'header');
         $reflection->setAccessible(true);
@@ -418,6 +418,8 @@ class AdminProductsWidgetTests extends TestCase
         $this->assertRegExp('#Количество товаров: [0-9]{3}#', $result);
         $this->assertRegExp('#Сеокод: product-[0-9]{1}#', $result);
         $this->assertRegExp('#Просмотров: [0-9]{3}#', $result);
-        $this->assertRegExp('#<br><a href=".+"><strong>Изменить</strong></a>#', $result);
+        $this->assertRegExp('#<form id="admin-product-detail-get-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
     }
 }

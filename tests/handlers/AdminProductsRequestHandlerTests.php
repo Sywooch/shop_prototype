@@ -136,24 +136,24 @@ class AdminProductsRequestHandlerTests extends TestCase
     {
         $productsArray = [new class() {}];
         $currentCurrencyModel = new class() extends CurrencyModel {};
-        //$adminProductForm = new class() extends AbstractBaseForm {};
+        $adminProductForm = new class() extends AbstractBaseForm {};
         
         $reflection = new \ReflectionMethod($this->handler, 'adminProductsWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $productsArray, $currentCurrencyModel);
+        $result = $reflection->invoke($this->handler, $productsArray, $currentCurrencyModel, $adminProductForm);
         
         $this->assertInternalType('array', $result);
         
         $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('products', $result);
         $this->assertArrayHasKey('currency', $result);
-        //$this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('array', $result['products']);
         $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
-        //$this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
     }
     

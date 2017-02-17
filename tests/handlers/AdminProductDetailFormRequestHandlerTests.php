@@ -4,7 +4,6 @@ namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
 use app\handlers\AdminProductDetailFormRequestHandler;
-use yii\base\Model;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{BrandsFixture,
     CategoriesFixture,
@@ -114,39 +113,27 @@ class AdminProductDetailFormRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminProductDetailFormRequestHandler::adminProductDetailBreadcrumbsWidgetConfig
-     */
-    public function testAminProductDetailBreadcrumbsWidgetConfig()
-    {
-        $productsModel = new class() extends Model {};
-        
-        $reflection = new \ReflectionMethod($this->handler, 'adminProductDetailBreadcrumbsWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $productsModel);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('product', $result);
-        $this->assertInstanceOf(Model::class, $result['product']);
-    }
-    
-    /**
      * Тестирует метод AdminProductDetailFormRequestHandler::handle
-     * если запрос пуст
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: productId
+     * если пуста форма
      */
-    public function testHandleEmptyRequest()
+    public function testHandleEmptyForm()
     {
         $request = new class() {
             public $isAjax = true;
-            public function get($name=null, $defaultValue=null)
+            public function post($name=null, $defaultValue=null)
             {
-                return null;
+                return [
+                    'AdminProductForm'=>[
+                        'id'=>null
+                    ],
+                ];
             }
         };
         
-        $this->handler->handle($request);
+        $result = $this->handler->handle($request);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
     }
     
     /**
@@ -156,21 +143,20 @@ class AdminProductDetailFormRequestHandlerTests extends TestCase
     {
         $request = new class() {
             public $isAjax = true;
-            public function get($name=null, $defaultValue=null)
+            public function post($name=null, $defaultValue=null)
             {
-                return 1;
+                return [
+                    'AdminProductForm'=>[
+                        'id'=>1
+                    ],
+                ];
             }
         };
         
         $result = $this->handler->handle($request);
         
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('adminProductDetailFormWidgetConfig', $result);
-        $this->assertArrayHasKey('adminProductDetailBreadcrumbsWidgetConfig', $result);
-        
-        $this->assertInternalType('array', $result['adminProductDetailFormWidgetConfig']);
-        $this->assertInternalType('array', $result['adminProductDetailBreadcrumbsWidgetConfig']);
+        $this->assertInternalType('string', $result);
+        $this->assertNotEmpty($result);
     }
     
     public static function tearDownAfterClass()

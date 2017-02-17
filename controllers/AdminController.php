@@ -46,14 +46,13 @@ class AdminController extends Controller
                 'view'=>'products.twig',
             ],
             'product-detail-form'=>[
-                'class'=>GetAction::class,
+                'class'=>AjaxAction::class,
                 'handler'=>new AdminProductDetailFormRequestHandler(),
-                'view'=>'product-detail-form.twig',
             ],
-            /*'product-detail-change'=>[
+            'product-detail-change'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminProductDetailChangeRequestHandler(),
-            ],*/
+            ],
         ];
     }
     

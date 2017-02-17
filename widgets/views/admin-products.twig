@@ -25,7 +25,10 @@
                     <br>{{ seocodeHeader }}: {{ product.seocode }}
                     <br>{{ viewsHeader }}: {{ product.views }}
                     
-                    <br><a href="{{ product.href }}"><strong>{{ product.hrefText }}</strong></a>
+                    {% set form=active_form_begin({'id':product.formId, 'enableAjaxValidation':product.ajaxValidation, 'validateOnSubmit':product.validateOnSubmit, 'validateOnChange':product.validateOnChange, 'validateOnBlur':product.validateOnBlur, 'validateOnType':product.validateOnType, 'action':product.formAction, 'method':'POST'}) %}
+                        {{ form.field(product.modelForm, 'id').hiddenInput().label(false) | raw }}
+                        <input type="submit" value="{{ product.button }}">
+                    {{ active_form_end() }}
                 </div>
             </li>
         {% endfor %}

@@ -27,7 +27,7 @@ class AdminProductsWidget extends AbstractBaseWidget
     /**
      * @var AdminProductForm
      */
-    //private $form;
+    private $form;
     /**
      * @var string заголовок
      */
@@ -47,9 +47,9 @@ class AdminProductsWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            /*if (empty($this->form)) {
+            if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
-            }*/
+            }
             if (empty($this->header)) {
                 throw new ErrorException($this->emptyError('header'));
             }
@@ -87,8 +87,17 @@ class AdminProductsWidget extends AbstractBaseWidget
                     $set['seocode'] = $product->seocode;
                     $set['views'] = $product->views;
                     
-                    $set['href'] = Url::to(['/admin/product-detail-form', \Yii::$app->params['productId']=>$product->id]);
-                    $set['hrefText'] = \Yii::t('base', 'Change');
+                    $form = clone $this->form;
+                    $set['modelForm'] = \Yii::configure($form, ['id'=>$product->id]);
+                    $set['formId'] = sprintf('admin-product-detail-get-form-%d', $product->id);
+                    $set['formAction'] = Url::to(['/admin/product-detail-form']);
+                    $set['button'] = \Yii::t('base', 'Change');
+                    
+                    $set['ajaxValidation'] = false;
+                    $set['validateOnSubmit'] = false;
+                    $set['validateOnChange'] = false;
+                    $set['validateOnBlur'] = false;
+                    $set['validateOnType'] = false;
                     
                     $renderArray['products'][] = $set;
                 }
@@ -148,14 +157,14 @@ class AdminProductsWidget extends AbstractBaseWidget
      * Присваивает AdminProductForm свойству AdminProductsWidget::form
      * @param AdminProductForm $form
      */
-    /*public function setForm(AdminProductForm $form)
+    public function setForm(AdminProductForm $form)
     {
         try {
             $this->form = $form;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }*/
+    }
     
     /**
      * Присваивает заголовок свойству AdminProductsWidget::header

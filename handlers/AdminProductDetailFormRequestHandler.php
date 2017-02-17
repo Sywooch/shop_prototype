@@ -2,8 +2,7 @@
 
 namespace app\handlers;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\ErrorException;
 use yii\web\Response;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
@@ -38,63 +37,63 @@ class AdminProductDetailFormRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            if (empty($this->dataArray)) {
-                $productId = $request->get(\Yii::$app->params['productId']) ?? null;
-                if (empty($productId)) {
-                    throw new ErrorException($this->emptyError('productId'));
-                }
-                
-                $finder = \Yii::$app->registry->get(ProductIdFinder::class, [
-                    'id'=>$productId
-                ]);
-                $productsModel = $finder->find();
-                if (empty($productsModel)) {
-                    throw new ErrorException($this->emptyError('productsModel'));
-                }
-                
-                $finder = \Yii::$app->registry->get(CategoriesFinder::class);
-                $categoriesArray = $finder->find();
-                if (empty($categoriesArray)) {
-                    throw new ErrorException($this->emptyError('categoriesArray'));
-                }
-                
-                $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, [
-                    'id_category'=>$productsModel->id_category
-                ]);
-                $subcategoryArray = $finder->find();
-                if (empty($subcategoryArray)) {
-                    throw new ErrorException($this->emptyError('subcategoryArray'));
-                }
-                
-                $finder = \Yii::$app->registry->get(ColorsFinder::class);
-                $colorsArray = $finder->find();
-                if (empty($colorsArray)) {
-                    throw new ErrorException($this->emptyError('colorsArray'));
-                }
-                
-                $finder = \Yii::$app->registry->get(SizesFinder::class);
-                $sizesArray = $finder->find();
-                if (empty($sizesArray)) {
-                    throw new ErrorException($this->emptyError('sizesArray'));
-                }
-                
-                $finder = \Yii::$app->registry->get(BrandsFinder::class);
-                $brandsArray = $finder->find();
-                if (empty($brandsArray)) {
-                    throw new ErrorException($this->emptyError('brandsArray'));
-                }
-                
-                $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
-                
-                $dataArray = [];
-                
-                $dataArray['adminProductDetailFormWidgetConfig'] = $this->adminProductDetailFormWidgetConfig($productsModel, $categoriesArray, $subcategoryArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
-                $dataArray['adminProductDetailBreadcrumbsWidgetConfig'] = $this->adminProductDetailBreadcrumbsWidgetConfig($productsModel);
-                
-                $this->dataArray = $dataArray;
-            }
+           $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
             
-            return $this->dataArray;
+            if ($request->isAjax === true) {
+                if ($form->load($request->post()) === true) {
+                    \Yii::$app->response->format = Response::FORMAT_JSON;
+                    $errors = ActiveForm::validate($form);
+                    if (!empty($errors)) {
+                        return $errors;
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(ProductIdFinder::class, [
+                        'id'=>$form->id
+                    ]);
+                    $productsModel = $finder->find();
+                    if (empty($productsModel)) {
+                        throw new ErrorException($this->emptyError('productsModel'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+                    $categoriesArray = $finder->find();
+                    if (empty($categoriesArray)) {
+                        throw new ErrorException($this->emptyError('categoriesArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(SubcategoryIdCategoryFinder::class, [
+                        'id_category'=>$productsModel->id_category
+                    ]);
+                    $subcategoryArray = $finder->find();
+                    if (empty($subcategoryArray)) {
+                        throw new ErrorException($this->emptyError('subcategoryArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(ColorsFinder::class);
+                    $colorsArray = $finder->find();
+                    if (empty($colorsArray)) {
+                        throw new ErrorException($this->emptyError('colorsArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(SizesFinder::class);
+                    $sizesArray = $finder->find();
+                    if (empty($sizesArray)) {
+                        throw new ErrorException($this->emptyError('sizesArray'));
+                    }
+                    
+                    $finder = \Yii::$app->registry->get(BrandsFinder::class);
+                    $brandsArray = $finder->find();
+                    if (empty($brandsArray)) {
+                        throw new ErrorException($this->emptyError('brandsArray'));
+                    }
+                    
+                    $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
+                    
+                    $adminProductDetailFormWidgetConfig = $this->adminProductDetailFormWidgetConfig($productsModel, $categoriesArray, $subcategoryArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
+                    
+                    return AdminProductDetailFormWidget::widget($adminProductDetailFormWidgetConfig);
+                }
+            }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
@@ -102,7 +101,7 @@ class AdminProductDetailFormRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AdminProductDetailFormWidget
-     * @param Model $productsModel
+     * @param ProductsModel $productsModel
      * @param array $categoriesArray
      * @param array $subcategoryArray
      * @param array $colorsArray
@@ -111,7 +110,7 @@ class AdminProductDetailFormRequestHandler extends AbstractBaseHandler
      * @param AbstractBaseForm $adminProductForm
      * @return array
      */
-    private function adminProductDetailFormWidgetConfig(Model $productsModel, array $categoriesArray, array $subcategoryArray, array $colorsArray, array $sizesArray, array $brandsArray, AbstractBaseForm $adminProductForm)
+    private function adminProductDetailFormWidgetConfig(ProductsModel $productsModel, array $categoriesArray, array $subcategoryArray, array $colorsArray, array $sizesArray, array $brandsArray, AbstractBaseForm $adminProductForm)
     {
         try {
             $dataArray = [];
@@ -136,23 +135,6 @@ class AdminProductDetailFormRequestHandler extends AbstractBaseHandler
             
             $dataArray['form'] = $adminProductForm;
             $dataArray['template'] = 'admin-product-detail-form.twig';
-            
-            return $dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета AdminProductDetailBreadcrumbsWidget
-     * @param Model $productsModel
-     */
-    private function adminProductDetailBreadcrumbsWidgetConfig(Model $productsModel)
-    {
-        try {
-            $dataArray = [];
-            
-            $dataArray['product'] = $productsModel;
             
             return $dataArray;
         } catch (\Throwable $t) {

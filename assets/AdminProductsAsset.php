@@ -17,8 +17,8 @@ class AdminProductsAsset extends AbstractAsset
     public $js = [
         'js/sendGetSubcategory.js',
         'js/sendAdminProductsGetCsv.js',
-        //'js/sendAdminProductDetailForm.js',
-        //'js/sendAdminProductDetailChange.js',
+        'js/sendAdminProductDetailForm.js',
+        'js/sendAdminProductDetailChange.js',
     ];
     /**
      * @var array зависимости пакета
