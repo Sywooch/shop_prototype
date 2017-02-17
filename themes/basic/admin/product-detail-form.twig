@@ -1,0 +1,10 @@
+{{ register_asset_bundle('app/assets/AdminProductDetailFormAsset') }}
+
+{{ use ('app/widgets/AdminProductDetailBreadcrumbsWidget') }}
+{{ use ('app/widgets/AdminProductDetailFormWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_product_detail_breadcrumbs_widget_widget(adminProductDetailBreadcrumbsWidgetConfig) }}
+
+{{ admin_product_detail_form_widget_widget(adminProductDetailFormWidgetConfig) }}

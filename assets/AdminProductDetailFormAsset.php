@@ -8,7 +8,7 @@ use app\assets\{AbstractAsset,
 /**
  * Задает основной пакет ресурсов
  */
-class AdminProductsAsset extends AbstractAsset
+class AdminProductDetailFormAsset extends AbstractAsset
 {
     /**
      * @var array массив, перечисляющий JavaScript файлы, 
@@ -16,9 +16,6 @@ class AdminProductsAsset extends AbstractAsset
      */
     public $js = [
         'js/sendGetSubcategory.js',
-        'js/sendAdminProductsGetCsv.js',
-        //'js/sendAdminProductDetailForm.js',
-        //'js/sendAdminProductDetailChange.js',
     ];
     /**
      * @var array зависимости пакета

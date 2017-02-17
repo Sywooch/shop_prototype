@@ -75,7 +75,7 @@ class ImgHelper
             }
             
             $catalog = time();
-            $path = \Yii::getAlias(sprintf('@imagesroot/%s', $catalog));
+            $path = \Yii::getAlias(sprintf('@imagesroot/new_%s', $catalog));
             
             if (mkdir($path) === false) {
                 throw new ErrorException(ExceptionsTrait::staticMethodError('mkdir'));

@@ -130,12 +130,12 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
                 }
                 
                 $adminProductsFiltersForm = new AdminProductsFiltersForm($filtersModel->toArray());
-                $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+                //$adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
                 
                 $dataArray = [];
                 
                 $dataArray['adminProductsFiltersWidgetConfig'] = $this->adminProductsFiltersWidgetConfig($sortingFieldsArray, $sortingTypesArray, $colorsArray, $sizesArray, $brandsArray, $categoriesArray, $subcategoryArray ?? [], $activeStatusesArray, $adminProductsFiltersForm);
-                $dataArray['adminProductsWidgetConfig'] = $this->adminProductsWidgetConfig($productsCollection->asArray(), $currentCurrencyModel, $adminProductForm);
+                $dataArray['adminProductsWidgetConfig'] = $this->adminProductsWidgetConfig($productsCollection->asArray(), $currentCurrencyModel);
                 $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection->pagination);
                 $dataArray['adminCsvProductsFormWidgetConfig'] = $this->adminCsvProductsFormWidgetConfig($productsCollection->isEmpty() ? false : true);
                 
@@ -227,10 +227,9 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
      * Возвращает массив конфигурации для виджета AdminProductsWidget
      * @param array $productsArray
      * @param CurrencyInterface $currentCurrencyModel
-     * @param AbstractBaseForm $adminProductForm
      * @return array
      */
-    private function adminProductsWidgetConfig(array $productsArray, CurrencyInterface $currentCurrencyModel, AbstractBaseForm $adminProductForm): array
+    private function adminProductsWidgetConfig(array $productsArray, CurrencyInterface $currentCurrencyModel): array
     {
         try {
             $dataArray = [];
@@ -238,7 +237,7 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
             $dataArray['header'] = \Yii::t('base', 'Products');
             $dataArray['products'] = $productsArray;
             $dataArray['currency'] = $currentCurrencyModel;
-            $dataArray['form'] = $adminProductForm;
+            //$dataArray['form'] = $adminProductForm;
             $dataArray['template'] = 'admin-products.twig';
             
             return $dataArray;

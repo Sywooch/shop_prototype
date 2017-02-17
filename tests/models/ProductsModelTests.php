@@ -52,6 +52,7 @@ class ProductsModelTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('VIEWS'));
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('EDIT'));
         
         $model = new ProductsModel();
         
@@ -85,6 +86,40 @@ class ProductsModelTests extends TestCase
         $this->assertEquals(12, $model->views);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::SAVE]);
+        $model->attributes = [
+            'id'=>1,
+            'date'=>time(),
+            'code'=>'FJHERJ',
+            'name'=>'Mock',
+            'description'=>'Mock',
+            'short_description'=>'Mock',
+            'price'=>15.78,
+            'images'=>'test',
+            'id_category'=>1,
+            'id_subcategory'=>1,
+            'id_brand'=>1,
+            'active'=>true,
+            'total_products'=>12,
+            'seocode'=>'mock',
+            'views'=>12,
+        ];
+        
+        $this->assertEquals(1, $model->id);
+        $this->assertEquals(time(), $model->date);
+        $this->assertEquals('FJHERJ', $model->code);
+        $this->assertEquals('Mock', $model->name);
+        $this->assertEquals('Mock', $model->short_description);
+        $this->assertEquals(15.78, $model->price);
+        $this->assertEquals('test', $model->images);
+        $this->assertEquals(1, $model->id_category);
+        $this->assertEquals(1, $model->id_subcategory);
+        $this->assertEquals(1, $model->id_brand);
+        $this->assertEquals(true, $model->active);
+        $this->assertEquals(12, $model->total_products);
+        $this->assertEquals('mock', $model->seocode);
+        $this->assertEquals(12, $model->views);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::EDIT]);
         $model->attributes = [
             'id'=>1,
             'date'=>time(),
@@ -165,6 +200,30 @@ class ProductsModelTests extends TestCase
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::EDIT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(13, $model->errors);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::EDIT]);
+        $model->attributes = [
+            'id'=>1,
+            'date'=>time(),
+            'code'=>'FJHERJ',
+            'name'=>'Mock',
+            'description'=>'Mock',
+            'short_description'=>'Mock',
+            'price'=>15.78,
+            'id_category'=>1,
+            'id_subcategory'=>1,
+            'id_brand'=>1,
+            'total_products'=>12,
+            'seocode'=>'mock',
+            'views'=>12,
+        ];
+        $model->validate();
     }
     
     /**

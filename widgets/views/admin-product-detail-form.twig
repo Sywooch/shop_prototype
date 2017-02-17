@@ -1,6 +1,6 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<div class="admin-product-change-form">
+<div class="admin-product-change-form"><p>
     {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
         {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
         {{ form.field(modelForm, 'code') | raw }}
@@ -9,7 +9,7 @@
         {{ form.field(modelForm, 'description').textarea({'rows':rows, 'cols':cols}) | raw }}
         {{ form.field(modelForm, 'price').input('number', {'step':0.01, 'min':0}) | raw }}
         <br>{{ images | raw }}
-        {{ form.field(modelForm, 'images').fileInput({'multiple':true, 'accept':'image/*'}) | raw }}
+        {{ form.field(modelForm, 'images[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
         {{ form.field(modelForm, 'id_category').dropDownList(categories, {'data-href':categoriesHref}) | raw }}
         {{ form.field(modelForm, 'id_subcategory').dropDownList(subcategory) | raw }}
         {{ form.field(modelForm, 'id_colors').dropDownList(colors, {'multiple':true}) | raw }}
@@ -23,4 +23,4 @@
         <input type="submit" name="send" value="{{ button }}">
         <input type="submit" name="cancel" value="{{ buttonCancel }}">
     {{ active_form_end() }}
-</div>
+</p></div>

@@ -20,7 +20,6 @@ class AdminProductFormTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('CREATE'));
         $this->assertTrue($reflection->hasConstant('EDIT'));
-        $this->assertTrue($reflection->hasConstant('GET'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('code'));
@@ -174,15 +173,6 @@ class AdminProductFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'views');
         $result = $reflection->getValue($form);
         $this->assertSame(571, $result);
-        
-        $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
-        $form->attributes = [
-            'id'=>12,
-        ];
-        
-        $reflection = new \ReflectionProperty($form, 'id');
-        $result = $reflection->getValue($form);
-        $this->assertSame(12, $result);
     }
     
     /**
@@ -326,19 +316,6 @@ class AdminProductFormTests extends TestCase
             'images'=>$imagesToLoad
         ];
         $form->validate();
-        
-        $this->assertEmpty($form->errors);
-        
-        $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
-        $form->validate();
-        
-        $this->assertNotEmpty($form->errors);
-        $this->assertCount(1, $form->errors);
-        
-        $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
-        $form->attributes = [
-            'id'=>7,
-        ];
         
         $this->assertEmpty($form->errors);
     }

@@ -2,10 +2,10 @@
 
 namespace app\widgets;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use app\widgets\BreadcrumbsWidget;
 use app\exceptions\ExceptionsTrait;
-use app\models\ProductsModel;
 
 /**
  * Формирует breadcrumbs для страницы товара
@@ -39,9 +39,9 @@ class ProductBreadcrumbsWidget extends BreadcrumbsWidget
     
     /**
      * Присваивает ProductsModel свойству ProductBreadcrumbsWidget::model
-     * @param ProductsModel $model
+     * @param Model $model
      */
-    public function setProduct(ProductsModel $product)
+    public function setProduct(Model $product)
     {
         try {
             $this->product = $product;

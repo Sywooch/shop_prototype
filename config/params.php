@@ -22,6 +22,7 @@ $params = [
     'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступна текущая категория
     'subcategoryKey'=>'subcategory', # Ключ, по которому в $_REQUEST доступна текущая подкатегория
     'productKey'=>'seocode', # Ключ, по которому в $_REQUEST доступен seocode продукта
+    'productId'=>'productId', # Ключ, по которому в $_REQUEST доступен id продукта
     
     # Путь к товару админ раздел
     'orderId'=>'orderId', # Ключ, по которому в $_REQUEST доступен номер запрашиваемого заказа

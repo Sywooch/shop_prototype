@@ -22,6 +22,10 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий сохранения данных
      */
     const SAVE = 'save';
+    /**
+     * Сценарий обновления данных
+     */
+    const EDIT = 'edit';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -41,6 +45,7 @@ class ProductsModel extends AbstractBaseModel
         return [
             self::VIEWS=>['views'],
             self::SAVE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode', 'views'],
+            self::EDIT=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode', 'views'],
         ];
     }
     
@@ -49,6 +54,7 @@ class ProductsModel extends AbstractBaseModel
         return [
             [['views'], 'required', 'on'=>self::VIEWS],
             [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode', 'views'], 'required', 'on'=>self::SAVE],
+            [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'id_category', 'id_subcategory', 'id_brand', 'total_products', 'seocode', 'views'], 'required', 'on'=>self::EDIT],
         ];
     }
     

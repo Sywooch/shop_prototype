@@ -15,6 +15,10 @@ class ProductsSizesModelTests extends TestCase
      */
     public function testProperties()
     {
+        $reflection = new \ReflectionClass(ProductsSizesModel::class);
+        
+        $this->assertTrue($reflection->hasConstant('SAVE'));
+        
         $model = new ProductsSizesModel();
         
         $this->assertArrayHasKey('id_product', $model->attributes);
@@ -29,5 +33,41 @@ class ProductsSizesModelTests extends TestCase
         $result = ProductsSizesModel::tableName();
         
         $this->assertSame('products_sizes', $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsSizesModel::scenarios
+     */
+    public function testScenarios()
+    {
+        $model = new ProductsSizesModel(['scenario'=>ProductsSizesModel::SAVE]);
+        $model->attributes = [
+            'id_product'=>12,
+            'id_size'=>2
+        ];
+        
+        $this->assertEquals(12, $model->id_product);
+        $this->assertEquals(2, $model->id_size);
+    }
+    
+    /**
+     * Тестирует метод ProductsSizesModel::rules
+     */
+    public function testRules()
+    {
+        $model = new ProductsSizesModel(['scenario'=>ProductsSizesModel::SAVE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(2, $model->errors);
+        
+        $model = new ProductsSizesModel(['scenario'=>ProductsSizesModel::SAVE]);
+        $model->attributes = [
+            'id_product'=>12,
+            'id_size'=>2
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
 }
