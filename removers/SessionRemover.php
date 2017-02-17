@@ -1,15 +1,16 @@
 <?php
 
-namespace app\cleaners;
+namespace app\removers;
 
 use yii\base\ErrorException;
-use app\cleaners\AbstractBaseCleaner;
+use app\removers\{AbstractBaseRemover,
+    SessionRemoverInterface};
 use app\helpers\SessionHelper;
 
 /**
  * Удаляет данные из сессионного хранилища
  */
-class SessionCleaner extends AbstractBaseCleaner
+class SessionRemover extends AbstractBaseRemover implements SessionRemoverInterface
 {
     /**
      * @var array ключи, данные которых будут удалены
@@ -20,7 +21,7 @@ class SessionCleaner extends AbstractBaseCleaner
      * Удаляет данные из сессионного хранилища
      * @return bool
      */
-    public function clean()
+    public function remove()
     {
         try {
             if (empty($this->keys)) {
@@ -36,7 +37,8 @@ class SessionCleaner extends AbstractBaseCleaner
     }
     
     /**
-     * Присваивает array SessionCleaner::keys
+     * Присваивает значение SessionRemover::keys
+     * @param array $keys
      */
     public function setKeys(array $keys)
     {

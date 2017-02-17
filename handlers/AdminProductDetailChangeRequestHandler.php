@@ -17,6 +17,8 @@ use app\models\{ProductsColorsModel,
 use app\savers\{ModelSaver,
     ProductsColorsArraySaver,
     ProductsSizesArraySaver};
+use app\services\{SaveProductsColorsService,
+    SaveProductsSizesService};
 
 /**
  * Обрабатывает запрос на обновление данных товара
@@ -55,7 +57,12 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                             throw new ErrorException($this->emptyError('productsModel'));
                         }
                         
-                        $imgCatalog = ImgHelper::saveImages($form->images);
+                        if (!empty($form->images)) {
+                            if (!empty($productsModel->images)) {
+                                ImgHelper::removeImages($productsModel->images);
+                            }
+                            $imgCatalog = ImgHelper::saveImages($form->images);
+                        }
                         
                         $productsModel->scenario = ProductsModel::EDIT;
                         $productsModel->code = $form->code;
@@ -79,8 +86,19 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                         ]);
                         $saver->save();
                         
-                        $this->saveProductsColors($form);
-                        $this->saveProductsSizes($form);
+                        $service = new SaveProductsColorsService([
+                            'idColors'=>$form->id_colors,
+                            'idProduct'=>$productsModel->id
+                        ]);
+                        $service->get();
+                        
+                        $service = new SaveProductsSizesService([
+                            'idSizes'=>$form->id_sizes,
+                            'idProduct'=>$productsModel->id
+                        ]);
+                        $service->get();
+                        
+                        $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
                         
                         $transaction->commit();
                         
@@ -88,7 +106,7 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         if (!empty($imgCatalog)) {
-                            $this->cleanFiles($imgCatalog);
+                            ImgHelper::removeImages($imgCatalog);
                         }
                         throw $t;
                     }
@@ -100,90 +118,17 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Сохраняет ProductsColorsModel
-     * @param AbstractBaseForm $form
-     * @return bool
+     * Возвращает массив настроек для виджета AdminProductDataWidget
+     * @param Model $productsModel
+     * @param CurrencyInterface $currentCurrencyModel
+     * @param AbstrctBaseForm $form
      */
-    /*private function saveProductsColors(AbstractBaseForm $form)
+    private function adminProductDataWidgetConfig(AbstrctBaseForm $adminProductForm): array
     {
         try {
-            $productsColorsModel = new ProductsColorsModel(['scenario'=>ProductsColorsModel::SAVE]);
-            $productsColorsModelArray = [];
+            $dataArray = [];
             
-            foreach ($form->id_colors as $idColor) {
-                $rawProductsColorsModel = clone $productsColorsModel;
-                $rawProductsColorsModel->id_product = $form->id;
-                $rawProductsColorsModel->id_color = $idColor;
-                if ($rawProductsColorsModel->validate() === false) {
-                    throw new ErrorException($this->modelError($rawProductsColorsModel->errors));
-                }
-                $productsColorsModelArray[] = $rawProductsColorsModel;
-            }
-            
-            $saver = new ProductsColorsArraySaver([
-                'models'=>$productsColorsModelArray
-            ]);
-            $saver->save();
-            
-            return true;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }*/
-    
-    /**
-     * Сохраняет ProductsSizesModel
-     * @param AbstractBaseForm $form
-     * @return bool
-     */
-    private function saveProductsSizes(AbstractBaseForm $form)
-    {
-        try {
-            $productsSizesModel = new ProductsSizesModel(['scenario'=>ProductsSizesModel::SAVE]);
-            $productsSizesModelArray = [];
-            
-            foreach ($form->id_sizes as $idSize) {
-                $rawProductsSizesModel = clone $productsSizesModel;
-                $rawProductsSizesModel->id_product = $form->id;
-                $rawProductsSizesModel->id_size = $idSize;
-                if ($rawProductsSizesModel->validate() === false) {
-                    throw new ErrorException($this->modelError($rawProductsSizesModel->errors));
-                }
-                $productsSizesModelArray[] = $rawProductsSizesModel;
-            }
-            
-            $saver = new ProductsSizesArraySaver([
-                'models'=>$productsSizesModelArray
-            ]);
-            $saver->save();
-            
-            return true;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Удаляет сохраненные файлы при ошибке выполнения
-     * @param string $imgCatalog
-     * @return bool
-     */
-    private function cleanFiles(string $imgCatalog)
-    {
-        try {
-            $path = \Yii::getAlias(sprintf('@imagesroot/%s', $imgCatalog));
-            
-            if (file_exists($path) && is_dir($path)) {
-                $fileArray = glob(sprintf('%s/*.{jpg,gif,png}', $path), GLOB_BRACE);
-                if (!empty($fileArray)) {
-                    foreach ($fileArray as $file) {
-                        unlink($file);
-                    }
-                }
-                rmdir($path);
-            }
-            
-            return true;
+            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

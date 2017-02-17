@@ -15,7 +15,7 @@ use app\finders\PurchasesSessionFinder;
 use app\widgets\{CartWidget,
     ShortCartRedirectWidget};
 use app\models\PurchasesModel;
-use app\cleaners\SessionCleaner;
+use app\removers\SessionRemover;
 use app\services\GetCurrentCurrencyModelService;
 
 /**
@@ -69,10 +69,10 @@ class CartDeleteRequestHandler extends AbstractBaseHandler
                     $ordersCollection->delete($rawPurchasesModel);
                     
                     if ($ordersCollection->isEmpty() === true) {
-                        $cleaner = new SessionCleaner([
+                        $remover = new SessionRemover([
                             'keys'=>[$key],
                         ]);
-                        $cleaner->clean();
+                        $remover->remove();
                         
                         return Url::to(['/products-list/index']);
                     } else {

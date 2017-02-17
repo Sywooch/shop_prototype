@@ -36,9 +36,11 @@ class ProductsColorsArraySaver extends AbstractBaseSaver implements SaverArrayIn
                 ];
             }
             
-            $sql = \Yii::$app->db->getQueryBuilder()->batchInsert('{{products_colors}}', ['id_product', 'id_color'], $toRecord);
-            $query = sprintf('%s %s', $sql, 'ON DUPLICATE KEY UPDATE id_product=id_product, id_color=id_color');
-            $result = \Yii::$app->db->createCommand($query)->execute();
+            $result = \Yii::$app->db->createCommand()->batchInsert('{{products_colors}}', ['id_product', 'id_color'], $toRecord)->execute();
+            
+            if ((int) $result !== (int) count($this->models)) {
+                throw new ErrorException($this->methodError('batchInsert'));
+            }
             
             return $result;
         } catch (\Throwable $t) {

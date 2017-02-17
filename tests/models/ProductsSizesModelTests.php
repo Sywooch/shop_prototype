@@ -18,6 +18,7 @@ class ProductsSizesModelTests extends TestCase
         $reflection = new \ReflectionClass(ProductsSizesModel::class);
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
         
         $model = new ProductsSizesModel();
         
@@ -48,6 +49,13 @@ class ProductsSizesModelTests extends TestCase
         
         $this->assertEquals(12, $model->id_product);
         $this->assertEquals(2, $model->id_size);
+        
+        $model = new ProductsSizesModel(['scenario'=>ProductsSizesModel::DELETE]);
+        $model->attributes = [
+            'id_product'=>12,
+        ];
+        
+        $this->assertEquals(12, $model->id_product);
     }
     
     /**
@@ -65,6 +73,20 @@ class ProductsSizesModelTests extends TestCase
         $model->attributes = [
             'id_product'=>12,
             'id_size'=>2
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new ProductsSizesModel(['scenario'=>ProductsSizesModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new ProductsSizesModel(['scenario'=>ProductsSizesModel::DELETE]);
+        $model->attributes = [
+            'id_product'=>12,
         ];
         $model->validate();
         

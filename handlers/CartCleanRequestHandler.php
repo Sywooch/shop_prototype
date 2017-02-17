@@ -7,7 +7,7 @@ use yii\web\Response;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
 use app\helpers\HashHelper;
-use app\cleaners\SessionCleaner;
+use app\removers\SessionRemover;
 use app\widgets\ShortCartWidget;
 use app\finders\PurchasesSessionFinder;
 use app\services\GetCurrentCurrencyModelService;
@@ -37,10 +37,10 @@ class CartCleanRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('currentCurrencyModel'));
                 }
                 
-                $cleaner = new SessionCleaner([
+                $remover = new SessionRemover([
                     'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],
                 ]);
-                $cleaner->clean();
+                $remover->remove();
                 
                 $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
                     'key'=>HashHelper::createCartKey()

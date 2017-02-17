@@ -26,7 +26,7 @@ use app\finders\{PurchasesSessionFinder,
 use app\helpers\HashHelper;
 use app\savers\{ModelSaver,
     PurchasesArraySaver};
-use app\cleaners\SessionCleaner;
+use app\removers\SessionRemover;
 
 /**
  * Обрабатывает запрос, сохраняющий оформленные покупки в БД
@@ -203,10 +203,10 @@ class CartCheckoutAjaxRequestHandler extends AbstractBaseHandler
                         ]);
                         $mailService->get();
                         
-                        $cleaner = new SessionCleaner([
+                        $remover = new SessionRemover([
                             'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],
                         ]);
-                        $cleaner->clean();
+                        $remover->remove();
                         
                         $transaction->commit();
                         

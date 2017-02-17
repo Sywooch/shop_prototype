@@ -36,9 +36,11 @@ class ProductsSizesArraySaver extends AbstractBaseSaver implements SaverArrayInt
                 ];
             }
             
-            $sql = \Yii::$app->db->getQueryBuilder()->batchInsert('{{products_sizes}}', ['id_product', 'id_size'], $toRecord);
-            $query = sprintf('%s %s', $sql, 'ON DUPLICATE KEY UPDATE id_product=id_product, id_size=id_size');
-            $result = \Yii::$app->db->createCommand($query)->execute();
+            $result = \Yii::$app->db->createCommand()->batchInsert('{{products_sizes}}', ['id_product', 'id_size'], $toRecord)->execute();
+            
+            if ((int) $result !== (int) count($this->models)) {
+                throw new ErrorException($this->methodError('batchInsert'));
+            }
             
             return $result;
         } catch (\Throwable $t) {

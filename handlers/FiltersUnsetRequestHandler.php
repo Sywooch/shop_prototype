@@ -7,7 +7,7 @@ use app\handlers\AbstractBaseHandler;
 use app\forms\FiltersForm;
 use app\helpers\{HashHelper,
     StringHelper};
-use app\cleaners\SessionCleaner;
+use app\removers\SessionRemover;
 
 /**
  * Очищает фильтры каталога товаров
@@ -31,10 +31,10 @@ class FiltersUnsetRequestHandler extends AbstractBaseHandler
                 throw new ErrorException($this->modelError($form->errors));
             }
             
-            $cleaner = new SessionCleaner([
+            $remover = new SessionRemover([
                 'keys'=>[HashHelper::createFiltersKey($form->url)],
             ]);
-            $cleaner->clean();
+            $remover->remove();
             
             return StringHelper::cutPage($form->url);
         } catch (\Throwable $t) {

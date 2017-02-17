@@ -72,11 +72,11 @@ class ProductsSizesArraySaverTests extends TestCase
         $models = [
             new class() {
                 public $id_product = 1;
-                public $id_size = 2;
+                public $id_size = 3;
             },
             new class() {
                 public $id_product = 2;
-                public $id_size = 1;
+                public $id_size = 3;
             }
         ];
         
@@ -91,10 +91,10 @@ class ProductsSizesArraySaverTests extends TestCase
         
         $result = $saver->save();
         
-        $this->assertEquals(1, $result);
+        $this->assertEquals(2, $result);
         
         $result = \Yii::$app->db->createCommand('SELECT * FROM {{products_sizes}}')->queryAll();
-        $this->assertCount(12, $result);
+        $this->assertCount(13, $result);
     }
     
     public static function tearDownAfterClass()

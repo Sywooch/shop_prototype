@@ -9,6 +9,10 @@ $data = [
         'id'=>2,
         'color'=>'grey',
     ],
+    'color_3'=>[
+        'id'=>3,
+        'color'=>'green',
+    ],
 ];
 
 return $data;

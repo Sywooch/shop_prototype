@@ -2,13 +2,11 @@
 
 namespace app\services;
 
-use yii\base\{ErrorException,
-    Model};
-use yii\helpers\ArrayHelper;
+use yii\base\ErrorException;
 use app\services\AbstractBaseService;
 use app\models\ProductsColorsModel;
 use app\savers\ProductsColorsArraySaver;
-use app\remover\ProductsColorsModelRemover;
+use app\removers\ProductsColorsModelRemover;
 
 /**
  * Возвращает объект текущей валюты

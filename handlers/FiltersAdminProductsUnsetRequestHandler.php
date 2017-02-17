@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use app\handlers\AbstractBaseHandler;
 use app\helpers\{HashHelper,
     StringHelper};
-use app\cleaners\SessionCleaner;
+use app\removers\SessionRemover;
 use app\forms\AdminProductsFiltersForm;
 
 /**
@@ -31,10 +31,10 @@ class FiltersAdminProductsUnsetRequestHandler extends AbstractBaseHandler
                 throw new ErrorException($this->modelError($form->errors));
             }
             
-            $cleaner = new SessionCleaner([
+            $remover = new SessionRemover([
                 'keys'=>[HashHelper::createHash([\Yii::$app->params['adminProductsFilters']])],
             ]);
-            $cleaner->clean();
+            $remover->remove();
             
             return StringHelper::cutPage($form->url);
         } catch (\Throwable $t) {

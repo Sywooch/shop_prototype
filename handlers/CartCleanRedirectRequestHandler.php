@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\handlers\AbstractBaseHandler;
 use app\helpers\HashHelper;
-use app\cleaners\SessionCleaner;
+use app\removers\SessionRemover;
 
 /**
  * Обрабатывает запрос на удаление покупок из корзины, 
@@ -22,10 +22,10 @@ class CartCleanRedirectRequestHandler extends AbstractBaseHandler
     {
         try {
             if ($request->isPost === true) {
-                $cleaner = new SessionCleaner([
+                $remover = new SessionRemover([
                     'keys'=>[HashHelper::createCartKey(), HashHelper::createCartCustomerKey()],
                 ]);
-                $cleaner->clean();
+                $remover->remove();
                 
                 return Url::to(['/products-list/index']);
             }

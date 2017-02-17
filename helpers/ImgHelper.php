@@ -67,30 +67,55 @@ class ImgHelper
     public static function saveImages(array $uploadedFiles)
     {
         try {
-            if (!empty($uploadedFiles)) {
-                $catalog = sprintf('new_%s', time());
-                $path = \Yii::getAlias(sprintf('@imagesroot/%s', $catalog));
-                
-                if (mkdir($path) === false) {
-                    throw new ErrorException(ExceptionsTrait::staticMethodError('mkdir'));
-                }
-                
-                foreach ($uploadedFiles as $file) {
-                    $result = $file->saveAs(sprintf('%s/%s.%s', $path, $file->getBaseName(), $file->getExtension()));
-                    if ($result === false) {
-                        $filesArray = glob(sprintf('%/*.{jpg,png,gif}', $path), GLOB_BRACE);
-                        if (!empty($filesArray)) {
-                            foreach ($filesArray as $file) {
-                                unlink($file);
-                            }
-                        }
-                        rmdir($path);
-                        throw new ErrorException(ExceptionsTrait::staticMethodError('saveAs'));
-                    }
+            if (empty($uploadedFiles)) {
+                throw new ErrorException(ExceptionsTrait::staticEmptyError('uploadedFiles'));
+            }
+            
+            $catalog = sprintf('new_%s', time());
+            $path = \Yii::getAlias(sprintf('@imagesroot/%s', $catalog));
+            
+            if (mkdir($path) === false) {
+                throw new ErrorException(ExceptionsTrait::staticMethodError('mkdir'));
+            }
+            
+            foreach ($uploadedFiles as $file) {
+                $result = $file->saveAs(sprintf('%s/%s.%s', $path, $file->getBaseName(), $file->getExtension()));
+                if ($result === false) {
+                    self::removeImages($catalog);
+                    throw new ErrorException(ExceptionsTrait::staticMethodError('saveAs'));
                 }
             }
             
             return $catalog ?? null;
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет изображения и каталог
+     * @param string $catalog имя каталога
+     * @return bool
+     */
+    public static function removeImages(string $catalog)
+    {
+        try {
+            if (empty($catalog)) {
+                throw new ErrorException(ExceptionsTrait::staticEmptyError('catalog'));
+            }
+            
+            $path = \Yii::getAlias(sprintf('@imagesroot/%s', $catalog));
+            $filesArray = glob(sprintf('%/*.{jpg,png,gif}', $path), GLOB_BRACE);
+            
+            if (!empty($filesArray)) {
+                foreach ($filesArray as $file) {
+                    unlink($file);
+                }
+            }
+            
+            rmdir($path);
+            
+            return true;
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }
