@@ -582,7 +582,7 @@ class AdminProductDetailFormWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<div class="admin-product-change-form">#', $result);
-        $this->assertRegExp('#<form id="admin-products-detail-send-form-[0-9]{1}" action=".+" method="POST" enctype="multipart/form-data">#', $result);
+        $this->assertRegExp('#<form id="admin-product-detail-send-form-[0-9]{1}" action=".+" method="POST" enctype="multipart/form-data">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[code\]" value=".+">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[name\]" value=".+">#', $result);
@@ -590,7 +590,7 @@ class AdminProductDetailFormWidgetTests extends TestCase
         $this->assertRegExp('#<textarea id=".+" class="form-control" name=".+\[description\]" rows="[0-9]{2}" cols="[0-9]{2}">.+</textarea>#', $result);
         $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[price\]" value=".+" step="0.01" min="0">#', $result);
         $this->assertRegExp('#<img src=".+" height="50" alt="">#', $result);
-        $this->assertRegExp('#<input type="file" id=".+" name=".+\[images\]" multiple accept="image\/\*">#', $result);
+        $this->assertRegExp('#<input type="file" id=".+" name=".+\[images\]\[\]" multiple accept="image\/\*">#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_category\]" data-href=".+">#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_subcategory\]">#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_colors\]\[\]" multiple size="[0-9]{1}">#', $result);

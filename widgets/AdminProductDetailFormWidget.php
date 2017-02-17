@@ -106,7 +106,7 @@ class AdminProductDetailFormWidget extends AbstractBaseWidget
                 'views'=>$this->product->views,
             ]);
             
-            $renderArray['formId'] = sprintf('admin-products-detail-send-form-%d', $this->product->id);
+            $renderArray['formId'] = sprintf('admin-product-detail-send-form-%d', $this->product->id);
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;

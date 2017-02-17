@@ -3,10 +3,12 @@
 namespace app\handlers;
 
 use yii\base\ErrorException;
-use yii\web\Response;
+use yii\web\{Response,
+    UploadedFile};
 use yii\widgets\ActiveForm;
 use app\handlers\AbstractBaseHandler;
-use app\forms\AdminProductForm;
+use app\forms\{AbstractBaseForm,
+    AdminProductForm};
 use app\helpers\ImgHelper;
 use app\finders\ProductIdFinder;
 use app\models\{ProductsColorsModel,
@@ -35,6 +37,8 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                 if ($form->load($request->post()) === true) {
                     \Yii::$app->response->format = Response::FORMAT_JSON;
                     
+                    $form->images = UploadedFile::getInstances($form, 'images');
+                    
                     $errors = ActiveForm::validate($form);
                     if (!empty($errors)) {
                         return $errors;
@@ -51,16 +55,7 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                             throw new ErrorException($this->emptyError('productsModel'));
                         }
                         
-                        /*if (!empty($form->images)) {
-                            $imgCatalog = ImgHelper::saveImages($form, 'images');
-                            if (empty($imgCatalog)) {
-                                throw new ErrorException($this->emptyError('imgCatalog'));
-                            }
-                        }*/
-                        $imgCatalog = ImgHelper::saveImages($form, 'images');
-                        if (empty($imgCatalog)) {
-                            throw new ErrorException($this->emptyError('imgCatalog'));
-                        }
+                        $imgCatalog = ImgHelper::saveImages($form->images);
                         
                         $productsModel->scenario = ProductsModel::EDIT;
                         $productsModel->code = $form->code;
@@ -68,7 +63,7 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                         $productsModel->short_description = $form->short_description;
                         $productsModel->description = $form->description;
                         $productsModel->price = $form->price;
-                        $productsModel->images = $imgCatalog ?? $form->images ?? '';
+                        $productsModel->images = $imgCatalog ?? $productsModel->images;
                         $productsModel->id_category = $form->id_category;
                         $productsModel->id_subcategory = $form->id_subcategory;
                         $productsModel->id_brand = $form->id_brand;
@@ -106,10 +101,10 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
     
     /**
      * Сохраняет ProductsColorsModel
-     * @param AdminProductForm $form
+     * @param AbstractBaseForm $form
      * @return bool
      */
-    private function saveProductsColors(AdminProductForm $form)
+    /*private function saveProductsColors(AbstractBaseForm $form)
     {
         try {
             $productsColorsModel = new ProductsColorsModel(['scenario'=>ProductsColorsModel::SAVE]);
@@ -134,14 +129,14 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
-    }
+    }*/
     
     /**
      * Сохраняет ProductsSizesModel
-     * @param AdminProductForm $form
+     * @param AbstractBaseForm $form
      * @return bool
      */
-    private function saveProductsSizes(AdminProductForm $form)
+    private function saveProductsSizes(AbstractBaseForm $form)
     {
         try {
             $productsSizesModel = new ProductsSizesModel(['scenario'=>ProductsSizesModel::SAVE]);
@@ -176,14 +171,16 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
     private function cleanFiles(string $imgCatalog)
     {
         try {
-            if (file_exists($imgCatalog) && is_dir($imgCatalog)) {
-                $fileArray = glob(sprintf('%s/*.{jpg,gif,png}', \Yii::getAlias(sprintf('@imagesroot/%s', $imgCatalog))));
+            $path = \Yii::getAlias(sprintf('@imagesroot/%s', $imgCatalog));
+            
+            if (file_exists($path) && is_dir($path)) {
+                $fileArray = glob(sprintf('%s/*.{jpg,gif,png}', $path), GLOB_BRACE);
                 if (!empty($fileArray)) {
                     foreach ($fileArray as $file) {
                         unlink($file);
                     }
                 }
-                rmdir($imgCatalog);
+                rmdir($path);
             }
             
             return true;

@@ -7,7 +7,7 @@ use app\cleaners\AbstractBaseCleaner;
 use app\helpers\SessionHelper;
 
 /**
- * Сохранаяет данные в сессионном хранилище
+ * Удаляет данные из сессионного хранилища
  */
 class SessionCleaner extends AbstractBaseCleaner
 {

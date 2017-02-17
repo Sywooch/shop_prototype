@@ -14,6 +14,10 @@ class ProductsColorsModel extends AbstractBaseModel
      * Сценарий сохранения данных
      */
     const SAVE = 'save';
+    /**
+     * Сценарий удаления данных
+     */
+    const DELETE = 'delete';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -32,6 +36,7 @@ class ProductsColorsModel extends AbstractBaseModel
     {
         return [
             self::SAVE=>['id_product', 'id_color'],
+            self::DELETE=>['id_product'],
         ];
     }
     
@@ -39,6 +44,7 @@ class ProductsColorsModel extends AbstractBaseModel
     {
         return [
             [['id_product', 'id_color'], 'required', 'on'=>self::SAVE],
+            [['id_product'], 'required', 'on'=>self::DELETE],
         ];
     }
 }

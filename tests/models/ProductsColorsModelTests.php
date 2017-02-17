@@ -18,6 +18,7 @@ class ProductsColorsModelTests extends TestCase
         $reflection = new \ReflectionClass(ProductsColorsModel::class);
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
         
         $model = new ProductsColorsModel();
         
@@ -48,6 +49,13 @@ class ProductsColorsModelTests extends TestCase
         
         $this->assertEquals(12, $model->id_product);
         $this->assertEquals(2, $model->id_color);
+        
+        $model = new ProductsColorsModel(['scenario'=>ProductsColorsModel::DELETE]);
+        $model->attributes = [
+            'id_product'=>12,
+        ];
+        
+        $this->assertEquals(12, $model->id_product);
     }
     
     /**
@@ -65,6 +73,20 @@ class ProductsColorsModelTests extends TestCase
         $model->attributes = [
             'id_product'=>12,
             'id_color'=>2
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new ProductsColorsModel(['scenario'=>ProductsColorsModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new ProductsColorsModel(['scenario'=>ProductsColorsModel::DELETE]);
+        $model->attributes = [
+            'id_product'=>12,
         ];
         $model->validate();
         

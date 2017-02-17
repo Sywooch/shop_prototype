@@ -205,25 +205,32 @@ class ProductsModelTests extends TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertCount(13, $model->errors);
+        $this->assertCount(8, $model->errors);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::EDIT]);
         $model->attributes = [
             'id'=>1,
-            'date'=>time(),
             'code'=>'FJHERJ',
             'name'=>'Mock',
-            'description'=>'Mock',
-            'short_description'=>'Mock',
             'price'=>15.78,
             'id_category'=>1,
             'id_subcategory'=>1,
             'id_brand'=>1,
-            'total_products'=>12,
             'seocode'=>'mock',
-            'views'=>12,
         ];
         $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::EDIT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals('', $model->description);
+        $this->assertEquals('', $model->short_description);
+        $this->assertEquals('', $model->images);
+        $this->assertEquals(0, $model->total_products);
+        $this->assertEquals(0, $model->views);
     }
     
     /**
