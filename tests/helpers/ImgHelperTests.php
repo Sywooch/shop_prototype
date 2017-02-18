@@ -12,6 +12,24 @@ use app\forms\AdminProductForm;
  */
 class ImgHelperTests extends TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        $path = \Yii::getAlias('@imagesroot/other');
+        
+        mkdir($path);
+        
+        $filesArray = glob(\Yii::getAlias('@imagesroot/test') . '/*.{jpg,png,gif}', GLOB_BRACE);
+        
+        foreach ($filesArray as $file) {
+            if (preg_match('#thumbn_#', $file) === 0) {
+                $imagick = new \Imagick($file);
+                $newFile = fopen($path . '/' . basename($file), 'w');
+                $imagick->writeImageFile($newFile);
+                fclose($newFile);
+            }
+        }
+    }
+    
     /**
      * Тестирует метод ImgHelper::randThumbn
      */
@@ -33,49 +51,33 @@ class ImgHelperTests extends TestCase
     }
     
     /**
-     * Тестирует метод ImgHelper::saveImages
+     * Тестирует метод ImgHelper::makeThumbn
      */
-    /*public function testSaveImages()
+    public function testMakeThumbn()
     {
-        $filesArray = [
-            'AdminProductForm' => [
-                'name' => [
-                    'images'=>[
-                        0=>'m1.jpg', 
-                        1=>'m2.jpg'
-                    ]
-                ],
-                'type' => [
-                    'images'=>[
-                        0=>'image/jpeg', 
-                        1=>'image/jpeg'
-                    ]
-                ],
-                'tmp_name' => [
-                    'images'=>[
-                        0=>'/var/www/html/shop/tests/sources/images/m1.jpg',
-                        1=>'/var/www/html/shop/tests/sources/images/m2.jpg'
-                    ]
-                ],
-                'size' => [
-                    'images' => [
-                        0=>11037,
-                        1=>(1024*1024)*2
-                    ]
-                ],
-                'error' => [
-                    'images' => [
-                        0=>0,
-                        1=>0,
-                    ]
-                ],
-            ],
-        ];
+        $filesArray = glob(\Yii::getAlias('@imagesroot/other') . '/thumbn_*.{jpg,png,gif}', GLOB_BRACE);
+        $this->assertEmpty($filesArray);
         
-        $form = new AdminProductForm();
+        ImgHelper::makeThumbn('other');
         
-        $_FILES = $filesArray;
+        $filesArray = glob(\Yii::getAlias('@imagesroot/other') . '/thumbn_*.{jpg,png,gif}', GLOB_BRACE);
+        $this->assertNotEmpty($filesArray);
+    }
+    
+    /**
+     * Тестирует метод ImgHelper::removeImages
+     * @depends testMakeThumbn
+     */
+    public function testRemoveImages()
+    {
+        $filesArray = glob(\Yii::getAlias('@imagesroot/other') . '/thumbn_*.{jpg,png,gif}', GLOB_BRACE);
+        $this->assertNotEmpty($filesArray);
         
-        $result = ImgHelper::saveImages($form, 'images');
-    }*/
+        ImgHelper::removeImages('other');
+        
+        $filesArray = glob(\Yii::getAlias('@imagesroot/other') . '/thumbn_*.{jpg,png,gif}', GLOB_BRACE);
+        $this->assertEmpty($filesArray);
+        
+        $this->assertFalse(file_exists(\Yii::getAlias('@imagesroot/other')));
+    }
 }

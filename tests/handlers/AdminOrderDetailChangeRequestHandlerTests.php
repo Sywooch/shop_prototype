@@ -122,7 +122,7 @@ class AdminOrderDetailChangeRequestHandlerTests extends TestCase
         $this->assertNotEmpty($result);
         
         $newOrder = \Yii::$app->db->createCommand('SELECT * FROM {{purchases}} WHERE [[id]]=:id')->bindValue(':id', 1)->queryOne();
-        $this->assertNotEmpty($oldOrder);
+        $this->assertNotEmpty($newOrder);
         
         $this->assertEquals($oldOrder['id'], $newOrder['id']);
         $this->assertNotEquals($oldOrder['quantity'], $newOrder['quantity']);
