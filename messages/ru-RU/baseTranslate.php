@@ -213,7 +213,8 @@ $translate = [
     'Total products'=>'Количество товаров',
     'Seocode'=>'Сеокод',
     'Product name'=>'Название товара',
-    'Images catalog'=>'Каталог изображений'
+    'Images catalog'=>'Каталог изображений',
+    'Add product'=>'Добавить товар'
 ];
 
 return $translate;

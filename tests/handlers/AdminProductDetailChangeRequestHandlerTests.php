@@ -4,6 +4,7 @@ namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
 use yii\base\Model;
+use yii\web\UploadedFile;
 use app\handlers\AdminProductDetailChangeRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
@@ -92,6 +93,11 @@ class AdminProductDetailChangeRequestHandlerTests extends TestCase
      */
     public function testHandle()
     {
+        $reflection = new \ReflectionProperty(UploadedFile::class, '_files');
+        $reflection->setAccessible(true);
+        $reflection->setValue(null);
+        $_FILES = [];
+        
         $oldProduct = \Yii::$app->db->createCommand('SELECT * FROM {{products}} WHERE [[id]]=:id')->bindValue(':id', 1)->queryOne();
         $this->assertNotEmpty($oldProduct);
         
@@ -107,7 +113,7 @@ class AdminProductDetailChangeRequestHandlerTests extends TestCase
                         'short_description'=>'New short escription',
                         'description'=>'New description',
                         'price'=>46897.88,
-                        'images'=>'test',
+                        //'images'=>'other',
                         'id_category'=>2,
                         'id_subcategory'=>2,
                         'id_colors'=>[1, 2, 3],
