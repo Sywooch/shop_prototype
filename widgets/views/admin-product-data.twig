@@ -1,27 +1,27 @@
 {{ use('yii/widgets/ActiveForm') }}
 
 <div class="admin-product-previous-data">
-    <a href="{{ product.link }}">{{ product.linkText }}</a>
-    <br>{{ shortDescriptionHeader }}:  {{ product.short_description }}
-    <br>{{ product.image | raw }}
-    <br>{{ idHeader }}: {{ product.id }}
-    <br>{{ dateHeader }}: {{ product.date }}
-    <br>{{ codeHeader }}: {{ product.code }}
-    <br>{{ descriptionHeader }}: {{ product.description }}
-    <br>{{ priceHeader }}: {{ product.price }}
-    <br>{{ colorsHeader }}: {{ product.colors }}
-    <br>{{ sizesHeader }}: {{ product.sizes }}
-    <br>{{ categoryHeader }}: {{ product.category }}
-    <br>{{ subcategoryHeader }}: {{ product.subcategory }}
-    <br>{{ brandHeader }}: {{ product.brand }}
-    <br>{{ activeHeader }}: {{ product.active }}
-    <br>{{ totalProductsHeader }}: {{ product.total_products }}
-    <br>{{ seocodeHeader }}: {{ product.seocode }}
-    <br>{{ viewsHeader }}: {{ product.views }}
+    <a href="{{ link }}">{{ linkText }}</a>
+    <br>{{ shortDescriptionHeader }}:  {{ short_description }}
+    <br>{{ image | raw }}
+    <br>{{ idHeader }}: {{ id }}
+    <br>{{ dateHeader }}: {{ date }}
+    <br>{{ codeHeader }}: {{ code }}
+    <br>{{ descriptionHeader }}: {{ description }}
+    <br>{{ priceHeader }}: {{ price }}
+    <br>{{ colorsHeader }}: {{ colors }}
+    <br>{{ sizesHeader }}: {{ sizes }}
+    <br>{{ categoryHeader }}: {{ category }}
+    <br>{{ subcategoryHeader }}: {{ subcategory }}
+    <br>{{ brandHeader }}: {{ brand }}
+    <br>{{ activeHeader }}: {{ active }}
+    <br>{{ totalProductsHeader }}: {{ total_products }}
+    <br>{{ seocodeHeader }}: {{ seocode }}
+    <br>{{ viewsHeader }}: {{ views }}
     
-    {% set form=active_form_begin({'id':product.formId, 'enableAjaxValidation':product.ajaxValidation, 'validateOnSubmit':product.validateOnSubmit, 'validateOnChange':product.validateOnChange, 'validateOnBlur':product.validateOnBlur, 'validateOnType':product.validateOnType, 'action':product.formAction, 'method':'POST'}) %}
-        {{ form.field(product.modelForm, 'id').hiddenInput().label(false) | raw }}
-        <input type="submit" value="{{ product.button }}">
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
+        <input type="submit" value="{{ button }}">
     {{ active_form_end() }}
 </div>
 

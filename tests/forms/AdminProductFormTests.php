@@ -220,11 +220,22 @@ class AdminProductFormTests extends TestCase
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
-        $this->assertCount(1, $form->errors);
+        $this->assertCount(12, $form->errors);
         
         $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
         $form->attributes = [
-            'id'=>1, 
+            'id'=>1,
+            'code'=>'HJU780-R',
+            'name'=>'Product 1',
+            'short_description'=>'Short description 1',
+            'description'=>'Description 1',
+            'price'=>568.89,
+            'id_category'=>1,
+            'id_subcategory'=>2,
+            'id_colors'=>[1, 2, 3],
+            'id_sizes'=>[2, 4],
+            'id_brand'=>1,
+            'seocode'=>'product', 
         ];
         $form->validate();
         
@@ -271,6 +282,17 @@ class AdminProductFormTests extends TestCase
         $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
         $form->attributes = [
             'id'=>1,
+            'code'=>'HJU780-R',
+            'name'=>'Product 1',
+            'short_description'=>'Short description 1',
+            'description'=>'Description 1',
+            'price'=>568.89,
+            'id_category'=>1,
+            'id_subcategory'=>2,
+            'id_colors'=>[1, 2, 3],
+            'id_sizes'=>[2, 4],
+            'id_brand'=>1,
+            'seocode'=>'product',
             'images'=>$imagesToLoad
         ];
         $form->validate();
@@ -301,7 +323,7 @@ class AdminProductFormTests extends TestCase
                 'size' => [
                     'images' => [
                         0=>11037,
-                        1=>(1024*1024)*2
+                        1=>1024*400
                     ]
                 ],
                 'error' => [
@@ -323,6 +345,17 @@ class AdminProductFormTests extends TestCase
         $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
         $form->attributes = [
             'id'=>1,
+            'code'=>'HJU780-R',
+            'name'=>'Product 1',
+            'short_description'=>'Short description 1',
+            'description'=>'Description 1',
+            'price'=>568.89,
+            'id_category'=>1,
+            'id_subcategory'=>2,
+            'id_colors'=>[1, 2, 3],
+            'id_sizes'=>[2, 4],
+            'id_brand'=>1,
+            'seocode'=>'product',
             'images'=>$imagesToLoad
         ];
         $form->validate();

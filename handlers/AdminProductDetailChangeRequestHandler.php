@@ -2,23 +2,24 @@
 
 namespace app\handlers;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use yii\web\{Response,
     UploadedFile};
 use yii\widgets\ActiveForm;
 use app\handlers\AbstractBaseHandler;
 use app\forms\{AbstractBaseForm,
     AdminProductForm};
-use app\helpers\ImgHelper;
+use app\helpers\{HashHelper,
+    ImgHelper};
 use app\finders\ProductIdFinder;
-use app\models\{ProductsColorsModel,
-    ProductsModel,
-    ProductsSizesModel};
-use app\savers\{ModelSaver,
-    ProductsColorsArraySaver,
-    ProductsSizesArraySaver};
-use app\services\{SaveProductsColorsService,
+use app\models\{CurrencyInterface,
+    ProductsModel};
+use app\savers\ModelSaver;
+use app\services\{GetCurrentCurrencyModelService,
+    SaveProductsColorsService,
     SaveProductsSizesService};
+use app\widgets\AdminProductDataWidget;
 
 /**
  * Обрабатывает запрос на обновление данных товара
@@ -98,16 +99,25 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                         ]);
                         $service->get();
                         
+                        $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                            'key'=>HashHelper::createCurrencyKey()
+                        ]);
+                        $currentCurrencyModel = $service->get();
+                        if (empty($currentCurrencyModel)) {
+                            throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                        }
+                        
                         $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+                        
+                        $adminProductDataWidgetConfig = $this->adminProductDataWidgetConfig($productsModel, $currentCurrencyModel, $adminProductForm);
+                        $response = AdminProductDataWidget::widget($adminProductDataWidgetConfig);
                         
                         $transaction->commit();
                         
-                        return 'CHNAGED';
+                        return $response;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
-                        if (!empty($imgCatalog)) {
-                            ImgHelper::removeImages($imgCatalog);
-                        }
+                        ImgHelper::removeImages($imgCatalog ?? '');
                         throw $t;
                     }
                 }
@@ -121,12 +131,17 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
      * Возвращает массив настроек для виджета AdminProductDataWidget
      * @param Model $productsModel
      * @param CurrencyInterface $currentCurrencyModel
-     * @param AbstrctBaseForm $form
+     * @param AbstractBaseForm $form
      */
-    private function adminProductDataWidgetConfig(AbstrctBaseForm $adminProductForm): array
+    private function adminProductDataWidgetConfig(Model $productsModel, CurrencyInterface $currentCurrencyModel, AbstractBaseForm $adminProductForm): array
     {
         try {
             $dataArray = [];
+            
+            $dataArray['productsModel'] = $productsModel;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['form'] = $adminProductForm;
+            $dataArray['template'] = 'admin-product-data.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

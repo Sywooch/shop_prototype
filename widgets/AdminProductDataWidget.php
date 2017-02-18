@@ -13,7 +13,7 @@ use app\forms\AbstractBaseForm;
 use app\helpers\ImgHelper;
 
 /**
- * Формирует HTML строку с каталогом товаров
+ * Формирует HTML строку с данными товара
  */
 class AdminProductDataWidget extends AbstractBaseWidget
 {
@@ -29,6 +29,10 @@ class AdminProductDataWidget extends AbstractBaseWidget
      * @var AbstractBaseForm
      */
     private $form;
+    /**
+     * @var string имя шаблона
+     */
+    private $template;
     
     /**
      * Конструирует HTML строку с данными
@@ -46,33 +50,36 @@ class AdminProductDataWidget extends AbstractBaseWidget
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
-            
-            $renderArray = [];
-            
-            $renderArray = [];
-            $renderArray['id'] = $this->productsMode->id;
-            $renderArray['date'] = \Yii::$app->formatter->asDate($this->productsMode->date);
-            $renderArray['code'] = $this->productsMode->code;
-            $renderArray['link'] = Url::to(['/product-detail/index', 'seocode'=>$this->productsMode->seocode]);
-            $renderArray['linkText'] = Html::encode($this->productsMode->name);
-            $renderArray['short_description'] = Html::encode($this->productsMode->short_description);
-            $renderArray['description'] = Html::encode($this->productsMode->description);
-            $renderArray['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($this->productsMode->price * $this->currency->exchangeRate(), 2), $this->currency->code());
-            $renderArray['colors'] = implode(', ', ArrayHelper::getColumn($this->productsMode->colors, 'color'));
-            $renderArray['sizes'] = implode(', ', ArrayHelper::getColumn($this->productsMode->sizes, 'size'));
-            if (!empty($this->productsMode->images)) {
-                $renderArray['image'] = ImgHelper::randThumbn($this->productsMode->images);
+            if (empty($this->template)) {
+                throw new ErrorException($this->emptyError('template'));
             }
-            $renderArray['category'] = $this->productsMode->category->name;
-            $renderArray['subcategory'] = $this->productsMode->subcategory->name;
-            $renderArray['brand'] = $this->productsMode->brand->brand;
-            $renderArray['active'] = $this->productsMode->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
-            $renderArray['total_products'] = $this->productsMode->total_products;
-            $renderArray['seocode'] = $this->productsMode->seocode;
-            $renderArray['views'] = $this->productsMode->views;
             
-            $renderArray['modelForm'] = \Yii::configure($this->form, ['id'=>$this->productsMode->id]);
-            $renderArray['formId'] = sprintf('admin-product-detail-get-form-%d', $this->productsMode->id);
+            $renderArray = [];
+            
+            $renderArray = [];
+            $renderArray['id'] = $this->productsModel->id;
+            $renderArray['date'] = \Yii::$app->formatter->asDate($this->productsModel->date);
+            $renderArray['code'] = $this->productsModel->code;
+            $renderArray['link'] = Url::to(['/product-detail/index', 'seocode'=>$this->productsModel->seocode]);
+            $renderArray['linkText'] = Html::encode($this->productsModel->name);
+            $renderArray['short_description'] = Html::encode($this->productsModel->short_description);
+            $renderArray['description'] = Html::encode($this->productsModel->description);
+            $renderArray['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($this->productsModel->price * $this->currency->exchangeRate(), 2), $this->currency->code());
+            $renderArray['colors'] = implode(', ', ArrayHelper::getColumn($this->productsModel->colors, 'color'));
+            $renderArray['sizes'] = implode(', ', ArrayHelper::getColumn($this->productsModel->sizes, 'size'));
+            if (!empty($this->productsModel->images)) {
+                $renderArray['image'] = ImgHelper::randThumbn($this->productsModel->images);
+            }
+            $renderArray['category'] = $this->productsModel->category->name;
+            $renderArray['subcategory'] = $this->productsModel->subcategory->name;
+            $renderArray['brand'] = $this->productsModel->brand->brand;
+            $renderArray['active'] = $this->productsModel->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
+            $renderArray['total_products'] = $this->productsModel->total_products;
+            $renderArray['seocode'] = $this->productsModel->seocode;
+            $renderArray['views'] = $this->productsModel->views;
+            
+            $renderArray['modelForm'] = \Yii::configure($this->form, ['id'=>$this->productsModel->id]);
+            $renderArray['formId'] = sprintf('admin-product-detail-get-form-%d', $this->productsModel->id);
             $renderArray['formAction'] = Url::to(['/admin/product-detail-form']);
             $renderArray['button'] = \Yii::t('base', 'Change');
             
@@ -138,6 +145,19 @@ class AdminProductDataWidget extends AbstractBaseWidget
     {
         try {
             $this->form = $form;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству AdminOrderDataWidget::template
+     * @param string $template
+     */
+    public function setTemplate(string $template)
+    {
+        try {
+            $this->template = $template;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
