@@ -79,14 +79,15 @@ class AdminAddProductFormWidget extends AbstractBaseWidget
             
             $renderArray['modelForm'] = $this->form;
             $renderArray['formId'] = 'admin-add-product-form';
-            $renderArray['formAction'] = Url::to(['/admin/add-product-post']);
-            $renderArray['button'] = \Yii::t('base', 'Save');
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
             $renderArray['validateOnChange'] = false;
             $renderArray['validateOnBlur'] = false;
             $renderArray['validateOnType'] = false;
+            
+            $renderArray['formAction'] = Url::to(['/admin/add-product-post']);
+            $renderArray['button'] = \Yii::t('base', 'Save');
             
             $renderArray['categoriesHref'] = Url::to(['/categories/get-subcategory']);
             $renderArray['cols'] = 30;

@@ -276,7 +276,7 @@ class AdminProductDetailFormWidgetTests extends TestCase
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: product
      */
-    public function testRunEmptyPurchase()
+    public function testRunEmptyProduct()
     {
         $widget = new AdminProductDetailFormWidget();
         $widget->run();
