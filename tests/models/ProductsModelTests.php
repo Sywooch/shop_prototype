@@ -87,7 +87,6 @@ class ProductsModelTests extends TestCase
         
         $model = new ProductsModel(['scenario'=>ProductsModel::SAVE]);
         $model->attributes = [
-            'id'=>1,
             'date'=>time(),
             'code'=>'FJHERJ',
             'name'=>'Mock',
@@ -101,10 +100,8 @@ class ProductsModelTests extends TestCase
             'active'=>true,
             'total_products'=>12,
             'seocode'=>'mock',
-            'views'=>12,
         ];
         
-        $this->assertEquals(1, $model->id);
         $this->assertEquals(time(), $model->date);
         $this->assertEquals('FJHERJ', $model->code);
         $this->assertEquals('Mock', $model->name);
@@ -117,7 +114,6 @@ class ProductsModelTests extends TestCase
         $this->assertEquals(true, $model->active);
         $this->assertEquals(12, $model->total_products);
         $this->assertEquals('mock', $model->seocode);
-        $this->assertEquals(12, $model->views);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::EDIT]);
         $model->attributes = [
@@ -177,11 +173,10 @@ class ProductsModelTests extends TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertCount(15, $model->errors);
+        $this->assertCount(11, $model->errors);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::SAVE]);
         $model->attributes = [
-            'id'=>1,
             'date'=>time(),
             'code'=>'FJHERJ',
             'name'=>'Mock',
@@ -192,14 +187,19 @@ class ProductsModelTests extends TestCase
             'id_category'=>1,
             'id_subcategory'=>1,
             'id_brand'=>1,
-            'active'=>true,
-            'total_products'=>12,
             'seocode'=>'mock',
-            'views'=>12,
         ];
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::SAVE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertEquals(0, $model->active);
+        $this->assertEquals(0, $model->total_products);
+        $this->assertEquals(0, $model->views);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::EDIT]);
         $model->attributes = [];

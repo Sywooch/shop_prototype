@@ -7,6 +7,7 @@ use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     GetAction};
 use app\handlers\{AdminAddProductRequestHandler,
+    AdminAddProductPostRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
@@ -58,6 +59,10 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminAddProductRequestHandler(),
                 'view'=>'add-product.twig',
+            ],
+            'add-product-post'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminAddProductPostRequestHandler(),
             ],
         ];
     }

@@ -194,7 +194,7 @@ class AdminProductFormTests extends TestCase
         $form->validate();
         
         $this->assertNotEmpty($form->errors);
-        $this->assertCount(14, $form->errors);
+        $this->assertCount(13, $form->errors);
         
         $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
         $form->attributes = [
@@ -210,7 +210,6 @@ class AdminProductFormTests extends TestCase
             'id_sizes'=>[2, 4],
             'id_brand'=>1,
             'active'=>true,
-            'total_products'=>568,
             'seocode'=>'product',
         ];
         
@@ -219,7 +218,6 @@ class AdminProductFormTests extends TestCase
         $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
         $form->validate();
         
-        $this->assertNotEmpty($form->errors);
         $this->assertCount(12, $form->errors);
         
         $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);

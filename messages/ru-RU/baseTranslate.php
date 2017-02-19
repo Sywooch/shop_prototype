@@ -214,7 +214,8 @@ $translate = [
     'Seocode'=>'Сеокод',
     'Product name'=>'Название товара',
     'Images catalog'=>'Каталог изображений',
-    'Add product'=>'Добавить товар'
+    'Add product'=>'Добавить товар',
+    'Product saved successfully!'=>'Продукт успешно сохранен!'
 ];
 
 return $translate;

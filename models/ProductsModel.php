@@ -44,7 +44,7 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             self::VIEWS=>['views'],
-            self::SAVE=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode', 'views'],
+            self::SAVE=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode'],
             self::EDIT=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode', 'views'],
         ];
     }
@@ -53,7 +53,8 @@ class ProductsModel extends AbstractBaseModel
     {
         return [
             [['views'], 'required', 'on'=>self::VIEWS],
-            [['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode', 'views'], 'required', 'on'=>self::SAVE],
+            [['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'seocode'], 'required', 'on'=>self::SAVE],
+            [['active', 'total_products', 'views'], 'default', 'value'=>0, 'on'=>self::SAVE],
             [['description', 'short_description', 'images'], 'default', 'value'=>'', 'on'=>self::EDIT],
             [['total_products', 'views'], 'default', 'value'=>0, 'on'=>self::EDIT],
             [['id', 'code', 'name', 'price', 'id_category', 'id_subcategory', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
