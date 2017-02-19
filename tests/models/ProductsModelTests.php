@@ -187,11 +187,12 @@ class ProductsModelTests extends TestCase
             'id_category'=>1,
             'id_subcategory'=>1,
             'id_brand'=>1,
-            'seocode'=>'mock',
+            'seocode'=>self::$dbClass->products['product_1']['seocode'],
         ];
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        $this->assertEquals(implode('-', [self::$dbClass->products['product_1']['seocode'], mb_strtolower('FJHERJ', 'UTF-8')]), $model->seocode);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::SAVE]);
         $model->attributes = [];

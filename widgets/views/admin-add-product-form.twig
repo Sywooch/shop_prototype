@@ -1,5 +1,7 @@
 {{ use('yii/widgets/ActiveForm') }}
 
+<div class="add-product-success"></div>
+
 <div class="admin-add-product-form"><p>
     {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
         {{ form.field(modelForm, 'code') | raw }}

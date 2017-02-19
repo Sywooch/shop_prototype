@@ -8,7 +8,8 @@ use yii\web\{Response,
 use yii\widgets\ActiveForm;
 use app\handlers\AbstractBaseHandler;
 use app\forms\AdminProductForm;
-use app\helpers\ImgHelper;
+use app\helpers\{ImgHelper,
+    TransliterationHelper};
 use app\models\ProductsModel;
 use app\savers\ModelSaver;
 use app\services\{SaveProductsColorsService,
@@ -61,7 +62,7 @@ class AdminAddProductPostRequestHandler extends AbstractBaseHandler
                         $productsModel->id_brand = $form->id_brand;
                         $productsModel->active = $form->active;
                         $productsModel->total_products = $form->total_products;
-                        $productsModel->seocode = $form->seocode;
+                        $productsModel->seocode = empty($form->seocode) ? TransliterationHelper::getTransliterationSeparate($form->name) : $form->seocode;
                         if ($productsModel->validate() === false) {
                             throw new ErrorException($this->modelError($productsModel->errors));
                         }

@@ -96,7 +96,8 @@ class AdminAddProductRequestHandler extends AbstractBaseHandler
             $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
             
             ArrayHelper::multisort($brandsArray, 'brand');
-            $dataArray['brands'] = ArrayHelper::map($brandsArray, 'id', 'brand');
+            $brandsArray = ArrayHelper::map($brandsArray, 'id', 'brand');
+            $dataArray['brands'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $brandsArray);
             
             $dataArray['form'] = $adminProductForm;
             $dataArray['template'] = 'admin-add-product-form.twig';

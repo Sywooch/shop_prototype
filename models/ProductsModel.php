@@ -8,6 +8,7 @@ use app\models\{AbstractBaseModel,
     SizesModel,
     SubcategoryModel};
 use app\exceptions\ExceptionsTrait;
+use app\validators\AddProductSeocodeValidator;
 
 /**
  * Представляет данные таблицы products
@@ -55,6 +56,7 @@ class ProductsModel extends AbstractBaseModel
             [['views'], 'required', 'on'=>self::VIEWS],
             [['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'seocode'], 'required', 'on'=>self::SAVE],
             [['active', 'total_products', 'views'], 'default', 'value'=>0, 'on'=>self::SAVE],
+            [['seocode'], AddProductSeocodeValidator::class, 'on'=>self::SAVE],
             [['description', 'short_description', 'images'], 'default', 'value'=>'', 'on'=>self::EDIT],
             [['total_products', 'views'], 'default', 'value'=>0, 'on'=>self::EDIT],
             [['id', 'code', 'name', 'price', 'id_category', 'id_subcategory', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
