@@ -51,6 +51,65 @@ class ImgHelperTests extends TestCase
     }
     
     /**
+     * Тестирует метод ImgHelper::saveImages
+     */
+    public function testSaveImages()
+    {
+        $reflection = new \ReflectionProperty(UploadedFile::class, '_files');
+        $reflection->setAccessible(true);
+        $reflection->setValue(null);
+        
+        $filesArray = [
+            'MockForm' => [
+                'name' => [
+                    'images'=>[
+                        0=>'1.jpg', 
+                        1=>'3.jpg'
+                    ]
+                ],
+                'type' => [
+                    'images'=>[
+                        0=>'image/jpeg', 
+                        1=>'image/jpeg'
+                    ]
+                ],
+                'tmp_name' => [
+                    'images'=>[
+                        0=>'/var/www/html/shop/tests/sources/images/m1.jpg', 
+                        1=>'/var/www/html/shop/tests/sources/images/m2.jpg'
+                    ]
+                ],
+                'size' => [
+                    'images' => [
+                        0=>11037,
+                        1=>1024*300
+                    ]
+                ],
+                'error' => [
+                    'images' => [
+                        0=>0,
+                        1=>0,
+                    ]
+                ],
+            ],
+        ];
+        
+        $_FILES = $filesArray;
+        $uploadedFiles = UploadedFile::getInstancesByName('MockForm[images]');
+        
+        $result = ImgHelper::saveImages($uploadedFiles);
+        
+        $this->assertInternalType('integer', $result);
+        $this->assertEquals(10, strlen($result));
+        
+        $path = \Yii::getAlias('@imagesroot' . '/' . $result);
+        $this->assertTrue(file_exists($path));
+        $this->assertTrue(is_dir($path));
+        $files = glob($path . '/*.{jpg,gif,png}', GLOB_BRACE);
+        $this->assertNotEmpty($files);
+    }
+    
+    /**
      * Тестирует метод ImgHelper::makeThumbn
      */
     public function testMakeThumbn()
@@ -79,5 +138,21 @@ class ImgHelperTests extends TestCase
         $this->assertEmpty($filesArray);
         
         $this->assertFalse(file_exists(\Yii::getAlias('@imagesroot/other')));
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        $dirsArray = glob(\Yii::getAlias('@imagesroot') . '/*');
+        foreach ($dirsArray as $dir) {
+            if (preg_match('#test$#', $dir) === 0) {
+                $files = glob($dir . '/*.{jpg,gif,png}', GLOB_BRACE);
+                if (!empty($files)) {
+                    foreach ($files as $file) {
+                        unlink($file);
+                    }
+                }
+                rmdir($dir);
+            }
+        }
     }
 }

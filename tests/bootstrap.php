@@ -1,7 +1,7 @@
 <?php
 
 defined('YII_DEBUG') or define('YII_DEBUG', true);
-defined('YII_ENV') or define('YII_ENV', 'test');
+defined('YII_ENV') or define('YII_ENV', 'dev');
 
 require(__DIR__ . '/../vendor/autoload.php');
 
@@ -18,5 +18,7 @@ $config['components']['mailer']['fileTransportPath'] = '@app/tests/sources/mail/
 $config['aliases']['@imagesroot'] = '@app/tests/sources/images/products';
 $config['aliases']['@imagestemp'] = '@app/tests/sources/images/temp';
 $config['aliases']['@csvroot'] = '@app/tests/sources/csv';
+
+Yii::$classMap['yii\web\UploadedFile'] = '@app/tests/MockUploadedFile.php';
 
 (new yii\web\Application($config));

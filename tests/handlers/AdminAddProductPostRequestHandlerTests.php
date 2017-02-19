@@ -3,18 +3,13 @@
 namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use yii\base\Model;
 use yii\web\UploadedFile;
 use app\handlers\AdminAddProductPostRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{ProductsFixture,
     ProductsColorsFixture,
     ProductsSizesFixture};
-use app\models\{CurrencyInterface,
-    CurrencyModel,
-    ProductsModel};
-use app\forms\{AbstractBaseForm,
-    AdminProductForm};
+use app\forms\AdminProductForm;
 
 /**
  * Тестирует класс AdminAddProductPostRequestHandler
@@ -162,5 +157,18 @@ class AdminAddProductPostRequestHandlerTests extends TestCase
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
+        
+        $dirsArray = glob(\Yii::getAlias('@imagesroot') . '/*');
+        foreach ($dirsArray as $dir) {
+            if (preg_match('#test$#', $dir) === 0) {
+                $files = glob($dir . '/*.{jpg,gif,png}', GLOB_BRACE);
+                if (!empty($files)) {
+                    foreach ($files as $file) {
+                        unlink($file);
+                    }
+                }
+                rmdir($dir);
+            }
+        }
     }
 }

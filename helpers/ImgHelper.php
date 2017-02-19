@@ -70,7 +70,7 @@ class ImgHelper
                 throw new ErrorException(ExceptionsTrait::staticEmptyError('uploadedFiles'));
             }
             
-            $catalog = 'new_' . time();
+            $catalog = time();
             $path = \Yii::getAlias('@imagesroot/' . $catalog);
             
             if (mkdir($path) === false) {

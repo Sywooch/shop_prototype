@@ -259,7 +259,7 @@ class AdminProductDataWidgetTests extends TestCase
         $this->assertRegExp('#Краткое описание:  Short description#', $result);
         $this->assertRegExp('#<img src=".+" height="200" alt="">#', $result);
         $this->assertRegExp('#Id товара: 2#', $result);
-        $this->assertRegExp('#Дата добавления: 18 февр. 2017 г.#', $result);
+        $this->assertRegExp('#Дата добавления: .+#', $result);
         $this->assertRegExp('#Код: CODE#', $result);
         $this->assertRegExp('#Описание: Description#', $result);
         $this->assertRegExp('#Цена: 1188,75 MONEY#', $result);
