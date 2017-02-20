@@ -4,7 +4,8 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
-use app\handlers\AbstractBaseHandler;
+use app\handlers\{AbstractBaseHandler,
+    ConfigHandlerTrait};
 use app\finders\{BrandsFinder,
     CategoriesFinder,
     ColorsFinder,
@@ -18,6 +19,8 @@ use app\forms\{AbstractBaseForm,
  */
 class AdminAddProductRequestHandler extends AbstractBaseHandler
 {
+    use ConfigHandlerTrait;
+    
     /**
      * @var array массив данных для рендеринга
      */
@@ -64,45 +67,6 @@ class AdminAddProductRequestHandler extends AbstractBaseHandler
             }
             
             return $this->dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета AdminAddProductFormWidget
-     * @param array $categoriesArray
-     * @param array $colorsArray
-     * @param array $sizesArray
-     * @param array $brandsArray
-     * @param AbstractBaseForm $adminProductForm
-     * @return array
-     */
-    private function adminAddProductFormWidgetConfig(array $categoriesArray, array $colorsArray, array $sizesArray, array $brandsArray, AbstractBaseForm $adminProductForm): array
-    {
-        try {
-            $dataArray = [];
-            
-            ArrayHelper::multisort($categoriesArray, 'name');
-            $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
-            $dataArray['categories'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
-            
-            $dataArray['subcategory'] = [\Yii::$app->params['formFiller']];
-            
-            ArrayHelper::multisort($colorsArray, 'color');
-            $dataArray['colors'] = ArrayHelper::map($colorsArray, 'id', 'color');
-            
-            ArrayHelper::multisort($sizesArray, 'size');
-            $dataArray['sizes'] = ArrayHelper::map($sizesArray, 'id', 'size');
-            
-            ArrayHelper::multisort($brandsArray, 'brand');
-            $brandsArray = ArrayHelper::map($brandsArray, 'id', 'brand');
-            $dataArray['brands'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $brandsArray);
-            
-            $dataArray['form'] = $adminProductForm;
-            $dataArray['template'] = 'admin-add-product-form.twig';
-            
-            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

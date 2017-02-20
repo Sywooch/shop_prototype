@@ -147,8 +147,11 @@ class AdminAddProductPostRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
 
-        $this->assertInternalType('string', $result);
-        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('successText', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertInternalType('string', $result['successText']);
+        $this->assertInternalType('string', $result['form']);
         
         $product = \Yii::$app->db->createCommand('SELECT * FROM {{products}} WHERE [[code]]=:code')->bindValue(':code', 'NEWCODE')->queryOne();
         $this->assertNotEmpty($product);

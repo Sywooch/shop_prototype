@@ -1,5 +1,7 @@
 $(function() {
     
-    $('select > option').attr('disabled', true);
+    $('select[data-disabled]').each(function(index, domElement) {
+        $(domElement).find('option:first').attr('disabled', true);
+    });
     
-};
+});

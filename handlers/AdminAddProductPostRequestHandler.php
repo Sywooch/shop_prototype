@@ -6,7 +6,8 @@ use yii\base\ErrorException;
 use yii\web\{Response,
     UploadedFile};
 use yii\widgets\ActiveForm;
-use app\handlers\AbstractBaseHandler;
+use app\handlers\{AbstractBaseHandler,
+    ConfigHandlerTrait};
 use app\forms\AdminProductForm;
 use app\helpers\{ImgHelper,
     TransliterationHelper};
@@ -14,13 +15,20 @@ use app\models\ProductsModel;
 use app\savers\ModelSaver;
 use app\services\{SaveProductsColorsService,
     SaveProductsSizesService};
-use app\widgets\AdminProductSaveSuccessWidget;
+use app\widgets\{AdminAddProductFormWidget,
+    AdminProductSaveSuccessWidget};
+use app\finders\{BrandsFinder,
+    CategoriesFinder,
+    ColorsFinder,
+    SizesFinder};
 
 /**
  * Обрабатывает запрос на обновление данных товара
  */
 class AdminAddProductPostRequestHandler extends AbstractBaseHandler
 {
+    use ConfigHandlerTrait;
+    
     /**
      * Обновляет данные товара
      * @param $request
@@ -83,11 +91,41 @@ class AdminAddProductPostRequestHandler extends AbstractBaseHandler
                         ]);
                         $service->get();
                         
-                        $response = AdminProductSaveSuccessWidget::widget(['template'=>'admin-product-save-success.twig']);
+                        $finder = \Yii::$app->registry->get(CategoriesFinder::class);
+                        $categoriesArray = $finder->find();
+                        if (empty($categoriesArray)) {
+                            throw new ErrorException($this->emptyError('categoriesArray'));
+                        }
+                        
+                        $finder = \Yii::$app->registry->get(ColorsFinder::class);
+                        $colorsArray = $finder->find();
+                        if (empty($colorsArray)) {
+                            throw new ErrorException($this->emptyError('colorsArray'));
+                        }
+                        
+                        $finder = \Yii::$app->registry->get(SizesFinder::class);
+                        $sizesArray = $finder->find();
+                        if (empty($sizesArray)) {
+                            throw new ErrorException($this->emptyError('sizesArray'));
+                        }
+                        
+                        $finder = \Yii::$app->registry->get(BrandsFinder::class);
+                        $brandsArray = $finder->find();
+                        if (empty($brandsArray)) {
+                            throw new ErrorException($this->emptyError('brandsArray'));
+                        }
+                        
+                        $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
+                        
+                        $dataArray = [];
+                        
+                        $dataArray['successText'] = AdminProductSaveSuccessWidget::widget(['template'=>'admin-product-save-success.twig']);
+                        $adminAddProductFormWidgetConfig = $this->adminAddProductFormWidgetConfig($categoriesArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
+                        $dataArray['form'] = AdminAddProductFormWidget::widget($adminAddProductFormWidgetConfig);
                         
                         $transaction->commit();
                         
-                        return $response;
+                        return $dataArray;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         ImgHelper::removeImages($imgCatalog ?? '');

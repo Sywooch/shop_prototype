@@ -138,6 +138,7 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
                 $dataArray['adminProductsWidgetConfig'] = $this->adminProductsWidgetConfig($productsCollection->asArray(), $currentCurrencyModel, $adminProductForm);
                 $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection->pagination);
                 $dataArray['adminCsvProductsFormWidgetConfig'] = $this->adminCsvProductsFormWidgetConfig($productsCollection->isEmpty() ? false : true);
+                $dataArray['adminAddProductButtonWidgetConfig'] = $this->adminAddProductButtonWidgetConfig();
                 
                 $this->dataArray = $dataArray;
             }
@@ -260,6 +261,22 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
             $dataArray['header'] = \Yii::t('base', 'Download selected products in csv format');
             $dataArray['template'] = 'admin-csv-products-form.twig';
             $dataArray['isAllowed'] = $isAllowed;
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminAddProductButtonWidget
+     */
+    private function adminAddProductButtonWidgetConfig(): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['template'] = 'admin-add-product-button.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

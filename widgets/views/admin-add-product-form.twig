@@ -1,8 +1,6 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<div class="add-product-success"></div>
-
-<div class="admin-add-product-form"><p>
+<p>
     {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
         {{ form.field(modelForm, 'code') | raw }}
         {{ form.field(modelForm, 'name') | raw }}
@@ -10,15 +8,15 @@
         {{ form.field(modelForm, 'description').textarea({'rows':rows, 'cols':cols}) | raw }}
         {{ form.field(modelForm, 'price').input('number', {'step':0.01, 'min':0}) | raw }}
         {{ form.field(modelForm, 'images[]').fileInput({'accept':'image/*', 'multiple':true}) | raw }}
-        {{ form.field(modelForm, 'id_category').dropDownList(categories, {'data-href':categoriesHref}) | raw }}
-        {{ form.field(modelForm, 'id_subcategory').dropDownList(subcategory) | raw }}
+        {{ form.field(modelForm, 'id_category').dropDownList(categories, {'data-href':categoriesHref, 'data-disabled':true}) | raw }}
+        {{ form.field(modelForm, 'id_subcategory').dropDownList(subcategory, {'data-disabled':true}) | raw }}
         {{ form.field(modelForm, 'id_colors').dropDownList(colors, {'multiple':true}) | raw }}
         {{ form.field(modelForm, 'id_sizes').dropDownList(sizes, {'multiple':true}) | raw }}
-        {{ form.field(modelForm, 'id_brand').dropDownList(brands) | raw }}
+        {{ form.field(modelForm, 'id_brand').dropDownList(brands, {'data-disabled':true}) | raw }}
         {{ form.field(modelForm, 'active').checkbox() | raw }}
         {{ form.field(modelForm, 'total_products').input('number', {'step':1, 'min':0}) | raw }}
         {{ form.field(modelForm, 'seocode') | raw }}
         
         <input type="submit" name="send" value="{{ button }}">
     {{ active_form_end() }}
-</p></div>
+</p>

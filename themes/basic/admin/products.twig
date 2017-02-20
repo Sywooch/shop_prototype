@@ -5,6 +5,7 @@
 {{ use ('app/widgets/AdminProductsWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
 {{ use('app/widgets/AdminCsvProductsFormWidget') }}
+{{ use('app/widgets/AdminAddProductButtonWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
@@ -13,6 +14,8 @@
 {{ admin_products_filters_widget_widget(adminProductsFiltersWidgetConfig) }}
 
 {{ admin_csv_products_form_widget_widget(adminCsvProductsFormWidgetConfig) }}
+
+{{ admin_add_product_button_widget_widget(adminAddProductButtonWidgetConfig) }}
 
 {{ admin_products_widget_widget(adminProductsWidgetConfig) }}
 
