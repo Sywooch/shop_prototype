@@ -8,11 +8,13 @@ use app\actions\{AjaxAction,
     GetAction};
 use app\handlers\{AdminAddProductRequestHandler,
     AdminAddProductPostRequestHandler,
+    AdminCategoriesRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
     AdminOrdersRequestHandler,
     AdminProductDetailChangeRequestHandler,
+    AdminProductDetailDeleteRequestHandler,
     AdminProductDetailFormRequestHandler,
     AdminProductsRequestHandler};
 
@@ -55,6 +57,10 @@ class AdminController extends Controller
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminProductDetailChangeRequestHandler(),
             ],
+            'product-detail-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminProductDetailDeleteRequestHandler(),
+            ],
             'add-product'=>[
                 'class'=>GetAction::class,
                 'handler'=>new AdminAddProductRequestHandler(),
@@ -63,6 +69,11 @@ class AdminController extends Controller
             'add-product-post'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminAddProductPostRequestHandler(),
+            ],
+            'categories'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminCategoriesRequestHandler(),
+                'view'=>'categories.twig',
             ],
         ];
     }

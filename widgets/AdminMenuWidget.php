@@ -45,6 +45,10 @@ class AdminMenuWidget extends Menu
                     'url'=>['/admin/orders']
                 ],
                 [
+                    'label'=>\Yii::t('base', 'Categories'),
+                    'url'=>['/admin/categories']
+                ],
+                [
                     'label'=>\Yii::t('base', 'Products'),
                     'url'=>['/admin/products']
                 ],

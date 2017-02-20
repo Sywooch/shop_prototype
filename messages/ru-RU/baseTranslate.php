@@ -215,7 +215,8 @@ $translate = [
     'Product name'=>'Название товара',
     'Images catalog'=>'Каталог изображений',
     'Add product'=>'Добавить товар',
-    'Product saved successfully!'=>'Продукт успешно сохранен!'
+    'Product saved successfully!'=>'Продукт успешно сохранен!',
+    'Categories'=>'Категории'
 ];
 
 return $translate;

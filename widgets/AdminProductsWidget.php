@@ -89,9 +89,14 @@ class AdminProductsWidget extends AbstractBaseWidget
                     
                     $form = clone $this->form;
                     $set['modelForm'] = \Yii::configure($form, ['id'=>$product->id]);
+                    
                     $set['formId'] = sprintf('admin-product-detail-get-form-%d', $product->id);
                     $set['formAction'] = Url::to(['/admin/product-detail-form']);
                     $set['button'] = \Yii::t('base', 'Change');
+                    
+                    $set['formIdDelete'] = sprintf('admin-product-detail-delete-form-%d', $product->id);
+                    $set['formActionDelete'] = Url::to(['/admin/product-detail-delete']);
+                    $set['buttonDelete'] = \Yii::t('base', 'Delete');
                     
                     $set['ajaxValidation'] = false;
                     $set['validateOnSubmit'] = false;

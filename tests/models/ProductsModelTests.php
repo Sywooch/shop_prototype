@@ -53,6 +53,7 @@ class ProductsModelTests extends TestCase
         $this->assertTrue($reflection->hasConstant('VIEWS'));
         $this->assertTrue($reflection->hasConstant('SAVE'));
         $this->assertTrue($reflection->hasConstant('EDIT'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
         
         $model = new ProductsModel();
         
@@ -148,6 +149,13 @@ class ProductsModelTests extends TestCase
         $this->assertEquals(12, $model->total_products);
         $this->assertEquals('mock', $model->seocode);
         $this->assertEquals(12, $model->views);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::DELETE]);
+        $model->attributes = [
+            'id'=>1,
+        ];
+        
+        $this->assertEquals(1, $model->id);
     }
     
     /**
@@ -232,6 +240,20 @@ class ProductsModelTests extends TestCase
         $this->assertEquals('', $model->images);
         $this->assertEquals(0, $model->total_products);
         $this->assertEquals(0, $model->views);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new ProductsModel(['scenario'=>ProductsModel::DELETE]);
+        $model->attributes = [
+            'id'=>1,
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
     
     /**

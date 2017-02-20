@@ -27,6 +27,10 @@ class ProductsModel extends AbstractBaseModel
      * Сценарий обновления данных
      */
     const EDIT = 'edit';
+    /**
+     * Сценарий удаления данных
+     */
+    const DELETE = 'delete';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -47,6 +51,7 @@ class ProductsModel extends AbstractBaseModel
             self::VIEWS=>['views'],
             self::SAVE=>['date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode'],
             self::EDIT=>['id', 'date', 'code', 'name', 'description', 'short_description', 'price', 'images', 'id_category', 'id_subcategory', 'id_brand', 'active', 'total_products', 'seocode', 'views'],
+            self::DELETE=>['id'],
         ];
     }
     
@@ -60,6 +65,7 @@ class ProductsModel extends AbstractBaseModel
             [['description', 'short_description', 'images'], 'default', 'value'=>'', 'on'=>self::EDIT],
             [['total_products', 'views'], 'default', 'value'=>0, 'on'=>self::EDIT],
             [['id', 'code', 'name', 'price', 'id_category', 'id_subcategory', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
+            [['id'], 'required', 'on'=>self::DELETE],
         ];
     }
     

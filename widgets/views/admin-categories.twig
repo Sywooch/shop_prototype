@@ -1,0 +1,41 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+{% if purchases %}
+    <ol class="{{ listClass }}">
+        {% for purchase in purchases %}
+            <li>
+                <div class="admin-order-previous-data">
+                    <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
+                    <br>{{ purchase.short_description }}
+                    <br>{{ purchase.image | raw }}
+                    <br>{{ idHeader }}: {{ purchase.id }}
+                    <br>{{ dateHeader }}: {{ purchase.date }}
+                    <br>{{ colorHeader }}: {{ purchase.color }}
+                    <br>{{ sizeHeader }}: {{ purchase.size }}
+                    <br>{{ quantityHeader }}: {{ purchase.quantity }}
+                    <br>{{ priceHeader }}: {{ purchase.price }}
+                    <br>{{ totalPriceHeader }}: {{ purchase.totalPrice }}
+                    
+                    <br>{{ clientHeader }}: {{ purchase.client }}
+                    <br>{{ phoneHeader }}: {{ purchase.phone }}
+                    <br>{{ addressHeader }}: {{ purchase.address }}
+                    <br>{{ cityHeader }}: {{ purchase.city }}
+                    <br>{{ countryHeader }}: {{ purchase.country }}
+                    <br>{{ postcodeHeader }}: {{ purchase.postcode }}
+                    <br>{{ paymentHeader }}: {{ purchase.payment }}
+                    <br>{{ deliveryHeader }}: {{ purchase.delivery }}
+                    <br>{{ statusHeader }}: {{ purchase.status }}
+                    
+                    {% set form=active_form_begin({'id':purchase.formId, 'enableAjaxValidation':purchase.ajaxValidation, 'validateOnSubmit':purchase.validateOnSubmit, 'validateOnChange':purchase.validateOnChange, 'validateOnBlur':purchase.validateOnBlur, 'validateOnType':purchase.validateOnType, 'action':purchase.formAction, 'method':'POST'}) %}
+                        {{ form.field(purchase.modelForm, 'id').hiddenInput().label(false) | raw }}
+                        <input type="submit" value="{{ purchase.button }}">
+                    {{ active_form_end() }}
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
+{% else %}
+    <p>{{ ordersEmpty }}</p>
+{% endif %}

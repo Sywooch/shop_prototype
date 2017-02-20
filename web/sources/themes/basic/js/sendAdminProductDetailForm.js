@@ -17,7 +17,7 @@ $(function() {
         };
     };
     
-    $('li').on('click', 'form[id^="admin-product-detail-get-form-"] > input[type="submit"]', function(event) {
+    $('li').on('click', 'form[id^="admin-product-detail-get-form-"], form[id^="admin-product-detail-delete-form-"] > input[type="submit"]', function(event) {
         (new SendAdminProductDetailForm()).send(event);
         event.preventDefault();
     });

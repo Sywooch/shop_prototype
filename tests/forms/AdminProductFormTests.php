@@ -21,6 +21,7 @@ class AdminProductFormTests extends TestCase
         $this->assertTrue($reflection->hasConstant('CREATE'));
         $this->assertTrue($reflection->hasConstant('EDIT'));
         $this->assertTrue($reflection->hasConstant('GET'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('code'));
@@ -176,6 +177,15 @@ class AdminProductFormTests extends TestCase
         $this->assertSame(571, $result);
         
         $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+        $form->attributes = [
+            'id'=>12,
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(12, $result);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::DELETE]);
         $form->attributes = [
             'id'=>12,
         ];
@@ -365,6 +375,19 @@ class AdminProductFormTests extends TestCase
         $this->assertCount(1, $form->errors);
         
         $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+        $form->attributes = [
+            'id'=>7,
+        ];
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::DELETE]);
+        $form->validate();
+        
+        $this->assertNotEmpty($form->errors);
+        $this->assertCount(1, $form->errors);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::DELETE]);
         $form->attributes = [
             'id'=>7,
         ];

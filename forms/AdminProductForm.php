@@ -20,9 +20,13 @@ class AdminProductForm extends AbstractBaseForm
      */
     const EDIT = 'edit';
     /**
-     * Сценарий сценарий запроса формы редактирования
+     * Сценарий запроса формы редактирования
      */
     const GET = 'get';
+    /**
+     * Сценарий удаления товара
+     */
+    const DELETE = 'delete';
     
     /**
      * @var int ID товара
@@ -95,6 +99,7 @@ class AdminProductForm extends AbstractBaseForm
             self::CREATE=>['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode'],
             self::EDIT=>['id', 'code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode', 'views'],
             self::GET=>['id'],
+            self::DELETE=>['id'],
         ];
     }
     
@@ -105,6 +110,7 @@ class AdminProductForm extends AbstractBaseForm
             [['id', 'code', 'name', 'short_description', 'description', 'price', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
             [['images'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'maxWidth'=>800, 'maxHeight'=>800, 'maxFiles'=>5, 'maxSize'=>1024*512],
             [['id'], 'required', 'on'=>self::GET],
+            [['id'], 'required', 'on'=>self::DELETE],
             [['code', 'name', 'short_description', 'description', 'total_products', 'seocode'], StripTagsValidator::class],
         ];
     }

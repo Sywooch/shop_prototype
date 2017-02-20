@@ -1,0 +1,7 @@
+{{ register_asset_bundle('app/assets/AdminProductsAsset') }}
+
+{{ use ('app/widgets/AdminCategoriesBreadcrumbsWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_categories_breadcrumbs_widget_widget() }}
