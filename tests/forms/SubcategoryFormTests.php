@@ -4,12 +4,26 @@ namespace app\tests\forms;
 
 use PHPUnit\Framework\TestCase;
 use app\forms\SubcategoryForm;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\ProductsFixture;
 
 /**
  * Тестирует класс SubcategoryForm
  */
 class SubcategoryFormTests extends TestCase
 {
+    private static $dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'products'=>ProductsFixture::class,
+            ],
+        ]);
+        self::$dbClass->loadFixtures();
+    }
+    
     /**
      * Тестирует свойства SubcategoryForm
      */
@@ -49,10 +63,23 @@ class SubcategoryFormTests extends TestCase
         
         $form = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
         $form->attributes = [
-            'id'=>3,
+            'id'=>1,
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
+        $form->attributes = [
+            'id'=>102,
         ];
         $form->validate();
         
         $this->assertEmpty($form->errors);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$dbClass->unloadFixtures();
     }
 }

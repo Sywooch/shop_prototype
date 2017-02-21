@@ -10,15 +10,15 @@ use app\handlers\{AbstractBaseHandler,
 use app\forms\{CategoriesForm,
     SubcategoryForm};
 use app\finders\{CategoriesFinder,
-    CategoryIdFinder};
-use app\models\CategoriesModel;
-use app\removers\CategoriesModelRemover;
+    SubcategoryIdFinder};
+use app\models\SubcategoryModel;
+use app\removers\SubcategoryModelRemover;
 use app\widgets\AdminCategoriesWidget;
 
 /**
  * Обрабатывает запрос на обновление данных товара
  */
-class AdminCategoriesCategoryDeleteRequestHandler extends AbstractBaseHandler
+class AdminCategoriesSubcategoryDeleteRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
@@ -30,7 +30,7 @@ class AdminCategoriesCategoryDeleteRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            $form = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
+            $form = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {
@@ -44,18 +44,18 @@ class AdminCategoriesCategoryDeleteRequestHandler extends AbstractBaseHandler
                     $transaction = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $finder = \Yii::$app->registry->get(CategoryIdFinder::class, [
+                        $finder = \Yii::$app->registry->get(SubcategoryIdFinder::class, [
                             'id'=>$form->id
                         ]);
-                        $categoriesModel = $finder->find();
+                        $subcategoryModel = $finder->find();
                         
-                        $categoriesModel->scenario = CategoriesModel::DELETE;
-                        if ($categoriesModel->validate() === false) {
-                            throw new ErrorException($this->modelError($categoriesModel->errors));
+                        $subcategoryModel->scenario = SubcategoryModel::DELETE;
+                        if ($subcategoryModel->validate() === false) {
+                            throw new ErrorException($this->modelError($subcategoryModel->errors));
                         }
                         
-                        $remover = new CategoriesModelRemover([
-                            'model'=>$categoriesModel
+                        $remover = new SubcategoryModelRemover([
+                            'model'=>$subcategoryModel
                         ]);
                         $remover->remove();
                         

@@ -9,6 +9,7 @@ use app\actions\{AjaxAction,
 use app\handlers\{AdminAddProductRequestHandler,
     AdminAddProductPostRequestHandler,
     AdminCategoriesCategoryDeleteRequestHandler,
+    AdminCategoriesSubcategoryDeleteRequestHandler,
     AdminCategoriesRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
@@ -79,6 +80,10 @@ class AdminController extends Controller
             'categories-category-delete'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCategoriesCategoryDeleteRequestHandler(),
+            ],
+            'categories-subcategory-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCategoriesSubcategoryDeleteRequestHandler(),
             ],
         ];
     }

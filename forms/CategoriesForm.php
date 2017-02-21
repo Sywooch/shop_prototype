@@ -4,7 +4,9 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\DeleteCategorySubcategoryExistsValidator;
+use app\validators\{CreateCategoryNameExistsValidator,
+    DeleteCategorySubcategoryExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы редактирования категорий
@@ -15,24 +17,44 @@ class CategoriesForm extends AbstractBaseForm
      * Сценарий удаления категории
      */
     const DELETE = 'delete';
+    /**
+     * Сценарий создания категории
+     */
+    const CREATE = 'create';
     
     /**
      * @var int ID
      */
     public $id;
+    /**
+     * @var string имя категории
+     */
+    public $name;
+    /**
+     * @var string seocode
+     */
+    public $seocode;
+    /**
+     * @var bool
+     */
+    public $active;
     
     public function scenarios()
     {
         return [
             self::DELETE=>['id'],
+            self::CREATE=>['name', 'seocode', 'active'],
         ];
     }
     
     public function rules()
     {
         return [
+            [['name', 'seocode'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteCategorySubcategoryExistsValidator::class, 'on'=>self::DELETE],
+            [['name'], 'required', 'on'=>self::CREATE],
+            [['name'], CreateCategoryNameExistsValidator::class, 'on'=>self::CREATE],
         ];
     }
 }

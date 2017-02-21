@@ -32,8 +32,12 @@ class CategoriesFormTests extends TestCase
         $reflection = new \ReflectionClass(CategoriesForm::class);
         
         $this->assertTrue($reflection->hasConstant('DELETE'));
+        $this->assertTrue($reflection->hasConstant('CREATE'));
         
         $this->assertTrue($reflection->hasProperty('id'));
+        $this->assertTrue($reflection->hasProperty('name'));
+        $this->assertTrue($reflection->hasProperty('seocode'));
+        $this->assertTrue($reflection->hasProperty('active'));
     }
     
     /**
@@ -49,6 +53,25 @@ class CategoriesFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'id');
         $result = $reflection->getValue($form);
         $this->assertSame(2, $result);
+        
+        $form = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
+        $form->attributes = [
+            'name'=>'Name',
+            'seocode'=>'name',
+            'active'=>true,
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'name');
+        $result = $reflection->getValue($form);
+        $this->assertSame('Name', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'seocode');
+        $result = $reflection->getValue($form);
+        $this->assertSame('name', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'active');
+        $result = $reflection->getValue($form);
+        $this->assertSame(true, $result);
     }
     
     /**
@@ -72,6 +95,27 @@ class CategoriesFormTests extends TestCase
         $form = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
         $form->attributes = [
             'id'=>101
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
+        $form->attributes = [
+            'name'=>self::$dbClass->categories['category_1']['name']
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
+        $form->attributes = [
+            'name'=>'Not exists name'
         ];
         $form->validate();
         

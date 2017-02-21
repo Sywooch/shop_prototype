@@ -45,6 +45,39 @@ class SubcategoryModelTests extends TestCase
     }
     
     /**
+     * Тестирует метод SubcategoryModel::scenarios
+     */
+    public function testScenarios()
+    {
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::DELETE]);
+        $model->attributes = [
+            'id'=>23
+        ];
+        
+        $this->assertEquals(23, $model->id);
+    }
+    
+    /**
+     * Тестирует метод SubcategoryModel::rules
+     */
+    public function testRules()
+    {
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::DELETE]);
+        $model->attributes = [
+            'id'=>23
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+    }
+    
+    /**
      * Тестирует метод SubcategoryModel::tableName
      */
     public function testTableName()
