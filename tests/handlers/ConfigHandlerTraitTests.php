@@ -441,6 +441,34 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('string', $result['template']);
     }
     
+    /**
+     * Тестирует метод MailingsUnsubscribeRequestHandler::adminCategoriesWidgetConfig
+     */
+    public function testAdminCategoriesWidgetConfig()
+    {
+        $categoriesModelArray = [new class() {}];
+        $categoriesForm = new class() extends AbstractBaseForm {};
+        $subcategoryForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminCategoriesWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $categoriesModelArray, $categoriesForm, $subcategoryForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('categories', $result);
+        $this->assertArrayHasKey('categoriesForm', $result);
+        $this->assertArrayHasKey('subcategoryForm', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['categories']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['categoriesForm']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['subcategoryForm']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();

@@ -3,7 +3,10 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\widgets\AbstractBaseWidget;
+use app\forms\AbstractBaseForm;
 
 /**
  * Формирует HTML строку с основными данными аккаунта
@@ -18,6 +21,14 @@ class AdminCategoriesWidget extends AbstractBaseWidget
      * @var string заголовок
      */
     private $header;
+    /**
+     * @var AbstractBaseWidget
+     */
+    private $categoriesForm;
+    /**
+     * @var AbstractBaseWidget
+     */
+    private $subcategoryForm;
     /**
      * @var string имя шаблона
      */
@@ -36,6 +47,12 @@ class AdminCategoriesWidget extends AbstractBaseWidget
             if (empty($this->header)) {
                 throw new ErrorException($this->emptyError('header'));
             }
+            if (empty($this->categoriesForm)) {
+                throw new ErrorException($this->emptyError('categoriesForm'));
+            }
+            if (empty($this->subcategoryForm)) {
+                throw new ErrorException($this->emptyError('subcategoryForm'));
+            }
             if (empty($this->template)) {
                 throw new ErrorException($this->emptyError('template'));
             }
@@ -46,16 +63,48 @@ class AdminCategoriesWidget extends AbstractBaseWidget
             
             $categoriesArray = [];
             foreach ($this->categories as $category) {
-                $set = [];
-                $set['name'] = $category->name;
+                $setCategory = [];
+                $setCategory['name'] = $category->name;
+                
+                $categoriesForm = clone $this->categoriesForm;
+                $setCategory['modelForm'] = \Yii::configure($categoriesForm, ['id'=>$category->id]);
+                $setCategory['formId'] = sprintf('admin-category-delete-form-%d', $category->id);
+                
+                $setCategory['ajaxValidation'] = false;
+                $setCategory['validateOnSubmit'] = false;
+                $setCategory['validateOnChange'] = false;
+                $setCategory['validateOnBlur'] = false;
+                $setCategory['validateOnType'] = false;
+                
+                $setCategory['formAction'] = Url::to(['/admin/categories-category-delete']);
+                $setCategory['button'] = \Yii::t('base', 'Delete');
+                
                 if (!empty($category->subcategory)) {
                     foreach ($category->subcategory as $subcategory) {
-                        $set['subcategory'][] = $subcategory->name;
+                        $setSubcategory = [];
+                        $setSubcategory['name'] = $subcategory->name;
+                        
+                        $subcategoryForm = clone $this->subcategoryForm;
+                        $setSubcategory['modelForm'] = \Yii::configure($subcategoryForm, ['id'=>$subcategory->id]);
+                        $setSubcategory['formId'] = sprintf('admin-subcategory-delete-form-%d', $subcategory->id);
+                        
+                        $setSubcategory['ajaxValidation'] = false;
+                        $setSubcategory['validateOnSubmit'] = false;
+                        $setSubcategory['validateOnChange'] = false;
+                        $setSubcategory['validateOnBlur'] = false;
+                        $setSubcategory['validateOnType'] = false;
+                        
+                        $setSubcategory['formAction'] = Url::to(['/admin/categories-subcategory-delete']);
+                        $setSubcategory['button'] = \Yii::t('base', 'Delete');
+                        
+                        $setCategory['subcategory'][] = $setSubcategory;
                     }
+                    ArrayHelper::multisort($setCategory['subcategory'], 'name', SORT_ASC);
                 }
-                $categoriesArray[] = $set;
+                $categoriesArray[] = $setCategory;
             }
             
+            ArrayHelper::multisort($categoriesArray, 'name', SORT_ASC);
             $renderArray['categories'] = $categoriesArray;
             
             return $this->render($this->template, $renderArray);
@@ -85,6 +134,32 @@ class AdminCategoriesWidget extends AbstractBaseWidget
     {
         try {
             $this->header = $header;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству AdminCategoriesWidget::categoriesForm
+     * @param AbstractBaseForm $categoriesForm
+     */
+    public function setCategoriesForm(AbstractBaseForm $categoriesForm)
+    {
+        try {
+            $this->categoriesForm = $categoriesForm;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает имя шаблона свойству AdminCategoriesWidget::subcategoryForm
+     * @param AbstractBaseForm $subcategoryForm
+     */
+    public function setSubcategoryForm(AbstractBaseForm $subcategoryForm)
+    {
+        try {
+            $this->subcategoryForm = $subcategoryForm;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

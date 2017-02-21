@@ -13,6 +13,25 @@ use app\exceptions\ExceptionsTrait;
 class CategoriesModel extends AbstractBaseModel
 {
     /**
+     * Сценарий удаления категории
+     */
+    const DELETE = 'delete';
+    
+    public function scenarios()
+    {
+        return [
+            self::DELETE=>['id'],
+        ];
+    }
+    
+    public function rules()
+    {
+        return [
+            [['id'], 'required', 'on'=>self::DELETE],
+        ];
+    }
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */

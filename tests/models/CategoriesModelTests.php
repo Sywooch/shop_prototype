@@ -54,6 +54,39 @@ class CategoriesModelTests extends TestCase
     }
     
     /**
+     * Тестирует метод CategoriesModel::scenarios
+     */
+    public function testScenarios()
+    {
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::DELETE]);
+        $model->attributes = [
+            'id'=>23
+        ];
+        
+        $this->assertEquals(23, $model->id);
+    }
+    
+    /**
+     * Тестирует метод CategoriesModel::rules
+     */
+    public function testRules()
+    {
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::DELETE]);
+        $model->attributes = [
+            'id'=>23
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+    }
+    
+    /**
      * Тестирует метод CategoriesModel::getSubcategory
      */
     public function testGetSubcategory()

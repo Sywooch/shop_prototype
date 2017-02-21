@@ -395,4 +395,28 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminCategoriesWidget
+     * @param array $categoriesModelArray
+     * @param AbstractBaseForm $categoriesForm
+     * @param AbstractBaseForm $subcategoryForm
+     * @return array
+     */
+    private function adminCategoriesWidgetConfig(array $categoriesModelArray, AbstractBaseForm $categoriesForm, AbstractBaseForm $subcategoryForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['categories'] = $categoriesModelArray;
+            $dataArray['categoriesForm'] = $categoriesForm;
+            $dataArray['subcategoryForm'] = $subcategoryForm;
+            $dataArray['header'] = \Yii::t('base', 'Product categories');
+            $dataArray['template'] = 'admin-categories.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

@@ -216,7 +216,9 @@ $translate = [
     'Images catalog'=>'Каталог изображений',
     'Add product'=>'Добавить товар',
     'Product saved successfully!'=>'Продукт успешно сохранен!',
-    'Categories'=>'Категории'
+    'Categories'=>'Категории',
+    'Product categories'=>'Категории товаров',
+    'You must first delete or transfer subcategories'=>'Сначала необходимо удалить или перенести подкатегории'
 ];
 
 return $translate;
