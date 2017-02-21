@@ -82,6 +82,7 @@ $routes = [
     'admin-add-product'=>'admin/add-product',
     'admin-add-product-post'=>'admin/add-product-post',
     'admin-categories'=>'admin/categories',
+    'admin-categories-category-create'=>'admin/categories-category-create',
     'admin-categories-category-delete'=>'admin/categories-category-delete',
     'admin-categories-subcategory-delete'=>'admin/categories-subcategory-delete',
     

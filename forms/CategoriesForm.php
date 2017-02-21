@@ -5,6 +5,7 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{CreateCategoryNameExistsValidator,
+    CreateCategorySeocodeExistsValidator,
     DeleteCategorySubcategoryExistsValidator,
     StripTagsValidator};
 
@@ -53,8 +54,9 @@ class CategoriesForm extends AbstractBaseForm
             [['name', 'seocode'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteCategorySubcategoryExistsValidator::class, 'on'=>self::DELETE],
-            [['name'], 'required', 'on'=>self::CREATE],
+            [['name', 'seocode'], 'required', 'on'=>self::CREATE],
             [['name'], CreateCategoryNameExistsValidator::class, 'on'=>self::CREATE],
+            [['seocode'], CreateCategorySeocodeExistsValidator::class, 'on'=>self::CREATE],
         ];
     }
 }

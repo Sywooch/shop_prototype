@@ -34,17 +34,38 @@ class AdminCategoriesRequestHandler extends AbstractBaseHandler
                 $finder = \Yii::$app->registry->get(CategoriesFinder::class);
                 $categoriesModelArray = $finder->find();
                 
-                $categoriesForm = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
+                $categoriesFormDelete = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
                 $subcategoryForm = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
+                $categoriesFormCreate = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
                 
                 $dataArray = [];
                 
-                $dataArray['adminCategoriesWidgetConfig'] = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesForm, $subcategoryForm);
+                $dataArray['adminCategoriesWidgetConfig'] = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesFormDelete, $subcategoryForm);
+                $dataArray['adminCreateCategoryWidgetConfig'] = $this->adminCreateCategoryWidgetConfig($categoriesFormCreate);
                 
                 $this->dataArray = $dataArray;
             }
             
             return $this->dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminCreateCategoryWidget
+     * @param AbstractBaseForm $categoriesForm
+     */
+    private function adminCreateCategoryWidgetConfig(AbstractBaseForm $categoriesForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['form'] = $categoriesForm;
+            $dataArray['header'] = \Yii::t('base', 'Create category');
+            $dataArray['template'] = 'admin-create-category.twig';
+            
+            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

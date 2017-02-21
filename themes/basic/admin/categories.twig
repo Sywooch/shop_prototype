@@ -2,6 +2,7 @@
 
 {{ use ('app/widgets/AdminCategoriesBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminCategoriesWidget') }}
+{{ use ('app/widgets/AdminCreateCategoryWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
@@ -10,3 +11,5 @@
 <div class="product-categories">
     {{ admin_categories_widget_widget(adminCategoriesWidgetConfig) }}
 </div>
+
+{{ admin_create_category_widget_widget(adminCreateCategoryWidgetConfig) }}

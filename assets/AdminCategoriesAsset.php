@@ -16,6 +16,7 @@ class AdminCategoriesAsset extends AbstractAsset
      */
     public $js = [
         'js/sendAdminCategoryDelete.js',
+        'js/sendAdminCategoryCreate.js',
     ];
     /**
      * @var array зависимости пакета

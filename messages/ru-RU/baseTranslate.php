@@ -218,9 +218,12 @@ $translate = [
     'Product saved successfully!'=>'Продукт успешно сохранен!',
     'Categories'=>'Категории',
     'Product categories'=>'Категории товаров',
-    'You must first delete or transfer subcategories'=>'Сначала необходимо удалить или перенести подкатегории',
+    'You must first delete subcategories'=>'Сначала необходимо удалить подкатегории',
     'You must first delete or transfer products'=>'Сначала необходимо удалить или перенести товары',
     'Category with this name already exists'=>'Категория с этим именем уже существует',
+    'Category with this seocode already exists'=>'Категория с этим seocode уже существует',
+    'Create'=>'Создать',
+    'Create category'=>'Создать категорию',
 ];
 
 return $translate;

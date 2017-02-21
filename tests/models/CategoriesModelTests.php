@@ -35,6 +35,11 @@ class CategoriesModelTests extends TestCase
      */
     public function testProperties()
     {
+        $reflection = new \ReflectionClass(CategoriesModel::class);
+        
+        $this->assertTrue($reflection->hasConstant('DELETE'));
+        $this->assertTrue($reflection->hasConstant('CREATE'));
+        
         $model = new CategoriesModel();
         
         $this->assertArrayHasKey('id', $model->attributes);
@@ -64,6 +69,17 @@ class CategoriesModelTests extends TestCase
         ];
         
         $this->assertEquals(23, $model->id);
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::CREATE]);
+        $model->attributes = [
+            'name'=>'name',
+            'seocode'=>'seocode',
+            'active'=>true,
+        ];
+        
+        $this->assertEquals('name', $model->name);
+        $this->assertEquals('seocode', $model->seocode);
+        $this->assertEquals(true, $model->active);
     }
     
     /**
@@ -84,6 +100,21 @@ class CategoriesModelTests extends TestCase
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::CREATE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(2, $model->errors);
+        
+        $model = new CategoriesModel(['scenario'=>CategoriesModel::CREATE]);
+        $model->attributes = [
+            'name'=>'name',
+            'seocode'=>'seocode',
+        ];
+        
+        $this->assertEmpty($model->errors);
+        $this->assertEquals(0, $model->active);
     }
     
     /**

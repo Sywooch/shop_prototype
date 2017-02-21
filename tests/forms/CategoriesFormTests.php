@@ -103,11 +103,12 @@ class CategoriesFormTests extends TestCase
         $form = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
         $form->validate();
         
-        $this->assertCount(1, $form->errors);
+        $this->assertCount(2, $form->errors);
         
         $form = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
         $form->attributes = [
-            'name'=>self::$dbClass->categories['category_1']['name']
+            'name'=>self::$dbClass->categories['category_1']['name'],
+            'seocode'=>'some-new'
         ];
         $form->validate();
         
@@ -115,7 +116,17 @@ class CategoriesFormTests extends TestCase
         
         $form = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
         $form->attributes = [
-            'name'=>'Not exists name'
+            'name'=>'Not exists name',
+            'seocode'=>self::$dbClass->categories['category_1']['seocode'],
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
+        $form->attributes = [
+            'name'=>'Not exists name',
+            'seocode'=>'some-new'
         ];
         $form->validate();
         

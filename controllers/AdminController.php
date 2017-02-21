@@ -8,6 +8,7 @@ use app\actions\{AjaxAction,
     GetAction};
 use app\handlers\{AdminAddProductRequestHandler,
     AdminAddProductPostRequestHandler,
+    AdminCategoriesCategoryCreateRequestHandler,
     AdminCategoriesCategoryDeleteRequestHandler,
     AdminCategoriesSubcategoryDeleteRequestHandler,
     AdminCategoriesRequestHandler,
@@ -76,6 +77,10 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminCategoriesRequestHandler(),
                 'view'=>'categories.twig',
+            ],
+            'categories-category-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCategoriesCategoryCreateRequestHandler(),
             ],
             'categories-category-delete'=>[
                 'class'=>AjaxAction::class,
