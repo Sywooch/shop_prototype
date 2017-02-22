@@ -7,31 +7,29 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
+use app\models\SubcategoryModel;
+use app\savers\ModelSaver;
+use app\finders\CategoriesFinder;
 use app\forms\{CategoriesForm,
     SubcategoryForm};
-use app\finders\{CategoriesFinder,
-    CategoryIdFinder};
-use app\models\CategoriesModel;
-use app\removers\CategoriesModelRemover;
-use app\widgets\{AdminCategoriesWidget,
-    CategoriesOptionWidget};
+use app\widgets\AdminCategoriesWidget;
 
 /**
- * Обрабатывает запрос на обновление данных товара
+ * Обрабатывает запрос на создание подкатегории
  */
-class AdminCategoriesCategoryDeleteRequestHandler extends AbstractBaseHandler
+class AdminCategoriesSubcategoryCreateRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
     /**
-     * Обновляет данные товара
+     * Создает подкатегорию
      * @param $request
      * @return mixed
      */
     public function handle($request)
     {
         try {
-            $form = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
+            $form = new SubcategoryForm(['scenario'=>SubcategoryForm::CREATE]);
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {
@@ -45,20 +43,19 @@ class AdminCategoriesCategoryDeleteRequestHandler extends AbstractBaseHandler
                     $transaction = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $finder = \Yii::$app->registry->get(CategoryIdFinder::class, [
-                            'id'=>$form->id
-                        ]);
-                        $categoriesModel = $finder->find();
-                        
-                        $categoriesModel->scenario = CategoriesModel::DELETE;
-                        if ($categoriesModel->validate() === false) {
-                            throw new ErrorException($this->modelError($categoriesModel->errors));
+                        $rawSubcategoryModel = new SubcategoryModel(['scenario'=>SubcategoryModel::CREATE]);
+                        $rawSubcategoryModel->name = $form->name;
+                        $rawSubcategoryModel->seocode = $form->seocode;
+                        $rawSubcategoryModel->id_category = $form->id_category;
+                        $rawSubcategoryModel->active = $form->active;
+                        if ($rawSubcategoryModel->validate() === false) {
+                            throw new ErrorException($this->modelError($rawSubcategoryModel->errors));
                         }
                         
-                        $remover = new CategoriesModelRemover([
-                            'model'=>$categoriesModel
+                        $saver = new ModelSaver([
+                            'model'=>$rawSubcategoryModel
                         ]);
-                        $remover->remove();
+                        $saver->save();
                         
                         $finder = \Yii::$app->registry->get(CategoriesFinder::class);
                         $categoriesModelArray = $finder->find();
@@ -66,17 +63,12 @@ class AdminCategoriesCategoryDeleteRequestHandler extends AbstractBaseHandler
                         $categoriesForm = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
                         $subcategoryForm = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
                         
-                        $dataArray = [];
-                        
                         $adminCategoriesWidgetConfig = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesForm, $subcategoryForm);
-                        $dataArray['list'] = AdminCategoriesWidget::widget($adminCategoriesWidgetConfig);
-                        
-                        $categoriesOptionWidgetConfig = $this->categoriesOptionWidgetConfig($categoriesModelArray);
-                        $dataArray['options'] = CategoriesOptionWidget::widget($categoriesOptionWidgetConfig);
+                        $response = AdminCategoriesWidget::widget($adminCategoriesWidgetConfig);
                         
                         $transaction->commit();
                         
-                        return $dataArray;
+                        return $response;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

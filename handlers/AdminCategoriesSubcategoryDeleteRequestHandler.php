@@ -65,12 +65,14 @@ class AdminCategoriesSubcategoryDeleteRequestHandler extends AbstractBaseHandler
                         $categoriesForm = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
                         $subcategoryForm = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
                         
+                        $dataArray = [];
+                        
                         $adminCategoriesWidgetConfig = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesForm, $subcategoryForm);
-                        $response = AdminCategoriesWidget::widget($adminCategoriesWidgetConfig);
+                        $dataArray['list'] = AdminCategoriesWidget::widget($adminCategoriesWidgetConfig);
                         
                         $transaction->commit();
                         
-                        return $response;
+                        return $dataArray;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

@@ -419,4 +419,22 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета CategoriesOptionWidget
+     * @param array $categoriesModelArray
+     */
+    private function categoriesOptionWidgetConfig(array $categoriesModelArray): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['categories'] = $categoriesModelArray;
+            $dataArray['template'] = 'categories-option.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

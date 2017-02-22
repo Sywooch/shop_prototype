@@ -83,32 +83,13 @@ class SubcategoryOptionWidgetTests extends TestCase
     
     /**
      * Тестирует метод SubcategoryOptionWidget::run
-     * если пуст SubcategoryOptionWidget::subcategory
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: subcategory
-     */
-    public function testRunEmptySubcategory()
-    {
-        $widget = new SubcategoryOptionWidget();
-        $widget->run();
-    }
-    
-    /**
-     * Тестирует метод SubcategoryOptionWidget::run
      * если пуст SubcategoryOptionWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
     public function testRunEmptyTemplate()
     {
-        $mock = 'mock';
-        
         $widget = new SubcategoryOptionWidget();
-       
-        $reflection = new \ReflectionProperty($widget, 'subcategoryArray');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
-        
         $widget->run();
     }
     
@@ -117,7 +98,20 @@ class SubcategoryOptionWidgetTests extends TestCase
      */
     public function testRun()
     {
-        $subcategoryArray = [1=>'First', 2=>'Second', 3=>'Three'];
+        $subcategoryArray = [
+            new class() {
+                public $id = 1;
+                public $name = 'First';
+            },
+            new class() {
+                public $id = 2;
+                public $name = 'Second';
+            },
+            new class() {
+                public $id = 3;
+                public $name = 'Three';
+            }
+        ];
         
         $widget = new SubcategoryOptionWidget();
         
@@ -131,6 +125,7 @@ class SubcategoryOptionWidgetTests extends TestCase
         
         $result = $widget->run();
         
+        $this->assertRegExp('#<option value="0">------------------------</option>#', $result);
         $this->assertRegExp('#<option value="1">First</option>#', $result);
         $this->assertRegExp('#<option value="2">Second</option>#', $result);
         $this->assertRegExp('#<option value="3">Three</option>#', $result);

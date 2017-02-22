@@ -35,6 +35,11 @@ class SubcategoryModelTests extends TestCase
      */
     public function testProperties()
     {
+        $reflection = new \ReflectionClass(SubcategoryModel::class);
+        
+        $this->assertTrue($reflection->hasConstant('DELETE'));
+        $this->assertTrue($reflection->hasConstant('CREATE'));
+        
         $model = new SubcategoryModel();
         
         $this->assertArrayHasKey('id', $model->attributes);
@@ -55,6 +60,19 @@ class SubcategoryModelTests extends TestCase
         ];
         
         $this->assertEquals(23, $model->id);
+        
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::CREATE]);
+        $model->attributes = [
+            'name'=>'name',
+            'seocode'=>'seocode',
+            'id_category'=>1,
+            'active'=>true,
+        ];
+        
+        $this->assertEquals('name', $model->name);
+        $this->assertEquals('seocode', $model->seocode);
+        $this->assertEquals(1, $model->id_category);
+        $this->assertEquals(true, $model->active);
     }
     
     /**
@@ -75,6 +93,22 @@ class SubcategoryModelTests extends TestCase
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::CREATE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(3, $model->errors);
+        
+        $model = new SubcategoryModel(['scenario'=>SubcategoryModel::CREATE]);
+        $model->attributes = [
+            'name'=>'name',
+            'seocode'=>'seocode',
+            'id_category'=>1,
+        ];
+        
+        $this->assertEmpty($model->errors);
+        $this->assertEquals(0, $model->active);
     }
     
     /**

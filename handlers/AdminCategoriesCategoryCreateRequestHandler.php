@@ -12,7 +12,8 @@ use app\savers\ModelSaver;
 use app\finders\CategoriesFinder;
 use app\forms\{CategoriesForm,
     SubcategoryForm};
-use app\widgets\AdminCategoriesWidget;
+use app\widgets\{AdminCategoriesWidget,
+    CategoriesOptionWidget};
 
 /**
  * Обрабатывает запрос на создание категории
@@ -62,12 +63,17 @@ class AdminCategoriesCategoryCreateRequestHandler extends AbstractBaseHandler
                         $categoriesForm = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
                         $subcategoryForm = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
                         
+                        $dataArray = [];
+                        
                         $adminCategoriesWidgetConfig = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesForm, $subcategoryForm);
-                        $response = AdminCategoriesWidget::widget($adminCategoriesWidgetConfig);
+                        $dataArray['list'] = AdminCategoriesWidget::widget($adminCategoriesWidgetConfig);
+                        
+                        $categoriesOptionWidgetConfig = $this->categoriesOptionWidgetConfig($categoriesModelArray);
+                        $dataArray['options'] = CategoriesOptionWidget::widget($categoriesOptionWidgetConfig);
                         
                         $transaction->commit();
                         
-                        return $response;
+                        return $dataArray;
                     } catch (\Throwable $t) {
                         $transaction->rollBack();
                         throw $t;

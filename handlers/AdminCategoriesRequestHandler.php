@@ -35,13 +35,15 @@ class AdminCategoriesRequestHandler extends AbstractBaseHandler
                 $categoriesModelArray = $finder->find();
                 
                 $categoriesFormDelete = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
-                $subcategoryForm = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
+                $subcategoryFormDelete = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
                 $categoriesFormCreate = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
+                $subcategoryFormCreate = new SubcategoryForm(['scenario'=>CategoriesForm::CREATE]);
                 
                 $dataArray = [];
                 
-                $dataArray['adminCategoriesWidgetConfig'] = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesFormDelete, $subcategoryForm);
+                $dataArray['adminCategoriesWidgetConfig'] = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesFormDelete, $subcategoryFormDelete);
                 $dataArray['adminCreateCategoryWidgetConfig'] = $this->adminCreateCategoryWidgetConfig($categoriesFormCreate);
+                $dataArray['adminCreateSubcategoryWidgetConfig'] = $this->adminCreateSubcategoryWidgetConfig($subcategoryFormCreate, $categoriesModelArray);
                 
                 $this->dataArray = $dataArray;
             }
@@ -64,6 +66,28 @@ class AdminCategoriesRequestHandler extends AbstractBaseHandler
             $dataArray['form'] = $categoriesForm;
             $dataArray['header'] = \Yii::t('base', 'Create category');
             $dataArray['template'] = 'admin-create-category.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminCreateSubcategoryWidget
+     * @param AbstractBaseForm $categoriesForm
+     * @param array $categoriesModelArray
+     * @return array
+     */
+    private function adminCreateSubcategoryWidgetConfig(AbstractBaseForm $subcategoryForm, array $categoriesModelArray): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['form'] = $subcategoryForm;
+            $dataArray['categories'] = $categoriesModelArray;
+            $dataArray['header'] = \Yii::t('base', 'Create subcategory');
+            $dataArray['template'] = 'admin-create-subcategory.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

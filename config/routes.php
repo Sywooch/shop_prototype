@@ -83,8 +83,11 @@ $routes = [
     'admin-add-product-post'=>'admin/add-product-post',
     'admin-categories'=>'admin/categories',
     'admin-categories-category-create'=>'admin/categories-category-create',
+    'admin-categories-subcategory-create'=>'admin/categories-subcategory-create',
     'admin-categories-category-delete'=>'admin/categories-category-delete',
     'admin-categories-subcategory-delete'=>'admin/categories-subcategory-delete',
+    'admin-brands'=>'admin/brands',
+    'admin-brand-delete'=>'admin/brand-delete',
     
     # Календарь
     'calendar-get'=>'calendar/get',

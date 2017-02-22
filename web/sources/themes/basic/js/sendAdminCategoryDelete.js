@@ -7,17 +7,23 @@ $(function() {
         self.success = function(data, status, jqXHR)
         {
             self.form.find('div.help-block').html('');
-            if (typeof data == 'string') {
-                self.infoDiv.html(data);
-            } else if (typeof data == 'object' && data.length != 0) {
-                for (var key in data) {
-                    self.form.find('div.help-block').text(data[key]);
+            if (typeof data == 'object' && data.length != 0) {
+                if ('list' in data) {
+                    self.form.find('input:text').val('');
+                    self.infoDiv.html(data.list);
+                    if ('options' in data) {
+                        $('#subcategoryform-id_category').html(data.options);
+                    }
+                } else {
+                    for (var key in data) {
+                        self.form.find('div.help-block').text(data[key]);
+                    }
                 }
             }
         };
     };
     
-    $('div.product-categories').on('click', 'input[type="submit"]', function(event) {
+    $('div.product-categories').on('click', 'input:submit', function(event) {
         (new SendAdminCategoryDelete()).send(event);
         event.preventDefault();
     });

@@ -5,17 +5,17 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\ArrayHelper;
 use app\widgets\AbstractBaseWidget;
-use app\models\SubcategoryModel;
+use app\models\CategoriesModel;
 
 /**
- * Формирует HTML строку с тегами option подкатегорий для втсавки в форму
+ * Формирует HTML строку с тегами option категорий для втсавки в форму
  */
-class SubcategoryOptionWidget extends AbstractBaseWidget
+class CategoriesOptionWidget extends AbstractBaseWidget
 {
     /**
-     * @var array SubcategoryModel
+     * @var array CategoriesModel
      */
-    private $subcategoryArray;
+    private $categories;
     /**
      * @var string имя шаблона
      */
@@ -28,18 +28,18 @@ class SubcategoryOptionWidget extends AbstractBaseWidget
     public function run()
     {
         try {
+            if (empty($this->categories)) {
+                throw new ErrorException($this->emptyError('categories'));
+            }
             if (empty($this->template)) {
                 throw new ErrorException($this->emptyError('template'));
             }
             
             $renderArray = [];
             
-            if (!empty($this->subcategoryArray)) {
-                $subcategoryArray = ArrayHelper::map($this->subcategoryArray, 'id', 'name');
-                asort($subcategoryArray, SORT_STRING);
-            }
-            
-            $renderArray['subcategoryArray'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $subcategoryArray ?? []);
+            $categoriesArray = ArrayHelper::map($this->categories, 'id', 'name');
+            asort($categoriesArray, SORT_STRING);
+            $renderArray['categoriesArray'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
@@ -48,20 +48,20 @@ class SubcategoryOptionWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array SubcategoryModel свойству SubcategoryOptionWidget::subcategory
-     * @param array SubcategoryModel $subcategory
+     * Присваивает значение CategoriesOptionWidget::categories
+     * @param array $categories
      */
-    public function setSubcategoryArray(array $subcategoryArray)
+    public function setCategories(array $categories)
     {
         try {
-            $this->subcategoryArray = $subcategoryArray;
+            $this->categories = $categories;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает имя шаблона свойству SubcategoryOptionWidget::template
+     * Присваивает имя шаблона свойству CategoriesOptionWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)

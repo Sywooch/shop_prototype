@@ -56,11 +56,7 @@ class CategoriesGetSubcategoryRequestHandler extends AbstractBaseHandler
         try {
             $dataArray = [];
             
-            if (!empty($subcategoryArray)) {
-                $subcategoryArray = ArrayHelper::map($subcategoryArray, 'id', 'name');
-            }
-            
-            $dataArray['subcategoryArray'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $subcategoryArray);
+            $dataArray['subcategoryArray'] = $subcategoryArray;
             $dataArray['template'] = 'subcategory-option.twig';
             
             return $dataArray;

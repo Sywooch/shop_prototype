@@ -8,8 +8,10 @@ use app\actions\{AjaxAction,
     GetAction};
 use app\handlers\{AdminAddProductRequestHandler,
     AdminAddProductPostRequestHandler,
+    AdminBrandsRequestHandler,
     AdminCategoriesCategoryCreateRequestHandler,
     AdminCategoriesCategoryDeleteRequestHandler,
+    AdminCategoriesSubcategoryCreateRequestHandler,
     AdminCategoriesSubcategoryDeleteRequestHandler,
     AdminCategoriesRequestHandler,
     AdminIndexRequestHandler,
@@ -82,6 +84,10 @@ class AdminController extends Controller
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCategoriesCategoryCreateRequestHandler(),
             ],
+            'categories-subcategory-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCategoriesSubcategoryCreateRequestHandler(),
+            ],
             'categories-category-delete'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCategoriesCategoryDeleteRequestHandler(),
@@ -89,6 +95,11 @@ class AdminController extends Controller
             'categories-subcategory-delete'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCategoriesSubcategoryDeleteRequestHandler(),
+            ],
+            'brands'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminBrandsRequestHandler(),
+                'view'=>'brands.twig',
             ],
         ];
     }

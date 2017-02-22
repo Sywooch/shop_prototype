@@ -54,8 +54,8 @@ class AdminCategoriesSubcategoryDeleteRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
         
-        $this->assertInternalType('string', $result);
-        $this->assertNotEmpty($result);
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('list', $result);
         
         $category = \Yii::$app->db->createCommand('SELECT * FROM {{subcategory}} WHERE [[id]]=:id')->bindValue(':id', 1)->queryOne();
         $this->assertEmpty($category);

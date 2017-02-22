@@ -469,6 +469,26 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('string', $result['template']);
     }
     
+    /**
+     * Тестирует метод MailingsUnsubscribeRequestHandler::categoriesOptionWidgetConfig
+     */
+    public function testCategoriesOptionWidgetConfig()
+    {
+        $categoriesModelArray = [new class() {}];
+        
+        $reflection = new \ReflectionMethod($this->handler, 'categoriesOptionWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $categoriesModelArray);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('categories', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['categories']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
