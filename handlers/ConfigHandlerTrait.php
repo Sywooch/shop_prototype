@@ -437,4 +437,26 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminBrandsWidget
+     * @param array $brandsModelArray
+     * @param AbstractBaseForm $brandsForm
+     * @return array
+     */
+    private function adminBrandsWidgetConfig(array $brandsModelArray, AbstractBaseForm $brandsForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['brands'] = $brandsModelArray;
+            $dataArray['header'] = \Yii::t('base', 'Brands');
+            $dataArray['brandsForm'] = $brandsForm;
+            $dataArray['template'] = 'admin-brands.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

@@ -203,7 +203,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountOrdersRequestHandler::оrdersFiltersWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::оrdersFiltersWidgetConfig
      */
     public function testOrdersFiltersWidgetConfig()
     {
@@ -236,7 +236,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountOrdersRequestHandler::paginationWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::paginationWidgetConfig
      */
     public function testPaginationWidgetConfig()
     {
@@ -374,7 +374,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeRequestHandler::unsubscribeEmptyWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::unsubscribeEmptyWidgetConfig
      */
     public function testUnsubscribeEmptyWidgetConfig()
     {
@@ -394,7 +394,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminAddProductRequestHandler::adminAddProductFormWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::adminAddProductFormWidgetConfig
      */
     public function testAminAddProductFormWidgetConfig()
     {
@@ -442,7 +442,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeRequestHandler::adminCategoriesWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::adminCategoriesWidgetConfig
      */
     public function testAdminCategoriesWidgetConfig()
     {
@@ -470,7 +470,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод MailingsUnsubscribeRequestHandler::categoriesOptionWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::categoriesOptionWidgetConfig
      */
     public function testCategoriesOptionWidgetConfig()
     {
@@ -486,6 +486,31 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['categories']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::adminBrandsWidgetConfig
+     */
+    public function testAdminBrandsWidgetConfig()
+    {
+        $brandsModelArray = [new class() {}];
+        $brandsForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminBrandsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $brandsModelArray, $brandsForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('brands', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('brandsForm', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['brands']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['brandsForm']);
         $this->assertInternalType('string', $result['template']);
     }
     

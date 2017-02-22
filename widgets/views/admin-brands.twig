@@ -1,0 +1,16 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<ul>
+    {% for brand in brands %}
+        <li>
+            {{ brand.brand }}
+            {% set form=active_form_begin({'id':brand.formId, 'enableAjaxValidation':brand.ajaxValidation, 'validateOnSubmit':brand.validateOnSubmit, 'validateOnChange':brand.validateOnChange, 'validateOnBlur':brand.validateOnBlur, 'validateOnType':brand.validateOnType, 'action':brand.formAction, 'method':'POST'}) %}
+                {{ form.field(brand.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ brand.button }}">
+            {{ active_form_end() }}
+        </li>
+    {% endfor %}
+</ul>
+

@@ -228,6 +228,8 @@ $translate = [
     'Create category'=>'Создать категорию',
     'Create subcategory'=>'Создать подкатегорию',
     'Brands'=>'Бренды',
+    'Brand with this name already exists'=>'Бренд с таким названием уже существует',
+    'Create brand'=>'Создать бренд',
 ];
 
 return $translate;

@@ -87,6 +87,7 @@ $routes = [
     'admin-categories-category-delete'=>'admin/categories-category-delete',
     'admin-categories-subcategory-delete'=>'admin/categories-subcategory-delete',
     'admin-brands'=>'admin/brands',
+    'admin-brand-create'=>'admin/brand-create',
     'admin-brand-delete'=>'admin/brand-delete',
     
     # Календарь
