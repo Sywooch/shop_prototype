@@ -37,6 +37,7 @@ class AdminProductDetailDeleteRequestHandlerTests extends TestCase
      */
     public function testHandle()
     {
+        \Yii::$app->db->createCommand('UPDATE {{products}} SET [[images]]="" WHERE [[id]]=:id')->bindValue(':id', 1)->execute();
         $product = \Yii::$app->db->createCommand('SELECT * FROM {{products}} WHERE [[id]]=:id')->bindValue(':id', 1)->queryOne();
         $this->assertNotEmpty($product);
         

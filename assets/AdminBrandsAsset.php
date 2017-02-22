@@ -16,6 +16,7 @@ class AdminBrandsAsset extends AbstractAsset
      */
     public $js = [
         'js/sendAdminBrandDelete.js',
+        'js/sendAdminBrandCreate.js',
     ];
     /**
      * @var array зависимости пакета

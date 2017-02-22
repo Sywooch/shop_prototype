@@ -213,7 +213,7 @@ class AdminCreateSubcategoryWidgetTests extends TestCase
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="subcategory-create-form" action="..+" method="POST">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[name\]">#', $result);
-        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_category\]">#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[id_category\]" data-disabled>#', $result);
         $this->assertRegExp('#<option value="0">------------------------</option>#', $result);
         $this->assertRegExp('#<option value="1">One</option>#', $result);
         $this->assertRegExp('#<option value="2">Two</option>#', $result);

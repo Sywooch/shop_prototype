@@ -1,0 +1,16 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<ul>
+    {% for color in colors %}
+        <li>
+            {{ color.color }}
+            {% set form=active_form_begin({'id':color.formId, 'enableAjaxValidation':color.ajaxValidation, 'validateOnSubmit':color.validateOnSubmit, 'validateOnChange':color.validateOnChange, 'validateOnBlur':color.validateOnBlur, 'validateOnType':color.validateOnType, 'action':color.formAction, 'method':'POST'}) %}
+                {{ form.field(color.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ color.button }}">
+            {{ active_form_end() }}
+        </li>
+    {% endfor %}
+</ul>
+

@@ -18,6 +18,7 @@ class BrandsModelTests extends TestCase
         $reflection = new \ReflectionClass(BrandsModel::class);
         
         $this->assertTrue($reflection->hasConstant('DELETE'));
+        $this->assertTrue($reflection->hasConstant('CREATE'));
         
         $model = new BrandsModel();
         
@@ -46,6 +47,13 @@ class BrandsModelTests extends TestCase
         ];
         
         $this->assertEquals(23, $model->id);
+        
+        $model = new BrandsModel(['scenario'=>BrandsModel::CREATE]);
+        $model->attributes = [
+            'brand'=>'brand'
+        ];
+        
+        $this->assertEquals('brand', $model->brand);
     }
     
     /**
@@ -62,6 +70,20 @@ class BrandsModelTests extends TestCase
         $model = new BrandsModel(['scenario'=>BrandsModel::DELETE]);
         $model->attributes = [
             'id'=>23
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new BrandsModel(['scenario'=>BrandsModel::CREATE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new BrandsModel(['scenario'=>BrandsModel::CREATE]);
+        $model->attributes = [
+            'brand'=>'brand'
         ];
         $model->validate();
         

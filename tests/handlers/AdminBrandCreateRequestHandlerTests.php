@@ -4,15 +4,15 @@ namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
 use yii\web\UploadedFile;
-use app\handlers\AdminCategoriesCategoryCreateRequestHandler;
+use app\handlers\AdminBrandCreateRequestHandler;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\CategoriesFixture;
-use app\forms\CategoriesForm;
+use app\tests\sources\fixtures\BrandsFixture;
+use app\forms\BrandsForm;
 
 /**
- * Тестирует класс AdminCategoriesCategoryCreateRequestHandler
+ * Тестирует класс AdminBrandCreateRequestHandler
  */
-class AdminCategoriesCategoryCreateRequestHandlerTests extends TestCase
+class AdminBrandCreateRequestHandlerTests extends TestCase
 {
     private static $dbClass;
     private $handler;
@@ -21,7 +21,7 @@ class AdminCategoriesCategoryCreateRequestHandlerTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'categories'=>CategoriesFixture::class,
+                'brands'=>BrandsFixture::class,
             ]
         ]);
         self::$dbClass->loadFixtures();
@@ -31,11 +31,11 @@ class AdminCategoriesCategoryCreateRequestHandlerTests extends TestCase
     {
         \Yii::$app->registry->clean();
         
-        $this->handler = new AdminCategoriesCategoryCreateRequestHandler();
+        $this->handler = new AdminBrandCreateRequestHandler();
     }
     
     /**
-     * Тестирует метод AdminCategoriesCategoryCreateRequestHandler::handle
+     * Тестирует метод AdminBrandCreateRequestHandler::handle
      * если в запросе ошибки
      */
     public function testHandleAjaxError()
@@ -45,10 +45,8 @@ class AdminCategoriesCategoryCreateRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'CategoriesForm'=>[
-                        'name'=>null,
-                        'seocode'=>'new-name',
-                        'active'=>true,
+                    'BrandsForm'=>[
+                        'brand'=>null,
                     ],
                 ];
             }
@@ -59,22 +57,20 @@ class AdminCategoriesCategoryCreateRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCategoriesCategoryCreateRequestHandler::handle
+     * Тестирует метод AdminBrandCreateRequestHandler::handle
      */
     public function testHandle()
     {
-        $categories = \Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll();
-        $this->assertCount(2, $categories);
+        $brands = \Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll();
+        $this->assertCount(2, $brands);
         
         $request = new class() {
             public $isAjax = true;
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'CategoriesForm'=>[
-                        'name'=>'New name',
-                        'seocode'=>'new-name',
-                        'active'=>true,
+                    'BrandsForm'=>[
+                        'brand'=>'New brand',
                     ],
                 ];
             }
@@ -82,12 +78,11 @@ class AdminCategoriesCategoryCreateRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
 
-        $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('list', $result);
-        $this->assertArrayHasKey('options', $result);
+        $this->assertInternalType('string', $result);
+        $this->assertNotEmpty($result);
         
-        $categories = \Yii::$app->db->createCommand('SELECT * FROM {{categories}}')->queryAll();
-        $this->assertCount(3, $categories);
+        $brands = \Yii::$app->db->createCommand('SELECT * FROM {{brands}}')->queryAll();
+        $this->assertCount(3, $brands);
     }
     
     public static function tearDownAfterClass()

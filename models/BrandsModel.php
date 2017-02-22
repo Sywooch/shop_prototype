@@ -14,11 +14,16 @@ class BrandsModel extends AbstractBaseModel
      * Сценарий удаления категории
      */
     const DELETE = 'delete';
+    /**
+     * Сценарий создания категории
+     */
+    const CREATE = 'create';
     
     public function scenarios()
     {
         return [
             self::DELETE=>['id'],
+            self::CREATE=>['brand'],
         ];
     }
     
@@ -26,6 +31,7 @@ class BrandsModel extends AbstractBaseModel
     {
         return [
             [['id'], 'required', 'on'=>self::DELETE],
+            [['brand'], 'required', 'on'=>self::CREATE],
         ];
     }
     

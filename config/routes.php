@@ -89,6 +89,8 @@ $routes = [
     'admin-brands'=>'admin/brands',
     'admin-brand-create'=>'admin/brand-create',
     'admin-brand-delete'=>'admin/brand-delete',
+    'admin-colors'=>'admin/colors',
+    'admin-color-delete'=>'admin/color-delete',
     
     # Календарь
     'calendar-get'=>'calendar/get',

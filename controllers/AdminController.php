@@ -8,6 +8,7 @@ use app\actions\{AjaxAction,
     GetAction};
 use app\handlers\{AdminAddProductRequestHandler,
     AdminAddProductPostRequestHandler,
+    AdminBrandCreateRequestHandler,
     AdminBrandDeleteRequestHandler,
     AdminBrandsRequestHandler,
     AdminCategoriesCategoryCreateRequestHandler,
@@ -15,6 +16,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminCategoriesSubcategoryCreateRequestHandler,
     AdminCategoriesSubcategoryDeleteRequestHandler,
     AdminCategoriesRequestHandler,
+    AdminColorsRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
@@ -105,6 +107,15 @@ class AdminController extends Controller
             'brand-delete'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminBrandDeleteRequestHandler(),
+            ],
+            'brand-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminBrandCreateRequestHandler(),
+            ],
+            'colors'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminColorsRequestHandler(),
+                'view'=>'colors.twig',
             ],
         ];
     }
