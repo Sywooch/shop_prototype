@@ -230,6 +230,10 @@ $translate = [
     'Brands'=>'Бренды',
     'Brand with this name already exists'=>'Бренд с таким названием уже существует',
     'Create brand'=>'Создать бренд',
+    'Color with this name already exists'=>'Цвет с таким названием уже существует',
+    'Create color'=>'Создать цвет',
+    'Size with this name already exists'=>'Размер с таким названием уже существует',
+    'Create size'=>'Создать размер',
 ];
 
 return $translate;

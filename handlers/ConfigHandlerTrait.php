@@ -459,4 +459,46 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminColorsWidget
+     * @param array $colorsModelArray
+     * @param AbstractBaseForm $colorsForm
+     */
+    private function adminColorsWidgetConfig(array $colorsModelArray, AbstractBaseForm $colorsForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['colors'] = $colorsModelArray;
+            $dataArray['form'] = $colorsForm;
+            $dataArray['header'] = \Yii::t('base', 'Colors');
+            $dataArray['template'] = 'admin-colors.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminSizesWidget
+     * @param array $sizesModelArray
+     * @param AbstractBaseForm $sizesForm
+     */
+    private function adminSizesWidgetConfig(array $sizesModelArray, AbstractBaseForm $sizesForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['sizes'] = $sizesModelArray;
+            $dataArray['form'] = $sizesForm;
+            $dataArray['header'] = \Yii::t('base', 'Sizes');
+            $dataArray['template'] = 'admin-sizes.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

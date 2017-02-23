@@ -11,6 +11,15 @@ use app\exceptions\ExceptionsTrait;
 class SizesModel extends AbstractBaseModel
 {
     /**
+     * Сценарий удаления размера
+     */
+    const DELETE = 'delete';
+    /**
+     * Сценарий создания размера
+     */
+    const CREATE = 'create';
+    
+    /**
      * Возвращает имя таблицы, связанной с текущим классом AR
      * @return string
      */
@@ -23,10 +32,19 @@ class SizesModel extends AbstractBaseModel
         }
     }
     
+    public function scenarios()
+    {
+        return [
+            self::DELETE=>['id'],
+            self::CREATE=>['size'],
+        ];
+    }
+    
     public function rules()
     {
         return [
-            [['size'], 'app\validators\StripTagsValidator'],
+            [['id'], 'required', 'on'=>self::DELETE],
+            [['size'], 'required', 'on'=>self::CREATE],
         ];
     }
 }

@@ -1,0 +1,15 @@
+{{ register_asset_bundle('app/assets/AdminSizesAsset') }}
+
+{{ use ('app/widgets/AdminSizesBreadcrumbsWidget') }}
+{{ use ('app/widgets/AdminSizesWidget') }}
+{{ use ('app/widgets/AdminCreateSizeWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_sizes_breadcrumbs_widget_widget() }}
+
+<div class="admin-sizes">
+    {{ admin_sizes_widget_widget(adminSizesWidgetConfig) }}
+</div>
+
+{{ admin_create_size_widget_widget(adminCreateSizeWidgetConfig) }}

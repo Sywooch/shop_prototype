@@ -11,12 +11,12 @@ use app\forms\AbstractBaseForm;
 /**
  * Формирует HTML строку с основными данными аккаунта
  */
-class AdminColorsWidget extends AbstractBaseWidget
+class AdminSizesWidget extends AbstractBaseWidget
 {
     /**
-     * @var array ColorsModel
+     * @var array SizesModel
      */
-    private $colors;
+    private $sizes;
     /**
      * @var AbstractBaseForm
      */
@@ -37,8 +37,8 @@ class AdminColorsWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->colors)) {
-                throw new ErrorException($this->emptyError('colors'));
+            if (empty($this->sizes)) {
+                throw new ErrorException($this->emptyError('sizes'));
             }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
@@ -54,14 +54,14 @@ class AdminColorsWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             
-            $colorsArray = [];
-            foreach ($this->colors as $color) {
+            $sizesArray = [];
+            foreach ($this->sizes as $size) {
                 $set = [];
-                $set['color'] = $color->color;
+                $set['size'] = $size->size;
                 
-                $colorsForm = clone $this->form;
-                $set['modelForm'] = \Yii::configure($colorsForm, ['id'=>$color->id]);
-                $set['formId'] = sprintf('admin-color-delete-form-%d', $color->id);
+                $sizesForm = clone $this->form;
+                $set['modelForm'] = \Yii::configure($sizesForm, ['id'=>$size->id]);
+                $set['formId'] = sprintf('admin-size-delete-form-%d', $size->id);
                 
                 $set['ajaxValidation'] = false;
                 $set['validateOnSubmit'] = false;
@@ -69,14 +69,14 @@ class AdminColorsWidget extends AbstractBaseWidget
                 $set['validateOnBlur'] = false;
                 $set['validateOnType'] = false;
                 
-                $set['formAction'] = Url::to(['/admin/color-delete']);
+                $set['formAction'] = Url::to(['/admin/size-delete']);
                 $set['button'] = \Yii::t('base', 'Delete');
                 
-                $colorsArray[] = $set;
+                $sizesArray[] = $set;
             }
             
-            ArrayHelper::multisort($colorsArray, 'color', SORT_ASC);
-            $renderArray['colors'] = $colorsArray;
+            ArrayHelper::multisort($sizesArray, 'size', SORT_ASC);
+            $renderArray['sizes'] = $sizesArray;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
@@ -85,20 +85,20 @@ class AdminColorsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminColorsWidget::colors
-     * @param array $colors
+     * Присваивает значение AdminSizesWidget::sizes
+     * @param array $sizes
      */
-    public function setColors(array $colors)
+    public function setSizes(array $sizes)
     {
         try {
-            $this->colors = $colors;
+            $this->sizes = $sizes;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает значение AdminColorsWidget::form
+     * Присваивает значение AdminSizesWidget::form
      * @param AbstractBaseForm $form
      */
     public function setForm(AbstractBaseForm $form)
@@ -111,7 +111,7 @@ class AdminColorsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminColorsWidget::header
+     * Присваивает значение AdminSizesWidget::header
      * @param string $header
      */
     public function setHeader(string $header)
@@ -124,7 +124,7 @@ class AdminColorsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminColorsWidget::template
+     * Присваивает значение AdminSizesWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)

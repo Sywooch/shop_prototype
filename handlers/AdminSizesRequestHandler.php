@@ -4,15 +4,15 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use app\handlers\AbstractBaseHandler;
-use app\finders\ColorsFinder;
+use app\finders\SizesFinder;
 use app\forms\{AbstractBaseForm,
-    ColorsForm};
+    SizesForm};
 
 /**
  * Обрабатывает запрос на получение данных 
  * с перечнем брендов
  */
-class AdminColorsRequestHandler extends AbstractBaseHandler
+class AdminSizesRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
@@ -30,16 +30,16 @@ class AdminColorsRequestHandler extends AbstractBaseHandler
     {
         try {
             if (empty($this->dataArray)) {
-                $finder = \Yii::$app->registry->get(ColorsFinder::class);
-                $colorsModelArray = $finder->find();
+                $finder = \Yii::$app->registry->get(SizesFinder::class);
+                $sizesModelArray = $finder->find();
                 
-                $colorsFormDelete = new ColorsForm(['scenario'=>ColorsForm::DELETE]);
-                $colorsFormCreate = new ColorsForm(['scenario'=>ColorsForm::CREATE]);
+                $sizesFormDelete = new SizesForm(['scenario'=>SizesForm::DELETE]);
+                $sizesFormCreate = new SizesForm(['scenario'=>SizesForm::CREATE]);
                 
                 $dataArray = [];
                 
-                $dataArray['adminColorsWidgetConfig'] = $this->adminColorsWidgetConfig($colorsModelArray, $colorsFormDelete);
-                $dataArray['adminCreateColorWidgetConfig'] = $this->adminCreateColorWidgetConfig($colorsFormCreate);
+                $dataArray['adminSizesWidgetConfig'] = $this->adminSizesWidgetConfig($sizesModelArray, $sizesFormDelete);
+                $dataArray['adminCreateSizeWidgetConfig'] = $this->adminCreateSizeWidgetConfig($sizesFormCreate);
                 
                 $this->dataArray = $dataArray;
             }
@@ -51,17 +51,17 @@ class AdminColorsRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Возвращает массив конфигурации для виджета AdminCreateColorWidget
-     * @param AbstractBaseForm $colorsFormCreate
+     * Возвращает массив конфигурации для виджета AdminCreateSizeWidget
+     * @param AbstractBaseForm $sizesFormCreate
      */
-    private function adminCreateColorWidgetConfig(AbstractBaseForm $colorsFormCreate): array
+    private function adminCreateSizeWidgetConfig(AbstractBaseForm $sizesFormCreate): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['form'] = $colorsFormCreate;
-            $dataArray['header'] = \Yii::t('base', 'Create color');
-            $dataArray['template'] = 'admin-create-color.twig';
+            $dataArray['form'] = $sizesFormCreate;
+            $dataArray['header'] = \Yii::t('base', 'Create size');
+            $dataArray['template'] = 'admin-create-size.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

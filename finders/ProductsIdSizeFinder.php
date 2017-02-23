@@ -9,12 +9,12 @@ use app\models\ProductsModel;
 /**
  * Возвращает ProductsModel выбранного товара из СУБД
  */
-class ProductsIdColorFinder extends AbstractBaseFinder
+class ProductsIdSizeFinder extends AbstractBaseFinder
 {
     /**
      * @var int ID цвета
      */
-    private $id_color;
+    private $id_size;
     /**
      * @var array ProductsModel
      */
@@ -27,15 +27,15 @@ class ProductsIdColorFinder extends AbstractBaseFinder
     public function find()
     {
         try {
-            if (empty($this->id_color)) {
-                throw new ErrorException($this->emptyError('id_color'));
+            if (empty($this->id_size)) {
+                throw new ErrorException($this->emptyError('id_size'));
             }
             
             if (empty($this->storage)) {
                 $query = ProductsModel::find();
                 $query->select(['[[products.id]]']);
-                $query->innerJoin('{{products_colors}}', '[[products.id]]=[[products_colors.id_product]]');
-                $query->where(['[[products_colors.id_color]]'=>$this->id_color]);
+                $query->innerJoin('{{products_sizes}}', '[[products.id]]=[[products_sizes.id_product]]');
+                $query->where(['[[products_sizes.id_size]]'=>$this->id_size]);
                 
                 $this->storage = $query->all();
             }
@@ -47,13 +47,13 @@ class ProductsIdColorFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает значение ProductsIdColorFinder::id_color
-     * @param int $id_color
+     * Присваивает значение ProductsIdSizeFinder::id_size
+     * @param int $id_size
      */
-    public function setId_color(int $id_color)
+    public function setId_size(int $id_size)
     {
         try {
-            $this->id_color = $id_color;
+            $this->id_size = $id_size;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

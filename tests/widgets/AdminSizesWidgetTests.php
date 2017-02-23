@@ -3,15 +3,15 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\AdminColorsWidget;
+use app\widgets\AdminSizesWidget;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\ColorsFixture;
+use app\tests\sources\fixtures\SizesFixture;
 use app\forms\AbstractBaseForm;
 
 /**
- * Тестирует класс AdminColorsWidget
+ * Тестирует класс AdminSizesWidget
  */
-class AdminColorsWidgetTests extends TestCase
+class AdminSizesWidgetTests extends TestCase
 {
     private static $dbClass;
     private $widget;
@@ -20,7 +20,7 @@ class AdminColorsWidgetTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'colors'=>ColorsFixture::class,
+                'sizes'=>SizesFixture::class,
             ]
         ]);
         self::$dbClass->loadFixtures();
@@ -28,32 +28,32 @@ class AdminColorsWidgetTests extends TestCase
     
     public function setUp()
     {
-        $this->widget = new AdminColorsWidget();
+        $this->widget = new AdminSizesWidget();
     }
     
     /**
-     * Тестирует свойства AdminColorsWidget
+     * Тестирует свойства AdminSizesWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminColorsWidget::class);
+        $reflection = new \ReflectionClass(AdminSizesWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('colors'));
+        $this->assertTrue($reflection->hasProperty('sizes'));
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::setColors
+     * Тестирует метод AdminSizesWidget::setSizes
      */
-    public function testSetColors()
+    public function testSetSizes()
     {
-        $colors = [new class() {}];
+        $sizes = [new class() {}];
         
-        $this->widget->setColors($colors);
+        $this->widget->setSizes($sizes);
         
-        $reflection = new \ReflectionProperty($this->widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($this->widget);
         
@@ -61,13 +61,13 @@ class AdminColorsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::setForm
+     * Тестирует метод AdminSizesWidget::setForm
      */
     public function testSetForm()
     {
-        $colorsForm = new class() extends AbstractBaseForm {};
+        $sizesForm = new class() extends AbstractBaseForm {};
         
-        $this->widget->setForm($colorsForm);
+        $this->widget->setForm($sizesForm);
         
         $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
@@ -77,7 +77,7 @@ class AdminColorsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::setHeader
+     * Тестирует метод AdminSizesWidget::setHeader
      */
     public function testSetHeader()
     {
@@ -93,7 +93,7 @@ class AdminColorsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::setTemplate
+     * Тестирует метод AdminSizesWidget::setTemplate
      */
     public function testSetTemplate()
     {
@@ -109,19 +109,19 @@ class AdminColorsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::run
-     * если пуст AdminColorsWidget::colors
+     * Тестирует метод AdminSizesWidget::run
+     * если пуст AdminSizesWidget::sizes
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: colors
+     * @expectedExceptionMessage Отсутствуют необходимые данные: sizes
      */
-    public function testRunEmptyColors()
+    public function testRunEmptySizes()
     {
         $this->widget->run();
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::run
-     * если пуст AdminColorsWidget::form
+     * Тестирует метод AdminSizesWidget::run
+     * если пуст AdminSizesWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
@@ -129,7 +129,7 @@ class AdminColorsWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $reflection = new \ReflectionProperty($this->widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, [$mock]);
         
@@ -137,8 +137,8 @@ class AdminColorsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::run
-     * если пуст AdminColorsWidget::header
+     * Тестирует метод AdminSizesWidget::run
+     * если пуст AdminSizesWidget::header
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
@@ -146,7 +146,7 @@ class AdminColorsWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $reflection = new \ReflectionProperty($this->widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, [$mock]);
         
@@ -158,8 +158,8 @@ class AdminColorsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::run
-     * если пуст AdminColorsWidget::template
+     * Тестирует метод AdminSizesWidget::run
+     * если пуст AdminSizesWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
@@ -167,7 +167,7 @@ class AdminColorsWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $reflection = new \ReflectionProperty($this->widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, [$mock]);
         
@@ -183,18 +183,18 @@ class AdminColorsWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminColorsWidget::run
+     * Тестирует метод AdminSizesWidget::run
      */
     public function testRun()
     {
-        $colors = [
+        $sizes = [
             new class() {
                 public $id = 1;
-                public $color = 'One';
+                public $size = 'One';
             },
             new class() {
                 public $id = 2;
-                public $color = 'Two';
+                public $size = 'Two';
             },
         ];
         
@@ -202,9 +202,9 @@ class AdminColorsWidgetTests extends TestCase
             public $id;
         };
         
-        $reflection = new \ReflectionProperty($this->widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, $colors);
+        $reflection->setValue($this->widget, $sizes);
         
         $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
@@ -216,12 +216,12 @@ class AdminColorsWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-colors.twig');
+        $reflection->setValue($this->widget, 'admin-sizes.twig');
         
         $result = $this->widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<form id="admin-color-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<form id="admin-size-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
         $this->assertRegExp('#One#', $result);
         $this->assertRegExp('#Two#', $result);

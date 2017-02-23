@@ -1,7 +1,8 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/AdminColorsAsset') }}
 
 {{ use ('app/widgets/AdminColorsBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminColorsWidget') }}
+{{ use ('app/widgets/AdminCreateColorWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
@@ -10,3 +11,5 @@
 <div class="admin-colors">
     {{ admin_colors_widget_widget(adminColorsWidgetConfig) }}
 </div>
+
+{{ admin_create_color_widget_widget(adminCreateColorWidgetConfig) }}

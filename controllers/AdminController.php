@@ -16,6 +16,8 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminCategoriesSubcategoryCreateRequestHandler,
     AdminCategoriesSubcategoryDeleteRequestHandler,
     AdminCategoriesRequestHandler,
+    AdminColorCreateRequestHandler,
+    AdminColorDeleteRequestHandler,
     AdminColorsRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
@@ -24,7 +26,10 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminProductDetailChangeRequestHandler,
     AdminProductDetailDeleteRequestHandler,
     AdminProductDetailFormRequestHandler,
-    AdminProductsRequestHandler};
+    AdminProductsRequestHandler,
+    AdminSizeCreateRequestHandler,
+    AdminSizeDeleteRequestHandler,
+    AdminSizesRequestHandler};
 
 /**
  * Обрабатывает запросы к админ разделу
@@ -116,6 +121,27 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminColorsRequestHandler(),
                 'view'=>'colors.twig',
+            ],
+            'color-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminColorDeleteRequestHandler(),
+            ],
+            'color-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminColorCreateRequestHandler(),
+            ],
+            'sizes'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminSizesRequestHandler(),
+                'view'=>'sizes.twig',
+            ],
+            'size-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminSizeDeleteRequestHandler(),
+            ],
+            'size-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminSizeCreateRequestHandler(),
             ],
         ];
     }

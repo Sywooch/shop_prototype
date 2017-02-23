@@ -1,0 +1,16 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<ul>
+    {% for size in sizes %}
+        <li>
+            {{ size.size }}
+            {% set form=active_form_begin({'id':size.formId, 'enableAjaxValidation':size.ajaxValidation, 'validateOnSubmit':size.validateOnSubmit, 'validateOnChange':size.validateOnChange, 'validateOnBlur':size.validateOnBlur, 'validateOnType':size.validateOnType, 'action':size.formAction, 'method':'POST'}) %}
+                {{ form.field(size.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ size.button }}">
+            {{ active_form_end() }}
+        </li>
+    {% endfor %}
+</ul>
+

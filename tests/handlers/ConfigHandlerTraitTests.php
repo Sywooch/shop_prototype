@@ -514,6 +514,56 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('string', $result['template']);
     }
     
+    /**
+     * Тестирует метод ConfigHandlerTrait::adminColorsWidgetConfig
+     */
+    public function testAdminColorsWidgetConfig()
+    {
+        $colorsModelArray = [new class() {}];
+        $colorsForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminColorsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $colorsModelArray, $colorsForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('colors', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['colors']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::adminSizesWidgetConfig
+     */
+    public function testAdminSizesWidgetConfig()
+    {
+        $sizesModelArray = [new class() {}];
+        $sizesForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminSizesWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $sizesModelArray, $sizesForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('sizes', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['sizes']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();
