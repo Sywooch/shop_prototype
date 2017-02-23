@@ -95,6 +95,9 @@ $routes = [
     'admin-sizes'=>'admin/sizes',
     'admin-size-create'=>'admin/size-create',
     'admin-size-delete'=>'admin/size-delete',
+    'admin-users-<page:\d{1,3}>'=>'admin/users',
+    'admin-users'=>'admin/users',
+    'admin-user-<id:\d{1,4}>'=>'admin/user-detail',
     
     # Календарь
     'calendar-get'=>'calendar/get',

@@ -1,0 +1,47 @@
+<p><strong>{{ header }}</strong></p>
+
+{% if users %}
+<ol>
+    {% for user in users %}
+        <li>
+        {% if user.email %}
+            {{ emailHeader }}: {{ user.email }}<br>
+        {% endif %}
+           
+        {% if user.name %}
+            {{ nameHeader }}: {{ user.name }}<br>
+        {% endif %}
+        
+        {% if user.surname %}
+            {{ surnameHeader }}: {{ user.surname }}<br>
+        {% endif %}
+        
+        {% if user.phone %}
+            {{ phoneHeader }}: {{ user.phone }}<br>
+        {% endif %}
+        
+        {% if user.address %}
+            {{ addressHeader }}: {{ user.address }}<br>
+        {% endif %}
+        
+        {% if user.city %}
+            {{ cityHeader }}: {{ user.city }}<br>
+        {% endif %}
+        
+        {% if user.country %}
+            {{ countryHeader }}: {{ user.country }}<br>
+        {% endif %}
+        
+        {% if user.postcode %}
+            {{ postcodeHeader }}: {{ user.postcode }}<br>
+        {% endif %}
+        
+        <strong><a href="{{ user.href }}">{{ user.hrefText }}</a></strong>
+        
+        <p></p>
+    </li>
+    {% endfor %}
+</ol>
+{% else %}
+    <p>{{ usersEmpty }}</p>
+{% endif %}

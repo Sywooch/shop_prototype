@@ -25,6 +25,30 @@ $data = [
         'id_country'=>2,
         'id_postcode'=>2,
     ],
+    'user_3'=>[
+        'id'=>3,
+        'id_email'=>3,
+        'password'=>'HGjJyuyy',
+        'id_name'=>1,
+        'id_surname'=>2,
+        'id_phone'=>1,
+        'id_address'=>1,
+        'id_city'=>2,
+        'id_country'=>1,
+        'id_postcode'=>2,
+    ],
+    'user_4'=>[
+        'id'=>4,
+        'id_email'=>4,
+        'password'=>'09IoooU',
+        'id_name'=>2,
+        'id_surname'=>2,
+        'id_phone'=>1,
+        'id_address'=>2,
+        'id_city'=>2,
+        'id_country'=>1,
+        'id_postcode'=>2,
+    ],
 ];
 
 return $data;

@@ -6,6 +6,15 @@ use yii\web\IdentityInterface;
 use app\models\AbstractBaseModel;
 use app\exceptions\ExceptionsTrait;
 use app\finders\UserIdFinder;
+use app\models\{AddressModel,
+    CitiesModel,
+    CountriesModel,
+    EmailsModel,
+    NamesModel,
+    PhonesModel,
+    PostcodesModel,
+    PurchasesModel,
+    SurnamesModel};
 
 /**
  * Представляет данные таблицы users
@@ -156,6 +165,19 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     {
         try {
             return $this->hasOne(PostcodesModel::class, ['id'=>'id_postcode']);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив объектов PurchasesModel, с которыми связан текущий объект UsersModel
+     * @return ActiveQueryInterface the relational query object
+     */
+    public function getOrders()
+    {
+        try {
+            return $this->hasMany(PurchasesModel::class, ['id_product'=>'id']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

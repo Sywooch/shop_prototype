@@ -1,0 +1,15 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use ('app/widgets/AdminUsersBreadcrumbsWidget') }}
+{{ use ('app/widgets/AdminUsersWidget') }}
+{{ use('app/widgets/PaginationWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_users_breadcrumbs_widget_widget() }}
+
+<div class="admin-users">
+    {{ admin_users_widget_widget(adminUsersWidgetConfig) }}
+</div>
+
+{{ pagination_widget_widget(paginationWidgetConfig) }}

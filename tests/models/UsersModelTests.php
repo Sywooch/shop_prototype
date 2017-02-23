@@ -11,9 +11,11 @@ use app\models\{AddressModel,
     NamesModel,
     PhonesModel,
     PostcodesModel,
+    PurchasesModel,
     SurnamesModel,
     UsersModel};
-use app\tests\sources\fixtures\UsersFixture;
+use app\tests\sources\fixtures\{PurchasesFixture,
+    UsersFixture};
 
 /**
  * Тестирует класс UsersModel
@@ -26,7 +28,8 @@ class UsersModelTests extends TestCase
     {
         self::$_dbClass = new DbManager([
             'fixtures'=>[
-                'users'=>UsersFixture::class
+                'users'=>UsersFixture::class,
+                'purchases'=>PurchasesFixture::class,
             ],
         ]);
         self::$_dbClass->loadFixtures();
@@ -306,6 +309,22 @@ class UsersModelTests extends TestCase
         $result = $model->postcode;
         
         $this->assertInstanceOf(PostcodesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод UsersModel::getOrders
+     */
+    public function testGetOrders()
+    {
+        $model = new UsersModel;
+        $model->id = 1;
+        
+        $result = $model->orders;
+        
+        $this->assertInternalType('array', $result);
+        foreach ($result as $item) {
+            $this->assertInstanceOf(PurchasesModel::class, $item);
+        }
     }
     
     /**

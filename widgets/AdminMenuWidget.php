@@ -66,7 +66,7 @@ class AdminMenuWidget extends Menu
                 ],
                 [
                     'label'=>\Yii::t('base', 'Users'),
-                    'url'=>['/admin/index']
+                    'url'=>['/admin/users']
                 ],
                 [
                     'label'=>\Yii::t('base', 'Exit'),

@@ -234,6 +234,7 @@ $translate = [
     'Create color'=>'Создать цвет',
     'Size with this name already exists'=>'Размер с таким названием уже существует',
     'Create size'=>'Создать размер',
+    'No users'=>'Пользователей нет',
 ];
 
 return $translate;

@@ -29,7 +29,8 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminProductsRequestHandler,
     AdminSizeCreateRequestHandler,
     AdminSizeDeleteRequestHandler,
-    AdminSizesRequestHandler};
+    AdminSizesRequestHandler,
+    AdminUsersRequestHandler};
 
 /**
  * Обрабатывает запросы к админ разделу
@@ -142,6 +143,11 @@ class AdminController extends Controller
             'size-create'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminSizeCreateRequestHandler(),
+            ],
+            'users'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminUsersRequestHandler(),
+                'view'=>'users.twig',
             ],
         ];
     }

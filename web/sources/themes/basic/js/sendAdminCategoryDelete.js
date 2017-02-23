@@ -13,6 +13,9 @@ $(function() {
                     self.infoDiv.html(data.list);
                     if ('options' in data) {
                         $('#subcategoryform-id_category').html(data.options);
+                        $('select[data-disabled]').each(function(index, domElement) {
+                            $(domElement).find('option:first').attr('disabled', true);
+                        });
                     }
                 } else {
                     for (var key in data) {
