@@ -167,6 +167,7 @@ class AdminUsersWidgetTests extends TestCase
         $this->assertRegExp('#Город: [a-zA-Z]+#', $result);
         $this->assertRegExp('#Страна: [a-zA-Z]+#', $result);
         $this->assertRegExp('#Почтовый код: [a-zA-Z0-9]+#', $result);
+        $this->assertRegExp('#Заказы: [0-9]{1,3}#', $result);
         $this->assertRegExp('#<a href=".+/admin-user-[0-9]{1,4}">.+</a>#', $result);
     }
     

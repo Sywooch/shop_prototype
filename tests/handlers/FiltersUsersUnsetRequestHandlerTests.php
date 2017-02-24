@@ -3,13 +3,13 @@
 namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\handlers\FiltersOrdersUnsetRequestHandler;
+use app\handlers\FiltersUsersUnsetRequestHandler;
 use app\helpers\HashHelper;
 
 /**
- * Тестирует класс FiltersOrdersUnsetRequestHandler
+ * Тестирует класс FiltersUsersUnsetRequestHandler
  */
-class FiltersOrdersUnsetRequestHandlerTests extends TestCase
+class FiltersUsersUnsetRequestHandlerTests extends TestCase
 {
     private $handler;
     
@@ -17,11 +17,11 @@ class FiltersOrdersUnsetRequestHandlerTests extends TestCase
     {
         \Yii::$app->registry->clean();
         
-        $this->handler = new FiltersOrdersUnsetRequestHandler();
+        $this->handler = new FiltersUsersUnsetRequestHandler();
     }
     
     /**
-     * Тестирует метод FiltersOrdersUnsetRequestHandler::handle
+     * Тестирует метод FiltersUsersUnsetRequestHandler::handle
      */
     public function testHandle()
     {
@@ -29,17 +29,17 @@ class FiltersOrdersUnsetRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'OrdersFiltersForm'=>[
+                    'UsersFiltersForm'=>[
                         'url'=>'https://shop.com'
                     ]
                 ];
             }
         };
         
-        $key = HashHelper::createHash([\Yii::$app->params['ordersFilters']]);
+        $key = HashHelper::createHash([\Yii::$app->params['usersFilters']]);
         $session = \Yii::$app->session;
         $session->open();
-        $session->set($key, ['sortingType'=>SORT_ASC]);
+        $session->set($key, ['sortingField'=>'orders', 'sortingType'=>SORT_ASC]);
         
         $result = $session->get($key);
         $this->assertInternalType('array', $result);
@@ -51,7 +51,7 @@ class FiltersOrdersUnsetRequestHandlerTests extends TestCase
         
         $session = \Yii::$app->session;
         $session->open();
-        $result = $session->has(HashHelper::createHash([\Yii::$app->params['ordersFilters']]));
+        $result = $session->has(HashHelper::createHash([\Yii::$app->params['usersFilters']]));
         $this->assertFalse($result);
         $session->close();
     }

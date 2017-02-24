@@ -2,11 +2,14 @@
 
 {{ use ('app/widgets/AdminUsersBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminUsersWidget') }}
+{{ use ('app/widgets/UsersFiltersWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
 {{ admin_users_breadcrumbs_widget_widget() }}
+
+{{ users_filters_widget_widget(usersFiltersWidgetConfig) }}
 
 <div class="admin-users">
     {{ admin_users_widget_widget(adminUsersWidgetConfig) }}

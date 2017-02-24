@@ -177,7 +177,7 @@ class UsersModel extends AbstractBaseModel implements IdentityInterface
     public function getOrders()
     {
         try {
-            return $this->hasMany(PurchasesModel::class, ['id_product'=>'id']);
+            return $this->hasMany(PurchasesModel::class, ['id_user'=>'id']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

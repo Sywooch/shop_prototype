@@ -18,6 +18,8 @@ $routes = [
     'filters-orders-unset'=>'filters/orders-unset',
     'filters-admin-products-set'=>'filters/admin-products-set',
     'filters-admin-products-unset'=>'filters/admin-products-unset',
+    'filters-users-set'=>'filters/users-set',
+    'filters-users-unset'=>'filters/users-unset',
     
     # Поиск
     'search-<page:\d{1,3}>'=>'products-list/search',

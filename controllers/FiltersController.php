@@ -11,7 +11,9 @@ use app\handlers\{FiltersAdminProductsSetRequestHandler,
     FiltersOrdersSetRequestHandler,
     FiltersOrdersUnsetRequestHandler,
     FiltersSetRequestHandler,
-    FiltersUnsetRequestHandler};
+    FiltersUnsetRequestHandler,
+    FiltersUsersSetRequestHandler,
+    FiltersUsersUnsetRequestHandler};
 
 /**
  * Обрабатывает запросы, связанные с применением фильтров
@@ -44,6 +46,14 @@ class FiltersController extends Controller
             'admin-products-unset'=>[
                 'class'=>RedirectAction::class,
                 'handler'=>new FiltersAdminProductsUnsetRequestHandler()
+            ],
+            'users-set'=>[
+                'class'=>RedirectAction::class,
+                'handler'=>new FiltersUsersSetRequestHandler()
+            ],
+            'users-unset'=>[
+                'class'=>RedirectAction::class,
+                'handler'=>new FiltersUsersUnsetRequestHandler()
             ],
         ];
     }

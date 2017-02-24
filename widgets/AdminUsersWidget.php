@@ -54,7 +54,7 @@ class AdminUsersWidget extends AbstractBaseWidget
                     $set['city'] = !empty($user->id_city) ? $user->city->city : null;
                     $set['country'] = !empty($user->id_country) ? $user->country->country : null;
                     $set['postcode'] = !empty($user->id_postcode) ? $user->postcode->postcode : null;
-                    $set['orders'] = $user->getOrders()->count();
+                    $set['orders'] = count($user->orders);
                     
                     $set['href'] = Url::to(['/admin/user-detail', \Yii::$app->params['userId']=>$user->id]);
                     $set['hrefText'] = \Yii::t('base', 'Change');
@@ -70,6 +70,7 @@ class AdminUsersWidget extends AbstractBaseWidget
                 $renderArray['cityHeader'] = \Yii::t('base', 'City');
                 $renderArray['countryHeader'] = \Yii::t('base', 'Country');
                 $renderArray['postcodeHeader'] = \Yii::t('base', 'Postcode');
+                $renderArray['ordersHeader'] = \Yii::t('base', 'Orders');
             } else {
                 $renderArray['usersEmpty'] = \Yii::t('base', 'No users');
             }

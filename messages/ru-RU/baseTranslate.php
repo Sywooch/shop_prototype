@@ -235,6 +235,10 @@ $translate = [
     'Size with this name already exists'=>'Размер с таким названием уже существует',
     'Create size'=>'Создать размер',
     'No users'=>'Пользователей нет',
+    'Sorting by name'=>'Сортировать по имени',
+    'Sorting by surname'=>'Сортировать по фамилии',
+    'Sorting by orders'=>'Сортировать по заказам',
+    'Sorting by id'=>'Сортировать по id',
 ];
 
 return $translate;
