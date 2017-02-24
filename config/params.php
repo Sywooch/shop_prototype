@@ -12,6 +12,7 @@ $params = [
     # Фильтры
     'filterKeys'=>['colors', 'sizes', 'brands'], # Ключи, по которым доступны значения фильтров
     'sortingField'=>'date', # Поле сортировки по умолчанию
+    'sortingFieldUsers'=>'id', # Поле сортировки пользователей по умолчанию
     'sortingType'=>SORT_DESC, # Тип сортировки по умолчанию
     'sortingFieldOrders'=>'received_date', # Поле сортировки заказов по умолчанию
     'sortingTypeOrders'=>SORT_DESC, # Тип сортировки заказов по умолчанию

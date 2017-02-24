@@ -9,6 +9,8 @@ use app\tests\sources\fixtures\{PurchasesFixture,
     UsersFixture};
 use app\models\UsersModel;
 use app\collections\UsersCollection;
+use app\filters\{UsersFilters,
+    UsersFiltersInterface};
 
 /**
  * Тестирует класс UsersFinder
@@ -42,6 +44,7 @@ class UsersFinderTests extends TestCase
         $reflection = new \ReflectionClass(UsersFinder::class);
         
         $this->assertTrue($reflection->hasProperty('page'));
+        $this->assertTrue($reflection->hasProperty('filters'));
         $this->assertTrue($reflection->hasProperty('storage'));
     }
     
@@ -60,11 +63,34 @@ class UsersFinderTests extends TestCase
     }
     
     /**
+     * Тестирует метод UsersFinder::setFilters
+     */
+    public function testSetFilters()
+    {
+        $filters = new class() extends UsersFilters {};
+        
+        $this->finder->setFilters($filters);
+        
+        $reflection = new \ReflectionProperty($this->finder, 'filters');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->finder);
+        
+        $this->assertInstanceOf(UsersFiltersInterface::class, $result);
+    }
+    
+    /**
      * Тестирует метод UsersFinder::find
-     * если page === null
+     * page === null
+     * filters === null
      */
     public function testFind()
     {
+        $filters = new class() extends UsersFilters {};
+        
+        $reflection = new \ReflectionProperty($this->finder, 'filters');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->finder, $filters);
+        
         $result = $this->finder->find();
         
         $this->assertInstanceOf(UsersCollection::class, $result);
@@ -75,13 +101,44 @@ class UsersFinderTests extends TestCase
     
     /**
      * Тестирует метод UsersFinder::find
-     * если page === true
+     * page === true
+     * filters === null
      */
     public function testFindPage()
     {
+        $filters = new class() extends UsersFilters {};
+        
+        $reflection = new \ReflectionProperty($this->finder, 'filters');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->finder, $filters);
+        
         $reflection = new \ReflectionProperty($this->finder, 'page');
         $reflection->setAccessible(true);
         $reflection->setValue($this->finder, 2);
+        
+        $result = $this->finder->find();
+        
+        $this->assertInstanceOf(UsersCollection::class, $result);
+        foreach ($result as $item) {
+            $this->assertInstanceOf(UsersModel::class, $item);
+        }
+    }
+    
+    /**
+     * Тестирует метод UsersFinder::find
+     * page === null
+     * filters === true
+     */
+    public function testFindFilters()
+    {
+        $filters = new class() extends UsersFilters {
+            public $sortingField = 'orders';
+            public $sortingType = SORT_ASC;
+        };
+        
+        $reflection = new \ReflectionProperty($this->finder, 'filters');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->finder, $filters);
         
         $result = $this->finder->find();
         

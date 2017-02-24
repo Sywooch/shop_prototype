@@ -38,7 +38,13 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
             $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
             
             if (empty($this->dataArray)) {
+                $finder = \Yii::$app->registry->get(UsersFiltersSessionFinder::class, [
+                    'key'=>HashHelper::createHash([\Yii::$app->params['usersFilters']])
+                ]);
+                $filtersModel = $finder->find();
+                
                 $finder = \Yii::$app->registry->get(UsersFinder::class, [
+                    'filters'=>$filtersModel,
                     'page'=>$page
                 ]);
                 $usersCollection = $finder->find();
@@ -54,11 +60,6 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
                 if (empty($sortingTypesArray)) {
                     throw new ErrorException($this->emptyError('sortingTypesArray'));
                 }
-                
-                $finder = \Yii::$app->registry->get(UsersFiltersSessionFinder::class, [
-                    'key'=>HashHelper::createHash([\Yii::$app->params['usersFilters']])
-                ]);
-                $filtersModel = $finder->find();
                 
                 $usersFiltersForm = new UsersFiltersForm(array_filter($filtersModel->toArray()));
                 
@@ -117,7 +118,7 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
             
             if (empty($usersFiltersForm->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {
-                    if ($key === 'id') {
+                    if ($key === \Yii::$app->params['sortingFieldUsers']) {
                         $usersFiltersForm->sortingField = $key;
                     }
                 }
