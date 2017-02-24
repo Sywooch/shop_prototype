@@ -32,8 +32,7 @@ class FiltersUsersSetRequestHandler extends AbstractBaseHandler
             }
             
             $model = new UsersFilters(['scenario'=>UsersFilters::SESSION]);
-            $model->sortingField = $form->sortingField;
-            $model->sortingType = $form->sortingType;
+            $model->attributes = $form->toArray();
             if ($model->validate() === false) {
                 throw new ErrorException($this->modelError($model->errors));
             }

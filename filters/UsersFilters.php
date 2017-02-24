@@ -27,11 +27,15 @@ class UsersFilters extends Model implements UsersFiltersInterface
      * @var string тип сортировки
      */
     private $sortingType;
+    /**
+     * @var int статус заказов
+     */
+    public $ordersStatus;
     
     public function scenarios()
     {
         return [
-            self::SESSION=>['sortingField', 'sortingType']
+            self::SESSION=>['sortingField', 'sortingType', 'ordersStatus']
         ];
     }
     
@@ -88,6 +92,32 @@ class UsersFilters extends Model implements UsersFiltersInterface
     }
     
     /**
+     * Присваивает значение UsersFilters::ordersStatus
+     * @param string $ordersStatus
+     */
+    public function setOrdersStatus(string $ordersStatus)
+    {
+        try {
+            $this->ordersStatus = $ordersStatus;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает значение UsersFilters::ordersStatus
+     * @return mixed
+     */
+    public function getOrdersStatus()
+    {
+        try {
+            return !empty($this->ordersStatus) ? $this->ordersStatus : null;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Возвращает массив данных при вызове UsersFilters::toArray
      * @return array
      */
@@ -100,6 +130,9 @@ class UsersFilters extends Model implements UsersFiltersInterface
                 },
                 'sortingType'=>function() {
                     return $this->sortingType;
+                },
+                'ordersStatus'=>function() {
+                    return $this->ordersStatus;
                 },
             ];
         } catch (\Throwable $t) {

@@ -3,10 +3,12 @@
 namespace app\handlers;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\finders\{SortingFieldsUsersFinder,
+use app\finders\{OrdersExistFinder,
+    SortingFieldsUsersFinder,
     SortingTypesFinder,
     UsersFinder,
     UsersFiltersSessionFinder};
@@ -42,12 +44,18 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
                     'key'=>HashHelper::createHash([\Yii::$app->params['usersFilters']])
                 ]);
                 $filtersModel = $finder->find();
+                if (empty($filtersModel)) {
+                    throw new ErrorException($this->emptyError('filtersModel'));
+                }
                 
                 $finder = \Yii::$app->registry->get(UsersFinder::class, [
                     'filters'=>$filtersModel,
                     'page'=>$page
                 ]);
                 $usersCollection = $finder->find();
+                if (empty($usersCollection)) {
+                    throw new ErrorException($this->emptyError('usersCollection'));
+                }
                 
                 $finder = \Yii::$app->registry->get(SortingFieldsUsersFinder::class);
                 $sortingFieldsArray = $finder->find();
@@ -61,13 +69,19 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('sortingTypesArray'));
                 }
                 
+                $finder = \Yii::$app->registry->get(OrdersExistFinder::class);
+                $ordersStatusesArray = $finder->find();
+                if (empty($ordersStatusesArray)) {
+                    throw new ErrorException($this->emptyError('ordersStatusesArray'));
+                }
+                
                 $usersFiltersForm = new UsersFiltersForm(array_filter($filtersModel->toArray()));
                 
                 $dataArray = [];
                 
                 $dataArray['adminUsersWidgetConfig'] = $this->adminUsersWidgetConfig($usersCollection->asArray());
                 $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($usersCollection->pagination);
-                $dataArray['usersFiltersWidgetConfig'] = $this->usersFiltersWidgetConfig($sortingFieldsArray, $sortingTypesArray, $usersFiltersForm);
+                $dataArray['usersFiltersWidgetConfig'] = $this->usersFiltersWidgetConfig($sortingFieldsArray, $sortingTypesArray, $ordersStatusesArray, $usersFiltersForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -102,10 +116,11 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
      * Возвращает массив конфигурации для виджета UsersFiltersWidget
      * @param array $sortingFieldsArray
      * @param array $sortingTypesArray
+     * @param array $ordersStatusesArray
      * @param AbstractBaseForm $usersFiltersForm
      * @return array
      */
-    private function usersFiltersWidgetConfig(array $sortingFieldsArray, array $sortingTypesArray, AbstractBaseForm $usersFiltersForm): array
+    private function usersFiltersWidgetConfig(array $sortingFieldsArray, array $sortingTypesArray, array $ordersStatusesArray, AbstractBaseForm $usersFiltersForm): array
     {
         try {
             $dataArray = [];
@@ -115,6 +130,8 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
             
             asort($sortingTypesArray, SORT_STRING);
             $dataArray['sortingTypes'] = $sortingTypesArray;
+            
+            $dataArray['ordersStatuses'] = $ordersStatusesArray;
             
             if (empty($usersFiltersForm->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {

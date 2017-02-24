@@ -22,6 +22,10 @@ class UsersFiltersWidget extends AbstractBaseWidget
      */
     private $sortingTypes;
     /**
+     * @var array
+     */
+    private $ordersStatuses;
+    /**
      * @var UsersFiltersForm
      */
     private $form;
@@ -43,6 +47,9 @@ class UsersFiltersWidget extends AbstractBaseWidget
             if (empty($this->sortingTypes)) {
                 throw new ErrorException($this->emptyError('sortingTypes'));
             }
+            if (empty($this->ordersStatuses)) {
+                throw new ErrorException($this->emptyError('ordersStatuses'));
+            }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
             }
@@ -61,6 +68,7 @@ class UsersFiltersWidget extends AbstractBaseWidget
             
             $renderArray['sortingFields'] = $this->sortingFields;
             $renderArray['sortingTypes'] = $this->sortingTypes;
+            $renderArray['ordersStatuses'] = $this->ordersStatuses;
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -103,6 +111,19 @@ class UsersFiltersWidget extends AbstractBaseWidget
     {
         try {
             $this->sortingTypes = $sortingTypes;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение UsersFiltersWidget::ordersStatuses
+     * @param array $ordersStatuses
+     */
+    public function setOrdersStatuses(array $ordersStatuses)
+    {
+        try {
+            $this->ordersStatuses = $ordersStatuses;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

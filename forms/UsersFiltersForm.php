@@ -28,6 +28,10 @@ class UsersFiltersForm extends AbstractBaseForm
      */
     public $sortingType;
     /**
+     * @var int статус заказов
+     */
+    public $ordersStatus;
+    /**
      * @var string URL, с которого была запрошена сортировка
      */
     public $url;
@@ -35,7 +39,7 @@ class UsersFiltersForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::SAVE=>['sortingField', 'sortingType', 'url'],
+            self::SAVE=>['sortingField', 'sortingType', 'ordersStatus', 'url'],
             self::CLEAN=>['url'],
         ];
     }

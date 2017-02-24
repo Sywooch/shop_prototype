@@ -33,14 +33,7 @@ class FiltersAdminProductsSetRequestHandler extends AbstractBaseHandler
             }
             
             $model = new AdminProductsFilters(['scenario'=>AdminProductsFilters::SESSION]);
-            $model->sortingField = $form->sortingField;
-            $model->sortingType = $form->sortingType;
-            $model->colors = $form->colors;
-            $model->sizes = $form->sizes;
-            $model->brands = $form->brands;
-            $model->category = $form->category;
-            $model->subcategory = $form->subcategory;
-            $model->active = $form->active;
+            $model->attributes = $form->toArray();
             if ($model->validate() === false) {
                 throw new ErrorException($this->modelError($model->errors));
             }

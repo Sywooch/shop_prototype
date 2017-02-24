@@ -32,10 +32,7 @@ class FiltersOrdersSetRequestHandler extends AbstractBaseHandler
             }
             
             $model = new OrdersFilters(['scenario'=>OrdersFilters::SESSION]);
-            $model->sortingType = $form->sortingType;
-            $model->status = $form->status;
-            $model->dateFrom = $form->dateFrom;
-            $model->dateTo = $form->dateTo;
+            $model->attributes = $form->toArray();
             if ($model->validate() === false) {
                 throw new ErrorException($this->modelError($model->errors));
             }

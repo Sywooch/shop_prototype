@@ -22,6 +22,7 @@ class UsersFiltersFormTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('sortingField'));
         $this->assertTrue($reflection->hasProperty('sortingType'));
+        $this->assertTrue($reflection->hasProperty('ordersStatus'));
         $this->assertTrue($reflection->hasProperty('url'));
     }
     
@@ -34,6 +35,7 @@ class UsersFiltersFormTests extends TestCase
         $form->attributes = [
             'sortingField'=>'received_date',
             'sortingType'=>SORT_ASC,
+            'ordersStatus'=>1,
             'url'=>'https://shop.com',
         ];
         
@@ -42,6 +44,9 @@ class UsersFiltersFormTests extends TestCase
         
         $reflection = new \ReflectionProperty($form, 'sortingType');
         $this->assertSame(SORT_ASC, $reflection->getValue($form));
+        
+        $reflection = new \ReflectionProperty($form, 'ordersStatus');
+        $this->assertSame(1, $reflection->getValue($form));
         
         $reflection = new \ReflectionProperty($form, 'url');
         $this->assertSame('https://shop.com', $reflection->getValue($form));

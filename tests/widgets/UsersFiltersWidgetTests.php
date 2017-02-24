@@ -30,6 +30,7 @@ class UsersFiltersWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('sortingFields'));
         $this->assertTrue($reflection->hasProperty('sortingTypes'));
+        $this->assertTrue($reflection->hasProperty('ordersStatuses'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
@@ -62,6 +63,23 @@ class UsersFiltersWidgetTests extends TestCase
         $this->widget->setSortingTypes($sortingTypes);
         
         $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->widget);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertNotEmpty($result);
+    }
+    
+    /**
+     * Тестирует метод UsersFiltersWidget::setOrdersStatuses
+     */
+    public function testSetOrdersStatuses()
+    {
+        $ordersStatuses = [1=>'True'];
+        
+        $this->widget->setOrdersStatuses($ordersStatuses);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'ordersStatuses');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($this->widget);
         
@@ -147,6 +165,27 @@ class UsersFiltersWidgetTests extends TestCase
     
     /**
      * Тестирует метод UsersFiltersWidget::run
+     * если пуст UsersFiltersWidget::ordersStatuses
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: ordersStatuses
+     */
+    public function testRunEmptyOrdersStatuses()
+    {
+        $mock = new class() {};
+        
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, [$mock]);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, [$mock]);
+        
+        $this->widget->run();
+    }
+    
+    /**
+     * Тестирует метод UsersFiltersWidget::run
      * если пуст UsersFiltersWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
@@ -160,6 +199,10 @@ class UsersFiltersWidgetTests extends TestCase
         $reflection->setValue($this->widget, [$mock]);
         
         $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, [$mock]);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'ordersStatuses');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, [$mock]);
         
@@ -181,6 +224,10 @@ class UsersFiltersWidgetTests extends TestCase
         $reflection->setValue($this->widget, [$mock]);
         
         $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, [$mock]);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'ordersStatuses');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, [$mock]);
         
@@ -209,6 +256,10 @@ class UsersFiltersWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, [$mock]);
         
+        $reflection = new \ReflectionProperty($this->widget, 'ordersStatuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, [$mock]);
+        
         $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, [$mock]);
@@ -227,10 +278,12 @@ class UsersFiltersWidgetTests extends TestCase
     {
         $sortingFields = ['name'=>'Name', 'orders'=>'Orders'];
         $sortingTypes = [SORT_ASC=>'Sort ascending', SORT_DESC=>'Sort descending'];
+        $ordersStatuses = [1=>'True', 0=>'False'];
         
         $form = new class() extends AbstractBaseForm {
             public $sortingField;
             public $sortingType;
+            public $ordersStatus;
             public $url = 'https:://shop.com';
         };
         
@@ -241,6 +294,10 @@ class UsersFiltersWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, $sortingTypes);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'ordersStatuses');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, $ordersStatuses);
         
         $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
@@ -265,6 +322,8 @@ class UsersFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<option value="[0-9]{1}">Sort ascending</option>#', $result);
         $this->assertRegExp('#<option value="[0-9]{1}">Sort descending</option>#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value="https:://shop.com">#', $result);
+        $this->assertRegExp('#<label><input type="checkbox" name=".+\[ordersStatus\]\[\]" value="1"> True</label>#', $result);
+        $this->assertRegExp('#<label><input type="checkbox" name=".+\[ordersStatus\]\[\]" value="0"> False</label>#', $result);
         $this->assertRegExp('#<input type="submit" value="Применить">#', $result);
         $this->assertRegExp('#<form id="admin-users-filters-clean" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value="https:://shop.com">#', $result);

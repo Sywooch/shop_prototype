@@ -239,6 +239,8 @@ $translate = [
     'Sorting by surname'=>'Сортировать по фамилии',
     'Sorting by orders'=>'Сортировать по заказам',
     'Sorting by id'=>'Сортировать по id',
+    'Has orders'=>'Есть заказы',
+    'Had no orders'=>'Нет заказов',
 ];
 
 return $translate;

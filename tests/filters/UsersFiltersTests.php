@@ -10,6 +10,13 @@ use app\filters\UsersFilters;
  */
 class UsersFiltersTests extends TestCase
 {
+    private $filter;
+    
+    public function setUp()
+    {
+        $this->filter = new UsersFilters();
+    }
+    
     /**
      * Тестирует наличие свойств и констант
      */
@@ -21,6 +28,7 @@ class UsersFiltersTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('sortingField'));
         $this->assertTrue($reflection->hasProperty('sortingType'));
+        $this->assertTrue($reflection->hasProperty('ordersStatus'));
     }
     
     /**
@@ -32,6 +40,7 @@ class UsersFiltersTests extends TestCase
         $filter->attributes = [
             'sortingField'=>'price',
             'sortingType'=>SORT_ASC,
+            'ordersStatus'=>1,
         ];
         
         $reflection = new \ReflectionProperty($filter, 'sortingField');
@@ -43,6 +52,11 @@ class UsersFiltersTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->getValue($filter);
         $this->assertSame(SORT_ASC, (int) $result);
+        
+        $reflection = new \ReflectionProperty($filter, 'ordersStatus');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($filter);
+        $this->assertSame(1, (int) $result);
     }
     
     /**
@@ -50,12 +64,11 @@ class UsersFiltersTests extends TestCase
      */
     public function testSetSortingField()
     {
-        $filter = new UsersFilters();
-        $filter->setSortingField('Name');
+        $this->filter->setSortingField('Name');
         
-        $reflection = new \ReflectionProperty($filter, 'sortingField');
+        $reflection = new \ReflectionProperty($this->filter, 'sortingField');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($filter);
+        $result = $reflection->getValue($this->filter);
         
         $this->assertSame('Name', $result);
     }
@@ -65,13 +78,11 @@ class UsersFiltersTests extends TestCase
      */
     public function testGetSortingField()
     {
-        $filter = new UsersFilters();
-        
-        $reflection = new \ReflectionProperty($filter, 'sortingField');
+        $reflection = new \ReflectionProperty($this->filter, 'sortingField');
         $reflection->setAccessible(true);
-        $reflection->setValue($filter, 'Orders');
+        $reflection->setValue($this->filter, 'Orders');
         
-        $result = $filter->getSortingField();
+        $result = $this->filter->getSortingField();
         
         $this->assertSame('Orders', $result);
     }
@@ -81,12 +92,11 @@ class UsersFiltersTests extends TestCase
      */
     public function testSetSortingType()
     {
-        $filter = new UsersFilters();
-        $filter->setSortingType(SORT_ASC);
+        $this->filter->setSortingType(SORT_ASC);
         
-        $reflection = new \ReflectionProperty($filter, 'sortingType');
+        $reflection = new \ReflectionProperty($this->filter, 'sortingType');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($filter);
+        $result = $reflection->getValue($this->filter);
         
         $this->assertSame(SORT_ASC, (int) $result);
     }
@@ -96,14 +106,40 @@ class UsersFiltersTests extends TestCase
      */
     public function testGetSortingType()
     {
-        $filter = new UsersFilters();
-        
-        $reflection = new \ReflectionProperty($filter, 'sortingType');
+        $reflection = new \ReflectionProperty($this->filter, 'sortingType');
         $reflection->setAccessible(true);
-        $reflection->setValue($filter, SORT_DESC);
+        $reflection->setValue($this->filter, SORT_DESC);
         
-        $result = $filter->getSortingType();
+        $result = $this->filter->getSortingType();
         
         $this->assertSame(SORT_DESC, $result);
+    }
+    
+    /**
+     * Тестирует метод UsersFilters::setOrdersStatus
+     */
+    public function testSetOrdersStatus()
+    {
+        $this->filter->setOrdersStatus(1);
+        
+        $reflection = new \ReflectionProperty($this->filter, 'ordersStatus');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->filter);
+        
+        $this->assertEquals(1, $result);
+    }
+    
+    /**
+     * Тестирует метод UsersFilters::getOrdersStatus
+     */
+    public function testGetOrdersStatus()
+    {
+        $reflection = new \ReflectionProperty($this->filter, 'ordersStatus');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->filter, 1);
+        
+        $result = $this->filter->getOrdersStatus();
+        
+        $this->assertSame(1, $result);
     }
 }

@@ -49,6 +49,17 @@ class UsersFinder extends AbstractBaseFinder
                 $query->leftJoin('{{surnames}}', '[[users.id_surname]]=[[surnames.id]]');
                 $query->with('email', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'orders');
                 
+                if (!empty($this->filters->ordersStatus)) {
+                    switch ($this->filters->ordersStatus) {
+                        case 1:
+                            $query->having(['>', '[[orders]]', 0]);
+                            break;
+                        case 2:
+                            $query->having(['=', '[[orders]]', 0]);
+                            break;
+                    }
+                }
+                
                 $this->storage->pagination->pageSize = \Yii::$app->params['limit'];
                 $this->storage->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
                 $this->storage->pagination->setTotalCount($query);
