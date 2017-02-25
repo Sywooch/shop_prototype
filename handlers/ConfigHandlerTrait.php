@@ -585,15 +585,68 @@ trait ConfigHandlerTrait
     
     /**
      * Возвращает массив конфигурации для виджета AdminUserMenuWidget
-     * @param int $id_user
+     * @param Model $usersModel
      * @return array
      */
-    private function adminUserMenuWidgetConfig(int $id_user): array
+    private function adminUserMenuWidgetConfig(Model $usersModel): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['id_user'] = $id_user;
+            $dataArray['usersModel'] = $usersModel;
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AccountOrdersWidget
+     * @param array $ordersArray массив PurchasesModel
+     * @patram AbstractBaseForm $purchaseForm
+     * @param CurrencyInterface $currentCurrencyModel
+     * @return array
+     */
+    private function accountOrdersWidgetConfig(array $ordersArray, AbstractBaseForm $purchaseForm, CurrencyInterface $currentCurrencyModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['header'] = \Yii::t('base', 'Orders');
+            $dataArray['purchases'] = $ordersArray;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['form'] = $purchaseForm;
+            $dataArray['template'] = 'account-orders.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AccountChangeDataWidget
+     * @param AbstractBaseForm $userUpdateForm
+     * @param Model $usersModel
+     * @return array
+     */
+    private function accountChangeDataWidgetConfig(AbstractBaseForm $userUpdateForm, Model $usersModel): array
+    {
+        try {
+            $userUpdateForm->name = !empty($usersModel->id_name) ? $usersModel->name->name : null;
+            $userUpdateForm->surname = !empty($usersModel->id_surname) ? $usersModel->surname->surname: null;
+            $userUpdateForm->phone = !empty($usersModel->id_phone) ? $usersModel->phone->phone : null;
+            $userUpdateForm->address = !empty($usersModel->id_address) ? $usersModel->address->address : null;
+            $userUpdateForm->city = !empty($usersModel->id_city) ? $usersModel->city->city : null;
+            $userUpdateForm->country = !empty($usersModel->id_country) ? $usersModel->country->country : null;
+            $userUpdateForm->postcode = !empty($usersModel->id_postcode) ? $usersModel->postcode->postcode : null;
+            
+            $dataArray = [];
+            
+            $dataArray['form'] = $userUpdateForm;
+            $dataArray['header'] = \Yii::t('base', 'Change data');
+            $dataArray['template'] = 'account-change-data-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

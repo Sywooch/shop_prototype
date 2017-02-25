@@ -3,6 +3,7 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
+use yii\base\Model;
 use app\widgets\AdminUserMenuWidget;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\PurchasesFixture;
@@ -39,7 +40,18 @@ class AdminUserMenuWidgetTests extends TestCase
      */
     public function testRun()
     {
-        $widget = new AdminUserMenuWidget(['id_user'=>1]);
+        $usersModel = new class() extends Model {
+            public $id = 1;
+            public $email;
+            public function __construct()
+            {
+                $this->email = new class() {
+                    public $email = 'mail@mail.com';
+                };
+            }
+        };
+        
+        $widget = new AdminUserMenuWidget(['usersModel'=>$usersModel]);
         
         $widget->run();
         

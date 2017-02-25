@@ -8,11 +8,13 @@ use yii\base\Model;
 use app\handlers\ConfigHandlerTrait;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
-    CurrencyFixture};
+    CurrencyFixture,
+    UsersFixture};
 use app\models\{AbstractBaseModel,
     CategoriesModel,
     CurrencyInterface,
-    CurrencyModel};
+    CurrencyModel,
+    UsersModel};
 use app\collections\{CollectionInterface,
     LightPagination,
     PaginationInterface,
@@ -37,6 +39,7 @@ class ConfigHandlerTraitTests extends TestCase
             'fixtures'=>[
                 'currency'=>CurrencyFixture::class,
                 'categories'=>CategoriesFixture::class,
+                'users'=>UsersFixture::class,
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -656,13 +659,74 @@ class ConfigHandlerTraitTests extends TestCase
      */
     public function testAdminUserMenuWidgetConfig()
     {
+        $usersModel = new class() extends Model {};
+        
         $reflection = new \ReflectionMethod($this->handler, 'adminUserMenuWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, 1);
+        $result = $reflection->invoke($this->handler, $usersModel);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('id_user', $result);
-        $this->assertInternalType('integer', $result['id_user']);
+        $this->assertArrayHasKey('usersModel', $result);
+        $this->assertInstanceOf(Model::class, $result['usersModel']);
+    }
+    
+    /**
+     * Тестирует метод AccountOrdersRequestHandler::accountOrdersWidgetConfig
+     */
+    public function testAccountOrdersWidgetConfig()
+    {
+        $ordersArray = [new class() {}];
+        $currentCurrencyModel = new class() extends CurrencyModel {};
+        $purchaseForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'accountOrdersWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $ordersArray, $purchaseForm, $currentCurrencyModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('purchases', $result);
+        $this->assertArrayhasKey('currency', $result);
+        $this->assertArrayhasKey('form', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('array', $result['purchases']);
+        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод AccountChangeDataRequestHandler::accountChangeDataWidgetConfig
+     */
+    public function testAccountChangeDataWidgetConfig()
+    {
+        $userUpdateForm = new class() extends AbstractBaseForm {
+            public $name;
+            public $surname;
+            public $phone;
+            public $address;
+            public $city;
+            public $country;
+            public $postcode;
+        };
+        $usersModel = UsersModel::findOne(1);
+        
+        $reflection = new \ReflectionMethod($this->handler, 'accountChangeDataWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $userUpdateForm, $usersModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('form', $result);
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
     }
     
     public static function tearDownAfterClass()

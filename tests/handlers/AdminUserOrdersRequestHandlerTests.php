@@ -3,18 +3,19 @@
 namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\handlers\AccountOrdersRequestHandler;
+use app\handlers\AdminUserOrdersRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
+    EmailsFixture,
     PurchasesFixture,
     UsersFixture};
-use app\controllers\AccountController;
+use app\controllers\AdminController;
 use app\models\UsersModel;
 
 /**
- * Тестирует класс AccountOrdersRequestHandler
+ * Тестирует класс AdminUserOrdersRequestHandler
  */
-class AccountOrdersRequestHandlerTests extends TestCase
+class AdminUserOrdersRequestHandlerTests extends TestCase
 {
     private static $dbClass;
     private $handler;
@@ -23,6 +24,7 @@ class AccountOrdersRequestHandlerTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
+                'emails'=>EmailsFixture::class,
                 'users'=>UsersFixture::class,
                 'orders'=>PurchasesFixture::class,
                 'currency'=>CurrencyFixture::class
@@ -30,40 +32,47 @@ class AccountOrdersRequestHandlerTests extends TestCase
         ]);
         self::$dbClass->loadFixtures();
         
-        \Yii::$app->controller = new AccountController('account', \Yii::$app);
-        
-        $user = UsersModel::findOne(1);
-        \Yii::$app->user->login($user);
+        \Yii::$app->controller = new AdminController('admin', \Yii::$app);
     }
     
     public function setUp()
     {
         \Yii::$app->registry->clean();
         
-        $this->handler = new AccountOrdersRequestHandler();
+        $this->handler = new AdminUserOrdersRequestHandler();
     }
     
     /**
-     * Тестирует свойства AccountOrdersRequestHandler
+     * Тестирует свойства AdminUserOrdersRequestHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AccountOrdersRequestHandler::class);
+        $reflection = new \ReflectionClass(AdminUserOrdersRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод AccountOrdersRequestHandler::handle
+     * Тестирует метод AdminUserOrdersRequestHandler::handle
      */
     public function testHandle()
     {
         $request = new class() {
+            public $email;
             public function get($name=null, $defaultValue=null)
             {
-                return null;
+                switch ($name) {
+                    case 'email':
+                        return $this->email;
+                        break;
+                    case 'page':
+                        return null;
+                        break;
+                }
             }
         };
+        $reflection = new \ReflectionProperty($request, 'email');
+        $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
         $result = $this->handler->handle($request);
         
@@ -72,25 +81,39 @@ class AccountOrdersRequestHandlerTests extends TestCase
         $this->assertArrayhasKey('оrdersFiltersWidgetConfig', $result);
         $this->assertArrayhasKey('accountOrdersWidgetConfig', $result);
         $this->assertArrayhasKey('paginationWidgetConfig', $result);
+        $this->assertArrayhasKey('adminUserDetailBreadcrumbsWidgetConfig', $result);
+        $this->assertArrayhasKey('adminUserMenuWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['оrdersFiltersWidgetConfig']);
         $this->assertInternalType('array', $result['accountOrdersWidgetConfig']);
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
+        $this->assertInternalType('array', $result['adminUserDetailBreadcrumbsWidgetConfig']);
+        $this->assertInternalType('array', $result['adminUserMenuWidgetConfig']);
     }
     
     /**
-     * Тестирует метод AccountOrdersRequestHandler::handle
+     * Тестирует метод AdminUserOrdersRequestHandler::handle
      * не существующая страница
      * @expectedException yii\web\NotFoundHttpException
      */
     public function testHandleNotPage()
     {
         $request = new class() {
+            public $email;
             public function get($name=null, $defaultValue=null)
             {
-                return 204;
+                switch ($name) {
+                    case 'email':
+                        return $this->email;
+                        break;
+                    case 'page':
+                        return 402;
+                        break;
+                }
             }
         };
+        $reflection = new \ReflectionProperty($request, 'email');
+        $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
         
         $this->handler->handle($request);
     }

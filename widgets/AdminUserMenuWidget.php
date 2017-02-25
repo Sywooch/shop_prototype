@@ -2,7 +2,8 @@
 
 namespace app\widgets;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use yii\widgets\Menu;
 use app\exceptions\ExceptionsTrait;
 use app\finders\PurchasesIdUserFinder;
@@ -15,9 +16,9 @@ class AdminUserMenuWidget extends Menu
     use ExceptionsTrait;
     
     /**
-     * @var int
+     * @var UsersModel
      */
-    private $id_user;
+    private $usersModel;
     
     /**
      * @var array HTML атрибуты, которые будут применены к тегу-контейнеру меню (ul по-умолчанию)
@@ -41,41 +42,43 @@ class AdminUserMenuWidget extends Menu
     private function setItems()
     {
         try {
-            if (empty($this->id_user)) {
-                throw new ErrorException($this->emptyError('id_user'));
+            if (empty($this->usersModel)) {
+                throw new ErrorException($this->emptyError('usersModel'));
             }
             
             $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, [
-                'id_user'=>$this->id_user
+                'id_user'=>$this->usersModel->id
             ]);
             $purchasesArray = $finder->find();
+            
+            $email = $this->usersModel->email->email;
             
             $this->items = [
                 [
                     'label'=>\Yii::t('base', 'General data'),
-                    'url'=>['/admin/user-detail', \Yii::$app->params['userId']=>$this->id_user]
+                    'url'=>['/admin/user-detail', \Yii::$app->params['userEmail']=>$email]
                 ],
             ];
             
             if (!empty($purchasesArray)) {
                 $this->items[] = [
                     'label'=>\Yii::t('base', 'Orders'),
-                    'url'=>['/admin/user-orders', \Yii::$app->params['userId']=>$this->id_user]
+                    'url'=>['/admin/user-orders', \Yii::$app->params['userEmail']=>$email]
                 ];
             }
             
             $this->items = array_merge($this->items, [
                 [
                     'label'=>\Yii::t('base', 'Change data'),
-                    'url'=>['/admin/user-data', \Yii::$app->params['userId']=>$this->id_user]
+                    'url'=>['/admin/user-data', \Yii::$app->params['userEmail']=>$email]
                 ],
                 [
                     'label'=>\Yii::t('base', 'Change password'),
-                    'url'=>['/admin/user-password', \Yii::$app->params['userId']=>$this->id_user]
+                    'url'=>['/admin/user-password', \Yii::$app->params['userEmail']=>$email]
                 ],
                 [
                     'label'=>\Yii::t('base', 'Manage subscriptions'),
-                    'url'=>['/admin/user-subscriptions', \Yii::$app->params['userId']=>$this->id_user]
+                    'url'=>['/admin/user-subscriptions', \Yii::$app->params['userEmail']=>$email]
                 ],
             ]);
             
@@ -85,13 +88,13 @@ class AdminUserMenuWidget extends Menu
     }
     
     /**
-     * Присваивает значение AdminUserDetailBreadcrumbsWidget::id_user
-     * @param Model $id_user
+     * Присваивает значение AdminUserDetailBreadcrumbsWidget::usersModel
+     * @param Model $usersModel
      */
-    public function setId_user(int $id_user)
+    public function setUsersModel(Model $usersModel)
     {
         try {
-            $this->id_user = $id_user;
+            $this->usersModel = $usersModel;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -99,12 +99,12 @@ $routes = [
     'admin-size-delete'=>'admin/size-delete',
     'admin-users-<page:\d{1,3}>'=>'admin/users',
     'admin-users'=>'admin/users',
-    'admin-user-<id:\d{1,4}>'=>'admin/user-detail',
-    'admin-user-orders-<id:\d{1,4}>-<page:\d{1,4}>'=>'admin/user-orders',
-    'admin-user-orders-<id:\d{1,4}>'=>'admin/user-orders',
-    'admin-user-data-<id:\d{1,4}>'=>'admin/user-data',
-    'admin-user-password-<id:\d{1,4}>'=>'admin/user-password',
-    'admin-user-subscriptions-<id:\d{1,4}>'=>'admin/user-subscriptions',
+    'admin-user-detail-<email>'=>'admin/user-detail',
+    'admin-user-orders-<email>-<page:\d{1,4}>'=>'admin/user-orders',
+    'admin-user-orders-<email>'=>'admin/user-orders',
+    'admin-user-data-<email>'=>'admin/user-data',
+    'admin-user-password-<email>'=>'admin/user-password',
+    'admin-user-subscriptions-<email>'=>'admin/user-subscriptions',
     
     # Календарь
     'calendar-get'=>'calendar/get',

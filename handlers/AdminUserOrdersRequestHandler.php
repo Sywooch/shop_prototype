@@ -10,13 +10,11 @@ use app\finders\{AccountOrdersFinder,
     OrdersFiltersSessionFinder,
     OrderStatusesFinder,
     SortingTypesFinder,
-    UserIdFinder};
-use app\forms\{AbstractBaseForm,
-    OrdersFiltersForm,
+    UserEmailFinder};
+use app\forms\{OrdersFiltersForm,
     PurchaseForm};
 use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
-use app\models\CurrencyInterface;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -40,14 +38,14 @@ class AdminUserOrdersRequestHandler extends AbstractBaseHandler
     {
         try {
             $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
-            $userId = $request->get(\Yii::$app->params['userId']) ?? null;
-            if (empty($userId)) {
-                throw new ErrorException($this->emptyError('userId'));
+            $userEmail = $request->get(\Yii::$app->params['userEmail']) ?? null;
+            if (empty($userEmail)) {
+                throw new ErrorException($this->emptyError('userEmail'));
             }
             
             if (empty($this->dataArray)) {
-                $finder = \Yii::$app->registry->get(UserIdFinder::class, [
-                    'id'=>$userId
+                $finder = \Yii::$app->registry->get(UserEmailFinder::class, [
+                    'email'=>$userEmail
                 ]);
                 $usersModel = $finder->find();
                 if (empty($usersModel)) {
@@ -101,7 +99,7 @@ class AdminUserOrdersRequestHandler extends AbstractBaseHandler
                 $dataArray['accountOrdersWidgetConfig'] = $this->accountOrdersWidgetConfig($ordersCollection->asArray(), $purchaseForm, $currentCurrencyModel);
                 $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($ordersCollection->pagination);
                 $dataArray['adminUserDetailBreadcrumbsWidgetConfig'] = $this->adminUserDetailBreadcrumbsWidgetConfig($usersModel);
-                $dataArray['adminUserMenuWidgetConfig'] = $this->adminUserMenuWidgetConfig($usersModel->id);
+                $dataArray['adminUserMenuWidgetConfig'] = $this->adminUserMenuWidgetConfig($usersModel);
                 
                 $this->dataArray = $dataArray;
             }
@@ -109,30 +107,6 @@ class AdminUserOrdersRequestHandler extends AbstractBaseHandler
             return $this->dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета AccountOrdersWidget
-     * @param array $ordersArray массив PurchasesModel
-     * @patram AbstractBaseForm $purchaseForm
-     * @param CurrencyInterface $currentCurrencyModel
-     * @return array
-     */
-    private function accountOrdersWidgetConfig(array $ordersArray, AbstractBaseForm $purchaseForm, CurrencyInterface $currentCurrencyModel): array
-    {
-        try {
-            $dataArray = [];
-            
-            $dataArray['header'] = \Yii::t('base', 'Orders');
-            $dataArray['purchases'] = $ordersArray;
-            $dataArray['currency'] = $currentCurrencyModel;
-            $dataArray['form'] = $purchaseForm;
-            $dataArray['template'] = 'account-orders.twig';
-            
-            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

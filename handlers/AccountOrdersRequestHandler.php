@@ -10,12 +10,10 @@ use app\finders\{AccountOrdersFinder,
     OrdersFiltersSessionFinder,
     OrderStatusesFinder,
     SortingTypesFinder};
-use app\forms\{AbstractBaseForm,
-    OrdersFiltersForm,
+use app\forms\{OrdersFiltersForm,
     PurchaseForm};
 use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
-use app\models\CurrencyInterface;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -95,30 +93,6 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
             return $this->dataArray;
         } catch (NotFoundHttpException $e) {
             throw $e;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета AccountOrdersWidget
-     * @param array $ordersArray массив PurchasesModel
-     * @patram AbstractBaseForm $purchaseForm
-     * @param CurrencyInterface $currentCurrencyModel
-     * @return array
-     */
-    private function accountOrdersWidgetConfig(array $ordersArray, AbstractBaseForm $purchaseForm, CurrencyInterface $currentCurrencyModel): array
-    {
-        try {
-            $dataArray = [];
-            
-            $dataArray['header'] = \Yii::t('base', 'Orders');
-            $dataArray['purchases'] = $ordersArray;
-            $dataArray['currency'] = $currentCurrencyModel;
-            $dataArray['form'] = $purchaseForm;
-            $dataArray['template'] = 'account-orders.twig';
-            
-            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

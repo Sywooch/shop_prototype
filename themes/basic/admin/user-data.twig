@@ -1,0 +1,12 @@
+{{ register_asset_bundle('app/assets/AccountChangeDataAsset') }}
+
+{{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
+{{ use ('app/widgets/AccountChangeDataWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
+
+{{ include('@theme/common/admin-user-common.twig') }}
+
+{{ account_change_data_widget_widget(accountChangeDataWidgetConfig) }}

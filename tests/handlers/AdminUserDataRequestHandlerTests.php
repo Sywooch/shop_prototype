@@ -3,22 +3,16 @@
 namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use yii\base\Model;
-use app\handlers\AdminUserDetailRequestHandler;
+use app\handlers\AdminUserDataRequestHandler;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\{CurrencyFixture,
-    EmailsFixture,
-    MailingsFixture,
-    PurchasesFixture,
+use app\tests\sources\fixtures\{EmailsFixture,
     UsersFixture};
-use app\models\{CurrencyInterface,
-    CurrencyModel,
-    UsersModel};
+use app\models\UsersModel;
 
 /**
- * Тестирует класс AdminUserDetailRequestHandler
+ * Тестирует класс AdminUserDataRequestHandler
  */
-class AdminUserDetailRequestHandlerTests extends TestCase
+class AdminUserDataRequestHandlerTests extends TestCase
 {
     private static $dbClass;
     private $handler;
@@ -28,9 +22,6 @@ class AdminUserDetailRequestHandlerTests extends TestCase
         self::$dbClass = new DbManager([
             'fixtures'=>[
                 'users'=>UsersFixture::class,
-                'orders'=>PurchasesFixture::class,
-                'mailings'=>MailingsFixture::class,
-                'currency'=>CurrencyFixture::class,
                 'emails'=>EmailsFixture::class,
             ],
         ]);
@@ -41,21 +32,21 @@ class AdminUserDetailRequestHandlerTests extends TestCase
     {
         \Yii::$app->registry->clean();
         
-        $this->handler = new AdminUserDetailRequestHandler();
+        $this->handler = new AdminUserDataRequestHandler();
     }
     
     /**
-     * Тестирует свойства AdminUserDetailRequestHandler
+     * Тестирует свойства AdminUserDataRequestHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminUserDetailRequestHandler::class);
+        $reflection = new \ReflectionClass(AdminUserDataRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод AdminUserDetailRequestHandler::handle
+     * Тестирует метод AdminUserDataRequestHandler::handle
      */
     public function testHandle()
     {
@@ -73,15 +64,11 @@ class AdminUserDetailRequestHandlerTests extends TestCase
         
         $this->assertInternalType('array', $result);
         
-        $this->assertArrayhasKey('accountContactsWidgetConfig', $result);
-        $this->assertArrayhasKey('accountCurrentOrdersWidgetConfig', $result);
-        $this->assertArrayhasKey('accountMailingsWidgetConfig', $result);
+        $this->assertArrayhasKey('accountChangeDataWidgetConfig', $result);
         $this->assertArrayhasKey('adminUserDetailBreadcrumbsWidgetConfig', $result);
         $this->assertArrayhasKey('adminUserMenuWidgetConfig', $result);
         
-        $this->assertInternalType('array', $result['accountContactsWidgetConfig']);
-        $this->assertInternalType('array', $result['accountCurrentOrdersWidgetConfig']);
-        $this->assertInternalType('array', $result['accountMailingsWidgetConfig']);
+        $this->assertInternalType('array', $result['accountChangeDataWidgetConfig']);
         $this->assertInternalType('array', $result['adminUserDetailBreadcrumbsWidgetConfig']);
         $this->assertInternalType('array', $result['adminUserMenuWidgetConfig']);
     }

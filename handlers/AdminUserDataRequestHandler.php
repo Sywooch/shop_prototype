@@ -2,21 +2,17 @@
 
 namespace app\handlers;
 
-use yii\base\{ErrorException,
-    Model};
+use yii\base\ErrorException;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\finders\{MailingsEmailFinder,
-    PurchasesIdUserFinder,
-    UserEmailFinder};
-use app\services\GetCurrentCurrencyModelService;
-use app\helpers\HashHelper;
+use app\forms\UserUpdateForm;
+use app\finders\UserEmailFinder;
 
 /**
- * Обрабатывает запрос на получение данных 
- * для рендеринга страницы с настройками аккаунта
+ * Обрабатывает запрос на получение 
+ * формы редактирования данных клиента
  */
-class AdminUserDetailRequestHandler extends AbstractBaseHandler
+class AdminUserDataRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
@@ -47,29 +43,11 @@ class AdminUserDetailRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('usersModel'));
                 }
                 
-                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
-                    'key'=>HashHelper::createCurrencyKey()
-                ]);
-                $currentCurrencyModel = $service->get();
-                if (empty($currentCurrencyModel)) {
-                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
-                }
-                
-                $finder = \Yii::$app->registry->get(PurchasesIdUserFinder::class, [
-                    'id_user'=>$usersModel->id
-                ]);
-                $purchasesArray = $finder->find();
-                
-                $finder = \Yii::$app->registry->get(MailingsEmailFinder::class, [
-                    'email'=>$usersModel->email->email
-                ]);
-                $mailingsArray = $finder->find();
+                $userUpdateForm = new UserUpdateForm(['scenario'=>UserUpdateForm::UPDATE]);
                 
                 $dataArray = [];
                 
-                $dataArray['accountContactsWidgetConfig'] = $this->accountContactsWidgetConfig($usersModel);
-                $dataArray['accountCurrentOrdersWidgetConfig'] = $this->accountCurrentOrdersWidgetConfig($purchasesArray, $currentCurrencyModel);
-                $dataArray['accountMailingsWidgetConfig'] = $this->accountMailingsWidgetConfig($mailingsArray);
+                $dataArray['accountChangeDataWidgetConfig'] = $this->accountChangeDataWidgetConfig($userUpdateForm, $usersModel);
                 $dataArray['adminUserDetailBreadcrumbsWidgetConfig'] = $this->adminUserDetailBreadcrumbsWidgetConfig($usersModel);
                 $dataArray['adminUserMenuWidgetConfig'] = $this->adminUserMenuWidgetConfig($usersModel);
                 

@@ -56,7 +56,7 @@ class AdminUsersWidget extends AbstractBaseWidget
                     $set['postcode'] = !empty($user->id_postcode) ? $user->postcode->postcode : null;
                     $set['orders'] = count($user->orders);
                     
-                    $set['href'] = Url::to(['/admin/user-detail', \Yii::$app->params['userId']=>$user->id]);
+                    $set['href'] = Url::to(['/admin/user-detail', \Yii::$app->params['userEmail']=>$user->email->email]);
                     $set['hrefText'] = \Yii::t('base', 'Change');
                     
                     $renderArray['users'][] = $set;
