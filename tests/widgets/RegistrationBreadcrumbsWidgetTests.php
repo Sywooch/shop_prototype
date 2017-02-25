@@ -17,6 +17,8 @@ class RegistrationBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new RegistrationBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

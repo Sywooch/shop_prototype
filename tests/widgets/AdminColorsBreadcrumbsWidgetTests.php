@@ -17,6 +17,8 @@ class AdminColorsBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new AdminColorsBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

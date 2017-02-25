@@ -100,6 +100,8 @@ class CategoriesBreadcrumbsWidgetTests extends TestCase
         ]);
         
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

@@ -47,5 +47,7 @@ class AdminMenuWidgetTests extends TestCase
     {
         $widget = new AdminMenuWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }

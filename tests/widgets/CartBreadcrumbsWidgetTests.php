@@ -17,6 +17,8 @@ class CartBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new CartBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

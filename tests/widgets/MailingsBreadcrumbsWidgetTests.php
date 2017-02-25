@@ -17,6 +17,8 @@ class MailingsBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new MailingsBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

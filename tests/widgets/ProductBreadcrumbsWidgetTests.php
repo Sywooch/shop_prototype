@@ -65,6 +65,8 @@ class ProductBreadcrumbsWidgetTests extends TestCase
         $widget = new ProductBreadcrumbsWidget(['product'=>$product]);
         
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

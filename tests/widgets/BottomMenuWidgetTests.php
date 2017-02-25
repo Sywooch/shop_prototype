@@ -47,5 +47,7 @@ class BottomMenuWidgetTests extends TestCase
     {
         $widget = new BottomMenuWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }

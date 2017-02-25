@@ -17,6 +17,8 @@ class AdminOrdersBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new AdminOrdersBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

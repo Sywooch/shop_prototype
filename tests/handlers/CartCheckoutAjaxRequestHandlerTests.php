@@ -257,7 +257,7 @@ class CartCheckoutAjaxRequestHandlerTests extends TestCase
         ]);
         
         $this->assertCount(6, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
-        $this->assertCount(2, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
+        $this->assertCount(4, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
         
         $request = new class() {
             public $isAjax = true;
@@ -290,7 +290,7 @@ class CartCheckoutAjaxRequestHandlerTests extends TestCase
         $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
         
         $this->assertCount(7, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
-        $this->assertCount(3, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
+        $this->assertCount(5, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
         
         $saveDir = \Yii::getAlias(\Yii::$app->mailer->fileTransportPath);
         $files = glob($saveDir . '/*.eml');
@@ -324,7 +324,7 @@ class CartCheckoutAjaxRequestHandlerTests extends TestCase
         ]);
         
         $this->assertCount(7, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
-        $this->assertCount(3, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
+        $this->assertCount(5, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
         
         $this->assertEquals(3, $user['id_name']);
         $this->assertEquals(3, $user['id_surname']);
@@ -363,7 +363,7 @@ class CartCheckoutAjaxRequestHandlerTests extends TestCase
         $this->assertEquals('../vendor/phpunit/phpunit/catalog', $result);
         
         $this->assertCount(8, \Yii::$app->db->createCommand('SELECT * FROM {{purchases}}')->queryAll());
-        $this->assertCount(3, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
+        $this->assertCount(5, \Yii::$app->db->createCommand('SELECT * FROM {{users}}')->queryAll());
         
         $email = \Yii::$app->db->createCommand('SELECT * FROM {{emails}} WHERE [[emails.email]]=:email')->bindValue(':email', 'new@new.com')->queryOne();
         $user = \Yii::$app->db->createCommand('SELECT * FROM {{users}} WHERE [[users.id_email]]=:id_email')->bindValue(':id_email', $email['id'])->queryOne();

@@ -321,9 +321,9 @@ class UsersFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[sortingType\]">#', $result);
         $this->assertRegExp('#<option value="[0-9]{1}">Sort ascending</option>#', $result);
         $this->assertRegExp('#<option value="[0-9]{1}">Sort descending</option>#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value="https:://shop.com">#', $result);
-        $this->assertRegExp('#<label><input type="checkbox" name=".+\[ordersStatus\]\[\]" value="1"> True</label>#', $result);
-        $this->assertRegExp('#<label><input type="checkbox" name=".+\[ordersStatus\]\[\]" value="0"> False</label>#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[ordersStatus\]">#', $result);
+        $this->assertRegExp('#<option value="1">True</option>#', $result);
+        $this->assertRegExp('#<option value="0">False</option>#', $result);
         $this->assertRegExp('#<input type="submit" value="Применить">#', $result);
         $this->assertRegExp('#<form id="admin-users-filters-clean" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value="https:://shop.com">#', $result);

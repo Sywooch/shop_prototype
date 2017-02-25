@@ -93,6 +93,8 @@ class AccountMenuWidgetTests extends TestCase
     {
         $widget = new AccountMenuWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
     
     public function tearDown()

@@ -17,6 +17,8 @@ class AccountChangeDataBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new AccountChangeDataBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

@@ -57,6 +57,8 @@ class SearchBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new SearchBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

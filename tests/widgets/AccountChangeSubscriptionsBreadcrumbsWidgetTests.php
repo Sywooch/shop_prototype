@@ -17,6 +17,8 @@ class AccountChangeSubscriptionsBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new AccountChangeSubscriptionsBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

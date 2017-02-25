@@ -17,6 +17,8 @@ class RecoveryBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new RecoveryBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 

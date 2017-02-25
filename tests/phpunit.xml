@@ -8,6 +8,8 @@
     convertWarningsToExceptions = "true"
     processIsolation = "false"
     stopOnFailure = "true"
+    stopOnRisky = "true"
+    stopOnError = "true"
     syntaxCheck = "false" 
     bootstrap="./bootstrap.php">
     

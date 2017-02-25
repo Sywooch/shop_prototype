@@ -17,6 +17,8 @@ class AdminSizesBreadcrumbsWidgetTests extends TestCase
     {
         $widget = new AdminSizesBreadcrumbsWidget();
         $widget->run();
+        
+        $this->assertTrue(true);
     }
 }
 
