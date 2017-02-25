@@ -585,15 +585,15 @@ trait ConfigHandlerTrait
     
     /**
      * Возвращает массив конфигурации для виджета AdminUserMenuWidget
-     * @param Model $usersModel
+     * @param int $id_user
      * @return array
      */
-    private function adminUserMenuWidgetConfig(Model $usersModel): array
+    private function adminUserMenuWidgetConfig(int $id_user): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['usersModel'] = $usersModel;
+            $dataArray['id_user'] = $id_user;
             
             return $dataArray;
         } catch (\Throwable $t) {

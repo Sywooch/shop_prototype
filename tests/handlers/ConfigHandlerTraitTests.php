@@ -656,15 +656,13 @@ class ConfigHandlerTraitTests extends TestCase
      */
     public function testAdminUserMenuWidgetConfig()
     {
-        $usersModel = new class() extends Model {};
-        
         $reflection = new \ReflectionMethod($this->handler, 'adminUserMenuWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $usersModel);
+        $result = $reflection->invoke($this->handler, 1);
         
         $this->assertInternalType('array', $result);
-        $this->assertArrayHasKey('usersModel', $result);
-        $this->assertInstanceOf(Model::class, $result['usersModel']);
+        $this->assertArrayHasKey('id_user', $result);
+        $this->assertInternalType('integer', $result['id_user']);
     }
     
     public static function tearDownAfterClass()

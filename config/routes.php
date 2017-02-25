@@ -100,6 +100,7 @@ $routes = [
     'admin-users-<page:\d{1,3}>'=>'admin/users',
     'admin-users'=>'admin/users',
     'admin-user-<id:\d{1,4}>'=>'admin/user-detail',
+    'admin-user-orders-<id:\d{1,4}>-<page:\d{1,4}>'=>'admin/user-orders',
     'admin-user-orders-<id:\d{1,4}>'=>'admin/user-orders',
     'admin-user-data-<id:\d{1,4}>'=>'admin/user-data',
     'admin-user-password-<id:\d{1,4}>'=>'admin/user-password',

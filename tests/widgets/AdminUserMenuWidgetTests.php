@@ -12,7 +12,6 @@ use app\tests\sources\fixtures\PurchasesFixture;
  */
 class AdminUserMenuWidgetTests extends TestCase
 {
-    private $widget;
     private static $dbClass;
     
     public static function setUpBeforeClass()
@@ -23,11 +22,6 @@ class AdminUserMenuWidgetTests extends TestCase
             ],
         ]);
         self::$dbClass->loadFixtures();
-    }
-    
-    public function setUp()
-    {
-        $this->widget = new AdminUserMenuWidget();
     }
     
     /**
@@ -41,33 +35,13 @@ class AdminUserMenuWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminUserMenuWidget::setItems
-     */
-    public function testSetItemsNotOrders()
-    {
-        $usersModel = new class() {
-            public $id = 1;
-        };
-        
-        $reflection = new \ReflectionMethod($this->widget, 'setItems');
-        $reflection->setAccessible(true);
-        $reflection->invoke($this->widget);
-        
-        $reflection = new \ReflectionProperty($this->widget, 'items');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->widget);
-        
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertCount(9, $result);
-    }
-    
-    /**
      * Тестирует метод AdminUserMenuWidget::run
      */
     public function testRun()
     {
-        $this->widget->run();
+        $widget = new AdminUserMenuWidget(['id_user'=>1]);
+        
+        $widget->run();
         
         $this->assertTrue(true);
     }
