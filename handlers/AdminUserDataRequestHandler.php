@@ -2,10 +2,12 @@
 
 namespace app\handlers;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\forms\UserUpdateForm;
+use app\forms\{AbstractBaseForm,
+    UserUpdateForm};
 use app\finders\UserEmailFinder;
 
 /**
@@ -43,11 +45,11 @@ class AdminUserDataRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('usersModel'));
                 }
                 
-                $userUpdateForm = new UserUpdateForm(['scenario'=>UserUpdateForm::UPDATE]);
+                $userUpdateForm = new UserUpdateForm(['id'=>$usersModel->id]);
                 
                 $dataArray = [];
                 
-                $dataArray['accountChangeDataWidgetConfig'] = $this->accountChangeDataWidgetConfig($userUpdateForm, $usersModel);
+                $dataArray['adminChangeUserDataWidgetConfig'] = $this->adminChangeUserDataWidgetConfig($userUpdateForm, $usersModel);
                 $dataArray['adminUserDetailBreadcrumbsWidgetConfig'] = $this->adminUserDetailBreadcrumbsWidgetConfig($usersModel);
                 $dataArray['adminUserMenuWidgetConfig'] = $this->adminUserMenuWidgetConfig($usersModel);
                 
@@ -55,6 +57,24 @@ class AdminUserDataRequestHandler extends AbstractBaseHandler
             }
             
             return $this->dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminChangeUserDataWidget
+     * @param AbstractBaseForm $userUpdateForm
+     * @param Model $usersModel
+     * @return array
+     */
+    private function adminChangeUserDataWidgetConfig(AbstractBaseForm $userUpdateForm, Model $usersModel): array
+    {
+        try {
+            $dataArray = $this->accountChangeDataWidgetConfig($userUpdateForm, $usersModel);
+            $dataArray['template'] = 'admin-change-user-data-form.twig';
+            
+            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

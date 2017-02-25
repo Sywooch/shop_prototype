@@ -103,6 +103,7 @@ $routes = [
     'admin-user-orders-<email>-<page:\d{1,4}>'=>'admin/user-orders',
     'admin-user-orders-<email>'=>'admin/user-orders',
     'admin-user-data-<email>'=>'admin/user-data',
+    'admin-user-data-change-post'=>'admin/user-data-change-post',
     'admin-user-password-<email>'=>'admin/user-password',
     'admin-user-subscriptions-<email>'=>'admin/user-subscriptions',
     

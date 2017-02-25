@@ -32,7 +32,9 @@ class UserUpdateFormTests extends TestCase
         $reflection = new \ReflectionClass(UserUpdateForm::class);
         
         $this->assertTrue($reflection->hasConstant('UPDATE'));
+        $this->assertTrue($reflection->hasConstant('ADMIN_UPDATE'));
         
+        $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('name'));
         $this->assertTrue($reflection->hasProperty('surname'));
         $this->assertTrue($reflection->hasProperty('phone'));
@@ -85,6 +87,50 @@ class UserUpdateFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'postcode');
         $result = $reflection->getValue($form);
         $this->assertSame('056987', $result);
+        
+        $form = new UserUpdateForm(['scenario'=>UserUpdateForm::ADMIN_UPDATE]);
+        $form->attributes = [
+            'id'=>2,
+            'name'=>'Name',
+            'surname'=>'Surname',
+            'phone'=>'+045 897-99-20',
+            'address'=>'Address str., 19',
+            'city'=>'City',
+            'country'=>'Country',
+            'postcode'=>'056987',
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(2, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'name');
+        $result = $reflection->getValue($form);
+        $this->assertSame('Name', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'surname');
+        $result = $reflection->getValue($form);
+        $this->assertSame('Surname', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'phone');
+        $result = $reflection->getValue($form);
+        $this->assertSame('+045 897-99-20', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'address');
+        $result = $reflection->getValue($form);
+        $this->assertSame('Address str., 19', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'city');
+        $result = $reflection->getValue($form);
+        $this->assertSame('City', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'country');
+        $result = $reflection->getValue($form);
+        $this->assertSame('Country', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'postcode');
+        $result = $reflection->getValue($form);
+        $this->assertSame('056987', $result);
     }
     
     /**
@@ -95,18 +141,30 @@ class UserUpdateFormTests extends TestCase
         $form = new UserUpdateForm(['scenario'=>UserUpdateForm::UPDATE]);
         $form->validate();
         
-        $this->assertNotEmpty($form->errors);
         $this->assertCount(7, $form->errors);
-        $this->assertArrayHasKey('name', $form->errors);
-        $this->assertArrayHasKey('surname', $form->errors);
-        $this->assertArrayHasKey('phone', $form->errors);
-        $this->assertArrayHasKey('address', $form->errors);
-        $this->assertArrayHasKey('city', $form->errors);
-        $this->assertArrayHasKey('country', $form->errors);
-        $this->assertArrayHasKey('postcode', $form->errors);
         
         $form = new UserUpdateForm(['scenario'=>UserUpdateForm::UPDATE]);
         $form->attributes = [
+            'name'=>'Name',
+            'surname'=>'Surname',
+            'phone'=>'+045 897-99-20',
+            'address'=>'Address str., 19',
+            'city'=>'City',
+            'country'=>'Country',
+            'postcode'=>'056987',
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new UserUpdateForm(['scenario'=>UserUpdateForm::ADMIN_UPDATE]);
+        $form->validate();
+        
+        $this->assertCount(8, $form->errors);
+        
+        $form = new UserUpdateForm(['scenario'=>UserUpdateForm::ADMIN_UPDATE]);
+        $form->attributes = [
+            'id'=>2,
             'name'=>'Name',
             'surname'=>'Surname',
             'phone'=>'+045 897-99-20',

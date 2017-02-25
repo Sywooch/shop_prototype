@@ -3,11 +3,13 @@
 namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
+use yii\base\Model;
 use app\handlers\AdminUserDataRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{EmailsFixture,
     UsersFixture};
 use app\models\UsersModel;
+use app\forms\AbstractBaseForm;
 
 /**
  * Тестирует класс AdminUserDataRequestHandler
@@ -46,6 +48,38 @@ class AdminUserDataRequestHandlerTests extends TestCase
     }
     
     /**
+     * Тестирует метод AdminUserDataRequestHandler::adminChangeUserDataWidgetConfig
+     */
+    public function testAdminChangeUserDataWidgetConfig()
+    {
+        $userUpdateForm = new class() extends AbstractBaseForm {
+            public $name;
+            public $surname;
+            public $phone;
+            public $address;
+            public $city;
+            public $country;
+            public $postcode;
+        };
+        
+        $usersModel = UsersModel::findOne(1);
+        
+        $reflection = new \ReflectionMethod($this->handler, 'accountChangeDataWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $userUpdateForm, $usersModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('form', $result);
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
      * Тестирует метод AdminUserDataRequestHandler::handle
      */
     public function testHandle()
@@ -64,11 +98,11 @@ class AdminUserDataRequestHandlerTests extends TestCase
         
         $this->assertInternalType('array', $result);
         
-        $this->assertArrayhasKey('accountChangeDataWidgetConfig', $result);
+        $this->assertArrayhasKey('adminChangeUserDataWidgetConfig', $result);
         $this->assertArrayhasKey('adminUserDetailBreadcrumbsWidgetConfig', $result);
         $this->assertArrayhasKey('adminUserMenuWidgetConfig', $result);
         
-        $this->assertInternalType('array', $result['accountChangeDataWidgetConfig']);
+        $this->assertInternalType('array', $result['adminChangeUserDataWidgetConfig']);
         $this->assertInternalType('array', $result['adminUserDetailBreadcrumbsWidgetConfig']);
         $this->assertInternalType('array', $result['adminUserMenuWidgetConfig']);
     }

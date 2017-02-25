@@ -167,6 +167,10 @@ class AdminController extends Controller
                 'handler'=>new AdminUserDataRequestHandler(),
                 'view'=>'user-data.twig',
             ],
+            /*'user-data-change-post'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminUserDataPostRequestHandler(),
+            ],*/
         ];
     }
     

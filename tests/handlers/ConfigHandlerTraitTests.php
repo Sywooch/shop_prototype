@@ -712,6 +712,7 @@ class ConfigHandlerTraitTests extends TestCase
             public $country;
             public $postcode;
         };
+        
         $usersModel = UsersModel::findOne(1);
         
         $reflection = new \ReflectionMethod($this->handler, 'accountChangeDataWidgetConfig');
