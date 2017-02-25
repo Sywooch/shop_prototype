@@ -82,6 +82,7 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
                 $dataArray['adminUsersWidgetConfig'] = $this->adminUsersWidgetConfig($usersCollection->asArray());
                 $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($usersCollection->pagination);
                 $dataArray['usersFiltersWidgetConfig'] = $this->usersFiltersWidgetConfig($sortingFieldsArray, $sortingTypesArray, $ordersStatusesArray, $usersFiltersForm);
+                $dataArray['adminCsvUsersFormWidgetConfig'] = $this->adminCsvUsersFormWidgetConfig($usersCollection->isEmpty() ? false : true);
                 
                 $this->dataArray = $dataArray;
             }
@@ -153,6 +154,26 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
             $dataArray['form'] = $usersFiltersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'users-filters.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminCsvUsersFormWidget
+     * @param bool $isAllowed
+     * @return array
+     */
+    private function adminCsvUsersFormWidgetConfig(bool $isAllowed): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['header'] = \Yii::t('base', 'Download selected users in csv format');
+            $dataArray['template'] = 'admin-csv-users-form.twig';
+            $dataArray['isAllowed'] = $isAllowed;
             
             return $dataArray;
         } catch (\Throwable $t) {

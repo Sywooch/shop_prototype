@@ -2,7 +2,8 @@
 
 namespace app\handlers;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use yii\helpers\{ArrayHelper,
     Url};
 use yii\web\User;
@@ -495,6 +496,104 @@ trait ConfigHandlerTrait
             $dataArray['form'] = $sizesForm;
             $dataArray['header'] = \Yii::t('base', 'Sizes');
             $dataArray['template'] = 'admin-sizes.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AccountContactsWidget
+     * @param Model $usersModel
+     * @return array
+     */
+    private function accountContactsWidgetConfig(Model $usersModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['user'] = $usersModel;
+            $dataArray['header'] = \Yii::t('base', 'Current contact details');
+            $dataArray['template'] = 'account-contacts.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AccountCurrentOrdersWidget
+     * @param array $purchasesArray
+     * @patram CurrencyInterface $currentCurrencyModel объект текущей валюты
+     * @return array
+     */
+    private function accountCurrentOrdersWidgetConfig(array $purchasesArray, CurrencyInterface $currentCurrencyModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['header'] = \Yii::t('base', 'Current orders');
+            $dataArray['purchases'] = $purchasesArray;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['template'] = 'account-current-orders.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета MailingsWidget
+     * @param array $mailingsArray
+     * @return array
+     */
+    private function accountMailingsWidgetConfig(array $mailingsArray): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['mailings'] = $mailingsArray;
+            $dataArray['header'] = \Yii::t('base', 'Current subscriptions');
+            $dataArray['template'] = 'mailings.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminUserDetailBreadcrumbsWidget
+     * @param Model $usersModel
+     * @return array
+     */
+    private function adminUserDetailBreadcrumbsWidgetConfig(Model $usersModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['usersModel'] = $usersModel;
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminUserMenuWidget
+     * @param Model $usersModel
+     * @return array
+     */
+    private function adminUserMenuWidgetConfig(Model $usersModel): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['usersModel'] = $usersModel;
             
             return $dataArray;
         } catch (\Throwable $t) {

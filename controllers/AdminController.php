@@ -30,6 +30,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminSizeCreateRequestHandler,
     AdminSizeDeleteRequestHandler,
     AdminSizesRequestHandler,
+    AdminUserDetailRequestHandler,
     AdminUsersRequestHandler};
 
 /**
@@ -148,6 +149,11 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminUsersRequestHandler(),
                 'view'=>'users.twig',
+            ],
+            'user-detail'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminUserDetailRequestHandler(),
+                'view'=>'user-detail.twig',
             ],
         ];
     }

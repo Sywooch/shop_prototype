@@ -1,15 +1,18 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{{ register_asset_bundle('app/assets/AdminUsersAsset') }}
 
 {{ use ('app/widgets/AdminUsersBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminUsersWidget') }}
 {{ use ('app/widgets/UsersFiltersWidget') }}
 {{ use('app/widgets/PaginationWidget') }}
+{{ use('app/widgets/AdminCsvUsersFormWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
 {{ admin_users_breadcrumbs_widget_widget() }}
 
 {{ users_filters_widget_widget(usersFiltersWidgetConfig) }}
+
+{{ admin_csv_users_form_widget_widget(adminCsvUsersFormWidgetConfig) }}
 
 <div class="admin-users">
     {{ admin_users_widget_widget(adminUsersWidgetConfig) }}

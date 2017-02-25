@@ -200,6 +200,7 @@ $translate = [
     'Sun'=>'Вск',
     'Download selected orders in csv format'=>'Скачать выбранные заказы в формате CSV',
     'Download selected products in csv format'=>'Скачать выбранные товары в формате CSV',
+    'Download selected users in csv format'=>'Скачать выбранных пользователей в формате CSV',
     'Get link'=>'Получить ссылку',
     'No products'=>'Нет товаров',
     'Short description'=>'Краткое описание',
@@ -241,6 +242,7 @@ $translate = [
     'Sorting by id'=>'Сортировать по id',
     'Has orders'=>'Есть заказы',
     'Had no orders'=>'Нет заказов',
+    'User Id'=>'Id пользователя',
 ];
 
 return $translate;

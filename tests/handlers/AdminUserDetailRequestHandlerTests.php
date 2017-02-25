@@ -3,7 +3,8 @@
 namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
-use app\handlers\AccountIndexRequestHandler;
+use yii\base\Model;
+use app\handlers\AdminUserDetailRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CurrencyFixture,
     MailingsFixture,
@@ -14,9 +15,9 @@ use app\models\{CurrencyInterface,
     UsersModel};
 
 /**
- * Тестирует класс AccountIndexRequestHandler
+ * Тестирует класс AdminUserDetailRequestHandler
  */
-class AccountIndexRequestHandlerTests extends TestCase
+class AdminUserDetailRequestHandlerTests extends TestCase
 {
     private static $dbClass;
     private $handler;
@@ -38,28 +39,30 @@ class AccountIndexRequestHandlerTests extends TestCase
     {
         \Yii::$app->registry->clean();
         
-        $this->handler = new AccountIndexRequestHandler();
+        $this->handler = new AdminUserDetailRequestHandler();
     }
     
     /**
-     * Тестирует свойства AccountIndexRequestHandler
+     * Тестирует свойства AdminUserDetailRequestHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AccountIndexRequestHandler::class);
+        $reflection = new \ReflectionClass(AdminUserDetailRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод AccountIndexRequestHandler::handle
+     * Тестирует метод AdminUserDetailRequestHandler::handle
      */
     public function testHandle()
     {
-        $user = UsersModel::findOne(1);
-        \Yii::$app->user->login($user);
-        
-        $request = new class() {};
+        $request = new class() {
+            public function get($name=null, $defaultValue=null)
+            {
+                return 1;
+            }
+        };
         
         $result = $this->handler->handle($request);
         
@@ -68,10 +71,14 @@ class AccountIndexRequestHandlerTests extends TestCase
         $this->assertArrayhasKey('accountContactsWidgetConfig', $result);
         $this->assertArrayhasKey('accountCurrentOrdersWidgetConfig', $result);
         $this->assertArrayhasKey('accountMailingsWidgetConfig', $result);
+        $this->assertArrayhasKey('adminUserDetailBreadcrumbsWidgetConfig', $result);
+        $this->assertArrayhasKey('adminUserMenuWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['accountContactsWidgetConfig']);
         $this->assertInternalType('array', $result['accountCurrentOrdersWidgetConfig']);
         $this->assertInternalType('array', $result['accountMailingsWidgetConfig']);
+        $this->assertInternalType('array', $result['adminUserDetailBreadcrumbsWidgetConfig']);
+        $this->assertInternalType('array', $result['adminUserMenuWidgetConfig']);
     }
     
     public static function tearDownAfterClass()

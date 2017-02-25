@@ -105,6 +105,26 @@ class AdminUsersRequestHandlerTests extends TestCase
     }
     
     /**
+     * Тестирует метод AdminUsersRequestHandler::adminCsvUsersFormWidgetConfig
+     */
+    public function testAdminCsvUsersFormWidgetConfig()
+    {
+        $reflection = new \ReflectionMethod($this->handler, 'adminCsvUsersFormWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, true);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        $this->assertArrayHasKey('isAllowed', $result);
+        
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+        $this->assertInternalType('boolean', $result['isAllowed']);
+    }
+    
+    /**
      * Тестирует метод AdminUsersRequestHandler::handle
      */
     public function testHandle()
@@ -123,10 +143,12 @@ class AdminUsersRequestHandlerTests extends TestCase
         $this->assertArrayHasKey('adminUsersWidgetConfig', $result);
         $this->assertArrayHasKey('paginationWidgetConfig', $result);
         $this->assertArrayHasKey('usersFiltersWidgetConfig', $result);
+        $this->assertArrayHasKey('adminCsvUsersFormWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['adminUsersWidgetConfig']);
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
         $this->assertInternalType('array', $result['usersFiltersWidgetConfig']);
+        $this->assertInternalType('array', $result['adminCsvUsersFormWidgetConfig']);
     }
     
     /**
@@ -149,10 +171,12 @@ class AdminUsersRequestHandlerTests extends TestCase
         $this->assertArrayHasKey('adminUsersWidgetConfig', $result);
         $this->assertArrayHasKey('paginationWidgetConfig', $result);
         $this->assertArrayHasKey('usersFiltersWidgetConfig', $result);
+        $this->assertArrayHasKey('adminCsvUsersFormWidgetConfig', $result);
         
         $this->assertInternalType('array', $result['adminUsersWidgetConfig']);
         $this->assertInternalType('array', $result['paginationWidgetConfig']);
         $this->assertInternalType('array', $result['usersFiltersWidgetConfig']);
+        $this->assertInternalType('array', $result['adminCsvUsersFormWidgetConfig']);
     }
     
     public static function tearDownAfterClass()

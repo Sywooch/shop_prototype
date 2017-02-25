@@ -3,26 +3,26 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\AdminCsvProductsFormWidget;
+use app\widgets\AdminCsvUsersFormWidget;
 
 /**
- * Тестирует класс AdminCsvProductsFormWidget
+ * Тестирует класс AdminCsvUsersFormWidget
  */
-class AdminCsvProductsFormWidgetTests extends TestCase
+class AdminCsvUsersFormWidgetTests extends TestCase
 {
     private $widget;
     
     public function setUp()
     {
-        $this->widget = new AdminCsvProductsFormWidget();
+        $this->widget = new AdminCsvUsersFormWidget();
     }
     
     /**
-     * Тестирует свойства AdminCsvProductsFormWidget
+     * Тестирует свойства AdminCsvUsersFormWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminCsvProductsFormWidget::class);
+        $reflection = new \ReflectionClass(AdminCsvUsersFormWidget::class);
         
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
@@ -30,7 +30,7 @@ class AdminCsvProductsFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCsvProductsFormWidget::setHeader
+     * Тестирует метод AdminCsvUsersFormWidget::setHeader
      */
     public function testSetHeader()
     {
@@ -46,7 +46,7 @@ class AdminCsvProductsFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCsvProductsFormWidget::setTemplate
+     * Тестирует метод AdminCsvUsersFormWidget::setTemplate
      */
     public function testSetTemplate()
     {
@@ -62,8 +62,8 @@ class AdminCsvProductsFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCsvProductsFormWidget::run
-     * если пуст AdminCsvProductsFormWidget::header
+     * Тестирует метод AdminCsvUsersFormWidget::run
+     * если пуст AdminCsvUsersFormWidget::header
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: header
      */
@@ -72,9 +72,10 @@ class AdminCsvProductsFormWidgetTests extends TestCase
         $this->widget->run();
     }
     
+    
     /**
-     * Тестирует метод AdminCsvProductsFormWidget::run
-     * если пуст AdminCsvProductsFormWidget::template
+     * Тестирует метод AdminCsvUsersFormWidget::run
+     * если пуст AdminCsvUsersFormWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
@@ -88,7 +89,7 @@ class AdminCsvProductsFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCsvProductsFormWidget::run
+     * Тестирует метод AdminCsvUsersFormWidget::run
      */
     public function testRun()
     {
@@ -98,7 +99,7 @@ class AdminCsvProductsFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-csv-products-form.twig');
+        $reflection->setValue($this->widget, 'admin-csv-users-form.twig');
         
         $reflection = new \ReflectionProperty($this->widget, 'isAllowed');
         $reflection->setAccessible(true);
@@ -109,7 +110,7 @@ class AdminCsvProductsFormWidgetTests extends TestCase
         $this->assertRegExp('#<div class="get-csv">#', $result);
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<p class="csv-success"></p>#', $result);
-        $this->assertRegExp('#<form id="admin-scv-products-form" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<form id="admin-scv-users-form" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="submit" value="Получить ссылку">#', $result);
     }
 }

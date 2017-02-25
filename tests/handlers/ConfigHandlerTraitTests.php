@@ -4,11 +4,13 @@ namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
 use yii\web\User;
+use yii\base\Model;
 use app\handlers\ConfigHandlerTrait;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{CategoriesFixture,
     CurrencyFixture};
-use app\models\{CategoriesModel,
+use app\models\{AbstractBaseModel,
+    CategoriesModel,
     CurrencyInterface,
     CurrencyModel};
 use app\collections\{CollectionInterface,
@@ -562,6 +564,107 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод AccountIndexRequestHandler::accountContactsWidgetConfig
+     */
+    public function testAccountContactsWidgetConfig()
+    {
+        $usersModel = new class() extends Model {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'accountContactsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $usersModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('user', $result);
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInstanceOf(Model::class, $result['user']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод AccountIndexRequestHandler::accountCurrentOrdersWidgetConfig
+     */
+    public function testAccountCurrentOrdersWidgetConfig()
+    {
+        $purchasesArray = [new class() {}];
+        $currencyModel = new class() extends CurrencyModel {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'accountCurrentOrdersWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $purchasesArray, $currencyModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('purchases', $result);
+        $this->assertArrayhasKey('currency', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('array', $result['purchases']);
+        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод AccountIndexRequestHandler::accountMailingsWidgetConfig
+     */
+    public function testAccountMailingsWidgetConfig()
+    {
+        $mailingsArray = [new class() {}];
+        
+        $reflection = new \ReflectionMethod($this->handler, 'accountMailingsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $mailingsArray);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('mailings', $result);
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['mailings']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод AdminUserDetailRequestHandler::adminUserDetailBreadcrumbsWidgetConfig
+     */
+    public function testAdminUserDetailBreadcrumbsWidgetConfig()
+    {
+        $usersModel = new class() extends Model {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminUserDetailBreadcrumbsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $usersModel);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('usersModel', $result);
+        $this->assertInstanceOf(Model::class, $result['usersModel']);
+    }
+    
+    /**
+     * Тестирует метод AdminUserDetailRequestHandler::adminUserMenuWidgetConfig
+     */
+    public function testAdminUserMenuWidgetConfig()
+    {
+        $usersModel = new class() extends Model {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminUserMenuWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $usersModel);
+        
+        $this->assertInternalType('array', $result);
+        $this->assertArrayHasKey('usersModel', $result);
+        $this->assertInstanceOf(Model::class, $result['usersModel']);
     }
     
     public static function tearDownAfterClass()
