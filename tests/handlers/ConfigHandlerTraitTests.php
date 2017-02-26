@@ -570,7 +570,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountIndexRequestHandler::accountContactsWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::accountContactsWidgetConfig
      */
     public function testAccountContactsWidgetConfig()
     {
@@ -592,7 +592,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountIndexRequestHandler::accountCurrentOrdersWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::accountCurrentOrdersWidgetConfig
      */
     public function testAccountCurrentOrdersWidgetConfig()
     {
@@ -617,7 +617,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountIndexRequestHandler::accountMailingsWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::accountMailingsWidgetConfig
      */
     public function testAccountMailingsWidgetConfig()
     {
@@ -639,7 +639,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminUserDetailRequestHandler::adminUserDetailBreadcrumbsWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::adminUserDetailBreadcrumbsWidgetConfig
      */
     public function testAdminUserDetailBreadcrumbsWidgetConfig()
     {
@@ -655,7 +655,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminUserDetailRequestHandler::adminUserMenuWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::adminUserMenuWidgetConfig
      */
     public function testAdminUserMenuWidgetConfig()
     {
@@ -671,7 +671,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountOrdersRequestHandler::accountOrdersWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::accountOrdersWidgetConfig
      */
     public function testAccountOrdersWidgetConfig()
     {
@@ -699,7 +699,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AccountChangeDataRequestHandler::accountChangeDataWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::accountChangeDataWidgetConfig
      */
     public function testAccountChangeDataWidgetConfig()
     {
@@ -718,6 +718,28 @@ class ConfigHandlerTraitTests extends TestCase
         $reflection = new \ReflectionMethod($this->handler, 'accountChangeDataWidgetConfig');
         $reflection->setAccessible(true);
         $result = $reflection->invoke($this->handler, $userUpdateForm, $usersModel);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayhasKey('form', $result);
+        $this->assertArrayhasKey('header', $result);
+        $this->assertArrayhasKey('template', $result);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::accountChangePasswordWidgetConfig
+     */
+    public function testAccountChangePasswordWidgetConfig()
+    {
+        $userChangePasswordForm = new class() extends AbstractBaseForm{};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'accountChangePasswordWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $userChangePasswordForm);
         
         $this->assertInternalType('array', $result);
         

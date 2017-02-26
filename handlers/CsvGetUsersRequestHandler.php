@@ -86,6 +86,7 @@ class CsvGetUsersRequestHandler extends AbstractBaseHandler
                 \Yii::t('base', 'City'),
                 \Yii::t('base', 'Country'),
                 \Yii::t('base', 'Postcode'),
+                \Yii::t('base', 'Orders'),
             ];
             
             $this->write($array);
@@ -105,12 +106,14 @@ class CsvGetUsersRequestHandler extends AbstractBaseHandler
             
             $array[] = $user->id;
             $array[] = $user->email->email;
+            $array[] = $user->name->name;
             $array[] = $user->surname->surname;
             $array[] = $user->phone->phone;
             $array[] = $user->address->address;
             $array[] = $user->city->city;
             $array[] = $user->country->country;
             $array[] = $user->postcode->postcode;
+            $array[] = count($user->orders);
             
             $this->write($array);
         } catch (\Throwable $t) {

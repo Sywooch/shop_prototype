@@ -27,7 +27,19 @@ class MailingForm extends AbstractBaseForm
      * Сценарий добавления подписки пользователю из настроек аккаунта
      */
     const SAVE_ACC = 'save_acc';
+    /**
+     * Сценарий удаление связи пользователя с рассылкой из настроек админ панели
+     */
+    const UNSUBSCRIBE_ADMIN= 'unsubscribe_admin';
+    /**
+     * Сценарий добавления подписки пользователю из настроек админ панели
+     */
+    const SAVE_ADMIN = 'save_admin';
     
+    /**
+     * @var int ID пользователя
+     */
+    public $id_user;
     /**
      * @var string email
      */
@@ -48,6 +60,8 @@ class MailingForm extends AbstractBaseForm
             self::UNSUBSCRIBE=>['id', 'email', 'key'],
             self::UNSUBSCRIBE_ACC=>['id'],
             self::SAVE_ACC=>['id'],
+            self::UNSUBSCRIBE_ADMIN=>['id_user', 'id'],
+            self::SAVE_ADMIN=>['id_user', 'id'],
         ];
     }
     
@@ -63,6 +77,8 @@ class MailingForm extends AbstractBaseForm
             [['email'], 'email', 'on'=>self::UNSUBSCRIBE],
             [['id'], 'required', 'on'=>self::UNSUBSCRIBE_ACC],
             [['id'], 'required', 'on'=>self::SAVE_ACC],
+            [['id_user', 'id'], 'required', 'on'=>self::UNSUBSCRIBE_ADMIN],
+            [['id_user', 'id'], 'required', 'on'=>self::SAVE_ADMIN],
         ];
     }
 }

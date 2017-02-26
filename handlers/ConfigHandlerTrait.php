@@ -653,4 +653,24 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AccountChangePasswordWidget
+     * @param AbstractBaseForm $userChangePasswordForm
+     * @return array
+     */
+    private function accountChangePasswordWidgetConfig(AbstractBaseForm $userChangePasswordForm)
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['header'] = \Yii::t('base', 'Change password');
+            $dataArray['form'] = $userChangePasswordForm;
+            $dataArray['template'] = 'account-change-password-form.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

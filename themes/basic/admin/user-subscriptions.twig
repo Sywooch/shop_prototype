@@ -1,0 +1,19 @@
+{{ register_asset_bundle('app/assets/AccountChangeSubscriptionsAsset') }}
+
+{{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
+{{ use ('app/widgets/AdminUserMailingsUnsubscribeWidget') }}
+{{ use ('app/widgets/AccountMailingsFormWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
+
+{{ include('@theme/common/admin-user-common.twig') }}
+
+<div class="account-unsubscribe">
+    {{ admin_user_mailings_unsubscribe_widget_widget(adminUserMailingsUnsubscribeWidgetConfig) }}
+</div>
+
+<div class="account-subscribe">
+    {{ account_mailings_form_widget_widget(accountMailingsFormWidgetConfig) }}
+</div>

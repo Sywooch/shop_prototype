@@ -23,7 +23,7 @@ $(function() {
         }
     };
     
-    $('#change-data-form').find('input[type="submit"]').on('click', function(event) {
+    $('form').on('click', 'input:submit', function(event) {
         (new SendAccountChangeData()).send(event);
         event.preventDefault();
     });

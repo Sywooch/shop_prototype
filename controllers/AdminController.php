@@ -30,10 +30,14 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminSizeCreateRequestHandler,
     AdminSizeDeleteRequestHandler,
     AdminSizesRequestHandler,
+    AdminUserDataChangePostRequestHandler,
     AdminUserDataRequestHandler,
     AdminUserDetailRequestHandler,
     AdminUserOrdersRequestHandler,
-    AdminUsersRequestHandler};
+    AdminUserPasswordRequestHandler,
+    AdminUserPasswordChangePostRequestHandler,
+    AdminUsersRequestHandler,
+    AdminUserSubscriptionsRequestHandler};
 
 /**
  * Обрабатывает запросы к админ разделу
@@ -167,10 +171,24 @@ class AdminController extends Controller
                 'handler'=>new AdminUserDataRequestHandler(),
                 'view'=>'user-data.twig',
             ],
-            /*'user-data-change-post'=>[
+            'user-data-change-post'=>[
                 'class'=>AjaxAction::class,
-                'handler'=>new AdminUserDataPostRequestHandler(),
-            ],*/
+                'handler'=>new AdminUserDataChangePostRequestHandler(),
+            ],
+            'user-password'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminUserPasswordRequestHandler(),
+                'view'=>'user-password.twig',
+            ],
+            'user-password-change-post'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminUserPasswordChangePostRequestHandler(),
+            ],
+            'user-subscriptions'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminUserSubscriptionsRequestHandler(),
+                'view'=>'user-subscriptions.twig',
+            ],
         ];
     }
     

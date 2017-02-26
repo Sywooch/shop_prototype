@@ -33,7 +33,9 @@ class UserChangePasswordFormTests extends TestCase
         $reflection = new \ReflectionClass(UserChangePasswordForm::class);
         
         $this->assertTrue($reflection->hasConstant('CHANGE'));
+        $this->assertTrue($reflection->hasConstant('ADMIN_UPDATE'));
         
+        $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('currentPassword'));
         $this->assertTrue($reflection->hasProperty('password'));
         $this->assertTrue($reflection->hasProperty('password2'));
@@ -62,6 +64,30 @@ class UserChangePasswordFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'password2');
         $result = $reflection->getValue($form);
         $this->assertSame('9Iui7Yhh', $result);
+        
+        $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::ADMIN_UPDATE]);
+        $form->attributes = [
+            'id'=>34,
+            'currentPassword'=>'Ui7Htyy',
+            'password'=>'9Iui7Yhh',
+            'password2'=>'9Iui7Yhh',
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(34, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'currentPassword');
+        $result = $reflection->getValue($form);
+        $this->assertSame('Ui7Htyy', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'password');
+        $result = $reflection->getValue($form);
+        $this->assertSame('9Iui7Yhh', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'password2');
+        $result = $reflection->getValue($form);
+        $this->assertSame('9Iui7Yhh', $result);
     }
     
     /**
@@ -75,11 +101,7 @@ class UserChangePasswordFormTests extends TestCase
         $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
         $form->validate();
         
-        $this->assertNotEmpty($form->errors);
         $this->assertCount(3, $form->errors);
-        $this->assertArrayHasKey('currentPassword', $form->errors);
-        $this->assertArrayHasKey('password', $form->errors);
-        $this->assertArrayHasKey('password2', $form->errors);
         
         $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
         $form->attributes = [
@@ -89,9 +111,7 @@ class UserChangePasswordFormTests extends TestCase
         ];
         $form->validate();
         
-        $this->assertNotEmpty($form->errors);
         $this->assertCount(1, $form->errors);
-        $this->assertArrayHasKey('currentPassword', $form->errors);
         
         $rawPassword = $user->password;
         
@@ -108,12 +128,51 @@ class UserChangePasswordFormTests extends TestCase
         ];
         $form->validate();
         
-        $this->assertNotEmpty($form->errors);
         $this->assertCount(1, $form->errors);
-        $this->assertArrayHasKey('password2', $form->errors);
         
         $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
         $form->attributes = [
+            'currentPassword'=>$rawPassword,
+            'password'=>'9Iui7Yhh',
+            'password2'=>'9Iui7Yhh',
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $user = UsersModel::findOne(1);
+        \Yii::$app->user->login($user);
+        
+        $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::ADMIN_UPDATE]);
+        $form->validate();
+        
+        $this->assertCount(4, $form->errors);
+        
+        $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::ADMIN_UPDATE]);
+        $form->attributes = [
+            'id'=>1,
+            'currentPassword'=>'Ui7Htyy',
+            'password'=>'9Iui7Yhh',
+            'password2'=>'9Iui7Yhh',
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::ADMIN_UPDATE]);
+        $form->attributes = [
+            'id'=>1,
+            'currentPassword'=>$rawPassword,
+            'password'=>'9Iui7Yhh',
+            'password2'=>'8Iui7Yhh',
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::ADMIN_UPDATE]);
+        $form->attributes = [
+            'id'=>1,
             'currentPassword'=>$rawPassword,
             'password'=>'9Iui7Yhh',
             'password2'=>'9Iui7Yhh',
