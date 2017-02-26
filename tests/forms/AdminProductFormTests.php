@@ -39,6 +39,7 @@ class AdminProductFormTests extends TestCase
         $this->assertTrue($reflection->hasProperty('total_products'));
         $this->assertTrue($reflection->hasProperty('seocode'));
         $this->assertTrue($reflection->hasProperty('views'));
+        $this->assertTrue($reflection->hasProperty('related'));
     }
     
     /**
@@ -124,7 +125,8 @@ class AdminProductFormTests extends TestCase
             'active'=>true,
             'total_products'=>568,
             'seocode'=>'product',
-            'views'=>571
+            'views'=>571,
+            'related'=>'1,2,3'
         ];
         
         $reflection = new \ReflectionProperty($form, 'id');
@@ -175,6 +177,9 @@ class AdminProductFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'views');
         $result = $reflection->getValue($form);
         $this->assertSame(571, $result);
+        $reflection = new \ReflectionProperty($form, 'related');
+        $result = $reflection->getValue($form);
+        $this->assertSame('1,2,3', $result);
         
         $form = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
         $form->attributes = [

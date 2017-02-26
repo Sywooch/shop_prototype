@@ -104,6 +104,7 @@ class AdminProductDetailFormWidget extends AbstractBaseWidget
                 'total_products'=>$this->product->total_products,
                 'seocode'=>$this->product->seocode,
                 'views'=>$this->product->views,
+                'related'=>implode(',', ArrayHelper::getColumn($this->product->related, 'id_related_product')),
             ]);
             
             $renderArray['formId'] = sprintf('admin-product-detail-send-form-%d', $this->product->id);

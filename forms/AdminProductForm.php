@@ -92,12 +92,16 @@ class AdminProductForm extends AbstractBaseForm
      * @var int количество просмотров
      */
     public $views;
+    /**
+     * @var int связанных товаров
+     */
+    public $related;
     
     public function scenarios()
     {
         return [
             self::CREATE=>['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode'],
-            self::EDIT=>['id', 'code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode', 'views'],
+            self::EDIT=>['id', 'code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode', 'views', 'related'],
             self::GET=>['id'],
             self::DELETE=>['id'],
         ];

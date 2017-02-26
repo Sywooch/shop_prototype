@@ -18,7 +18,8 @@ use app\models\{CurrencyInterface,
 use app\savers\ModelSaver;
 use app\services\{GetCurrentCurrencyModelService,
     SaveProductsColorsService,
-    SaveProductsSizesService};
+    SaveProductsSizesService,
+    SaveRelatedProductsService};
 use app\widgets\AdminProductDataWidget;
 
 /**
@@ -98,6 +99,14 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                             'idProduct'=>$productsModel->id
                         ]);
                         $service->get();
+                        
+                        if (!empty($form->related)) {
+                            $service = new SaveRelatedProductsService([
+                                'idRelatedProducts'=>explode(',', $form->related),
+                                'idProduct'=>$productsModel->id
+                            ]);
+                            $service->get();
+                        }
                         
                         $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
                             'key'=>HashHelper::createCurrencyKey()

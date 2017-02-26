@@ -19,6 +19,7 @@
         {{ form.field(modelForm, 'total_products').input('number', {'step':1, 'min':0}) | raw }}
         {{ form.field(modelForm, 'seocode') | raw }}
         {{ form.field(modelForm, 'views').input('number', {'step':1, 'min':0}) | raw }}
+        {{ form.field(modelForm, 'related') | raw }}
         
         <input type="submit" name="send" value="{{ button }}">
         <input type="submit" name="cancel" value="{{ buttonCancel }}">

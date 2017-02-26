@@ -3,7 +3,6 @@
 namespace app\tests\model;
 
 use PHPUnit\Framework\TestCase;
-use app\models\ProductsModel;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\{BrandsFixture,
     CategoriesFixture,
@@ -11,11 +10,14 @@ use app\tests\sources\fixtures\{BrandsFixture,
     ProductsColorsFixture,
     ProductsFixture,
     ProductsSizesFixture,
+    RelatedProductsFixture,
     SizesFixture,
     SubcategoryFixture};
 use app\models\{BrandsModel,
     CategoriesModel,
     ColorsModel,
+    ProductsModel,
+    RelatedProductsModel,
     SizesModel,
     SubcategoryModel};
 
@@ -37,7 +39,8 @@ class ProductsModelTests extends TestCase
                 'colors'=>ColorsFixture::class,
                 'products_colors'=>ProductsColorsFixture::class,
                 'sizes'=>SizesFixture::class,
-                'products_sizes'=>ProductsSizesFixture::class
+                'products_sizes'=>ProductsSizesFixture::class,
+                'related_products'=>RelatedProductsFixture::class,
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -320,7 +323,6 @@ class ProductsModelTests extends TestCase
         $result = $model->sizes;
         
         $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
         foreach ($result as $item) {
             $this->assertInstanceOf(SizesModel::class, $item);
         }
@@ -337,6 +339,22 @@ class ProductsModelTests extends TestCase
         $result = $model->brand;
         
         $this->assertInstanceOf(BrandsModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод ProductsModel::getRelated
+     */
+    public function testGetRelated()
+    {
+        $model = new ProductsModel();
+        $model->id = 1;
+        
+        $result = $model->related;
+        
+        $this->assertInternalType('array', $result);
+        foreach ($result as $item) {
+            $this->assertInstanceOf(RelatedProductsModel::class, $item);
+        }
     }
     
     public static function tearDownAfterClass()

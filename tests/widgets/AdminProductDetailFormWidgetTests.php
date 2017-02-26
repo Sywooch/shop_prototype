@@ -528,6 +528,7 @@ class AdminProductDetailFormWidgetTests extends TestCase
             public $total_products = 105;
             public $seocode = 'name-1';
             public $views = 561;
+            public $related;
             public function __construct()
             {
                 $this->colors = [
@@ -540,6 +541,16 @@ class AdminProductDetailFormWidgetTests extends TestCase
                     new class() {
                         public $id = 2;
                         public $size = 45.5;
+                    },
+                ];
+                $this->related = [
+                    new class() {
+                        public $id_product = 2;
+                        public $id_related_product = 1;
+                    },
+                    new class() {
+                        public $id_product = 2;
+                        public $id_related_product = 2;
                     },
                 ];
             }
@@ -602,6 +613,7 @@ class AdminProductDetailFormWidgetTests extends TestCase
         $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[total_products\]" value="[0-9]{1,3}" step="1" min="0">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[seocode\]" value=".+">#', $result);
         $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[views\]" value="[0-9]{1,3}" step="1" min="0">#', $result);
+        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[related\]" value="[0-9]{1,3},[0-9]{1,3}">#', $result);
         $this->assertRegExp('#<input type="submit" name="send" value="Сохранить">#', $result);
         $this->assertRegExp('#<input type="submit" name="cancel" value="Отменить">#', $result);
     }

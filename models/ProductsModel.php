@@ -5,6 +5,7 @@ namespace app\models;
 use app\models\{AbstractBaseModel,
     BrandsModel,
     CategoriesModel,
+    RelatedProductsModel,
     SizesModel,
     SubcategoryModel};
 use app\exceptions\ExceptionsTrait;
@@ -129,6 +130,19 @@ class ProductsModel extends AbstractBaseModel
     {
         try {
             return $this->hasOne(BrandsModel::class, ['id'=>'id_brand']);
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает массив RelatedProductsModel
+     * @return ActiveQueryInterface
+     */
+    public function getRelated()
+    {
+        try {
+            return $this->hasMany(RelatedProductsModel::class, ['id_product'=>'id']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
