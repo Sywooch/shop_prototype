@@ -37,6 +37,8 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminUserPasswordRequestHandler,
     AdminUserPasswordChangePostRequestHandler,
     AdminUsersRequestHandler,
+    AdminUserSubscriptionsAddRequestHandler,
+    AdminUserSubscriptionsCancelRequestHandler,
     AdminUserSubscriptionsRequestHandler};
 
 /**
@@ -188,6 +190,14 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminUserSubscriptionsRequestHandler(),
                 'view'=>'user-subscriptions.twig',
+            ],
+            'user-subscriptions-cancel'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminUserSubscriptionsCancelRequestHandler(),
+            ],
+            'user-subscriptions-add'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminUserSubscriptionsAddRequestHandler(),
             ],
         ];
     }

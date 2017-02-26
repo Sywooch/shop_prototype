@@ -8,8 +8,7 @@ use app\handlers\{AbstractBaseHandler,
 use app\finders\{MailingsEmailFinder,
     MailingsNotEmailFinder,
     UserEmailFinder};
-use app\forms\{AbstractBaseForm,
-    MailingForm};
+use app\forms\MailingForm;
 
 /**
  * Обрабатывает запрос на данные 
@@ -62,7 +61,7 @@ class AdminUserSubscriptionsRequestHandler extends AbstractBaseHandler
                 $dataArray = [];
                 
                 $dataArray['adminUserMailingsUnsubscribeWidgetConfig'] = $this->adminUserMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
-                $dataArray['accountMailingsFormWidgetConfig'] = $this->accountMailingsFormWidgetConfig($notMailingsArray, $notMailingForm);
+                $dataArray['adminUserMailingsFormWidgetConfig'] = $this->adminUserMailingsFormWidgetConfig($notMailingsArray, $notMailingForm);
                 $dataArray['adminUserDetailBreadcrumbsWidgetConfig'] = $this->adminUserDetailBreadcrumbsWidgetConfig($usersModel);
                 $dataArray['adminUserMenuWidgetConfig'] = $this->adminUserMenuWidgetConfig($usersModel);
                 
@@ -70,26 +69,6 @@ class AdminUserSubscriptionsRequestHandler extends AbstractBaseHandler
             }
             
             return $this->dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Возвращает массив конфигурации для виджета AdminUserMailingsUnsubscribeWidget
-     * @param array $mailingsArray
-     * @param AbstractBaseForm $mailingForm
-     * @return array
-     */
-    private function adminUserMailingsUnsubscribeWidgetConfig(array $mailingsArray, AbstractBaseForm $mailingForm): array
-    {
-        try {
-            $dataArray = [];
-            
-            $dataArray = $this->accountMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
-            $dataArray['template'] = 'admin-user-mailings-unsubscribe.twig';
-            
-            return $dataArray;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

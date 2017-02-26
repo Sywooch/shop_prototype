@@ -3,21 +3,22 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
-use yii\helpers\Url;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\widgets\AbstractBaseWidget;
 use app\forms\AbstractBaseForm;
 
 /**
- * Формирует HTML строку с данными о текущих подписках
+ * Формирует HTML строку с информацией о текущем статусе корзины заказов
  */
-class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
+class AdminUserMailingsFormWidget extends AbstractBaseWidget
 {
     /**
      * @var array MailingsModel
      */
     private $mailings;
     /**
-     * @var array MailingForm
+     * @var object MailingForm
      */
     private $form;
     /**
@@ -30,7 +31,7 @@ class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
     private $template;
     
     /**
-     * Конструирует HTML строку с данными
+     * Конструирует HTML строку с информацией о текущем статусе корзины заказов
      * @return string
      */
     public function run()
@@ -59,7 +60,7 @@ class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
                     $form = clone $this->form;
                     
                     $set['modelForm'] = \Yii::configure($form, ['id'=>$mailing->id]);
-                    $set['formId'] = sprintf('admin-user-mailings-unsubscribe-form-%d', $mailing->id);
+                    $set['formId'] = sprintf('admin-user-mailings-form-%d', $mailing->id);
                     
                     $set['ajaxValidation'] = false;
                     $set['validateOnSubmit'] = false;
@@ -67,8 +68,10 @@ class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
                     $set['validateOnBlur'] = false;
                     $set['validateOnType'] = false;
                     
-                    $set['formAction'] = Url::to(['/admin/user-subscriptions-cancel']);
-                    $set['button'] = \Yii::t('base', 'Cancel');
+                    $set['multiple'] = true;
+                    
+                    $set['formAction'] = Url::to(['/admin/user-subscriptions-add']);
+                    $set['button'] = \Yii::t('base', 'Subscribe');
                     
                     $renderArray['mailings'][] = $set;
                 }
@@ -81,8 +84,8 @@ class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminUserMailingsUnsubscribeWidget::mailings
-     * @param $mailings array
+     * Присваивает значение AdminUserMailingsFormWidget::mailings
+     * @param array $mailings
      */
     public function setMailings(array $mailings)
     {
@@ -94,7 +97,7 @@ class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminUserMailingsUnsubscribeWidget::form
+     * Присваивает значение AdminUserMailingsFormWidget::form
      * @param AbstractBaseForm $form
      */
     public function setForm(AbstractBaseForm $form)
@@ -107,7 +110,7 @@ class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminUserMailingsUnsubscribeWidget::header
+     * Присваивает значение AdminUserMailingsFormWidget::header
      * @param string $header
      */
     public function setHeader(string $header)
@@ -120,7 +123,7 @@ class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminUserMailingsUnsubscribeWidget::template
+     * Присваивает значение AdminUserMailingsFormWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)

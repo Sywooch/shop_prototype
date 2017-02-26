@@ -106,7 +106,8 @@ $routes = [
     'admin-user-data-<email>'=>'admin/user-data',
     'admin-user-password-change-post'=>'admin/user-password-change-post',
     'admin-user-password-<email>'=>'admin/user-password',
-    'admin-user-subscriptions-unsubscribe'=>'admin/user-subscriptions-unsubscribe',
+    'admin-user-subscriptions-cancel'=>'admin/user-subscriptions-cancel',
+    'admin-user-subscriptions-add'=>'admin/user-subscriptions-add',
     'admin-user-subscriptions-<email>'=>'admin/user-subscriptions',
     
     # Календарь

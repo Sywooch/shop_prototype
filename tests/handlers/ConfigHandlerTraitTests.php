@@ -752,6 +752,56 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('string', $result['template']);
     }
     
+    /**
+     * Тестирует метод ConfigHandlerTrait::adminUserMailingsUnsubscribeWidgetConfig
+     */
+    public function testAdminUserMailingsUnsubscribeWidgetConfig()
+    {
+        $mailingsArray = [new class() {}];
+        $mailingForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminUserMailingsUnsubscribeWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $mailingsArray, $mailingForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('mailings', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['mailings']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::adminUserMailingsFormWidgetConfig
+     */
+    public function testAdminUserMailingsFormWidgetConfig()
+    {
+        $mailingsArray = [new class() {}];
+        $mailingForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminUserMailingsFormWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $mailingsArray, $mailingForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('mailings', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['mailings']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();

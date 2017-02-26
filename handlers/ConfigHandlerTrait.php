@@ -673,4 +673,40 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminUserMailingsUnsubscribeWidget
+     * @param array $mailingsArray
+     * @param AbstractBaseForm $mailingForm
+     * @return array
+     */
+    private function adminUserMailingsUnsubscribeWidgetConfig(array $mailingsArray, AbstractBaseForm $mailingForm): array
+    {
+        try {
+            $dataArray = $this->accountMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
+            $dataArray['template'] = 'admin-user-mailings-unsubscribe.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminUserMailingsFormWidget
+     * @param array $mailingsArray
+     * @param AbstractBaseForm $mailingForm
+     * @return array
+     */
+    private function adminUserMailingsFormWidgetConfig(array $mailingsArray, AbstractBaseForm $mailingForm): array
+    {
+        try {
+            $dataArray = $this->accountMailingsFormWidgetConfig($mailingsArray, $mailingForm);
+            $dataArray['template'] = 'admin-user-mailings-add.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

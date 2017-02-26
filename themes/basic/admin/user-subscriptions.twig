@@ -2,7 +2,7 @@
 
 {{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
 {{ use ('app/widgets/AdminUserMailingsUnsubscribeWidget') }}
-{{ use ('app/widgets/AccountMailingsFormWidget') }}
+{{ use ('app/widgets/AdminUserMailingsFormWidget') }}
 
 {{ include('@theme/common/admin-common.twig') }}
 
@@ -15,5 +15,5 @@
 </div>
 
 <div class="account-subscribe">
-    {{ account_mailings_form_widget_widget(accountMailingsFormWidgetConfig) }}
+    {{ admin_user_mailings_form_widget_widget(adminUserMailingsFormWidgetConfig) }}
 </div>
