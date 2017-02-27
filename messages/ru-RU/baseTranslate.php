@@ -201,6 +201,7 @@ $translate = [
     'Download selected orders in csv format'=>'Скачать выбранные заказы в формате CSV',
     'Download selected products in csv format'=>'Скачать выбранные товары в формате CSV',
     'Download selected users in csv format'=>'Скачать выбранных пользователей в формате CSV',
+    'Download selected comments in csv format'=>'Скачать выбранные комментарии в формате CSV',
     'Get link'=>'Получить ссылку',
     'No products'=>'Нет товаров',
     'Short description'=>'Краткое описание',

@@ -1,0 +1,18 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<div class="comments-filters">
+{% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionApply, 'method':'POST'}) %}
+    {{ form.field(formModel, 'sortingField').dropDownList(sortingFields) | raw }}
+    {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes) | raw }}
+    {{ form.field(formModel, 'activeStatus').dropDownList(activeStatuses) | raw }}
+    {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    <input type="submit" value="{{ buttonApply }}">
+{{ active_form_end() }}
+
+{% set form = active_form_begin({'id':formIdClean, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionClean, 'method':'POST'}) %}
+    {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    <input type="submit" value="{{ buttonClean }}">
+{{ active_form_end() }}
+</div>

@@ -4,12 +4,18 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use yii\web\NotFoundHttpException;
+use yii\helpers\{ArrayHelper,
+    Url};
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\finders\{CommentsFinder,
-    CommentsFiltersSessionFinder};
+use app\finders\{ActiveStatusesFinder,
+    CommentsFinder,
+    CommentsFiltersSessionFinder,
+    SortingFieldsCommentsFinder,
+    SortingTypesFinder};
 use app\helpers\HashHelper;
 use app\forms\{AbstractBaseForm,
+    AdminCommentsFiltersForm,
     CommentForm};
 
 /**
@@ -59,11 +65,33 @@ class AdminCommentsRequestHandler extends AbstractBaseHandler
                     }
                 }
                 
+                $finder = \Yii::$app->registry->get(SortingFieldsCommentsFinder::class);
+                $sortingFieldsArray = $finder->find();
+                if (empty($sortingFieldsArray)) {
+                    throw new ErrorException($this->emptyError('sortingFieldsArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(SortingTypesFinder::class);
+                $sortingTypesArray = $finder->find();
+                if (empty($sortingTypesArray)) {
+                    throw new ErrorException($this->emptyError('sortingTypesArray'));
+                }
+                
+                $finder = \Yii::$app->registry->get(ActiveStatusesFinder::class);
+                $activeStatusesArray = $finder->find();
+                if (empty($activeStatusesArray)) {
+                    throw new ErrorException($this->emptyError('activeStatusesArray'));
+                }
+                
                 $commentForm = new CommentForm();
+                $adminCommentsFiltersForm = new AdminCommentsFiltersForm();
                 
                 $dataArray = [];
                 
                 $dataArray['adminCommentsWidgetConfig'] = $this->adminCommentsWidgetConfig($commentsCollection->asArray(), $commentForm);
+                $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($commentsCollection->pagination);
+                $dataArray['adminCommentsFiltersWidgetConfig'] = $this->adminCommentsFiltersWidgetConfig($sortingFieldsArray, $sortingTypesArray, $activeStatusesArray, $adminCommentsFiltersForm);
+                $dataArray['adminCsvCommentsFormWidgetConfig'] = $this->adminCsvCommentsFormWidgetConfig($commentsCollection->isEmpty() ? false : true);
                 
                 $this->dataArray = $dataArray;
             }
@@ -91,6 +119,68 @@ class AdminCommentsRequestHandler extends AbstractBaseHandler
             $dataArray['form'] = $commentForm;
             $dataArray['header'] = \Yii::t('base', 'Comments');
             $dataArray['template'] = 'admin-comments.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminCommentsFiltersWidget
+     * @param array $sortingFieldsArray
+     * @param array $sortingTypesArray
+     * @param array $activeStatusesArray
+     * @param AbstractBaseForm $adminCommentsFiltersForm
+     * @return array
+     */
+    private function adminCommentsFiltersWidgetConfig(array $sortingFieldsArray, array $sortingTypesArray, array $activeStatusesArray, AbstractBaseForm $adminCommentsFiltersForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            asort($sortingFieldsArray, SORT_STRING);
+            $dataArray['sortingFields'] = $sortingFieldsArray;
+            
+            asort($sortingTypesArray, SORT_STRING);
+            $dataArray['sortingTypes'] = $sortingTypesArray;
+            
+            asort($activeStatusesArray, SORT_STRING);
+            $dataArray['activeStatuses'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $activeStatusesArray);
+            
+            if (empty($adminCommentsFiltersForm->sortingType)) {
+                foreach ($sortingTypesArray as $key=>$val) {
+                    if ($key === \Yii::$app->params['sortingType']) {
+                        $adminCommentsFiltersForm->sortingType = $key;
+                    }
+                }
+            }
+            
+            $adminCommentsFiltersForm->url = Url::current();
+            
+            $dataArray['form'] = $adminCommentsFiltersForm;
+            $dataArray['header'] = \Yii::t('base', 'Filters');
+            $dataArray['template'] = 'admin-comments-filters.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminCsvCommentsFormWidget
+     * @param bool $isAllowed
+     * @return array
+     */
+    private function adminCsvCommentsFormWidgetConfig(bool $isAllowed): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['header'] = \Yii::t('base', 'Download selected comments in csv format');
+            $dataArray['template'] = 'admin-csv-comments-form.twig';
+            $dataArray['isAllowed'] = $isAllowed;
             
             return $dataArray;
         } catch (\Throwable $t) {
