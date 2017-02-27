@@ -225,6 +225,7 @@ $translate = [
     'Subcategory with this name already exists'=>'Подкатегория с этим именем уже существует',
     'Category with this seocode already exists'=>'Категория с этим seocode уже существует',
     'Subcategory with this seocode already exists'=>'Подкатегория с этим seocode уже существует',
+    'Product with this code already exists'=>'Товар с этим кодом уже существует',
     'Create'=>'Создать',
     'Create category'=>'Создать категорию',
     'Create subcategory'=>'Создать подкатегорию',

@@ -64,6 +64,9 @@ class ProductsModel extends AbstractBaseModel
             [['active', 'total_products', 'views'], 'default', 'value'=>0, 'on'=>self::SAVE],
             [['seocode'], AddProductSeocodeValidator::class, 'on'=>self::SAVE],
             [['description', 'short_description', 'images'], 'default', 'value'=>'', 'on'=>self::EDIT],
+            [['seocode'], AddProductSeocodeValidator::class, 'on'=>self::EDIT, 'when'=>function($model, $attribute) {
+                return $model->$attribute !== $model->getOldAttribute($attribute);
+            }],
             [['total_products', 'views'], 'default', 'value'=>0, 'on'=>self::EDIT],
             [['id', 'code', 'name', 'price', 'id_category', 'id_subcategory', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
             [['id'], 'required', 'on'=>self::DELETE],

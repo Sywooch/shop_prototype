@@ -14,7 +14,8 @@ use app\helpers\{ImgHelper,
 use app\models\ProductsModel;
 use app\savers\ModelSaver;
 use app\services\{SaveProductsColorsService,
-    SaveProductsSizesService};
+    SaveProductsSizesService,
+    SaveRelatedProductsService};
 use app\widgets\{AdminAddProductFormWidget,
     AdminProductSaveSuccessWidget};
 use app\finders\{BrandsFinder,
@@ -90,6 +91,14 @@ class AdminAddProductPostRequestHandler extends AbstractBaseHandler
                             'idProduct'=>$productsModel->id
                         ]);
                         $service->get();
+                        
+                        if (!empty($form->related)) {
+                            $service = new SaveRelatedProductsService([
+                                'idRelatedProducts'=>explode(',', $form->related),
+                                'idProduct'=>$productsModel->id
+                            ]);
+                            $service->get();
+                        }
                         
                         $finder = \Yii::$app->registry->get(CategoriesFinder::class);
                         $categoriesArray = $finder->find();

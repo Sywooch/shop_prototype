@@ -31,9 +31,6 @@ class SaveRelatedProductsService extends AbstractBaseService
     public function get()
     {
         try {
-            if (empty($this->idRelatedProducts)) {
-                throw new ErrorException($this->emptyError('idRelatedProducts'));
-            }
             if (empty($this->idProduct)) {
                 throw new ErrorException($this->emptyError('idProduct'));
             }
@@ -48,21 +45,23 @@ class SaveRelatedProductsService extends AbstractBaseService
             ]);
             $remover->remove();
             
-            $relatedProductsModel = new RelatedProductsModel(['scenario'=>RelatedProductsModel::SAVE]);
-            $relatedProductsModelArray = [];
-            foreach ($this->idRelatedProducts as $idRelatedProduct) {
-                $rawRelatedProductsModel = clone $relatedProductsModel;
-                $rawRelatedProductsModel->id_product = $this->idProduct;
-                $rawRelatedProductsModel->id_related_product = $idRelatedProduct;
-                if ($rawRelatedProductsModel->validate() === false) {
-                    throw new ErrorException($this->modelError($rawRelatedProductsModel->errors));
+            if (!empty($this->idRelatedProducts)) {
+                $relatedProductsModel = new RelatedProductsModel(['scenario'=>RelatedProductsModel::SAVE]);
+                $relatedProductsModelArray = [];
+                foreach ($this->idRelatedProducts as $idRelatedProduct) {
+                    $rawRelatedProductsModel = clone $relatedProductsModel;
+                    $rawRelatedProductsModel->id_product = $this->idProduct;
+                    $rawRelatedProductsModel->id_related_product = $idRelatedProduct;
+                    if ($rawRelatedProductsModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawRelatedProductsModel->errors));
+                    }
+                    $relatedProductsModelArray[] = $rawRelatedProductsModel;
                 }
-                $relatedProductsModelArray[] = $rawRelatedProductsModel;
+                $saver = new RelatedProductsArraySaver([
+                    'models'=>$relatedProductsModelArray
+                ]);
+                $saver->save();
             }
-            $saver = new RelatedProductsArraySaver([
-                'models'=>$relatedProductsModelArray
-            ]);
-            $saver->save();
             
             return true;
         } catch (\Throwable $t) {

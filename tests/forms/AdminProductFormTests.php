@@ -5,12 +5,26 @@ namespace app\tests\forms;
 use PHPUnit\Framework\TestCase;
 use app\forms\AdminProductForm;
 use yii\web\UploadedFile;
+use app\tests\DbManager;
+use app\tests\sources\fixtures\ProductsFixture;
 
 /**
  * Тестирует класс AdminProductForm
  */
 class AdminProductFormTests extends TestCase
 {
+    private static $dbClass;
+    
+    public static function setUpBeforeClass()
+    {
+        self::$dbClass = new DbManager([
+            'fixtures'=>[
+                'products'=>ProductsFixture::class,
+            ]
+        ]);
+        self::$dbClass->loadFixtures();
+    }
+    
     /**
      * Тестирует свойства AdminProductForm
      */
@@ -63,6 +77,7 @@ class AdminProductFormTests extends TestCase
             'active'=>true,
             'total_products'=>568,
             'seocode'=>'product',
+            'related'=>'1,2,3'
         ];
         
         $reflection = new \ReflectionProperty($form, 'code');
@@ -107,6 +122,9 @@ class AdminProductFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'seocode');
         $result = $reflection->getValue($form);
         $this->assertSame('product', $result);
+        $reflection = new \ReflectionProperty($form, 'related');
+        $result = $reflection->getValue($form);
+        $this->assertSame('1,2,3', $result);
         
         $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
         $form->attributes = [
@@ -208,8 +226,25 @@ class AdminProductFormTests extends TestCase
         $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
         $form->validate();
         
-        $this->assertNotEmpty($form->errors);
         $this->assertCount(11, $form->errors);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
+        $form->attributes = [
+            'code'=>self::$dbClass->products['product_1']['code'],
+            'name'=>'Product 1',
+            'short_description'=>'Short description 1',
+            'description'=>'Description 1',
+            'price'=>568.89,
+            'images'=>'test',
+            'id_category'=>1,
+            'id_subcategory'=>2,
+            'id_colors'=>[1, 2, 3],
+            'id_sizes'=>[2, 4],
+            'id_brand'=>1,
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
         
         $form = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
         $form->attributes = [
@@ -251,6 +286,44 @@ class AdminProductFormTests extends TestCase
         $form->validate();
         
         $this->assertEmpty($form->errors);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
+        $form->attributes = [
+            'id'=>self::$dbClass->products['product_1']['id'],
+            'code'=>self::$dbClass->products['product_1']['code'],
+            'name'=>'Product 1',
+            'short_description'=>'Short description 1',
+            'description'=>'Description 1',
+            'price'=>568.89,
+            'id_category'=>1,
+            'id_subcategory'=>2,
+            'id_colors'=>[1, 2, 3],
+            'id_sizes'=>[2, 4],
+            'id_brand'=>1,
+            'seocode'=>'product', 
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new AdminProductForm(['scenario'=>AdminProductForm::EDIT]);
+        $form->attributes = [
+            'id'=>self::$dbClass->products['product_2']['id'],
+            'code'=>self::$dbClass->products['product_1']['code'],
+            'name'=>'Product 1',
+            'short_description'=>'Short description 1',
+            'description'=>'Description 1',
+            'price'=>568.89,
+            'id_category'=>1,
+            'id_subcategory'=>2,
+            'id_colors'=>[1, 2, 3],
+            'id_sizes'=>[2, 4],
+            'id_brand'=>1,
+            'seocode'=>'product', 
+        ];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
         
         $filesArray = [
             'AdminProductForm' => [
@@ -398,5 +471,10 @@ class AdminProductFormTests extends TestCase
         ];
         
         $this->assertEmpty($form->errors);
+    }
+    
+    public static function tearDownAfterClass()
+    {
+        self::$dbClass->unloadFixtures();
     }
 }

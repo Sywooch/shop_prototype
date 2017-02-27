@@ -16,6 +16,7 @@ $(function() {
                 } else if (id == 'adminproductform-id_category') {
                     $('#adminproductform-id_subcategory').html(data);
                 }
+                setDisable();
             }
         };
         self.send = function(event) 
@@ -33,6 +34,12 @@ $(function() {
                 'error': self.error,
             });
         };
+        function setDisable()
+        {
+            $('select[data-disabled]').each(function(index, domElement) {
+                $(domElement).find('option:first').attr('disabled', true);
+            });
+        }
     };
     
     $('body').on('change', '#adminproductsfiltersform-category, #adminproductform-id_category', function(event) {

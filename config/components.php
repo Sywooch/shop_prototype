@@ -10,11 +10,6 @@ $components = [
             'twig'=>[
                 'class'=>'yii\twig\ViewRenderer',
                 'options'=>['auto_reload'=>true],
-                /*'globals'=>[
-                    'url'=>'yii\helpers\Url',
-                    'yii'=>'\Yii',
-                    'array'=>'yii\helpers\ArrayHelper'
-                ],*/
             ]
         ],
         'theme'=>[

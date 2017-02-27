@@ -4,7 +4,9 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\StripTagsValidator;
+use app\validators\{CreateProductCodeExistsValidator,
+    EditProductCodeExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы добавления коментария
@@ -100,7 +102,7 @@ class AdminProductForm extends AbstractBaseForm
     public function scenarios()
     {
         return [
-            self::CREATE=>['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode'],
+            self::CREATE=>['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode', 'related'],
             self::EDIT=>['id', 'code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode', 'views', 'related'],
             self::GET=>['id'],
             self::DELETE=>['id'],
@@ -110,12 +112,14 @@ class AdminProductForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['code', 'name', 'short_description', 'description', 'total_products', 'seocode', 'related'], StripTagsValidator::class],
             [['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand'], 'required', 'on'=>self::CREATE],
+            [['code'], CreateProductCodeExistsValidator::class, 'on'=>self::CREATE],
             [['id', 'code', 'name', 'short_description', 'description', 'price', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
+            [['code'], EditProductCodeExistsValidator::class, 'on'=>self::EDIT],
             [['images'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'maxWidth'=>800, 'maxHeight'=>800, 'maxFiles'=>5, 'maxSize'=>1024*512],
             [['id'], 'required', 'on'=>self::GET],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['code', 'name', 'short_description', 'description', 'total_products', 'seocode'], StripTagsValidator::class],
         ];
     }
 }

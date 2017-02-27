@@ -16,6 +16,7 @@
         {{ form.field(modelForm, 'active').checkbox() | raw }}
         {{ form.field(modelForm, 'total_products').input('number', {'step':1, 'min':0}) | raw }}
         {{ form.field(modelForm, 'seocode') | raw }}
+        {{ form.field(modelForm, 'related') | raw }}
         
         <input type="submit" name="send" value="{{ button }}">
     {{ active_form_end() }}

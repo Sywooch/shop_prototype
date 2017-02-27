@@ -100,13 +100,11 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                         ]);
                         $service->get();
                         
-                        if (!empty($form->related)) {
-                            $service = new SaveRelatedProductsService([
-                                'idRelatedProducts'=>explode(',', $form->related),
-                                'idProduct'=>$productsModel->id
-                            ]);
-                            $service->get();
-                        }
+                        $service = new SaveRelatedProductsService([
+                            'idRelatedProducts'=>!empty($form->related) ? explode(',', $form->related) : [],
+                            'idProduct'=>$productsModel->id
+                        ]);
+                        $service->get();
                         
                         $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
                             'key'=>HashHelper::createCurrencyKey()

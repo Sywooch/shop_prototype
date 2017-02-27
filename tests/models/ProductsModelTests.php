@@ -232,7 +232,22 @@ class ProductsModelTests extends TestCase
         ];
         $model->validate();
         
+        $model = ProductsModel::findOne(self::$dbClass->products['product_1']['id']);
+        $model->scenario = ProductsModel::EDIT;
+        $model->attributes = [
+            'id'=>self::$dbClass->products['product_1']['id'],
+            'code'=>'FHHRHY',
+            'name'=>'Mock',
+            'price'=>15.78,
+            'id_category'=>1,
+            'id_subcategory'=>1,
+            'id_brand'=>1,
+            'seocode'=>self::$dbClass->products['product_3']['seocode'],
+        ];
+        $model->validate();
+        
         $this->assertEmpty($model->errors);
+        $this->assertEquals(implode('-', [self::$dbClass->products['product_3']['seocode'], mb_strtolower('FHHRHY', 'UTF-8')]), $model->seocode);
         
         $model = new ProductsModel(['scenario'=>ProductsModel::EDIT]);
         $model->attributes = [];

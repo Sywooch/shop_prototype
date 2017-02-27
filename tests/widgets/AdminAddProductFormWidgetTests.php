@@ -387,6 +387,7 @@ class AdminAddProductFormWidgetTests extends TestCase
         $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[active\]" value="1">.+</label>#', $result);
         $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[total_products\]" step="1" min="0">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[seocode\]">#', $result);
+        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[related\]">#', $result);
         $this->assertRegExp('#<input type="submit" name="send" value="Сохранить">#', $result);
     }
 }

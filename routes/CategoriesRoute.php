@@ -18,7 +18,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
     /**
      * @var array массив данных, используется при парсинге URL
      */
-    private $_parsingArray = [];
+    private $parsingArray = [];
     /**
      * @var string строка, представляющая в URL ссылку на главную страницу каталога
      */
@@ -39,11 +39,11 @@ class CategoriesRoute extends Object implements UrlRuleInterface
             
             if ($category != $this->all) {
                 if (CategoriesModel::find()->where(['[[categories.seocode]]'=>$category])->exists()) {
-                    $this->_parsingArray[\Yii::$app->params['categoryKey']] = $category;
+                    $this->parsingArray[\Yii::$app->params['categoryKey']] = $category;
                     if (!empty($subcategory)) {
                         $subcategory = $this->parseChunk($subcategory);
                         if (SubcategoryModel::find()->where(['[[subcategory.seocode]]'=>$subcategory])->exists()) {
-                            $this->_parsingArray[\Yii::$app->params['subcategoryKey']] = $subcategory;
+                            $this->parsingArray[\Yii::$app->params['subcategoryKey']] = $subcategory;
                         } else {
                             return false;
                         }
@@ -53,7 +53,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
                 }
             }
             
-            return ['products-list/index', $this->_parsingArray];
+            return ['products-list/index', $this->parsingArray];
         } catch (\Throwable $t) {
             $this->writeErrorInLogs($t, __METHOD__);
             $this->throwException($t, __METHOD__);
@@ -101,7 +101,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
         try {
             if (preg_match('/^(.+)-(\d{1,3})$/', $chunk, $matches)) {
                 $chunk = $matches[1];
-                $this->_parsingArray[\Yii::$app->params['pagePointer']] = $matches[2];
+                $this->parsingArray[\Yii::$app->params['pagePointer']] = $matches[2];
             }
             
             return $chunk;
