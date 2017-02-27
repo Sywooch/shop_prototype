@@ -70,6 +70,9 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
                     'filters'=>$filtersModel
                 ]);
                 $productsCollection = $finder->find();
+                if (empty($productsCollection)) {
+                    throw new ErrorException($this->emptyError('productsCollection'));
+                }
                 
                 if ($productsCollection->isEmpty() === true) {
                     if ($productsCollection->pagination->totalCount > 0) {

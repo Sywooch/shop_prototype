@@ -109,6 +109,8 @@ $routes = [
     'admin-user-subscriptions-cancel'=>'admin/user-subscriptions-cancel',
     'admin-user-subscriptions-add'=>'admin/user-subscriptions-add',
     'admin-user-subscriptions-<email>'=>'admin/user-subscriptions',
+    'admin-comments-<page:\d{1,3}>'=>'admin/comments',
+    'admin-comments'=>'admin/comments',
     
     # Календарь
     'calendar-get'=>'calendar/get',

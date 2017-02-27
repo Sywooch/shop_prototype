@@ -5,6 +5,7 @@ namespace app\handlers;
 use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
+use yii\web\NotFoundHttpException;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
 use app\finders\{OrdersExistFinder,
@@ -57,6 +58,12 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('usersCollection'));
                 }
                 
+                if ($usersCollection->isEmpty() === true) {
+                    if ($usersCollection->pagination->totalCount > 0) {
+                        throw new NotFoundHttpException($this->error404());
+                    }
+                }
+                
                 $finder = \Yii::$app->registry->get(SortingFieldsUsersFinder::class);
                 $sortingFieldsArray = $finder->find();
                 if (empty($sortingFieldsArray)) {
@@ -88,6 +95,8 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
             }
             
             return $this->dataArray;
+        } catch (NotFoundHttpException $e) {
+            throw $e;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

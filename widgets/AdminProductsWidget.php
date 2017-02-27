@@ -8,7 +8,7 @@ use yii\helpers\{ArrayHelper,
     Url};
 use app\widgets\AbstractBaseWidget;
 use app\models\CurrencyInterface;
-use app\forms\AdminProductForm;
+use app\forms\AbstractBaseForm;
 use app\helpers\ImgHelper;
 
 /**
@@ -25,7 +25,7 @@ class AdminProductsWidget extends AbstractBaseWidget
      */
     private $currency;
     /**
-     * @var AdminProductForm
+     * @var AbstractBaseForm
      */
     private $form;
     /**
@@ -133,7 +133,7 @@ class AdminProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает array ProductsModel свойству AdminProductsWidget::products
+     * Присваивает значение AdminProductsWidget::products
      * @param array $products
      */
     public function setProducts(array $products)
@@ -146,7 +146,7 @@ class AdminProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает CurrencyInterface свойству AdminProductsWidget::currency
+     * Присваивает значение AdminProductsWidget::currency
      * @param CurrencyInterface $currency
      */
     public function setCurrency(CurrencyInterface $currency)
@@ -159,10 +159,10 @@ class AdminProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает AdminProductForm свойству AdminProductsWidget::form
-     * @param AdminProductForm $form
+     * Присваивает значение AdminProductsWidget::form
+     * @param AbstractBaseForm $form
      */
-    public function setForm(AdminProductForm $form)
+    public function setForm(AbstractBaseForm $form)
     {
         try {
             $this->form = $form;
@@ -172,7 +172,7 @@ class AdminProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает заголовок свойству AdminProductsWidget::header
+     * Присваивает значение AdminProductsWidget::header
      * @param string $header
      */
     public function setHeader(string $header)
@@ -185,7 +185,7 @@ class AdminProductsWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает имя шаблона свойству AdminProductsWidget::template
+     * Присваивает значение AdminProductsWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)

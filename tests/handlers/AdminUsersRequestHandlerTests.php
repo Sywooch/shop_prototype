@@ -179,6 +179,23 @@ class AdminUsersRequestHandlerTests extends TestCase
         $this->assertInternalType('array', $result['adminCsvUsersFormWidgetConfig']);
     }
     
+    /**
+     * Тестирует метод AdminProductsRequestHandler::handle
+     * не существующая страница
+     * @expectedException yii\web\NotFoundHttpException
+     */
+    public function testHandleNotPage()
+    {
+        $request = new class() {
+            public function get($name = null, $defaultValue = null)
+            {
+                return 500;
+            }
+        };
+        
+        $this->handler->handle($request);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();

@@ -4,9 +4,13 @@ namespace app\tests\model;
 
 use PHPUnit\Framework\TestCase;
 use app\models\{CommentsModel,
-    NamesModel};
+    EmailsModel,
+    NamesModel,
+    ProductsModel};
 use app\tests\DbManager;
-use app\tests\sources\fixtures\CommentsFixture;
+use app\tests\sources\fixtures\{CommentsFixture,
+    EmailsFixture,
+    ProductsFixture};
 
 /**
  * Тестирует класс CommentsModel
@@ -20,6 +24,8 @@ class CommentsModelTests extends TestCase
         self::$dbClass = new DbManager([
             'fixtures'=>[
                 'comments'=>CommentsFixture::class,
+                'emails'=>EmailsFixture::class,
+                'products'=>ProductsFixture::class
             ]
         ]);
         self::$dbClass->loadFixtures();
@@ -112,6 +118,32 @@ class CommentsModelTests extends TestCase
         $result = $model->name;
         
         $this->assertInstanceOf(NamesModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод CommentsModel::getEmail
+     */
+    public function testGetEmail()
+    {
+        $model = new CommentsModel();
+        $model->id_email = 1;
+        
+        $result = $model->email;
+        
+        $this->assertInstanceOf(EmailsModel::class, $result);
+    }
+    
+    /**
+     * Тестирует метод CommentsModel::getProduct
+     */
+    public function testGetProduct()
+    {
+        $model = new CommentsModel();
+        $model->id_product = 1;
+        
+        $result = $model->product;
+        
+        $this->assertInstanceOf(ProductsModel::class, $result);
     }
     
     public static function tearDownAfterClass()

@@ -14,7 +14,15 @@ class CommentForm extends AbstractBaseForm
      * Сценарий добавления коментария
      */
     const SAVE = 'save';
+    /**
+     * Сценарий запроса формы для редактирования
+     */
+    const GET = 'get';
     
+    /**
+     * @var int ID комментария
+     */
+    public $id;
     /**
      * @var string текст комментария
      */
@@ -36,14 +44,16 @@ class CommentForm extends AbstractBaseForm
     {
         return [
             self::SAVE=>['text', 'name', 'email', 'id_product'],
+            self::GET=>['id'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['text', 'name', 'email', 'id_product'], 'required', 'enableClientValidation'=>true, 'on'=>self::SAVE],
-            [['email'], 'email', 'enableClientValidation'=>true, 'on'=>self::SAVE]
+            [['text', 'name', 'email', 'id_product'], 'required', 'on'=>self::SAVE],
+            [['email'], 'email', 'on'=>self::SAVE],
+            [['id'], 'required', 'on'=>self::GET]
         ];
     }
 }

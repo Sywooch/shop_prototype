@@ -19,6 +19,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminColorCreateRequestHandler,
     AdminColorDeleteRequestHandler,
     AdminColorsRequestHandler,
+    AdminCommentsRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
@@ -198,6 +199,11 @@ class AdminController extends Controller
             'user-subscriptions-add'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminUserSubscriptionsAddRequestHandler(),
+            ],
+            'comments'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminCommentsRequestHandler(),
+                'view'=>'comments.twig',
             ],
         ];
     }

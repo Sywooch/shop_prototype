@@ -4,7 +4,9 @@ namespace app\models;
 
 use app\models\AbstractBaseModel;
 use app\exceptions\ExceptionsTrait;
-use app\models\NamesModel;
+use app\models\{EmailsModel,
+    NamesModel,
+    ProductsModel};
 
 /**
  * Представляет данные таблицы comments
@@ -51,6 +53,32 @@ class CommentsModel extends AbstractBaseModel
     {
         try {
             return $this->hasOne(NamesModel::class, ['id'=>'id_name']);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект EmailsModel
+     * @return ActiveQueryInterface
+     */
+    public function getEmail()
+    {
+        try {
+            return $this->hasOne(EmailsModel::class, ['id'=>'id_email']);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Получает объект ProductsModel
+     * @return ActiveQueryInterface
+     */
+    public function getProduct()
+    {
+        try {
+            return $this->hasOne(ProductsModel::class, ['id'=>'id_product']);
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

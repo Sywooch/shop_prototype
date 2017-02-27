@@ -19,6 +19,7 @@ $params = [
     'ordersFilters'=>'ordersFilters', # Ключ, по которому в $_SESSION доступны фильтры заказов админ раздела
     'adminProductsFilters'=>'adminProductsFilters', # Ключ, по которому в $_SESSION доступны фильтры товаров админ раздела
     'usersFilters'=>'usersFilters', # Ключ, по которому в $_SESSION доступны фильтры заказов админ раздела
+    'commentsFilters'=>'commentsFilters', # Ключ, по которому в $_SESSION доступны фильтры заказов админ раздела
     
     # Путь к товару
     'categoryKey'=>'category', # Ключ, по которому в $_REQUEST доступна текущая категория

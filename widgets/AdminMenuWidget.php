@@ -69,6 +69,10 @@ class AdminMenuWidget extends Menu
                     'url'=>['/admin/users']
                 ],
                 [
+                    'label'=>\Yii::t('base', 'Comments'),
+                    'url'=>['/admin/comments']
+                ],
+                [
                     'label'=>\Yii::t('base', 'Exit'),
                     'url'=>['/']
                 ],

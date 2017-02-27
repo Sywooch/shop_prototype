@@ -244,6 +244,10 @@ $translate = [
     'Has orders'=>'Есть заказы',
     'Had no orders'=>'Нет заказов',
     'User Id'=>'Id пользователя',
+    'No comments'=>'Нет комментариев',
+    'Comment Id'=>'Id комментария',
+    'Commentator'=>'Комментатор',
+    'Text'=>'Текст',
 ];
 
 return $translate;

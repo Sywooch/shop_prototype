@@ -36,11 +36,8 @@ class GetAction extends AbstractBaseAction
             
             $result = $this->handler->handle(\Yii::$app->request);
             
-            if (is_array($result) === false) {
+            if (is_array($result) === false || empty($result)) {
                 throw new ErrorException($this->invalidError('result'));
-            }
-            if (empty($result)) {
-                throw new ErrorException($this->emptyError('result'));
             }
             
             return $this->controller->render($this->view, $result);

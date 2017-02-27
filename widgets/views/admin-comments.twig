@@ -1,0 +1,33 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+{% if comments %}
+    <ol class="{{ listClass }}">
+        {% for comment in comments %}
+            <li>
+                <div class="admin-comments-previous-data">
+                    <a href="{{ comment.commentHref }}">{{ comment.commentName }}</a>
+                    <br>{{ idHeader }}: {{ comment.id }}
+                    <br>{{ dateHeader }}: {{ comment.date }}
+                    <br>{{ nameHeader }}: {{ comment.name }}
+                    <br>{{ emailHeader }}: {{ comment.email }}
+                    <br>{{ textHeader }}: {{ comment.text }}
+                    <br>{{ activeHeader }}: {{ comment.active }}
+                    
+                    {% set form=active_form_begin({'id':comment.formId, 'enableAjaxValidation':comment.ajaxValidation, 'validateOnSubmit':comment.validateOnSubmit, 'validateOnChange':comment.validateOnChange, 'validateOnBlur':comment.validateOnBlur, 'validateOnType':comment.validateOnType, 'action':comment.formAction, 'method':'POST'}) %}
+                        {{ form.field(comment.modelForm, 'id').hiddenInput().label(false) | raw }}
+                        <input type="submit" value="{{ comment.button }}">
+                    {{ active_form_end() }}
+                    
+                    {% set form=active_form_begin({'id':comment.formIdDelete, 'enableAjaxValidation':comment.ajaxValidation, 'validateOnSubmit':comment.validateOnSubmit, 'validateOnChange':comment.validateOnChange, 'validateOnBlur':comment.validateOnBlur, 'validateOnType':comment.validateOnType, 'action':comment.formActionDelete, 'method':'POST'}) %}
+                        {{ form.field(comment.modelForm, 'id').hiddenInput().label(false) | raw }}
+                        <input type="submit" value="{{ comment.buttonDelete }}">
+                    {{ active_form_end() }}
+                </div>
+            </li>
+        {% endfor %}
+    </ol>
+{% else %}
+    <p>{{ commentsEmpty }}</p>
+{% endif %}

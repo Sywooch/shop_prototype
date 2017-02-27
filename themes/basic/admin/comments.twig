@@ -1,0 +1,10 @@
+{{ register_asset_bundle('app/assets/MainAsset') }}
+
+{{ use ('app/widgets/AdminCommentsBreadcrumbsWidget') }}
+{{ use ('app/widgets/AdminCommentsWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_comments_breadcrumbs_widget_widget() }}
+
+{{ admin_comments_widget_widget(adminCommentsWidgetConfig) }}
