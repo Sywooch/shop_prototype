@@ -248,7 +248,8 @@ $translate = [
     'No comments'=>'Нет комментариев',
     'Comment Id'=>'Id комментария',
     'Commentator'=>'Комментатор',
-    'Text'=>'Текст',
+    'Comment text'=>'Текст комментария',
+    'Product'=>'Товар',
 ];
 
 return $translate;

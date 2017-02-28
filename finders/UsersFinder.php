@@ -49,12 +49,12 @@ class UsersFinder extends AbstractBaseFinder
                 $query->leftJoin('{{surnames}}', '[[users.id_surname]]=[[surnames.id]]');
                 $query->with('email', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'orders');
                 
-                if (!empty($this->filters->ordersStatus)) {
+                if ($this->filters->ordersStatus === ACTIVE_STATUS || $this->filters->ordersStatus === INACTIVE_STATUS) {
                     switch ($this->filters->ordersStatus) {
-                        case 1:
+                        case ACTIVE_STATUS:
                             $query->having(['>', '[[orders]]', 0]);
                             break;
-                        case 2:
+                        case INACTIVE_STATUS:
                             $query->having(['=', '[[orders]]', 0]);
                             break;
                     }

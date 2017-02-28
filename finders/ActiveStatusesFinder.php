@@ -24,8 +24,8 @@ class ActiveStatusesFinder extends AbstractBaseFinder
         try {
             if (empty($this->storage)) {
                 $this->storage = [
-                    1=>\Yii::t('base', 'Active'),
-                    0=>\Yii::t('base', 'Not active')
+                    ACTIVE_STATUS=>\Yii::t('base', 'Active'),
+                    INACTIVE_STATUS=>\Yii::t('base', 'Not active')
                 ];
             }
             

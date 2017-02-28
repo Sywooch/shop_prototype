@@ -269,7 +269,7 @@ class AdminCommentsWidgetTests extends TestCase
         $this->assertRegExp('#Дата добавления: .+#', $result);
         $this->assertRegExp('#Комментатор: .+#', $result);
         $this->assertRegExp('#Email: .+#', $result);
-        $this->assertRegExp('#Текст: .+#', $result);
+        $this->assertRegExp('#Текст комментария: .+#', $result);
         $this->assertRegExp('#Активен: .+#', $result);
         $this->assertRegExp('#<form id="admin-comment-detail-get-form-[0-9]{1,3}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="1">#', $result);

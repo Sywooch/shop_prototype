@@ -39,6 +39,7 @@ class CommentsModelTests extends TestCase
         $reflection = new \ReflectionClass(CommentsModel::class);
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
         
         $model = new CommentsModel();
         
@@ -80,6 +81,13 @@ class CommentsModelTests extends TestCase
         $this->assertEquals(1, $model->id_name);
         $this->assertEquals(1, $model->id_email);
         $this->assertEquals(1, $model->id_product);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::DELETE]);
+        $model->attributes = [
+            'id'=>15
+        ];
+        
+        $this->assertEquals(15, $model->id);
     }
     
     /**
@@ -91,7 +99,6 @@ class CommentsModelTests extends TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertNotEmpty($model->errors);
         $this->assertCount(5, $model->errors);
         
         $model = new CommentsModel(['scenario'=>CommentsModel::SAVE]);
@@ -101,6 +108,20 @@ class CommentsModelTests extends TestCase
             'id_name'=>1, 
             'id_email'=>1, 
             'id_product'=>1
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::DELETE]);
+        $model->attributes = [
+            'id'=>15
         ];
         $model->validate();
         

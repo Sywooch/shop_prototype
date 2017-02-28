@@ -20,6 +20,8 @@ $routes = [
     'filters-admin-products-unset'=>'filters/admin-products-unset',
     'filters-users-set'=>'filters/users-set',
     'filters-users-unset'=>'filters/users-unset',
+    'filters-admin-comments-set'=>'filters/admin-comments-set',
+    'filters-admin-comments-unset'=>'filters/admin-comments-unset',
     
     # Поиск
     'search-<page:\d{1,3}>'=>'products-list/search',
@@ -111,6 +113,8 @@ $routes = [
     'admin-user-subscriptions-<email>'=>'admin/user-subscriptions',
     'admin-comments-<page:\d{1,3}>'=>'admin/comments',
     'admin-comments'=>'admin/comments',
+    'admin-comment-form'=>'admin/comment-form',
+    'admin-comment-delete'=>'admin/comment-delete',
     
     # Календарь
     'calendar-get'=>'calendar/get',
@@ -119,6 +123,7 @@ $routes = [
     'csv-get-orders'=>'csv/get-orders',
     'csv-get-products'=>'csv/get-products',
     'csv-get-users'=>'csv/get-users',
+    'csv-get-comments'=>'csv/get-comments',
     
     # Категории
     'categories-get-subcategory'=>'categories/get-subcategory',

@@ -17,6 +17,10 @@ class CommentsModel extends AbstractBaseModel
      * Сценарий сохранения нового комментария
      */
     const SAVE = 'save';
+    /**
+     * Сценарий удаления комментария
+     */
+    const DELETE = 'delete';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -35,6 +39,7 @@ class CommentsModel extends AbstractBaseModel
     {
         return [
             self::SAVE=>['date', 'text', 'id_name', 'id_email', 'id_product'],
+            self::DELETE=>['id'],
         ];
     }
     
@@ -42,6 +47,7 @@ class CommentsModel extends AbstractBaseModel
     {
         return [
             [['date', 'text', 'id_name', 'id_email', 'id_product'], 'required', 'on'=>self::SAVE],
+            [['id'], 'required', 'on'=>self::DELETE],
         ];
     }
     

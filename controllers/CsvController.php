@@ -5,7 +5,8 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\AjaxAction;
-use app\handlers\{CsvGetOrdersRequestHandler,
+use app\handlers\{CsvGetCommentsRequestHandler,
+    CsvGetOrdersRequestHandler,
     CsvGetProductsRequestHandler,
     CsvGetUsersRequestHandler};
 
@@ -28,6 +29,10 @@ class CsvController extends Controller
             'get-users'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new CsvGetUsersRequestHandler(),
+            ],
+            'get-comments'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new CsvGetCommentsRequestHandler(),
             ],
         ];
     }

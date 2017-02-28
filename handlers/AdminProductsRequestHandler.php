@@ -188,16 +188,16 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
             
             ArrayHelper::multisort($categoriesArray, 'name');
             $categoriesArray = ArrayHelper::map($categoriesArray, 'id', 'name');
-            $dataArray['categories'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
+            $dataArray['categories'] = ArrayHelper::merge([''=>\Yii::t('base', 'All')], $categoriesArray);
             
             if (!empty($subcategoryArray)) {
                 ArrayHelper::multisort($subcategoryArray, 'name');
                 $subcategoryArray = ArrayHelper::map($subcategoryArray, 'id', 'name');
             }
-            $dataArray['subcategory'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $subcategoryArray);
+            $dataArray['subcategory'] = ArrayHelper::merge([''=>\Yii::t('base', 'All')], $subcategoryArray);
             
             asort($activeStatusesArray, SORT_STRING);
-            $dataArray['activeStatuses'] = $activeStatusesArray;
+            $dataArray['activeStatuses'] = ArrayHelper::merge([''=>\Yii::t('base', 'All')], $activeStatusesArray);
             
             if (empty($adminProductsFiltersForm->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {

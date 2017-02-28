@@ -3,35 +3,30 @@
 namespace app\finders;
 
 use yii\base\ErrorException;
-use app\models\CommentsModel;
+use yii\db\ActiveQuery;
 use app\finders\AbstractBaseFinder;
-use app\collections\{LightPagination,
-    CommentsCollection};
+use app\models\CommentsModel;
 use app\filters\CommentsFiltersInterface;
 
 /**
- * Возвращает пользователя с указанным email
+ * Возвращает заказы из СУБД
  */
-class CommentsFinder extends AbstractBaseFinder
+class AdminCommentsCsvFinder extends AbstractBaseFinder
 {
     /**
-     * @var string GET параметр, определяющий текущую страницу
-     */
-    private $page;
-    /**
-     * @var CommentsFiltersInterface объект товарных фильтров
+     * @var CommentsFiltersInterface
      */
     private $filters;
     /**
-     * @var array CommentsModel
+     * @var PurchasesCollection
      */
     private $storage = null;
     
     /**
      * Возвращает данные из СУБД
-     * @return mixed
+     * @return ActiveQuery
      */
-    public function find()
+    public function find(): ActiveQuery
     {
         try {
             if (empty($this->filters)) {
@@ -39,8 +34,6 @@ class CommentsFinder extends AbstractBaseFinder
             }
             
             if (empty($this->storage)) {
-                $this->storage = new CommentsCollection(['pagination'=>new LightPagination()]);
-                
                 $query = CommentsModel::find();
                 $query->select(['[[comments.id]]', '[[comments.date]]', '[[comments.text]]', '[[comments.id_name]]', '[[comments.id_email]]', '[[comments.id_product]]', '[[comments.active]]']);
                 $query->with('email', 'name', 'product');
@@ -49,24 +42,11 @@ class CommentsFinder extends AbstractBaseFinder
                     $query->where(['[[comments.active]]'=>$this->filters->activeStatus]);
                 }
                 
-                $this->storage->pagination->pageSize = \Yii::$app->params['limit'];
-                $this->storage->pagination->page = !empty($this->page) ? (int) $this->page - 1 : 0;
-                $this->storage->pagination->setTotalCount($query);
-                
-                $query->offset($this->storage->pagination->offset);
-                $query->limit($this->storage->pagination->limit);
-                
                 $sortingField = $this->filters->sortingField ?? \Yii::$app->params['sortingField'];
                 $sortingType = $this->filters->sortingType ?? \Yii::$app->params['sortingType'];
                 $query->orderBy(['[[comments.' . $sortingField . ']]'=>(int) $sortingType]);
                 
-                $commentsArray = $query->all();
-                
-                if (!empty($commentsArray)) {
-                    foreach ($commentsArray as $user) {
-                        $this->storage->add($user);
-                    }
-                }
+                $this->storage = $query;
             }
             
             return $this->storage;
@@ -76,21 +56,8 @@ class CommentsFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает значение CommentsFinder::page
-     * @param int $page
-     */
-    public function setPage(int $page)
-    {
-        try {
-            $this->page = $page;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает значение CommentsFinder::filters
-     * @param ProductsFiltersInterface $filters
+     * Присваивает CommentsFiltersInterface ProductsFinder::filters
+     * @param CommentsFiltersInterface $filters
      */
     public function setFilters(CommentsFiltersInterface $filters)
     {

@@ -73,11 +73,13 @@ class UsersFiltersFormTests extends TestCase
         
         $form = new UsersFiltersForm(['scenario'=>UsersFiltersForm::SAVE]);
         $form->attributes = [
+            'ordersStatus'=>'0',
             'url'=>'https://shop.com',
         ];
         $form->validate();
         
         $this->assertEmpty($form->errors);
+        $this->assertSame(0, $form->ordersStatus);
         
         $form = new UsersFiltersForm(['scenario'=>UsersFiltersForm::CLEAN]);
         $form->attributes = [];

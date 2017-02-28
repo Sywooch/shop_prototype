@@ -837,8 +837,9 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<option value="2">Hats</option>#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[subcategory\]">#', $result);
         $this->assertRegExp('#<option value="1">Sneakers</option>#', $result);
-        $this->assertRegExp('#<label><input type="checkbox" name=".+\[active\]\[\]" value="1"> Active</label>#', $result);
-        $this->assertRegExp('#<label><input type="checkbox" name=".+\[active\]\[\]" value="0"> Not active</label>#', $result);
+        $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[active\]">#', $result);
+        $this->assertRegExp('#<option value="1">Active</option>#', $result);
+        $this->assertRegExp('#<option value="0">Not active</option>#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]">#', $result);
         $this->assertRegExp('#<input type="submit" value="Применить">#', $result);
         $this->assertRegExp('#<form id="admin-products-filters-clean" action=".+" method="POST">#', $result);

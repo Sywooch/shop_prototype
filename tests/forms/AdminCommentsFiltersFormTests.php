@@ -73,11 +73,13 @@ class AdminCommentsFiltersFormTests extends TestCase
         
         $form = new AdminCommentsFiltersForm(['scenario'=>AdminCommentsFiltersForm::SAVE]);
         $form->attributes = [
+            'activeStatus'=>'0',
             'url'=>'https://shop.com',
         ];
         $form->validate();
         
         $this->assertEmpty($form->errors);
+        $this->assertSame(0, $form->activeStatus);
         
         $form = new AdminCommentsFiltersForm(['scenario'=>AdminCommentsFiltersForm::CLEAN]);
         $form->attributes = [];

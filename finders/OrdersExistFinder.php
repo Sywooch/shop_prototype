@@ -24,9 +24,8 @@ class OrdersExistFinder extends AbstractBaseFinder
         try {
             if (empty($this->storage)) {
                 $this->storage = [
-                    0=>\Yii::$app->params['formFiller'],
-                    1=>\Yii::t('base', 'Has orders'),
-                    2=>\Yii::t('base', 'Had no orders')
+                    ACTIVE_STATUS=>\Yii::t('base', 'Has orders'),
+                    INACTIVE_STATUS=>\Yii::t('base', 'Had no orders')
                 ];
             }
             

@@ -98,11 +98,13 @@ class AdminProductsFiltersFormTests extends TestCase
         
         $form = new AdminProductsFiltersForm(['scenario'=>AdminProductsFiltersForm::SAVE]);
         $form->attributes = [
+            'active'=>'0',
             'url'=>'https://shop.com',
         ];
         $form->validate();
         
         $this->assertEmpty($form->errors);
+        $this->assertSame(0, $form->active);
         
         $form = new AdminProductsFiltersForm(['scenario'=>AdminProductsFiltersForm::CLEAN]);
         $form->attributes = [];

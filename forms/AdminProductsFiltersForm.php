@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\ActiveStatusTypeValidator;
 
 /**
  * Представляет данные формы фильтров для списка заказов
@@ -68,6 +69,7 @@ class AdminProductsFiltersForm extends AbstractBaseForm
     {
         return [
             [['url'], 'required'],
+            [['active'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE]
         ];
     }
 }

@@ -19,6 +19,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminColorCreateRequestHandler,
     AdminColorDeleteRequestHandler,
     AdminColorsRequestHandler,
+    AdminCommentDeleteRequestHandler,
     AdminCommentsRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
@@ -204,6 +205,10 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminCommentsRequestHandler(),
                 'view'=>'comments.twig',
+            ],
+            'comment-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCommentDeleteRequestHandler(),
             ],
         ];
     }

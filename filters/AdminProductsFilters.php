@@ -243,7 +243,7 @@ class AdminProductsFilters extends Model implements AdminProductsFiltersInterfac
     
     /**
      * Присваивает значение AdminProductsFilters::active
-     * @param bool $active
+     * @param $active
      */
     public function setActive($active)
     {
@@ -261,7 +261,7 @@ class AdminProductsFilters extends Model implements AdminProductsFiltersInterfac
     public function getActive()
     {
         try {
-            return !empty($this->active) ? $this->active : null;
+            return ($this->active === ACTIVE_STATUS || $this->active === INACTIVE_STATUS) ? $this->active : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

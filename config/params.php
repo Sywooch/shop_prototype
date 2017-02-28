@@ -1,5 +1,8 @@
 <?php
 
+define('ACTIVE_STATUS', 1);
+define('INACTIVE_STATUS', 0);
+
 $params = [
     # Вывод записей на страницу
     'limit'=>3, # Кол-во записей на страницу

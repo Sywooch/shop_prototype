@@ -19,6 +19,7 @@ class CommentFormTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
         $this->assertTrue($reflection->hasConstant('GET'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('text'));
@@ -64,6 +65,15 @@ class CommentFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'id');
         $result = $reflection->getValue($form);
         $this->assertSame(4, $result);
+        
+        $form = new CommentForm(['scenario'=>CommentForm::DELETE]);
+        $form->attributes = [
+            'id'=>7,
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(7, $result);
     }
     
     /**
@@ -107,6 +117,20 @@ class CommentFormTests extends TestCase
         $form = new CommentForm(['scenario'=>CommentForm::GET]);
         $form->attributes = [
             'id'=>22,
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new CommentForm(['scenario'=>CommentForm::DELETE]);
+        $form->attributes = [];
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new CommentForm(['scenario'=>CommentForm::DELETE]);
+        $form->attributes = [
+            'id'=>17,
         ];
         $form->validate();
         

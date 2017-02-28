@@ -179,9 +179,8 @@ trait ConfigHandlerTrait
             asort($sortingTypesArray, SORT_STRING);
             $dataArray['sortingTypes'] = $sortingTypesArray;
             
-            asort($statusesArray,SORT_STRING);
-            array_unshift($statusesArray, \Yii::$app->params['formFiller']);
-            $dataArray['statuses'] = $statusesArray;
+            asort($statusesArray, SORT_STRING);
+            $dataArray['statuses'] = ArrayHelper::merge([''=>\Yii::t('base', 'All')], $statusesArray);
             
             if (empty($ordersFiltersForm->sortingType)) {
                 foreach ($sortingTypesArray as $key=>$val) {

@@ -6,7 +6,9 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
     RedirectAction};
-use app\handlers\{FiltersAdminProductsSetRequestHandler,
+use app\handlers\{FiltersAdminCommentsSetRequestHandler,
+    FiltersAdminCommentsUnsetRequestHandler,
+    FiltersAdminProductsSetRequestHandler,
     FiltersAdminProductsUnsetRequestHandler,
     FiltersOrdersSetRequestHandler,
     FiltersOrdersUnsetRequestHandler,
@@ -54,6 +56,14 @@ class FiltersController extends Controller
             'users-unset'=>[
                 'class'=>RedirectAction::class,
                 'handler'=>new FiltersUsersUnsetRequestHandler()
+            ],
+            'admin-comments-set'=>[
+                'class'=>RedirectAction::class,
+                'handler'=>new FiltersAdminCommentsSetRequestHandler()
+            ],
+            'admin-comments-unset'=>[
+                'class'=>RedirectAction::class,
+                'handler'=>new FiltersAdminCommentsUnsetRequestHandler()
             ],
         ];
     }

@@ -82,7 +82,7 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('ordersStatusesArray'));
                 }
                 
-                $usersFiltersForm = new UsersFiltersForm(array_filter($filtersModel->toArray()));
+                $usersFiltersForm = new UsersFiltersForm($filtersModel->toArray());
                 
                 $dataArray = [];
                 
@@ -141,7 +141,7 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
             asort($sortingTypesArray, SORT_STRING);
             $dataArray['sortingTypes'] = $sortingTypesArray;
             
-            $dataArray['ordersStatuses'] = $ordersStatusesArray;
+            $dataArray['ordersStatuses'] = ArrayHelper::merge([''=>\Yii::t('base', 'All')], $ordersStatusesArray);
             
             if (empty($usersFiltersForm->sortingField)) {
                 foreach ($sortingFieldsArray as $key=>$val) {

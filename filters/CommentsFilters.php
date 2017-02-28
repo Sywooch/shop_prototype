@@ -30,7 +30,7 @@ class CommentsFilters extends Model implements CommentsFiltersInterface
     /**
      * @var int статус
      */
-    public $activeStatus;
+    private $activeStatus;
     
     public function scenarios()
     {
@@ -93,9 +93,9 @@ class CommentsFilters extends Model implements CommentsFiltersInterface
     
     /**
      * Присваивает значение CommentsFilters::activeStatus
-     * @param int $activeStatus
+     * @param $activeStatus
      */
-    public function setActiveStatus(int $activeStatus)
+    public function setActiveStatus($activeStatus)
     {
         try {
             $this->activeStatus = $activeStatus;
@@ -111,7 +111,7 @@ class CommentsFilters extends Model implements CommentsFiltersInterface
     public function getActiveStatus()
     {
         try {
-            return !empty($this->activeStatus) ? $this->activeStatus : null;
+            return ($this->activeStatus === ACTIVE_STATUS || $this->activeStatus === INACTIVE_STATUS) ? $this->activeStatus : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

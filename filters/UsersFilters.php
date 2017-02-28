@@ -30,7 +30,7 @@ class UsersFilters extends Model implements UsersFiltersInterface
     /**
      * @var int статус заказов
      */
-    public $ordersStatus;
+    private $ordersStatus;
     
     public function scenarios()
     {
@@ -93,9 +93,9 @@ class UsersFilters extends Model implements UsersFiltersInterface
     
     /**
      * Присваивает значение UsersFilters::ordersStatus
-     * @param string $ordersStatus
+     * @param $ordersStatus
      */
-    public function setOrdersStatus(string $ordersStatus)
+    public function setOrdersStatus($ordersStatus)
     {
         try {
             $this->ordersStatus = $ordersStatus;
@@ -111,7 +111,7 @@ class UsersFilters extends Model implements UsersFiltersInterface
     public function getOrdersStatus()
     {
         try {
-            return !empty($this->ordersStatus) ? $this->ordersStatus : null;
+            return ($this->ordersStatus === ACTIVE_STATUS || $this->ordersStatus === INACTIVE_STATUS) ? $this->ordersStatus : null;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

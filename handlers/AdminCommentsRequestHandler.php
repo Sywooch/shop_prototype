@@ -84,7 +84,7 @@ class AdminCommentsRequestHandler extends AbstractBaseHandler
                 }
                 
                 $commentForm = new CommentForm();
-                $adminCommentsFiltersForm = new AdminCommentsFiltersForm();
+                $adminCommentsFiltersForm = new AdminCommentsFiltersForm($filtersModel->toArray());
                 
                 $dataArray = [];
                 
@@ -146,7 +146,7 @@ class AdminCommentsRequestHandler extends AbstractBaseHandler
             $dataArray['sortingTypes'] = $sortingTypesArray;
             
             asort($activeStatusesArray, SORT_STRING);
-            $dataArray['activeStatuses'] = ArrayHelper::merge([''=>\Yii::$app->params['formFiller']], $activeStatusesArray);
+            $dataArray['activeStatuses'] = ArrayHelper::merge([''=>\Yii::t('base', 'All')], $activeStatusesArray);
             
             if (empty($adminCommentsFiltersForm->sortingType)) {
                 foreach ($sortingTypesArray as $key=>$val) {

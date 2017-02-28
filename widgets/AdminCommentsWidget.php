@@ -67,11 +67,11 @@ class AdminCommentsWidget extends AbstractBaseWidget
                     $set['modelForm'] = \Yii::configure($form, ['id'=>$comment->id]);
                     
                     $set['formId'] = sprintf('admin-comment-detail-get-form-%d', $comment->id);
-                    $set['formAction'] = Url::to(['/admin/comment-detail-form']);
+                    $set['formAction'] = Url::to(['/admin/comment-form']);
                     $set['button'] = \Yii::t('base', 'Change');
                     
                     $set['formIdDelete'] = sprintf('admin-comment-detail-delete-form-%d', $comment->id);
-                    $set['formActionDelete'] = Url::to(['/admin/comment-detail-delete']);
+                    $set['formActionDelete'] = Url::to(['/admin/comment-delete']);
                     $set['buttonDelete'] = \Yii::t('base', 'Delete');
                     
                     $set['ajaxValidation'] = false;
@@ -87,7 +87,7 @@ class AdminCommentsWidget extends AbstractBaseWidget
                 $renderArray['dateHeader'] = \Yii::t('base', 'Date added');
                 $renderArray['nameHeader'] = \Yii::t('base', 'Commentator');
                 $renderArray['emailHeader'] = \Yii::t('base', 'Email');
-                $renderArray['textHeader'] = \Yii::t('base', 'Text');
+                $renderArray['textHeader'] = \Yii::t('base', 'Comment text');
                 $renderArray['activeHeader'] = \Yii::t('base', 'Active');
                 
             } else {
