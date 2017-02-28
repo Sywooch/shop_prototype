@@ -20,12 +20,14 @@ class CommentFormTests extends TestCase
         $this->assertTrue($reflection->hasConstant('SAVE'));
         $this->assertTrue($reflection->hasConstant('GET'));
         $this->assertTrue($reflection->hasConstant('DELETE'));
+        $this->assertTrue($reflection->hasConstant('EDIT'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('text'));
         $this->assertTrue($reflection->hasProperty('name'));
         $this->assertTrue($reflection->hasProperty('email'));
         $this->assertTrue($reflection->hasProperty('id_product'));
+        $this->assertTrue($reflection->hasProperty('active'));
     }
     
     /**
@@ -74,6 +76,25 @@ class CommentFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'id');
         $result = $reflection->getValue($form);
         $this->assertSame(7, $result);
+        
+        $form = new CommentForm(['scenario'=>CommentForm::EDIT]);
+        $form->attributes = [
+            'id'=>7,
+            'text'=>'Text',
+            'active'=>1
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(7, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'text');
+        $result = $reflection->getValue($form);
+        $this->assertSame('Text', $result);
+        
+        $reflection = new \ReflectionProperty($form, 'active');
+        $result = $reflection->getValue($form);
+        $this->assertSame(1, $result);
     }
     
     /**
@@ -132,6 +153,22 @@ class CommentFormTests extends TestCase
         $form->attributes = [
             'id'=>17,
         ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new CommentForm(['scenario'=>CommentForm::EDIT]);
+        $form->attributes = [];
+        $form->validate();
+        
+        $this->assertCount(2, $form->errors);
+        
+        $form = new CommentForm(['scenario'=>CommentForm::EDIT]);
+        $form->attributes = [
+            'id'=>7,
+            'text'=>'Text',
+        ];
+        
         $form->validate();
         
         $this->assertEmpty($form->errors);

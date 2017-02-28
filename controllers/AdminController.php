@@ -20,6 +20,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminColorDeleteRequestHandler,
     AdminColorsRequestHandler,
     AdminCommentDeleteRequestHandler,
+    AdminCommentFormRequestHandler,
     AdminCommentsRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
@@ -209,6 +210,10 @@ class AdminController extends Controller
             'comment-delete'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCommentDeleteRequestHandler(),
+            ],
+            'comment-form'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCommentFormRequestHandler(),
             ],
         ];
     }

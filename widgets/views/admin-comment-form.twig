@@ -1,0 +1,18 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<div class="admin-comment-edit-form"><p>
+    <a href="{{ commentHref }}">{{ commentName }}</a>
+    <br>{{ idHeader }}: {{ id }}
+    <br>{{ dateHeader }}: {{ date }}
+    <br>{{ nameHeader }}: {{ name }}
+    <br>{{ emailHeader }}: {{ email }}
+    
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
+        {{ form.field(modelForm, 'text').textarea({'cols':cols, 'rows':rows}) | raw }}
+        {{ form.field(modelForm, 'active').dropDownList(activeStatuses) | raw }}
+        
+        <input type="submit" name="send" value="{{ button }}">
+        <input type="submit" name="cancel" value="{{ buttonCancel }}">
+    {{ active_form_end() }}
+</p></div>

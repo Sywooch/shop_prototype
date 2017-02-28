@@ -22,6 +22,10 @@ class CommentForm extends AbstractBaseForm
      * Сценарий удаления коментария
      */
     const DELETE = 'delete';
+    /**
+     * Сценарий редактирования коментария
+     */
+    const EDIT = 'edit';
     
     /**
      * @var int ID комментария
@@ -43,6 +47,10 @@ class CommentForm extends AbstractBaseForm
      * @var int ID товара, которому предназначен комментарий
      */
     public $id_product;
+    /**
+     * @var int флаг доступности комментария
+     */
+    public $active;
     
     public function scenarios()
     {
@@ -50,6 +58,7 @@ class CommentForm extends AbstractBaseForm
             self::SAVE=>['text', 'name', 'email', 'id_product'],
             self::GET=>['id'],
             self::DELETE=>['id'],
+            self::EDIT=>['id', 'text', 'active'],
         ];
     }
     
@@ -59,7 +68,8 @@ class CommentForm extends AbstractBaseForm
             [['text', 'name', 'email', 'id_product'], 'required', 'on'=>self::SAVE],
             [['email'], 'email', 'on'=>self::SAVE],
             [['id'], 'required', 'on'=>self::GET],
-            [['id'], 'required', 'on'=>self::DELETE]
+            [['id'], 'required', 'on'=>self::DELETE],
+            [['id', 'text'], 'required', 'on'=>self::EDIT]
         ];
     }
 }
