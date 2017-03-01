@@ -86,6 +86,9 @@ class AdminProductsWidget extends AbstractBaseWidget
                     $set['total_products'] = $product->total_products;
                     $set['seocode'] = $product->seocode;
                     $set['views'] = $product->views;
+                    if (!empty($product->related)) {
+                        $set['related'] = implode(',', ArrayHelper::getColumn($product->related, 'id_related_product'));
+                    }
                     
                     $form = clone $this->form;
                     $set['modelForm'] = \Yii::configure($form, ['id'=>$product->id]);
@@ -122,6 +125,7 @@ class AdminProductsWidget extends AbstractBaseWidget
                 $renderArray['totalProductsHeader'] = \Yii::t('base', 'Total products');
                 $renderArray['seocodeHeader'] = \Yii::t('base', 'Seocode');
                 $renderArray['viewsHeader'] = \Yii::t('base', 'Views');
+                $renderArray['relatedHeader'] = \Yii::t('base', 'Related products');
             } else {
                 $renderArray['productsEmpty'] = \Yii::t('base', 'No products');
             }

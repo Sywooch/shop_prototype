@@ -3,6 +3,7 @@
 namespace app\tests\services;
 
 use PHPUnit\Framework\TestCase;
+use yii\base\Model;
 use app\services\GetCurrentCurrencyModelService;
 use app\models\CurrencyModel;
 use app\helpers\HashHelper;
@@ -16,6 +17,7 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
 {
     private static $dbClass;
     private static $session;
+    private $service;
     
     public static function setUpBeforeClass()
     {
@@ -32,6 +34,8 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
     public function setUp()
     {
         \Yii::$app->registry->clean();
+        
+        $this->service = new GetCurrentCurrencyModelService();
     }
     
     /**
@@ -47,28 +51,32 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
     
     /**
      * Тестирует метод GetCurrentCurrencyModelService::setKey
-     * передаю неверный параметр
-     * @expectedException TypeError
-     */
-    public function testSetKeyError()
-    {
-        $service = new GetCurrentCurrencyModelService();
-        $service->setKey([]);
-    }
-    
-    /**
-     * Тестирует метод GetCurrentCurrencyModelService::setKey
      */
     public function testSetKey()
     {
-        $service = new GetCurrentCurrencyModelService();
-        $service->setKey('key');
+        $this->service->setKey('key');
         
-        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection = new \ReflectionProperty($this->service, 'key');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($service);
+        $result = $reflection->getValue($this->service);
         
         $this->assertEquals('key', $result);
+    }
+    
+    /**
+     * Тестирует метод GetCurrentCurrencyModelService::updateCurrency
+     */
+    public function testUpdateCurrency()
+    {
+        $currencyModel = new CurrencyModel();
+        $currencyModel->update_date = time();
+        $currencyModel->code = 'USD';
+        
+        $reflection = new \ReflectionMethod($this->service, 'updateCurrency');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->service, $currencyModel);
+        
+        $this->assertInstanceOf(Model::class, $result);
     }
     
     /**
@@ -79,8 +87,7 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
      */
     public function testGetEmptyKey()
     {
-        $service = new GetCurrentCurrencyModelService();
-        $service->get();
+        $this->service->get();
     }
     
     /**
@@ -95,15 +102,13 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
         self::$session->remove($key);
         $this->assertFalse(self::$session->has($key));
         
-        $service = new GetCurrentCurrencyModelService();
-        
-        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection = new \ReflectionProperty($this->service, 'key');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, $key);
+        $reflection->setValue($this->service, $key);
         
-        $result = $service->get();
+        $result = $this->service->get();
         
-        $this->assertInstanceOf(CurrencyModel::class, $result);
+        $this->assertInstanceOf(Model::class, $result);
         
         self::$session->close();
     }
@@ -119,15 +124,13 @@ class GetCurrentCurrencyModelServiceTests extends TestCase
         
         $this->assertTrue(self::$session->has($key));
         
-        $service = new GetCurrentCurrencyModelService();
-        
-        $reflection = new \ReflectionProperty($service, 'key');
+        $reflection = new \ReflectionProperty($this->service, 'key');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, $key);
+        $reflection->setValue($this->service, $key);
         
-        $result = $service->get();
+        $result = $this->service->get();
         
-        $this->assertInstanceOf(CurrencyModel::class, $result);
+        $this->assertInstanceOf(Model::class, $result);
         
         self::$session->remove($key);
         self::$session->close();

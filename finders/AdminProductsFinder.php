@@ -43,7 +43,7 @@ class AdminProductsFinder extends AbstractBaseFinder
                 
                 $query = ProductsModel::find();
                 $query->select(['[[products.id]]', '[[products.date]]', '[[products.code]]', '[[products.name]]', '[[products.description]]', '[[products.short_description]]', '[[products.price]]', '[[products.images]]', '[[products.id_category]]', '[[products.id_subcategory]]', '[[products.id_brand]]', '[[products.active]]', '[[products.total_products]]', '[[products.seocode]]', '[[products.views]]', ]);
-                $query->with('category', 'subcategory', 'brand', 'colors', 'sizes');
+                $query->with('category', 'subcategory', 'colors', 'sizes', 'brand', 'related');
                 
                 if ($this->filters->active === ACTIVE_STATUS || $this->filters->active === INACTIVE_STATUS) {
                     $query->where(['[[products.active]]'=>$this->filters->active]);

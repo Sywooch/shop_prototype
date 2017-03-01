@@ -23,6 +23,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminCommentDeleteRequestHandler,
     AdminCommentFormRequestHandler,
     AdminCommentsRequestHandler,
+    AdminCurrencyRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
@@ -219,6 +220,11 @@ class AdminController extends Controller
             'comment-change'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCommentChangeRequestHandler(),
+            ],
+            'currency'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminCurrencyRequestHandler(),
+                'view'=>'currency.twig',
             ],
         ];
     }

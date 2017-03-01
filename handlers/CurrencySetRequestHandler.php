@@ -7,7 +7,9 @@ use app\handlers\AbstractBaseHandler;
 use app\forms\ChangeCurrencyForm;
 use app\helpers\HashHelper;
 use app\savers\SessionModelSaver;
-use app\finders\CurrencyIdFinder;
+use app\services\CurrenyUpdateService;
+use app\finders\{CurrencyIdFinder,
+    MainCurrencyFinder};
 
 /**
  * Обновляет текущую валюту
@@ -24,9 +26,6 @@ class CurrencySetRequestHandler extends AbstractBaseHandler
         try {
             $form = new ChangeCurrencyForm(['scenario'=>ChangeCurrencyForm::SET]);
             
-            if ($request->isPost === false) {
-                throw new ErrorException($this->invalidError('POST'));
-            }
             if ($form->load($request->post()) === false) {
                 throw new ErrorException($this->emptyError('POST'));
             }
@@ -38,6 +37,14 @@ class CurrencySetRequestHandler extends AbstractBaseHandler
                 'id'=>$form->id
             ]);
             $currencyModel = $finder->find();
+            if (empty($currencyModel)) {
+                throw new ErrorException($this->emptyError('currencyModel'));
+            }
+            
+            $service = \Yii::$app->registry->get(CurrenyUpdateService::class, [
+                'updateCurrencyModel'=>$currencyModel,
+            ]);
+            $currencyModel = $service->get();
             if (empty($currencyModel)) {
                 throw new ErrorException($this->emptyError('currencyModel'));
             }

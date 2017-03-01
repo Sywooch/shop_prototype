@@ -14,6 +14,10 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
      * Сценарий загрузки данных из СУБД
      */
     const DBMS = 'dbms';
+    /**
+     * Сценарий обновления данных
+     */
+    const UPDATE = 'update';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -31,14 +35,15 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
     public function scenarios()
     {
         return [
-            self::DBMS=>['id', 'code', 'exchange_rate', 'main'],
+            self::DBMS=>['id', 'code', 'exchange_rate', 'main', 'update_date'],
+            self::UPDATE=>['exchange_rate', 'update_date'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['code'], 'app\validators\StripTagsValidator'],
+            [['exchange_rate', 'update_date'], 'required', 'on'=>self::UPDATE],
         ];
     }
     

@@ -33,21 +33,6 @@ class CurrencySetRequestHandlerTests extends TestCase
     
     /**
      * Тестирует метод CurrencySetRequestHandler::handle
-     * если не POST
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Получен неверный тип данных вместо: POST
-     */
-    public function testHandleNotPost()
-    {
-        $request = new class() {
-            public $isPost = false;
-        };
-        
-        $this->handler->handle($request);
-    }
-    
-    /**
-     * Тестирует метод CurrencySetRequestHandler::handle
      * если POST пуст
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: POST

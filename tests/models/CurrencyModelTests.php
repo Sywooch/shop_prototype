@@ -18,6 +18,7 @@ class CurrencyModelTests extends TestCase
         $reflection = new \ReflectionClass(CurrencyModel::class);
         
         $this->assertTrue($reflection->hasConstant('DBMS'));
+        $this->assertTrue($reflection->hasConstant('UPDATE'));
         
         $model = new CurrencyModel();
         
@@ -25,6 +26,7 @@ class CurrencyModelTests extends TestCase
         $this->assertArrayHasKey('code', $model->attributes);
         $this->assertArrayHasKey('exchange_rate', $model->attributes);
         $this->assertArrayHasKey('main', $model->attributes);
+        $this->assertArrayHasKey('update_date', $model->attributes);
     }
     
     /**
@@ -47,21 +49,45 @@ class CurrencyModelTests extends TestCase
             'id'=>2,
             'code'=>'USD',
             'exchange_rate'=>23.17,
-            'main'=>true
+            'main'=>1,
+            'update_date'=>time()
         ];
         
-        $result = $model->toArray();
+        $this->assertEquals(2, $model->id);
+        $this->assertEquals('USD', $model->code);
+        $this->assertEquals(23.17, $model->exchange_rate);
+        $this->assertEquals(1, $model->main);
+        $this->assertEquals(time(), $model->update_date);
         
-        $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-        $this->assertArrayHasKey('id', $result);
-        $this->assertSame(2, $result['id']);
-        $this->assertArrayHasKey('code', $result);
-        $this->assertSame('USD', $result['code']);
-        $this->assertArrayHasKey('exchange_rate', $result);
-        $this->assertSame(23.17, $result['exchange_rate']);
-        $this->assertArrayHasKey('main', $result);
-        $this->assertSame(true, $result['main']);
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::UPDATE]);
+        $model->attributes = [
+            'exchange_rate'=>1.056,
+            'update_date'=>time()
+        ];
+        
+        $this->assertEquals(1.056, $model->exchange_rate);
+        $this->assertEquals(time(), $model->update_date);
+    }
+    
+    /**
+     * Тестирует метод CurrencyModel::rules
+     */
+    public function testRules()
+    {
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::UPDATE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(2, $model->errors);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::UPDATE]);
+        $model->attributes = [
+            'exchange_rate'=>1.056,
+            'update_date'=>time()
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
     }
     
     /**

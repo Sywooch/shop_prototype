@@ -318,6 +318,7 @@ class AdminProductsWidgetTests extends TestCase
                 public $price = 56.85;
                 public $colors = [['id'=>1, 'color'=>'black'], ['id'=>2, 'color'=>'green']];
                 public $sizes = [['id'=>1, 'size'=>45], ['id'=>2, 'size'=>35.5]];
+                public $related = [['id_related_product'=>1, 'name'=>'Name 1'], ['id_related_product'=>2, 'name'=>'Name 2']];
                 public $image = 'test';
                 public $category;
                 public $subcategory;
@@ -418,6 +419,7 @@ class AdminProductsWidgetTests extends TestCase
         $this->assertRegExp('#Количество товаров: [0-9]{3}#', $result);
         $this->assertRegExp('#Сеокод: product-[0-9]{1}#', $result);
         $this->assertRegExp('#Просмотров: [0-9]{3}#', $result);
+        $this->assertRegExp('#Связанные товары: [0-9]{1,3}#', $result);
         $this->assertRegExp('#<form id="admin-product-detail-get-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
         $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);

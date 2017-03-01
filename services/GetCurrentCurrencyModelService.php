@@ -2,16 +2,18 @@
 
 namespace app\services;
 
-use yii\base\ErrorException;
+use yii\base\{ErrorException,
+    Model};
 use app\services\AbstractBaseService;
-use app\helpers\HashHelper;
 use app\savers\SessionModelSaver;
 use app\finders\{CurrencySessionFinder,
     MainCurrencyFinder};
 use app\models\CurrencyModel;
 
 /**
- * Возвращает объект текущей валюты
+ * Возвращает CurrencyModel текущей валюты
+ * Первый запрос отправляет в сессию, 
+ * если данных нет, в СУБД и сохраняет полученные данные в сессию
  */
 class GetCurrentCurrencyModelService extends AbstractBaseService
 {
@@ -25,9 +27,7 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
     private $currencyModel = null;
     
     /**
-     * Возвращает CurrencyModel текущей валюты
-     * Первый запрос отправляет в сессию, 
-     * если данных нет, в СУБД и сохраняет полученные данные в сессию
+     * Возвращает объект текущей валюты
      * @return CurrencyModel
      */
     public function get(): CurrencyModel
@@ -43,12 +43,16 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
                 ]);
                 $currencyModel = $finder->find();
                 
-                if (empty($currencyModel)) {
+                if (!empty($currencyModel)) {
+                    $currencyModel = $this->updateCurrency($currencyModel);
+                } else {
                     $finder = \Yii::$app->registry->get(MainCurrencyFinder::class);
                     $currencyModel = $finder->find();
                     if (empty($currencyModel)) {
                         throw new ErrorException($this->emptyError('currencyModel'));
                     }
+                    
+                    $currencyModel = $this->updateCurrency($currencyModel);
                     
                     $saver = new SessionModelSaver([
                         'key'=>$this->key,
@@ -74,6 +78,27 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
     {
         try {
             $this->key = $key;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Обновляет данные валюты
+     * @param Model $currencyModel
+     */
+    private function updateCurrency(Model $currencyModel): Model
+    {
+        try {
+            $service = \Yii::$app->registry->get(CurrenyUpdateService::class, [
+                'updateCurrencyModel'=>$currencyModel,
+            ]);
+            $currencyModel = $service->get();
+            if (empty($currencyModel)) {
+                throw new ErrorException($this->emptyError('currencyModel'));
+            }
+            
+            return $currencyModel;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
