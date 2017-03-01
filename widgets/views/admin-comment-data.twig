@@ -1,23 +1,13 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<div class="admin-product-previous-data">
-    <a href="{{ link }}">{{ linkText }}</a>
-    <br>{{ shortDescriptionHeader }}:  {{ short_description }}
-    <br>{{ image | raw }}
+<div class="admin-comment-previous-data">
+    <a href="{{ commentHref }}">{{ commentName }}</a>
     <br>{{ idHeader }}: {{ id }}
     <br>{{ dateHeader }}: {{ date }}
-    <br>{{ codeHeader }}: {{ code }}
-    <br>{{ descriptionHeader }}: {{ description }}
-    <br>{{ priceHeader }}: {{ price }}
-    <br>{{ colorsHeader }}: {{ colors }}
-    <br>{{ sizesHeader }}: {{ sizes }}
-    <br>{{ categoryHeader }}: {{ category }}
-    <br>{{ subcategoryHeader }}: {{ subcategory }}
-    <br>{{ brandHeader }}: {{ brand }}
+    <br>{{ nameHeader }}: {{ name }}
+    <br>{{ emailHeader }}: {{ email }}
+    <br>{{ textHeader }}: {{ text }}
     <br>{{ activeHeader }}: {{ active }}
-    <br>{{ totalProductsHeader }}: {{ total_products }}
-    <br>{{ seocodeHeader }}: {{ seocode }}
-    <br>{{ viewsHeader }}: {{ views }}
     
     {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
         {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
@@ -29,4 +19,3 @@
         <input type="submit" value="{{ buttonDelete }}">
     {{ active_form_end() }}
 </div>
-

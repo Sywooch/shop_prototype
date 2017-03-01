@@ -6,7 +6,7 @@
     <ol class="{{ listClass }}">
         {% for comment in comments %}
             <li>
-                <div class="admin-comments-previous-data">
+                <div class="admin-comment-previous-data">
                     <a href="{{ comment.commentHref }}">{{ comment.commentName }}</a>
                     <br>{{ idHeader }}: {{ comment.id }}
                     <br>{{ dateHeader }}: {{ comment.date }}

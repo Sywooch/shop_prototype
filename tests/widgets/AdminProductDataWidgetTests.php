@@ -275,6 +275,9 @@ class AdminProductDataWidgetTests extends TestCase
         $this->assertRegExp('#<form id="admin-product-detail-get-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
         $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
+        $this->assertRegExp('#<form id="admin-product-detail-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Удалить">#', $result);
     }
     
     public static function tearDownAfterClass()

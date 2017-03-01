@@ -40,6 +40,7 @@ class CommentsModelTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
         $this->assertTrue($reflection->hasConstant('DELETE'));
+        $this->assertTrue($reflection->hasConstant('EDIT'));
         
         $model = new CommentsModel();
         
@@ -88,6 +89,15 @@ class CommentsModelTests extends TestCase
         ];
         
         $this->assertEquals(15, $model->id);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::EDIT]);
+        $model->attributes = [
+            'id'=>2, 
+            'text'=>'text', 
+        ];
+        
+        $this->assertEquals(2, $model->id);
+        $this->assertEquals('text', $model->text);
     }
     
     /**
@@ -112,6 +122,7 @@ class CommentsModelTests extends TestCase
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        $this->assertSame(0, $model->active);
         
         $model = new CommentsModel(['scenario'=>CommentsModel::DELETE]);
         $model->attributes = [];
@@ -126,6 +137,22 @@ class CommentsModelTests extends TestCase
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::EDIT]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(2, $model->errors);
+        
+        $model = new CommentsModel(['scenario'=>CommentsModel::EDIT]);
+        $model->attributes = [
+            'id'=>2, 
+            'text'=>'text', 
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        $this->assertSame(0, $model->active);
     }
     
     /**

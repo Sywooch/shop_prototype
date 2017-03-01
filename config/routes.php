@@ -114,6 +114,7 @@ $routes = [
     'admin-comments-<page:\d{1,3}>'=>'admin/comments',
     'admin-comments'=>'admin/comments',
     'admin-comment-form'=>'admin/comment-form',
+    'admin-comment-change'=>'admin/comment-change',
     'admin-comment-delete'=>'admin/comment-delete',
     
     # Календарь

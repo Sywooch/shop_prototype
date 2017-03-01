@@ -17,6 +17,7 @@ class AdminCommentsAsset extends AbstractAsset
     public $js = [
         'js/sendAdminCommentsGetCsv.js',
         'js/sendAdminCommentForm.js',
+        'js/sendAdminCommentChange.js'
     ];
     /**
      * @var array зависимости пакета

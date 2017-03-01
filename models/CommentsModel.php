@@ -21,6 +21,10 @@ class CommentsModel extends AbstractBaseModel
      * Сценарий удаления комментария
      */
     const DELETE = 'delete';
+    /**
+     * Сценарий редактирования комментария
+     */
+    const EDIT = 'edit';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -38,8 +42,9 @@ class CommentsModel extends AbstractBaseModel
     public function scenarios()
     {
         return [
-            self::SAVE=>['date', 'text', 'id_name', 'id_email', 'id_product'],
+            self::SAVE=>['date', 'text', 'id_name', 'id_email', 'id_product', 'active'],
             self::DELETE=>['id'],
+            self::EDIT=>['id', 'text', 'active'],
         ];
     }
     
@@ -48,6 +53,8 @@ class CommentsModel extends AbstractBaseModel
         return [
             [['date', 'text', 'id_name', 'id_email', 'id_product'], 'required', 'on'=>self::SAVE],
             [['id'], 'required', 'on'=>self::DELETE],
+            [['id', 'text'], 'required', 'on'=>self::EDIT],
+            [['active'], 'default', 'value'=>0],
         ];
     }
     

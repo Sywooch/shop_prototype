@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Представляет данные формы добавления коментария
@@ -65,6 +66,7 @@ class CommentForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['text', 'name', 'email'], StripTagsValidator::class],
             [['text', 'name', 'email', 'id_product'], 'required', 'on'=>self::SAVE],
             [['email'], 'email', 'on'=>self::SAVE],
             [['id'], 'required', 'on'=>self::GET],

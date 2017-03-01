@@ -263,7 +263,7 @@ class AdminCommentsWidgetTests extends TestCase
         $result = $this->widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<div class="admin-comments-previous-data">#', $result);
+        $this->assertRegExp('#<div class="admin-comment-previous-data">#', $result);
         $this->assertRegExp('#<a href="../vendor/phpunit/phpunit/product-1">Product 1</a>#', $result);
         $this->assertRegExp('#Id комментария: [0-9]{1,3}#', $result);
         $this->assertRegExp('#Дата добавления: .+#', $result);
