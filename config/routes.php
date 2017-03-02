@@ -116,6 +116,9 @@ $routes = [
     'admin-comment-form'=>'admin/comment-form',
     'admin-comment-change'=>'admin/comment-change',
     'admin-comment-delete'=>'admin/comment-delete',
+    'admin-currency'=>'admin/currency',
+    'admin-currency-create'=>'admin/currency-create',
+    'admin-currency-delete'=>'admin/currency-delete',
     
     # Календарь
     'calendar-get'=>'calendar/get',

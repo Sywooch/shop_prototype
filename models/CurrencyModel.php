@@ -18,6 +18,10 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
      * Сценарий обновления данных
      */
     const UPDATE = 'update';
+    /**
+     * Сценарий создания валюты
+     */
+    const CREATE = 'create';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -36,14 +40,16 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
     {
         return [
             self::DBMS=>['id', 'code', 'exchange_rate', 'main', 'update_date'],
-            self::UPDATE=>['exchange_rate', 'update_date'],
+            self::UPDATE=>['id', 'exchange_rate', 'update_date'],
+            self::CREATE=>['code', 'main', 'update_date'],
         ];
     }
     
     public function rules()
     {
         return [
-            [['exchange_rate', 'update_date'], 'required', 'on'=>self::UPDATE],
+            [['id', 'exchange_rate', 'update_date'], 'required', 'on'=>self::UPDATE],
+            [['code', 'exchange_rate', 'update_date'], 'required', 'on'=>self::CREATE],
         ];
     }
     

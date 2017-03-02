@@ -23,6 +23,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminCommentDeleteRequestHandler,
     AdminCommentFormRequestHandler,
     AdminCommentsRequestHandler,
+    AdminCurrencyCreateRequestHandler,
     AdminCurrencyRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
@@ -225,6 +226,10 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminCurrencyRequestHandler(),
                 'view'=>'currency.twig',
+            ],
+            'currency-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCurrencyCreateRequestHandler(),
             ],
         ];
     }

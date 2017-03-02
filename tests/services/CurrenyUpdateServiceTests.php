@@ -91,8 +91,6 @@ class CurrenyUpdateServiceTests extends TestCase
         
         $this->assertNotEquals($oldExchange_rate, $result->exchange_rate);
         $this->assertNotEquals($oldUpdate_date, $result->update_date);
-        
-        print_r($result);
     }
     
     public static function tearDownAfterClass()

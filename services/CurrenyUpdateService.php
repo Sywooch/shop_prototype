@@ -6,7 +6,7 @@ use yii\base\{ErrorException,
     Model};
 use app\services\AbstractBaseService;
 use app\models\CurrencyModel;
-use app\savers\ModelSaver;
+use app\updaters\CurrencyModelUpdater;
 use app\finders\MainCurrencyFinder;
 
 /**
@@ -32,7 +32,7 @@ class CurrenyUpdateService extends AbstractBaseService
                 throw new ErrorException($this->emptyError('updateCurrencyModel'));
             }
             
-            if (time() - $this->updateCurrencyModel->update_date > (60 * 60)) {
+            if (empty($this->updateCurrencyModel->update_date) || (time() - $this->updateCurrencyModel->update_date > (60 * 60))) {
                 $finder = \Yii::$app->registry->get(MainCurrencyFinder::class);
                 $mainCurrencyModel = $finder->find();
                 if (empty($mainCurrencyModel)) {
@@ -64,10 +64,10 @@ class CurrenyUpdateService extends AbstractBaseService
                     throw new ErrorException($this->modelError($this->updateCurrencyModel->errors));
                 }
                 
-                $saver = new ModelSaver([
+                $saver = new CurrencyModelUpdater([
                     'model'=>$this->updateCurrencyModel
                 ]);
-                $saver->save();
+                $saver->update();
             }
             
             return $this->updateCurrencyModel;

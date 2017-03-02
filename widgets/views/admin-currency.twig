@@ -1,0 +1,20 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<ul>
+    {% for currency in currencyArray %}
+        <li>
+            {{ codeHeader }}: {{ currency.code }}
+            <br>{{ exchangeHeader }}: {{ currency.exchange_rate }}
+            {% if currency.base %}
+                <br>{{ currency.base }}
+            {% endif %}
+            {% set form=active_form_begin({'id':currency.formId, 'enableAjaxValidation':currency.ajaxValidation, 'validateOnSubmit':currency.validateOnSubmit, 'validateOnChange':currency.validateOnChange, 'validateOnBlur':currency.validateOnBlur, 'validateOnType':currency.validateOnType, 'action':currency.formAction, 'method':'POST'}) %}
+                {{ form.field(currency.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ currency.button }}">
+            {{ active_form_end() }}
+        </li>
+    {% endfor %}
+</ul>
+

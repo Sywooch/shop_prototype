@@ -250,6 +250,9 @@ $translate = [
     'Commentator'=>'Комментатор',
     'Comment text'=>'Текст комментария',
     'Product'=>'Товар',
+    'Exchange rate'=>'Обменный курс',
+    'Base currency'=>'Базовая валюта',
+    'Add currency'=>'Добавить валюту',
 ];
 
 return $translate;

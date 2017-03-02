@@ -1,0 +1,16 @@
+{{ register_asset_bundle('app/assets/AdminBrandsAsset') }}
+
+{{ use ('app/widgets/AdminCurrencyBreadcrumbsWidget') }}
+{{ use ('app/widgets/AdminCurrencyWidget') }}
+{{ use ('app/widgets/AdminCreateCurrencyWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_currency_breadcrumbs_widget_widget() }}
+
+<div class="admin-currency">
+    {{ admin_currency_widget_widget(adminCurrencyWidgetConfig) }}
+</div>
+
+{{ admin_create_currency_widget_widget(adminCreateCurrencyWidgetConfig) }}
+

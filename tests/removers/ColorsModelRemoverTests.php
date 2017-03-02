@@ -9,7 +9,7 @@ use app\tests\sources\fixtures\ColorsFixture;
 use app\models\ColorsModel;
 
 /**
- * Тестирует класс СategoriesModelRemover
+ * Тестирует класс ColorsModelRemover
  */
 class ColorsModelRemoverTests extends TestCase
 {
@@ -29,7 +29,7 @@ class ColorsModelRemoverTests extends TestCase
     }
     
     /**
-     * Тестирует свойства СategoriesModelRemover
+     * Тестирует свойства ColorsModelRemover
      */
     public function testProperties()
     {
@@ -39,7 +39,7 @@ class ColorsModelRemoverTests extends TestCase
     }
     
     /**
-     * Тестирует метод СategoriesModelRemover::setModel
+     * Тестирует метод ColorsModelRemover::setModel
      */
     public function testSetModel()
     {
@@ -55,8 +55,8 @@ class ColorsModelRemoverTests extends TestCase
     }
     
     /**
-     * Тестирует метод СategoriesModelRemover::remove
-     * если пуст СategoriesModelRemover::model
+     * Тестирует метод ColorsModelRemover::remove
+     * если пуст ColorsModelRemover::model
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: model
      */
@@ -66,7 +66,7 @@ class ColorsModelRemoverTests extends TestCase
     }
     
     /**
-     * Тестирует метод СategoriesModelRemover::remove
+     * Тестирует метод ColorsModelRemover::remove
      */
     public function testRemove()
     {

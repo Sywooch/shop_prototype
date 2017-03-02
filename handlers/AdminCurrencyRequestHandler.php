@@ -4,13 +4,13 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use app\handlers\AbstractBaseHandler;
-use app\finders\SizesFinder;
+use app\finders\CurrencyFinder;
 use app\forms\{AbstractBaseForm,
     CurrencyForm};
 
 /**
  * Обрабатывает запрос на получение данных 
- * с перечнем брендов
+ * с перечнем валют
  */
 class AdminCurrencyRequestHandler extends AbstractBaseHandler
 {
@@ -30,16 +30,15 @@ class AdminCurrencyRequestHandler extends AbstractBaseHandler
     {
         try {
             if (empty($this->dataArray)) {
-                $finder = \Yii::$app->registry->get(SizesFinder::class);
-                $sizesModelArray = $finder->find();
+                $finder = \Yii::$app->registry->get(CurrencyFinder::class);
+                $currencyModelArray = $finder->find();
                 
-                $sizesFormDelete = new CurrencyForm(['scenario'=>CurrencyForm::DELETE]);
-                $sizesFormCreate = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
+                $currencyForm = new CurrencyForm();
                 
                 $dataArray = [];
                 
-                $dataArray['adminSizesWidgetConfig'] = $this->adminSizesWidgetConfig($sizesModelArray, $sizesFormDelete);
-                $dataArray['adminCreateSizeWidgetConfig'] = $this->adminCreateSizeWidgetConfig($sizesFormCreate);
+                $dataArray['adminCurrencyWidgetConfig'] = $this->adminCurrencyWidgetConfig($currencyModelArray, $currencyForm);
+                $dataArray['adminCreateCurrencyWidgetConfig'] = $this->adminCreateCurrencyWidgetConfig($currencyForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -51,17 +50,38 @@ class AdminCurrencyRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Возвращает массив конфигурации для виджета AdminCreateSizeWidget
-     * @param AbstractBaseForm $sizesFormCreate
+     * Возвращает массив конфигурации для виджета AdminCurrencyWidget
+     * @param array $currencyModelArray
+     * @param AbstractBaseForm $currencyForm
      */
-    private function adminCreateSizeWidgetConfig(AbstractBaseForm $sizesFormCreate): array
+    private function adminCurrencyWidgetConfig(array $currencyModelArray, AbstractBaseForm $currencyForm): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['form'] = $sizesFormCreate;
-            $dataArray['header'] = \Yii::t('base', 'Create size');
-            $dataArray['template'] = 'admin-create-size.twig';
+            $dataArray['currency'] = $currencyModelArray;
+            $dataArray['form'] = $currencyForm;
+            $dataArray['header'] = \Yii::t('base', 'Currency');
+            $dataArray['template'] = 'admin-currency.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminCreateCurrencyWidget
+     * @param AbstractBaseForm $currencyFormCreate
+     */
+    private function adminCreateCurrencyWidgetConfig(AbstractBaseForm $currencyForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['form'] = $currencyForm;
+            $dataArray['header'] = \Yii::t('base', 'Add currency');
+            $dataArray['template'] = 'admin-create-currency.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

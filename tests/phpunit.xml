@@ -28,6 +28,7 @@
             <directory suffix="Tests.php">removers</directory>
             <directory suffix="Tests.php">services</directory>
             <directory suffix="Tests.php">savers</directory>
+            <directory suffix="Tests.php">updaters</directory>
             <directory suffix="Tests.php">validators</directory>
             <directory suffix="Tests.php">widgets</directory>
         </testsuite>

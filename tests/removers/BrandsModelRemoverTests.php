@@ -9,7 +9,7 @@ use app\tests\sources\fixtures\BrandsFixture;
 use app\models\BrandsModel;
 
 /**
- * Тестирует класс СategoriesModelRemover
+ * Тестирует класс BrandsModelRemover
  */
 class BrandsModelRemoverTests extends TestCase
 {
@@ -29,7 +29,7 @@ class BrandsModelRemoverTests extends TestCase
     }
     
     /**
-     * Тестирует свойства СategoriesModelRemover
+     * Тестирует свойства BrandsModelRemover
      */
     public function testProperties()
     {
@@ -39,7 +39,7 @@ class BrandsModelRemoverTests extends TestCase
     }
     
     /**
-     * Тестирует метод СategoriesModelRemover::setModel
+     * Тестирует метод BrandsModelRemover::setModel
      */
     public function testSetModel()
     {
@@ -55,8 +55,8 @@ class BrandsModelRemoverTests extends TestCase
     }
     
     /**
-     * Тестирует метод СategoriesModelRemover::remove
-     * если пуст СategoriesModelRemover::model
+     * Тестирует метод BrandsModelRemover::remove
+     * если пуст BrandsModelRemover::model
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: model
      */
@@ -66,7 +66,7 @@ class BrandsModelRemoverTests extends TestCase
     }
     
     /**
-     * Тестирует метод СategoriesModelRemover::remove
+     * Тестирует метод BrandsModelRemover::remove
      */
     public function testRemove()
     {
