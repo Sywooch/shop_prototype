@@ -18,6 +18,10 @@ class CurrencyForm extends AbstractBaseForm
      * Сценарий создания валюты
      */
     const CREATE = 'create';
+    /**
+     * Сценарий замены базовой валюты
+     */
+    const BASE_CHANGE = 'base_change';
     
     /**
      * @var int ID валюты
@@ -37,6 +41,7 @@ class CurrencyForm extends AbstractBaseForm
         return [
             self::DELETE=>['id'],
             self::CREATE=>['code', 'main'],
+            self::BASE_CHANGE=>['id', 'main'],
         ];
     }
     
@@ -45,6 +50,7 @@ class CurrencyForm extends AbstractBaseForm
         return [
             [['id'], 'required', 'on'=>self::DELETE],
             [['code'], 'required', 'on'=>self::CREATE],
+            [['id', 'main'], 'required', 'on'=>self::BASE_CHANGE],
         ];
     }
 }

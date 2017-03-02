@@ -62,10 +62,13 @@ class AdminCurrencyWidget extends AbstractBaseWidget
                 if (!empty($currency->main)) {
                     $set['base'] = \Yii::t('base', 'Base currency');
                 }
+                $set['main'] = $currency->main;
                 
                 $currencyForm = clone $this->form;
                 $set['modelForm'] = \Yii::configure($currencyForm, ['id'=>$currency->id]);
+                
                 $set['formId'] = sprintf('admin-currency-delete-form-%d', $currency->id);
+                $set['formIdBaseChange'] = sprintf('admin-currency-base-change-form-%d', $currency->id);
                 
                 $set['ajaxValidation'] = false;
                 $set['validateOnSubmit'] = false;
@@ -74,6 +77,8 @@ class AdminCurrencyWidget extends AbstractBaseWidget
                 $set['validateOnType'] = false;
                 
                 $set['formAction'] = Url::to(['/admin/currency-delete']);
+                $set['formActionBaseChange'] = Url::to(['/admin/currency-base-change']);
+                
                 $set['button'] = \Yii::t('base', 'Delete');
                 
                 $currencyArray[] = $set;

@@ -24,6 +24,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminCommentFormRequestHandler,
     AdminCommentsRequestHandler,
     AdminCurrencyCreateRequestHandler,
+    AdminCurrencyDeleteRequestHandler,
     AdminCurrencyRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
@@ -230,6 +231,14 @@ class AdminController extends Controller
             'currency-create'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCurrencyCreateRequestHandler(),
+            ],
+            'currency-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCurrencyDeleteRequestHandler(),
+            ],
+            'currency-base-change'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCurrencyBaseChangeRequestHandler(),
             ],
         ];
     }

@@ -45,8 +45,8 @@ class CurrencyFinderTests extends TestCase
         
         $this->assertInternalType('array', $currency);
         $this->assertNotEmpty($currency);
-        foreach($currency as $category) {
-            $this->assertInstanceOf(CurrencyModel::class, $category);
+        foreach($currency as $currency) {
+            $this->assertInstanceOf(CurrencyModel::class, $currency);
         }
     }
     

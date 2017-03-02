@@ -155,7 +155,6 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 }
                 
                 $filtersFormConfig = [
-                    'scenario'=>FiltersForm::SAVE, 
                     'url'=>Url::current(),
                     'category'=>$category,
                     'subcategory'=>$subcategory
@@ -163,7 +162,6 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 $filtersForm = new FiltersForm(array_merge($filtersFormConfig, array_filter($filtersModel->toArray())));
                 
                 $changeCurrencyForm = new ChangeCurrencyForm([
-                    'scenario'=>ChangeCurrencyForm::SET,
                     'id'=>$currentCurrencyModel->id,
                     'url'=>Url::current()
                 ]);

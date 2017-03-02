@@ -10,6 +10,14 @@
             {% if currency.base %}
                 <br>{{ currency.base }}
             {% endif %}
+            
+            {% if not currency.main %}
+                {% set form=active_form_begin({'id':currency.formIdBaseChange, 'enableAjaxValidation':currency.ajaxValidation, 'validateOnSubmit':currency.validateOnSubmit, 'validateOnChange':currency.validateOnChange, 'validateOnBlur':currency.validateOnBlur, 'validateOnType':currency.validateOnType, 'action':currency.formActionBaseChange, 'method':'POST'}) %}
+                    {{ form.field(currency.modelForm, 'id').hiddenInput().label(false) | raw }}
+                    {{ form.field(currency.modelForm, 'main').checkbox() | raw }}
+                {{ active_form_end() }}
+            {% endif %}
+            
             {% set form=active_form_begin({'id':currency.formId, 'enableAjaxValidation':currency.ajaxValidation, 'validateOnSubmit':currency.validateOnSubmit, 'validateOnChange':currency.validateOnChange, 'validateOnBlur':currency.validateOnBlur, 'validateOnType':currency.validateOnType, 'action':currency.formAction, 'method':'POST'}) %}
                 {{ form.field(currency.modelForm, 'id').hiddenInput().label(false) | raw }}
                 <input type="submit" value="{{ currency.button }}">

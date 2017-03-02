@@ -204,6 +204,7 @@ class AdminCurrencyWidgetTests extends TestCase
         
         $form = new class() extends AbstractBaseForm {
             public $id;
+            public $main;
         };
         
         $reflection = new \ReflectionProperty($this->widget, 'currency');
@@ -225,12 +226,15 @@ class AdminCurrencyWidgetTests extends TestCase
         $result = $this->widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<form id="admin-currency-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
-        $this->assertRegExp('#<input type="submit" value="Удалить">#', $result);
         $this->assertRegExp('#Код: .+#', $result);
         $this->assertRegExp('#Обменный курс: [0-9]{1,2}.[0-9]{1,5}#', $result);
         $this->assertRegExp('#Базовая валюта#', $result);
+        $this->assertRegExp('#<form id="admin-currency-base-change-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[main\]" value="[0-9]{1}"> Main</label>#', $result);
+        $this->assertRegExp('#<form id="admin-currency-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Удалить">#', $result);
+        
     }
     
     public static function tearDownAfterClass()

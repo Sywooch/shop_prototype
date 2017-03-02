@@ -119,6 +119,7 @@ $routes = [
     'admin-currency'=>'admin/currency',
     'admin-currency-create'=>'admin/currency-create',
     'admin-currency-delete'=>'admin/currency-delete',
+    'admin-currency-base-change'=>'admin/currency-base-change',
     
     # Календарь
     'calendar-get'=>'calendar/get',

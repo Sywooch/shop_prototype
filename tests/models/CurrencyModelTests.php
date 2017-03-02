@@ -20,6 +20,8 @@ class CurrencyModelTests extends TestCase
         $this->assertTrue($reflection->hasConstant('DBMS'));
         $this->assertTrue($reflection->hasConstant('UPDATE'));
         $this->assertTrue($reflection->hasConstant('CREATE'));
+        $this->assertTrue($reflection->hasConstant('DELETE'));
+        $this->assertTrue($reflection->hasConstant('BASE_CHANGE'));
         
         $model = new CurrencyModel();
         
@@ -67,7 +69,7 @@ class CurrencyModelTests extends TestCase
             'update_date'=>time()
         ];
         
-         $this->assertEquals(2, $model->id);
+        $this->assertEquals(2, $model->id);
         $this->assertEquals(1.056, $model->exchange_rate);
         $this->assertEquals(time(), $model->update_date);
         
@@ -80,6 +82,26 @@ class CurrencyModelTests extends TestCase
         ];
         
         $this->assertEquals('USD', $model->code);
+        $this->assertEquals(1.056, $model->exchange_rate);
+        $this->assertEquals(1, $model->main);
+        $this->assertEquals(time(), $model->update_date);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::DELETE]);
+        $model->attributes = [
+            'id'=>2,
+        ];
+        
+        $this->assertEquals(2, $model->id);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::BASE_CHANGE]);
+        $model->attributes = [
+            'id'=>2,
+            'main'=>1,
+            'exchange_rate'=>1.056,
+            'update_date'=>time()
+        ];
+        
+        $this->assertEquals(2, $model->id);
         $this->assertEquals(1.056, $model->exchange_rate);
         $this->assertEquals(1, $model->main);
         $this->assertEquals(time(), $model->update_date);
@@ -122,6 +144,37 @@ class CurrencyModelTests extends TestCase
         
         $this->assertEmpty($model->errors);
         $this->assertSame(0, $model->main);
+        
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::DELETE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::DELETE]);
+        $model->attributes = [
+            'id'=>2,
+        ];
+        $model->validate();
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::BASE_CHANGE]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(4, $model->errors);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::BASE_CHANGE]);
+        $model->attributes = [
+            'id'=>2,
+            'main'=>1,
+            'exchange_rate'=>1.056,
+            'update_date'=>time()
+        ];
+        
+        $this->assertEmpty($model->errors);
     }
     
     /**

@@ -19,6 +19,7 @@ class CurrencyFormTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('DELETE'));
         $this->assertTrue($reflection->hasConstant('CREATE'));
+        $this->assertTrue($reflection->hasConstant('BASE_CHANGE'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('code'));
@@ -44,6 +45,15 @@ class CurrencyFormTests extends TestCase
         ];
         
         $this->assertSame('CODE', $form->code);
+        $this->assertSame(1, $form->main);
+        
+        $form = new CurrencyForm(['scenario'=>CurrencyForm::BASE_CHANGE]);
+        $form->attributes = [
+            'id'=>45,
+            'main'=>1,
+        ];
+        
+        $this->assertSame(45, $form->id);
         $this->assertSame(1, $form->main);
     }
     
@@ -73,6 +83,20 @@ class CurrencyFormTests extends TestCase
         $form = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
         $form->attributes = [
             'code'=>'CODE'
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new CurrencyForm(['scenario'=>CurrencyForm::BASE_CHANGE]);
+        $form->validate();
+        
+        $this->assertCount(2, $form->errors);
+        
+        $form = new CurrencyForm(['scenario'=>CurrencyForm::BASE_CHANGE]);
+        $form->attributes = [
+            'id'=>23,
+            'main'=>1,
         ];
         $form->validate();
         

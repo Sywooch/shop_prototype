@@ -15,6 +15,7 @@ use app\widgets\AdminCurrencyWidget;
 use app\models\CurrencyModel;
 use app\helpers\CurrencyHelper;
 use app\savers\ModelSaver;
+use app\updaters\CurrencyArrayUpdater;
 
 /**
  * Обрабатывает запрос на создание категории
