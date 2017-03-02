@@ -8,6 +8,7 @@ use app\services\AbstractBaseService;
 use app\models\CurrencyModel;
 use app\updaters\CurrencyModelUpdater;
 use app\finders\MainCurrencyFinder;
+use app\helpers\CurrencyHelper;
 
 /**
  * 
@@ -34,28 +35,12 @@ class CurrenyUpdateService extends AbstractBaseService
             
             if (empty($this->updateCurrencyModel->update_date) || (time() - $this->updateCurrencyModel->update_date > (60 * 60))) {
                 $finder = \Yii::$app->registry->get(MainCurrencyFinder::class);
-                $mainCurrencyModel = $finder->find();
-                if (empty($mainCurrencyModel)) {
-                    throw new ErrorException($this->emptyError('mainCurrencyModel'));
+                $baseCurrencyModel = $finder->find();
+                if (empty($baseCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('baseCurrencyModel'));
                 }
                 
-                $mainCurrenyCode = $mainCurrencyModel->code;
-                $updateCurrencyCode = $this->updateCurrencyModel->code;
-                
-                $dataJSON = file_get_contents('http://query.yahooapis.com/v1/public/yql?q=select+*+from+yahoo.finance.xchange+where+pair+in+("' . $mainCurrenyCode . $updateCurrencyCode . '")&format=json&env=store://datatables.org/alltableswithkeys');
-                if (empty($dataJSON)) {
-                    throw new ErrorException($this->emptyError('dataJSON'));
-                }
-                
-                $currencyDataObject = json_decode($dataJSON);
-                if (empty($currencyDataObject)) {
-                    throw new ErrorException($this->emptyError('currencyDataObject'));
-                }
-                
-                $exchange_rate = $currencyDataObject->query->results->rate->Rate;
-                if (empty($exchange_rate)) {
-                    throw new ErrorException($this->emptyError('exchange_rate'));
-                }
+                $exchange_rate = CurrencyHelper::exchangeRate($baseCurrencyModel->code, $this->updateCurrencyModel->code);
                 
                 $this->updateCurrencyModel->scenario = CurrencyModel::UPDATE;
                 $this->updateCurrencyModel->exchange_rate = $exchange_rate;
@@ -64,10 +49,10 @@ class CurrenyUpdateService extends AbstractBaseService
                     throw new ErrorException($this->modelError($this->updateCurrencyModel->errors));
                 }
                 
-                $saver = new CurrencyModelUpdater([
+                $updater = new CurrencyModelUpdater([
                     'model'=>$this->updateCurrencyModel
                 ]);
-                $saver->update();
+                $updater->update();
             }
             
             return $this->updateCurrencyModel;

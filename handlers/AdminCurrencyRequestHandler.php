@@ -50,27 +50,6 @@ class AdminCurrencyRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Возвращает массив конфигурации для виджета AdminCurrencyWidget
-     * @param array $currencyModelArray
-     * @param AbstractBaseForm $currencyForm
-     */
-    private function adminCurrencyWidgetConfig(array $currencyModelArray, AbstractBaseForm $currencyForm): array
-    {
-        try {
-            $dataArray = [];
-            
-            $dataArray['currency'] = $currencyModelArray;
-            $dataArray['form'] = $currencyForm;
-            $dataArray['header'] = \Yii::t('base', 'Currency');
-            $dataArray['template'] = 'admin-currency.twig';
-            
-            return $dataArray;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
      * Возвращает массив конфигурации для виджета AdminCreateCurrencyWidget
      * @param AbstractBaseForm $currencyFormCreate
      */

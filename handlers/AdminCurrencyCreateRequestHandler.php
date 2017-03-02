@@ -9,6 +9,12 @@ use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
 use app\forms\CurrencyForm;
 use app\services\CurrenyUpdateService;
+use app\finders\{CurrencyFinder,
+    MainCurrencyFinder};
+use app\widgets\AdminCurrencyWidget;
+use app\models\CurrencyModel;
+use app\helpers\CurrencyHelper;
+use app\savers\ModelSaver;
 
 /**
  * Обрабатывает запрос на создание категории
@@ -42,44 +48,69 @@ class AdminCurrencyCreateRequestHandler extends AbstractBaseHandler
                         $rawCurrencyModel = new CurrencyModel(['scenario'=>CurrencyModel::CREATE]);
                         $rawCurrencyModel->code = $form->code;
                         
-                        if (empty($form->main)) {
-                            $service = new CurrenyUpdateService([
-                                'updateCurrencyModel'=>$rawCurrencyModel
-                            ]);
-                            $rawCurrencyModel = $service->get();
-                            if (empty($rawCurrencyModel)) {
-                                throw new ErrorException($this->emptyError('rawCurrencyModel'));
-                            }
-                        } else {
-                            $updater = \Yii::$app->registry->get(CurrencyMainUpdater::class);
-                            $result = $updater->update();
-                            if ($result !=== 1) {
-                                throw new ErrorException($this->methodError('update'));
+                        if (!empty($form->main)) {
+                            $finder = new CurrencyFinder();
+                            $existsCurrencyModelArray = $finder->find();
+                            if (empty($existsCurrencyModelArray)) {
+                                throw new ErrorException($this->emptyError('existsCurrencyModelArray'));
                             }
                             
                             $rawCurrencyModel->main = 1;
                             $rawCurrencyModel->exchange_rate = 1;
                             $rawCurrencyModel->update_date = time();
+                            if ($rawCurrencyModel->validate() === false) {
+                                throw new ErrorException($this->modelError($rawCurrencyModel->errors));
+                            }
+                            
+                            $saver = new ModelSaver([
+                                'model'=>$rawCurrencyModel
+                            ]);
+                            $saver->save();
+                            
+                            $updateCurrencyModelArray = [];
+                            foreach ($existsCurrencyModelArray as $existsCurrencyModel) {
+                                $exchange_rate = CurrencyHelper::exchangeRate($rawCurrencyModel->code, $existsCurrencyModel->code);
+                                $existsCurrencyModel->main = 0;
+                                $existsCurrencyModel->exchange_rate = $exchange_rate;
+                                $existsCurrencyModel->update_date = time();
+                                $updateCurrencyModelArray[] = $existsCurrencyModel;
+                            }
+                            
+                            $updater = new CurrencyArrayUpdater([
+                                'models'=>$updateCurrencyModelArray
+                            ]);
+                            $updater->update();
+                        } else {
+                            $finder = \Yii::$app->registry->get(MainCurrencyFinder::class);
+                            $baseCurrencyModel = $finder->find();
+                            if (empty($baseCurrencyModel)) {
+                                throw new ErrorException($this->emptyError('baseCurrencyModel'));
+                            }
+                            
+                            $exchange_rate = CurrencyHelper::exchangeRate($baseCurrencyModel->code, $rawCurrencyModel->code);
+                            
+                            $rawCurrencyModel->exchange_rate = $exchange_rate;
+                            $rawCurrencyModel->update_date = time();
+                            if ($rawCurrencyModel->validate() === false) {
+                                throw new ErrorException($this->modelError($rawCurrencyModel->errors));
+                            }
+                            
+                            $saver = new ModelSaver([
+                                'model'=>$rawCurrencyModel
+                            ]);
+                            $saver->save();
                         }
                         
-                        if ($rawCurrencyModel->validate() === false) {
-                            throw new ErrorException($this->modelError($rawCurrencyModel->errors));
+                        $finder = \Yii::$app->registry->get(CurrencyFinder::class);
+                        $currencyModelArray = $finder->find();
+                        if (empty($currencyModelArray)) {
+                            throw new ErrorException($this->emptyError('currencyModelArray'));
                         }
                         
-                        $saver = new ModelSaver([
-                            'model'=>$rawCurrencyModel
-                        ]);
-                        $saver->save();
+                        $currencyForm = new CurrencyForm();
                         
-                        $finder = \Yii::$app->registry->get(SizesFinder::class);
-                        $sizesModelArray = $finder->find();
-                        
-                        $sizesForm = new CurrencyForm(['scenario'=>CurrencyForm::DELETE]);
-                        
-                        $dataArray = [];
-                        
-                        $adminSizesWidgetConfig = $this->adminSizesWidgetConfig($sizesModelArray, $sizesForm);
-                        $response = AdminSizesWidget::widget($adminSizesWidgetConfig);
+                        $adminCurrencyWidgetConfig = $this->adminCurrencyWidgetConfig($currencyModelArray, $currencyForm);
+                        $response = AdminCurrencyWidget::widget($adminCurrencyWidgetConfig);
                         
                         $transaction->commit();
                         

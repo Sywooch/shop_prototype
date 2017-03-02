@@ -41,7 +41,7 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
         return [
             self::DBMS=>['id', 'code', 'exchange_rate', 'main', 'update_date'],
             self::UPDATE=>['id', 'exchange_rate', 'update_date'],
-            self::CREATE=>['code', 'main', 'update_date'],
+            self::CREATE=>['code', 'exchange_rate', 'main', 'update_date'],
         ];
     }
     
@@ -50,6 +50,7 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
         return [
             [['id', 'exchange_rate', 'update_date'], 'required', 'on'=>self::UPDATE],
             [['code', 'exchange_rate', 'update_date'], 'required', 'on'=>self::CREATE],
+            [['main'], 'default', 'value'=>0, 'on'=>self::CREATE],
         ];
     }
     

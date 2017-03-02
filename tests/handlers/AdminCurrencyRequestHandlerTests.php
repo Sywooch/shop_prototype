@@ -47,31 +47,6 @@ class AdminCurrencyRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCurrencyRequestHandler::adminCurrencyWidgetConfig
-     */
-    public function testAdminCurrencyWidgetConfig()
-    {
-        $currencyModelArray = [new class() {}];
-        $currencyForm = new class() extends AbstractBaseForm {};
-        
-        $reflection = new \ReflectionMethod($this->handler, 'adminCurrencyWidgetConfig');
-        $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $currencyModelArray, $currencyForm);
-        
-        $this->assertInternalType('array', $result);
-        
-        $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('form', $result);
-        $this->assertArrayHasKey('header', $result);
-        $this->assertArrayHasKey('template', $result);
-        
-        $this->assertInternalType('array', $result['currency']);
-        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
-        $this->assertInternalType('string', $result['header']);
-        $this->assertInternalType('string', $result['template']);
-    }
-    
-    /**
      * Тестирует метод AdminCurrencyRequestHandler::adminCreateCurrencyWidgetConfig
      */
     public function testAdminCreateCurrencyWidgetConfig()

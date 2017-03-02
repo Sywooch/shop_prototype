@@ -74,11 +74,13 @@ class CurrencyModelTests extends TestCase
         $model = new CurrencyModel(['scenario'=>CurrencyModel::CREATE]);
         $model->attributes = [
             'code'=>'USD',
+            'exchange_rate'=>1.056,
             'main'=>1,
             'update_date'=>time()
         ];
         
         $this->assertEquals('USD', $model->code);
+        $this->assertEquals(1.056, $model->exchange_rate);
         $this->assertEquals(1, $model->main);
         $this->assertEquals(time(), $model->update_date);
     }
@@ -108,7 +110,7 @@ class CurrencyModelTests extends TestCase
         $model->attributes = [];
         $model->validate();
         
-        $this->assertCount(2, $model->errors);
+        $this->assertCount(3, $model->errors);
         
         $model = new CurrencyModel(['scenario'=>CurrencyModel::CREATE]);
         $model->attributes = [
@@ -119,6 +121,7 @@ class CurrencyModelTests extends TestCase
         $model->validate();
         
         $this->assertEmpty($model->errors);
+        $this->assertSame(0, $model->main);
     }
     
     /**
