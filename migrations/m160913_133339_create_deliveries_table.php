@@ -16,7 +16,8 @@ class m160913_133339_create_deliveries_table extends Migration
             'id' => $this->primaryKey(3)->unsigned()->notNull(),
             'name'=>$this->string(255)->notNull()->unique(),
             'description'=>$this->string(1000)->notNull(),
-            'price'=>$this->decimal(6, 2)->notNull()->defaultValue(0.00)
+            'price'=>$this->decimal(6, 2)->notNull()->defaultValue(0.00),
+            'active'=>$this->boolean()->defaultValue(0),
         ], 'ENGINE=InnoDB');
     }
 

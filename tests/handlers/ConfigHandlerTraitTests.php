@@ -800,7 +800,7 @@ class ConfigHandlerTraitTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCurrencyRequestHandler::adminCurrencyWidgetConfig
+     * Тестирует метод ConfigHandlerTrait::adminCurrencyWidgetConfig
      */
     public function testAdminCurrencyWidgetConfig()
     {
@@ -819,6 +819,34 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertArrayHasKey('template', $result);
         
         $this->assertInternalType('array', $result['currency']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
+    /**
+     * Тестирует метод ConfigHandlerTrait::adminDeliveriesWidgetConfig
+     */
+    public function testAdminDeliveriesWidgetConfig()
+    {
+        $deliveriesModelArray = [new class() {}];
+        $currentCurrencyModel = new class() extends CurrencyModel {};
+        $deliveriesForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminDeliveriesWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $deliveriesModelArray, $currentCurrencyModel, $deliveriesForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('deliveries', $result);
+        $this->assertArrayHasKey('currency', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['deliveries']);
+        $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
         $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);

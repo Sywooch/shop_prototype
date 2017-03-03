@@ -256,6 +256,9 @@ $translate = [
     'You must first assign a new base currency'=>'Сначала вы должны назначить новую базовую валюту',
     'Currency with this code already exist'=>'Валюта с этим кодом уже существует',
     'This code is not valid'=>'Этот код не является допустимым',
+    'Deliveries'=>'Доставка',
+    'Available deliveries'=>'Доступные доставки',
+    'Add delivery'=>'Добавить вариант доставки',
 ];
 
 return $translate;

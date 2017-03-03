@@ -3,10 +3,13 @@
 namespace app\handlers;
 
 use yii\base\ErrorException;
-use app\handlers\AbstractBaseHandler;
-use app\finders\DeliveriesFinder;
+use app\handlers\{AbstractBaseHandler,
+    ConfigHandlerTrait};
+use app\finders\AdminDeliveriesFinder;
 use app\forms\{AbstractBaseForm,
     DeliveriesForm};
+use app\services\GetCurrentCurrencyModelService;
+use app\helpers\HashHelper;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -30,15 +33,23 @@ class AdminDeliveriesRequestHandler extends AbstractBaseHandler
     {
         try {
             if (empty($this->dataArray)) {
-                $finder = \Yii::$app->registry->get(DeliveriesFinder::class);
-                $currencyModelArray = $finder->find();
+                $finder = \Yii::$app->registry->get(AdminDeliveriesFinder::class);
+                $deliveriesModelArray = $finder->find();
                 
-                $currencyForm = new DeliveriesForm();
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
+                $deliveriesForm = new DeliveriesForm();
                 
                 $dataArray = [];
                 
-                $dataArray['adminDeliveriesWidgetConfig'] = $this->adminDeliveriesWidgetConfig($currencyModelArray, $currencyForm);
-                $dataArray['adminCreateDeliveriesWidgetConfig'] = $this->adminCreateDeliveriesWidgetConfig($currencyForm);
+                $dataArray['adminDeliveriesWidgetConfig'] = $this->adminDeliveriesWidgetConfig($deliveriesModelArray, $currentCurrencyModel, $deliveriesForm);
+                $dataArray['adminCreateDeliveriesWidgetConfig'] = $this->adminCreateDeliveriesWidgetConfig($deliveriesForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -51,16 +62,16 @@ class AdminDeliveriesRequestHandler extends AbstractBaseHandler
     
     /**
      * Возвращает массив конфигурации для виджета AdminCreateDeliveriesWidget
-     * @param AbstractBaseForm $currencyFormCreate
+     * @param AbstractBaseForm $deliveriesFormCreate
      */
-    private function adminCreateDeliveriesWidgetConfig(AbstractBaseForm $currencyForm): array
+    private function adminCreateDeliveriesWidgetConfig(AbstractBaseForm $deliveriesForm): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['form'] = $currencyForm;
-            $dataArray['header'] = \Yii::t('base', 'Add currency');
-            $dataArray['template'] = 'admin-create-currency.twig';
+            $dataArray['form'] = $deliveriesForm;
+            $dataArray['header'] = \Yii::t('base', 'Add delivery');
+            $dataArray['template'] = 'admin-create-delivery.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

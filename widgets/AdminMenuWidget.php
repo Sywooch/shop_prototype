@@ -77,6 +77,10 @@ class AdminMenuWidget extends Menu
                     'url'=>['/admin/currency']
                 ],
                 [
+                    'label'=>\Yii::t('base', 'Deliveries'),
+                    'url'=>['/admin/deliveries']
+                ],
+                [
                     'label'=>\Yii::t('base', 'Exit'),
                     'url'=>['/']
                 ],

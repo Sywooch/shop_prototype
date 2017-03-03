@@ -9,7 +9,7 @@ use app\finders\AbstractBaseFinder;
 /**
  * Возвращает коллекцию способов доставки из СУБД
  */
-class DeliveriesFinder extends AbstractBaseFinder
+class AdminDeliveriesFinder extends AbstractBaseFinder
 {
     /**
      * @var массив загруженных DeliveriesModel
@@ -26,7 +26,6 @@ class DeliveriesFinder extends AbstractBaseFinder
             if (empty($this->storage)) {
                 $query = DeliveriesModel::find();
                 $query->select(['[[deliveries.id]]', '[[deliveries.name]]', '[[deliveries.description]]', '[[deliveries.price]]', '[[deliveries.active]]']);
-                $query->where(['[[deliveries.active]]'=>1]);
                 
                 $this->storage = $query->all();
             }

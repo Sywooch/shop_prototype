@@ -725,4 +725,27 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminDeliveriesWidget
+     * @param array $deliveriesModelArray
+     * @param CurrencyInterface $currentCurrencyModel
+     * @param AbstractBaseForm $deliveriesForm
+     */
+    private function adminDeliveriesWidgetConfig(array $deliveriesModelArray, CurrencyInterface $currentCurrencyModel, AbstractBaseForm $deliveriesForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['deliveries'] = $deliveriesModelArray;
+            $dataArray['currency'] = $currentCurrencyModel;
+            $dataArray['form'] = $deliveriesForm;
+            $dataArray['header'] = \Yii::t('base', 'Deliveries');
+            $dataArray['template'] = 'admin-deliveries.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }
