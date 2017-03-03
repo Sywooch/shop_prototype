@@ -15,7 +15,7 @@ use app\removers\CurrencyModelRemover;
 use app\widgets\AdminCurrencyWidget;
 
 /**
- * Обрабатывает запрос на обновление данных товара
+ * Обрабатывает запрос на удаление данных товара
  */
 class AdminCurrencyDeleteRequestHandler extends AbstractBaseHandler
 {

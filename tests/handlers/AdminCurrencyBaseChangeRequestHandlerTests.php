@@ -4,15 +4,15 @@ namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
 use yii\web\UploadedFile;
-use app\handlers\AdminCurrencyCreateRequestHandler;
+use app\handlers\AdminCurrencyBaseChangeRequestHandler;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\CurrencyFixture;
 use app\forms\CurrencyForm;
 
 /**
- * Тестирует класс AdminCurrencyCreateRequestHandler
+ * Тестирует класс AdminCurrencyBaseChangeRequestHandler
  */
-class AdminCurrencyCreateRequestHandlerTests extends TestCase
+class AdminCurrencyBaseChangeRequestHandlerTests extends TestCase
 {
     private static $dbClass;
     private $handler;
@@ -31,11 +31,11 @@ class AdminCurrencyCreateRequestHandlerTests extends TestCase
     {
         \Yii::$app->registry->clean();
         
-        $this->handler = new AdminCurrencyCreateRequestHandler();
+        $this->handler = new AdminCurrencyBaseChangeRequestHandler();
     }
     
     /**
-     * Тестирует метод AdminCurrencyCreateRequestHandler::handle
+     * Тестирует метод AdminCurrencyBaseChangeRequestHandler::handle
      * если в запросе ошибки
      */
     public function testHandleAjaxError()
@@ -46,7 +46,8 @@ class AdminCurrencyCreateRequestHandlerTests extends TestCase
             {
                 return [
                     'CurrencyForm'=>[
-                        'code'=>null,
+                        'id'=>1,
+                        'main'=>null
                     ],
                 ];
             }
@@ -58,12 +59,13 @@ class AdminCurrencyCreateRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCurrencyCreateRequestHandler::handle
+     * Тестирует метод AdminCurrencyBaseChangeRequestHandler::handle
      */
     public function testHandle()
     {
-        $currency = \Yii::$app->db->createCommand('SELECT * FROM {{currency}}')->queryAll();
-        $this->assertCount(2, $currency);
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{currency}} WHERE [[main]]=1')->queryAll();
+        $this->assertCount(1, $result);
+        $oldBase = $result[0];
         
         $request = new class() {
             public $isAjax = true;
@@ -71,37 +73,7 @@ class AdminCurrencyCreateRequestHandlerTests extends TestCase
             {
                 return [
                     'CurrencyForm'=>[
-                        'code'=>'EUR',
-                    ],
-                ];
-            }
-        };
-        
-        $result = $this->handler->handle($request);
-
-        $this->assertInternalType('string', $result);
-        $this->assertNotEmpty($result);
-        
-        $currency = \Yii::$app->db->createCommand('SELECT * FROM {{currency}}')->queryAll();
-        $this->assertCount(3, $currency);
-    }
-    
-    /**
-     * Тестирует метод AdminCurrencyCreateRequestHandler::handle
-     * если добавляется новая базовая валюта
-     */
-    public function testHandleNewBase()
-    {
-        $currency = \Yii::$app->db->createCommand('SELECT * FROM {{currency}}')->queryAll();
-        $this->assertCount(3, $currency);
-        
-        $request = new class() {
-            public $isAjax = true;
-            public function post($name = null, $defaultValue = null)
-            {
-                return [
-                    'CurrencyForm'=>[
-                        'code'=>'JPY',
+                        'id'=>2,
                         'main'=>1
                     ],
                 ];
@@ -113,8 +85,12 @@ class AdminCurrencyCreateRequestHandlerTests extends TestCase
         $this->assertInternalType('string', $result);
         $this->assertNotEmpty($result);
         
-        $currency = \Yii::$app->db->createCommand('SELECT * FROM {{currency}}')->queryAll();
-        $this->assertCount(4, $currency);
+        $result = \Yii::$app->db->createCommand('SELECT * FROM {{currency}} WHERE [[main]]=1')->queryAll();
+        $this->assertCount(1, $result);
+        $newBase = $result[0];
+        
+        $this->assertNotEquals($oldBase['id'], $newBase['id']);
+        $this->assertEquals(1, (int) $newBase['exchange_rate']);
     }
     
     public static function tearDownAfterClass()

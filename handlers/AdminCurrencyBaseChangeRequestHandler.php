@@ -18,14 +18,14 @@ use app\finders\CurrencyFinder;
 use app\widgets\AdminCurrencyWidget;
 
 /**
- * Обрабатывает запрос на создание категории
+ * Обрабатывает запрос на смену базовой валюты
  */
 class AdminCurrencyBaseChangeRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
     /**
-     * Добавляет валюту
+     * Меняет базовую валюту
      * @param $request
      * @return mixed
      */

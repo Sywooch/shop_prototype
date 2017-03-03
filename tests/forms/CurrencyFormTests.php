@@ -124,6 +124,14 @@ class CurrencyFormTests extends TestCase
         ];
         $form->validate();
         
+        $this->assertCount(1, $form->errors);
+        
+        $form = new CurrencyForm(['scenario'=>CurrencyForm::CREATE]);
+        $form->attributes = [
+            'code'=>'JPY'
+        ];
+        $form->validate();
+        
         $this->assertEmpty($form->errors);
         
         $form = new CurrencyForm(['scenario'=>CurrencyForm::BASE_CHANGE]);
