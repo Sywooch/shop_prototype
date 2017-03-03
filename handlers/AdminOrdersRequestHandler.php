@@ -77,7 +77,7 @@ class AdminOrdersRequestHandler extends AbstractBaseHandler
                 $statusesArray = $finder->find();
                 
                 $ordersFiltersForm = new OrdersFiltersForm($filtersModel->toArray());
-                $adminChangeOrderForm = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
+                $adminChangeOrderForm = new AdminChangeOrderForm();
                 
                 $dataArray = [];
                 

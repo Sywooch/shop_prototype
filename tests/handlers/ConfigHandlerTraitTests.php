@@ -292,26 +292,23 @@ class ConfigHandlerTraitTests extends TestCase
     {
         $purchasesCollection = new class() extends PurchasesCollection {};
         $currentCurrencyModel = new class() extends CurrencyModel {};
-        $updateForm = new class() extends AbstractBaseForm {};
-        $deleteForm = new class() extends AbstractBaseForm {};
+        $form = new class() extends AbstractBaseForm {};
         
         $reflection = new \ReflectionMethod($this->handler, 'cartWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $purchasesCollection, $currentCurrencyModel, $updateForm, $deleteForm);
+        $result = $reflection->invoke($this->handler, $purchasesCollection, $currentCurrencyModel, $form);
         
         $this->assertInternalType('array', $result);
         
         $this->assertArrayHasKey('purchases', $result);
         $this->assertArrayHasKey('currency', $result);
-        $this->assertArrayHasKey('updateForm', $result);
-        $this->assertArrayHasKey('deleteForm', $result);
+        $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('header', $result);
         $this->assertArrayHasKey('template', $result);
         
         $this->assertInstanceOf(PurchasesCollectionInterface::class, $result['purchases']);
         $this->assertInstanceOf(CurrencyInterface::class, $result['currency']);
-        $this->assertInstanceOf(AbstractBaseForm::class, $result['updateForm']);
-        $this->assertInstanceOf(AbstractBaseForm::class, $result['deleteForm']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['header']);
         $this->assertInternalType('string', $result['template']);
     }

@@ -59,7 +59,7 @@ class AdminAddProductRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('brandsArray'));
                 }
                 
-                $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::CREATE]);
+                $adminProductForm = new AdminProductForm();
                 
                 $dataArray['adminAddProductFormWidgetConfig'] = $this->adminAddProductFormWidgetConfig($categoriesArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
                 

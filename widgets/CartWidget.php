@@ -9,7 +9,7 @@ use yii\helpers\{ArrayHelper,
 use app\widgets\AbstractBaseWidget;
 use app\collections\PurchasesCollectionInterface;
 use app\models\CurrencyInterface;
-use app\forms\PurchaseForm;
+use app\forms\AbstractBaseForm;
 use app\helpers\ImgHelper;
 
 /**
@@ -28,11 +28,7 @@ class CartWidget extends AbstractBaseWidget
     /**
      * @var object PurchaseForm
      */
-    private $updateForm;
-    /**
-     * @var object PurchaseForm
-     */
-    private $deleteForm;
+    private $form;
     /**
      * @var string заголовок
      */
@@ -55,11 +51,8 @@ class CartWidget extends AbstractBaseWidget
             if (empty($this->currency)) {
                 throw new ErrorException($this->emptyError('currency'));
             }
-            if (empty($this->updateForm)) {
-                throw new ErrorException($this->emptyError('updateForm'));
-            }
-            if (empty($this->deleteForm)) {
-                throw new ErrorException($this->emptyError('deleteForm'));
+            if (empty($this->form)) {
+                throw new ErrorException($this->emptyError('form'));
             }
             if (empty($this->header)) {
                 throw new ErrorException($this->emptyError('header'));
@@ -77,7 +70,7 @@ class CartWidget extends AbstractBaseWidget
                 $set['short_description'] = $purchase->product->short_description;
                 $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
                 
-                $updateForm = clone $this->updateForm;
+                $updateForm = clone $this->form;
                 
                 $set['formModel'] = \Yii::configure($updateForm, [
                     'id_color'=>$purchase->id_color,
@@ -86,7 +79,7 @@ class CartWidget extends AbstractBaseWidget
                 ]);
                 $set['idForm'] = sprintf('update-product-form-%d', $purchase->id_product);
                 
-                $set['formModelDelete'] = clone $this->deleteForm;
+                $set['formModelDelete'] = clone $this->form;
                 $set['idFormDelete'] = sprintf('delete-product-form-%d', $purchase->id_product);
                 
                 $colors = $purchase->product->colors;
@@ -151,26 +144,13 @@ class CartWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает PurchaseForm свойству CartWidget::updateForm
+     * Присваивает значение CartWidget::form
      * @param CommentForm $form
      */
-    public function setUpdateForm(PurchaseForm $updateForm)
+    public function setForm(AbstractBaseForm $form)
     {
         try {
-            $this->updateForm = $updateForm;
-        } catch (\Throwable $t) {
-            $this->throwException($t, __METHOD__);
-        }
-    }
-    
-    /**
-     * Присваивает PurchaseForm свойству CartWidget::deleteForm
-     * @param CommentForm $form
-     */
-    public function setDeleteForm(PurchaseForm $deleteForm)
-    {
-        try {
-            $this->deleteForm = $deleteForm;
+            $this->form = $form;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -4,15 +4,15 @@ namespace app\handlers;
 
 use yii\base\ErrorException;
 use app\handlers\AbstractBaseHandler;
-use app\finders\BrandsFinder;
+use app\finders\DeliveriesFinder;
 use app\forms\{AbstractBaseForm,
-    BrandsForm};
+    DeliveriesForm};
 
 /**
  * Обрабатывает запрос на получение данных 
- * с перечнем брендов
+ * с перечнем валют
  */
-class AdminBrandsRequestHandler extends AbstractBaseHandler
+class AdminDeliveriesRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
@@ -30,15 +30,15 @@ class AdminBrandsRequestHandler extends AbstractBaseHandler
     {
         try {
             if (empty($this->dataArray)) {
-                $finder = \Yii::$app->registry->get(BrandsFinder::class);
-                $brandsModelArray = $finder->find();
+                $finder = \Yii::$app->registry->get(DeliveriesFinder::class);
+                $currencyModelArray = $finder->find();
                 
-                $brandsForm = new BrandsForm();
+                $currencyForm = new DeliveriesForm();
                 
                 $dataArray = [];
                 
-                $dataArray['adminBrandsWidgetConfig'] = $this->adminBrandsWidgetConfig($brandsModelArray, $brandsForm);
-                $dataArray['adminCreateBrandWidgetConfig'] = $this->adminCreateBrandWidgetConfig($brandsForm);
+                $dataArray['adminDeliveriesWidgetConfig'] = $this->adminDeliveriesWidgetConfig($currencyModelArray, $currencyForm);
+                $dataArray['adminCreateDeliveriesWidgetConfig'] = $this->adminCreateDeliveriesWidgetConfig($currencyForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -50,17 +50,17 @@ class AdminBrandsRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Возвращает массив конфигурации для виджета AdminCreateBrandWidget
-     * @param AbstractBaseForm $brandsFormCreate
+     * Возвращает массив конфигурации для виджета AdminCreateDeliveriesWidget
+     * @param AbstractBaseForm $currencyFormCreate
      */
-    private function adminCreateBrandWidgetConfig(AbstractBaseForm $brandsForm): array
+    private function adminCreateDeliveriesWidgetConfig(AbstractBaseForm $currencyForm): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['form'] = $brandsForm;
-            $dataArray['header'] = \Yii::t('base', 'Create brand');
-            $dataArray['template'] = 'admin-create-brand.twig';
+            $dataArray['form'] = $currencyForm;
+            $dataArray['header'] = \Yii::t('base', 'Add currency');
+            $dataArray['template'] = 'admin-create-currency.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

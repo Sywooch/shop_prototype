@@ -34,16 +34,14 @@ class AdminCategoriesRequestHandler extends AbstractBaseHandler
                 $finder = \Yii::$app->registry->get(CategoriesFinder::class);
                 $categoriesModelArray = $finder->find();
                 
-                $categoriesFormDelete = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
-                $subcategoryFormDelete = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
-                $categoriesFormCreate = new CategoriesForm(['scenario'=>CategoriesForm::CREATE]);
-                $subcategoryFormCreate = new SubcategoryForm(['scenario'=>CategoriesForm::CREATE]);
+                $categoriesForm = new CategoriesForm();
+                $subcategoryForm = new SubcategoryForm();
                 
                 $dataArray = [];
                 
-                $dataArray['adminCategoriesWidgetConfig'] = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesFormDelete, $subcategoryFormDelete);
-                $dataArray['adminCreateCategoryWidgetConfig'] = $this->adminCreateCategoryWidgetConfig($categoriesFormCreate);
-                $dataArray['adminCreateSubcategoryWidgetConfig'] = $this->adminCreateSubcategoryWidgetConfig($subcategoryFormCreate, $categoriesModelArray);
+                $dataArray['adminCategoriesWidgetConfig'] = $this->adminCategoriesWidgetConfig($categoriesModelArray, $categoriesForm, $subcategoryForm);
+                $dataArray['adminCreateCategoryWidgetConfig'] = $this->adminCreateCategoryWidgetConfig($categoriesForm);
+                $dataArray['adminCreateSubcategoryWidgetConfig'] = $this->adminCreateSubcategoryWidgetConfig($subcategoryForm, $categoriesModelArray);
                 
                 $this->dataArray = $dataArray;
             }

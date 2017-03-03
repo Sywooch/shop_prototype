@@ -67,12 +67,11 @@ class UserRecoveryRequestHandler extends AbstractBaseHandler
                 }
                 
                 $changeCurrencyForm = new ChangeCurrencyForm([
-                    'scenario'=>ChangeCurrencyForm::SET,
                     'id'=>$currentCurrencyModel->id,
                     'url'=>Url::current()
                 ]);
                 
-                $recoveryPasswordForm = new RecoveryPasswordForm(['scenario'=>RecoveryPasswordForm::GET]);
+                $recoveryPasswordForm = new RecoveryPasswordForm();
                 
                 $dataArray = [];
                 

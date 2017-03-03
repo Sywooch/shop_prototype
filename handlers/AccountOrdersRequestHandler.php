@@ -79,7 +79,7 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
                 }
                 
                 $ordersFiltersForm = new OrdersFiltersForm(array_filter($filtersModel->toArray()));
-                $purchaseForm = new PurchaseForm(['scenario'=>PurchaseForm::CANCEL]);
+                $purchaseForm = new PurchaseForm();
                 
                 $dataArray = [];
                 

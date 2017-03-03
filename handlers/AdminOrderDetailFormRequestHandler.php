@@ -100,7 +100,7 @@ class AdminOrderDetailFormRequestHandler extends AbstractBaseHandler
                         throw new ErrorException($this->emptyError('paymentsArray'));
                     }
                     
-                    $adminChangeOrderForm = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::SAVE]);
+                    $adminChangeOrderForm = new AdminChangeOrderForm();
                     
                     $adminOrderDetailFormWidgetConfig = $this->adminOrderDetailFormWidgetConfig($currentCurrencyModel, $purchasesModel, $statusesArray, $colorsArray, $sizesArray, $deliveriesArray, $paymentsArray, $adminChangeOrderForm);
                     

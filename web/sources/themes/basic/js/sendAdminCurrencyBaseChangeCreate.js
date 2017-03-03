@@ -19,6 +19,7 @@ $(function() {
     };
     
     $('div.admin-currency').on('change', 'input:checkbox', function(event) {
+        $('form[id^=admin-currency-delete-form-] > input:submit').attr('disabled', true);
         (new SendAdminCurrencyBaseChangeCreate()).send(event);
         event.preventDefault();
     });

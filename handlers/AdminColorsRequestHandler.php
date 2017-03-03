@@ -33,13 +33,12 @@ class AdminColorsRequestHandler extends AbstractBaseHandler
                 $finder = \Yii::$app->registry->get(ColorsFinder::class);
                 $colorsModelArray = $finder->find();
                 
-                $colorsFormDelete = new ColorsForm(['scenario'=>ColorsForm::DELETE]);
-                $colorsFormCreate = new ColorsForm(['scenario'=>ColorsForm::CREATE]);
+                $colorsForm = new ColorsForm();
                 
                 $dataArray = [];
                 
-                $dataArray['adminColorsWidgetConfig'] = $this->adminColorsWidgetConfig($colorsModelArray, $colorsFormDelete);
-                $dataArray['adminCreateColorWidgetConfig'] = $this->adminCreateColorWidgetConfig($colorsFormCreate);
+                $dataArray['adminColorsWidgetConfig'] = $this->adminColorsWidgetConfig($colorsModelArray, $colorsForm);
+                $dataArray['adminCreateColorWidgetConfig'] = $this->adminCreateColorWidgetConfig($colorsForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -54,12 +53,12 @@ class AdminColorsRequestHandler extends AbstractBaseHandler
      * Возвращает массив конфигурации для виджета AdminCreateColorWidget
      * @param AbstractBaseForm $colorsFormCreate
      */
-    private function adminCreateColorWidgetConfig(AbstractBaseForm $colorsFormCreate): array
+    private function adminCreateColorWidgetConfig(AbstractBaseForm $colorsForm): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['form'] = $colorsFormCreate;
+            $dataArray['form'] = $colorsForm;
             $dataArray['header'] = \Yii::t('base', 'Create color');
             $dataArray['template'] = 'admin-create-color.twig';
             

@@ -33,13 +33,12 @@ class AdminSizesRequestHandler extends AbstractBaseHandler
                 $finder = \Yii::$app->registry->get(SizesFinder::class);
                 $sizesModelArray = $finder->find();
                 
-                $sizesFormDelete = new SizesForm(['scenario'=>SizesForm::DELETE]);
-                $sizesFormCreate = new SizesForm(['scenario'=>SizesForm::CREATE]);
+                $sizesForm = new SizesForm();
                 
                 $dataArray = [];
                 
-                $dataArray['adminSizesWidgetConfig'] = $this->adminSizesWidgetConfig($sizesModelArray, $sizesFormDelete);
-                $dataArray['adminCreateSizeWidgetConfig'] = $this->adminCreateSizeWidgetConfig($sizesFormCreate);
+                $dataArray['adminSizesWidgetConfig'] = $this->adminSizesWidgetConfig($sizesModelArray, $sizesForm);
+                $dataArray['adminCreateSizeWidgetConfig'] = $this->adminCreateSizeWidgetConfig($sizesForm);
                 
                 $this->dataArray = $dataArray;
             }
@@ -54,12 +53,12 @@ class AdminSizesRequestHandler extends AbstractBaseHandler
      * Возвращает массив конфигурации для виджета AdminCreateSizeWidget
      * @param AbstractBaseForm $sizesFormCreate
      */
-    private function adminCreateSizeWidgetConfig(AbstractBaseForm $sizesFormCreate): array
+    private function adminCreateSizeWidgetConfig(AbstractBaseForm $sizesForm): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['form'] = $sizesFormCreate;
+            $dataArray['form'] = $sizesForm;
             $dataArray['header'] = \Yii::t('base', 'Create size');
             $dataArray['template'] = 'admin-create-size.twig';
             

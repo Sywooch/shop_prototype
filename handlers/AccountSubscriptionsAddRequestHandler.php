@@ -66,15 +66,14 @@ class AccountSubscriptionsAddRequestHandler extends AbstractBaseHandler
                         ]);
                         $notMailingsArray = $finder->find();
                         
-                        $mailingForm = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE_ACC]);
-                        $notMailingForm = new MailingForm(['scenario'=>MailingForm::SAVE_ACC]);
+                        $mailingForm = new MailingForm();
                         
                         $dataArray = [];
                         
                         $accountMailingsUnsubscribeWidgetConfig = $this->accountMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
                         $dataArray['unsubscribe'] = AccountMailingsUnsubscribeWidget::widget($accountMailingsUnsubscribeWidgetConfig);
                         
-                        $accountMailingsFormWidgetConfig = $this->accountMailingsFormWidgetConfig($notMailingsArray, $notMailingForm);
+                        $accountMailingsFormWidgetConfig = $this->accountMailingsFormWidgetConfig($notMailingsArray, $mailingForm);
                         $dataArray['subscribe'] = AccountMailingsFormWidget::widget($accountMailingsFormWidgetConfig);
                         
                         $transaction->commit();

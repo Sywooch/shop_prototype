@@ -102,15 +102,11 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('currencyArray'));
                 }
                 
-                $purchaseForm = new PurchaseForm(['scenario'=>PurchaseForm::SAVE, 'quantity'=>1]);
+                $purchaseForm = new PurchaseForm(['quantity'=>1]);
                 
-                $commentForm = new CommentForm([
-                    'scenario'=>CommentForm::SAVE,
-                    'id_product'=>$productsModel->id,
-                ]);
+                $commentForm = new CommentForm(['id_product'=>$productsModel->id]);
                 
                 $changeCurrencyForm = new ChangeCurrencyForm([
-                    'scenario'=>ChangeCurrencyForm::SET,
                     'id'=>$currentCurrencyModel->id,
                     'url'=>Url::current()
                 ]);

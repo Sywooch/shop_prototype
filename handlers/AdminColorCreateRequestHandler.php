@@ -56,7 +56,7 @@ class AdminColorCreateRequestHandler extends AbstractBaseHandler
                         $finder = \Yii::$app->registry->get(ColorsFinder::class);
                         $colorsModelArray = $finder->find();
                         
-                        $colorsForm = new ColorsForm(['scenario'=>ColorsForm::DELETE]);
+                        $colorsForm = new ColorsForm();
                         
                         $dataArray = [];
                         

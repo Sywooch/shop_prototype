@@ -88,7 +88,6 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                 }
                 
                 $changeCurrencyForm = new ChangeCurrencyForm([
-                    'scenario'=>ChangeCurrencyForm::SET,
                     'id'=>$currentCurrencyModel->id,
                     'url'=>Url::current()
                 ]);

@@ -6,7 +6,8 @@ use PHPUnit\Framework\TestCase;
 use app\widgets\CartWidget;
 use app\collections\PurchasesCollection;
 use app\models\CurrencyModel;
-use app\forms\PurchaseForm;
+use app\forms\{AbstractBaseForm,
+    PurchaseForm};
 
 /**
  * Тестирует класс CartWidget
@@ -22,23 +23,9 @@ class CartWidgetTests extends TestCase
         
         $this->assertTrue($reflection->hasProperty('purchases'));
         $this->assertTrue($reflection->hasProperty('currency'));
-        $this->assertTrue($reflection->hasProperty('updateForm'));
-        $this->assertTrue($reflection->hasProperty('deleteForm'));
+        $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
-    }
-    
-    /**
-     * Тестирует метод CartWidget::setPurchases
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetPurchasesError()
-    {
-        $purchases = new class() {};
-        
-        $widget = new CartWidget();
-        $widget->setPurchases($purchases);
     }
     
     /**
@@ -60,19 +47,6 @@ class CartWidgetTests extends TestCase
     
     /**
      * Тестирует метод CartWidget::setCurrency
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetCurrencyError()
-    {
-        $currency = new class() {};
-        
-        $widget = new CartWidget();
-        $widget->setCurrency($currency);
-    }
-    
-    /**
-     * Тестирует метод CartWidget::setCurrency
      */
     public function testSetCurrency()
     {
@@ -89,76 +63,20 @@ class CartWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод CartWidget::setUpdateForm
-     * передаю параметр неверного типа
-     * @expectedException TypeError
+     * Тестирует метод CartWidget::setForm
      */
-    public function testSetUpdateFormError()
+    public function testSetForm()
     {
-        $form = new class() {};
+        $form = new class() extends AbstractBaseForm {};
         
         $widget = new CartWidget();
-        $widget->setUpdateForm($form);
-    }
-    
-    /**
-     * Тестирует метод CartWidget::setUpdateForm
-     */
-    public function testSetUpdateForm()
-    {
-        $form = new class() extends PurchaseForm {};
+        $widget->setForm($form);
         
-        $widget = new CartWidget();
-        $widget->setUpdateForm($form);
-        
-        $reflection = new \ReflectionProperty($widget, 'updateForm');
+        $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(PurchaseForm::class, $result);
-    }
-    
-    /**
-     * Тестирует метод CartWidget::setDeleteForm
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetDeleteFormError()
-    {
-        $form = new class() {};
-        
-        $widget = new CartWidget();
-        $widget->setDeleteForm($form);
-    }
-    
-    /**
-     * Тестирует метод CartWidget::setDeleteForm
-     */
-    public function testSetDeleteForm()
-    {
-        $form = new class() extends PurchaseForm {};
-        
-        $widget = new CartWidget();
-        $widget->setDeleteForm($form);
-        
-        $reflection = new \ReflectionProperty($widget, 'deleteForm');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
-        
-        $this->assertInstanceOf(PurchaseForm::class, $result);
-    }
-    
-    /**
-     * Тестирует метод CartWidget::setHeader
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetHeaderError()
-    {
-        $header = null;
-        
-        $widget = new CartWidget();
-        $widget->setHeader($header);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result);
     }
     
     /**
@@ -176,19 +94,6 @@ class CartWidgetTests extends TestCase
         $result = $reflection->getValue($widget);
         
         $this->assertInternalType('string', $result);
-    }
-    
-    /**
-     * Тестирует метод CartWidget::setTemplate
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetTemplateError()
-    {
-        $template = null;
-        
-        $widget = new CartWidget();
-        $widget->setTemplate($template);
     }
     
     /**
@@ -262,11 +167,11 @@ class CartWidgetTests extends TestCase
     
     /**
      * Тестирует метод CartWidget::run
-     * при отсутствии CartWidget::updateForm
+     * при отсутствии CartWidget::form
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: updateForm
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
-    public function testRunEmptyUpdateForm()
+    public function testRunEmptyForm()
     {
         $purchases = new class() extends PurchasesCollection {
             protected $items = [1];
@@ -283,39 +188,6 @@ class CartWidgetTests extends TestCase
         $reflection = new \ReflectionProperty($widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
-        
-        $widget->run();
-    }
-    
-    /**
-     * Тестирует метод CartWidget::run
-     * при отсутствии CartWidget::deleteForm
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: deleteForm
-     */
-    public function testRunEmptyDeleteForm()
-    {
-        $purchases = new class() extends PurchasesCollection {
-            protected $items = [1];
-        };
-        
-        $currency = new class() extends CurrencyModel {};
-        
-        $form = new class() extends PurchaseForm {};
-        
-        $widget = new CartWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'purchases');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $purchases);
-        
-        $reflection = new \ReflectionProperty($widget, 'currency');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $currency);
-        
-        $reflection = new \ReflectionProperty($widget, 'updateForm');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);
         
         $widget->run();
     }
@@ -346,11 +218,7 @@ class CartWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'updateForm');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);
-        
-        $reflection = new \ReflectionProperty($widget, 'deleteForm');
+        $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         
@@ -371,7 +239,7 @@ class CartWidgetTests extends TestCase
         
         $currency = new class() extends CurrencyModel {};
         
-        $form = new class() extends PurchaseForm {};
+        $form = new class() extends AbstractBaseForm {};
         
         $widget = new CartWidget();
         
@@ -383,11 +251,7 @@ class CartWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'updateForm');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);
-        
-        $reflection = new \ReflectionProperty($widget, 'deleteForm');
+        $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         
@@ -456,7 +320,11 @@ class CartWidgetTests extends TestCase
             public $code = 'MONEY';
         };
         
-        $form = new class() extends PurchaseForm {};
+        $form = new class() extends AbstractBaseForm {
+            public $id_color;
+            public $id_size;
+            public $quantity;
+        };
         
         $widget = new CartWidget();
         
@@ -468,11 +336,7 @@ class CartWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $currency);
         
-        $reflection = new \ReflectionProperty($widget, 'updateForm');
-        $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);
-        
-        $reflection = new \ReflectionProperty($widget, 'deleteForm');
+        $reflection = new \ReflectionProperty($widget, 'form');
         $reflection->setAccessible(true);
         $reflection->setValue($widget, $form);
         

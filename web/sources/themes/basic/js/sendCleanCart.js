@@ -12,7 +12,7 @@ $(function() {
         };
     };
     
-    $('div.shortCart').on('click', '#clean-cart-form > input[type="submit"]', function(event) {
+    $('div.shortCart').on('click', '#clean-cart-form > input:submit', function(event) {
         (new SendCleanCart()).send(event);
         event.preventDefault();
     });

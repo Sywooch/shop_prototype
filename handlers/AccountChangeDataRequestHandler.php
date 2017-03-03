@@ -31,7 +31,7 @@ class AccountChangeDataRequestHandler extends AbstractBaseHandler
             if (empty($this->dataArray)) {
                 $usersModel = \Yii::$app->user->identity;
                 
-                $userUpdateForm = new UserUpdateForm(['scenario'=>UserUpdateForm::UPDATE]);
+                $userUpdateForm = new UserUpdateForm();
                 
                 $dataArray = [];
                 

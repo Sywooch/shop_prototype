@@ -114,7 +114,7 @@ class AdminProductDetailChangeRequestHandler extends AbstractBaseHandler
                             throw new ErrorException($this->emptyError('currentCurrencyModel'));
                         }
                         
-                        $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+                        $adminProductForm = new AdminProductForm();
                         
                         $adminProductDataWidgetConfig = $this->adminProductDataWidgetConfig($productsModel, $currentCurrencyModel, $adminProductForm);
                         $response = AdminProductDataWidget::widget($adminProductDataWidgetConfig);

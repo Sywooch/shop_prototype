@@ -56,7 +56,7 @@ class AdminBrandCreateRequestHandler extends AbstractBaseHandler
                         $finder = \Yii::$app->registry->get(BrandsFinder::class);
                         $brandsModelArray = $finder->find();
                         
-                        $brandsForm = new BrandsForm(['scenario'=>BrandsForm::DELETE]);
+                        $brandsForm = new BrandsForm();
                         
                         $dataArray = [];
                         

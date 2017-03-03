@@ -62,7 +62,7 @@ class ShortCartRedirectWidget extends AbstractBaseWidget
             
             $renderArray['goodsText'] = \Yii::t('base', 'Products in cart: {goods}, Total cost: {cost}', ['goods'=>$this->goods, 'cost'=>$this->cost]);
             
-            $renderArray['formId'] = 'clean-cart-form';
+            $renderArray['formId'] = 'clean-cart-redirect-form';
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;

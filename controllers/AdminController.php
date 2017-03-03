@@ -27,6 +27,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminCurrencyCreateRequestHandler,
     AdminCurrencyDeleteRequestHandler,
     AdminCurrencyRequestHandler,
+    AdminDeliveriesRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
@@ -240,6 +241,11 @@ class AdminController extends Controller
             'currency-base-change'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCurrencyBaseChangeRequestHandler(),
+            ],
+            'deliveries'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminDeliveriesRequestHandler(),
+                'view'=>'deliveries.twig',
             ],
         ];
     }

@@ -79,7 +79,6 @@ class MailingsUnsubscribeRequestHandler extends AbstractBaseHandler
             ]);
             
             $mailingForm = new MailingForm([
-                'scenario'=>MailingForm::UNSUBSCRIBE,
                 'email'=>$email,
                 'key'=>$unsubscribeKey
             ]);

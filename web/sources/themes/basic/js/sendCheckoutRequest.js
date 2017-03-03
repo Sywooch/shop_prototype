@@ -11,7 +11,7 @@ $(function() {
         };
     };
     
-    $('div.cart-checkout').on('click', '#cart-сheckout-ajax-link > input[type="submit"]', function(event) {
+    $('div.cart-checkout').on('click', '#cart-сheckout-ajax-link > input:submit', function(event) {
         (new SendCheckoutRequest()).send(event);
         event.preventDefault();
     });
@@ -33,7 +33,7 @@ $(function() {
         };
     };
     
-    $('div.cart-checkout').on('click', '#cart-сheckout-ajax-form > input[type="submit"]', function(event) {
+    $('div.cart-checkout').on('click', '#cart-сheckout-ajax-form > input:submit', function(event) {
         (new SendCheckoutForm()).send(event);
         event.preventDefault();
     });

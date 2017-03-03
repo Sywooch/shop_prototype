@@ -76,12 +76,11 @@ class CartUpdateRequestHandler extends AbstractBaseHandler
                     ]);
                     $saver->save();
                     
-                    $updateForm = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]);
-                    $deleteForm = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
+                    $purchaseForm = new PurchaseForm();
                     
                     $dataArray = [];
                     
-                    $cartWidgetConfig = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $updateForm, $deleteForm);
+                    $cartWidgetConfig = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $purchaseForm);
                     $dataArray['items'] = CartWidget::widget($cartWidgetConfig);
                     
                     $shortCartRedirectWidgetConfig = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);

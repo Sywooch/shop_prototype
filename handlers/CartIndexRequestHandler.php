@@ -69,12 +69,11 @@ class CartIndexRequestHandler extends AbstractBaseHandler
                     'url'=>Url::current()
                 ]);
                 
-                $updateForm = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]);
-                $deleteForm = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]);
+                $purchaseForm = new PurchaseForm();
                 
                 $dataArray = [];
                 
-                $dataArray['cartWidgetConfig'] = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $updateForm, $deleteForm);
+                $dataArray['cartWidgetConfig'] = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $purchaseForm);
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
                 $dataArray['shortCartRedirectWidgetConfig'] = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);

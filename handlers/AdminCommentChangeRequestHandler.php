@@ -62,7 +62,7 @@ class AdminCommentChangeRequestHandler extends AbstractBaseHandler
                         ]);
                         $saver->save();
                         
-                        $commentForm = new CommentForm(['id'=>$commentsModel->id]);
+                        $commentForm = new CommentForm();
                         
                         $adminCommentDataWidgetConfig = $this->adminCommentDataWidgetConfig($commentsModel, $commentForm);
                         $response = AdminCommentDataWidget::widget($adminCommentDataWidgetConfig);

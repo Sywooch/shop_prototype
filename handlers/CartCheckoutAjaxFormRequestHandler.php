@@ -49,11 +49,10 @@ class CartCheckoutAjaxFormRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->emptyError('paymentsArray'));
                 }
                 
-                $customerInfoForm = new CustomerInfoForm(['scenario'=>CustomerInfoForm::CHECKOUT]);
+                $customerInfoForm = new CustomerInfoForm();
                 
                 if (\Yii::$app->user->isGuest === false) {
                     $usersModel = \Yii::$app->user->identity;
-                    
                     $customerInfoForm->email = !empty($usersModel->id_email) ? $usersModel->email->email : null;
                     $customerInfoForm->name = !empty($usersModel->id_name) ? $usersModel->name->name : null;
                     $customerInfoForm->surname = !empty($usersModel->id_surname) ? $usersModel->surname->surname: null;

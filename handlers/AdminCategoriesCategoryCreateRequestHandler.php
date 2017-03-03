@@ -60,8 +60,8 @@ class AdminCategoriesCategoryCreateRequestHandler extends AbstractBaseHandler
                         $finder = \Yii::$app->registry->get(CategoriesFinder::class);
                         $categoriesModelArray = $finder->find();
                         
-                        $categoriesForm = new CategoriesForm(['scenario'=>CategoriesForm::DELETE]);
-                        $subcategoryForm = new SubcategoryForm(['scenario'=>SubcategoryForm::DELETE]);
+                        $categoriesForm = new CategoriesForm();
+                        $subcategoryForm = new SubcategoryForm();
                         
                         $dataArray = [];
                         

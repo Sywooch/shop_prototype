@@ -56,7 +56,7 @@ class AdminSizeCreateRequestHandler extends AbstractBaseHandler
                         $finder = \Yii::$app->registry->get(SizesFinder::class);
                         $sizesModelArray = $finder->find();
                         
-                        $sizesForm = new SizesForm(['scenario'=>SizesForm::DELETE]);
+                        $sizesForm = new SizesForm();
                         
                         $dataArray = [];
                         

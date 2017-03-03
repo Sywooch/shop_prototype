@@ -64,12 +64,11 @@ class UserLoginRequestHandler extends AbstractBaseHandler
                 }
                 
                 $changeCurrencyForm = new ChangeCurrencyForm([
-                    'scenario'=>ChangeCurrencyForm::SET,
                     'id'=>$currentCurrencyModel->id,
                     'url'=>Url::current()
                 ]);
                 
-                $userLoginForm = new UserLoginForm(['scenario'=>UserLoginForm::LOGIN]);
+                $userLoginForm = new UserLoginForm();
                 
                 $dataArray = [];
                 

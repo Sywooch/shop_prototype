@@ -44,13 +44,12 @@ class AccountChangeSubscriptionsRequestHandler extends AbstractBaseHandler
                 ]);
                 $notMailingsArray = $finder->find();
                 
-                $mailingForm = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE_ACC]);
-                $notMailingForm = new MailingForm(['scenario'=>MailingForm::SAVE_ACC]);
+                $mailingForm = new MailingForm();
                 
                 $dataArray = [];
                 
                 $dataArray['accountMailingsUnsubscribeWidgetConfig'] = $this->accountMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
-                $dataArray['accountMailingsFormWidgetConfig'] = $this->accountMailingsFormWidgetConfig($notMailingsArray, $notMailingForm);
+                $dataArray['accountMailingsFormWidgetConfig'] = $this->accountMailingsFormWidgetConfig($notMailingsArray, $mailingForm);
                 
                 $this->dataArray = $dataArray;
             }

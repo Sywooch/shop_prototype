@@ -30,7 +30,7 @@ class AccountChangePasswordRequestHandler extends AbstractBaseHandler
             if (empty($this->dataArray)) {
                 $dataArray = [];
                 
-                $userChangePasswordForm = new UserChangePasswordForm(['scenario'=>UserChangePasswordForm::CHANGE]);
+                $userChangePasswordForm = new UserChangePasswordForm();
                 
                 $dataArray['accountChangePasswordWidgetConfig'] = $this->accountChangePasswordWidgetConfig($userChangePasswordForm);
                 

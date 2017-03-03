@@ -255,21 +255,17 @@ trait ConfigHandlerTrait
      * Возвращает массив конфигурации для виджета CartWidget
      * @param PurchasesCollectionInterface $ordersCollection
      * @param CurrencyInterface $currentCurrencyModel
-     * @param AbstractBaseForm $updateForm
-     * @param AbstractBaseForm $deleteForm
+     * @param AbstractBaseForm $purchaseForm
      * @return array
      */
-    private function cartWidgetConfig(PurchasesCollectionInterface $ordersCollection, CurrencyInterface $currentCurrencyModel, AbstractBaseForm $updateForm, AbstractBaseForm $deleteForm): array
+    private function cartWidgetConfig(PurchasesCollectionInterface $ordersCollection, CurrencyInterface $currentCurrencyModel, AbstractBaseForm $purchaseForm): array
     {
         try {
             $dataArray = [];
             
             $dataArray['purchases'] = $ordersCollection;
             $dataArray['currency'] = $currentCurrencyModel;
-            //$dataArray['updateForm'] = new PurchaseForm(['scenario'=>PurchaseForm::UPDATE]); # !!!
-            //$dataArray['deleteForm'] = new PurchaseForm(['scenario'=>PurchaseForm::DELETE]); # !!!
-            $dataArray['updateForm'] = $updateForm;
-            $dataArray['deleteForm'] = $deleteForm;
+            $dataArray['form'] = $purchaseForm;
             $dataArray['header'] = \Yii::t('base', 'Selected products');
             $dataArray['template'] = 'cart.twig';
             

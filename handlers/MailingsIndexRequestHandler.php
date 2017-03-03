@@ -75,7 +75,7 @@ class MailingsIndexRequestHandler extends AbstractBaseHandler
                     'url'=>Url::current()
                 ]);
                 
-                $mailingForm = new MailingForm(['scenario'=>MailingForm::SAVE]);
+                $mailingForm = new MailingForm();
                 
                 $dataArray = [];
                 

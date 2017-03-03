@@ -64,12 +64,11 @@ class UserRegistrationRequestHandler extends AbstractBaseHandler
                 }
                 
                 $changeCurrencyForm = new ChangeCurrencyForm([
-                    'scenario'=>ChangeCurrencyForm::SET,
                     'id'=>$currentCurrencyModel->id,
                     'url'=>Url::current()
                 ]);
                 
-                $userRegistrationForm = new UserRegistrationForm(['scenario'=>UserRegistrationForm::REGISTRATION]);
+                $userRegistrationForm = new UserRegistrationForm();
                 
                 $dataArray = [];
                 

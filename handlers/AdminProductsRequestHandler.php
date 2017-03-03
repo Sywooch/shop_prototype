@@ -133,7 +133,7 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
                 }
                 
                 $adminProductsFiltersForm = new AdminProductsFiltersForm($filtersModel->toArray());
-                $adminProductForm = new AdminProductForm(['scenario'=>AdminProductForm::GET]);
+                $adminProductForm = new AdminProductForm();
                 
                 $dataArray = [];
                 

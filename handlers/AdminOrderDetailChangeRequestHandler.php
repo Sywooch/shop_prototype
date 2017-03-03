@@ -135,7 +135,7 @@ class AdminOrderDetailChangeRequestHandler extends AbstractBaseHandler
                             throw new ErrorException($this->emptyError('currentCurrencyModel'));
                         }
                         
-                        $adminChangeOrderForm = new AdminChangeOrderForm(['scenario'=>AdminChangeOrderForm::GET]);
+                        $adminChangeOrderForm = new AdminChangeOrderForm();
                         
                         $adminOrderDataWidgetConfig = $this->adminOrderDataWidgetConfig($purchasesModel, $currentCurrencyModel, $adminChangeOrderForm);
                         $response = AdminOrderDataWidget::widget($adminOrderDataWidgetConfig);
