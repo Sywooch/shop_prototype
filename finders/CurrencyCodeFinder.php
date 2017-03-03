@@ -9,12 +9,12 @@ use app\finders\AbstractBaseFinder;
 /**
  * Возвращает доступные валюты из СУБД
  */
-class CurrencyIdFinder extends AbstractBaseFinder
+class CurrencyCodeFinder extends AbstractBaseFinder
 {
     /**
-     * @var int параметр, определяющий искомую валюту
+     * @var staring код валюты
      */
-    private $id;
+    private $code;
     /**
      * @var загруженный CurrencyModel
      */
@@ -26,14 +26,14 @@ class CurrencyIdFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->code)) {
+                throw new ErrorException($this->emptyError('code'));
+            }
+            
              if (empty($this->storage)) {
-                if (empty($this->id)) {
-                    throw new ErrorException($this->emptyError('id'));
-                }
-                
                 $query = CurrencyModel::find();
                 $query->select(['[[currency.id]]', '[[currency.code]]', '[[currency.exchange_rate]]', '[[currency.main]]', '[[currency.update_date]]']);
-                $query->where(['[[currency.id]]'=>$this->id]);
+                $query->where(['[[currency.code]]'=>$this->code]);
                 
                $this->storage = $query->one();
             }
@@ -45,13 +45,13 @@ class CurrencyIdFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает ID свойству CurrencyIdFinder::id
-     * @param int $id
+     * Присваивает значение CurrencyCodeFinder::code
+     * @param string $code
      */
-    public function setId(int $id)
+    public function setCode(string $code)
     {
         try {
-            $this->id = $id;
+            $this->code = $code;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

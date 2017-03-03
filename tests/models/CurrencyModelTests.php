@@ -22,6 +22,7 @@ class CurrencyModelTests extends TestCase
         $this->assertTrue($reflection->hasConstant('CREATE'));
         $this->assertTrue($reflection->hasConstant('DELETE'));
         $this->assertTrue($reflection->hasConstant('BASE_CHANGE'));
+        $this->assertTrue($reflection->hasConstant('SESSION'));
         
         $model = new CurrencyModel();
         
@@ -105,6 +106,13 @@ class CurrencyModelTests extends TestCase
         $this->assertEquals(1.056, $model->exchange_rate);
         $this->assertEquals(1, $model->main);
         $this->assertEquals(time(), $model->update_date);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::SESSION]);
+        $model->attributes = [
+            'id'=>2,
+        ];
+        
+        $this->assertEquals(2, $model->id);
     }
     
     /**
@@ -173,6 +181,20 @@ class CurrencyModelTests extends TestCase
             'exchange_rate'=>1.056,
             'update_date'=>time()
         ];
+        
+        $this->assertEmpty($model->errors);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::SESSION]);
+        $model->attributes = [];
+        $model->validate();
+        
+        $this->assertCount(1, $model->errors);
+        
+        $model = new CurrencyModel(['scenario'=>CurrencyModel::SESSION]);
+        $model->attributes = [
+            'id'=>2,
+        ];
+        $model->validate();
         
         $this->assertEmpty($model->errors);
     }

@@ -18,7 +18,7 @@ use app\savers\ModelSaver;
 use app\updaters\CurrencyArrayUpdater;
 
 /**
- * Обрабатывает запрос на создание категории
+ * Обрабатывает запрос на добавление валюты
  */
 class AdminCurrencyCreateRequestHandler extends AbstractBaseHandler
 {
@@ -71,9 +71,13 @@ class AdminCurrencyCreateRequestHandler extends AbstractBaseHandler
                             $updateCurrencyModelArray = [];
                             foreach ($existsCurrencyModelArray as $existsCurrencyModel) {
                                 $exchange_rate = CurrencyHelper::exchangeRate($rawCurrencyModel->code, $existsCurrencyModel->code);
+                                $existsCurrencyModel->scenario = CurrencyModel::UPDATE;
                                 $existsCurrencyModel->main = 0;
                                 $existsCurrencyModel->exchange_rate = $exchange_rate;
                                 $existsCurrencyModel->update_date = time();
+                                if ($existsCurrencyModel->validate() === false) {
+                                    throw new ErrorException($this->modelError($existsCurrencyModel->errors));
+                                }
                                 $updateCurrencyModelArray[] = $existsCurrencyModel;
                             }
                             

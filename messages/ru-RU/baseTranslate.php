@@ -253,6 +253,9 @@ $translate = [
     'Exchange rate'=>'Обменный курс',
     'Base currency'=>'Базовая валюта',
     'Add currency'=>'Добавить валюту',
+    'You must first assign a new base currency'=>'Сначала вы должны назначить новую базовую валюту',
+    'Currency with this code already exist'=>'Валюта с этим кодом уже существует',
+    'This code is not valid'=>'Этот код не является допустимым',
 ];
 
 return $translate;

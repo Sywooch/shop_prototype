@@ -4,6 +4,9 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\{CreateCurrencyExistsCodeValidator,
+    CreateCurrencyValidCodeValidator,
+    DeleteCurrencyIsBaseValidator};
 
 /**
  * Представляет данные формы редактирования валют
@@ -49,7 +52,11 @@ class CurrencyForm extends AbstractBaseForm
     {
         return [
             [['id'], 'required', 'on'=>self::DELETE],
+            [['id'], DeleteCurrencyIsBaseValidator::class, 'on'=>self::DELETE],
             [['code'], 'required', 'on'=>self::CREATE],
+            [['code'], 'string', 'length'=>3, 'on'=>self::CREATE],
+            [['code'], CreateCurrencyExistsCodeValidator::class, 'on'=>self::CREATE],
+            [['code'], CreateCurrencyValidCodeValidator::class, 'on'=>self::CREATE],
             [['id', 'main'], 'required', 'on'=>self::BASE_CHANGE],
         ];
     }

@@ -6,7 +6,7 @@ use yii\base\{ErrorException,
     Model};
 use app\services\AbstractBaseService;
 use app\savers\SessionModelSaver;
-use app\finders\{CurrencySessionFinder,
+use app\finders\{CurrencySessionDBMSFinder,
     MainCurrencyFinder};
 use app\models\CurrencyModel;
 
@@ -38,28 +38,32 @@ class GetCurrentCurrencyModelService extends AbstractBaseService
             }
             
             if (empty($this->currencyModel)) {
-                $finder = \Yii::$app->registry->get(CurrencySessionFinder::class, [
+                $finder = \Yii::$app->registry->get(CurrencySessionDBMSFinder::class, [
                     'key'=>$this->key
                 ]);
                 $currencyModel = $finder->find();
                 
-                if (!empty($currencyModel)) {
-                    $currencyModel = $this->updateCurrency($currencyModel);
-                } else {
+                if (empty($currencyModel)) {
                     $finder = \Yii::$app->registry->get(MainCurrencyFinder::class);
                     $currencyModel = $finder->find();
                     if (empty($currencyModel)) {
                         throw new ErrorException($this->emptyError('currencyModel'));
                     }
                     
-                    $currencyModel = $this->updateCurrency($currencyModel);
+                    $rawCurrencyModel = new CurrencyModel(['scenario'=>CurrencyModel::SESSION]);
+                    $rawCurrencyModel->id = $currencyModel->id;
+                    if ($rawCurrencyModel->validate() === false) {
+                        throw new ErrorException($this->modelError($rawCurrencyModel->errors));
+                    }
                     
                     $saver = new SessionModelSaver([
                         'key'=>$this->key,
-                        'model'=>$currencyModel
+                        'model'=>$rawCurrencyModel
                     ]);
                     $saver->save();
                 }
+                
+                $currencyModel = $this->updateCurrency($currencyModel);
                 
                 $this->currencyModel = $currencyModel;
             }

@@ -30,6 +30,10 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
      * Сценарий замены базовой валюты
      */
     const BASE_CHANGE = 'base_change';
+    /**
+     * Сценарий сохранения ID валюты в сесии
+     */
+    const SESSION = 'session';
     
     /**
      * Возвращает имя таблицы, связанной с текущим классом AR
@@ -52,6 +56,7 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
             self::CREATE=>['code', 'exchange_rate', 'main', 'update_date'],
             self::DELETE=>['id'],
             self::BASE_CHANGE=>['id', 'main', 'exchange_rate', 'update_date'],
+            self::SESSION=>['id'],
         ];
     }
     
@@ -63,6 +68,7 @@ class CurrencyModel extends AbstractBaseModel implements CurrencyInterface
             [['main'], 'default', 'value'=>0, 'on'=>self::CREATE],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id', 'main', 'exchange_rate', 'update_date'], 'required', 'on'=>self::BASE_CHANGE],
+            [['id'], 'required', 'on'=>self::SESSION],
         ];
     }
     

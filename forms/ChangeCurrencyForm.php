@@ -34,7 +34,7 @@ class ChangeCurrencyForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['id', 'url'], 'required', 'enableClientValidation'=>true, 'on'=>self::SET],
+            [['id', 'url'], 'required', 'on'=>self::SET],
         ];
     }
 }

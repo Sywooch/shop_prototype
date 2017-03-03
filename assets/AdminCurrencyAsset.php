@@ -17,6 +17,7 @@ class AdminCurrencyAsset extends AbstractAsset
     public $js = [
         'js/sendAdminCurrencyDelete.js',
         'js/sendAdminCurrencyCreate.js',
+        'js/sendAdminCurrencyBaseChangeCreate.js',
     ];
     /**
      * @var array зависимости пакета
