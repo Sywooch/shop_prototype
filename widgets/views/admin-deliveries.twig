@@ -5,6 +5,7 @@
 <ul>
     {% for delivery in deliveries %}
         <li>
+        <div class="admin-delivery-previous-data">
             {{nameHeader}}: {{ delivery.name }}
             <br>{{descriptionHeader}}: {{ delivery.description }}
             <br>{{priceHeader}}: {{ delivery.price }}
@@ -14,6 +15,12 @@
                 {{ form.field(delivery.modelForm, 'id').hiddenInput().label(false) | raw }}
                 <input type="submit" value="{{ delivery.button }}">
             {{ active_form_end() }}
+            
+            {% set form=active_form_begin({'id':delivery.formIdDelete, 'enableAjaxValidation':delivery.ajaxValidation, 'validateOnSubmit':delivery.validateOnSubmit, 'validateOnChange':delivery.validateOnChange, 'validateOnBlur':delivery.validateOnBlur, 'validateOnType':delivery.validateOnType, 'action':delivery.formActionDelete, 'method':'POST'}) %}
+                {{ form.field(delivery.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ delivery.buttonDelete }}">
+            {{ active_form_end() }}
+        </div>
         </li>
     {% endfor %}
 </ul>

@@ -3,7 +3,8 @@
 namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
-use app\widgets\AdminDeliveriesWidget;
+use yii\base\Model;
+use app\widgets\AdminDeliveryDataWidget;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\DeliveriesFixture;
 use app\forms\AbstractBaseForm;
@@ -11,9 +12,9 @@ use app\models\{CurrencyInterface,
     CurrencyModel};
 
 /**
- * Тестирует класс AdminDeliveriesWidget
+ * Тестирует класс AdminDeliveryDataWidget
  */
-class AdminDeliveriesWidgetTests extends TestCase
+class AdminDeliveryDataWidgetTests extends TestCase
 {
     private static $dbClass;
     private $widget;
@@ -30,41 +31,40 @@ class AdminDeliveriesWidgetTests extends TestCase
     
     public function setUp()
     {
-        $this->widget = new AdminDeliveriesWidget();
+        $this->widget = new AdminDeliveryDataWidget();
     }
     
     /**
-     * Тестирует свойства AdminDeliveriesWidget
+     * Тестирует свойства AdminDeliveryDataWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminDeliveriesWidget::class);
+        $reflection = new \ReflectionClass(AdminDeliveryDataWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('deliveries'));
+        $this->assertTrue($reflection->hasProperty('delivery'));
         $this->assertTrue($reflection->hasProperty('currency'));
         $this->assertTrue($reflection->hasProperty('form'));
-        $this->assertTrue($reflection->hasProperty('header'));
         $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::setDeliveries
+     * Тестирует метод AdminDeliveryDataWidget::setDelivery
      */
-    public function testSetDeliveries()
+    public function testSetDelivery()
     {
-        $deliveries = [new class() {}];
+        $delivery = new class() extends Model {};
         
-        $this->widget->setDeliveries($deliveries);
+        $this->widget->setDelivery($delivery);
         
-        $reflection = new \ReflectionProperty($this->widget, 'deliveries');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($this->widget);
         
-        $this->assertInternalType('array', $result);
+        $this->assertInstanceOf(Model::class, $result);
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::setCurrency
+     * Тестирует метод AdminDeliveryDataWidget::setCurrency
      */
     public function testSetCurrency()
     {
@@ -80,7 +80,7 @@ class AdminDeliveriesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::setForm
+     * Тестирует метод AdminDeliveryDataWidget::setForm
      */
     public function testSetForm()
     {
@@ -96,23 +96,7 @@ class AdminDeliveriesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::setHeader
-     */
-    public function testSetHeader()
-    {
-        $header = 'Header';
-        
-        $this->widget->setHeader($header);
-        
-        $reflection = new \ReflectionProperty($this->widget, 'header');
-        $reflection->setAccessible(true);
-        $result = $reflection->getValue($this->widget);
-        
-        $this->assertInternalType('string', $result);
-    }
-    
-    /**
-     * Тестирует метод AdminDeliveriesWidget::setTemplate
+     * Тестирует метод AdminDeliveryDataWidget::setTemplate
      */
     public function testSetTemplate()
     {
@@ -128,19 +112,19 @@ class AdminDeliveriesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::run
-     * если пуст AdminDeliveriesWidget::deliveries
+     * Тестирует метод AdminDeliveryDataWidget::run
+     * если пуст AdminDeliveryDataWidget::delivery
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: deliveries
+     * @expectedExceptionMessage Отсутствуют необходимые данные: delivery
      */
-    public function testRunEmptyDeliveries()
+    public function testRunEmptyDelivery()
     {
         $this->widget->run();
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::run
-     * если пуст AdminDeliveriesWidget::currency
+     * Тестирует метод AdminDeliveryDataWidget::run
+     * если пуст AdminDeliveryDataWidget::currency
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: currency
      */
@@ -148,16 +132,16 @@ class AdminDeliveriesWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $reflection = new \ReflectionProperty($this->widget, 'deliveries');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, [$mock]);
+        $reflection->setValue($this->widget, $mock);
         
         $this->widget->run();
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::run
-     * если пуст AdminDeliveriesWidget::form
+     * Тестирует метод AdminDeliveryDataWidget::run
+     * если пуст AdminDeliveryDataWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
@@ -165,9 +149,9 @@ class AdminDeliveriesWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $reflection = new \ReflectionProperty($this->widget, 'deliveries');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, [$mock]);
+        $reflection->setValue($this->widget, $mock);
         
         $reflection = new \ReflectionProperty($this->widget, 'currency');
         $reflection->setAccessible(true);
@@ -177,33 +161,8 @@ class AdminDeliveriesWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::run
-     * если пуст AdminDeliveriesWidget::header
-     * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: header
-     */
-    public function testRunEmptyHeader()
-    {
-        $mock = new class() {};
-        
-        $reflection = new \ReflectionProperty($this->widget, 'deliveries');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, [$mock]);
-        
-        $reflection = new \ReflectionProperty($this->widget, 'currency');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, $mock);
-        
-        $reflection = new \ReflectionProperty($this->widget, 'form');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, $mock);
-        
-        $this->widget->run();
-    }
-    
-    /**
-     * Тестирует метод AdminDeliveriesWidget::run
-     * если пуст AdminDeliveriesWidget::template
+     * Тестирует метод AdminDeliveryDataWidget::run
+     * если пуст AdminDeliveryDataWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
@@ -211,9 +170,9 @@ class AdminDeliveriesWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $reflection = new \ReflectionProperty($this->widget, 'deliveries');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, [$mock]);
+        $reflection->setValue($this->widget, $mock);
         
         $reflection = new \ReflectionProperty($this->widget, 'currency');
         $reflection->setAccessible(true);
@@ -223,34 +182,21 @@ class AdminDeliveriesWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($this->widget, 'header');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'Header');
-        
         $this->widget->run();
     }
     
     /**
-     * Тестирует метод AdminDeliveriesWidget::run
+     * Тестирует метод AdminDeliveryDataWidget::run
      */
     public function testRun()
     {
-        $deliveries = [
-            new class() {
-                public $id = 1;
-                public $name = 'Name 1';
-                public $description = 'Description 1';
-                public $price = 15.05;
-                public $active = 0;
-            },
-            new class() {
-                public $id = 2;
-                public $name = 'Name 2';
-                public $description = 'Description 2';
-                public $price = 25.00;
-                public $active = 1;
-            },
-        ];
+        $delivery = new class() {
+            public $id = 1;
+            public $name = 'Name 1';
+            public $description = 'Description 1';
+            public $price = 15.05;
+            public $active = 1;
+        };
         
         $currency = new class() extends CurrencyModel {
             public $exchange_rate = 2.09;
@@ -261,17 +207,13 @@ class AdminDeliveriesWidgetTests extends TestCase
             public $id;
         };
         
-        $reflection = new \ReflectionProperty($this->widget, 'deliveries');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, $deliveries);
+        $reflection->setValue($this->widget, $delivery);
         
         $reflection = new \ReflectionProperty($this->widget, 'currency');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, $currency);
-        
-        $reflection = new \ReflectionProperty($this->widget, 'header');
-        $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'Header');
         
         $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
@@ -279,11 +221,10 @@ class AdminDeliveriesWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-deliveries.twig');
+        $reflection->setValue($this->widget, 'admin-delivery-data.twig');
         
         $result = $this->widget->run();
         
-        $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#Имя: Name [0-9]{1}#', $result);
         $this->assertRegExp('#Описание: Description [0-9]{1}#', $result);
         $this->assertRegExp('#Цена: .+#', $result);

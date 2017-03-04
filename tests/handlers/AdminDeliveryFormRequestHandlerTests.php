@@ -4,15 +4,15 @@ namespace app\tests\handlers;
 
 use PHPUnit\Framework\TestCase;
 use yii\base\Model;
-use app\handlers\AdminCommentFormRequestHandler;
+use app\handlers\AdminDeliveryFormRequestHandler;
 use app\tests\DbManager;
-use app\tests\sources\fixtures\CommentsFixture;
+use app\tests\sources\fixtures\DeliveriesFixture;
 use app\forms\AbstractBaseForm;
 
 /**
- * Тестирует класс AdminCommentFormRequestHandler
+ * Тестирует класс AdminDeliveryFormRequestHandler
  */
-class AdminCommentFormRequestHandlerTests extends TestCase
+class AdminDeliveryFormRequestHandlerTests extends TestCase
 {
     private static $dbClass;
     private $handler;
@@ -21,7 +21,7 @@ class AdminCommentFormRequestHandlerTests extends TestCase
     {
         self::$dbClass = new DbManager([
             'fixtures'=>[
-                'comments'=>CommentsFixture::class
+                'deliveries'=>DeliveriesFixture::class
             ],
         ]);
         self::$dbClass->loadFixtures();
@@ -31,44 +31,44 @@ class AdminCommentFormRequestHandlerTests extends TestCase
     {
         \Yii::$app->registry->clean();
         
-        $this->handler = new AdminCommentFormRequestHandler();
+        $this->handler = new AdminDeliveryFormRequestHandler();
     }
     
     /**
-     * Тестирует свойства AdminCommentFormRequestHandler
+     * Тестирует свойства AdminDeliveryFormRequestHandler
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminCommentFormRequestHandler::class);
+        $reflection = new \ReflectionClass(AdminDeliveryFormRequestHandler::class);
         
         $this->assertTrue($reflection->hasProperty('dataArray'));
     }
     
     /**
-     * Тестирует метод AdminCommentFormRequestHandler::adminCommentFormWidgetConfig
+     * Тестирует метод AdminDeliveryFormRequestHandler::adminDeliveryFormWidgetConfig
      */
-    public function testAdminCommentFormWidgetConfig()
+    public function testAdminDeliveryFormWidgetConfig()
     {
-        $commentsModel = new class() extends Model {};
-        $commentForm = new class() extends AbstractBaseForm {};
+        $deliveriesModel = new class() extends Model {};
+        $deliveryForm = new class() extends AbstractBaseForm {};
         
-        $reflection = new \ReflectionMethod($this->handler, 'adminCommentFormWidgetConfig');
+        $reflection = new \ReflectionMethod($this->handler, 'adminDeliveryFormWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, $commentsModel, $commentForm);
+        $result = $reflection->invoke($this->handler, $deliveriesModel, $deliveryForm);
         
         $this->assertInternalType('array', $result);
         
-        $this->assertArrayHasKey('comment', $result);
+        $this->assertArrayHasKey('delivery', $result);
         $this->assertArrayHasKey('form', $result);
         $this->assertArrayHasKey('template', $result);
         
-        $this->assertInstanceOf(Model::class, $result['comment']);
+        $this->assertInstanceOf(Model::class, $result['delivery']);
         $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
         $this->assertInternalType('string', $result['template']);
     }
     
     /**
-     * Тестирует метод AdminCommentFormRequestHandler::handle
+     * Тестирует метод AdminDeliveryFormRequestHandler::handle
      * если пуста форма
      * @expectedException ErrorException
      */
@@ -79,7 +79,7 @@ class AdminCommentFormRequestHandlerTests extends TestCase
             public function post($name=null, $defaultValue=null)
             {
                 return [
-                    'CommentForm'=>[
+                    'DeliveriesForm'=>[
                         'id'=>null
                     ],
                 ];
@@ -93,7 +93,7 @@ class AdminCommentFormRequestHandlerTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCommentFormRequestHandler::handle
+     * Тестирует метод AdminDeliveryFormRequestHandler::handle
      */
     public function testHandle()
     {
@@ -102,7 +102,7 @@ class AdminCommentFormRequestHandlerTests extends TestCase
             public function post($name=null, $defaultValue=null)
             {
                 return [
-                    'CommentForm'=>[
+                    'DeliveriesForm'=>[
                         'id'=>1
                     ],
                 ];
