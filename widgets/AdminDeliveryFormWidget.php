@@ -11,12 +11,12 @@ use app\forms\AbstractBaseForm;
 /**
  * Формирует HTML строку с формой редактирования данных товара
  */
-class AdminCommentFormWidget extends AbstractBaseWidget
+class AdminDeliveryFormWidget extends AbstractBaseWidget
 {
     /**
      * @var Model
      */
-    private $comment;
+    private $delivery;
     /**
      * @var AbstractBaseForm
      */
@@ -33,8 +33,8 @@ class AdminCommentFormWidget extends AbstractBaseWidget
     public function run()
     {
         try {
-            if (empty($this->comment)) {
-                throw new ErrorException($this->emptyError('comment'));
+            if (empty($this->delivery)) {
+                throw new ErrorException($this->emptyError('delivery'));
             }
             if (empty($this->form)) {
                 throw new ErrorException($this->emptyError('form'));
@@ -46,12 +46,14 @@ class AdminCommentFormWidget extends AbstractBaseWidget
             $renderArray = [];
             
             $renderArray['modelForm'] = \Yii::configure($this->form, [
-                'id'=>$this->comment->id,
-                'text'=>$this->comment->text,
-                'active'=>$this->comment->active,
+                'id'=>$this->delivery->id,
+                'name'=>$this->delivery->name,
+                'description'=>$this->delivery->description,
+                'price'=>$this->delivery->price,
+                'active'=>$this->delivery->active,
             ]);
             
-            $renderArray['formId'] = sprintf('admin-comment-edit-form-%d', $this->comment->id);
+            $renderArray['formId'] = sprintf('admin-delivery-edit-form-%d', $this->delivery->id);
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;
@@ -62,23 +64,9 @@ class AdminCommentFormWidget extends AbstractBaseWidget
             $renderArray['cols'] = 20;
             $renderArray['rows'] = 5;
             
-            $renderArray['formAction'] = Url::to(['/admin/comment-change']);
+            $renderArray['formAction'] = Url::to(['/admin/delivery-change']);
             $renderArray['button'] = \Yii::t('base', 'Save');
             $renderArray['buttonCancel'] = \Yii::t('base', 'Cancel');
-            
-            $renderArray['id'] = $this->comment->id;
-            $renderArray['date'] = \Yii::$app->formatter->asDate($this->comment->date);
-            $renderArray['name'] = !empty($this->comment->id_name) ? $this->comment->name->name: null;
-            $renderArray['email'] = !empty($this->comment->id_email) ? $this->comment->email->email: null;
-            $renderArray['commentName'] = !empty($this->comment->id_product) ? $this->comment->product->name : null;
-            $renderArray['commentHref'] = !empty($this->comment->id_product) ? Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$this->comment->product->seocode]) : null;
-            
-            $renderArray['idHeader'] = \Yii::t('base', 'Comment Id');
-            $renderArray['dateHeader'] = \Yii::t('base', 'Date added');
-            $renderArray['nameHeader'] = \Yii::t('base', 'Commentator');
-            $renderArray['emailHeader'] = \Yii::t('base', 'Email');
-            $renderArray['textHeader'] = \Yii::t('base', 'Comment text');
-            $renderArray['activeHeader'] = \Yii::t('base', 'Active');
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
@@ -87,20 +75,20 @@ class AdminCommentFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminCommentFormWidget::comment
-     * @param Model $comment
+     * Присваивает значение AdminDeliveryFormWidget::delivery
+     * @param Model $delivery
      */
-    public function setComment(Model $comment)
+    public function setDelivery(Model $delivery)
     {
         try {
-            $this->comment = $comment;
+            $this->delivery = $delivery;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
     }
     
     /**
-     * Присваивает значение AdminCommentFormWidget::form
+     * Присваивает значение AdminDeliveryFormWidget::form
      * @param AbstractBaseForm $form
      */
     public function setForm(AbstractBaseForm $form)
@@ -113,7 +101,7 @@ class AdminCommentFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает значение AdminCommentFormWidget::template
+     * Присваивает значение AdminDeliveryFormWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)

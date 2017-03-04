@@ -259,6 +259,8 @@ $translate = [
     'Deliveries'=>'Доставка',
     'Available deliveries'=>'Доступные доставки',
     'Add delivery'=>'Добавить вариант доставки',
+    'Delivery with this name already exists'=>'Тип доставки с этим именем уже существует',
+    'With this type of delivery associated orders. You must first delete or transfer them'=>'С этим типом доставки связаны заказы. Сначала необходимо удалить или перенести их',
 ];
 
 return $translate;

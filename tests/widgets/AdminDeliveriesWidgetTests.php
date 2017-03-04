@@ -288,6 +288,9 @@ class AdminDeliveriesWidgetTests extends TestCase
         $this->assertRegExp('#Описание: Description [0-9]{1}#', $result);
         $this->assertRegExp('#Цена: .+#', $result);
         $this->assertRegExp('#Активен: .+#', $result);
+        $this->assertRegExp('#<form id="admin-delivery-get-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
+        $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);
         $this->assertRegExp('#<form id="admin-delivery-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
         $this->assertRegExp('#<input type="submit" value="Удалить">#', $result);

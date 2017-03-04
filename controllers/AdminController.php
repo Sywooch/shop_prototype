@@ -27,6 +27,9 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminCurrencyCreateRequestHandler,
     AdminCurrencyDeleteRequestHandler,
     AdminCurrencyRequestHandler,
+    AdminDeliveryCreateRequestHandler,
+    AdminDeliveryDeleteRequestHandler,
+    AdminDeliveryFormRequestHandler,
     AdminDeliveriesRequestHandler,
     AdminIndexRequestHandler,
     AdminOrderDetailChangeRequestHandler,
@@ -246,6 +249,18 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminDeliveriesRequestHandler(),
                 'view'=>'deliveries.twig',
+            ],
+            'delivery-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminDeliveryCreateRequestHandler(),
+            ],
+            'delivery-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminDeliveryDeleteRequestHandler(),
+            ],
+            'delivery-form'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminDeliveryFormRequestHandler(),
             ],
         ];
     }

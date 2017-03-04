@@ -1,15 +1,11 @@
 {{ use('yii/widgets/ActiveForm') }}
 
-<div class="admin-comment-edit-form"><p>
-    <a href="{{ commentHref }}">{{ commentName }}</a>
-    <br>{{ idHeader }}: {{ id }}
-    <br>{{ dateHeader }}: {{ date }}
-    <br>{{ nameHeader }}: {{ name }}
-    <br>{{ emailHeader }}: {{ email }}
-    
+<div class="admin-delivery-edit-form"><p>
     {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
         {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
-        {{ form.field(modelForm, 'text').textarea({'cols':cols, 'rows':rows}) | raw }}
+        {{ form.field(modelForm, 'name') | raw }}
+        {{ form.field(modelForm, 'description').textarea({'cols':cols, 'rows':rows}) | raw }}
+        {{ form.field(modelForm, 'price').input('number', {'step':0.01, 'min':1}) | raw }}
         {{ form.field(modelForm, 'active').checkbox() | raw }}
         
         <input type="submit" name="send" value="{{ button }}">

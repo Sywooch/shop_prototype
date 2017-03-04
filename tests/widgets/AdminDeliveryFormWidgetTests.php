@@ -4,43 +4,43 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use yii\base\Model;
-use app\widgets\AdminCommentFormWidget;
+use app\widgets\AdminDeliveryFormWidget;
 use app\forms\AbstractBaseForm;
 
 /**
- * Тестирует класс AdminCommentFormWidget
+ * Тестирует класс AdminDeliveryFormWidget
  */
-class AdminCommentFormWidgetTests extends TestCase
+class AdminDeliveryFormWidgetTests extends TestCase
 {
     private $widget;
     
     public function setUp()
     {
-        $this->widget = new AdminCommentFormWidget();
+        $this->widget = new AdminDeliveryFormWidget();
     }
     
     /**
-     * Тестирует свойства AdminCommentFormWidget
+     * Тестирует свойства AdminDeliveryFormWidget
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(AdminCommentFormWidget::class);
+        $reflection = new \ReflectionClass(AdminDeliveryFormWidget::class);
         
-        $this->assertTrue($reflection->hasProperty('comment'));
+        $this->assertTrue($reflection->hasProperty('delivery'));
         $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('template'));
     }
     
     /**
-     * Тестирует метод AdminCommentFormWidget::setComment
+     * Тестирует метод AdminDeliveryFormWidget::setDelivery
      */
-    public function testSetComment()
+    public function testSetDelivery()
     {
-        $comment = new class() extends Model {};
+        $delivery = new class() extends Model {};
         
-        $this->widget->setComment($comment);
+        $this->widget->setDelivery($delivery);
         
-        $reflection = new \ReflectionProperty($this->widget, 'comment');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
         $result = $reflection->getValue($this->widget);
         
@@ -48,7 +48,7 @@ class AdminCommentFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCommentFormWidget::setForm
+     * Тестирует метод AdminDeliveryFormWidget::setForm
      */
     public function testSetForm()
     {
@@ -64,7 +64,7 @@ class AdminCommentFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCommentFormWidget::setTemplate
+     * Тестирует метод AdminDeliveryFormWidget::setTemplate
      */
     public function testSetTemplate()
     {
@@ -80,19 +80,19 @@ class AdminCommentFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCommentFormWidget::run
-     * если пуст AdminCommentFormWidget::comment
+     * Тестирует метод AdminDeliveryFormWidget::run
+     * если пуст AdminDeliveryFormWidget::delivery
      * @expectedException ErrorException
-     * @expectedExceptionMessage Отсутствуют необходимые данные: comment
+     * @expectedExceptionMessage Отсутствуют необходимые данные: delivery
      */
-    public function testRunEmptyComment()
+    public function testRunEmptyDelivery()
     {
         $this->widget->run();
     }
     
     /**
-     * Тестирует метод AdminCommentFormWidget::run
-     * если пуст AdminCommentFormWidget::form
+     * Тестирует метод AdminDeliveryFormWidget::run
+     * если пуст AdminDeliveryFormWidget::form
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: form
      */
@@ -100,7 +100,7 @@ class AdminCommentFormWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $reflection = new \ReflectionProperty($this->widget, 'comment');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, $mock);
         
@@ -108,8 +108,8 @@ class AdminCommentFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCommentFormWidget::run
-     * если пуст AdminCommentFormWidget::template
+     * Тестирует метод AdminDeliveryFormWidget::run
+     * если пуст AdminDeliveryFormWidget::template
      * @expectedException ErrorException
      * @expectedExceptionMessage Отсутствуют необходимые данные: template
      */
@@ -117,7 +117,7 @@ class AdminCommentFormWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $reflection = new \ReflectionProperty($this->widget, 'comment');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
         $reflection->setValue($this->widget, $mock);
         
@@ -129,46 +129,29 @@ class AdminCommentFormWidgetTests extends TestCase
     }
     
     /**
-     * Тестирует метод AdminCommentFormWidget::run
+     * Тестирует метод AdminDeliveryFormWidget::run
      */
     public function testRun()
     {
-        $comment = new class() {
+        $delivery = new class() {
             public $id = 1;
-            public $date;
-            public $id_name = true;
-            public $name;
-            public $id_email = true;
-            public $email;
-            public $id_product = true;
-            public $product;
-            public $text = 'Text';
+            public $name = 'Name 1';
+            public $description = 'Description 1';
+            public $price = 108.78;
             public $active = 1;
-            public function __construct()
-            {
-                $this->date = time();
-                $this->name = new class() {
-                    public $name = 'Name 1';
-                };
-                $this->email = new class() {
-                    public $email = 'email@email.net';
-                };
-                $this->product = new class() {
-                    public $name = 'name';
-                    public $seocode = 'name';
-                };
-            }
         };
         
         $form = new class() extends AbstractBaseForm {
             public $id;
-            public $text;
+            public $name;
+            public $description;
+            public $price;
             public $active;
         };
         
-        $reflection = new \ReflectionProperty($this->widget, 'comment');
+        $reflection = new \ReflectionProperty($this->widget, 'delivery');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, $comment);
+        $reflection->setValue($this->widget, $delivery);
         
         $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
@@ -176,19 +159,16 @@ class AdminCommentFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-comment-form.twig');
+        $reflection->setValue($this->widget, 'admin-delivery-form.twig');
         
         $result = $this->widget->run();
         
-        $this->assertRegExp('#<div class="admin-comment-edit-form">#', $result);
-        $this->assertRegExp('#<a href=".+">.+</a>#', $result);
-        $this->assertRegExp('#Id комментария: [0-9]{1}#', $result);
-        $this->assertRegExp('#Дата добавления: .+#', $result);
-        $this->assertRegExp('#Комментатор: .+#', $result);
-        $this->assertRegExp('#Email: .+@.+#', $result);
-        $this->assertRegExp('#<form id="admin-comment-edit-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<div class="admin-delivery-edit-form">#', $result);
+        $this->assertRegExp('#<form id="admin-delivery-edit-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="1">#', $result);
-        $this->assertRegExp('#<textarea id=".+" class="form-control" name=".+\[text\]" rows="[0-9]{1,2}" cols="[0-9]{1,3}">.+</textarea>#', $result);
+        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[name\]" value="Name [0-9]{1}">#', $result);
+        $this->assertRegExp('#<textarea id=".+" class="form-control" name=".+\[description\]" rows="[0-9]{1,2}" cols="[0-9]{1,2}">Description [0-9]{1}</textarea>#', $result);
+        $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[price\]" value=".+" step="0.01" min="1">#', $result);
         $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[active\]" value="1" checked> Active</label>#', $result);
         $this->assertRegExp('#<input type="submit" name="send" value="Сохранить">#', $result);
         $this->assertRegExp('#<input type="submit" name="cancel" value="Отменить">#', $result);

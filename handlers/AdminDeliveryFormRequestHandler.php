@@ -8,15 +8,15 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\AbstractBaseHandler;
 use app\forms\{AbstractBaseForm,
-    CommentForm};
-use app\widgets\AdminCommentFormWidget;
-use app\finders\CommentIdFinder;
+    DeliveriesForm};
+use app\widgets\AdminDeliveryFormWidget;
+use app\finders\DeliveryIdFinder;
 
 /**
  * Обрабатывает запрос на получение данных 
- * с формой редактирования деталей товара
+ * с формой редактирования деталей типа доставки
  */
-class AdminCommentFormRequestHandler extends AbstractBaseHandler
+class AdminDeliveryFormRequestHandler extends AbstractBaseHandler
 {
     /**
      * @var array массив данных для рендеринга
@@ -31,7 +31,7 @@ class AdminCommentFormRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-           $form = new CommentForm(['scenario'=>CommentForm::GET]);
+           $form = new DeliveriesForm(['scenario'=>DeliveriesForm::GET]);
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {
@@ -42,19 +42,19 @@ class AdminCommentFormRequestHandler extends AbstractBaseHandler
                         return $errors;
                     }
                     
-                    $finder = \Yii::$app->registry->get(CommentIdFinder::class, [
+                    $finder = \Yii::$app->registry->get(DeliveryIdFinder::class, [
                         'id'=>$form->id
                     ]);
-                    $commentsModel = $finder->find();
-                    if (empty($commentsModel)) {
-                        throw new ErrorException($this->emptyError('commentsModel'));
+                    $deliveriesModel = $finder->find();
+                    if (empty($deliveriesModel)) {
+                        throw new ErrorException($this->emptyError('deliveriesModel'));
                     }
                     
-                    $commentForm = new CommentForm();
+                    $deliveryForm = new DeliveriesForm();
                     
-                    $adminCommentFormWidgetConfig = $this->adminCommentFormWidgetConfig($commentsModel, $commentForm);
+                    $adminDeliveryFormWidgetConfig = $this->adminDeliveryFormWidgetConfig($deliveriesModel, $deliveryForm);
                     
-                    return AdminCommentFormWidget::widget($adminCommentFormWidgetConfig);
+                    return AdminDeliveryFormWidget::widget($adminDeliveryFormWidgetConfig);
                 }
             }
         } catch (\Throwable $t) {
@@ -63,19 +63,19 @@ class AdminCommentFormRequestHandler extends AbstractBaseHandler
     }
     
     /**
-     * Возвращает массив конфигурации для виджета AdminCommentFormWidget
-     * @param Model $commentsModel
-     * @param AbstractBaseForm $commentForm
+     * Возвращает массив конфигурации для виджета AdminDeliveryFormWidget
+     * @param Model $deliveriesModel
+     * @param AbstractBaseForm $deliveryForm
      * @return array
      */
-    private function adminCommentFormWidgetConfig(Model $commentsModel, AbstractBaseForm $commentForm): array
+    private function adminDeliveryFormWidgetConfig(Model $deliveriesModel, AbstractBaseForm $deliveryForm): array
     {
         try {
             $dataArray = [];
             
-            $dataArray['comment'] = $commentsModel;
-            $dataArray['form'] = $commentForm;
-            $dataArray['template'] = 'admin-comment-form.twig';
+            $dataArray['delivery'] = $deliveriesModel;
+            $dataArray['form'] = $deliveryForm;
+            $dataArray['template'] = 'admin-delivery-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

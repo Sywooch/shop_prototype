@@ -72,16 +72,20 @@ class AdminDeliveriesWidget extends AbstractBaseWidget
                 
                 $deliveriesForm = clone $this->form;
                 $set['modelForm'] = \Yii::configure($deliveriesForm, ['id'=>$delivery->id]);
-                $set['formId'] = sprintf('admin-delivery-delete-form-%d', $delivery->id);
+                
+                $set['formId'] = sprintf('admin-delivery-get-form-%d', $delivery->id);
+                $set['formAction'] = Url::to(['/admin/delivery-form']);
+                $set['button'] = \Yii::t('base', 'Change');
+                
+                $set['formIdDelete'] = sprintf('admin-delivery-delete-form-%d', $delivery->id);
+                $set['formActionDelete'] = Url::to(['/admin/delivery-delete']);
+                $set['buttonDelete'] = \Yii::t('base', 'Delete');
                 
                 $set['ajaxValidation'] = false;
                 $set['validateOnSubmit'] = false;
                 $set['validateOnChange'] = false;
                 $set['validateOnBlur'] = false;
                 $set['validateOnType'] = false;
-                
-                $set['formAction'] = Url::to(['/admin/delivery-delete']);
-                $set['button'] = \Yii::t('base', 'Delete');
                 
                 $deliveriesArray[] = $set;
             }

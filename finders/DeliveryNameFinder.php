@@ -9,12 +9,12 @@ use app\finders\AbstractBaseFinder;
 /**
  * Возвращает DeliveriesModel из СУБД
  */
-class DeliveryIdFinder extends AbstractBaseFinder
+class DeliveryNameFinder extends AbstractBaseFinder
 {
     /**
-     * @var int Id
+     * @var string имя типа доставки
      */
-    private $id;
+    private $name;
     /**
      * @var загруженный DeliveriesModel
      */
@@ -27,14 +27,14 @@ class DeliveryIdFinder extends AbstractBaseFinder
     public function find()
     {
         try {
-            if (empty($this->id)) {
-                throw new ErrorException($this->emptyError('id'));
+            if (empty($this->name)) {
+                throw new ErrorException($this->emptyError('name'));
             }
             
             if (empty($this->storage)) {
                 $query = DeliveriesModel::find();
                 $query->select(['[[deliveries.id]]', '[[deliveries.name]]', '[[deliveries.description]]', '[[deliveries.price]]', '[[deliveries.active]]']);
-                $query->where(['[[deliveries.id]]'=>$this->id]);
+                $query->where(['[[deliveries.name]]'=>$this->name]);
                 
                 $this->storage = $query->one();
             }
@@ -46,13 +46,13 @@ class DeliveryIdFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает ID свойству DeliveriesModel::id
-     * @param int $id
+     * Присваивает ID свойству DeliveriesModel::name
+     * @param string $name
      */
-    public function setId(int $id)
+    public function setName(string $name)
     {
         try {
-            $this->id = $id;
+            $this->name = $name;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

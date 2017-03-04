@@ -136,6 +136,7 @@ class AdminCreateDeliveryWidgetTests extends TestCase
             public $name;
             public $description;
             public $price;
+            public $active;
         };
         
         $reflection = new \ReflectionProperty($this->widget, 'form');
@@ -156,6 +157,7 @@ class AdminCreateDeliveryWidgetTests extends TestCase
         $this->assertRegExp('#<form id="delivery-create-form" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[name\]">#', $result);
         $this->assertRegExp('#<textarea id=".+" class="form-control" name=".+\[description\]" rows="[0-9]{1,2}" cols="[0-9]{1,2}"></textarea>#', $result);
+        $this->assertRegExp('#<input type="checkbox" id=".+" name=".+\[active\]" value="1"> Active</label>#', $result);
         $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[price\]" step="0.01" min="1">#', $result);
         $this->assertRegExp('#<input type="submit" value="Создать">#', $result);
     }
