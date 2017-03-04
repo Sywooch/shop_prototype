@@ -22,6 +22,10 @@ class CategoriesForm extends AbstractBaseForm
      * Сценарий создания категории
      */
     const CREATE = 'create';
+    /**
+     * Сценарий редактирования категории
+     */
+    const EDIT = 'edit';
     
     /**
      * @var int ID
@@ -45,6 +49,7 @@ class CategoriesForm extends AbstractBaseForm
         return [
             self::DELETE=>['id'],
             self::CREATE=>['name', 'seocode', 'active'],
+            self::EDIT=>['id', 'active'],
         ];
     }
     
@@ -57,6 +62,7 @@ class CategoriesForm extends AbstractBaseForm
             [['name', 'seocode'], 'required', 'on'=>self::CREATE],
             [['name'], CreateCategoryNameExistsValidator::class, 'on'=>self::CREATE],
             [['seocode'], CreateCategorySeocodeExistsValidator::class, 'on'=>self::CREATE],
+            [['id'], 'required', 'on'=>self::EDIT],
         ];
     }
 }

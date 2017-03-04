@@ -18,7 +18,8 @@ class AdminCategoriesAsset extends AbstractAsset
         'js/sendAdminCategoryDelete.js',
         'js/sendAdminCategoryCreate.js',
         'js/sendAdminSubcategoryCreate.js',
-        'js/disableFirstSelect.js'
+        'js/disableFirstSelect.js',
+        'js/sendAdminCategoryChange.js',
     ];
     /**
      * @var array зависимости пакета

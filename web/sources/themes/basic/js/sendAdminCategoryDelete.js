@@ -26,7 +26,7 @@ $(function() {
         };
     };
     
-    $('div.product-categories').on('click', 'input:submit', function(event) {
+    $('div.product-categories').on('click', 'form[id^=admin-category-delete-form-], form[id^=admin-subcategory-delete-form-] > input:submit', function(event) {
         (new SendAdminCategoryDelete()).send(event);
         event.preventDefault();
     });

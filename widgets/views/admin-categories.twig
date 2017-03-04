@@ -6,6 +6,12 @@
     {% for category in categories %}
         <li>
             {{ category.name }}
+            
+            {% set form=active_form_begin({'id':category.formIdChange, 'enableAjaxValidation':category.ajaxValidation, 'validateOnSubmit':category.validateOnSubmit, 'validateOnChange':category.validateOnChange, 'validateOnBlur':category.validateOnBlur, 'validateOnType':category.validateOnType, 'action':category.formActionChange, 'method':'POST'}) %}
+                {{ form.field(category.modelForm, 'id').hiddenInput().label(false) | raw }}
+                {{ form.field(category.modelForm, 'active').checkbox() | raw }}
+            {{ active_form_end() }}
+            
             {% set form=active_form_begin({'id':category.formId, 'enableAjaxValidation':category.ajaxValidation, 'validateOnSubmit':category.validateOnSubmit, 'validateOnChange':category.validateOnChange, 'validateOnBlur':category.validateOnBlur, 'validateOnType':category.validateOnType, 'action':category.formAction, 'method':'POST'}) %}
                 {{ form.field(category.modelForm, 'id').hiddenInput().label(false) | raw }}
                 <input type="submit" value="{{ category.button }}">
@@ -16,6 +22,7 @@
                     {% for subcategory in category.subcategory %}
                         <li>
                             {{ subcategory.name }}
+                            
                             {% set form=active_form_begin({'id':subcategory.formId, 'enableAjaxValidation':subcategory.ajaxValidation, 'validateOnSubmit':subcategory.validateOnSubmit, 'validateOnChange':subcategory.validateOnChange, 'validateOnBlur':subcategory.validateOnBlur, 'validateOnType':subcategory.validateOnType, 'action':subcategory.formAction, 'method':'POST'}) %}
                                 {{ form.field(subcategory.modelForm, 'id').hiddenInput().label(false) | raw }}
                                 <input type="submit" value="{{ subcategory.button }}">

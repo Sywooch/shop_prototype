@@ -11,6 +11,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminBrandCreateRequestHandler,
     AdminBrandDeleteRequestHandler,
     AdminBrandsRequestHandler,
+    AdminCategoriesCategoryChangeRequestHandler,
     AdminCategoriesCategoryCreateRequestHandler,
     AdminCategoriesCategoryDeleteRequestHandler,
     AdminCategoriesSubcategoryCreateRequestHandler,
@@ -115,13 +116,17 @@ class AdminController extends Controller
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCategoriesCategoryCreateRequestHandler(),
             ],
-            'categories-subcategory-create'=>[
+            'categories-category-change'=>[
                 'class'=>AjaxAction::class,
-                'handler'=>new AdminCategoriesSubcategoryCreateRequestHandler(),
+                'handler'=>new AdminCategoriesCategoryChangeRequestHandler(),
             ],
             'categories-category-delete'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCategoriesCategoryDeleteRequestHandler(),
+            ],
+            'categories-subcategory-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCategoriesSubcategoryCreateRequestHandler(),
             ],
             'categories-subcategory-delete'=>[
                 'class'=>AjaxAction::class,

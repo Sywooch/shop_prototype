@@ -237,6 +237,7 @@ class AdminCategoriesWidgetTests extends TestCase
             new class() {
                 public $id = 1;
                 public $name = 'One';
+                public $active = 0;
                 public $subcategory;
                 public function __construct()
                 {
@@ -255,6 +256,7 @@ class AdminCategoriesWidgetTests extends TestCase
             new class() {
                 public $id = 2;
                 public $name = 'Two';
+                public $active = 1;
                 public $subcategory;
                 public function __construct()
                 {
@@ -274,6 +276,7 @@ class AdminCategoriesWidgetTests extends TestCase
         
         $form = new class() extends AbstractBaseForm {
             public $id;
+            public $active;
         };
         
         $reflection = new \ReflectionProperty($this->widget, 'categories');
@@ -307,7 +310,8 @@ class AdminCategoriesWidgetTests extends TestCase
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
         $this->assertRegExp('#<input type="submit" value="Удалить">#', $result);
         $this->assertRegExp('#<form id="admin-subcategory-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
+        $this->assertRegExp('#<form id="admin-category-change-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[active\]" value="1"> Active</label>#', $result);
     }
     
     public static function tearDownAfterClass()

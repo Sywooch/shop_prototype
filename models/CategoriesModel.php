@@ -20,12 +20,17 @@ class CategoriesModel extends AbstractBaseModel
      * Сценарий создания категории
      */
     const CREATE = 'create';
+    /**
+     * Сценарий редактирования категории
+     */
+    const EDIT = 'edit';
     
     public function scenarios()
     {
         return [
             self::DELETE=>['id'],
             self::CREATE=>['name', 'seocode', 'active'],
+            self::EDIT=>['id', 'active'],
         ];
     }
     
@@ -35,6 +40,8 @@ class CategoriesModel extends AbstractBaseModel
             [['id'], 'required', 'on'=>self::DELETE],
             [['name', 'seocode'], 'required', 'on'=>self::CREATE],
             [['active'], 'default', 'value'=>0, 'on'=>self::CREATE],
+            [['id'], 'required', 'on'=>self::EDIT],
+            [['active'], 'default', 'value'=>0, 'on'=>self::EDIT],
         ];
     }
     

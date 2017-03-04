@@ -67,17 +67,23 @@ class AdminCategoriesWidget extends AbstractBaseWidget
                 $setCategory['name'] = $category->name;
                 
                 $categoriesForm = clone $this->categoriesForm;
-                $setCategory['modelForm'] = \Yii::configure($categoriesForm, ['id'=>$category->id]);
+                $setCategory['modelForm'] = \Yii::configure($categoriesForm, [
+                    'id'=>$category->id,
+                    'active'=>$category->active,
+                ]);
+                
                 $setCategory['formId'] = sprintf('admin-category-delete-form-%d', $category->id);
+                $setCategory['formAction'] = Url::to(['/admin/categories-category-delete']);
+                $setCategory['button'] = \Yii::t('base', 'Delete');
+                
+                $setCategory['formIdChange'] = sprintf('admin-category-change-form-%d', $category->id);
+                $setCategory['formActionChange'] = Url::to(['/admin/categories-category-change']);
                 
                 $setCategory['ajaxValidation'] = false;
                 $setCategory['validateOnSubmit'] = false;
                 $setCategory['validateOnChange'] = false;
                 $setCategory['validateOnBlur'] = false;
                 $setCategory['validateOnType'] = false;
-                
-                $setCategory['formAction'] = Url::to(['/admin/categories-category-delete']);
-                $setCategory['button'] = \Yii::t('base', 'Delete');
                 
                 if (!empty($category->subcategory)) {
                     foreach ($category->subcategory as $subcategory) {

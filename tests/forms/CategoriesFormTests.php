@@ -33,6 +33,7 @@ class CategoriesFormTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('DELETE'));
         $this->assertTrue($reflection->hasConstant('CREATE'));
+        $this->assertTrue($reflection->hasConstant('EDIT'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('name'));
@@ -72,6 +73,20 @@ class CategoriesFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'active');
         $result = $reflection->getValue($form);
         $this->assertSame(true, $result);
+        
+        $form = new CategoriesForm(['scenario'=>CategoriesForm::EDIT]);
+        $form->attributes = [
+            'id'=>2,
+            'active'=>1,
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(2, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'active');
+        $result = $reflection->getValue($form);
+        $this->assertSame(1, $result);
     }
     
     /**
@@ -127,6 +142,19 @@ class CategoriesFormTests extends TestCase
         $form->attributes = [
             'name'=>'Not exists name',
             'seocode'=>'some-new'
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new CategoriesForm(['scenario'=>CategoriesForm::EDIT]);
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new CategoriesForm(['scenario'=>CategoriesForm::EDIT]);
+        $form->attributes = [
+            'id'=>1
         ];
         $form->validate();
         

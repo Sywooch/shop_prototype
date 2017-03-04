@@ -5,13 +5,13 @@ $data = [
         'id'=>1,
         'name'=>'Мужская обувь',
         'seocode'=>'mensfootwear',
-        'active'=>true,
+        'active'=>1,
     ],
     'category_2'=>[
         'id'=>2,
         'name'=>'Мужская одежда',
         'seocode'=>'menswear',
-        'active'=>true,
+        'active'=>1,
     ],
 ];
 
