@@ -245,10 +245,12 @@ class AdminCategoriesWidgetTests extends TestCase
                         new class() {
                             public $id = 1;
                             public $name = 'One one';
+                            public $active = 1;
                         },
                         new class() {
                             public $id = 2;
                             public $name = 'One two';
+                            public $active = 1;
                         },
                     ];
                 }
@@ -264,10 +266,12 @@ class AdminCategoriesWidgetTests extends TestCase
                         new class() {
                             public $id = 3;
                             public $name = 'Two one';
+                            public $active = 0;
                         },
                         new class() {
                             public $id = 4;
                             public $name = 'Two two';
+                            public $active = 1;
                         },
                     ];
                 }
@@ -312,6 +316,8 @@ class AdminCategoriesWidgetTests extends TestCase
         $this->assertRegExp('#<form id="admin-subcategory-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<form id="admin-category-change-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[active\]" value="1"> Active</label>#', $result);
+        $this->assertRegExp('#<form id="admin-subcategory-change-form-[0-9]{1}" action=".+" method="POST">#', $result);
+        $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[active\]" value="1" checked> Active</label>#', $result);
     }
     
     public static function tearDownAfterClass()

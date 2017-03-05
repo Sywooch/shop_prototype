@@ -6,14 +6,14 @@ $data = [
         'name'=>'Ботинки',
         'seocode'=>'boots',
         'id_category'=>1,
-        'active'=>true
+        'active'=>1
     ],
     'subcategory_2'=>[
         'id'=>2,
         'name'=>'Рубашки',
         'seocode'=>'shirts',
         'id_category'=>2,
-        'active'=>true
+        'active'=>1
     ],
 ];
 

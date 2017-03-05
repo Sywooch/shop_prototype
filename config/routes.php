@@ -90,6 +90,7 @@ $routes = [
     'admin-categories-category-change'=>'admin/categories-category-change',
     'admin-categories-category-delete'=>'admin/categories-category-delete',
     'admin-categories-subcategory-create'=>'admin/categories-subcategory-create',
+    'admin-categories-subcategory-change'=>'admin/categories-subcategory-change',
     'admin-categories-subcategory-delete'=>'admin/categories-subcategory-delete',
     'admin-brands'=>'admin/brands',
     'admin-brand-create'=>'admin/brand-create',
@@ -127,6 +128,7 @@ $routes = [
     'admin-delivery-change'=>'admin/delivery-change',
     'admin-delivery-create'=>'admin/delivery-create',
     'admin-delivery-delete'=>'admin/delivery-delete',
+    'admin-payments'=>'admin/payments',
     
     # Календарь
     'calendar-get'=>'calendar/get',

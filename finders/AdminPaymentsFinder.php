@@ -9,7 +9,7 @@ use app\finders\AbstractBaseFinder;
 /**
  * Возвращает коллекцию способов доставки из СУБД
  */
-class PaymentsFinder extends AbstractBaseFinder
+class AdminPaymentsFinder extends AbstractBaseFinder
 {
     /**
      * @var массив загруженных PaymentsModel
@@ -26,7 +26,6 @@ class PaymentsFinder extends AbstractBaseFinder
             if (empty($this->storage)) {
                 $query = PaymentsModel::find();
                 $query->select(['[[payments.id]]', '[[payments.name]]', '[[payments.description]]', '[[payments.active]]']);
-                $query->where(['[[payments.active]]'=>1]);
                 
                 $this->storage = $query->all();
             }

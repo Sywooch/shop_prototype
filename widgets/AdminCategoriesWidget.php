@@ -91,17 +91,23 @@ class AdminCategoriesWidget extends AbstractBaseWidget
                         $setSubcategory['name'] = $subcategory->name;
                         
                         $subcategoryForm = clone $this->subcategoryForm;
-                        $setSubcategory['modelForm'] = \Yii::configure($subcategoryForm, ['id'=>$subcategory->id]);
+                        $setSubcategory['modelForm'] = \Yii::configure($subcategoryForm, [
+                            'id'=>$subcategory->id,
+                            'active'=>$subcategory->active,
+                        ]);
+                        
                         $setSubcategory['formId'] = sprintf('admin-subcategory-delete-form-%d', $subcategory->id);
+                        $setSubcategory['formAction'] = Url::to(['/admin/categories-subcategory-delete']);
+                        $setSubcategory['button'] = \Yii::t('base', 'Delete');
+                        
+                        $setSubcategory['formIdChange'] = sprintf('admin-subcategory-change-form-%d', $category->id);
+                        $setSubcategory['formActionChange'] = Url::to(['/admin/categories-subcategory-change']);
                         
                         $setSubcategory['ajaxValidation'] = false;
                         $setSubcategory['validateOnSubmit'] = false;
                         $setSubcategory['validateOnChange'] = false;
                         $setSubcategory['validateOnBlur'] = false;
                         $setSubcategory['validateOnType'] = false;
-                        
-                        $setSubcategory['formAction'] = Url::to(['/admin/categories-subcategory-delete']);
-                        $setSubcategory['button'] = \Yii::t('base', 'Delete');
                         
                         $setCategory['subcategory'][] = $setSubcategory;
                     }

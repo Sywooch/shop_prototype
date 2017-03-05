@@ -1,0 +1,15 @@
+{{ register_asset_bundle('app/assets/AdminDeliveriesAsset') }}
+
+{{ use ('app/widgets/AdminPaymentsBreadcrumbsWidget') }}
+{{ use ('app/widgets/AdminPaymentsWidget') }}
+{{ use ('app/widgets/AdminCreatePaymentWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_payments_breadcrumbs_widget_widget() }}
+
+<div class="admin-payments">
+    {{ admin_payments_widget_widget(adminPaymentsWidgetConfig) }}
+</div>
+
+{{ admin_create_payment_widget_widget(adminCreatePaymentWidgetConfig) }}

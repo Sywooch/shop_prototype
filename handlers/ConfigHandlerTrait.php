@@ -748,4 +748,25 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminPaymentsWidget
+     * @param array $paymentsModelArray
+     * @param AbstractBaseForm $paymentsForm
+     */
+    private function adminPaymentsWidgetConfig(array $paymentsModelArray, AbstractBaseForm $paymentsForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['payments'] = $paymentsModelArray;
+            $dataArray['form'] = $paymentsForm;
+            $dataArray['header'] = \Yii::t('base', 'Payments');
+            $dataArray['template'] = 'admin-payments.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

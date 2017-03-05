@@ -1,6 +1,6 @@
 $(function() {
     
-    function SendAdminCategoryChange() {
+    function SendAdminCategorySubcategoryChange() {
         var self = this;
         AbstractSendForm.apply(this, arguments);
         self.success = function(data, status, jqXHR)
@@ -15,7 +15,7 @@ $(function() {
     };
     
     $('div.product-categories').on('change', 'input:checkbox', function(event) {
-        (new SendAdminCategoryChange()).send(event);
+        (new SendAdminCategorySubcategoryChange()).send(event);
         event.preventDefault();
     });
     

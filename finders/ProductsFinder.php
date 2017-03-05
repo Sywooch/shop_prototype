@@ -52,13 +52,19 @@ class ProductsFinder extends AbstractBaseFinder
                 $query = ProductsModel::find();
                 $query->select(['[[products.id]]', '[[products.name]]', '[[products.price]]', '[[products.short_description]]', '[[products.images]]', '[[products.seocode]]']);
                 $query->where(['[[products.active]]'=>true]);
+                $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
+                $query->andWhere(['[[categories.active]]'=>true]);
+                $query->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
+                $query->andWhere(['[[subcategory.active]]'=>true]);
                 
                 if (!empty($this->category)) {
-                    $query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
+                    //$query->innerJoin('{{categories}}', '[[categories.id]]=[[products.id_category]]');
                     $query->andWhere(['[[categories.seocode]]'=>$this->category]);
+                    //$query->andWhere(['[[categories.active]]'=>true]);
                     if (!empty($this->subcategory)) {
-                        $query->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
+                        //$query->innerJoin('{{subcategory}}', '[[subcategory.id]]=[[products.id_subcategory]]');
                         $query->andWhere(['[[subcategory.seocode]]'=>$this->subcategory]);
+                        //$query->andWhere(['[[subcategory.active]]'=>true]);
                     }
                 }
                 

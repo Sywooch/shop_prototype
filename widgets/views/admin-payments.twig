@@ -1,0 +1,26 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<ul>
+    {% for payment in payments %}
+        <li>
+        <div class="admin-payment-previous-data">
+            {{nameHeader}}: {{ payment.name }}
+            <br>{{descriptionHeader}}: {{ payment.description }}
+            <br>{{ activeHeader }}: {{ payment.active }}
+            
+            {% set form=active_form_begin({'id':payment.formId, 'enableAjaxValidation':payment.ajaxValidation, 'validateOnSubmit':payment.validateOnSubmit, 'validateOnChange':payment.validateOnChange, 'validateOnBlur':payment.validateOnBlur, 'validateOnType':payment.validateOnType, 'action':payment.formAction, 'method':'POST'}) %}
+                {{ form.field(payment.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ payment.button }}">
+            {{ active_form_end() }}
+            
+            {% set form=active_form_begin({'id':payment.formIdDelete, 'enableAjaxValidation':payment.ajaxValidation, 'validateOnSubmit':payment.validateOnSubmit, 'validateOnChange':payment.validateOnChange, 'validateOnBlur':payment.validateOnBlur, 'validateOnType':payment.validateOnType, 'action':payment.formActionDelete, 'method':'POST'}) %}
+                {{ form.field(payment.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ payment.buttonDelete }}">
+            {{ active_form_end() }}
+        </div>
+        </li>
+    {% endfor %}
+</ul>
+

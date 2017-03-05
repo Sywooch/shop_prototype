@@ -35,6 +35,7 @@ class SubcategoryFormTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('DELETE'));
         $this->assertTrue($reflection->hasConstant('CREATE'));
+        $this->assertTrue($reflection->hasConstant('EDIT'));
         
         $this->assertTrue($reflection->hasProperty('id'));
         $this->assertTrue($reflection->hasProperty('name'));
@@ -80,6 +81,20 @@ class SubcategoryFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'active');
         $result = $reflection->getValue($form);
         $this->assertSame(true, $result);
+        
+        $form = new SubcategoryForm(['scenario'=>SubcategoryForm::EDIT]);
+        $form->attributes = [
+            'id'=>2,
+            'active'=>1,
+        ];
+        
+        $reflection = new \ReflectionProperty($form, 'id');
+        $result = $reflection->getValue($form);
+        $this->assertSame(2, $result);
+        
+        $reflection = new \ReflectionProperty($form, 'active');
+        $result = $reflection->getValue($form);
+        $this->assertSame(1, $result);
     }
     
     /**
@@ -138,6 +153,19 @@ class SubcategoryFormTests extends TestCase
             'name'=>'new name',
             'seocode'=>'new-seocode',
             'id_category'=>1,
+        ];
+        $form->validate();
+        
+        $this->assertEmpty($form->errors);
+        
+        $form = new SubcategoryForm(['scenario'=>SubcategoryForm::EDIT]);
+        $form->validate();
+        
+        $this->assertCount(1, $form->errors);
+        
+        $form = new SubcategoryForm(['scenario'=>SubcategoryForm::EDIT]);
+        $form->attributes = [
+            'id'=>1
         ];
         $form->validate();
         

@@ -852,6 +852,31 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('string', $result['template']);
     }
     
+    /**
+     * Тестирует метод ConfigHandlerTrait::adminPaymentsWidgetConfig
+     */
+    public function testAdminPaymentsWidgetConfig()
+    {
+        $paymentsModelArray = [new class() {}];
+        $paymentsForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminPaymentsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $paymentsModelArray, $paymentsForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('payments', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['payments']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();

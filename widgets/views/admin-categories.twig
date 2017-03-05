@@ -23,6 +23,11 @@
                         <li>
                             {{ subcategory.name }}
                             
+                            {% set form=active_form_begin({'id':subcategory.formIdChange, 'enableAjaxValidation':subcategory.ajaxValidation, 'validateOnSubmit':subcategory.validateOnSubmit, 'validateOnChange':subcategory.validateOnChange, 'validateOnBlur':subcategory.validateOnBlur, 'validateOnType':subcategory.validateOnType, 'action':subcategory.formActionChange, 'method':'POST'}) %}
+                                {{ form.field(subcategory.modelForm, 'id').hiddenInput().label(false) | raw }}
+                                {{ form.field(subcategory.modelForm, 'active').checkbox() | raw }}
+                            {{ active_form_end() }}
+                            
                             {% set form=active_form_begin({'id':subcategory.formId, 'enableAjaxValidation':subcategory.ajaxValidation, 'validateOnSubmit':subcategory.validateOnSubmit, 'validateOnChange':subcategory.validateOnChange, 'validateOnBlur':subcategory.validateOnBlur, 'validateOnType':subcategory.validateOnType, 'action':subcategory.formAction, 'method':'POST'}) %}
                                 {{ form.field(subcategory.modelForm, 'id').hiddenInput().label(false) | raw }}
                                 <input type="submit" value="{{ subcategory.button }}">

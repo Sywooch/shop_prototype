@@ -19,12 +19,17 @@ class SubcategoryModel extends AbstractBaseModel
      * Сценарий создания категории
      */
     const CREATE = 'create';
+    /**
+     * Сценарий редактирования категории
+     */
+    const EDIT = 'edit';
     
     public function scenarios()
     {
         return [
             self::DELETE=>['id'],
             self::CREATE=>['name', 'seocode', 'id_category', 'active'],
+            self::EDIT=>['id', 'active'],
         ];
     }
     
@@ -34,6 +39,8 @@ class SubcategoryModel extends AbstractBaseModel
             [['id'], 'required', 'on'=>self::DELETE],
             [['name', 'seocode', 'id_category'], 'required', 'on'=>self::CREATE],
             [['active'], 'default', 'value'=>0, 'on'=>self::CREATE],
+            [['id'], 'required', 'on'=>self::EDIT],
+            [['active'], 'default', 'value'=>0, 'on'=>self::EDIT],
         ];
     }
     

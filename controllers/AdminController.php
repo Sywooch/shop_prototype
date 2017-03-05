@@ -14,6 +14,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminCategoriesCategoryChangeRequestHandler,
     AdminCategoriesCategoryCreateRequestHandler,
     AdminCategoriesCategoryDeleteRequestHandler,
+    AdminCategoriesSubcategoryChangeRequestHandler,
     AdminCategoriesSubcategoryCreateRequestHandler,
     AdminCategoriesSubcategoryDeleteRequestHandler,
     AdminCategoriesRequestHandler,
@@ -37,6 +38,7 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
     AdminOrdersRequestHandler,
+    AdminPaymentsRequestHandler,
     AdminProductDetailChangeRequestHandler,
     AdminProductDetailDeleteRequestHandler,
     AdminProductDetailFormRequestHandler,
@@ -127,6 +129,10 @@ class AdminController extends Controller
             'categories-subcategory-create'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminCategoriesSubcategoryCreateRequestHandler(),
+            ],
+            'categories-subcategory-change'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminCategoriesSubcategoryChangeRequestHandler(),
             ],
             'categories-subcategory-delete'=>[
                 'class'=>AjaxAction::class,
@@ -260,10 +266,6 @@ class AdminController extends Controller
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminDeliveryCreateRequestHandler(),
             ],
-            'delivery-delete'=>[
-                'class'=>AjaxAction::class,
-                'handler'=>new AdminDeliveryDeleteRequestHandler(),
-            ],
             'delivery-form'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminDeliveryFormRequestHandler(),
@@ -271,6 +273,15 @@ class AdminController extends Controller
             'delivery-change'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminDeliveryChangeRequestHandler(),
+            ],
+            'delivery-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminDeliveryDeleteRequestHandler(),
+            ],
+            'payments'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminPaymentsRequestHandler(),
+                'view'=>'payments.twig',
             ],
         ];
     }

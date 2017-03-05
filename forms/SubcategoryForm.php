@@ -22,6 +22,10 @@ class SubcategoryForm extends AbstractBaseForm
      * Сценарий создания подкатегории
      */
     const CREATE = 'create';
+    /**
+     * Сценарий редактирования подкатегории
+     */
+    const EDIT = 'edit';
     
     /**
      * @var int ID
@@ -49,6 +53,7 @@ class SubcategoryForm extends AbstractBaseForm
         return [
             self::DELETE=>['id'],
             self::CREATE=>['name', 'seocode', 'id_category', 'active'],
+            self::EDIT=>['id', 'active'],
         ];
     }
     
@@ -61,6 +66,7 @@ class SubcategoryForm extends AbstractBaseForm
             [['name', 'seocode', 'id_category'], 'required', 'on'=>self::CREATE],
             [['name'], CreateSubcategoryNameExistsValidator::class, 'on'=>self::CREATE],
             [['seocode'], CreateSubcategorySeocodeExistsValidator::class, 'on'=>self::CREATE],
+            [['id'], 'required', 'on'=>self::EDIT],
         ];
     }
 }
