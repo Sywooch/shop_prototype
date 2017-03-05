@@ -40,7 +40,7 @@ class MailingsNotEmailFinder extends AbstractBaseFinder
                 $existsQuery->where(['[[emails.email]]'=>$this->email]);
                 
                 $query = MailingsModel::find();
-                $query->select(['[[mailings.id]]', '[[mailings.name]]', '[[mailings.description]]']);
+                $query->select(['[[mailings.id]]', '[[mailings.name]]', '[[mailings.description]]', '[[mailings.active]]']);
                 $query->where(['not in', '[[mailings.id]]', $existsQuery]);
                 
                 $this->storage = $query->all();

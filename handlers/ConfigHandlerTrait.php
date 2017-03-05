@@ -769,4 +769,25 @@ trait ConfigHandlerTrait
             $this->throwException($t, __METHOD__);
         }
     }
+    
+    /**
+     * Возвращает массив конфигурации для виджета AdminMailingsWidget
+     * @param array $mailingsModelArray
+     * @param AbstractBaseForm $mailingsForm
+     */
+    private function adminMailingsWidgetConfig(array $mailingsModelArray, AbstractBaseForm $mailingsForm): array
+    {
+        try {
+            $dataArray = [];
+            
+            $dataArray['mailings'] = $mailingsModelArray;
+            $dataArray['form'] = $mailingsForm;
+            $dataArray['header'] = \Yii::t('base', 'Mailings');
+            $dataArray['template'] = 'admin-mailings.twig';
+            
+            return $dataArray;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
 }

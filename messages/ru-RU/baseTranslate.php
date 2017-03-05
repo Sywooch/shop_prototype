@@ -265,6 +265,9 @@ $translate = [
     'Payment with this name already exists'=>'Форма оплаты с этим именем уже существует',
     'Payments'=>'Формы оплаты',
     'Add payment'=>'Добавить форму оплаты',
+    'In this mail has subscribers. You must first delete or transfer them'=>'У этой почтовой рассылки есть подписчики. Сначала необходимо удалить или перенести их',
+    'Mailing with this name already exists'=>'Рассылка с таким именем уже существует',
+    'Add mailing'=>'Добавить рассылку',
 ];
 
 return $translate;

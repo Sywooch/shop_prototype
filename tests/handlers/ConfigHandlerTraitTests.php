@@ -877,6 +877,31 @@ class ConfigHandlerTraitTests extends TestCase
         $this->assertInternalType('string', $result['template']);
     }
     
+    /**
+     * Тестирует метод ConfigHandlerTrait::adminMailingsWidgetConfig
+     */
+    public function testAdminMailingsWidgetConfig()
+    {
+        $mailingsModelArray = [new class() {}];
+        $mailingsForm = new class() extends AbstractBaseForm {};
+        
+        $reflection = new \ReflectionMethod($this->handler, 'adminMailingsWidgetConfig');
+        $reflection->setAccessible(true);
+        $result = $reflection->invoke($this->handler, $mailingsModelArray, $mailingsForm);
+        
+        $this->assertInternalType('array', $result);
+        
+        $this->assertArrayHasKey('mailings', $result);
+        $this->assertArrayHasKey('form', $result);
+        $this->assertArrayHasKey('header', $result);
+        $this->assertArrayHasKey('template', $result);
+        
+        $this->assertInternalType('array', $result['mailings']);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result['form']);
+        $this->assertInternalType('string', $result['header']);
+        $this->assertInternalType('string', $result['template']);
+    }
+    
     public static function tearDownAfterClass()
     {
         self::$dbClass->unloadFixtures();

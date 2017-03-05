@@ -37,7 +37,7 @@ class AdminMenuWidgetTests extends TestCase
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-        $this->assertCount(13, $result);
+        $this->assertCount(14, $result);
     }
     
     /**

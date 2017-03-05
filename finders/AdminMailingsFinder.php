@@ -8,7 +8,7 @@ use app\finders\AbstractBaseFinder;
 /**
  * Возвращает доступные подписки из СУБД
  */
-class MailingsFinder extends AbstractBaseFinder
+class AdminMailingsFinder extends AbstractBaseFinder
 {
     /**
      * @var массив загруженных MailingsModel
@@ -25,7 +25,6 @@ class MailingsFinder extends AbstractBaseFinder
             if (empty($this->storage)) {
                 $query = MailingsModel::find();
                 $query->select(['[[mailings.id]]', '[[mailings.name]]', '[[mailings.description]]', '[[mailings.active]]']);
-                $query->where(['[[mailings.active]]'=>1]);
                 
                 $this->storage = $query->all();
             }

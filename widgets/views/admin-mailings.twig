@@ -1,0 +1,26 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<p><strong>{{ header }}</strong></p>
+
+<ul>
+    {% for mailing in mailings %}
+        <li>
+        <div class="admin-mailing-previous-data">
+            {{nameHeader}}: {{ mailing.name }}
+            <br>{{descriptionHeader}}: {{ mailing.description }}
+            <br>{{ activeHeader }}: {{ mailing.active }}
+            
+            {% set form=active_form_begin({'id':mailing.formId, 'enableAjaxValidation':mailing.ajaxValidation, 'validateOnSubmit':mailing.validateOnSubmit, 'validateOnChange':mailing.validateOnChange, 'validateOnBlur':mailing.validateOnBlur, 'validateOnType':mailing.validateOnType, 'action':mailing.formAction, 'method':'POST'}) %}
+                {{ form.field(mailing.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ mailing.button }}">
+            {{ active_form_end() }}
+            
+            {% set form=active_form_begin({'id':mailing.formIdDelete, 'enableAjaxValidation':mailing.ajaxValidation, 'validateOnSubmit':mailing.validateOnSubmit, 'validateOnChange':mailing.validateOnChange, 'validateOnBlur':mailing.validateOnBlur, 'validateOnType':mailing.validateOnType, 'action':mailing.formActionDelete, 'method':'POST'}) %}
+                {{ form.field(mailing.modelForm, 'id').hiddenInput().label(false) | raw }}
+                <input type="submit" value="{{ mailing.buttonDelete }}">
+            {{ active_form_end() }}
+        </div>
+        </li>
+    {% endfor %}
+</ul>
+

@@ -85,6 +85,10 @@ class AdminMenuWidget extends Menu
                     'url'=>['/admin/payments']
                 ],
                 [
+                    'label'=>\Yii::t('base', 'Mailings'),
+                    'url'=>['/admin/mailings']
+                ],
+                [
                     'label'=>\Yii::t('base', 'Exit'),
                     'url'=>['/']
                 ],

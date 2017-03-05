@@ -33,7 +33,7 @@ class MailingsEmailFinder extends AbstractBaseFinder
             
             if (empty($this->storage)) {
                 $query = MailingsModel::find();
-                $query->select(['[[mailings.id]]', '[[mailings.name]]', '[[mailings.description]]']);
+                $query->select(['[[mailings.id]]', '[[mailings.name]]', '[[mailings.description]]', '[[mailings.active]]']);
                 $query->innerJoin('{{emails_mailings}}', '[[mailings.id]]=[[emails_mailings.id_mailing]]');
                 $query->innerJoin('{{emails}}', '[[emails_mailings.id_email]]=[[emails.id]]');
                 $query->where(['[[emails.email]]'=>$this->email]);

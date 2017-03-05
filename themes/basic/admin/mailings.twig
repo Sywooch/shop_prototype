@@ -1,0 +1,15 @@
+{{ register_asset_bundle('app/assets/AdminMailingsAsset') }}
+
+{{ use ('app/widgets/AdminMailingsBreadcrumbsWidget') }}
+{{ use ('app/widgets/AdminMailingsWidget') }}
+{{ use ('app/widgets/AdminCreateMailingWidget') }}
+
+{{ include('@theme/common/admin-common.twig') }}
+
+{{ admin_mailings_breadcrumbs_widget_widget() }}
+
+<div class="admin-mailings">
+    {{ admin_mailings_widget_widget(adminMailingsWidgetConfig) }}
+</div>
+
+{{ admin_create_mailing_widget_widget(adminCreateMailingWidgetConfig) }}

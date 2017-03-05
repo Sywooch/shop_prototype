@@ -35,6 +35,8 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminDeliveryFormRequestHandler,
     AdminDeliveriesRequestHandler,
     AdminIndexRequestHandler,
+    AdminMailingCreateRequestHandler,
+    AdminMailingsRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
     AdminOrdersRequestHandler,
@@ -302,6 +304,15 @@ class AdminController extends Controller
             'payment-delete'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminPaymentDeleteRequestHandler(),
+            ],
+            'mailings'=>[
+                'class'=>GetAction::class,
+                'handler'=>new AdminMailingsRequestHandler(),
+                'view'=>'mailings.twig',
+            ],
+            'mailing-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminMailingCreateRequestHandler(),
             ],
         ];
     }

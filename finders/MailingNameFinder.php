@@ -7,16 +7,16 @@ use app\models\MailingsModel;
 use app\finders\AbstractBaseFinder;
 
 /**
- * Возвращает подписки с указанными ID из СУБД
+ * Возвращает из СУБД подписки, связанные с переданным email
  */
-class MailingsIdFinder extends AbstractBaseFinder
+class MailingNameFinder extends AbstractBaseFinder
 {
     /**
-     * @var массив ID
+     * @var string name
      */
-    private $id = [];
+    private $name;
     /**
-     * @var массив загруженных MailingsModel
+     * @var MailingsModel
      */
     private $storage = null;
     
@@ -27,16 +27,16 @@ class MailingsIdFinder extends AbstractBaseFinder
     public function find()
     {
         try {
-            if (empty($this->id)) {
-                throw new ErrorException($this->emptyError('id'));
+            if (empty($this->name)) {
+                throw new ErrorException($this->emptyError('name'));
             }
             
             if (empty($this->storage)) {
                 $query = MailingsModel::find();
                 $query->select(['[[mailings.id]]', '[[mailings.name]]', '[[mailings.description]]', '[[mailings.active]]']);
-                $query->where(['[[mailings.id]]'=>$this->id]);
+                $query->where(['[[mailings.name]]'=>$this->name]);
                 
-                $this->storage = $query->all();
+                $this->storage = $query->one();
             }
             
             return $this->storage;
@@ -46,13 +46,13 @@ class MailingsIdFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает array свойству MailingsIdFinder::id
-     * @param array $id
+     * Присваивает значение MailingNameFinder::name
+     * @param string $name
      */
-    public function setId(array $id)
+    public function setName(string $name)
     {
         try {
-            $this->id = $id;
+            $this->name = $name;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }
