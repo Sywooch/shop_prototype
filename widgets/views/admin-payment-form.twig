@@ -1,0 +1,13 @@
+{{ use('yii/widgets/ActiveForm') }}
+
+<div class="admin-payment-edit-form"><p>
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
+        {{ form.field(modelForm, 'name') | raw }}
+        {{ form.field(modelForm, 'description').textarea({'cols':cols, 'rows':rows}) | raw }}
+        {{ form.field(modelForm, 'active').checkbox() | raw }}
+        
+        <input type="submit" name="send" value="{{ button }}">
+        <input type="submit" name="cancel" value="{{ buttonCancel }}">
+    {{ active_form_end() }}
+</p></div>

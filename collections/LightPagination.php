@@ -9,7 +9,7 @@ use app\collections\PaginationInterface;
 use app\exceptions\ExceptionsTrait;
 
 /**
- * Представляет информацию о разбиении коллекции сущностей на страницы
+ * Разбивает коллекцию на страницы
  */
 class LightPagination extends Object implements PaginationInterface
 {

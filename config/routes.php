@@ -123,12 +123,15 @@ $routes = [
     'admin-currency-delete'=>'admin/currency-delete',
     'admin-currency-base-change'=>'admin/currency-base-change',
     'admin-deliveries'=>'admin/deliveries',
-    'admin-delivery-delete'=>'admin/delivery-delete',
+    'admin-delivery-create'=>'admin/delivery-create',
     'admin-delivery-form'=>'admin/delivery-form',
     'admin-delivery-change'=>'admin/delivery-change',
-    'admin-delivery-create'=>'admin/delivery-create',
     'admin-delivery-delete'=>'admin/delivery-delete',
     'admin-payments'=>'admin/payments',
+    'admin-payment-create'=>'admin/payment-create',
+    'admin-payment-form'=>'admin/payment-form',
+    'admin-payment-change'=>'admin/payment-change',
+    'admin-payment-delete'=>'admin/payment-delete',
     
     # Календарь
     'calendar-get'=>'calendar/get',

@@ -33,7 +33,7 @@ class PaymentIdFinder extends AbstractBaseFinder
             
             if (empty($this->storage)) {
                 $query = PaymentsModel::find();
-                $query->select(['[[payments.id]]', '[[payments.name]]', '[[payments.description]]']);
+                $query->select(['[[payments.id]]', '[[payments.name]]', '[[payments.description]]', '[[payments.active]]']);
                 $query->where(['[[payments.id]]'=>$this->id]);
                 
                 $this->storage = $query->one();

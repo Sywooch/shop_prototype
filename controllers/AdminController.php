@@ -38,6 +38,10 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
     AdminOrdersRequestHandler,
+    AdminPaymentChangeRequestHandler,
+    AdminPaymentCreateRequestHandler,
+    AdminPaymentDeleteRequestHandler,
+    AdminPaymentFormRequestHandler,
     AdminPaymentsRequestHandler,
     AdminProductDetailChangeRequestHandler,
     AdminProductDetailDeleteRequestHandler,
@@ -282,6 +286,22 @@ class AdminController extends Controller
                 'class'=>GetAction::class,
                 'handler'=>new AdminPaymentsRequestHandler(),
                 'view'=>'payments.twig',
+            ],
+            'payment-create'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminPaymentCreateRequestHandler(),
+            ],
+            'payment-form'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminPaymentFormRequestHandler(),
+            ],
+            'payment-change'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminPaymentChangeRequestHandler(),
+            ],
+            'payment-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminPaymentDeleteRequestHandler(),
             ],
         ];
     }

@@ -7,7 +7,7 @@ use app\actions\AbstractBaseAction;
 use app\handlers\HandlerInterface;
 
 /**
- * Обрабатывает запрос на вывод каталога товаров
+ * Обрабатывает AJAX запрос
  */
 class AjaxAction extends AbstractBaseAction
 {
@@ -22,6 +22,7 @@ class AjaxAction extends AbstractBaseAction
             if (empty($this->handler)) {
                 throw new ErrorException($this->emptyError('handler'));
             }
+            
             if (\Yii::$app->request->isAjax !== true) {
                 throw new ErrorException($this->invalidError('AJAX'));
             }
