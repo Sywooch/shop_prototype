@@ -86,6 +86,19 @@ class HashHelper
     }
     
     /**
+     * Конструирует ключ для сохранения данных IP сессии
+     * @return string
+     */
+    public static function createSessionIpKey(): string
+    {
+        try {
+            return self::createHash([\Yii::$app->params['userIP'], \Yii::$app->user->id ?? '']);
+        } catch (\Throwable $t) {
+            ExceptionsTrait::throwStaticException($t, __METHOD__);
+        }
+    }
+    
+    /**
      * Конструирует случайную строку заданной длины
      * @param int $length длина возвращаемой строки
      * @return string

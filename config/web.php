@@ -24,6 +24,10 @@ $config = [
     'modules'=>require(__DIR__ . '/modules.php'),
     
     'params'=>require(__DIR__ . '/params.php'),
+    
+    'as userIPFilter'=>[
+        'class'=>'app\filters\UserIpFilter',
+    ]
 ];
 
 if (YII_ENV_DEV) {

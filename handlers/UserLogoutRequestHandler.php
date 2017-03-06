@@ -37,6 +37,11 @@ class UserLogoutRequestHandler extends AbstractBaseHandler
                         \Yii::$app->user->logout();
                     }
                     
+                    $session = \Yii::$app->session;
+                    $session->open();
+                    $session->remove(\app\helpers\HashHelper::createSessionIpKey());
+                    $session->close();
+                    
                     return Url::to(['/products-list/index']);
                 }
             }

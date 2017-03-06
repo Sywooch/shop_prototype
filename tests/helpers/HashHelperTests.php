@@ -86,6 +86,18 @@ class HashHelperTests extends TestCase
     }
     
     /**
+     * Тестирует метод HashHelper::createSessionIpKey
+     */
+    public function testCreateSessionIpKey()
+    {
+        $hash = HashHelper::createSessionIpKey();
+        $this->assertEquals(40, strlen($hash));
+        
+        $expectedHash = HashHelper::createSessionIpKey();
+        $this->assertEquals($expectedHash, $hash);
+    }
+    
+    /**
      * Тестирует метод HashHelper::randomString
      */
     public function testRandomString()

@@ -9,6 +9,9 @@ use yii\widgets\ActiveForm;
 use app\handlers\AbstractBaseHandler;
 use app\forms\UserLoginForm;
 use app\finders\UserEmailFinder;
+use app\helpers\HashHelper;
+use app\models\UserIpModel;
+use app\savers\SessionModelSaver;
 
 /**
  * Обрабатывает запрос на обработку данных для аутентификации
@@ -42,6 +45,23 @@ class UserLoginPostRequestHandler extends AbstractBaseHandler
                     }
                     
                     \Yii::$app->user->login($usersModel);
+                    
+                    $userIpModel = new UserIpModel(['scenario'=>UserIpModel::SESSION]);
+                    $userIpModel->ip = $request->getUserIP();
+                    if ($userIpModel->validate() === false) {
+                        throw new ErrorException($this->modelError($userIpModel->errors));
+                    }
+                    
+                    $saver = new SessionModelSaver([
+                        'key'=>HashHelper::createSessionIpKey(),
+                        'model'=>$userIpModel
+                    ]);
+                    $saver->save();
+                    
+                    /*$session = \Yii::$app->session;
+                    $session->open();
+                    $session->set(HashHelper::createSessionIpKey(), $request->getUserIP());
+                    $session->close();*/
                     
                     return Url::to(['/products-list/index']);
                 }

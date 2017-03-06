@@ -20,7 +20,7 @@ class SessionModelSaver extends AbstractBaseSaver implements SaverModelInterface
     /**
      * @var Model
      */
-    private $model = [];
+    private $model;
     /**
      * @var bool флаг, указывающий сохранить данные во флеш-сесии
      */
