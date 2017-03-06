@@ -24,6 +24,7 @@ use app\forms\{AbstractBaseForm,
     AdminProductForm,
     AdminProductsFiltersForm};
 use app\models\CurrencyInterface;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -48,6 +49,8 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
         try {
             if (empty($this->dataArray)) {
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
+                $validator = new StripTagsValidator();
+                $page = $validator->validate($page);
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
                     'key'=>HashHelper::createCurrencyKey()

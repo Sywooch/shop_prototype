@@ -9,6 +9,7 @@ use app\finders\{MailingsEmailFinder,
     MailingsNotEmailFinder,
     UserEmailFinder};
 use app\forms\UserMailingForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на данные 
@@ -35,6 +36,8 @@ class AdminUserSubscriptionsRequestHandler extends AbstractBaseHandler
             if (empty($userEmail)) {
                 throw new ErrorException($this->emptyError('userEmail'));
             }
+            $validate = new StripTagsValidator();
+            $userEmail = $validate->validate($userEmail);
             
             if (empty($this->dataArray)) {
                 $finder = \Yii::$app->registry->get(UserEmailFinder::class, [

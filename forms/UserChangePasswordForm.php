@@ -6,7 +6,8 @@ use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{PasswordCorrectChangeValidator,
     PasswordCorrectAdminUserChangeValidator,
-    PasswordIdenticRegValidator};
+    PasswordIdenticRegValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы замены пароля
@@ -50,6 +51,7 @@ class UserChangePasswordForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'currentPassword', 'password', 'password2'], StripTagsValidator::class],
             [['currentPassword', 'password', 'password2'], 'required', 'on'=>self::CHANGE],
             [['id', 'currentPassword', 'password', 'password2'], 'required', 'on'=>self::ADMIN_UPDATE],
             [['currentPassword'], PasswordCorrectChangeValidator::class, 'on'=>self::CHANGE],

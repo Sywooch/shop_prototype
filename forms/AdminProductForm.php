@@ -112,7 +112,7 @@ class AdminProductForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['code', 'name', 'short_description', 'description', 'total_products', 'seocode', 'related'], StripTagsValidator::class],
+            [['id', 'code', 'name', 'short_description', 'description', 'price', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode', 'views', 'related'], StripTagsValidator::class],
             [['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand'], 'required', 'on'=>self::CREATE],
             [['code'], CreateProductCodeExistsValidator::class, 'on'=>self::CREATE],
             [['id', 'code', 'name', 'short_description', 'description', 'price', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],

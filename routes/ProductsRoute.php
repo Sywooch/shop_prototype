@@ -6,6 +6,7 @@ use yii\base\Object;
 use yii\web\UrlRuleInterface;
 use app\exceptions\ExceptionsTrait;
 use app\models\ProductsModel;
+use app\validators\StripTagsValidator;
 
 /**
  * Парсит и конструирует URL товарных категорий
@@ -22,6 +23,8 @@ class ProductsRoute extends Object implements UrlRuleInterface
     {
         try {
             $pathInfo = $request->getPathInfo();
+            $validator = new StripTagsValidator();
+            $pathInfo = $validator->validate($pathInfo);
             
             if (ProductsModel::find()->where(['[[products.seocode]]'=>$pathInfo])->exists()) {
                 $paramsArray[\Yii::$app->params['productKey']] = $pathInfo;

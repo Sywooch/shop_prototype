@@ -15,6 +15,7 @@ use app\forms\{OrdersFiltersForm,
     PurchaseForm};
 use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -42,6 +43,9 @@ class AdminUserOrdersRequestHandler extends AbstractBaseHandler
             if (empty($userEmail)) {
                 throw new ErrorException($this->emptyError('userEmail'));
             }
+            $validator = new StripTagsValidator();
+            $page = $validator->validate($page);
+            $userEmail = $validator->validate($userEmail);
             
             if (empty($this->dataArray)) {
                 $finder = \Yii::$app->registry->get(UserEmailFinder::class, [

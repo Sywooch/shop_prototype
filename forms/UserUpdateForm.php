@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Представляет обновляемые данные пользователя
@@ -63,6 +64,7 @@ class UserUpdateForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode'], StripTagsValidator::class],
             [['name', 'surname', 'phone', 'address', 'city', 'country', 'postcode'], 'required', 'on'=>self::UPDATE],
             [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode'], 'required', 'on'=>self::ADMIN_UPDATE],
         ];

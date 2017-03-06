@@ -5,7 +5,8 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{UserEmailExistsAuthValidator,
-    PasswordCorrectAuthValidator};
+    PasswordCorrectAuthValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы аутентификации пользователя
@@ -45,6 +46,7 @@ class UserLoginForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'email', 'password'], StripTagsValidator::class],
             [['email', 'password'], 'required', 'enableClientValidation'=>true, 'on'=>self::LOGIN],
             [['email'], 'email', 'enableClientValidation'=>true, 'on'=>self::LOGIN],
             [['email'], UserEmailExistsAuthValidator::class, 'on'=>self::LOGIN],

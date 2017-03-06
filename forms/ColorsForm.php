@@ -5,7 +5,8 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{CreateColorColorExistsValidator,
-    DeleteColorProductsExistsValidator};
+    DeleteColorProductsExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы редактирования цветов
@@ -41,6 +42,7 @@ class ColorsForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'color'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteColorProductsExistsValidator::class, 'on'=>self::DELETE],
             [['color'], 'required', 'on'=>self::CREATE],

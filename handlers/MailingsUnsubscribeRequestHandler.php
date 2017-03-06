@@ -16,6 +16,7 @@ use app\finders\{CategoriesFinder,
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
     UserMailingForm};
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на поиск данных для 
@@ -31,8 +32,13 @@ class MailingsUnsubscribeRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            $unsubscribeKey = $request->get(\Yii::$app->params['unsubscribeKey']) ?? null;
-            $email = $request->get(\Yii::$app->params['emailKey']) ?? null;
+            $unsubscribeKey = $request->get(\Yii::$app->params['unsubscribeKey']) ?? '';
+            $email = $request->get(\Yii::$app->params['emailKey']) ?? '';
+            
+            $validator = new StripTagsValidator();
+            $unsubscribeKey = $validator->validate($unsubscribeKey);
+            $email = $validator->validate($email);
+            
             $key = HashHelper::createHash([$email]);
             
             if (empty($unsubscribeKey) || empty($email) || $unsubscribeKey !== $key) {

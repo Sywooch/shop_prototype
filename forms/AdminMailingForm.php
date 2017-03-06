@@ -5,7 +5,8 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{CreateMailingNameExistsValidator,
-    DeleteMailingUsersExistsValidator};
+    DeleteMailingUsersExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы редактирования способов оплаты
@@ -59,6 +60,7 @@ class AdminMailingForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'name', 'description', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteMailingUsersExistsValidator::class, 'on'=>self::DELETE],
             [['name', 'description'], 'required', 'on'=>self::CREATE],

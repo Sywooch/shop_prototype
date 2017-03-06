@@ -46,20 +46,6 @@ class ProductsSphinxFinder extends AbstractBaseFinder
             }
             
             if (empty($this->storage)) {
-                //$this->createCollection();
-                
-                //$query = $this->createQuery();
-                
-                //$query->andWhere(['[[products.id]]'=>$this->sphinx]);
-                
-                //$query = $this->addFilters($query);
-                
-                //$query = $this->addPagination($query);
-                
-                //$query = $this->addSorting($query);
-                
-                //$this->get($query);
-                
                 $this->storage = new ProductsCollection(['pagination'=>new LightPagination()]);
                 
                 $query = ProductsModel::find();

@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Представляет данные формы изменения текущей валюты
@@ -34,6 +35,7 @@ class ChangeCurrencyForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'url'], StripTagsValidator::class],
             [['id', 'url'], 'required', 'on'=>self::SET],
         ];
     }

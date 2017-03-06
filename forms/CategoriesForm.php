@@ -56,7 +56,7 @@ class CategoriesForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['name', 'seocode'], StripTagsValidator::class],
+            [['id', 'name', 'seocode', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteCategorySubcategoryExistsValidator::class, 'on'=>self::DELETE],
             [['name', 'seocode'], 'required', 'on'=>self::CREATE],

@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\ActiveStatusTypeValidator;
+use app\validators\{ActiveStatusTypeValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы фильтров для списка пользователей
@@ -48,6 +49,7 @@ class UsersFiltersForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['sortingField', 'sortingType', 'ordersStatus', 'url'], StripTagsValidator::class],
             [['url'], 'required'],
             [['ordersStatus'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE]
         ];

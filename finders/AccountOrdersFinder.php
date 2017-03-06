@@ -123,10 +123,10 @@ class AccountOrdersFinder extends AbstractBaseFinder
     }
     
     /**
-     * Присваивает номер страницы AccountOrdersFinder::page
-     * @param string $page
+     * Присваивает значение AccountOrdersFinder::page
+     * @param int $page
      */
-    public function setPage(string $page)
+    public function setPage(int $page)
     {
         try {
             $this->page = $page;

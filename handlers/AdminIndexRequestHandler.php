@@ -29,7 +29,7 @@ class AdminIndexRequestHandler extends AbstractBaseHandler
      * формирования HTML страницы
      * @param array $request
      */
-    public function handle($request=null)
+    public function handle($request)
     {
         try {
             if (empty($this->dataArray)) {

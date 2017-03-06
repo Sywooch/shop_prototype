@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Представляет данные формы фильтров для каталога товаров
@@ -65,6 +66,7 @@ class PurchaseForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'quantity', 'id_color', 'id_size', 'id_product', 'price'], StripTagsValidator::class],
             [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::SAVE],
             [['quantity', 'id_color', 'id_size', 'id_product'], 'required', 'on'=>self::UPDATE],
             [['id_product'], 'required', 'on'=>self::DELETE],

@@ -17,6 +17,7 @@ use app\helpers\HashHelper;
 use app\savers\ModelSaver;
 use app\models\UsersModel;
 use app\forms\ChangeCurrencyForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на поиск данных для 
@@ -39,6 +40,10 @@ class UserGenerateRequestHandler extends AbstractBaseHandler
             if (empty($key) || empty($email)) {
                 throw new NotFoundHttpException($this->error404());
             }
+            
+            $validator = new StripTagsValidator();
+            $key = $validator->validate($key);
+            $email = $validator->validate($email);
             
             $finder = \Yii::$app->registry->get(RecoverySessionFinder::class, [
                 'key'=>$key

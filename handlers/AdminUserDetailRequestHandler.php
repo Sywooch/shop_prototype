@@ -11,6 +11,7 @@ use app\finders\{MailingsEmailFinder,
     UserEmailFinder};
 use app\services\GetCurrentCurrencyModelService;
 use app\helpers\HashHelper;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -37,6 +38,8 @@ class AdminUserDetailRequestHandler extends AbstractBaseHandler
             if (empty($userEmail)) {
                 throw new ErrorException($this->emptyError('userEmail'));
             }
+            $validator = new StripTagsValidator();
+            $userEmail = $validator->validate($userEmail);
             
             if (empty($this->dataArray)) {
                 $finder = \Yii::$app->registry->get(UserEmailFinder::class, [

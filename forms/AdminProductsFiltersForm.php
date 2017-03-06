@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\ActiveStatusTypeValidator;
+use app\validators\{ActiveStatusTypeValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы фильтров для списка заказов
@@ -68,6 +69,7 @@ class AdminProductsFiltersForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'category', 'subcategory', 'active', 'url'], StripTagsValidator::class],
             [['url'], 'required'],
             [['active'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE]
         ];

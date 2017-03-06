@@ -7,6 +7,7 @@ use yii\web\UrlRuleInterface;
 use app\exceptions\ExceptionsTrait;
 use app\models\{CategoriesModel,
     SubcategoryModel};
+use app\validators\StripTagsValidator;
 
 /**
  * Парсит и конструирует URL товарных категорий
@@ -32,6 +33,8 @@ class CategoriesRoute extends Object implements UrlRuleInterface
     {
         try {
             $pathInfo = $request->getPathInfo();
+            $validator = new StripTagsValidator();
+            $pathInfo = $validator->validate($pathInfo);
             
             list($category, $subcategory) = explode('/', $pathInfo);
             

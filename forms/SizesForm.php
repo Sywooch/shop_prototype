@@ -5,7 +5,8 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{CreateSizeSizeExistsValidator,
-    DeleteSizeProductsExistsValidator};
+    DeleteSizeProductsExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы редактирования размеров
@@ -41,6 +42,7 @@ class SizesForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'size'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteSizeProductsExistsValidator::class, 'on'=>self::DELETE],
             [['size'], 'required', 'on'=>self::CREATE],

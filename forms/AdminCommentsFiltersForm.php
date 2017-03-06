@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\ActiveStatusTypeValidator;
+use app\validators\{ActiveStatusTypeValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы фильтров для списка комментариев
@@ -48,6 +49,7 @@ class AdminCommentsFiltersForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['sortingField', 'sortingType', 'activeStatus', 'url'], StripTagsValidator::class],
             [['url'], 'required'],
             [['activeStatus'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE]
         ];

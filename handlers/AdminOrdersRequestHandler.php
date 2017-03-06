@@ -17,6 +17,7 @@ use app\forms\{AbstractBaseForm,
 use app\helpers\HashHelper;
 use app\filters\OrdersFilters;
 use app\models\CurrencyInterface;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -41,6 +42,8 @@ class AdminOrdersRequestHandler extends AbstractBaseHandler
         try {
             if (empty($this->dataArray)) {
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
+                $validator = new StripTagsValidator();
+                $page = $validator->validate($page);
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
                     'key'=>HashHelper::createCurrencyKey()

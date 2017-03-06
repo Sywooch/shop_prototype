@@ -5,7 +5,8 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{CreateBrandBrandExistsValidator,
-    DeleteBrandProductsExistsValidator};
+    DeleteBrandProductsExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы редактирования брендов
@@ -41,6 +42,7 @@ class BrandsForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'brand'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteBrandProductsExistsValidator::class, 'on'=>self::DELETE],
             [['brand'], 'required', 'on'=>self::CREATE],

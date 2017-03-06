@@ -14,6 +14,7 @@ use app\forms\{OrdersFiltersForm,
     PurchaseForm};
 use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -38,6 +39,9 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
         try {
             if (empty($this->dataArray)) {
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
+                $validator = new StripTagsValidator();
+                $page = $validator->validate($page);
+                
                 $usersModel = \Yii::$app->user->identity;
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [

@@ -23,6 +23,7 @@ use app\forms\{AbstractBaseForm,
     PurchaseForm};
 use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -50,6 +51,8 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                 if (empty($seocode)) {
                     throw new ErrorException($this->emptyError('seocode'));
                 }
+                $validator = new StripTagsValidator();
+                $seocode = $validator->validate($seocode);
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
                     'key'=>HashHelper::createCurrencyKey()

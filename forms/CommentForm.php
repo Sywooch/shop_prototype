@@ -66,7 +66,7 @@ class CommentForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['text', 'name', 'email'], StripTagsValidator::class],
+            [['id', 'text', 'name', 'email', 'id_product', 'active'], StripTagsValidator::class],
             [['text', 'name', 'email', 'id_product'], 'required', 'on'=>self::SAVE],
             [['email'], 'email', 'on'=>self::SAVE],
             [['id'], 'required', 'on'=>self::GET],

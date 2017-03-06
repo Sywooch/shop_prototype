@@ -381,7 +381,6 @@ class AdminProductFormTests extends TestCase
         ];
         $form->validate();
         
-        $this->assertNotEmpty($form->errors);
         $this->assertCount(1, $form->errors);
         
         $filesArray = [

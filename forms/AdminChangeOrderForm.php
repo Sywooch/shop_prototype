@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Представляет данные формы для изменения заказа
@@ -87,6 +88,7 @@ class AdminChangeOrderForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'status'], StripTagsValidator::class],
             [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'status'], 'required', 'on'=>self::SAVE],
             [['id'], 'required', 'on'=>self::GET],
         ];

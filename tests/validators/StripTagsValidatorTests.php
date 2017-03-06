@@ -3,6 +3,7 @@
 namespace app\tests\validators;
 
 use PHPUnit\Framework\TestCase;
+use yii\base\Model;
 use app\validators\StripTagsValidator;
 
 /**
@@ -50,17 +51,24 @@ class StripTagsValidatorTests extends TestCase
         $result = $validator->validate(self::$_withJavascriptRequireTags);
         $this->assertEquals(self::$_withoutJavascriptRequireTags, $result);
         
-        $model = new class(['description'=>self::$_withHtmlTags]) extends \yii\base\Object{
-            public $description;
-            public static function className()
-            {
-                return 'app\tests\MockObject';
-            }
+        $model = new class() extends Model {
+            public $description = '<p>Some Name.</p> <ul><li>First punkt</li> </ul><strong>some.com</strong>';
         };
         $validator = new StripTagsValidator();
-        $validator->allowable_tags = '<p></p><ul></ul><li></li><strong></strong>';
-        $validator->exceptProperties = ['app\tests\MockObject::description'];
         $validator->validateAttribute($model, 'description');
-        $this->assertEquals(self::$_withHtmlTags, $model->description);
+        
+        $this->assertEquals(self::$_withoutHtmlTags, $model->description);
+        
+        $model = new class() extends Model {
+            public $description = [
+                '<p>Some Name.</p> <ul><li>First punkt</li> </ul><strong>some.com</strong>',
+                '<a href="some.com">some.com</a>'
+            ];
+        };
+        $validator = new StripTagsValidator();
+        $validator->validateAttribute($model, 'description');
+        
+        $this->assertContains('Some Name. First punkt some.com', $model->description);
+        $this->assertContains('some.com', $model->description);
     }
 }

@@ -5,7 +5,8 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{CreateDeliveryNameExistsValidator,
-    DeleteDeliveryOrdersExistsValidator};
+    DeleteDeliveryOrdersExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы редактирования способов доставки
@@ -63,6 +64,7 @@ class DeliveriesForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id', 'name', 'description', 'price', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteDeliveryOrdersExistsValidator::class, 'on'=>self::DELETE],
             [['name', 'description', 'price'], 'required', 'on'=>self::CREATE],

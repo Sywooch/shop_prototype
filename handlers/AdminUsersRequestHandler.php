@@ -16,6 +16,7 @@ use app\finders\{OrdersExistFinder,
 use app\forms\{AbstractBaseForm,
     UsersFiltersForm};
 use app\helpers\HashHelper;
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -39,6 +40,8 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
     {
         try {
             $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
+            $validator = new StripTagsValidator();
+            $page = $validator->validate($page);
             
             if (empty($this->dataArray)) {
                 $finder = \Yii::$app->registry->get(UsersFiltersSessionFinder::class, [

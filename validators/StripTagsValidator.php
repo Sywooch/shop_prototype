@@ -24,18 +24,30 @@ class StripTagsValidator extends Validator
     public $exceptProperties = [];
     
     /**
-     * Инициирует удаление HTML и PHP-тегов из строки, являющейся значением свойства модели
+     * Инициирует удаление HTML и PHP-тегов из строки
      * @param object $model объект проверяемой модели
      * @param string $attribute имя проверяемого свойства
      */
     public function validateAttribute($model, $attribute)
     {
         try {
-            if (in_array($model::className() . '::' . $attribute, $this->exceptProperties)) {
-                $allowable_tags = $this->allowable_tags;
-            }
+            $rawAttribute = $model->$attribute;
             
-            $model->$attribute = $this->strip($model->$attribute, $allowable_tags ?? '');
+            if (!empty($rawAttribute)) {
+                if (in_array($model::className() . '::' . $attribute, $this->exceptProperties)) {
+                    $allowable_tags = $this->allowable_tags;
+                }
+                
+                if (is_array($rawAttribute)) {
+                    $resultArray = [];
+                    foreach ($rawAttribute as $item) {
+                        $resultArray[] = $this->strip($item, $allowable_tags ?? '');
+                    }
+                    $model->$attribute = $resultArray;
+                } else {
+                    $model->$attribute = $this->strip($rawAttribute, $allowable_tags ?? '');
+                }
+            }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

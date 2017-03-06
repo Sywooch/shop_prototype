@@ -17,6 +17,7 @@ use app\helpers\HashHelper;
 use app\forms\{AbstractBaseForm,
     AdminCommentsFiltersForm,
     CommentForm};
+use app\validators\StripTagsValidator;
 
 /**
  * Обрабатывает запрос на получение данных 
@@ -41,6 +42,8 @@ class AdminCommentsRequestHandler extends AbstractBaseHandler
         try {
             if (empty($this->dataArray)) {
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
+                $validate = new StripTagsValidator();
+                $page = $validate->validate($page);
                 
                 $finder = \Yii::$app->registry->get(CommentsFiltersSessionFinder::class, [
                     'key'=>HashHelper::createHash([\Yii::$app->params['commentsFilters']])

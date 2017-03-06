@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Представляет данные формы фильтров для списка заказов
@@ -55,6 +56,7 @@ class OrdersFiltersForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['sortingField', 'sortingType', 'status', 'dateFrom', 'dateTo', 'url'], StripTagsValidator::class],
             [['url'], 'required'],
         ];
     }

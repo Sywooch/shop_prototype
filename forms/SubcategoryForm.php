@@ -60,7 +60,7 @@ class SubcategoryForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['name', 'seocode'], StripTagsValidator::class],
+            [['id', 'name', 'seocode', 'id_category', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
             [['id'], DeleteSubcategoryProductsExistsValidator::class, 'on'=>self::DELETE],
             [['name', 'seocode', 'id_category'], 'required', 'on'=>self::CREATE],

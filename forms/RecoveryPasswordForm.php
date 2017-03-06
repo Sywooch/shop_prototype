@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\UserEmailExistsAuthValidator;
+use app\validators\{StripTagsValidator,
+    UserEmailExistsAuthValidator};
 
 /**
  * Представляет данные формы восстановления пароля
@@ -31,6 +32,7 @@ class RecoveryPasswordForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['email'], StripTagsValidator::class],
             [['email'], 'required', 'enableClientValidation'=>true, 'on'=>self::GET],
             [['email'], 'email', 'enableClientValidation'=>true],
             [['email'], UserEmailExistsAuthValidator::class, 'on'=>self::GET],

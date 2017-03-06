@@ -4,6 +4,7 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
+use app\validators\StripTagsValidator;
 
 /**
  * Представляет данные формы писка
@@ -34,7 +35,8 @@ class SearchForm extends AbstractBaseForm
     public function rules()
     {
         return [
-            [['search', 'url'], 'required', 'enableClientValidation'=>true, 'on'=>self::GET],
+            [['search', 'url'], StripTagsValidator::class],
+            [['search', 'url'], 'required', 'on'=>self::GET],
         ];
     }
 }

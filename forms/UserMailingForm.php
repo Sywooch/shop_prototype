@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\MailingsUserExistsValidator;
+use app\validators\{MailingsUserExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы добавления подписки
@@ -68,6 +69,7 @@ class UserMailingForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['id_user', 'email', 'id', 'key'], StripTagsValidator::class],
             [['id', 'email'], 'required', 'on'=>self::SAVE],
             [['email'], 'email', 'on'=>self::SAVE],
             [['id'], MailingsUserExistsValidator::class, 'on'=>self::SAVE, 'when'=>function($model) {

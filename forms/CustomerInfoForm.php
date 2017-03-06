@@ -5,7 +5,8 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{PasswordIdenticRegValidator,
-    UserEmailExistsRegValidator};
+    UserEmailExistsRegValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные покупателя при оформлении заказа
@@ -84,6 +85,7 @@ class CustomerInfoForm extends AbstractBaseForm
     public function rules()
     {
         return [
+            [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment', 'create', 'password', 'password2', 'change'], StripTagsValidator::class],
             [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment'], 'required', 'on'=>self::CHECKOUT],
             [['email'], 'email', 'on'=>self::CHECKOUT],
             [['email'], UserEmailExistsRegValidator::class, 'on'=>self::CHECKOUT, 'when'=>function($model) {
