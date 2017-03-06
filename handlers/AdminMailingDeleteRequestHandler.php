@@ -8,27 +8,28 @@ use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
 use app\forms\AdminMailingForm;
-use app\savers\ModelSaver;
-use app\widgets\AdminMailingsWidget;
 use app\models\MailingsModel;
-use app\finders\AdminMailingsFinder;
+use app\removers\MailingsModelRemover;
+use app\widgets\AdminMailingsWidget;
+use app\finders\{AdminMailingsFinder,
+    MailingIdFinder};
 
 /**
- * Обрабатывает запрос на добавление подписки
+ * Обрабатывает запрос на удаление данных о форме оплаты
  */
-class AdminMailingCreateRequestHandler extends AbstractBaseHandler
+class AdminMailingDeleteRequestHandler extends AbstractBaseHandler
 {
     use ConfigHandlerTrait;
     
     /**
-     * Добавляет подписку
+     * Обновляет данные о форме оплаты
      * @param $request
      * @return mixed
      */
     public function handle($request)
     {
         try {
-            $form = new AdminMailingForm(['scenario'=>AdminMailingForm::CREATE]);
+            $form = new AdminMailingForm(['scenario'=>AdminMailingForm::DELETE]);
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {
@@ -42,16 +43,23 @@ class AdminMailingCreateRequestHandler extends AbstractBaseHandler
                     $transaction = \Yii::$app->db->beginTransaction();
                     
                     try {
-                        $rawMailingsModel = new MailingsModel(['scenario'=>MailingsModel::CREATE]);
-                        $rawMailingsModel->attributes = $form->toArray();
-                        if ($rawMailingsModel->validate() === false) {
-                            throw new ErrorException($this->modelError($rawMailingsModel->errors));
+                        $finder = \Yii::$app->registry->get(MailingIdFinder::class, [
+                            'id'=>$form->id
+                        ]);
+                        $mailingsModel = $finder->find();
+                        if (empty($mailingsModel)) {
+                            throw new ErrorException($this->emptyError('mailingsModel'));
                         }
                         
-                        $saver = new ModelSaver([
-                            'model'=>$rawMailingsModel
+                        $mailingsModel->scenario = MailingsModel::DELETE;
+                        if ($mailingsModel->validate() === false) {
+                            throw new ErrorException($this->modelError($mailingsModel->errors));
+                        }
+                        
+                        $remover = new MailingsModelRemover([
+                            'model'=>$mailingsModel
                         ]);
-                        $saver->save();
+                        $remover->remove();
                         
                         $finder = \Yii::$app->registry->get(AdminMailingsFinder::class);
                         $mailingsModelArray = $finder->find();

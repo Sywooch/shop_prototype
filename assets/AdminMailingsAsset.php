@@ -16,10 +16,9 @@ class AdminMailingsAsset extends AbstractAsset
      */
     public $js = [
         'js/sendAdminMailingCreate.js',
-        /*
-        'js/sendAdminPaymentForm.js',
-        'js/sendAdminPaymentChange.js',
-        'js/sendAdminPaymentDelete.js',*/
+        'js/sendAdminMailingForm.js',
+        'js/sendAdminMailingChange.js',
+        'js/sendAdminMailingDelete.js',
     ];
     /**
      * @var array зависимости пакета

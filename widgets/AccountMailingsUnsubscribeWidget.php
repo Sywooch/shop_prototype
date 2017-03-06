@@ -5,7 +5,7 @@ namespace app\widgets;
 use yii\base\ErrorException;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
-use app\forms\MailingForm;
+use app\forms\AbstractBaseForm;
 
 /**
  * Формирует HTML строку с данными о текущих подписках
@@ -17,7 +17,7 @@ class AccountMailingsUnsubscribeWidget extends AbstractBaseWidget
      */
     private $mailings;
     /**
-     * @var array MailingForm
+     * @var AbstractBaseForm
      */
     private $form;
     /**
@@ -94,10 +94,10 @@ class AccountMailingsUnsubscribeWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает MailingForm свойству AccountMailingsUnsubscribeWidget::form
-     * @param $form MailingForm
+     * Присваивает значение AccountMailingsUnsubscribeWidget::form
+     * @param AbstractBaseForm $form
      */
-    public function setForm(MailingForm $form)
+    public function setForm(AbstractBaseForm $form)
     {
         try {
             $this->form = $form;

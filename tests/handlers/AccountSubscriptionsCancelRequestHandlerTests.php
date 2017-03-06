@@ -9,7 +9,6 @@ use app\tests\sources\fixtures\{EmailsFixture,
     EmailsMailingsFixture,
     UsersFixture};
 use app\models\UsersModel;
-use app\forms\MailingForm;
 
 /**
  * Тестирует класс AccountSubscriptionsCancelRequestHandler
@@ -52,7 +51,7 @@ class AccountSubscriptionsCancelRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id'=>null,
                     ]
                 ];
@@ -81,7 +80,7 @@ class AccountSubscriptionsCancelRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id'=>1,
                     ]
                 ];

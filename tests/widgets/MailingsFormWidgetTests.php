@@ -4,13 +4,20 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\MailingsFormWidget;
-use app\forms\MailingForm;
+use app\forms\AbstractBaseForm;
 
 /**
  * Тестирует класс MailingsFormWidget
  */
 class MailingsFormWidgetTests extends TestCase
 {
+    private $widget;
+    
+    public function setUp()
+    {
+        $this->widget = new MailingsFormWidget();
+    }
+    
     /**
      * Тестирует свойства MailingsFormWidget
      */
@@ -26,46 +33,18 @@ class MailingsFormWidgetTests extends TestCase
     
     /**
      * Тестирует метод MailingsFormWidget::setMailings
-     * если передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetMailingsError()
-    {
-        $mock = new class() {};
-        
-        $widget = new MailingsFormWidget();
-        $widget->setMailings($mock);
-    }
-    
-    /**
-     * Тестирует метод MailingsFormWidget::setMailings
      */
     public function testSetMailings()
     {
         $mock = [new class() {}];
         
-        $widget = new MailingsFormWidget();
-        $widget->setMailings($mock);
+        $this->widget->setMailings($mock);
         
-        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection = new \ReflectionProperty($this->widget, 'mailings');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
-        $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод MailingsFormWidget::setForm
-     * если передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetFormError()
-    {
-        $mock = new class() {};
-        
-        $widget = new MailingsFormWidget();
-        $widget->setForm($mock);
     }
     
     /**
@@ -73,29 +52,15 @@ class MailingsFormWidgetTests extends TestCase
      */
     public function testSetForm()
     {
-        $mock = new class() extends MailingForm {};
+        $mock = new class() extends AbstractBaseForm {};
         
-        $widget = new MailingsFormWidget();
-        $widget->setForm($mock);
+        $this->widget->setForm($mock);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
-        $this->assertInstanceOf(MailingForm::class, $result);
-    }
-    
-    /**
-     * Тестирует метод MailingsFormWidget::setHeader
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetHeaderError()
-    {
-        $header = null;
-        
-        $widget = new MailingsFormWidget();
-        $widget->setHeader($header);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result);
     }
     
     /**
@@ -105,27 +70,13 @@ class MailingsFormWidgetTests extends TestCase
     {
         $header = 'Header';
         
-        $widget = new MailingsFormWidget();
-        $widget->setHeader($header);
+        $this->widget->setHeader($header);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
-    }
-    
-    /**
-     * Тестирует метод MailingsFormWidget::setTemplate
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetTemplateError()
-    {
-        $template = null;
-        
-        $widget = new MailingsFormWidget();
-        $widget->setTemplate($template);
     }
     
     /**
@@ -135,12 +86,11 @@ class MailingsFormWidgetTests extends TestCase
     {
         $template = 'Template';
         
-        $widget = new MailingsFormWidget();
-        $widget->setTemplate($template);
+        $this->widget->setTemplate($template);
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
     }
@@ -153,8 +103,7 @@ class MailingsFormWidgetTests extends TestCase
      */
     public function testRunEmptyMailings()
     {
-        $widget = new MailingsFormWidget();
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -167,13 +116,11 @@ class MailingsFormWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new MailingsFormWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection = new \ReflectionProperty($this->widget, 'mailings');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -186,17 +133,15 @@ class MailingsFormWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new MailingsFormWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection = new \ReflectionProperty($this->widget, 'mailings');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -209,21 +154,19 @@ class MailingsFormWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new MailingsFormWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection = new \ReflectionProperty($this->widget, 'mailings');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($this->widget, 'Header');
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -244,27 +187,28 @@ class MailingsFormWidgetTests extends TestCase
             },
         ];
         
-        $form = new class() extends MailingForm {};
+        $form = new class() extends AbstractBaseForm {
+            public $id;
+            public $email;
+        };
         
-        $widget = new MailingsFormWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection = new \ReflectionProperty($this->widget, 'mailings');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mailings);
+        $reflection->setValue($this->widget, $mailings);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);
+        $reflection->setValue($this->widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($this->widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'mailings-form.twig');
+        $reflection->setValue($this->widget, 'mailings-form.twig');
         
-        $result = $widget->run();
+        $result = $this->widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="mailings-form" action=".+" method="POST">#', $result);

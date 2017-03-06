@@ -4,7 +4,7 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\AccountMailingsFormWidget;
-use app\forms\MailingForm;
+use app\forms\AbstractBaseForm;
 
 /**
  * Тестирует класс AccountMailingsFormWidget
@@ -72,7 +72,7 @@ class AccountMailingsFormWidgetTests extends TestCase
      */
     public function testSetForm()
     {
-        $form = new class() extends MailingForm {};
+        $form = new class() extends AbstractBaseForm {};
         
         $widget = new AccountMailingsFormWidget();
         $widget->setForm($form);
@@ -81,7 +81,7 @@ class AccountMailingsFormWidgetTests extends TestCase
         $reflection->setAccessible(true);
         $result = $reflection->getValue($widget);
         
-        $this->assertInstanceOf(MailingForm::class, $result);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result);
     }
     
     /**
@@ -206,7 +206,7 @@ class AccountMailingsFormWidgetTests extends TestCase
     {
         $mailings = [];
         
-        $form = new class() extends MailingForm {};
+        $form = new class() extends AbstractBaseForm {};
         
         $widget = new AccountMailingsFormWidget();
         
@@ -237,7 +237,9 @@ class AccountMailingsFormWidgetTests extends TestCase
      */
     public function testRun()
     {
-        $form = new class() extends MailingForm {};
+        $form = new class() extends AbstractBaseForm {
+            public $id;
+        };
         
         $mailings = [
             new class() {

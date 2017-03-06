@@ -7,7 +7,7 @@ use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
 use app\finders\{MailingsEmailFinder,
     MailingsNotEmailFinder};
-use app\forms\MailingForm;
+use app\forms\UserMailingForm;
 
 /**
  * Обрабатывает запрос на данные 
@@ -44,7 +44,7 @@ class AccountChangeSubscriptionsRequestHandler extends AbstractBaseHandler
                 ]);
                 $notMailingsArray = $finder->find();
                 
-                $mailingForm = new MailingForm();
+                $mailingForm = new UserMailingForm();
                 
                 $dataArray = [];
                 

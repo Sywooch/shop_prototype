@@ -9,7 +9,7 @@ use app\validators\MailingsUserExistsValidator;
 /**
  * Представляет данные формы добавления подписки
  */
-class MailingForm extends AbstractBaseForm
+class UserMailingForm extends AbstractBaseForm
 {
     /**
      * Сценарий добавления подписки пользователю

@@ -134,6 +134,9 @@ $routes = [
     'admin-payment-delete'=>'admin/payment-delete',
     'admin-mailings'=>'admin/mailings',
     'admin-mailing-create'=>'admin/mailing-create',
+    'admin-mailing-form'=>'admin/mailing-form',
+    'admin-mailing-change'=>'admin/mailing-change',
+    'admin-mailing-delete'=>'admin/mailing-delete',
     
     # Календарь
     'calendar-get'=>'calendar/get',

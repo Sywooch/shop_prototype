@@ -8,7 +8,7 @@ use app\handlers\{AbstractBaseHandler,
 use app\finders\{MailingsEmailFinder,
     MailingsNotEmailFinder,
     UserEmailFinder};
-use app\forms\MailingForm;
+use app\forms\UserMailingForm;
 
 /**
  * Обрабатывает запрос на данные 
@@ -55,13 +55,13 @@ class AdminUserSubscriptionsRequestHandler extends AbstractBaseHandler
                 ]);
                 $notMailingsArray = $finder->find();
                 
-                $mailingForm = new MailingForm(['id_user'=>$usersModel->id]);
-                $notMailingForm = new MailingForm(['id_user'=>$usersModel->id]);
+                $mailingForm = new UserMailingForm(['id_user'=>$usersModel->id]);
+                $notUserMailingForm = new UserMailingForm(['id_user'=>$usersModel->id]);
                 
                 $dataArray = [];
                 
                 $dataArray['adminUserMailingsUnsubscribeWidgetConfig'] = $this->adminUserMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
-                $dataArray['adminUserMailingsFormWidgetConfig'] = $this->adminUserMailingsFormWidgetConfig($notMailingsArray, $notMailingForm);
+                $dataArray['adminUserMailingsFormWidgetConfig'] = $this->adminUserMailingsFormWidgetConfig($notMailingsArray, $notUserMailingForm);
                 $dataArray['adminUserDetailBreadcrumbsWidgetConfig'] = $this->adminUserDetailBreadcrumbsWidgetConfig($usersModel);
                 $dataArray['adminUserMenuWidgetConfig'] = $this->adminUserMenuWidgetConfig($usersModel);
                 

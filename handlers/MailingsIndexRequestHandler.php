@@ -13,7 +13,7 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
-    MailingForm};
+    UserMailingForm};
 use app\helpers\HashHelper;
 
 /**
@@ -75,7 +75,7 @@ class MailingsIndexRequestHandler extends AbstractBaseHandler
                     'url'=>Url::current()
                 ]);
                 
-                $mailingForm = new MailingForm();
+                $mailingForm = new UserMailingForm();
                 
                 $dataArray = [];
                 

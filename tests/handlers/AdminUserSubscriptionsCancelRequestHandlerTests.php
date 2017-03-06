@@ -9,7 +9,6 @@ use app\tests\sources\fixtures\{EmailsFixture,
     EmailsMailingsFixture,
     UsersFixture};
 use app\models\UsersModel;
-use app\forms\MailingForm;
 
 /**
  * Тестирует класс AdminUserSubscriptionsCancelRequestHandler
@@ -49,7 +48,7 @@ class AdminUserSubscriptionsCancelRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id_user'=>1,
                         'id'=>null,
                     ]
@@ -78,7 +77,7 @@ class AdminUserSubscriptionsCancelRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id_user'=>1,
                         'id'=>1,
                     ]

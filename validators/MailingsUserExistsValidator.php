@@ -8,7 +8,7 @@ use app\exceptions\ExceptionsTrait;
 use app\finders\EmailsMailingsEmailFinder;
 
 /**
- * Проверяет валидность данных для формы MailingForm
+ * Проверяет валидность данных для формы UserMailingForm
  */
 class MailingsUserExistsValidator extends Validator
 {

@@ -10,7 +10,7 @@ use app\validators\{CreateMailingNameExistsValidator,
 /**
  * Представляет данные формы редактирования способов оплаты
  */
-class MailingsForm extends AbstractBaseForm
+class AdminMailingForm extends AbstractBaseForm
 {
     /**
      * Сценарий удаления подписки

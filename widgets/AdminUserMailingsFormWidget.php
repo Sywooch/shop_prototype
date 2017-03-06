@@ -18,7 +18,7 @@ class AdminUserMailingsFormWidget extends AbstractBaseWidget
      */
     private $mailings;
     /**
-     * @var object MailingForm
+     * @var AbstractBaseForm
      */
     private $form;
     /**

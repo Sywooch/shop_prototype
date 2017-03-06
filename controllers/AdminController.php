@@ -35,7 +35,10 @@ use app\handlers\{AdminAddProductRequestHandler,
     AdminDeliveryFormRequestHandler,
     AdminDeliveriesRequestHandler,
     AdminIndexRequestHandler,
+    AdminMailingChangeRequestHandler,
     AdminMailingCreateRequestHandler,
+    AdminMailingDeleteRequestHandler,
+    AdminMailingFormRequestHandler,
     AdminMailingsRequestHandler,
     AdminOrderDetailChangeRequestHandler,
     AdminOrderDetailFormRequestHandler,
@@ -313,6 +316,18 @@ class AdminController extends Controller
             'mailing-create'=>[
                 'class'=>AjaxAction::class,
                 'handler'=>new AdminMailingCreateRequestHandler(),
+            ],
+            'mailing-form'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminMailingFormRequestHandler(),
+            ],
+            'mailing-change'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminMailingChangeRequestHandler(),
+            ],
+            'mailing-delete'=>[
+                'class'=>AjaxAction::class,
+                'handler'=>new AdminMailingDeleteRequestHandler(),
             ],
         ];
     }

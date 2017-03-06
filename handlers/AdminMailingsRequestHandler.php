@@ -7,7 +7,7 @@ use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
 use app\finders\AdminMailingsFinder;
 use app\forms\{AbstractBaseForm,
-    MailingsForm};
+    AdminMailingForm};
 use app\helpers\HashHelper;
 
 /**
@@ -35,7 +35,7 @@ class AdminMailingsRequestHandler extends AbstractBaseHandler
                 $finder = \Yii::$app->registry->get(AdminMailingsFinder::class);
                 $mailingsModelArray = $finder->find();
                 
-                $mailingsForm = new MailingsForm();
+                $mailingsForm = new AdminMailingForm();
                 
                 $dataArray = [];
                 

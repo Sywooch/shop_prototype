@@ -63,7 +63,7 @@ class MailingsSaveRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id'=>null,
                         'email'=>'some@some.com',
                     ]
@@ -92,7 +92,7 @@ class MailingsSaveRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id'=>[1, 2],
                         'email'=>$this->email,
                     ]

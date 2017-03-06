@@ -4,13 +4,20 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\AccountMailingsUnsubscribeWidget;
-use app\forms\MailingForm;
+use app\forms\AbstractBaseForm;
 
 /**
  * Тестирует класс AccountMailingsUnsubscribeWidget
  */
 class AccountMailingsUnsubscribeWidgetTests extends TestCase
 {
+    private $widget;
+    
+    public function setUp()
+    {
+        $this->widget = new AccountMailingsUnsubscribeWidget();
+    }
+    
     /**
      * Тестирует свойства AccountMailingsUnsubscribeWidget
      */
@@ -26,45 +33,18 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
     
     /**
      * Тестирует метод AccountMailingsUnsubscribeWidget::setMailings
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetMailingsError()
-    {
-        $mailings = new class() {};
-        
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->setMailings($mailings);
-    }
-    
-    /**
-     * Тестирует метод AccountMailingsUnsubscribeWidget::setMailings
      */
     public function testSetMailings()
     {
         $mailings = [new class() {}];
         
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->setMailings($mailings);
+        $this->widget->setMailings($mailings);
         
-        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection = new \ReflectionProperty($this->widget, 'mailings');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
-    }
-    
-    /**
-     * Тестирует метод AccountMailingsUnsubscribeWidget::setForm
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetFormError()
-    {
-        $form = new class() {};
-        
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->setForm($form);
     }
     
     /**
@@ -72,29 +52,15 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
      */
     public function testSetForm()
     {
-        $form = new class() extends MailingForm {};
+        $form = new class() extends AbstractBaseForm {};
         
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->setForm($form);
+        $this->widget->setForm($form);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
-        $this->assertInstanceOf(MailingForm::class, $result);
-    }
-    
-    /**
-     * Тестирует метод AccountMailingsUnsubscribeWidget::setHeader
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetHeaderError()
-    {
-        $header = null;
-        
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->setHeader($header);
+        $this->assertInstanceOf(AbstractBaseForm::class, $result);
     }
     
     /**
@@ -104,27 +70,13 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
     {
         $header = 'Header';
         
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->setHeader($header);
+        $this->widget->setHeader($header);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
-    }
-    
-    /**
-     * Тестирует метод AccountMailingsUnsubscribeWidget::setTemplate
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetTemplateError()
-    {
-        $template = null;
-        
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->setTemplate($template);
     }
     
     /**
@@ -134,12 +86,11 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
     {
         $template = 'Template';
         
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->setTemplate($template);
+        $this->widget->setTemplate($template);
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
     }
@@ -152,8 +103,7 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
      */
     public function testRunEmptyForm()
     {
-        $widget = new AccountMailingsUnsubscribeWidget();
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -166,13 +116,11 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AccountMailingsUnsubscribeWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -185,17 +133,15 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new AccountMailingsUnsubscribeWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($this->widget, 'Header');
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -208,25 +154,23 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
         
         $mock = new class() {};
         
-        $widget = new AccountMailingsUnsubscribeWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection = new \ReflectionProperty($this->widget, 'mailings');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mailings);
+        $reflection->setValue($this->widget, $mailings);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($this->widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-mailings-unsubscribe.twig');
+        $reflection->setValue($this->widget, 'account-mailings-unsubscribe.twig');
         
-        $result = $widget->run();
+        $result = $this->widget->run();
         
         $this->assertEmpty(trim($result));
     }
@@ -250,27 +194,27 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
             },
         ];
         
-        $form = new class() extends MailingForm {};
+        $form = new class() extends AbstractBaseForm {
+            public $id;
+        };
         
-        $widget = new AccountMailingsUnsubscribeWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'mailings');
+        $reflection = new \ReflectionProperty($this->widget, 'mailings');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mailings);
+        $reflection->setValue($this->widget, $mailings);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $form);
+        $reflection->setValue($this->widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($this->widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-mailings-unsubscribe.twig');
+        $reflection->setValue($this->widget, 'account-mailings-unsubscribe.twig');
         
-        $result = $widget->run();
+        $result = $this->widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#Mailing 1#', $result);

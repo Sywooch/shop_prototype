@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\widgets\AbstractBaseWidget;
-use app\forms\MailingForm;
+use app\forms\AbstractBaseForm;
 
 /**
  * Выводит форму добавления нововго комментария
@@ -14,7 +14,7 @@ use app\forms\MailingForm;
 class UnsubscribeFormWidget extends AbstractBaseWidget
 {
     /**
-     * @var object MailingForm
+     * @var object AbstractBaseForm
      */
     private $form;
     /**
@@ -66,10 +66,10 @@ class UnsubscribeFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает MailingForm свойству UnsubscribeFormWidget::form
-     * @param MailingForm $form
+     * Присваивает значение UnsubscribeFormWidget::form
+     * @param AbstractBaseForm $form
      */
-    public function setForm(MailingForm $form)
+    public function setForm(AbstractBaseForm $form)
     {
         try {
             $this->form = $form;

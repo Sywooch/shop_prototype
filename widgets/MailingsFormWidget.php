@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\helpers\{ArrayHelper,
     Url};
 use app\widgets\AbstractBaseWidget;
-use app\forms\MailingForm;
+use app\forms\AbstractBaseForm;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе корзины заказов
@@ -18,7 +18,7 @@ class MailingsFormWidget extends AbstractBaseWidget
      */
     private $mailings;
     /**
-     * @var object MailingForm
+     * @var AbstractBaseForm
      */
     private $form;
     /**
@@ -91,10 +91,10 @@ class MailingsFormWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает MailingForm свойству MailingsFormsWidget::form
-     * @param MailingForm $form
+     * Присваивает значение MailingsFormsWidget::form
+     * @param AbstractBaseForm $form
      */
-    public function setForm(MailingForm $form)
+    public function setForm(AbstractBaseForm $form)
     {
         try {
             $this->form = $form;

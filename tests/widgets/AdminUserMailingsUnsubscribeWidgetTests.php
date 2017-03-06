@@ -4,8 +4,7 @@ namespace app\tests\widgets;
 
 use PHPUnit\Framework\TestCase;
 use app\widgets\AdminUserMailingsUnsubscribeWidget;
-use app\forms\{AbstractBaseForm,
-    MailingForm};
+use app\forms\AbstractBaseForm;
 
 /**
  * Тестирует класс AdminUserMailingsUnsubscribeWidget

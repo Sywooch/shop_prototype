@@ -7,7 +7,7 @@ use app\exceptions\ExceptionsTrait;
 use app\finders\MailingNameFinder;
 
 /**
- * Проверяет валидность данных для формы MailingsForm
+ * Проверяет валидность данных для формы AdminMailingForm
  */
 class CreateMailingNameExistsValidator extends Validator
 {

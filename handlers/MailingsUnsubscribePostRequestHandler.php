@@ -7,7 +7,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\forms\MailingForm;
+use app\forms\UserMailingForm;
 use app\widgets\{UnsubscribeEmptyWidget,
     UnsubscribeSuccessWidget};
 use app\helpers\HashHelper;
@@ -31,7 +31,7 @@ class MailingsUnsubscribePostRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE]);
+            $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE]);
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {

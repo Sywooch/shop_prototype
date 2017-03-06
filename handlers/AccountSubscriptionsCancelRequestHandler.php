@@ -7,7 +7,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\forms\MailingForm;
+use app\forms\UserMailingForm;
 use app\removers\EmailsMailingsModelRemover;
 use app\widgets\{AccountMailingsFormWidget,
     AccountMailingsUnsubscribeWidget};
@@ -30,7 +30,7 @@ class AccountSubscriptionsCancelRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            $form = new MailingForm(['scenario'=>MailingForm::UNSUBSCRIBE_ACC]);
+            $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE_ACC]);
             $usersModel = \Yii::$app->user->identity;
             $email = $usersModel->email->email;
             
@@ -67,7 +67,7 @@ class AccountSubscriptionsCancelRequestHandler extends AbstractBaseHandler
                         ]);
                         $notMailingsArray = $finder->find();
                         
-                        $mailingForm = new MailingForm();
+                        $mailingForm = new UserMailingForm();
                         
                         $dataArray = [];
                         

@@ -3,14 +3,14 @@
 namespace app\tests\forms;
 
 use PHPUnit\Framework\TestCase;
-use app\forms\MailingsForm;
+use app\forms\AdminMailingForm;
 use app\tests\DbManager;
 use app\tests\sources\fixtures\MailingsFixture;
 
 /**
- * Тестирует класс MailingsForm
+ * Тестирует класс AdminMailingForm
  */
-class MailingsFormTests extends TestCase
+class AdminMailingFormTests extends TestCase
 {
     private static $_dbClass;
     
@@ -25,11 +25,11 @@ class MailingsFormTests extends TestCase
     }
     
     /**
-     * Тестирует свойства MailingsForm
+     * Тестирует свойства AdminMailingForm
      */
     public function testProperties()
     {
-        $reflection = new \ReflectionClass(MailingsForm::class);
+        $reflection = new \ReflectionClass(AdminMailingForm::class);
         
         $this->assertTrue($reflection->hasConstant('DELETE'));
         $this->assertTrue($reflection->hasConstant('CREATE'));
@@ -43,18 +43,18 @@ class MailingsFormTests extends TestCase
     }
     
     /**
-     * Тестирует метод MailingsForm::scenarios
+     * Тестирует метод AdminMailingForm::scenarios
      */
     public function testScenarios()
     {
-        $form = new MailingsForm(['scenario'=>MailingsForm::DELETE]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::DELETE]);
         $form->attributes = [
             'id'=>2,
         ];
         
         $this->assertSame(2, $form->id);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::CREATE]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::CREATE]);
         $form->attributes = [
             'name'=>'Name',
             'description'=>'Description',
@@ -65,14 +65,14 @@ class MailingsFormTests extends TestCase
         $this->assertSame('Description', $form->description);
         $this->assertSame(1, $form->active);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::GET]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::GET]);
         $form->attributes = [
             'id'=>21,
         ];
         
         $this->assertSame(21, $form->id);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::EDIT]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::EDIT]);
         $form->attributes = [
             'id'=>5,
             'name'=>'Name',
@@ -87,16 +87,16 @@ class MailingsFormTests extends TestCase
     }
     
     /**
-     * Тестирует метод MailingsForm::rules
+     * Тестирует метод AdminMailingForm::rules
      */
     public function testRules()
     {
-        $form = new MailingsForm(['scenario'=>MailingsForm::DELETE]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::DELETE]);
         $form->validate();
         
         $this->assertCount(1, $form->errors);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::DELETE]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::DELETE]);
         $form->attributes = [
             'id'=>1
         ];
@@ -104,12 +104,12 @@ class MailingsFormTests extends TestCase
         
         $this->assertEmpty($form->errors);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::CREATE]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::CREATE]);
         $form->validate();
         
         $this->assertCount(2, $form->errors);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::CREATE]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::CREATE]);
         $form->attributes = [
             'name'=>self::$_dbClass->mailings['delivery_1']['name'],
             'description'=>'Description',
@@ -118,7 +118,7 @@ class MailingsFormTests extends TestCase
         
         $this->assertCount(1, $form->errors);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::CREATE]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::CREATE]);
         $form->attributes = [
             'name'=>'Name',
             'description'=>'Description',
@@ -127,12 +127,12 @@ class MailingsFormTests extends TestCase
         
         $this->assertEmpty($form->errors);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::GET]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::GET]);
         $form->validate();
         
         $this->assertCount(1, $form->errors);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::GET]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::GET]);
         $form->attributes = [
             'id'=>1
         ];
@@ -140,12 +140,12 @@ class MailingsFormTests extends TestCase
         
         $this->assertEmpty($form->errors);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::EDIT]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::EDIT]);
         $form->validate();
         
         $this->assertCount(3, $form->errors);
         
-        $form = new MailingsForm(['scenario'=>MailingsForm::EDIT]);
+        $form = new AdminMailingForm(['scenario'=>AdminMailingForm::EDIT]);
         $form->attributes = [
             'id'=>45,
             'name'=>'Name',

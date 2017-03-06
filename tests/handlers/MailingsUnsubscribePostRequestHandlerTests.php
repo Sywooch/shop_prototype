@@ -64,7 +64,7 @@ class MailingsUnsubscribePostRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id'=>[1],
                         'email'=>null,
                         'key'=>'key',
@@ -90,7 +90,7 @@ class MailingsUnsubscribePostRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id'=>[1],
                         'email'=>'some@some.com',
                         'key'=>'key',
@@ -120,7 +120,7 @@ class MailingsUnsubscribePostRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'MailingForm'=>[
+                    'UserMailingForm'=>[
                         'id'=>[1, 2],
                         'email'=>$this->email,
                         'key'=>$this->key,

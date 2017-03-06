@@ -9,7 +9,7 @@ use yii\helpers\ArrayHelper;
 use app\handlers\AbstractBaseHandler;
 use app\services\{EmailGetSaveEmailService,
     MailingsEmailService};
-use app\forms\MailingForm;
+use app\forms\UserMailingForm;
 use app\savers\EmailsMailingsArraySaver;
 use app\finders\{EmailsMailingsEmailFinder,
     MailingsIdFinder};
@@ -29,7 +29,7 @@ class MailingsSaveRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            $form = new MailingForm(['scenario'=>MailingForm::SAVE]);
+            $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE]);
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {

@@ -3,6 +3,7 @@
 namespace app\widgets;
 
 use yii\base\ErrorException;
+use yii\helpers\ArrayHelper;
 use app\widgets\AbstractBaseWidget;
 
 /**
@@ -48,6 +49,7 @@ class MailingsWidget extends AbstractBaseWidget
                     $set['description'] = $mailing->description;
                     $renderArray['mailings'][] = $set;
                 }
+                ArrayHelper::multisort($renderArray['mailings'], 'name');
             }
             
             return $this->render($this->template, $renderArray);

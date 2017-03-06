@@ -15,7 +15,7 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
-    MailingForm};
+    UserMailingForm};
 
 /**
  * Обрабатывает запрос на поиск данных для 
@@ -78,7 +78,7 @@ class MailingsUnsubscribeRequestHandler extends AbstractBaseHandler
                 'url'=>Url::current()
             ]);
             
-            $mailingForm = new MailingForm([
+            $mailingForm = new UserMailingForm([
                 'email'=>$email,
                 'key'=>$unsubscribeKey
             ]);

@@ -17,7 +17,7 @@ class AdminUserMailingsUnsubscribeWidget extends AbstractBaseWidget
      */
     private $mailings;
     /**
-     * @var array MailingForm
+     * @var AbstractBaseForm
      */
     private $form;
     /**
