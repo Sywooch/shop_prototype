@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\{SortingFieldExistsValidator,
+use app\validators\{IntInArrayValidator,
+    SortingFieldExistsValidator,
     SortingTypeExistsValidator,
     StripTagsValidator};
 
@@ -70,6 +71,29 @@ class FiltersForm extends AbstractBaseForm
             [['url'], 'required'],
             [['sortingField'], SortingFieldExistsValidator::class],
             [['sortingType'], SortingTypeExistsValidator::class],
+            [['colors', 'sizes', 'brands'], IntInArrayValidator::class],
+            [['url'], 'match', 'pattern'=>'#^/[a-z]+/?[a-z-]*-?[0-9]*$#i'],
+            [['category', 'subcategory'], 'match', 'pattern'=>'#^[a-z-]+$#i'],
+        ];
+    }
+    
+    public function fields()
+    {
+        return [
+            'sortingField',
+            'sortingType',
+            'colors'=>function() {
+                return !empty($this->colors) ? $this->colors : [];
+            },
+            'sizes'=>function() {
+                return  !empty($this->sizes) ? $this->sizes : [];
+            },
+            'brands'=>function() {
+                return !empty($this->brands) ? $this->brands : [];
+            },
+            'url',
+            'category',
+            'subcategory',
         ];
     }
 }

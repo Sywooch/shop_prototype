@@ -91,6 +91,10 @@ class AdminChangeOrderForm extends AbstractBaseForm
             [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'status'], StripTagsValidator::class],
             [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment', 'status'], 'required', 'on'=>self::SAVE],
             [['id'], 'required', 'on'=>self::GET],
+            [['id', 'postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment'], 'integer'],
+            [['name', 'surname'], 'match', 'pattern'=>'#^[A-ZА-Я]{1}[a-zа-я]+-?[A-ZА-Я]?[a-zа-я]*$#u'],
+            [['phone'], 'match', 'pattern'=>'#^[+()0-9\s-]+$#u'],
+            [['city', 'country'], 'match', 'pattern'=>'#^[A-ZА-Яa-zа-я\s0-9]+$#u'],
         ];
     }
 }

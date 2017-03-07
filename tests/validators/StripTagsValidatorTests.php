@@ -11,10 +11,10 @@ use app\validators\StripTagsValidator;
  */
 class StripTagsValidatorTests extends TestCase
 {
-    private static $_withHtmlTags = '<p>Some Name.</p> <ul><li>First punkt</li> </ul><strong>some.com</strong>';
+    private static $_withHtmlTags = '<p>Some Name.</p> <ul><li>First punkt</li> </ul><strong>some.com</strong><?= echo "f"; ?>';
     private static $_withoutHtmlTags = 'Some Name. First punkt some.com';
     
-    private static $_withHtmlHrefTags = '<a href="some.com">some.com</a>';
+    private static $_withHtmlHrefTags = '<a href="some.com">some.com</a><php echo "f"; ?>';
     private static $_withoutHtmlHrefTags = 'some.com';
     
     private static $_withSomeSpacesTags = 'some    text ';

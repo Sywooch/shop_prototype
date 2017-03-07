@@ -101,9 +101,9 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
     
     /**
      * Присваивает значение ProductsFilters::colors
-     * @param mixed $colors
+     * @param array $colors
      */
-    public function setColors($colors)
+    public function setColors(array $colors)
     {
         try {
             $this->colors = $colors;
@@ -127,9 +127,9 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
     
     /**
      * Присваивает значение ProductsFilters::sizes
-     * @param mixed $colors
+     * @param array $colors
      */
-    public function setSizes($sizes)
+    public function setSizes(array $sizes)
     {
         try {
             $this->sizes = $sizes;
@@ -153,9 +153,9 @@ class ProductsFilters extends Model implements ProductsFiltersInterface
     
     /**
      * Присваивает значение ProductsFilters::brands
-     * @param mixed $brands
+     * @param array $brands
      */
-    public function setBrands($brands)
+    public function setBrands(array $brands)
     {
         try {
             $this->brands = $brands;

@@ -76,10 +76,12 @@ class StripTagsValidator extends Validator
     private function strip(string $value, string $allowable_tags=''): string
     {
         try {
-            $value = HtmlPurifier::process($value);
-            $value = preg_replace('/\s+/', ' ', $value);
+            $value = HtmlPurifier::process($value, [
+                'HTML.Allowed'=>$allowable_tags,
+                'Core.RemoveProcessingInstructions'=>true
+            ]);
+            $value = preg_replace('/\s+/u', ' ', $value);
             $value = trim($value);
-            $value = strip_tags($value, $allowable_tags);
             
             return $value;
         } catch (\Throwable $t) {

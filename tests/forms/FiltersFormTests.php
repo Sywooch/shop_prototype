@@ -94,7 +94,7 @@ class FiltersFormTests extends TestCase
         
         $form = new FiltersForm(['scenario'=>FiltersForm::SAVE]);
         $form->attributes = [
-            'url'=>'https://shop.com',
+            'url'=>'/shop/main-23',
         ];
         $form->validate();
         
@@ -109,10 +109,34 @@ class FiltersFormTests extends TestCase
         
         $form = new FiltersForm(['scenario'=>FiltersForm::CLEAN]);
         $form->attributes = [
-            'url'=>'https://shop.com',
+            'url'=>'/shop/main-3',
         ];
         $form->validate();
         
         $this->assertEmpty($form->errors);
+    }
+    
+    /**
+     * Тестирует метод FiltersForm::fields
+     */
+    public function testFields()
+    {
+        $form = new FiltersForm();
+        $form->sortingField = 'name';
+        $form->sortingType = SORT_ASC;
+        $form->url = '/shop/main-7';
+        $form->category = 'man';
+        $form->subcategory = 'shoes';
+        
+        $result = $form->toArray();
+        
+        $this->assertSame('name', $result['sortingField']);
+        $this->assertSame(SORT_ASC, $result['sortingType']);
+        $this->assertSame([], $result['colors']);
+        $this->assertSame([], $result['sizes']);
+        $this->assertSame([], $result['brands']);
+        $this->assertSame('/shop/main-7', $result['url']);
+        $this->assertSame('man', $result['category']);
+        $this->assertSame('shoes', $result['subcategory']);
     }
 }

@@ -16,7 +16,7 @@ class SortingFieldExistsValidator extends Validator
     
     /**
      * Проверяет является ли допустимым переданное поле сортировки
-     * фиксирует ошибку, если результат проверки отрицателен
+     * выбрасывает исключенние, если результат проверки отрицателен
      * @param object $model текущий экземпляр модели, атрибут которой проверяется
      * @param string $attribute имя атрибута, значение которого проверяется
      */
@@ -29,8 +29,8 @@ class SortingFieldExistsValidator extends Validator
                 throw new ErrorException($this->emptyError('sortingFieldsArray'));
             }
             
-            if (in_array($model->$attribute, $sortingFieldsArray) === false) {
-                throw new ErrorException($this->invalidRange('sortingField'));
+            if (array_key_exists($model->$attribute, $sortingFieldsArray) === false) {
+                throw new ErrorException($this->invalidRange($attribute));
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
