@@ -40,7 +40,7 @@ class CategoriesForm extends AbstractBaseForm
      */
     public $seocode;
     /**
-     * @var bool
+     * @var int
      */
     public $active;
     
@@ -58,11 +58,14 @@ class CategoriesForm extends AbstractBaseForm
         return [
             [['id', 'name', 'seocode', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id'], DeleteCategorySubcategoryExistsValidator::class, 'on'=>self::DELETE],
+            [['id'], 'required', 'on'=>self::EDIT],
             [['name', 'seocode'], 'required', 'on'=>self::CREATE],
+            [['id', 'active'], 'integer'],
+            [['name', 'seocode'], 'string'],
+            [['seocode'], 'match', 'pattern'=>'#^[a-z-]+$#'],
             [['name'], CreateCategoryNameExistsValidator::class, 'on'=>self::CREATE],
             [['seocode'], CreateCategorySeocodeExistsValidator::class, 'on'=>self::CREATE],
-            [['id'], 'required', 'on'=>self::EDIT],
+            [['id'], DeleteCategorySubcategoryExistsValidator::class, 'on'=>self::DELETE],
         ];
     }
 }

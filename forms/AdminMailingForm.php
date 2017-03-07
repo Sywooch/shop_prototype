@@ -62,11 +62,13 @@ class AdminMailingForm extends AbstractBaseForm
         return [
             [['id', 'name', 'description', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id'], DeleteMailingUsersExistsValidator::class, 'on'=>self::DELETE],
-            [['name', 'description'], 'required', 'on'=>self::CREATE],
-            [['name'], CreateMailingNameExistsValidator::class, 'on'=>self::CREATE],
             [['id'], 'required', 'on'=>self::GET],
+            [['name', 'description'], 'required', 'on'=>self::CREATE],
             [['id', 'name', 'description'], 'required', 'on'=>self::EDIT],
+            [['id', 'active'], 'integer'],
+            [['name', 'description'], 'string'],
+            [['id'], DeleteMailingUsersExistsValidator::class, 'on'=>self::DELETE],
+            [['name'], CreateMailingNameExistsValidator::class, 'on'=>self::CREATE],
         ];
     }
 }

@@ -74,7 +74,7 @@ class AdminCommentsFiltersFormTests extends TestCase
         $form = new AdminCommentsFiltersForm(['scenario'=>AdminCommentsFiltersForm::SAVE]);
         $form->attributes = [
             'activeStatus'=>'0',
-            'url'=>'https://shop.com',
+            'url'=>'/shop/hats',
         ];
         $form->validate();
         
@@ -89,7 +89,7 @@ class AdminCommentsFiltersFormTests extends TestCase
         
         $form = new AdminCommentsFiltersForm(['scenario'=>AdminCommentsFiltersForm::CLEAN]);
         $form->attributes = [
-            'url'=>'https://shop.com',
+            'url'=>'/shop/hats',
         ];
         $form->validate();
         

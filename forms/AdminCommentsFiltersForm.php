@@ -4,7 +4,10 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\{ActiveStatusTypeValidator,
+use app\validators\{ActiveStatusExistsValidator,
+    ActiveStatusTypeValidator,
+    SortingFieldExistsValidator,
+    SortingTypeExistsValidator,
     StripTagsValidator};
 
 /**
@@ -26,7 +29,7 @@ class AdminCommentsFiltersForm extends AbstractBaseForm
      */
     public $sortingField;
     /**
-     * @var string тип сортировки
+     * @var int тип сортировки
      */
     public $sortingType;
     /**
@@ -51,7 +54,13 @@ class AdminCommentsFiltersForm extends AbstractBaseForm
         return [
             [['sortingField', 'sortingType', 'activeStatus', 'url'], StripTagsValidator::class],
             [['url'], 'required'],
-            [['activeStatus'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE]
+            [['sortingField', 'activeStatus', 'url'], 'string'],
+            [['sortingType'], 'integer'],
+            [['url'], 'match', 'pattern'=>'#^/[a-z]+/?[a-z-]*-?[0-9]*$#i'],
+            [['sortingField'], SortingFieldExistsValidator::class],
+            [['sortingType'], SortingTypeExistsValidator::class],
+            [['activeStatus'], ActiveStatusExistsValidator::class],
+            [['activeStatus'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE],
         ];
     }
 }

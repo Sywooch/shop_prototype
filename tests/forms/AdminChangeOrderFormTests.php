@@ -131,13 +131,13 @@ class AdminChangeOrderFormTests extends TestCase
            'address'=>'Address str, 1',
            'city'=>'City',
            'country'=>'Country',
-           'postcode'=>'postcode',
+           'postcode'=>15698,
            'quantity'=>2,
-           'id_color'=>'id_color',
+           'id_color'=>2,
            'id_size'=>45,
-           'id_delivery'=>'id_delivery',
-           'id_payment'=>'id_payment',
-           'status'=>'status',
+           'id_delivery'=>1,
+           'id_payment'=>3,
+           'status'=>'canceled',
         ];
         $form->validate();
         

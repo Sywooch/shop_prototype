@@ -5,16 +5,17 @@ namespace app\validators;
 use yii\validators\Validator;
 use yii\base\ErrorException;
 use app\exceptions\ExceptionsTrait;
+use app\finders\OrderStatusesFinder;
 
 /**
  * Проверяет валидность данных полей сортировки
  */
-class IntInArrayValidator extends Validator
+class OrderStatusExistsValidator extends Validator
 {
     use ExceptionsTrait;
     
     /**
-     * Проверяет содержит ли атрибут допустимые значения
+     * Проверяет является ли допустимым переданное поле сортировки
      * выбрасывает исключенние, если результат проверки отрицателен
      * @param object $model текущий экземпляр модели, атрибут которой проверяется
      * @param string $attribute имя атрибута, значение которого проверяется
@@ -22,15 +23,14 @@ class IntInArrayValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $dataArray = $model->$attribute;
-            if (is_array($dataArray) === false) {
-                throw new ErrorException($this->invalidRange($attribute));
+            $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
+            $statusesArray = $finder->find();
+            if (empty($statusesArray)) {
+                throw new ErrorException($this->emptyError('statusesArray'));
             }
             
-            foreach ($dataArray as $item) {
-                if (is_numeric($item) === false) {
-                    throw new ErrorException($this->invalidRange($attribute));
-                }
+            if (array_key_exists($model->$attribute, $statusesArray) === false) {
+                throw new ErrorException($this->invalidRange($attribute));
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

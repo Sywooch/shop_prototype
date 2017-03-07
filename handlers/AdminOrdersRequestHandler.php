@@ -78,6 +78,9 @@ class AdminOrdersRequestHandler extends AbstractBaseHandler
                 
                 $finder = \Yii::$app->registry->get(OrderStatusesFinder::class);
                 $statusesArray = $finder->find();
+                if (empty($statusesArray)) {
+                    throw new ErrorException($this->emptyError('statusesArray'));
+                }
                 
                 $ordersFiltersForm = new OrdersFiltersForm($filtersModel->toArray());
                 $adminChangeOrderForm = new AdminChangeOrderForm();

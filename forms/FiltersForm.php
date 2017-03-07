@@ -72,8 +72,8 @@ class FiltersForm extends AbstractBaseForm
             [['sortingField'], SortingFieldExistsValidator::class],
             [['sortingType'], SortingTypeExistsValidator::class],
             [['colors', 'sizes', 'brands'], IntInArrayValidator::class],
-            [['url'], 'match', 'pattern'=>'#^/[a-z]+/?[a-z-]*-?[0-9]*$#i'],
-            [['category', 'subcategory'], 'match', 'pattern'=>'#^[a-z-]+$#i'],
+            [['url'], 'match', 'pattern'=>'#^/[a-z]+/?[a-z-]*-?[0-9]*$#u'],
+            [['category', 'subcategory'], 'match', 'pattern'=>'#^[a-z-]+$#u'],
         ];
     }
     

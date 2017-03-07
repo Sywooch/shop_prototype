@@ -439,7 +439,8 @@ class AdminProductFormTests extends TestCase
             'id_sizes'=>[2, 4],
             'id_brand'=>1,
             'seocode'=>'product',
-            'images'=>$imagesToLoad
+            'images'=>$imagesToLoad,
+            'related'=>'1,2,3'
         ];
         $form->validate();
         

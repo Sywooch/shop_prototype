@@ -44,8 +44,10 @@ class ColorsForm extends AbstractBaseForm
         return [
             [['id', 'color'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id'], DeleteColorProductsExistsValidator::class, 'on'=>self::DELETE],
             [['color'], 'required', 'on'=>self::CREATE],
+            [['id'], 'integer'],
+            [['color'], 'string'],
+            [['id'], DeleteColorProductsExistsValidator::class, 'on'=>self::DELETE],
             [['color'], CreateColorColorExistsValidator::class, 'on'=>self::CREATE],
         ];
     }

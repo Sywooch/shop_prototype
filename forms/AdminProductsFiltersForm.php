@@ -4,7 +4,11 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\{ActiveStatusTypeValidator,
+use app\validators\{ActiveStatusExistsValidator,
+    ActiveStatusTypeValidator,
+    IntInArrayValidator,
+    SortingFieldExistsValidator,
+    SortingTypeExistsValidator,
     StripTagsValidator};
 
 /**
@@ -26,19 +30,19 @@ class AdminProductsFiltersForm extends AbstractBaseForm
      */
     public $sortingField;
     /**
-     * @var string тип сортировки
+     * @var int тип сортировки
      */
     public $sortingType;
     /**
-     * @var array массив ID цветов для сортировки
+     * @var array ID цветов для сортировки
      */
     public $colors;
     /**
-     * @var array массив ID размеров для сортировки
+     * @var array ID размеров для сортировки
      */
     public $sizes;
     /**
-     * @var array массив ID брендов для сортировки
+     * @var array ID брендов для сортировки
      */
     public $brands;
     /**
@@ -50,7 +54,7 @@ class AdminProductsFiltersForm extends AbstractBaseForm
      */
     public $subcategory;
     /**
-     * @var bool
+     * @var int
      */
     public $active;
     /**
@@ -71,7 +75,14 @@ class AdminProductsFiltersForm extends AbstractBaseForm
         return [
             [['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'category', 'subcategory', 'active', 'url'], StripTagsValidator::class],
             [['url'], 'required'],
-            [['active'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE]
+            [['sortingField', 'url'], 'string'],
+            [['sortingType', 'category', 'subcategory', 'active'], 'integer'],
+            [['sortingField'], SortingFieldExistsValidator::class],
+            [['sortingType'], SortingTypeExistsValidator::class],
+            [['colors', 'sizes', 'brands'], IntInArrayValidator::class],
+            [['active'], ActiveStatusExistsValidator::class],
+            [['active'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE],
+            [['url'], 'match', 'pattern'=>'#^/[a-z]+/?[a-z-]*-?[0-9]*$#u'],
         ];
     }
 }

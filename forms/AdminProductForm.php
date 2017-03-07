@@ -4,8 +4,11 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\{CreateProductCodeExistsValidator,
+use app\validators\{ActiveStatusExistsValidator,
+    CreateProductCodeExistsValidator,
     EditProductCodeExistsValidator,
+    IntInArrayValidator,
+    RelatedProductsExistsValidator,
     StripTagsValidator};
 
 /**
@@ -79,7 +82,7 @@ class AdminProductForm extends AbstractBaseForm
      */
     public $id_brand;
     /**
-     * @var bool активен ли товар
+     * @var int активен ли товар
      */
     public $active;
     /**
@@ -113,13 +116,24 @@ class AdminProductForm extends AbstractBaseForm
     {
         return [
             [['id', 'code', 'name', 'short_description', 'description', 'price', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'active', 'total_products', 'seocode', 'views', 'related'], StripTagsValidator::class],
-            [['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand'], 'required', 'on'=>self::CREATE],
-            [['code'], CreateProductCodeExistsValidator::class, 'on'=>self::CREATE],
-            [['id', 'code', 'name', 'short_description', 'description', 'price', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
-            [['code'], EditProductCodeExistsValidator::class, 'on'=>self::EDIT],
-            [['images'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'maxWidth'=>800, 'maxHeight'=>800, 'maxFiles'=>5, 'maxSize'=>1024*512],
             [['id'], 'required', 'on'=>self::GET],
             [['id'], 'required', 'on'=>self::DELETE],
+            [['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand'], 'required', 'on'=>self::CREATE],
+            [['id', 'code', 'name', 'short_description', 'description', 'price', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
+            [['images'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'minWidth'=>200, 'minHeight'=>200, 'maxWidth'=>800, 'maxHeight'=>800, 'maxFiles'=>5, 'maxSize'=>1024*512, 'mimeTypes'=>'image/*'],
+            
+            [['name', 'short_description', 'description', 'related', 'code'], 'string'],
+            [['id', 'id_category', 'id_subcategory', 'id_brand', 'total_products', 'views'], 'integer'],
+            [['code'], 'match', 'pattern'=>'#^[A-Z0-9-]+$#'],
+            [['price'], 'double'],
+            [['active'], ActiveStatusExistsValidator::class],
+            [['id_colors', 'id_sizes'], IntInArrayValidator::class],
+            [['seocode'], 'match', 'pattern'=>'#^[a-z0-9-]+$#'],
+            [['related'], 'match', 'pattern'=>'#^(?:[0-9]{1,3},?)+$#'],
+            
+            [['related'], RelatedProductsExistsValidator::class],
+            [['code'], CreateProductCodeExistsValidator::class, 'on'=>self::CREATE],
+            [['code'], EditProductCodeExistsValidator::class, 'on'=>self::EDIT],
         ];
     }
 }

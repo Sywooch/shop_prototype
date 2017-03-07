@@ -268,6 +268,7 @@ $translate = [
     'In this mail has subscribers. You must first delete or transfer them'=>'У этой почтовой рассылки есть подписчики. Сначала необходимо удалить или перенести их',
     'Mailing with this name already exists'=>'Рассылка с таким именем уже существует',
     'Add mailing'=>'Добавить рассылку',
+    'Goods with these ID do not exist: {placeholder}'=>'Товары с этими ID не существуют: {placeholder}',
 ];
 
 return $translate;
