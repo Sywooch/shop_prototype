@@ -5,7 +5,7 @@
 <ol>
 {% for product in collection %}
     <li class="product-id-{{ product.id_product }}">
-        {{ product.link | raw }}
+        <a href="{{ product.linkHref }}">{{ product.linkText }}</a>
         <br>{{ product.short_description }}
         <br>{{ priceText }} <span class="price">{{ product.price }}</span>
         <br>{{ product.image | raw }}

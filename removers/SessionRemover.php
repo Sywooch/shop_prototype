@@ -15,7 +15,7 @@ class SessionRemover extends AbstractBaseRemover implements SessionRemoverInterf
     /**
      * @var array ключи, данные которых будут удалены
      */
-    private $keys;
+    private $keys = [];
     
     /**
      * Удаляет данные из сессионного хранилища

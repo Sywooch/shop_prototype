@@ -10,7 +10,9 @@
 
 {{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}
 
-<div class="products-filters">{{ filters_widget_widget(filtersWidgetConfig) }}</div>
+<div class="products-filters">
+    {{ filters_widget_widget(filtersWidgetConfig) }}
+</div>
 
 {% if emptyProductsWidgetConfig %}
     <div class="products-items">{{ empty_products_widget_widget(emptyProductsWidgetConfig) }}</div>

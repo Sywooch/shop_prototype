@@ -131,4 +131,13 @@ trait ExceptionsTrait
         
         return implode(PHP_EOL, $errorsText);
     }
+    
+    /**
+     * Конструирует строку сообщения об ошибке "Недопустимый диапазон данных"
+     * @return string
+     */
+    public function invalidRange(string $placeholder): string
+    {
+        return \Yii::t('base/errors', 'Invalid data range: {placeholder}', ['placeholder'=>$placeholder]);
+    }
 }

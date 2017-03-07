@@ -58,11 +58,6 @@ class UserLoginPostRequestHandler extends AbstractBaseHandler
                     ]);
                     $saver->save();
                     
-                    /*$session = \Yii::$app->session;
-                    $session->open();
-                    $session->set(HashHelper::createSessionIpKey(), $request->getUserIP());
-                    $session->close();*/
-                    
                     return Url::to(['/products-list/index']);
                 }
             }

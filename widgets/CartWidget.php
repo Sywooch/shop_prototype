@@ -65,10 +65,11 @@ class CartWidget extends AbstractBaseWidget
             
             foreach ($this->purchases as $purchase) {
                 $set = [];
-                $set['id_product'] = $purchase->id_product;
-                $set['link'] = Html::a(Html::encode($purchase->product->name), ['/product-detail/index', 'seocode'=>$purchase->product->seocode]);
-                $set['short_description'] = $purchase->product->short_description;
-                $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
+                $set['id_product'] = Html::encode($purchase->id_product);
+                $set['linkText'] = Html::encode($purchase->product->name);
+                $set['linkHref'] = Url::to(['/product-detail/index', 'seocode'=>Html::encode($purchase->product->seocode)]);
+                $set['short_description'] = Html::encode($purchase->product->short_description);
+                $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . Html::encode($this->currency->code());
                 
                 $updateForm = clone $this->form;
                 
@@ -77,10 +78,10 @@ class CartWidget extends AbstractBaseWidget
                     'id_size'=>$purchase->id_size,
                     'quantity'=>$purchase->quantity,
                 ]);
-                $set['idForm'] = sprintf('update-product-form-%d', $purchase->id_product);
+                $set['idForm'] = sprintf('update-product-form-%d', Html::encode($purchase->id_product));
                 
                 $set['formModelDelete'] = clone $this->form;
-                $set['idFormDelete'] = sprintf('delete-product-form-%d', $purchase->id_product);
+                $set['idFormDelete'] = sprintf('delete-product-form-%d', Html::encode($purchase->id_product));
                 
                 $colors = $purchase->product->colors;
                 ArrayHelper::multisort($colors, 'color');
@@ -97,7 +98,7 @@ class CartWidget extends AbstractBaseWidget
                 $renderArray['collection'][] = $set;
             }
             
-            $renderArray['header'] = $this->header;
+            $renderArray['header'] = Html::encode($this->header);
             
             $renderArray['ajaxValidation'] = false;
             $renderArray['validateOnSubmit'] = false;

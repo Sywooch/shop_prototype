@@ -89,6 +89,10 @@ class UserLoginPostRequestHandlerTests extends TestCase
                     ],
                 ];
             }
+            public function getUserIP()
+            {
+                return '127.0.0.1';
+            }
         };
         $reflection = new \ReflectionProperty($request, 'email');
         $reflection->setValue($request, self::$dbClass->emails['email_1']['email']);
@@ -98,7 +102,6 @@ class UserLoginPostRequestHandlerTests extends TestCase
         $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
-        $this->assertNotEmpty($result);
         $this->assertSame(Url::to(['/products-list/index']), $result);
     }
     

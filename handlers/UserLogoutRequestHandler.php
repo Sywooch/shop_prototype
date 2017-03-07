@@ -8,6 +8,8 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\AbstractBaseHandler;
 use app\forms\UserLoginForm;
+use app\removers\SessionRemover;
+use app\helpers\HashHelper;
 
 /**
  * Обрабатывает запрос на обнуление данных аутентификации пользователя
@@ -37,10 +39,10 @@ class UserLogoutRequestHandler extends AbstractBaseHandler
                         \Yii::$app->user->logout();
                     }
                     
-                    $session = \Yii::$app->session;
-                    $session->open();
-                    $session->remove(\app\helpers\HashHelper::createSessionIpKey());
-                    $session->close();
+                    $remover = new SessionRemover([
+                        'keys'=>[HashHelper::createSessionIpKey()]
+                    ]);
+                    $remover->remove();
                     
                     return Url::to(['/products-list/index']);
                 }

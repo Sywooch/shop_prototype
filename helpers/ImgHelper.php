@@ -5,7 +5,7 @@ namespace app\helpers;
 use yii\base\ErrorException;
 use yii\helpers\Html;
 use app\exceptions\ExceptionsTrait;
-
+use app\validators\StripTagsValidator;
 /**
  * Коллекция методов для работы с изображениями
  */
@@ -23,7 +23,8 @@ class ImgHelper
             $imagesArray = glob(\Yii::getAlias('@imagesroot/' . $directory) . '/thumbn_*.{jpg,jpeg,png,gif}', GLOB_BRACE);
             
             if (!empty($imagesArray)) {
-                $image = Html::img(\Yii::getAlias('@imagesweb/' . $directory . '/' . basename($imagesArray[random_int(0, count($imagesArray) - 1)])), ['height'=>$height]);
+                $img = basename($imagesArray[random_int(0, count($imagesArray) - 1)]);
+                $image = Html::img(\Yii::getAlias('@imagesweb/' . $directory . '/' . Html::encode($img)), ['height'=>$height]);
             }
             
             return $image ?? '';
@@ -47,7 +48,8 @@ class ImgHelper
             
             if (!empty($rawImgArray)) {
                 foreach ($rawImgArray as $img) {
-                    $imgArray[] = Html::img(\Yii::getAlias('@imagesweb/' . $directory . '/' . basename($img)), ['height'=>$height]);
+                    $img = basename($img);
+                    $imgArray[] = Html::img(\Yii::getAlias('@imagesweb/' . $directory . '/' . Html::encode($img)), ['height'=>$height]);
                 }
             }
             
@@ -78,7 +80,9 @@ class ImgHelper
             }
             
             foreach ($uploadedFiles as $file) {
-                $result = $file->saveAs($path . '/' . $file->getBaseName() . '.' . $file->getExtension());
+                $validator = new StripTagsValidator();
+                $baseName = $validator->validate($file->getBaseName());
+                $result = $file->saveAs($path . '/' . $baseName . '.' . $file->getExtension());
                 if ($result === false) {
                     throw new ErrorException(ExceptionsTrait::staticMethodError('saveAs'));
                 }

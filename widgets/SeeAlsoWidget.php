@@ -49,18 +49,19 @@ class SeeAlsoWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['header'] = $this->header;
+            $renderArray['header'] = Html::encode($this->header);
             $renderArray['priceText'] = \Yii::t('base', 'Price');
             
             foreach ($this->products as $product) {
                 $set = [];
-                $set['link'] = Html::a($product->name, Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$product->seocode]));
+                $set['linkText'] = Html::encode($product->name);
+                $set['linkHref'] = Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>Html::encode($product->seocode)]);
                 
                 if (!empty($product->images)) {
                     $set['image'] = ImgHelper::randThumbn($product->images, 150);
                 }
                 
-                $set['price'] = \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
+                $set['price'] = \Yii::$app->formatter->asDecimal($product->price * Html::encode($this->currency->exchangeRate()), 2) . ' ' . Html::encode($this->currency->code());
                 
                 $renderArray['products'][] = $set;
             }

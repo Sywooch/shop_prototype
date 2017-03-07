@@ -3,9 +3,9 @@
 <ul>
     {% for product in products %}
         <li>
-            {{ product.link | raw }}</br>
-            {{ product.image | raw }}</br>
-            {{ priceText }}: {{ product.price }}
+            <a href="{{ product.linkHref }}">{{ product.linkText }}</a>
+            </br>{{ product.image | raw }}
+            </br>{{ priceText }}: {{ product.price }}
         </li>
     {% endfor %}
 </ul>

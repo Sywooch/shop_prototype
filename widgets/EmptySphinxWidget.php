@@ -32,7 +32,7 @@ class EmptySphinxWidget extends Widget
             
             $renderArray = [];
             
-            $renderArray['text'] = Html::tag('p', \Yii::t('base', 'Search returned no results'));
+            $renderArray['text'] = \Yii::t('base', 'Search returned no results');
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

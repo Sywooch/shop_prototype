@@ -48,7 +48,8 @@ class ConversionWidget extends AbstractBaseWidget
                 $conversion = 0;
             }
             
-            $renderArray['conversion'] = sprintf('%s: %s%%', Html::tag('strong', \Yii::t('base', 'Conversion')), $conversion);
+            $renderArray['conversion'] =\Yii::t('base', 'Conversion');
+            $renderArray['conversionData'] = $conversion . '%';
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

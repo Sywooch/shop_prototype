@@ -15,7 +15,8 @@ $translate = [
     'Missing required data: {placeholder}'=>'Отсутствуют необходимые данные: {placeholder}',
     'This page does not exist'=>'Такой страницы не существует',
     'Array {placeholder} is empty'=>'Массив {placeholder} пуст',
-    'Array {placeholder} must contain objects'=>'Массив {placeholder} должен содержать объекты'
+    'Array {placeholder} must contain objects'=>'Массив {placeholder} должен содержать объекты',
+    'Invalid data range: {placeholder}'=>'Недопустимый диапазон данных: {placeholder}',
 ];
 
 return $translate;

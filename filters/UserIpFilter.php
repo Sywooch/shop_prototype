@@ -5,6 +5,7 @@ namespace app\filters;
 use yii\base\ActionFilter;
 use app\exceptions\ExceptionsTrait;
 use app\helpers\HashHelper;
+use app\finders\UserIpSessionFinder;
 
 /**
  * Проверяет валидность IP сессии для зарегистрированного пользователя
@@ -17,14 +18,18 @@ class UserIpFilter extends ActionFilter
     {
         try {
             if (\Yii::$app->user->isGuest === false) {
-                $session = \Yii::$app->session;
-                $session->open();
-                $sessionIP = $session->get(HashHelper::createSessionIpKey());
-                $session->close();
+                $finder = \Yii::$app->registry->get(UserIpSessionFinder::class, [
+                    'key'=>HashHelper::createSessionIpKey()
+                ]);
+                $userIpModel = $finder->find();
+                
+                if (empty($userIpModel) || empty($userIpModel->ip)) {
+                    \Yii::$app->user->logout();
+                }
                 
                 $requestIP = \Yii::$app->request->getUserIP();
                 
-                if ($sessionIP !== $requestIP) {
+                if (empty($requestIP) || ($userIpModel->ip !== $requestIP)) {
                     \Yii::$app->user->logout();
                 }
             }
