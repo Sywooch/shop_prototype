@@ -36,9 +36,12 @@ class AdminUserSubscriptionsRequestHandler extends AbstractBaseHandler
             if (empty($userEmail)) {
                 throw new ErrorException($this->emptyError('userEmail'));
             }
+            
             $validate = new StripTagsValidator();
             $userEmail = $validate->validate($userEmail);
-            if (filter_var($userEmail, FILTER_VALIDATE_EMAIL) === false) {
+            
+            $userEmail = filter_var($userEmail, FILTER_VALIDATE_EMAIL);
+            if ($userEmail === false) {
                 throw new ErrorException($this->invalidError('userEmail'));
             }
             

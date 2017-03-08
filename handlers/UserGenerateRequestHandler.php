@@ -45,7 +45,8 @@ class UserGenerateRequestHandler extends AbstractBaseHandler
             $key = $validator->validate($key);
             $email = $validator->validate($email);
             
-            if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+            $email = filter_var($email, FILTER_VALIDATE_EMAIL);
+            if ($email === false) {
                 throw new ErrorException($this->invalidError('email'));
             }
             

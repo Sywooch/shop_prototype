@@ -59,16 +59,21 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 $page = $validator->validate($page);
                 
                 if (!empty($category)) {
-                    if (filter_var($category, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z0-9-]+$#u']]) === false) {
+                    $category = filter_var($category, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z0-9-]+$#u']]);
+                    if ($category === false) {
                         throw new ErrorException($this->invalidError('category'));
                     }
                 }
+                
                 if (!empty($subcategory)) {
-                    if (filter_var($subcategory, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z0-9-]+$#u']]) === false) {
+                    $subcategory = filter_var($subcategory, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z0-9-]+$#u']]);
+                    if ($subcategory === false) {
                         throw new ErrorException($this->invalidError('subcategory'));
                     }
                 }
-                if (filter_var($page, FILTER_VALIDATE_INT) === false) {
+                
+                $page = filter_var($page, FILTER_VALIDATE_INT);
+                if ($page === false) {
                     throw new ErrorException($this->invalidError('page'));
                 }
                 

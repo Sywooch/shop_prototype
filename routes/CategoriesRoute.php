@@ -37,7 +37,8 @@ class CategoriesRoute extends Object implements UrlRuleInterface
             $validator = new StripTagsValidator();
             $pathInfo = $validator->validate($pathInfo);
             
-            if (filter_var($pathInfo, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z-0-9/]+$#u']]) === false) {
+            $pathInfo = filter_var($pathInfo, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z-0-9/]+$#u']]);
+            if ($pathInfo === false) {
                 throw new ErrorException($this->invalidError('pathInfo'));
             }
             

@@ -51,9 +51,12 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                 if (empty($seocode)) {
                     throw new ErrorException($this->emptyError('seocode'));
                 }
+                
                 $validator = new StripTagsValidator();
                 $seocode = $validator->validate($seocode);
-                if (filter_var($seocode, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z0-9-]+$#u']]) === false) {
+                
+                $seocode = filter_var($seocode, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z0-9-]+$#u']]);
+                if ($seocode === false) {
                     throw new ErrorException($this->invalidError('seocode'));
                 }
                 

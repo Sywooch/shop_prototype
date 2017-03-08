@@ -49,9 +49,12 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
         try {
             if (empty($this->dataArray)) {
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
+                
                 $validator = new StripTagsValidator();
                 $page = $validator->validate($page);
-                if (filter_var($page, FILTER_VALIDATE_INT) === false) {
+                
+                $page = filter_var($page, FILTER_VALIDATE_INT);
+                if ($page === false) {
                     throw new ErrorException($this->invalidError('page'));
                 }
                 
