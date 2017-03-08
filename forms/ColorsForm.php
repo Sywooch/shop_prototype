@@ -47,6 +47,7 @@ class ColorsForm extends AbstractBaseForm
             [['color'], 'required', 'on'=>self::CREATE],
             [['id'], 'integer'],
             [['color'], 'string'],
+            [['color'], 'match', 'pattern'=>'#^[A-Za-z\s]+$#u'],
             [['id'], DeleteColorProductsExistsValidator::class, 'on'=>self::DELETE],
             [['color'], CreateColorColorExistsValidator::class, 'on'=>self::CREATE],
         ];

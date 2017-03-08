@@ -62,11 +62,13 @@ class PaymentsForm extends AbstractBaseForm
         return [
             [['id', 'name', 'description', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id'], DeletePaymentOrdersExistsValidator::class, 'on'=>self::DELETE],
             [['name', 'description'], 'required', 'on'=>self::CREATE],
-            [['name'], CreatePaymentNameExistsValidator::class, 'on'=>self::CREATE],
             [['id'], 'required', 'on'=>self::GET],
             [['id', 'name', 'description'], 'required', 'on'=>self::EDIT],
+            [['id', 'active'], 'integer'],
+            [['name', 'description'], 'string'],
+            [['id'], DeletePaymentOrdersExistsValidator::class, 'on'=>self::DELETE],
+            [['name'], CreatePaymentNameExistsValidator::class, 'on'=>self::CREATE],
         ];
     }
 }

@@ -2,7 +2,8 @@
 
 namespace app\routes;
 
-use yii\base\Object;
+use yii\base\{ErrorException,
+    Object};
 use yii\web\UrlRuleInterface;
 use app\exceptions\ExceptionsTrait;
 use app\models\{CategoriesModel,
@@ -35,6 +36,10 @@ class CategoriesRoute extends Object implements UrlRuleInterface
             $pathInfo = $request->getPathInfo();
             $validator = new StripTagsValidator();
             $pathInfo = $validator->validate($pathInfo);
+            
+            if (filter_var($pathInfo, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z-0-9/]+$#u']]) === false) {
+                throw new ErrorException($this->invalidError('pathInfo'));
+            }
             
             list($category, $subcategory) = explode('/', $pathInfo);
             

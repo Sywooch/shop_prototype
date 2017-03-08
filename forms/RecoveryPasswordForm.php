@@ -33,8 +33,9 @@ class RecoveryPasswordForm extends AbstractBaseForm
     {
         return [
             [['email'], StripTagsValidator::class],
-            [['email'], 'required', 'enableClientValidation'=>true, 'on'=>self::GET],
-            [['email'], 'email', 'enableClientValidation'=>true],
+            [['email'], 'required', 'on'=>self::GET],
+            [['email'], 'string'],
+            [['email'], 'email'],
             [['email'], UserEmailExistsAuthValidator::class, 'on'=>self::GET],
         ];
     }

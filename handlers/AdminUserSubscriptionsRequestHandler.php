@@ -8,7 +8,7 @@ use app\handlers\{AbstractBaseHandler,
 use app\finders\{MailingsEmailFinder,
     MailingsNotEmailFinder,
     UserEmailFinder};
-use app\forms\UserMailingForm;
+use app\forms\AdminUserMailingForm;
 use app\validators\StripTagsValidator;
 
 /**
@@ -29,7 +29,7 @@ class AdminUserSubscriptionsRequestHandler extends AbstractBaseHandler
      * формирования HTML страницы с настройками аккаунта
      * @param array $request
      */
-    public function handle($request=null)
+    public function handle($request)
     {
         try {
             $userEmail = $request->get(\Yii::$app->params['userEmail']) ?? null;
@@ -38,6 +38,9 @@ class AdminUserSubscriptionsRequestHandler extends AbstractBaseHandler
             }
             $validate = new StripTagsValidator();
             $userEmail = $validate->validate($userEmail);
+            if (filter_var($userEmail, FILTER_VALIDATE_EMAIL) === false) {
+                throw new ErrorException($this->invalidError('userEmail'));
+            }
             
             if (empty($this->dataArray)) {
                 $finder = \Yii::$app->registry->get(UserEmailFinder::class, [
@@ -58,13 +61,13 @@ class AdminUserSubscriptionsRequestHandler extends AbstractBaseHandler
                 ]);
                 $notMailingsArray = $finder->find();
                 
-                $mailingForm = new UserMailingForm(['id_user'=>$usersModel->id]);
-                $notUserMailingForm = new UserMailingForm(['id_user'=>$usersModel->id]);
+                $mailingForm = new AdminUserMailingForm(['id_user'=>$usersModel->id]);
+                $notAdminUserMailingForm = new AdminUserMailingForm(['id_user'=>$usersModel->id]);
                 
                 $dataArray = [];
                 
                 $dataArray['adminUserMailingsUnsubscribeWidgetConfig'] = $this->adminUserMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
-                $dataArray['adminUserMailingsFormWidgetConfig'] = $this->adminUserMailingsFormWidgetConfig($notMailingsArray, $notUserMailingForm);
+                $dataArray['adminUserMailingsFormWidgetConfig'] = $this->adminUserMailingsFormWidgetConfig($notMailingsArray, $notAdminUserMailingForm);
                 $dataArray['adminUserDetailBreadcrumbsWidgetConfig'] = $this->adminUserDetailBreadcrumbsWidgetConfig($usersModel);
                 $dataArray['adminUserMenuWidgetConfig'] = $this->adminUserMenuWidgetConfig($usersModel);
                 

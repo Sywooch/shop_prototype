@@ -27,7 +27,7 @@ class SizesForm extends AbstractBaseForm
      */
     public $id;
     /**
-     * @var string название цвета
+     * @var float размеры
      */
     public $size;
     
@@ -44,8 +44,10 @@ class SizesForm extends AbstractBaseForm
         return [
             [['id', 'size'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id'], DeleteSizeProductsExistsValidator::class, 'on'=>self::DELETE],
             [['size'], 'required', 'on'=>self::CREATE],
+            [['id'], 'integer'],
+            [['size'], 'double'],
+            [['id'], DeleteSizeProductsExistsValidator::class, 'on'=>self::DELETE],
             [['size'], CreateSizeSizeExistsValidator::class, 'on'=>self::CREATE],
         ];
     }

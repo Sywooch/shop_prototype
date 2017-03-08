@@ -5,6 +5,8 @@ namespace app\forms;
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
 use app\validators\{ActiveStatusTypeValidator,
+    SortingFieldsUsersExistsValidator,
+    SortingTypeExistsValidator,
     StripTagsValidator};
 
 /**
@@ -26,7 +28,7 @@ class UsersFiltersForm extends AbstractBaseForm
      */
     public $sortingField;
     /**
-     * @var string тип сортировки
+     * @var int тип сортировки
      */
     public $sortingType;
     /**
@@ -51,6 +53,11 @@ class UsersFiltersForm extends AbstractBaseForm
         return [
             [['sortingField', 'sortingType', 'ordersStatus', 'url'], StripTagsValidator::class],
             [['url'], 'required'],
+            [['sortingType', 'ordersStatus'], 'integer'],
+            [['sortingField', 'url'], 'string'],
+            [['url'], 'match', 'pattern'=>'#^/[a-z-]+/?[a-z-]*-?[0-9]*$#u'],
+            [['sortingField'], SortingFieldsUsersExistsValidator::class],
+            [['sortingType'], SortingTypeExistsValidator::class],
             [['ordersStatus'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE]
         ];
     }

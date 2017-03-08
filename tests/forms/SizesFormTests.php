@@ -105,7 +105,7 @@ class SizesFormTests extends TestCase
         
         $form = new SizesForm(['scenario'=>SizesForm::CREATE]);
         $form->attributes = [
-            'size'=>'size'
+            'size'=>35.5
         ];
         $form->validate();
         

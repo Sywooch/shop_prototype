@@ -83,7 +83,7 @@ class OrdersFiltersFormTests extends TestCase
         
         $form = new OrdersFiltersForm(['scenario'=>OrdersFiltersForm::SAVE]);
         $form->attributes = [
-            'url'=>'https://shop.com',
+            'url'=>'/shop/sneakers',
         ];
         $form->validate();
         
@@ -97,7 +97,7 @@ class OrdersFiltersFormTests extends TestCase
         
         $form = new OrdersFiltersForm(['scenario'=>OrdersFiltersForm::CLEAN]);
         $form->attributes = [
-            'url'=>'https://shop.com',
+            'url'=>'/shop/coats',
         ];
         $form->validate();
         

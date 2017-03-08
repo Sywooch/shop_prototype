@@ -58,6 +58,20 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                 $subcategory = $validator->validate($subcategory);
                 $page = $validator->validate($page);
                 
+                if (!empty($category)) {
+                    if (filter_var($category, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z0-9-]+$#u']]) === false) {
+                        throw new ErrorException($this->invalidError('category'));
+                    }
+                }
+                if (!empty($subcategory)) {
+                    if (filter_var($subcategory, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z0-9-]+$#u']]) === false) {
+                        throw new ErrorException($this->invalidError('subcategory'));
+                    }
+                }
+                if (filter_var($page, FILTER_VALIDATE_INT) === false) {
+                    throw new ErrorException($this->invalidError('page'));
+                }
+                
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
                     'key'=>HashHelper::createCurrencyKey()
                 ]);

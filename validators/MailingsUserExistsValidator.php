@@ -23,7 +23,9 @@ class MailingsUserExistsValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $finder = \Yii::$app->registry->get(EmailsMailingsEmailFinder::class, ['email'=>$model->email]);
+            $finder = \Yii::$app->registry->get(EmailsMailingsEmailFinder::class, [
+                'email'=>$model->email
+            ]);
             $resultArray = $finder->find();
             
             if (!empty($resultArray)) {

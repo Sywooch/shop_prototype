@@ -32,16 +32,23 @@ class MailingsUnsubscribeRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            $unsubscribeKey = $request->get(\Yii::$app->params['unsubscribeKey']) ?? '';
-            $email = $request->get(\Yii::$app->params['emailKey']) ?? '';
+            $unsubscribeKey = $request->get(\Yii::$app->params['unsubscribeKey']) ?? null;
+            $email = $request->get(\Yii::$app->params['emailKey']) ?? null;
+            if (empty($unsubscribeKey) || empty($email)) {
+                throw new NotFoundHttpException($this->error404());
+            }
             
             $validator = new StripTagsValidator();
             $unsubscribeKey = $validator->validate($unsubscribeKey);
             $email = $validator->validate($email);
             
+            if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+                throw new ErrorException($this->invalidError('email'));
+            }
+            
             $key = HashHelper::createHash([$email]);
             
-            if (empty($unsubscribeKey) || empty($email) || $unsubscribeKey !== $key) {
+            if ($unsubscribeKey !== $key) {
                 throw new NotFoundHttpException($this->error404());
             }
             

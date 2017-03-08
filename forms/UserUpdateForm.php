@@ -49,7 +49,7 @@ class UserUpdateForm extends AbstractBaseForm
      */
     public $country;
     /**
-     * @var string почтовый индекс
+     * @var int почтовый индекс
      */
     public $postcode;
     
@@ -67,6 +67,11 @@ class UserUpdateForm extends AbstractBaseForm
             [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode'], StripTagsValidator::class],
             [['name', 'surname', 'phone', 'address', 'city', 'country', 'postcode'], 'required', 'on'=>self::UPDATE],
             [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode'], 'required', 'on'=>self::ADMIN_UPDATE],
+            [['id', 'postcode'], 'integer'],
+            [['name', 'surname', 'phone', 'address', 'city', 'country'], 'string'],
+            [['name', 'surname'], 'match', 'pattern'=>'#^[A-ZА-Я]{1}[a-zа-я]+-?[A-ZА-Я]?[a-zа-я]*$#u'],
+            [['phone'], 'match', 'pattern'=>'#^[+()0-9\s-]+$#u'],
+            [['city', 'country'], 'match', 'pattern'=>'#^[A-ZА-Яa-zа-я\s0-9]+$#u'],
         ];
     }
 }

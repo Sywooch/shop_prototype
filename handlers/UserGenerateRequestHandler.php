@@ -45,6 +45,10 @@ class UserGenerateRequestHandler extends AbstractBaseHandler
             $key = $validator->validate($key);
             $email = $validator->validate($email);
             
+            if (filter_var($email, FILTER_VALIDATE_EMAIL) === false) {
+                throw new ErrorException($this->invalidError('email'));
+            }
+            
             $finder = \Yii::$app->registry->get(RecoverySessionFinder::class, [
                 'key'=>$key
             ]);

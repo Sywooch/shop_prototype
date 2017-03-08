@@ -74,7 +74,7 @@ class UsersFiltersFormTests extends TestCase
         $form = new UsersFiltersForm(['scenario'=>UsersFiltersForm::SAVE]);
         $form->attributes = [
             'ordersStatus'=>'0',
-            'url'=>'https://shop.com',
+            'url'=>'/shop/main-56',
         ];
         $form->validate();
         
@@ -89,7 +89,7 @@ class UsersFiltersFormTests extends TestCase
         
         $form = new UsersFiltersForm(['scenario'=>UsersFiltersForm::CLEAN]);
         $form->attributes = [
-            'url'=>'https://shop.com',
+            'url'=>'/shop/main-5',
         ];
         $form->validate();
         

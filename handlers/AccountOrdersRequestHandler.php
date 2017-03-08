@@ -41,6 +41,9 @@ class AccountOrdersRequestHandler extends AbstractBaseHandler
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
                 $validator = new StripTagsValidator();
                 $page = $validator->validate($page);
+                if (filter_var($page, FILTER_VALIDATE_INT) === false) {
+                    throw new ErrorException($this->invalidError('page'));
+                }
                 
                 $usersModel = \Yii::$app->user->identity;
                 

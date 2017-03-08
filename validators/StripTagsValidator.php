@@ -56,12 +56,16 @@ class StripTagsValidator extends Validator
     /**
      * Инициирует удаление HTML и PHP-тегов из любой переданной строки
      * @param string $value проверяемая строка
-     * @return string
+     * @return mixed
      */
-    public function validate($value, &$error=null): string
+    public function validate($value, &$error=null)
     {
         try {
-            return $this->strip($value);
+            if (!empty($value) && is_string($value)) {
+                $value = $this->strip($value);
+            }
+            
+            return $value;
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

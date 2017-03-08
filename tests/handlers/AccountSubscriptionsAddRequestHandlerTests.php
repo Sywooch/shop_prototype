@@ -51,7 +51,7 @@ class AccountSubscriptionsAddRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'UserMailingForm'=>[
+                    'AdminUserMailingForm'=>[
                         'id'=>null,
                     ]
                 ];
@@ -82,7 +82,7 @@ class AccountSubscriptionsAddRequestHandlerTests extends TestCase
             public function post($name = null, $defaultValue = null)
             {
                 return [
-                    'UserMailingForm'=>[
+                    'AdminUserMailingForm'=>[
                         'id'=>1,
                     ]
                 ];

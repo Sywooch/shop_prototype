@@ -68,10 +68,12 @@ class CommentForm extends AbstractBaseForm
         return [
             [['id', 'text', 'name', 'email', 'id_product', 'active'], StripTagsValidator::class],
             [['text', 'name', 'email', 'id_product'], 'required', 'on'=>self::SAVE],
-            [['email'], 'email', 'on'=>self::SAVE],
             [['id'], 'required', 'on'=>self::GET],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id', 'text'], 'required', 'on'=>self::EDIT]
+            [['id', 'text'], 'required', 'on'=>self::EDIT],
+            [['id', 'id_product', 'active'], 'integer'],
+            [['text', 'name', 'email'], 'string'],
+            [['email'], 'email'],
         ];
     }
 }

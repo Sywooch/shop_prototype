@@ -7,7 +7,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\forms\UserMailingForm;
+use app\forms\AdminUserMailingForm;
 use app\savers\ModelSaver;
 use app\widgets\{AdminUserMailingsFormWidget,
     AdminUserMailingsUnsubscribeWidget};
@@ -30,7 +30,7 @@ class AdminUserSubscriptionsAddRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE_ADMIN]);
+            $form = new AdminUserMailingForm(['scenario'=>AdminUserMailingForm::SAVE_ADMIN]);
             
             if ($request->isAjax === true) {
                 if ($form->load($request->post()) === true) {
@@ -76,15 +76,15 @@ class AdminUserSubscriptionsAddRequestHandler extends AbstractBaseHandler
                         ]);
                         $notMailingsArray = $finder->find();
                         
-                        $mailingForm = new UserMailingForm(['id_user'=>$usersModel->id]);
-                        $notUserMailingForm = new UserMailingForm(['id_user'=>$usersModel->id]);
+                        $mailingForm = new AdminUserMailingForm(['id_user'=>$usersModel->id]);
+                        $notAdminUserMailingForm = new AdminUserMailingForm(['id_user'=>$usersModel->id]);
                         
                         $dataArray = [];
                         
                         $adminUserMailingsUnsubscribeWidgetConfig = $this->adminUserMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
                         $dataArray['unsubscribe'] = AdminUserMailingsUnsubscribeWidget::widget($adminUserMailingsUnsubscribeWidgetConfig);
                         
-                        $adminUserMailingsFormWidgetConfig = $this->adminUserMailingsFormWidgetConfig($notMailingsArray, $notUserMailingForm);
+                        $adminUserMailingsFormWidgetConfig = $this->adminUserMailingsFormWidgetConfig($notMailingsArray, $notAdminUserMailingForm);
                         $dataArray['subscribe'] = AdminUserMailingsFormWidget::widget($adminUserMailingsFormWidgetConfig);
                         
                         $transaction->commit();

@@ -4,7 +4,10 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\StripTagsValidator;
+use app\validators\{OrderStatusExistsValidator,
+    SortingFieldExistsValidator,
+    SortingTypeExistsValidator,
+    StripTagsValidator};
 
 /**
  * Представляет данные формы фильтров для списка заказов
@@ -58,6 +61,12 @@ class OrdersFiltersForm extends AbstractBaseForm
         return [
             [['sortingField', 'sortingType', 'status', 'dateFrom', 'dateTo', 'url'], StripTagsValidator::class],
             [['url'], 'required'],
+            [['sortingType', 'dateFrom', 'dateTo'], 'integer'],
+            [['sortingField', 'status', 'url'], 'string'],
+            [['sortingField'], SortingFieldExistsValidator::class],
+            [['sortingType'], SortingTypeExistsValidator::class],
+            [['status'], OrderStatusExistsValidator::class],
+            [['url'], 'match', 'pattern'=>'#^/[a-z-]+/?[a-z-]*-?[0-9]*$#u'],
         ];
     }
 }

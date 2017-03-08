@@ -56,7 +56,7 @@ class AdminCommentsFiltersForm extends AbstractBaseForm
             [['url'], 'required'],
             [['sortingField', 'activeStatus', 'url'], 'string'],
             [['sortingType'], 'integer'],
-            [['url'], 'match', 'pattern'=>'#^/[a-z]+/?[a-z-]*-?[0-9]*$#i'],
+            [['url'], 'match', 'pattern'=>'#^/[a-z-]+/?[a-z-]*-?[0-9]*$#i'],
             [['sortingField'], SortingFieldExistsValidator::class],
             [['sortingType'], SortingTypeExistsValidator::class],
             [['activeStatus'], ActiveStatusExistsValidator::class],

@@ -28,7 +28,7 @@ class FiltersForm extends AbstractBaseForm
      */
     public $sortingField;
     /**
-     * @var string тип сортировки
+     * @var int тип сортировки
      */
     public $sortingType;
     /**
@@ -69,11 +69,13 @@ class FiltersForm extends AbstractBaseForm
         return [
             [['sortingField', 'sortingType', 'colors', 'sizes', 'brands', 'url', 'category', 'subcategory'], StripTagsValidator::class],
             [['url'], 'required'],
+            [['sortingType'], 'integer'],
+            [['sortingField', 'url', 'category', 'subcategory'], 'string'],
+            [['colors', 'sizes', 'brands'], IntInArrayValidator::class],
+            [['url'], 'match', 'pattern'=>'#^/[a-z-]+/?[a-z-]*-?[0-9]*$#u'],
+            [['category', 'subcategory'], 'match', 'pattern'=>'#^[a-z-]+$#u'],
             [['sortingField'], SortingFieldExistsValidator::class],
             [['sortingType'], SortingTypeExistsValidator::class],
-            [['colors', 'sizes', 'brands'], IntInArrayValidator::class],
-            [['url'], 'match', 'pattern'=>'#^/[a-z]+/?[a-z-]*-?[0-9]*$#u'],
-            [['category', 'subcategory'], 'match', 'pattern'=>'#^[a-z-]+$#u'],
         ];
     }
     

@@ -40,11 +40,11 @@ class SubcategoryForm extends AbstractBaseForm
      */
     public $seocode;
     /**
-     * @var id подкатегории
+     * @var id категории
      */
     public $id_category;
     /**
-     * @var bool
+     * @var int
      */
     public $active;
     
@@ -62,11 +62,14 @@ class SubcategoryForm extends AbstractBaseForm
         return [
             [['id', 'name', 'seocode', 'id_category', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id'], DeleteSubcategoryProductsExistsValidator::class, 'on'=>self::DELETE],
+            [['id'], 'required', 'on'=>self::EDIT],
             [['name', 'seocode', 'id_category'], 'required', 'on'=>self::CREATE],
+            [['id', 'id_category', 'active'], 'integer'],
+            [['name', 'seocode'], 'string'],
+            [['seocode'], 'match', 'pattern'=>'#^[a-z-]+$#'],
+            [['id'], DeleteSubcategoryProductsExistsValidator::class, 'on'=>self::DELETE],
             [['name'], CreateSubcategoryNameExistsValidator::class, 'on'=>self::CREATE],
             [['seocode'], CreateSubcategorySeocodeExistsValidator::class, 'on'=>self::CREATE],
-            [['id'], 'required', 'on'=>self::EDIT],
         ];
     }
 }

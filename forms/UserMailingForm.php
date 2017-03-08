@@ -4,7 +4,8 @@ namespace app\forms;
 
 use yii\base\ErrorException;
 use app\forms\AbstractBaseForm;
-use app\validators\{MailingsUserExistsValidator,
+use app\validators\{IntInArrayValidator,
+    MailingsUserExistsValidator,
     StripTagsValidator};
 
 /**
@@ -20,22 +21,6 @@ class UserMailingForm extends AbstractBaseForm
      * Сценарий удаление связи пользователя с рассылками
      */
     const UNSUBSCRIBE = 'unsubscribe';
-    /**
-     * Сценарий удаление связи пользователя с рассылкой из настроек аккаунта
-     */
-    const UNSUBSCRIBE_ACC = 'unsubscribe_acc';
-    /**
-     * Сценарий добавления подписки пользователю из настроек аккаунта
-     */
-    const SAVE_ACC = 'save_acc';
-    /**
-     * Сценарий удаление связи пользователя с рассылкой из настроек админ панели
-     */
-    const UNSUBSCRIBE_ADMIN= 'unsubscribe_admin';
-    /**
-     * Сценарий добавления подписки пользователю из настроек админ панели
-     */
-    const SAVE_ADMIN = 'save_admin';
     
     /**
      * @var int ID пользователя
@@ -46,7 +31,7 @@ class UserMailingForm extends AbstractBaseForm
      */
     public $email;
     /**
-     * @var int ID выбранных подписок
+     * @var array ID выбранных подписок
      */
     public $id;
     /**
@@ -59,10 +44,6 @@ class UserMailingForm extends AbstractBaseForm
         return [
             self::SAVE=>['id', 'email'],
             self::UNSUBSCRIBE=>['id', 'email', 'key'],
-            self::UNSUBSCRIBE_ACC=>['id'],
-            self::SAVE_ACC=>['id'],
-            self::UNSUBSCRIBE_ADMIN=>['id_user', 'id'],
-            self::SAVE_ADMIN=>['id_user', 'id'],
         ];
     }
     
@@ -71,16 +52,15 @@ class UserMailingForm extends AbstractBaseForm
         return [
             [['id_user', 'email', 'id', 'key'], StripTagsValidator::class],
             [['id', 'email'], 'required', 'on'=>self::SAVE],
-            [['email'], 'email', 'on'=>self::SAVE],
+            [['id', 'email', 'key'], 'required', 'on'=>self::UNSUBSCRIBE],
+            [['id_user'], 'integer'],
+            [['email'], 'string'],
+            [['email'], 'email'],
+            [['id'], IntInArrayValidator::class],
+            [['key'], 'string', 'length'=>40],
             [['id'], MailingsUserExistsValidator::class, 'on'=>self::SAVE, 'when'=>function($model) {
                 return empty($model->errors);
             }],
-            [['id', 'email', 'key'], 'required', 'on'=>self::UNSUBSCRIBE],
-            [['email'], 'email', 'on'=>self::UNSUBSCRIBE],
-            [['id'], 'required', 'on'=>self::UNSUBSCRIBE_ACC],
-            [['id'], 'required', 'on'=>self::SAVE_ACC],
-            [['id_user', 'id'], 'required', 'on'=>self::UNSUBSCRIBE_ADMIN],
-            [['id_user', 'id'], 'required', 'on'=>self::SAVE_ADMIN],
         ];
     }
 }

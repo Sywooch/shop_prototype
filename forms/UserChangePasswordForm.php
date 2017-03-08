@@ -32,11 +32,11 @@ class UserChangePasswordForm extends AbstractBaseForm
      */
     public $currentPassword;
     /**
-     * @var string пароль
+     * @var string новый пароль
      */
     public $password;
     /**
-     * @var string подтверждение пароля
+     * @var string подтверждение нового пароля
      */
     public $password2;
     
@@ -54,6 +54,8 @@ class UserChangePasswordForm extends AbstractBaseForm
             [['id', 'currentPassword', 'password', 'password2'], StripTagsValidator::class],
             [['currentPassword', 'password', 'password2'], 'required', 'on'=>self::CHANGE],
             [['id', 'currentPassword', 'password', 'password2'], 'required', 'on'=>self::ADMIN_UPDATE],
+            [['id'], 'integer'],
+            [['currentPassword', 'password', 'password2'], 'string'],
             [['currentPassword'], PasswordCorrectChangeValidator::class, 'on'=>self::CHANGE],
             [['currentPassword'], PasswordCorrectAdminUserChangeValidator::class, 'on'=>self::ADMIN_UPDATE],
             [['password2'], PasswordIdenticRegValidator::class],

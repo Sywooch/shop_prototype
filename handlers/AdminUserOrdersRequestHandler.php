@@ -46,6 +46,12 @@ class AdminUserOrdersRequestHandler extends AbstractBaseHandler
             $validator = new StripTagsValidator();
             $page = $validator->validate($page);
             $userEmail = $validator->validate($userEmail);
+            if (filter_var($page, FILTER_VALIDATE_INT) === false) {
+                throw new ErrorException($this->invalidError('page'));
+            }
+            if (filter_var($userEmail, FILTER_VALIDATE_EMAIL) === false) {
+                throw new ErrorException($this->invalidError('userEmail'));
+            }
             
             if (empty($this->dataArray)) {
                 $finder = \Yii::$app->registry->get(UserEmailFinder::class, [

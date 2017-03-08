@@ -33,7 +33,7 @@ class PurchaseForm extends AbstractBaseForm
      */
     public $quantity;
     /**
-     * @var int Iцвет товара
+     * @var int цвет товара
      */
     public $id_color;
     /**
@@ -70,7 +70,9 @@ class PurchaseForm extends AbstractBaseForm
             [['quantity', 'id_color', 'id_size', 'id_product', 'price'], 'required', 'on'=>self::SAVE],
             [['quantity', 'id_color', 'id_size', 'id_product'], 'required', 'on'=>self::UPDATE],
             [['id_product'], 'required', 'on'=>self::DELETE],
-            [['id'], 'required', 'on'=>self::CANCEL]
+            [['id'], 'required', 'on'=>self::CANCEL],
+            [['id', 'quantity', 'id_color', 'id_size', 'id_product'], 'integer'],
+            [['price'], 'double'],
         ];
     }
 }

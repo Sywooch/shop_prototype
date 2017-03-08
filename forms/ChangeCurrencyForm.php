@@ -39,7 +39,7 @@ class ChangeCurrencyForm extends AbstractBaseForm
             [['id', 'url'], 'required', 'on'=>self::SET],
             [['id'], 'integer'],
             [['url'], 'string'],
-            [['url'], 'match', 'pattern'=>'#^/[a-z]+/?[a-z-]*-?[0-9]*$#u'],
+            [['url'], 'match', 'pattern'=>'#^/[a-z-]+/?[a-z-]*-?[0-9]*$#u'],
         ];
     }
 }

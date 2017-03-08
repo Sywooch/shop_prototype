@@ -37,10 +37,6 @@ class UserMailingFormTests extends TestCase
         
         $this->assertTrue($reflection->hasConstant('SAVE'));
         $this->assertTrue($reflection->hasConstant('UNSUBSCRIBE'));
-        $this->assertTrue($reflection->hasConstant('UNSUBSCRIBE_ACC'));
-        $this->assertTrue($reflection->hasConstant('SAVE_ACC'));
-        $this->assertTrue($reflection->hasConstant('UNSUBSCRIBE_ADMIN'));
-        $this->assertTrue($reflection->hasConstant('SAVE_ADMIN'));
         
         $this->assertTrue($reflection->hasProperty('id_user'));
         $this->assertTrue($reflection->hasProperty('id'));
@@ -55,13 +51,13 @@ class UserMailingFormTests extends TestCase
     {
         $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE]);
         $form->attributes = [
-            'id'=>1,
+            'id'=>[1],
             'email'=>'some@some.com'
         ];
         
         $reflection = new \ReflectionProperty($form, 'id');
         $result = $reflection->getValue($form);
-        $this->assertEquals(1, $result);
+        $this->assertEquals([1], $result);
         
         $reflection = new \ReflectionProperty($form, 'email');
         $result = $reflection->getValue($form);
@@ -69,14 +65,14 @@ class UserMailingFormTests extends TestCase
         
         $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE]);
         $form->attributes = [
-            'id'=>1,
+            'id'=>[1],
             'email'=>'some@some.com',
             'key'=>'key'
         ];
         
         $reflection = new \ReflectionProperty($form, 'id');
         $result = $reflection->getValue($form);
-        $this->assertEquals(1, $result);
+        $this->assertEquals([1], $result);
         
         $reflection = new \ReflectionProperty($form, 'email');
         $result = $reflection->getValue($form);
@@ -85,52 +81,6 @@ class UserMailingFormTests extends TestCase
         $reflection = new \ReflectionProperty($form, 'key');
         $result = $reflection->getValue($form);
         $this->assertEquals('key', $result);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE_ACC]);
-        $form->attributes = [
-            'id'=>1,
-        ];
-        
-        $reflection = new \ReflectionProperty($form, 'id');
-        $result = $reflection->getValue($form);
-        $this->assertEquals(1, $result);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE_ACC]);
-        $form->attributes = [
-            'id'=>1,
-        ];
-        
-        $reflection = new \ReflectionProperty($form, 'id');
-        $result = $reflection->getValue($form);
-        $this->assertEquals(1, $result);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE_ADMIN]);
-        $form->attributes = [
-            'id_user'=>3,
-            'id'=>1,
-        ];
-        
-        $reflection = new \ReflectionProperty($form, 'id');
-        $result = $reflection->getValue($form);
-        $this->assertEquals(1, $result);
-        
-        $reflection = new \ReflectionProperty($form, 'id_user');
-        $result = $reflection->getValue($form);
-        $this->assertEquals(3, $result);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE_ADMIN]);
-        $form->attributes = [
-            'id_user'=>3,
-            'id'=>1,
-        ];
-        
-        $reflection = new \ReflectionProperty($form, 'id');
-        $result = $reflection->getValue($form);
-        $this->assertEquals(1, $result);
-        
-        $reflection = new \ReflectionProperty($form, 'id_user');
-        $result = $reflection->getValue($form);
-        $this->assertEquals(3, $result);
     }
     
     /**
@@ -164,17 +114,8 @@ class UserMailingFormTests extends TestCase
         
         $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE]);
         $form->attributes = [
-            'id'=>[1],
-            'email'=>self::$_dbClass->emails['email_1']['email'],
-        ];
-        $form->validate();
-        
-        $this->assertCount(1, $form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE]);
-        $form->attributes = [
-            'id'=>[1, 3],
-            'email'=>self::$_dbClass->emails['email_1']['email'],
+            'id'=>[3],
+            'email'=>self::$_dbClass->emails['email_2']['email'],
         ];
         $form->validate();
         
@@ -197,9 +138,9 @@ class UserMailingFormTests extends TestCase
         
         $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE]);
         $form->attributes = [
-            'id'=>[1],
+            'id'=>[2],
             'email'=>'some@some',
-            'key'=>'key'
+            'key'=>sha1('key')
         ];
         $form->validate();
         
@@ -207,67 +148,9 @@ class UserMailingFormTests extends TestCase
         
         $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE]);
         $form->attributes = [
-            'id'=>[1],
+            'id'=>[2],
             'email'=>'some@some.com',
-            'key'=>'key'
-        ];
-        $form->validate();
-        
-        $this->assertEmpty($form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE_ACC]);
-        $form->attributes = [];
-        $form->validate();
-        
-        $this->assertCount(1, $form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE_ACC]);
-        $form->attributes = [
-            'id'=>1,
-        ];
-        $form->validate();
-        
-        $this->assertEmpty($form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE_ACC]);
-        $form->attributes = [];
-        $form->validate();
-        
-        $this->assertCount(1, $form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE_ACC]);
-        $form->attributes = [
-            'id'=>1,
-        ];
-        $form->validate();
-        
-        $this->assertEmpty($form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE_ADMIN]);
-        $form->attributes = [];
-        $form->validate();
-        
-        $this->assertCount(2, $form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::UNSUBSCRIBE_ADMIN]);
-        $form->attributes = [
-            'id_user'=>3,
-            'id'=>1,
-        ];
-        $form->validate();
-        
-        $this->assertEmpty($form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE_ADMIN]);
-        $form->attributes = [];
-        $form->validate();
-        
-        $this->assertCount(2, $form->errors);
-        
-        $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE_ADMIN]);
-        $form->attributes = [
-            'id_user'=>3,
-            'id'=>1,
+            'key'=>sha1('key')
         ];
         $form->validate();
         

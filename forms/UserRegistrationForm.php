@@ -43,7 +43,8 @@ class UserRegistrationForm extends AbstractBaseForm
         return [
             [['email', 'password', 'password2'], StripTagsValidator::class],
             [['email', 'password', 'password2'], 'required', 'on'=>self::REGISTRATION],
-            [['email'], 'email', 'on'=>self::REGISTRATION],
+            [['email', 'password', 'password2'], 'string'],
+            [['email'], 'email'],
             [['email'], UserEmailExistsRegValidator::class, 'on'=>self::REGISTRATION],
             [['password2'], PasswordIdenticRegValidator::class, 'on'=>self::REGISTRATION],
         ];

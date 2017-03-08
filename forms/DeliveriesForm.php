@@ -66,11 +66,14 @@ class DeliveriesForm extends AbstractBaseForm
         return [
             [['id', 'name', 'description', 'price', 'active'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id'], DeleteDeliveryOrdersExistsValidator::class, 'on'=>self::DELETE],
-            [['name', 'description', 'price'], 'required', 'on'=>self::CREATE],
-            [['name'], CreateDeliveryNameExistsValidator::class, 'on'=>self::CREATE],
             [['id'], 'required', 'on'=>self::GET],
             [['id', 'name', 'description', 'price'], 'required', 'on'=>self::EDIT],
+            [['name', 'description', 'price'], 'required', 'on'=>self::CREATE],
+            [['id', 'active'], 'integer'],
+            [['price'], 'double'],
+            [['name', 'description'], 'string'],
+            [['id'], DeleteDeliveryOrdersExistsValidator::class, 'on'=>self::DELETE],
+            [['name'], CreateDeliveryNameExistsValidator::class, 'on'=>self::CREATE],
         ];
     }
 }

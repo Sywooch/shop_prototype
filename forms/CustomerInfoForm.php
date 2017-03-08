@@ -47,7 +47,7 @@ class CustomerInfoForm extends AbstractBaseForm
      */
     public $country;
     /**
-     * @var string почтовый индекс
+     * @var int почтовый индекс
      */
     public $postcode;
     /**
@@ -59,7 +59,7 @@ class CustomerInfoForm extends AbstractBaseForm
      */
     public $id_payment;
     /**
-     * @var bool нужно ли создавать аккаунт
+     * @var int нужно ли создавать аккаунт
      */
     public $create;
     /**
@@ -71,7 +71,7 @@ class CustomerInfoForm extends AbstractBaseForm
      */
     public $password2;
     /**
-     * @var bool нужно ли обновить данные
+     * @var int нужно ли обновить данные
      */
     public $change;
     
@@ -87,7 +87,12 @@ class CustomerInfoForm extends AbstractBaseForm
         return [
             [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment', 'create', 'password', 'password2', 'change'], StripTagsValidator::class],
             [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment'], 'required', 'on'=>self::CHECKOUT],
-            [['email'], 'email', 'on'=>self::CHECKOUT],
+            [['postcode', 'id_delivery', 'id_payment', 'create', 'change'], 'integer'],
+            [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'password', 'password2'], 'string'],
+            [['name', 'surname'], 'match', 'pattern'=>'#^[A-ZА-Я]{1}[a-zа-я]+-?[A-ZА-Я]?[a-zа-я]*$#u'],
+            [['email'], 'email'],
+            [['phone'], 'match', 'pattern'=>'#^[+()0-9\s-]+$#u'],
+            [['city', 'country'], 'match', 'pattern'=>'#^[A-ZА-Яa-zа-я\s0-9]+$#u'],
             [['email'], UserEmailExistsRegValidator::class, 'on'=>self::CHECKOUT, 'when'=>function($model) {
                 return !empty($model->create);
             }],

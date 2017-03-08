@@ -44,6 +44,9 @@ class AdminCommentsRequestHandler extends AbstractBaseHandler
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
                 $validate = new StripTagsValidator();
                 $page = $validate->validate($page);
+                if (filter_var($page, FILTER_VALIDATE_INT) === false) {
+                    throw new ErrorException($this->invalidError('page'));
+                }
                 
                 $finder = \Yii::$app->registry->get(CommentsFiltersSessionFinder::class, [
                     'key'=>HashHelper::createHash([\Yii::$app->params['commentsFilters']])

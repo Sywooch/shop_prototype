@@ -54,12 +54,14 @@ class CurrencyForm extends AbstractBaseForm
         return [
             [['id', 'code', 'main'], StripTagsValidator::class],
             [['id'], 'required', 'on'=>self::DELETE],
-            [['id'], DeleteCurrencyIsBaseValidator::class, 'on'=>self::DELETE],
             [['code'], 'required', 'on'=>self::CREATE],
+            [['id', 'main'], 'required', 'on'=>self::BASE_CHANGE],
             [['code'], 'string', 'length'=>3, 'on'=>self::CREATE],
+            [['id', 'main'], 'integer'],
+            [['id'], DeleteCurrencyIsBaseValidator::class, 'on'=>self::DELETE],
             [['code'], CreateCurrencyExistsCodeValidator::class, 'on'=>self::CREATE],
             [['code'], CreateCurrencyValidCodeValidator::class, 'on'=>self::CREATE],
-            [['id', 'main'], 'required', 'on'=>self::BASE_CHANGE],
+            
         ];
     }
 }

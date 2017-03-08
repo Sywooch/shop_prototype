@@ -26,6 +26,10 @@ class ProductsRoute extends Object implements UrlRuleInterface
             $validator = new StripTagsValidator();
             $pathInfo = $validator->validate($pathInfo);
             
+            if (filter_var($pathInfo, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z-0-9]+$#u']]) === false) {
+                throw new ErrorException($this->invalidError('pathInfo'));
+            }
+            
             if (ProductsModel::find()->where(['[[products.seocode]]'=>$pathInfo])->exists()) {
                 $paramsArray[\Yii::$app->params['productKey']] = $pathInfo;
             } else {

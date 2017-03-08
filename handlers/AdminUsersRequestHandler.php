@@ -42,6 +42,9 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
             $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
             $validator = new StripTagsValidator();
             $page = $validator->validate($page);
+            if (filter_var($page, FILTER_VALIDATE_INT) === false) {
+                throw new ErrorException($this->invalidError('page'));
+            }
             
             if (empty($this->dataArray)) {
                 $finder = \Yii::$app->registry->get(UsersFiltersSessionFinder::class, [

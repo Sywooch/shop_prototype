@@ -44,6 +44,9 @@ class AdminOrdersRequestHandler extends AbstractBaseHandler
                 $page = $request->get(\Yii::$app->params['pagePointer']) ?? 0;
                 $validator = new StripTagsValidator();
                 $page = $validator->validate($page);
+                if (filter_var($page, FILTER_VALIDATE_INT) === false) {
+                    throw new ErrorException($this->invalidError('page'));
+                }
                 
                 $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
                     'key'=>HashHelper::createCurrencyKey()

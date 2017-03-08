@@ -7,7 +7,7 @@ use yii\web\Response;
 use yii\widgets\ActiveForm;
 use app\handlers\{AbstractBaseHandler,
     ConfigHandlerTrait};
-use app\forms\UserMailingForm;
+use app\forms\AdminUserMailingForm;
 use app\savers\ModelSaver;
 use app\widgets\{AccountMailingsFormWidget,
     AccountMailingsUnsubscribeWidget};
@@ -29,7 +29,7 @@ class AccountSubscriptionsAddRequestHandler extends AbstractBaseHandler
     public function handle($request)
     {
         try {
-            $form = new UserMailingForm(['scenario'=>UserMailingForm::SAVE_ACC]);
+            $form = new AdminUserMailingForm(['scenario'=>AdminUserMailingForm::SAVE_ACC]);
             $usersModel = \Yii::$app->user->identity;
             $email = $usersModel->email->email;
             
@@ -66,7 +66,7 @@ class AccountSubscriptionsAddRequestHandler extends AbstractBaseHandler
                         ]);
                         $notMailingsArray = $finder->find();
                         
-                        $mailingForm = new UserMailingForm();
+                        $mailingForm = new AdminUserMailingForm();
                         
                         $dataArray = [];
                         
