@@ -1,4 +1,5 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-id-form.twig' as form %}
 
 <p><strong>{{ header }}</strong></p>
 
@@ -10,15 +11,9 @@
             <br>{{descriptionHeader}}: {{ payment.description }}
             <br>{{ activeHeader }}: {{ payment.active }}
             
-            {% set form=active_form_begin({'id':payment.formId, 'enableAjaxValidation':payment.ajaxValidation, 'validateOnSubmit':payment.validateOnSubmit, 'validateOnChange':payment.validateOnChange, 'validateOnBlur':payment.validateOnBlur, 'validateOnType':payment.validateOnType, 'action':payment.formAction, 'method':'POST'}) %}
-                {{ form.field(payment.modelForm, 'id').hiddenInput().label(false) | raw }}
-                <input type="submit" value="{{ payment.button }}">
-            {{ active_form_end() }}
+            {{ form.form(modelForm, formSettings, payment.formIdChange, formActionChange, payment.id, buttonChange) }}
             
-            {% set form=active_form_begin({'id':payment.formIdDelete, 'enableAjaxValidation':payment.ajaxValidation, 'validateOnSubmit':payment.validateOnSubmit, 'validateOnChange':payment.validateOnChange, 'validateOnBlur':payment.validateOnBlur, 'validateOnType':payment.validateOnType, 'action':payment.formActionDelete, 'method':'POST'}) %}
-                {{ form.field(payment.modelForm, 'id').hiddenInput().label(false) | raw }}
-                <input type="submit" value="{{ payment.buttonDelete }}">
-            {{ active_form_end() }}
+            {{ form.form(modelForm, formSettings, payment.formIdDelete, formActionDelete, payment.id, buttonDelete) }}
         </div>
         </li>
     {% endfor %}

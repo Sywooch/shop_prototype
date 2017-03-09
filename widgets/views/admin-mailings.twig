@@ -1,4 +1,5 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-id-form.twig' as form %}
 
 <p><strong>{{ header }}</strong></p>
 
@@ -10,15 +11,9 @@
             <br>{{descriptionHeader}}: {{ mailing.description }}
             <br>{{ activeHeader }}: {{ mailing.active }}
             
-            {% set form=active_form_begin({'id':mailing.formId, 'enableAjaxValidation':mailing.ajaxValidation, 'validateOnSubmit':mailing.validateOnSubmit, 'validateOnChange':mailing.validateOnChange, 'validateOnBlur':mailing.validateOnBlur, 'validateOnType':mailing.validateOnType, 'action':mailing.formAction, 'method':'POST'}) %}
-                {{ form.field(mailing.modelForm, 'id').hiddenInput().label(false) | raw }}
-                <input type="submit" value="{{ mailing.button }}">
-            {{ active_form_end() }}
+            {{ form.form(modelForm, formSettings, mailing.formIdChange, formActionChange, mailing.id, buttonChange) }}
             
-            {% set form=active_form_begin({'id':mailing.formIdDelete, 'enableAjaxValidation':mailing.ajaxValidation, 'validateOnSubmit':mailing.validateOnSubmit, 'validateOnChange':mailing.validateOnChange, 'validateOnBlur':mailing.validateOnBlur, 'validateOnType':mailing.validateOnType, 'action':mailing.formActionDelete, 'method':'POST'}) %}
-                {{ form.field(mailing.modelForm, 'id').hiddenInput().label(false) | raw }}
-                <input type="submit" value="{{ mailing.buttonDelete }}">
-            {{ active_form_end() }}
+            {{ form.form(modelForm, formSettings, mailing.formIdDelete, formActionDelete, mailing.id, buttonDelete) }}
         </div>
         </li>
     {% endfor %}

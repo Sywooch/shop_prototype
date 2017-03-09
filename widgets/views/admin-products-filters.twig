@@ -2,7 +2,7 @@
 
 <p><strong>{{ header }}</strong></p>
 
-<div class="orders-filters">
+<div class="products-filters">
     {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionApply, 'method':'POST'}) %}
         {{ form.field(formModel, 'sortingField').dropDownList(sortingFields) | raw }}
         {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes) | raw }}

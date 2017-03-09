@@ -1,4 +1,5 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-id-form.twig' as form %}
 
 <p><strong>{{ header }}</strong></p>
 
@@ -28,11 +29,8 @@
                     <br>{{ deliveryHeader }}: {{ purchase.delivery }}
                     <br>{{ statusHeader }}: <span class="{{ statusClass }}">{{ purchase.status }}</span>
                     
-                    {% if purchase.modelForm %}
-                        {% set form=active_form_begin({'id':purchase.formId, 'enableAjaxValidation':purchase.ajaxValidation, 'validateOnSubmit':purchase.validateOnSubmit, 'validateOnChange':purchase.validateOnChange, 'validateOnBlur':purchase.validateOnBlur, 'validateOnType':purchase.validateOnType, 'action':purchase.formAction, 'method':'POST'}) %}
-                            {{ form.field(purchase.modelForm, 'id').hiddenInput().label(false) | raw }}
-                            <input type="submit" value="{{ purchase.button }}">
-                        {{ active_form_end() }}
+                    {% if purchase.activeForm %}
+                        {{ form.form(modelForm, formSettings, purchase.formId, formAction, purchase.id, button) }}
                     {% endif %}
                 </div>
             </li>

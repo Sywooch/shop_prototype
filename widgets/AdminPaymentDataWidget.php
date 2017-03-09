@@ -46,25 +46,26 @@ class AdminPaymentDataWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
+            $renderArray['id'] = $this->payment->id;
             $renderArray['name'] = $this->payment->name;
             $renderArray['description'] = $this->payment->description;
             $renderArray['active'] = $this->payment->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
             
-            $renderArray['modelForm'] = \Yii::configure($this->form, ['id'=>$this->payment->id]);
+            $renderArray['modelForm'] = $this->form;
             
-            $renderArray['formId'] = sprintf('admin-payment-get-form-%d', $this->payment->id);
-            $renderArray['formAction'] = Url::to(['/admin/payment-form']);
-            $renderArray['button'] = \Yii::t('base', 'Change');
+            $renderArray['formIdChange'] = sprintf('admin-payment-get-form-%d', $this->payment->id);
+            $renderArray['formActionChange'] = Url::to(['/admin/payment-form']);
+            $renderArray['buttonChange'] = \Yii::t('base', 'Change');
             
             $renderArray['formIdDelete'] = sprintf('admin-payment-delete-form-%d', $this->payment->id);
             $renderArray['formActionDelete'] = Url::to(['/admin/payment-delete']);
             $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             $renderArray['nameHeader'] = \Yii::t('base', 'Name');
             $renderArray['descriptionHeader'] = \Yii::t('base', 'Description');

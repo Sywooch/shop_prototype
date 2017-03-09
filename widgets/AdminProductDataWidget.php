@@ -78,21 +78,21 @@ class AdminProductDataWidget extends AbstractBaseWidget
             $renderArray['seocode'] = $this->productsModel->seocode;
             $renderArray['views'] = $this->productsModel->views;
             
-            $renderArray['modelForm'] = \Yii::configure($this->form, ['id'=>$this->productsModel->id]);
+            $renderArray['modelForm'] = $this->form;
             
-            $renderArray['formId'] = sprintf('admin-product-detail-get-form-%d', $this->productsModel->id);
-            $renderArray['formAction'] = Url::to(['/admin/product-detail-form']);
-            $renderArray['button'] = \Yii::t('base', 'Change');
+            $renderArray['formIdChange'] = sprintf('admin-product-detail-get-form-%d', $this->productsModel->id);
+            $renderArray['formActionChange'] = Url::to(['/admin/product-detail-form']);
+            $renderArray['buttonChange'] = \Yii::t('base', 'Change');
             
             $renderArray['formIdDelete'] = sprintf('admin-product-detail-delete-form-%d', $this->productsModel->id);
             $renderArray['formActionDelete'] = Url::to(['/admin/product-detail-delete']);
             $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             $renderArray['idHeader'] = \Yii::t('base', 'Product Id');
             $renderArray['dateHeader'] = \Yii::t('base', 'Date added');

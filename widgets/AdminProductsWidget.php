@@ -90,25 +90,25 @@ class AdminProductsWidget extends AbstractBaseWidget
                         $set['related'] = implode(',', ArrayHelper::getColumn($product->related, 'id_related_product'));
                     }
                     
-                    $form = clone $this->form;
-                    $set['modelForm'] = \Yii::configure($form, ['id'=>$product->id]);
-                    
-                    $set['formId'] = sprintf('admin-product-detail-get-form-%d', $product->id);
-                    $set['formAction'] = Url::to(['/admin/product-detail-form']);
-                    $set['button'] = \Yii::t('base', 'Change');
-                    
+                    $set['formIdChange'] = sprintf('admin-product-detail-get-form-%d', $product->id);
                     $set['formIdDelete'] = sprintf('admin-product-detail-delete-form-%d', $product->id);
-                    $set['formActionDelete'] = Url::to(['/admin/product-detail-delete']);
-                    $set['buttonDelete'] = \Yii::t('base', 'Delete');
-                    
-                    $set['ajaxValidation'] = false;
-                    $set['validateOnSubmit'] = false;
-                    $set['validateOnChange'] = false;
-                    $set['validateOnBlur'] = false;
-                    $set['validateOnType'] = false;
                     
                     $renderArray['products'][] = $set;
                 }
+                
+                $renderArray['modelForm'] = $this->form;
+                
+                $renderArray['formActionChange'] = Url::to(['/admin/product-detail-form']);
+                $renderArray['buttonChange'] = \Yii::t('base', 'Change');
+                
+                $renderArray['formActionDelete'] = Url::to(['/admin/product-detail-delete']);
+                $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
+                
+                $renderArray['formSettings']['ajaxValidation'] = false;
+                $renderArray['formSettings']['validateOnSubmit'] = false;
+                $renderArray['formSettings']['validateOnChange'] = false;
+                $renderArray['formSettings']['validateOnBlur'] = false;
+                $renderArray['formSettings']['validateOnType'] = false;
                 
                 $renderArray['idHeader'] = \Yii::t('base', 'Product Id');
                 $renderArray['dateHeader'] = \Yii::t('base', 'Date added');

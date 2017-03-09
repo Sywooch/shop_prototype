@@ -1,4 +1,5 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-id-form.twig' as form %}
 
 <div class="admin-product-previous-data">
     <a href="{{ link }}">{{ linkText }}</a>
@@ -19,14 +20,8 @@
     <br>{{ seocodeHeader }}: {{ seocode }}
     <br>{{ viewsHeader }}: {{ views }}
     
-    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
-        {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
-        <input type="submit" value="{{ button }}">
-    {{ active_form_end() }}
+    {{ form.form(modelForm, formSettings, formIdChange, formActionChange, id, buttonChange) }}
     
-    {% set form=active_form_begin({'id':formIdDelete, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionDelete, 'method':'POST'}) %}
-        {{ form.field(modelForm, 'id').hiddenInput().label(false) | raw }}
-        <input type="submit" value="{{ buttonDelete }}">
-    {{ active_form_end() }}
+    {{ form.form(modelForm, formSettings, formIdDelete, formActionDelete, id, buttonDelete) }}
 </div>
 

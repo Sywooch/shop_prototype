@@ -52,7 +52,7 @@ class UserLoginForm extends AbstractBaseForm
             [['id'], 'integer'],
             [['email', 'password'], 'string'],
             [['email'], 'email'],
-            [['password'], 'match', 'pattern'=>'#[^\s]+#u'],
+            [['password'], 'match', 'pattern'=>'#^[^\s]+$#u'],
             [['email'], UserEmailExistsAuthValidator::class, 'on'=>self::LOGIN],
             [['password'], PasswordCorrectAuthValidator::class, 'on'=>self::LOGIN, 'when'=>function($model, $attribute) {
                 return empty($this->errors);

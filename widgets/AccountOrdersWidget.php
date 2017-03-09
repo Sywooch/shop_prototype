@@ -100,21 +100,22 @@ class AccountOrdersWidget extends AbstractBaseWidget
                     }
                     
                     if ((bool) $purchase->shipped !== true && (bool) $purchase->canceled !== true) {
-                        $form = clone $this->form;
-                        $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id]);
+                        $set['activeForm'] = true;
                         $set['formId'] = sprintf('order-cancellation-form-%d', $purchase->id);
-                        $set['formAction'] = Url::to(['/account/order-cancel']);
-                        $set['button'] = \Yii::t('base', 'Cancel');
-                        
-                        $set['ajaxValidation'] = false;
-                        $set['validateOnSubmit'] = false;
-                        $set['validateOnChange'] = false;
-                        $set['validateOnBlur'] = false;
-                        $set['validateOnType'] = false;
                     }
                     
                     $renderArray['purchases'][] = $set;
                 }
+                
+                $renderArray['modelForm'] = $this->form;
+                $renderArray['formAction'] = Url::to(['/account/order-cancel']);
+                $renderArray['button'] = \Yii::t('base', 'Cancel');
+                
+                $renderArray['formSettings']['ajaxValidation'] = false;
+                $renderArray['formSettings']['validateOnSubmit'] = false;
+                $renderArray['formSettings']['validateOnChange'] = false;
+                $renderArray['formSettings']['validateOnBlur'] = false;
+                $renderArray['formSettings']['validateOnType'] = false;
                 
                 $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
                 $renderArray['idHeader'] = \Yii::t('base', 'Order number');

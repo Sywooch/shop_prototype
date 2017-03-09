@@ -90,16 +90,16 @@ class AdminOrderDataWidget extends AbstractBaseWidget
                 $renderArray['status'] = \Yii::t('base', 'Received');
             }
             
-            $renderArray['modelForm'] = \Yii::configure($this->form, ['id'=>$this->purchase->id]);
+            $renderArray['modelForm'] = $this->form;
             $renderArray['formId'] = sprintf('admin-order-detail-get-form-%d', $this->purchase->id);
             $renderArray['formAction'] = Url::to(['/admin/order-detail-form']);
             $renderArray['button'] = \Yii::t('base', 'Change');
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
             $renderArray['idHeader'] = \Yii::t('base', 'Order number');

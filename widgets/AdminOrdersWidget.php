@@ -99,20 +99,23 @@ class AdminOrdersWidget extends AbstractBaseWidget
                         $set['status'] = \Yii::t('base', 'Received');
                     }
                     
-                    $form = clone $this->form;
-                    $set['modelForm'] = \Yii::configure($form, ['id'=>$purchase->id]);
-                    $set['formId'] = sprintf('admin-order-detail-get-form-%d', $purchase->id);
-                    $set['formAction'] = Url::to(['/admin/order-detail-form']);
-                    $set['button'] = \Yii::t('base', 'Change');
+                    $set['activeForm'] = true;
                     
-                    $set['ajaxValidation'] = false;
-                    $set['validateOnSubmit'] = false;
-                    $set['validateOnChange'] = false;
-                    $set['validateOnBlur'] = false;
-                    $set['validateOnType'] = false;
+                    $set['formId'] = sprintf('admin-order-detail-get-form-%d', $purchase->id);
                     
                     $renderArray['purchases'][] = $set;
                 }
+                
+                $renderArray['modelForm'] = $this->form;
+                
+                $renderArray['formAction'] = Url::to(['/admin/order-detail-form']);
+                $renderArray['button'] = \Yii::t('base', 'Change');
+                
+                $renderArray['formSettings']['ajaxValidation'] = false;
+                $renderArray['formSettings']['validateOnSubmit'] = false;
+                $renderArray['formSettings']['validateOnChange'] = false;
+                $renderArray['formSettings']['validateOnBlur'] = false;
+                $renderArray['formSettings']['validateOnType'] = false;
                 
                 $renderArray['dateHeader'] = \Yii::t('base', 'Order date');
                 $renderArray['idHeader'] = \Yii::t('base', 'Order number');

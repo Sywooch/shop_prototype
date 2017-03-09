@@ -67,7 +67,7 @@ class AdminMailingForm extends AbstractBaseForm
             [['id', 'name', 'description'], 'required', 'on'=>self::EDIT],
             [['id', 'active'], 'integer'],
             [['name', 'description'], 'string'],
-            [['name', 'description'], 'match', 'pattern'=>'#[a-zа-я0-9\s]#iu'],
+            [['name', 'description'], 'match', 'pattern'=>'#^[a-zа-я\s,.!0-9]+$#iu'],
             [['id'], DeleteMailingUsersExistsValidator::class, 'on'=>self::DELETE],
             [['name'], CreateMailingNameExistsValidator::class, 'on'=>self::CREATE],
         ];

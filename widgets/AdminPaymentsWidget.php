@@ -58,32 +58,33 @@ class AdminPaymentsWidget extends AbstractBaseWidget
             $paymentsArray = [];
             foreach ($this->payments as $payment) {
                 $set = [];
+                $set['id'] = $payment->id;
                 $set['name'] = $payment->name;
                 $set['description'] = $payment->description;
                 $set['active'] = $payment->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
                 
-                $paymentsForm = clone $this->form;
-                $set['modelForm'] = \Yii::configure($paymentsForm, ['id'=>$payment->id]);
-                
-                $set['formId'] = sprintf('admin-payment-get-form-%d', $payment->id);
-                $set['formAction'] = Url::to(['/admin/payment-form']);
-                $set['button'] = \Yii::t('base', 'Change');
-                
+                $set['formIdChange'] = sprintf('admin-payment-get-form-%d', $payment->id);
                 $set['formIdDelete'] = sprintf('admin-payment-delete-form-%d', $payment->id);
-                $set['formActionDelete'] = Url::to(['/admin/payment-delete']);
-                $set['buttonDelete'] = \Yii::t('base', 'Delete');
-                
-                $set['ajaxValidation'] = false;
-                $set['validateOnSubmit'] = false;
-                $set['validateOnChange'] = false;
-                $set['validateOnBlur'] = false;
-                $set['validateOnType'] = false;
                 
                 $paymentsArray[] = $set;
             }
             
             ArrayHelper::multisort($paymentsArray, 'name', SORT_ASC);
             $renderArray['payments'] = $paymentsArray;
+            
+            $renderArray['modelForm'] = $this->form;
+            
+            $renderArray['formActionChange'] = Url::to(['/admin/payment-form']);
+            $renderArray['buttonChange'] = \Yii::t('base', 'Change');
+            
+            $renderArray['formActionDelete'] = Url::to(['/admin/payment-delete']);
+            $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             $renderArray['nameHeader'] = \Yii::t('base', 'Name');
             $renderArray['descriptionHeader'] = \Yii::t('base', 'Description');
