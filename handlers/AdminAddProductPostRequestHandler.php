@@ -128,7 +128,7 @@ class AdminAddProductPostRequestHandler extends AbstractBaseHandler
                         
                         $dataArray = [];
                         
-                        $dataArray['successText'] = AdminProductSaveSuccessWidget::widget(['template'=>'admin-product-save-success.twig']);
+                        $dataArray['successText'] = AdminProductSaveSuccessWidget::widget(['template'=>'paragraph.twig']);
                         $adminAddProductFormWidgetConfig = $this->adminAddProductFormWidgetConfig($categoriesArray, $colorsArray, $sizesArray, $brandsArray, $adminProductForm);
                         $dataArray['form'] = AdminAddProductFormWidget::widget($adminAddProductFormWidgetConfig);
                         

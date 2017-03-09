@@ -303,7 +303,7 @@ class AccountOrdersWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-orders.twig');
+        $reflection->setValue($widget, 'orders.twig');
         
         $result = $widget->run();
         
@@ -568,7 +568,7 @@ class AccountOrdersWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-orders.twig');
+        $reflection->setValue($widget, 'orders.twig');
         
         $result = $widget->run();
         

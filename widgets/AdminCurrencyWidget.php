@@ -57,6 +57,7 @@ class AdminCurrencyWidget extends AbstractBaseWidget
             $currencyArray = [];
             foreach ($this->currency as $currency) {
                 $set = [];
+                $set['id'] = $currency->id;
                 $set['code'] = $currency->code;
                 $set['exchange_rate'] = $currency->exchange_rate;
                 if (!empty($currency->main)) {
@@ -64,28 +65,26 @@ class AdminCurrencyWidget extends AbstractBaseWidget
                 }
                 $set['main'] = $currency->main;
                 
-                $currencyForm = clone $this->form;
-                $set['modelForm'] = \Yii::configure($currencyForm, ['id'=>$currency->id]);
-                
-                $set['formId'] = sprintf('admin-currency-delete-form-%d', $currency->id);
+                $set['formIdDelete'] = sprintf('admin-currency-delete-form-%d', $currency->id);
                 $set['formIdBaseChange'] = sprintf('admin-currency-base-change-form-%d', $currency->id);
-                
-                $set['ajaxValidation'] = false;
-                $set['validateOnSubmit'] = false;
-                $set['validateOnChange'] = false;
-                $set['validateOnBlur'] = false;
-                $set['validateOnType'] = false;
-                
-                $set['formAction'] = Url::to(['/admin/currency-delete']);
-                $set['formActionBaseChange'] = Url::to(['/admin/currency-base-change']);
-                
-                $set['button'] = \Yii::t('base', 'Delete');
                 
                 $currencyArray[] = $set;
             }
             
             ArrayHelper::multisort($currencyArray, 'code', SORT_ASC);
             $renderArray['currencyArray'] = $currencyArray;
+            
+            $renderArray['modelForm'] = $this->form;
+            
+            $renderArray['formActionDelete'] = Url::to(['/admin/currency-delete']);
+            $renderArray['formActionBaseChange'] = Url::to(['/admin/currency-base-change']);
+            $renderArray['button'] = \Yii::t('base', 'Delete');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             $renderArray['codeHeader'] = \Yii::t('base', 'Code');
             $renderArray['exchangeHeader'] = \Yii::t('base', 'Exchange rate');

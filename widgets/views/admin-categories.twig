@@ -1,4 +1,6 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-id-form.twig' as hiddenIdForm %}
+{% import '@app/widgets/views/macro/hidden-id-activecheckbox-form.twig' as hiddenIdActiveForm %}
 
 <p><strong>{{ header }}</strong></p>
 
@@ -6,32 +8,16 @@
     {% for category in categories %}
         <li>
             {{ category.name }}
-            
-            {% set form=active_form_begin({'id':category.formIdChange, 'enableAjaxValidation':category.ajaxValidation, 'validateOnSubmit':category.validateOnSubmit, 'validateOnChange':category.validateOnChange, 'validateOnBlur':category.validateOnBlur, 'validateOnType':category.validateOnType, 'action':category.formActionChange, 'method':'POST'}) %}
-                {{ form.field(category.modelForm, 'id').hiddenInput().label(false) | raw }}
-                {{ form.field(category.modelForm, 'active').checkbox() | raw }}
-            {{ active_form_end() }}
-            
-            {% set form=active_form_begin({'id':category.formId, 'enableAjaxValidation':category.ajaxValidation, 'validateOnSubmit':category.validateOnSubmit, 'validateOnChange':category.validateOnChange, 'validateOnBlur':category.validateOnBlur, 'validateOnType':category.validateOnType, 'action':category.formAction, 'method':'POST'}) %}
-                {{ form.field(category.modelForm, 'id').hiddenInput().label(false) | raw }}
-                <input type="submit" value="{{ category.button }}">
-            {{ active_form_end() }}
+            {{ hiddenIdActiveForm.form(categoryForm, formSettings, category.formIdChange, categoryFormActionChange, category.id, category.active) }}
+            {{ hiddenIdForm.form(categoryForm, formSettings, category.formIdDelete, categoryFormActionDelete, category.id, buttonDelete) }}
             
             {% if category.subcategory %}
                 <ul>
                     {% for subcategory in category.subcategory %}
                         <li>
                             {{ subcategory.name }}
-                            
-                            {% set form=active_form_begin({'id':subcategory.formIdChange, 'enableAjaxValidation':subcategory.ajaxValidation, 'validateOnSubmit':subcategory.validateOnSubmit, 'validateOnChange':subcategory.validateOnChange, 'validateOnBlur':subcategory.validateOnBlur, 'validateOnType':subcategory.validateOnType, 'action':subcategory.formActionChange, 'method':'POST'}) %}
-                                {{ form.field(subcategory.modelForm, 'id').hiddenInput().label(false) | raw }}
-                                {{ form.field(subcategory.modelForm, 'active').checkbox() | raw }}
-                            {{ active_form_end() }}
-                            
-                            {% set form=active_form_begin({'id':subcategory.formId, 'enableAjaxValidation':subcategory.ajaxValidation, 'validateOnSubmit':subcategory.validateOnSubmit, 'validateOnChange':subcategory.validateOnChange, 'validateOnBlur':subcategory.validateOnBlur, 'validateOnType':subcategory.validateOnType, 'action':subcategory.formAction, 'method':'POST'}) %}
-                                {{ form.field(subcategory.modelForm, 'id').hiddenInput().label(false) | raw }}
-                                <input type="submit" value="{{ subcategory.button }}">
-                            {{ active_form_end() }}
+                            {{ hiddenIdActiveForm.form(subcategoryForm, formSettings, subcategory.formIdChange, subcategoryFormActionChange, subcategory.id, subcategory.active) }}
+                            {{ hiddenIdForm.form(subcategoryForm, formSettings, subcategory.formIdDelete, subcategoryFormActionDelete, subcategory.id, buttonDelete) }}
                         </li>
                     {% endfor %}
                 </ul>

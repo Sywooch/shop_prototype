@@ -137,7 +137,7 @@ class CommentFormTests extends TestCase
         
         $form = new CommentForm(['scenario'=>CommentForm::GET]);
         $form->attributes = [
-            'id'=>22,
+            'id'=>1,
         ];
         $form->validate();
         

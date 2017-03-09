@@ -108,7 +108,7 @@ class AdminUserDataChangePostRequestHandler extends AbstractBaseHandler
                         ]);
                         $saver->save();
                         
-                        $response = AccountChangeDataSuccessWidget::widget(['template'=>'account-change-data-success.twig']);
+                        $response = AccountChangeDataSuccessWidget::widget(['template'=>'paragraph.twig']);
                         
                         $transaction->commit();
                         

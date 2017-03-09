@@ -78,7 +78,7 @@ class AdminUserPasswordRequestHandler extends AbstractBaseHandler
     {
         try {
             $dataArray = $this->accountChangePasswordWidgetConfig($userChangePasswordForm);
-            $dataArray['template'] = 'admin-user-password-change-form.twig';
+            $dataArray['template'] = 'password-change-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

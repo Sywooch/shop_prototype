@@ -26,12 +26,14 @@
                     <br>{{ postcodeHeader }}: {{ purchase.postcode }}
                     <br>{{ paymentHeader }}: {{ purchase.payment }}
                     <br>{{ deliveryHeader }}: {{ purchase.delivery }}
-                    <br>{{ statusHeader }}: {{ purchase.status }}
+                    <br>{{ statusHeader }}: <span class="{{ statusClass }}">{{ purchase.status }}</span>
                     
-                    {% set form=active_form_begin({'id':purchase.formId, 'enableAjaxValidation':purchase.ajaxValidation, 'validateOnSubmit':purchase.validateOnSubmit, 'validateOnChange':purchase.validateOnChange, 'validateOnBlur':purchase.validateOnBlur, 'validateOnType':purchase.validateOnType, 'action':purchase.formAction, 'method':'POST'}) %}
-                        {{ form.field(purchase.modelForm, 'id').hiddenInput().label(false) | raw }}
-                        <input type="submit" value="{{ purchase.button }}">
-                    {{ active_form_end() }}
+                    {% if purchase.modelForm %}
+                        {% set form=active_form_begin({'id':purchase.formId, 'enableAjaxValidation':purchase.ajaxValidation, 'validateOnSubmit':purchase.validateOnSubmit, 'validateOnChange':purchase.validateOnChange, 'validateOnBlur':purchase.validateOnBlur, 'validateOnType':purchase.validateOnType, 'action':purchase.formAction, 'method':'POST'}) %}
+                            {{ form.field(purchase.modelForm, 'id').hiddenInput().label(false) | raw }}
+                            <input type="submit" value="{{ purchase.button }}">
+                        {{ active_form_end() }}
+                    {% endif %}
                 </div>
             </li>
         {% endfor %}

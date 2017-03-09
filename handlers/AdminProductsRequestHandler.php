@@ -271,7 +271,7 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Download selected products in csv format');
-            $dataArray['template'] = 'admin-csv-products-form.twig';
+            $dataArray['template'] = 'csv-form.twig';
             $dataArray['isAllowed'] = $isAllowed;
             
             return $dataArray;

@@ -57,26 +57,25 @@ class AdminColorsWidget extends AbstractBaseWidget
             $colorsArray = [];
             foreach ($this->colors as $color) {
                 $set = [];
+                $set['id'] = $color->id;
                 $set['color'] = $color->color;
-                
-                $colorsForm = clone $this->form;
-                $set['modelForm'] = \Yii::configure($colorsForm, ['id'=>$color->id]);
                 $set['formId'] = sprintf('admin-color-delete-form-%d', $color->id);
-                
-                $set['ajaxValidation'] = false;
-                $set['validateOnSubmit'] = false;
-                $set['validateOnChange'] = false;
-                $set['validateOnBlur'] = false;
-                $set['validateOnType'] = false;
-                
-                $set['formAction'] = Url::to(['/admin/color-delete']);
-                $set['button'] = \Yii::t('base', 'Delete');
-                
                 $colorsArray[] = $set;
             }
             
             ArrayHelper::multisort($colorsArray, 'color', SORT_ASC);
             $renderArray['colors'] = $colorsArray;
+            
+            $renderArray['modelForm'] = $this->form;
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
+            
+            $renderArray['formAction'] = Url::to(['/admin/color-delete']);
+            $renderArray['button'] = \Yii::t('base', 'Delete');
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

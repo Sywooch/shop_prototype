@@ -82,7 +82,7 @@ class AdminProductsFiltersForm extends AbstractBaseForm
             [['colors', 'sizes', 'brands'], IntInArrayValidator::class],
             [['active'], ActiveStatusExistsValidator::class],
             [['active'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE],
-            [['url'], 'match', 'pattern'=>'#^/[a-z-]+/?[a-z-]*-?[0-9]*$#u'],
+            [['url'], 'match', 'pattern'=>'#^/[a-z-0-9]+$#u'],
         ];
     }
 }

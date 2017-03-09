@@ -2,12 +2,12 @@
 
 {% if purchases %}
     <ol class="account-last-orders">
-        {% for purchase in purchases %}
+        {% for order in purchases %}
             <li>
-                <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
-                <br>{{ purchase.image | raw }}
-                <br>{{ idHeader }}: {{ purchase.id }}
-                <br>{{ statusHeader }}: {{ purchase.status }}
+                <a href="{{ order.link }}">{{ order.linkText }}</a>
+                <br>{{ order.image | raw }}
+                <br>{{ idHeader }}: {{ order.id }}
+                <br>{{ statusHeader }}: {{ order.status }}
             </li>
         {% endfor %}
     </ol>

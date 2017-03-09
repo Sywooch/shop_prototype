@@ -64,7 +64,7 @@ class CommentSaveRequestHandler extends AbstractBaseHandler
                         ]);
                         $saver->save();
                         
-                        $response = CommentSaveSuccessWidget::widget(['template'=>'comment-save-success.twig']);
+                        $response = CommentSaveSuccessWidget::widget(['template'=>'paragraph.twig']);
                         
                         $transaction->commit();
                         

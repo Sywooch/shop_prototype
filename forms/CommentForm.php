@@ -73,6 +73,7 @@ class CommentForm extends AbstractBaseForm
             [['id', 'text'], 'required', 'on'=>self::EDIT],
             [['id', 'id_product', 'active'], 'integer'],
             [['text', 'name', 'email'], 'string'],
+            [['text', 'name'], 'match', 'pattern'=>'#[a-zа-я\s0-9]+#iu'],
             [['email'], 'email'],
         ];
     }

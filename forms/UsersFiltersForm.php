@@ -55,7 +55,7 @@ class UsersFiltersForm extends AbstractBaseForm
             [['url'], 'required'],
             [['sortingType', 'ordersStatus'], 'integer'],
             [['sortingField', 'url'], 'string'],
-            [['url'], 'match', 'pattern'=>'#^/[a-z-]+/?[a-z-]*-?[0-9]*$#u'],
+            [['url'], 'match', 'pattern'=>'#^/[a-z-0-9]+$#u'],
             [['sortingField'], SortingFieldsUsersExistsValidator::class],
             [['sortingType'], SortingTypeExistsValidator::class],
             [['ordersStatus'], ActiveStatusTypeValidator::class, 'on'=>self::SAVE]

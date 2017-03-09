@@ -121,16 +121,15 @@ class AdminProductForm extends AbstractBaseForm
             [['code', 'name', 'short_description', 'description', 'price', 'images', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand'], 'required', 'on'=>self::CREATE],
             [['id', 'code', 'name', 'short_description', 'description', 'price', 'id_category', 'id_subcategory', 'id_colors', 'id_sizes', 'id_brand', 'seocode'], 'required', 'on'=>self::EDIT],
             [['images'], 'image', 'extensions'=>['png', 'jpg', 'gif'], 'minWidth'=>200, 'minHeight'=>200, 'maxWidth'=>800, 'maxHeight'=>800, 'maxFiles'=>5, 'maxSize'=>1024*512, 'mimeTypes'=>'image/*'],
-            
             [['name', 'short_description', 'description', 'related', 'code'], 'string'],
             [['id', 'id_category', 'id_subcategory', 'id_brand', 'total_products', 'views'], 'integer'],
-            [['code'], 'match', 'pattern'=>'#^[A-Z0-9-]+$#'],
+            [['name', 'short_description', 'description'], 'match', 'pattern'=>'#[a-zа-я0-9\s]#iu'],
+            [['code'], 'match', 'pattern'=>'#^[A-Z0-9-]+$#u'],
             [['price'], 'double'],
             [['active'], ActiveStatusExistsValidator::class],
             [['id_colors', 'id_sizes'], IntInArrayValidator::class],
             [['seocode'], 'match', 'pattern'=>'#^[a-z0-9-]+$#'],
             [['related'], 'match', 'pattern'=>'#^(?:[0-9]{1,3},?)+$#'],
-            
             [['related'], RelatedProductsExistsValidator::class],
             [['code'], CreateProductCodeExistsValidator::class, 'on'=>self::CREATE],
             [['code'], EditProductCodeExistsValidator::class, 'on'=>self::EDIT],

@@ -45,27 +45,26 @@ class AdminMailingFormWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['modelForm'] = \Yii::configure($this->form, [
-                'id'=>$this->mailing->id,
-                'name'=>$this->mailing->name,
-                'description'=>$this->mailing->description,
-                'active'=>$this->mailing->active,
-            ]);
+            $renderArray['modelForm'] = $this->form;
+            
+            $renderArray['id'] = $this->mailing->id;
+            $renderArray['name'] = $this->mailing->name;
+            $renderArray['description'] = $this->mailing->description;
+            $renderArray['active'] = !empty($this->mailing->active) ? true : false;
             
             $renderArray['formId'] = sprintf('admin-mailing-edit-form-%d', $this->mailing->id);
-            
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['formAction'] = Url::to(['/admin/mailing-change']);
+            $renderArray['button'] = \Yii::t('base', 'Save');
+            $renderArray['buttonCancel'] = \Yii::t('base', 'Cancel');
             
             $renderArray['cols'] = 20;
             $renderArray['rows'] = 5;
             
-            $renderArray['formAction'] = Url::to(['/admin/mailing-change']);
-            $renderArray['button'] = \Yii::t('base', 'Save');
-            $renderArray['buttonCancel'] = \Yii::t('base', 'Cancel');
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

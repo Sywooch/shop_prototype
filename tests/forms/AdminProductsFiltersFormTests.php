@@ -99,7 +99,7 @@ class AdminProductsFiltersFormTests extends TestCase
         $form = new AdminProductsFiltersForm(['scenario'=>AdminProductsFiltersForm::SAVE]);
         $form->attributes = [
             'active'=>'0',
-            'url'=>'/shop/main-2',
+            'url'=>'/shop-main-2',
         ];
         $form->validate();
         
@@ -114,7 +114,7 @@ class AdminProductsFiltersFormTests extends TestCase
         
         $form = new AdminProductsFiltersForm(['scenario'=>AdminProductsFiltersForm::CLEAN]);
         $form->attributes = [
-            'url'=>'/shop/main',
+            'url'=>'/shop-main',
         ];
         $form->validate();
         

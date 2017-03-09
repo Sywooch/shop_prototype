@@ -1,8 +1,6 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/create-inputtext-form.twig' as form %}
 
 <p><strong>{{ header }}</strong></p>
 
-{% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
-    {{ form.field(formModel, 'size').input('number', {'step':0.5, 'min':2}) | raw }}
-    <input type="submit" value="{{ button }}">
-{{ active_form_end() }}
+{{ form.form(modelForm, formSettings, formId, formAction, 'size', button) }}

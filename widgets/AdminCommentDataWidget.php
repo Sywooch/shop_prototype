@@ -55,8 +55,7 @@ class AdminCommentDataWidget extends AbstractBaseWidget
             $renderArray['text'] = Html::encode($this->commentsModel->text);
             $renderArray['active'] = $this->commentsModel->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
             
-            $form = clone $this->form;
-            $renderArray['modelForm'] = \Yii::configure($form, ['id'=>$this->commentsModel->id]);
+            $renderArray['modelForm'] = $this->form;
             
             $renderArray['formId'] = sprintf('admin-comment-detail-get-form-%d', $this->commentsModel->id);
             $renderArray['formAction'] = Url::to(['/admin/comment-form']);
@@ -66,11 +65,11 @@ class AdminCommentDataWidget extends AbstractBaseWidget
             $renderArray['formActionDelete'] = Url::to(['/admin/comment-delete']);
             $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             $renderArray['idHeader'] = \Yii::t('base', 'Comment Id');
             $renderArray['dateHeader'] = \Yii::t('base', 'Date added');

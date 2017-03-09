@@ -72,6 +72,7 @@ class DeliveriesForm extends AbstractBaseForm
             [['id', 'active'], 'integer'],
             [['price'], 'double'],
             [['name', 'description'], 'string'],
+            [['name', 'description'], 'match', 'pattern'=>'#[a-zа-я\s-0-9]+#ui'],
             [['id'], DeleteDeliveryOrdersExistsValidator::class, 'on'=>self::DELETE],
             [['name'], CreateDeliveryNameExistsValidator::class, 'on'=>self::CREATE],
         ];

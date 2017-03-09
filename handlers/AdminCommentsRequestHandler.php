@@ -188,7 +188,7 @@ class AdminCommentsRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Download selected comments in csv format');
-            $dataArray['template'] = 'admin-csv-comments-form.twig';
+            $dataArray['template'] = 'csv-form.twig';
             $dataArray['isAllowed'] = $isAllowed;
             
             return $dataArray;

@@ -2,19 +2,19 @@
     <p><strong>{{ header }}</strong></p>
     
     <ol class="account-last-orders">
-        {% for purchase in purchases %}
+        {% for order in purchases %}
             <li>
-                <a href="{{ purchase.link }}">{{ purchase.linkText }}</a>
-                <br>{{ purchase.short_description }}
-                <br>{{ purchase.image | raw }}
-                <br>{{ idHeader }}: {{ purchase.id }}
-                <br>{{ dateHeader }}: {{ purchase.date }}
-                <br>{{ colorHeader }}: {{ purchase.color }}
-                <br>{{ sizeHeader }}: {{ purchase.size }}
-                <br>{{ quantityHeader }}: {{ purchase.quantity }}
-                <br>{{ priceHeader }}: {{ purchase.price }}
-                <br>{{ totalPriceHeader }}: {{ purchase.totalPrice }}
-                <br>{{ statusHeader }}: {{ purchase.status }}
+                <a href="{{ order.link }}">{{ order.linkText }}</a>
+                <br>{{ order.short_description }}
+                <br>{{ order.image | raw }}
+                <br>{{ idHeader }}: {{ order.id }}
+                <br>{{ dateHeader }}: {{ order.date }}
+                <br>{{ colorHeader }}: {{ order.color }}
+                <br>{{ sizeHeader }}: {{ order.size }}
+                <br>{{ quantityHeader }}: {{ order.quantity }}
+                <br>{{ priceHeader }}: {{ order.price }}
+                <br>{{ totalPriceHeader }}: {{ order.totalPrice }}
+                <br>{{ statusHeader }}: {{ order.status }}
             </li>
         {% endfor %}
     </ol>

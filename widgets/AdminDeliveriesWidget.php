@@ -65,33 +65,34 @@ class AdminDeliveriesWidget extends AbstractBaseWidget
             $deliveriesArray = [];
             foreach ($this->deliveries as $delivery) {
                 $set = [];
+                $set['id'] = $delivery->id;
                 $set['name'] = $delivery->name;
                 $set['description'] = $delivery->description;
                 $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($delivery->price * $this->currency->exchangeRate(), 2), $this->currency->code());
                 $set['active'] = $delivery->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
                 
-                $deliveriesForm = clone $this->form;
-                $set['modelForm'] = \Yii::configure($deliveriesForm, ['id'=>$delivery->id]);
-                
-                $set['formId'] = sprintf('admin-delivery-get-form-%d', $delivery->id);
-                $set['formAction'] = Url::to(['/admin/delivery-form']);
-                $set['button'] = \Yii::t('base', 'Change');
-                
+                $set['formIdChange'] = sprintf('admin-delivery-get-form-%d', $delivery->id);
                 $set['formIdDelete'] = sprintf('admin-delivery-delete-form-%d', $delivery->id);
-                $set['formActionDelete'] = Url::to(['/admin/delivery-delete']);
-                $set['buttonDelete'] = \Yii::t('base', 'Delete');
-                
-                $set['ajaxValidation'] = false;
-                $set['validateOnSubmit'] = false;
-                $set['validateOnChange'] = false;
-                $set['validateOnBlur'] = false;
-                $set['validateOnType'] = false;
                 
                 $deliveriesArray[] = $set;
             }
             
             ArrayHelper::multisort($deliveriesArray, 'name', SORT_ASC);
             $renderArray['deliveries'] = $deliveriesArray;
+            
+            $renderArray['modelForm'] = $this->form;
+            
+            $renderArray['formActionChange'] = Url::to(['/admin/delivery-form']);
+            $renderArray['buttonChange'] = \Yii::t('base', 'Change');
+            
+            $renderArray['formActionDelete'] = Url::to(['/admin/delivery-delete']);
+            $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             $renderArray['nameHeader'] = \Yii::t('base', 'Name');
             $renderArray['descriptionHeader'] = \Yii::t('base', 'Description');

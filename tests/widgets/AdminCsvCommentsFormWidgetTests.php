@@ -99,7 +99,7 @@ class AdminCsvCommentsFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-csv-comments-form.twig');
+        $reflection->setValue($this->widget, 'csv-form.twig');
         
         $reflection = new \ReflectionProperty($this->widget, 'isAllowed');
         $reflection->setAccessible(true);

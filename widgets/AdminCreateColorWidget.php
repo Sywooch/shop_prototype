@@ -46,17 +46,16 @@ class AdminCreateColorWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             
-            $renderArray['formModel'] = $this->form;
+            $renderArray['modelForm'] = $this->form;
             $renderArray['formId'] = 'color-create-form';
-            
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = true;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
-            
             $renderArray['formAction'] = Url::to(['/admin/color-create']);
             $renderArray['button'] = \Yii::t('base', 'Create');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = true;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

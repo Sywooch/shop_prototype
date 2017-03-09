@@ -71,7 +71,7 @@ class CommentSaveSuccessWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'comment-save-success.twig');
+        $reflection->setValue($widget, 'paragraph.twig');
         
         $result = $widget->run();
         

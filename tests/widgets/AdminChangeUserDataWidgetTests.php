@@ -186,7 +186,7 @@ class AdminChangeUserDataWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'admin-change-user-data-form.twig');
+        $reflection->setValue($widget, 'change-user-data-form.twig');
         
         $result = $widget->run();
         
@@ -230,7 +230,7 @@ class AdminChangeUserDataWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'admin-change-user-data-form.twig');
+        $reflection->setValue($widget, 'change-user-data-form.twig');
         
         $result = $widget->run();
         

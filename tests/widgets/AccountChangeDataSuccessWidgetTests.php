@@ -71,7 +71,7 @@ class AccountChangeDataSuccessWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-change-data-success.twig');
+        $reflection->setValue($widget, 'paragraph.twig');
         
         $result = $widget->run();
         

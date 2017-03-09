@@ -168,7 +168,7 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'account-mailings-unsubscribe.twig');
+        $reflection->setValue($this->widget, 'admin-mailings-form.twig');
         
         $result = $this->widget->run();
         
@@ -212,7 +212,7 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'account-mailings-unsubscribe.twig');
+        $reflection->setValue($this->widget, 'admin-mailings-form.twig');
         
         $result = $this->widget->run();
         

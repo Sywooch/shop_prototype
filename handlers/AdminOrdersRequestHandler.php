@@ -125,7 +125,7 @@ class AdminOrdersRequestHandler extends AbstractBaseHandler
             $dataArray['purchases'] = $ordersArray;
             $dataArray['currency'] = $currentCurrencyModel;
             $dataArray['form'] = $adminChangeOrderForm;
-            $dataArray['template'] = 'admin-orders.twig';
+            $dataArray['template'] = 'orders.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -144,7 +144,7 @@ class AdminOrdersRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Download selected orders in csv format');
-            $dataArray['template'] = 'admin-csv-orders-form.twig';
+            $dataArray['template'] = 'csv-form.twig';
             $dataArray['isAllowed'] = $isAllowed;
             
             return $dataArray;

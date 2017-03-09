@@ -71,7 +71,7 @@ class PurchaseSaveInfoWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'save-purchase-info.twig');
+        $reflection->setValue($widget, 'paragraph.twig');
         
         $result = $widget->run();
         

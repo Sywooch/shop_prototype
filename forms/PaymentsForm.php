@@ -67,6 +67,7 @@ class PaymentsForm extends AbstractBaseForm
             [['id', 'name', 'description'], 'required', 'on'=>self::EDIT],
             [['id', 'active'], 'integer'],
             [['name', 'description'], 'string'],
+            [['name', 'description'], 'match', 'pattern'=>'#[a-zа-я\s0-9]#iu'],
             [['id'], DeletePaymentOrdersExistsValidator::class, 'on'=>self::DELETE],
             [['name'], CreatePaymentNameExistsValidator::class, 'on'=>self::CREATE],
         ];

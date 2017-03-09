@@ -1,4 +1,5 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-id-form.twig' as formDelete %}
 
 <p><strong>{{ header }}</strong></p>
 
@@ -12,16 +13,13 @@
             {% endif %}
             
             {% if not currency.main %}
-                {% set form=active_form_begin({'id':currency.formIdBaseChange, 'enableAjaxValidation':currency.ajaxValidation, 'validateOnSubmit':currency.validateOnSubmit, 'validateOnChange':currency.validateOnChange, 'validateOnBlur':currency.validateOnBlur, 'validateOnType':currency.validateOnType, 'action':currency.formActionBaseChange, 'method':'POST'}) %}
-                    {{ form.field(currency.modelForm, 'id').hiddenInput().label(false) | raw }}
-                    {{ form.field(currency.modelForm, 'main').checkbox() | raw }}
+                {% set form=active_form_begin({'id':currency.formIdBaseChange, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionBaseChange, 'method':'POST'}) %}
+                    {{ form.field(modelForm, 'id').hiddenInput({'value':currency.id}).label(false) | raw }}
+                    {{ form.field(modelForm, 'main').checkbox() | raw }}
                 {{ active_form_end() }}
             {% endif %}
             
-            {% set form=active_form_begin({'id':currency.formId, 'enableAjaxValidation':currency.ajaxValidation, 'validateOnSubmit':currency.validateOnSubmit, 'validateOnChange':currency.validateOnChange, 'validateOnBlur':currency.validateOnBlur, 'validateOnType':currency.validateOnType, 'action':currency.formAction, 'method':'POST'}) %}
-                {{ form.field(currency.modelForm, 'id').hiddenInput().label(false) | raw }}
-                <input type="submit" value="{{ currency.button }}">
-            {{ active_form_end() }}
+            {{ formDelete.form(modelForm, formSettings, currency.formIdDelete, formActionDelete, currency.id, button) }}
         </li>
     {% endfor %}
 </ul>

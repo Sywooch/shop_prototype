@@ -81,7 +81,7 @@ class AdminUserDataRequestHandler extends AbstractBaseHandler
     {
         try {
             $dataArray = $this->accountChangeDataWidgetConfig($userUpdateForm, $usersModel);
-            $dataArray['template'] = 'admin-change-user-data-form.twig';
+            $dataArray['template'] = 'change-user-data-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

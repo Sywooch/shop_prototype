@@ -1,0 +1,10 @@
+{% macro form(modelForm, formSettings, formId, formAction, id, name, description, active, cols, rows, button, buttonCancel) %}
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'id').hiddenInput({'value':id}).label(false) | raw }}
+        {{ form.field(modelForm, 'name').textInput({'value':name}) | raw }}
+        {{ form.field(modelForm, 'description').textarea({'value':description, 'cols':cols, 'rows':rows}) | raw }}
+        {{ form.field(modelForm, 'active').input('checkbox', {'value':1, 'checked':active}) | raw }}
+        <input type="submit" name="send" value="{{ button }}">
+        <input type="submit" name="cancel" value="{{ buttonCancel }}">
+    {{ active_form_end() }}
+{% endmacro %}

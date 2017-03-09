@@ -1,4 +1,5 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-id-form.twig' as form %}
 
 <p><strong>{{ header }}</strong></p>
 
@@ -15,15 +16,8 @@
                     <br>{{ textHeader }}: {{ comment.text }}
                     <br>{{ activeHeader }}: {{ comment.active }}
                     
-                    {% set form=active_form_begin({'id':comment.formId, 'enableAjaxValidation':comment.ajaxValidation, 'validateOnSubmit':comment.validateOnSubmit, 'validateOnChange':comment.validateOnChange, 'validateOnBlur':comment.validateOnBlur, 'validateOnType':comment.validateOnType, 'action':comment.formAction, 'method':'POST'}) %}
-                        {{ form.field(comment.modelForm, 'id').hiddenInput().label(false) | raw }}
-                        <input type="submit" value="{{ comment.button }}">
-                    {{ active_form_end() }}
-                    
-                    {% set form=active_form_begin({'id':comment.formIdDelete, 'enableAjaxValidation':comment.ajaxValidation, 'validateOnSubmit':comment.validateOnSubmit, 'validateOnChange':comment.validateOnChange, 'validateOnBlur':comment.validateOnBlur, 'validateOnType':comment.validateOnType, 'action':comment.formActionDelete, 'method':'POST'}) %}
-                        {{ form.field(comment.modelForm, 'id').hiddenInput().label(false) | raw }}
-                        <input type="submit" value="{{ comment.buttonDelete }}">
-                    {{ active_form_end() }}
+                    {{ form.form(modelForm, formSettings, comment.formId, formAction, comment.id, button) }}
+                    {{ form.form(modelForm, formSettings, comment.formIdDelete, formActionDelete, comment.id, buttonDelete) }}
                 </div>
             </li>
         {% endfor %}

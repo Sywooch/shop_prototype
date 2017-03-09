@@ -1,0 +1,6 @@
+{% macro form(modelForm, formSettings, formId, formAction, id, button) %}
+    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formAction, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'id').hiddenInput({'value':id}).label(false) | raw }}
+        <input type="submit" value="{{ button }}">
+    {{ active_form_end() }}
+{% endmacro %}

@@ -134,7 +134,7 @@ trait ConfigHandlerTrait
             $dataArray['mailings'] = $mailingsArray;
             $dataArray['form'] = $mailingForm;
             $dataArray['header'] = \Yii::t('base', 'Current subscriptions');
-            $dataArray['template'] = 'account-mailings-unsubscribe.twig';
+            $dataArray['template'] = 'admin-mailings-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -156,7 +156,7 @@ trait ConfigHandlerTrait
             $dataArray['mailings'] = $mailingsArray;
             $dataArray['form'] = $mailingForm;
             $dataArray['header'] = \Yii::t('base', 'Sign up now!');
-            $dataArray['template'] = 'account-mailings-form.twig';
+            $dataArray['template'] = 'admin-mailings-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -612,7 +612,7 @@ trait ConfigHandlerTrait
             $dataArray['purchases'] = $ordersArray;
             $dataArray['currency'] = $currentCurrencyModel;
             $dataArray['form'] = $purchaseForm;
-            $dataArray['template'] = 'account-orders.twig';
+            $dataArray['template'] = 'orders.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -641,7 +641,7 @@ trait ConfigHandlerTrait
             
             $dataArray['form'] = $userUpdateForm;
             $dataArray['header'] = \Yii::t('base', 'Change data');
-            $dataArray['template'] = 'account-change-data-form.twig';
+            $dataArray['template'] = 'change-user-data-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -661,7 +661,7 @@ trait ConfigHandlerTrait
             
             $dataArray['header'] = \Yii::t('base', 'Change password');
             $dataArray['form'] = $userChangePasswordForm;
-            $dataArray['template'] = 'account-change-password-form.twig';
+            $dataArray['template'] = 'password-change-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -679,7 +679,7 @@ trait ConfigHandlerTrait
     {
         try {
             $dataArray = $this->accountMailingsUnsubscribeWidgetConfig($mailingsArray, $mailingForm);
-            $dataArray['template'] = 'admin-user-mailings-unsubscribe.twig';
+            $dataArray['template'] = 'admin-mailings-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -697,7 +697,7 @@ trait ConfigHandlerTrait
     {
         try {
             $dataArray = $this->accountMailingsFormWidgetConfig($mailingsArray, $mailingForm);
-            $dataArray['template'] = 'admin-user-mailings-add.twig';
+            $dataArray['template'] = 'admin-mailings-form.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

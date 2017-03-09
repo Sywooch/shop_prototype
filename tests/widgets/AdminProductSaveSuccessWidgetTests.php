@@ -59,7 +59,7 @@ class AdminProductSaveSuccessWidgetTests extends TestCase
     {
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-product-save-success.twig');
+        $reflection->setValue($this->widget, 'paragraph.twig');
         
         $result = $this->widget->run();
         

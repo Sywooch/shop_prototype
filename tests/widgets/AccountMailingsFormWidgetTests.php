@@ -224,7 +224,7 @@ class AccountMailingsFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-mailings-form.twig');
+        $reflection->setValue($widget, 'admin-mailings-form.twig');
         
         $result = $widget->run();
         
@@ -270,7 +270,7 @@ class AccountMailingsFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-mailings-form.twig');
+        $reflection->setValue($widget, 'admin-mailings-form.twig');
         
         $result = $widget->run();
         

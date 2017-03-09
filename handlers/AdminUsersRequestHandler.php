@@ -190,7 +190,7 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Download selected users in csv format');
-            $dataArray['template'] = 'admin-csv-users-form.twig';
+            $dataArray['template'] = 'csv-form.twig';
             $dataArray['isAllowed'] = $isAllowed;
             
             return $dataArray;

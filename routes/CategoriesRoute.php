@@ -39,7 +39,7 @@ class CategoriesRoute extends Object implements UrlRuleInterface
             
             $pathInfo = filter_var($pathInfo, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z-0-9/]+$#u']]);
             if ($pathInfo === false) {
-                throw new ErrorException($this->invalidError('pathInfo'));
+                return false;
             }
             
             list($category, $subcategory) = explode('/', $pathInfo);

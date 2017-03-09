@@ -28,7 +28,7 @@ class ProductsRoute extends Object implements UrlRuleInterface
             
             $pathInfo = filter_var($pathInfo, FILTER_VALIDATE_REGEXP, ['options'=>['regexp'=>'#^[a-z-0-9]+$#u']]);
             if ($pathInfo === false) {
-                throw new ErrorException($this->invalidError('pathInfo'));
+                return false;
             }
             
             if (ProductsModel::find()->where(['[[products.seocode]]'=>$pathInfo])->exists()) {

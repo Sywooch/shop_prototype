@@ -94,7 +94,7 @@ class AdminChangeOrderForm extends AbstractBaseForm
             [['id'], 'required', 'on'=>self::GET],
             [['name', 'surname', 'phone', 'address', 'city', 'country', 'status'], 'string'],
             [['id', 'postcode', 'quantity', 'id_color', 'id_size', 'id_delivery', 'id_payment'], 'integer'],
-            [['name', 'surname'], 'match', 'pattern'=>'#^[A-ZА-Я]{1}[a-zа-я]+-?[A-ZА-Я]?[a-zа-я]*$#u'],
+            [['name', 'surname'], 'match', 'pattern'=>'#^([A-ZА-Я]{1}[a-zа-я]+-?)+$#u'],
             [['phone'], 'match', 'pattern'=>'#^[+()0-9\s-]+$#u'],
             [['city', 'country'], 'match', 'pattern'=>'#^[A-ZА-Яa-zа-я\s0-9]+$#u'],
             [['status'], OrderStatusExistsValidator::class],

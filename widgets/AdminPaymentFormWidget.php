@@ -45,27 +45,27 @@ class AdminPaymentFormWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['modelForm'] = \Yii::configure($this->form, [
-                'id'=>$this->payment->id,
-                'name'=>$this->payment->name,
-                'description'=>$this->payment->description,
-                'active'=>$this->payment->active,
-            ]);
+            $renderArray['modelForm'] = $this->form;
+            
+            $renderArray['id'] = $this->payment->id;
+            $renderArray['name'] = $this->payment->name;
+            $renderArray['description'] = $this->payment->description;
+            $renderArray['active'] = !empty($this->payment->active) ? true : false;
             
             $renderArray['formId'] = sprintf('admin-payment-edit-form-%d', $this->payment->id);
-            
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
-            
-            $renderArray['cols'] = 20;
-            $renderArray['rows'] = 5;
             
             $renderArray['formAction'] = Url::to(['/admin/payment-change']);
             $renderArray['button'] = \Yii::t('base', 'Save');
             $renderArray['buttonCancel'] = \Yii::t('base', 'Cancel');
+            
+            $renderArray['cols'] = 20;
+            $renderArray['rows'] = 5;
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

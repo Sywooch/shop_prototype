@@ -71,7 +71,7 @@ class AccountChangePasswordSuccessWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'account-change-password-success.twig');
+        $reflection->setValue($widget, 'paragraph.twig');
         
         $result = $widget->run();
         

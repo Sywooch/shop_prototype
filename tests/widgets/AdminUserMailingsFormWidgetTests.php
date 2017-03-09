@@ -168,7 +168,7 @@ class AdminUserMailingsFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-user-mailings-add.twig');
+        $reflection->setValue($this->widget, 'admin-mailings-form.twig');
         
         $result = $this->widget->run();
         
@@ -213,7 +213,7 @@ class AdminUserMailingsFormWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-user-mailings-add.twig');
+        $reflection->setValue($this->widget, 'admin-mailings-form.twig');
         
         $result = $this->widget->run();
         

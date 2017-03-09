@@ -315,9 +315,9 @@ class AdminCategoriesWidgetTests extends TestCase
         $this->assertRegExp('#<input type="submit" value="Удалить">#', $result);
         $this->assertRegExp('#<form id="admin-subcategory-delete-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<form id="admin-category-change-form-[0-9]{1}" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[active\]" value="1"> Active</label>#', $result);
+        $this->assertRegExp('#<label class="control-label" for=".+">Active</label>#', $result);
+        $this->assertRegExp('#<input type="checkbox" id=".+" class="form-control" name=".+\[active\]" value="1" checked>#', $result);
         $this->assertRegExp('#<form id="admin-subcategory-change-form-[0-9]{1}" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[active\]" value="1" checked> Active</label>#', $result);
     }
     
     public static function tearDownAfterClass()

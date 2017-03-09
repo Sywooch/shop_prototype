@@ -89,10 +89,10 @@ class CustomerInfoForm extends AbstractBaseForm
             [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'postcode', 'id_delivery', 'id_payment'], 'required', 'on'=>self::CHECKOUT],
             [['postcode', 'id_delivery', 'id_payment', 'create', 'change'], 'integer'],
             [['name', 'surname', 'email', 'phone', 'address', 'city', 'country', 'password', 'password2'], 'string'],
-            [['name', 'surname'], 'match', 'pattern'=>'#^[A-ZА-Я]{1}[a-zа-я]+-?[A-ZА-Я]?[a-zа-я]*$#u'],
+            [['name', 'surname'], 'match', 'pattern'=>'#^(?:[A-ZА-Я]{1}[a-zа-я\s]+-?)+$#u'],
             [['email'], 'email'],
             [['phone'], 'match', 'pattern'=>'#^[+()0-9\s-]+$#u'],
-            [['city', 'country'], 'match', 'pattern'=>'#^[A-ZА-Яa-zа-я\s0-9]+$#u'],
+            [['city', 'country'], 'match', 'pattern'=>'#^[a-zа-я\s0-9]+$#ui'],
             [['email'], UserEmailExistsRegValidator::class, 'on'=>self::CHECKOUT, 'when'=>function($model) {
                 return !empty($model->create);
             }],

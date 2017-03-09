@@ -57,26 +57,25 @@ class AdminSizesWidget extends AbstractBaseWidget
             $sizesArray = [];
             foreach ($this->sizes as $size) {
                 $set = [];
+                $set['id'] = $size->id;
                 $set['size'] = $size->size;
-                
-                $sizesForm = clone $this->form;
-                $set['modelForm'] = \Yii::configure($sizesForm, ['id'=>$size->id]);
                 $set['formId'] = sprintf('admin-size-delete-form-%d', $size->id);
-                
-                $set['ajaxValidation'] = false;
-                $set['validateOnSubmit'] = false;
-                $set['validateOnChange'] = false;
-                $set['validateOnBlur'] = false;
-                $set['validateOnType'] = false;
-                
-                $set['formAction'] = Url::to(['/admin/size-delete']);
-                $set['button'] = \Yii::t('base', 'Delete');
-                
                 $sizesArray[] = $set;
             }
             
             ArrayHelper::multisort($sizesArray, 'size', SORT_ASC);
             $renderArray['sizes'] = $sizesArray;
+            
+            $renderArray['modelForm'] = $this->form;
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
+            
+            $renderArray['formAction'] = Url::to(['/admin/size-delete']);
+            $renderArray['button'] = \Yii::t('base', 'Delete');
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

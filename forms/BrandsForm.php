@@ -47,6 +47,7 @@ class BrandsForm extends AbstractBaseForm
             [['brand'], 'required', 'on'=>self::CREATE],
             [['id'], 'integer'],
             [['brand'], 'string'],
+            [['brand'], 'match', 'pattern'=>'#[a-z-0-9\s]#iu'],
             [['id'], DeleteBrandProductsExistsValidator::class, 'on'=>self::DELETE],
             [['brand'], CreateBrandBrandExistsValidator::class, 'on'=>self::CREATE],
         ];

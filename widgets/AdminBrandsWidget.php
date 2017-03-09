@@ -57,26 +57,25 @@ class AdminBrandsWidget extends AbstractBaseWidget
             $brandsArray = [];
             foreach ($this->brands as $brand) {
                 $set = [];
+                $set['id'] = $brand->id;
                 $set['brand'] = $brand->brand;
-                
-                $brandsForm = clone $this->brandsForm;
-                $set['modelForm'] = \Yii::configure($brandsForm, ['id'=>$brand->id]);
                 $set['formId'] = sprintf('admin-brand-delete-form-%d', $brand->id);
-                
-                $set['ajaxValidation'] = false;
-                $set['validateOnSubmit'] = false;
-                $set['validateOnChange'] = false;
-                $set['validateOnBlur'] = false;
-                $set['validateOnType'] = false;
-                
-                $set['formAction'] = Url::to(['/admin/brand-delete']);
-                $set['button'] = \Yii::t('base', 'Delete');
-                
                 $brandsArray[] = $set;
             }
             
             ArrayHelper::multisort($brandsArray, 'brand', SORT_ASC);
             $renderArray['brands'] = $brandsArray;
+            
+            $renderArray['modelForm'] = $this->brandsForm;
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
+            
+            $renderArray['formAction'] = Url::to(['/admin/brand-delete']);
+            $renderArray['button'] = \Yii::t('base', 'Delete');
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

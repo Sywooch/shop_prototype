@@ -198,7 +198,7 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
         try {
             $dataArray = [];
             
-            $dataArray['template'] = 'empty-sphinx.twig';
+            $dataArray['template'] = 'paragraph.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

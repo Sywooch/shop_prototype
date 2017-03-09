@@ -166,7 +166,8 @@ class AdminPaymentFormWidgetTests extends TestCase
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="1">#', $result);
         $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[name\]" value="Name [0-9]{1}">#', $result);
         $this->assertRegExp('#<textarea id=".+" class="form-control" name=".+\[description\]" rows="[0-9]{1,2}" cols="[0-9]{1,2}">Description [0-9]{1}</textarea>#', $result);
-        $this->assertRegExp('#<label><input type="checkbox" id=".+" name=".+\[active\]" value="1" checked> Active</label>#', $result);
+        $this->assertRegExp('#<label class="control-label" for=".+">Active</label>#', $result);
+        $this->assertRegExp('#<input type="checkbox" id=".+" class="form-control" name=".+\[active\]" value="1" checked>#', $result);
         $this->assertRegExp('#<input type="submit" name="send" value="Сохранить">#', $result);
         $this->assertRegExp('#<input type="submit" name="cancel" value="Отменить">#', $result);
     }

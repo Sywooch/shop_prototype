@@ -53,26 +53,27 @@ class AdminDeliveryDataWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
+            $renderArray['id'] = $this->delivery->id;
             $renderArray['name'] = $this->delivery->name;
             $renderArray['description'] = $this->delivery->description;
             $renderArray['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($this->delivery->price * $this->currency->exchangeRate(), 2), $this->currency->code());
             $renderArray['active'] = $this->delivery->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
             
-            $renderArray['modelForm'] = \Yii::configure($this->form, ['id'=>$this->delivery->id]);
+            $renderArray['modelForm'] = $this->form;
             
-            $renderArray['formId'] = sprintf('admin-delivery-get-form-%d', $this->delivery->id);
-            $renderArray['formAction'] = Url::to(['/admin/delivery-form']);
-            $renderArray['button'] = \Yii::t('base', 'Change');
+            $renderArray['formIdChange'] = sprintf('admin-delivery-get-form-%d', $this->delivery->id);
+            $renderArray['formActionChange'] = Url::to(['/admin/delivery-form']);
+            $renderArray['buttonChange'] = \Yii::t('base', 'Change');
             
             $renderArray['formIdDelete'] = sprintf('admin-delivery-delete-form-%d', $this->delivery->id);
             $renderArray['formActionDelete'] = Url::to(['/admin/delivery-delete']);
             $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             $renderArray['nameHeader'] = \Yii::t('base', 'Name');
             $renderArray['descriptionHeader'] = \Yii::t('base', 'Description');

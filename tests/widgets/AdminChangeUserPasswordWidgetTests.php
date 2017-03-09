@@ -145,7 +145,7 @@ class AdminChangeUserPasswordWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'admin-user-password-change-form.twig');
+        $reflection->setValue($this->widget, 'password-change-form.twig');
         
         $result = $this->widget->run();
         

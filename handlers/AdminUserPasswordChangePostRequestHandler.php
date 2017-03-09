@@ -59,7 +59,7 @@ class AdminUserPasswordChangePostRequestHandler extends AbstractBaseHandler
                         ]);
                         $saver->save();
                         
-                        $response = AccountChangePasswordSuccessWidget::widget(['template'=>'account-change-password-success.twig']);
+                        $response = AccountChangePasswordSuccessWidget::widget(['template'=>'paragraph.twig']);
                         
                         $transaction->commit();
                         

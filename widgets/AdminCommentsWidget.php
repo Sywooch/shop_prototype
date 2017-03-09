@@ -63,25 +63,25 @@ class AdminCommentsWidget extends AbstractBaseWidget
                     $set['text'] = Html::encode($comment->text);
                     $set['active'] = $comment->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
                     
-                    $form = clone $this->form;
-                    $set['modelForm'] = \Yii::configure($form, ['id'=>$comment->id]);
-                    
                     $set['formId'] = sprintf('admin-comment-detail-get-form-%d', $comment->id);
-                    $set['formAction'] = Url::to(['/admin/comment-form']);
-                    $set['button'] = \Yii::t('base', 'Change');
-                    
                     $set['formIdDelete'] = sprintf('admin-comment-detail-delete-form-%d', $comment->id);
-                    $set['formActionDelete'] = Url::to(['/admin/comment-delete']);
-                    $set['buttonDelete'] = \Yii::t('base', 'Delete');
-                    
-                    $set['ajaxValidation'] = false;
-                    $set['validateOnSubmit'] = false;
-                    $set['validateOnChange'] = false;
-                    $set['validateOnBlur'] = false;
-                    $set['validateOnType'] = false;
                     
                     $renderArray['comments'][] = $set;
                 }
+                
+                $renderArray['modelForm'] = $this->form;
+                
+                $renderArray['formAction'] = Url::to(['/admin/comment-form']);
+                $renderArray['button'] = \Yii::t('base', 'Change');
+                
+                $renderArray['formActionDelete'] = Url::to(['/admin/comment-delete']);
+                $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
+                
+                $renderArray['formSettings']['ajaxValidation'] = false;
+                $renderArray['formSettings']['validateOnSubmit'] = false;
+                $renderArray['formSettings']['validateOnChange'] = false;
+                $renderArray['formSettings']['validateOnBlur'] = false;
+                $renderArray['formSettings']['validateOnType'] = false;
                 
                 $renderArray['idHeader'] = \Yii::t('base', 'Comment Id');
                 $renderArray['dateHeader'] = \Yii::t('base', 'Date added');

@@ -22,15 +22,23 @@ class IntInArrayValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         try {
-            $dataArray = $model->$attribute;
-            if (is_array($dataArray) === false) {
+            $rawDataArray = $model->$attribute;
+            if (is_array($rawDataArray) === false) {
                 throw new ErrorException($this->invalidRange($attribute));
             }
             
-            foreach ($dataArray as $item) {
-                if (is_numeric($item) === false) {
-                    throw new ErrorException($this->invalidRange($attribute));
+            if (!empty($rawDataArray)) {
+                $postFilterArray = [];
+                
+                foreach ($rawDataArray as $item) {
+                    $item = filter_var($item, FILTER_VALIDATE_INT);
+                    if ($item === false) {
+                        throw new ErrorException($this->invalidRange($attribute));
+                    }
+                    $postFilterArray[] = $item;
                 }
+                
+                $model->$attribute = $postFilterArray;
             }
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);

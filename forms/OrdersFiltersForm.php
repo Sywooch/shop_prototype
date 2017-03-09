@@ -66,7 +66,7 @@ class OrdersFiltersForm extends AbstractBaseForm
             [['sortingField'], SortingFieldExistsValidator::class],
             [['sortingType'], SortingTypeExistsValidator::class],
             [['status'], OrderStatusExistsValidator::class],
-            [['url'], 'match', 'pattern'=>'#^/[a-z-]+/?[a-z-]*-?[0-9]*$#u'],
+            [['url'], 'match', 'pattern'=>'#^/[a-z-0-9]+$#u'],
         ];
     }
 }
