@@ -1,12 +1,5 @@
 {% if mailings %}
-    <p><strong>{{ header }}</strong></p>
+    {% import '@app/widgets/views/macro/mailings-list.twig' as list %}
     
-    <ol>
-        {% for mailing in mailings %}
-            <li>
-                {{ mailing.name }}
-                <br>{{ mailing.description }}
-            </li>
-    {% endfor %}
-    </ol>
+    {{ list.list(header, mailings) }}
 {% endif %}

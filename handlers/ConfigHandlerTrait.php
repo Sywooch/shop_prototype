@@ -199,8 +199,6 @@ trait ConfigHandlerTrait
                 $ordersFiltersForm->dateTo = $todayDate;
             }
             
-            $ordersFiltersForm->url = Url::current();
-            
             $dataArray['form'] = $ordersFiltersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'orders-filters.twig';
@@ -243,7 +241,7 @@ trait ConfigHandlerTrait
             
             $dataArray['purchases'] = $ordersCollection;
             $dataArray['currency'] = $currentCurrencyModel;
-            $dataArray['template'] = 'short-cart-ajax.twig';
+            $dataArray['template'] = 'short-cart.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -305,7 +303,7 @@ trait ConfigHandlerTrait
         try {
             $dataArray = [];
             
-            $dataArray['template'] = 'empty-products.twig';
+            $dataArray['template'] = 'paragraph.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -345,7 +343,7 @@ trait ConfigHandlerTrait
             $dataArray = [];
             
             $dataArray['email'] = $email;
-            $dataArray['template'] = 'unsubscribe-empty.twig';
+            $dataArray['template'] = 'empty.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {
@@ -426,7 +424,7 @@ trait ConfigHandlerTrait
             $dataArray = [];
             
             $dataArray['categories'] = $categoriesModelArray;
-            $dataArray['template'] = 'categories-option.twig';
+            $dataArray['template'] = 'options.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

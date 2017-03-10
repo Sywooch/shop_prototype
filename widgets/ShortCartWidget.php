@@ -67,15 +67,14 @@ class ShortCartWidget extends AbstractBaseWidget
             $renderArray['toCartText'] = \Yii::t('base', 'To cart');
             
             $renderArray['formId'] = 'clean-cart-form';
-            
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
-            
             $renderArray['formAction'] = Url::to(['/cart/clean']);
             $renderArray['button'] = \Yii::t('base', 'To clean cart');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

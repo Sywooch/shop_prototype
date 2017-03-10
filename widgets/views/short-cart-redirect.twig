@@ -1,9 +1,8 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/post-button.twig' as formDelete %}
 
 <div class="shortCart">
     <p>{{ goodsText }}</p>
     
-    {% set form=active_form_begin({'id':formId, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formAction, 'method':'POST'}) %}
-        <input type="submit" value="{{ button }}">
-    {{ active_form_end() }}
+    {{ formDelete.form(formSettings, formId, formAction, button) }}
 </div>

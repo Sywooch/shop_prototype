@@ -29,7 +29,7 @@ class EmptyProductsWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
-            $renderArray['text'] = Html::tag('p', \Yii::t('base', 'Search by this parameters returned no results'));
+            $renderArray['text'] = \Yii::t('base', 'Search by this parameters returned no results');
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

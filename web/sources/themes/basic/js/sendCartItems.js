@@ -14,7 +14,7 @@ $(function() {
         };
     };
     
-    $('div.cart-items').on('click', 'form[name^="update-product-form"] > input:submit', function(event) {
+    $('div.cart-items').on('click', 'form[id^="update-product-form"] > input:submit', function(event) {
         (new SendCartItemsUpdate()).send(event);
         event.preventDefault();
     });
@@ -35,7 +35,7 @@ $(function() {
         };
     };
     
-    $('div.cart-items').on('click', 'form[name^="delete-product-form"] > input:submit', function(event) {
+    $('div.cart-items').on('click', 'form[id^="delete-product-form"] > input:submit', function(event) {
         (new SendCartItemsDelete()).send(event);
         event.preventDefault();
     });

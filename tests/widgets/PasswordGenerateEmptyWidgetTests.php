@@ -123,7 +123,7 @@ class PasswordGenerateEmptyWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'generate-empty.twig');
+        $reflection->setValue($widget, 'empty.twig');
         
         $result = $widget->run();
         

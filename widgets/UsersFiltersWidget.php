@@ -64,17 +64,12 @@ class UsersFiltersWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             
-            $renderArray['formModel'] = $this->form;
-            
             $renderArray['sortingFields'] = $this->sortingFields;
             $renderArray['sortingTypes'] = $this->sortingTypes;
             $renderArray['ordersStatuses'] = $this->ordersStatuses;
+            $renderArray['url'] = Url::current();
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['modelForm'] = $this->form;
             
             $renderArray['formIdApply'] = 'admin-users-filters-form';
             $renderArray['formActionApply'] = Url::to(['/filters/users-set']);
@@ -83,6 +78,12 @@ class UsersFiltersWidget extends AbstractBaseWidget
             $renderArray['formIdClean'] = 'admin-users-filters-clean';
             $renderArray['formActionClean'] = Url::to(['/filters/users-unset']);
             $renderArray['buttonClean'] = \Yii::t('base', 'Clean');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

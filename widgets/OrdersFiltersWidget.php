@@ -57,25 +57,20 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             
-            $renderArray['formModel'] = $this->form;
-            
             $renderArray['statuses'] = $this->statuses;
             $renderArray['sortingTypes'] = $this->sortingTypes;
             
             $renderArray['statusLabel'] = \Yii::t('base', 'Status');
             $renderArray['sortingTypeLabel'] = \Yii::t('base', 'Sorting by date');
             
+            $renderArray['url'] = Url::current();
             $renderArray['calendarHref'] = Url::to(['/calendar/get']);
             $renderArray['calendarDateFrom'] = \Yii::$app->formatter->asDate($this->form->dateFrom ?? DateHelper::getToday00());
             $renderArray['calendarDateTo'] = \Yii::$app->formatter->asDate($this->form->dateTo ?? DateHelper::getToday00());
             $renderArray['calendarTimestampForm'] = $this->form->dateFrom ?? DateHelper::getToday00();
             $renderArray['calendarTimestampTo'] = $this->form->dateTo ?? DateHelper::getToday00();
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['modelForm'] = $this->form;
             
             $renderArray['formIdApply'] = 'admin-orders-filters-form';
             $renderArray['formActionApply'] = Url::to(['/filters/orders-set']);
@@ -84,6 +79,12 @@ class OrdersFiltersWidget extends AbstractBaseWidget
             $renderArray['formIdClean'] = 'admin-orders-filters-clean';
             $renderArray['formActionClean'] = Url::to(['/filters/orders-unset']);
             $renderArray['buttonClean'] = \Yii::t('base', 'Clean');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

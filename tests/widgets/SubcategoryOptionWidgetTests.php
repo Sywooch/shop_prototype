@@ -121,7 +121,7 @@ class SubcategoryOptionWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'subcategory-option.twig');
+        $reflection->setValue($widget, 'options.twig');
         
         $result = $widget->run();
         

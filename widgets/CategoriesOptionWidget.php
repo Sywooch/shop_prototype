@@ -39,7 +39,7 @@ class CategoriesOptionWidget extends AbstractBaseWidget
             
             $categoriesArray = ArrayHelper::map($this->categories, 'id', 'name');
             asort($categoriesArray, SORT_STRING);
-            $renderArray['categoriesArray'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
+            $renderArray['dataArray'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $categoriesArray);
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

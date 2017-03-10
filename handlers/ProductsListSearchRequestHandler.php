@@ -166,7 +166,7 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                         throw new ErrorException($this->emptyError('sortingTypesArray'));
                     }
                     
-                    $filtersForm = new FiltersForm(array_merge(['url'=>Url::current()], array_filter($filtersModel ->toArray())));
+                    $filtersForm = new FiltersForm(array_filter($filtersModel ->toArray()));
                     
                     $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($colorsArray, $sizesArray, $brandsArray, $sortingFieldsArray, $sortingTypesArray, $filtersForm);
                 }

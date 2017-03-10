@@ -99,8 +99,6 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             
-            $renderArray['formModel'] = $this->form;
-            
             $renderArray['sortingFields'] = $this->sortingFields;
             $renderArray['sortingTypes'] = $this->sortingTypes;
             $renderArray['colors'] = $this->colors;
@@ -109,14 +107,10 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             $renderArray['categories'] = $this->categories;
             $renderArray['subcategory'] = $this->subcategory;
             $renderArray['activeStatuses'] = $this->activeStatuses;
-            
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
-            
             $renderArray['categoriesHref'] = Url::to(['/categories/get-subcategory']);
+            $renderArray['url'] = Url::current();
+            
+            $renderArray['modelForm'] = $this->form;
             
             $renderArray['formIdApply'] = 'admin-products-filters-form';
             $renderArray['formActionApply'] = Url::to(['/filters/admin-products-set']);
@@ -125,6 +119,12 @@ class AdminProductsFiltersWidget extends AbstractBaseWidget
             $renderArray['formIdClean'] = 'admin-products-filters-clean';
             $renderArray['formActionClean'] = Url::to(['/filters/admin-products-unset']);
             $renderArray['buttonClean'] = \Yii::t('base', 'Clean');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

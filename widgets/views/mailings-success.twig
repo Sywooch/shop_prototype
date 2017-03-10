@@ -1,10 +1,3 @@
-<p><strong>{{ text }}</strong></p>
+{% import '@app/widgets/views/macro/mailings-list.twig' as list %}
 
-<ol>
-    {% for mailing in mailings %}
-        <li>
-            <strong>{{ mailing.name }}</strong>
-            <br/>{{ mailing.description }}
-        </li>
-    {% endfor %}
-</ol>
+{{ list.list(text, mailings) }}

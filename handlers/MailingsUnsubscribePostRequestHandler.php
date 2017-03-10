@@ -107,7 +107,7 @@ class MailingsUnsubscribePostRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             $dataArray['mailings'] = $mailingsArray;
-            $dataArray['template'] = 'unsubscribe-success.twig';
+            $dataArray['template'] = 'mailings-success.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

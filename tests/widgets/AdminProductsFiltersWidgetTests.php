@@ -817,7 +817,7 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
-        $this->assertRegExp('#<div class="orders-filters">#', $result);
+        $this->assertRegExp('#<div class="products-filters">#', $result);
         $this->assertRegExp('#<form id="admin-products-filters-form" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[sortingField\]">#', $result);
         $this->assertRegExp('#<option value="date">Date</option>#', $result);

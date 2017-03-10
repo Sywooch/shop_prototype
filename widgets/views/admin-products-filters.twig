@@ -1,23 +1,21 @@
 {{ use('yii/widgets/ActiveForm') }}
+{% import '@app/widgets/views/macro/hidden-url-form.twig' as formClean %}
 
 <p><strong>{{ header }}</strong></p>
 
 <div class="products-filters">
-    {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionApply, 'method':'POST'}) %}
-        {{ form.field(formModel, 'sortingField').dropDownList(sortingFields) | raw }}
-        {{ form.field(formModel, 'sortingType').dropDownList(sortingTypes) | raw }}
-        {{ form.field(formModel, 'colors').checkboxList(colors) | raw }}
-        {{ form.field(formModel, 'sizes').checkboxList(sizes) | raw }}
-        {{ form.field(formModel, 'brands').checkboxList(brands) | raw }}
-        {{ form.field(formModel, 'category').dropDownList(categories, {'data-href':categoriesHref}) | raw }}
-        {{ form.field(formModel, 'subcategory').dropDownList(subcategory) | raw }}
-        {{ form.field(formModel, 'active').dropDownList(activeStatuses) | raw }}
-        {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
+    {% set form=active_form_begin({'id':formIdApply, 'enableAjaxValidation':formSettings.ajaxValidation, 'validateOnSubmit':formSettings.validateOnSubmit, 'validateOnChange':formSettings.validateOnChange, 'validateOnBlur':formSettings.validateOnBlur, 'validateOnType':formSettings.validateOnType, 'action':formActionApply, 'method':'POST'}) %}
+        {{ form.field(modelForm, 'sortingField').dropDownList(sortingFields) | raw }}
+        {{ form.field(modelForm, 'sortingType').dropDownList(sortingTypes) | raw }}
+        {{ form.field(modelForm, 'colors').checkboxList(colors) | raw }}
+        {{ form.field(modelForm, 'sizes').checkboxList(sizes) | raw }}
+        {{ form.field(modelForm, 'brands').checkboxList(brands) | raw }}
+        {{ form.field(modelForm, 'category').dropDownList(categories, {'data-href':categoriesHref}) | raw }}
+        {{ form.field(modelForm, 'subcategory').dropDownList(subcategory) | raw }}
+        {{ form.field(modelForm, 'active').dropDownList(activeStatuses) | raw }}
+        {{ form.field(modelForm, 'url').hiddenInput({'value':url}).label(false) | raw }}
         <input type="submit" value="{{ buttonApply }}">
     {{ active_form_end() }}
-
-    {% set form = active_form_begin({'id':formIdClean, 'enableAjaxValidation':ajaxValidation, 'validateOnSubmit':validateOnSubmit, 'validateOnChange':validateOnChange, 'validateOnBlur':validateOnBlur, 'validateOnType':validateOnType, 'action':formActionClean, 'method':'POST'}) %}
-        {{ form.field(formModel, 'url').hiddenInput().label(false) | raw }}
-        <input type="submit" value="{{ buttonClean }}">
-    {{ active_form_end() }}
+    
+    {{ formClean.form(modelForm, formSettings, formIdClean, formActionClean, url, buttonClean) }}
 </div>

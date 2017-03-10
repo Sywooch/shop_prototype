@@ -224,8 +224,6 @@ class AdminProductsRequestHandler extends AbstractBaseHandler
                 }
             }
             
-            $adminProductsFiltersForm->url = Url::current();
-            
             $dataArray['form'] = $adminProductsFiltersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'admin-products-filters.twig';

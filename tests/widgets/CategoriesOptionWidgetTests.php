@@ -112,7 +112,7 @@ class CategoriesOptionWidgetTests extends TestCase
         
         $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $reflection->setValue($this->widget, 'categories-option.twig');
+        $reflection->setValue($this->widget, 'options.twig');
         
         $result = $this->widget->run();
         

@@ -167,8 +167,6 @@ class AdminUsersRequestHandler extends AbstractBaseHandler
                 }
             }
             
-            $usersFiltersForm->url = Url::current();
-            
             $dataArray['form'] = $usersFiltersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'users-filters.twig';

@@ -57,7 +57,7 @@ class CategoriesGetSubcategoryRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             $dataArray['subcategoryArray'] = $subcategoryArray;
-            $dataArray['template'] = 'subcategory-option.twig';
+            $dataArray['template'] = 'options.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

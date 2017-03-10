@@ -63,25 +63,22 @@ class CartWidget extends AbstractBaseWidget
             
             $renderArray = [];
             
+            $renderArray['header'] = $this->header;
+            
             foreach ($this->purchases as $purchase) {
                 $set = [];
-                $set['id_product'] = Html::encode($purchase->id_product);
-                $set['linkText'] = Html::encode($purchase->product->name);
-                $set['linkHref'] = Url::to(['/product-detail/index', 'seocode'=>Html::encode($purchase->product->seocode)]);
-                $set['short_description'] = Html::encode($purchase->product->short_description);
-                $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . Html::encode($this->currency->code());
+                $set['id_product'] = $purchase->id_product;
+                $set['linkText'] = $purchase->product->name;
+                $set['linkHref'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode]);
+                $set['short_description'] = $purchase->product->short_description;
+                $set['price'] = \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
                 
-                $updateForm = clone $this->form;
+                $set['id_color'] = $purchase->id_color;
+                $set['id_size'] = $purchase->id_size;
+                $set['quantity'] = $purchase->quantity;
                 
-                $set['formModel'] = \Yii::configure($updateForm, [
-                    'id_color'=>$purchase->id_color,
-                    'id_size'=>$purchase->id_size,
-                    'quantity'=>$purchase->quantity,
-                ]);
-                $set['idForm'] = sprintf('update-product-form-%d', Html::encode($purchase->id_product));
-                
-                $set['formModelDelete'] = clone $this->form;
-                $set['idFormDelete'] = sprintf('delete-product-form-%d', Html::encode($purchase->id_product));
+                $set['formIdChange'] = sprintf('update-product-form-%d', $purchase->id_product);
+                $set['formIdDelete'] = sprintf('delete-product-form-%d', $purchase->id_product);
                 
                 $colors = $purchase->product->colors;
                 ArrayHelper::multisort($colors, 'color');
@@ -98,19 +95,19 @@ class CartWidget extends AbstractBaseWidget
                 $renderArray['collection'][] = $set;
             }
             
-            $renderArray['header'] = Html::encode($this->header);
+            $renderArray['modelForm'] = $this->form;
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
-            
-            $renderArray['formAction'] = Url::to(['/cart/update']);
-            $renderArray['button'] = \Yii::t('base', 'Update');
+            $renderArray['formActionChange'] = Url::to(['/cart/update']);
+            $renderArray['buttonChange'] = \Yii::t('base', 'Update');
             
             $renderArray['formActionDelete'] = Url::to(['/cart/delete']);
             $renderArray['buttonDelete'] = \Yii::t('base', 'Delete');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

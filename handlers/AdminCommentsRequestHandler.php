@@ -165,8 +165,6 @@ class AdminCommentsRequestHandler extends AbstractBaseHandler
                 }
             }
             
-            $adminCommentsFiltersForm->url = Url::current();
-            
             $dataArray['form'] = $adminCommentsFiltersForm;
             $dataArray['header'] = \Yii::t('base', 'Filters');
             $dataArray['template'] = 'admin-comments-filters.twig';

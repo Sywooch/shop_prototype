@@ -77,18 +77,14 @@ class FiltersWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             
-            $renderArray['formModel'] = $this->form;
             $renderArray['sortingFields'] = $this->sortingFields;
             $renderArray['sortingTypes'] = $this->sortingTypes;
             $renderArray['colors'] = $this->colors;
             $renderArray['sizes'] = $this->sizes;
             $renderArray['brands'] = $this->brands;
+            $renderArray['url'] = Url::current();
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['modelForm'] = $this->form;
             
             $renderArray['formIdApply'] = 'products-filters-form';
             $renderArray['formActionApply'] = Url::to(['/filters/set']);
@@ -97,6 +93,12 @@ class FiltersWidget extends AbstractBaseWidget
             $renderArray['formIdClean'] = 'products-filters-clean';
             $renderArray['formActionClean'] = Url::to(['/filters/unset']);
             $renderArray['buttonClean'] = \Yii::t('base', 'Clean');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

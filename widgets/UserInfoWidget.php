@@ -49,14 +49,22 @@ class UserInfoWidget extends AbstractBaseWidget
             } else {
                 $user = $this->user->identity;
                 $placeholder = $user->email->email;
-                $renderArray['formModel'] = new UserLoginForm(['id'=>$user->id]);
+                
+                $renderArray['id'] = $user->id;
+                
+                $renderArray['modelForm'] = new UserLoginForm();
                 $renderArray['formId'] = 'user-logout-form';
                 $renderArray['formAction'] = Url::to(['/user/logout']);
                 $renderArray['button'] = \Yii::t('base', 'Logout');
                 
-                $renderArray['formIdSettings'] = 'account-settings-form';
-                $renderArray['formActionSettings'] = Url::to(['/account/index']);
-                $renderArray['buttonSettings'] = \Yii::t('base', 'Account settings');
+                $renderArray['formSettings']['ajaxValidation'] = false;
+                $renderArray['formSettings']['validateOnSubmit'] = false;
+                $renderArray['formSettings']['validateOnChange'] = false;
+                $renderArray['formSettings']['validateOnBlur'] = false;
+                $renderArray['formSettings']['validateOnType'] = false;
+                
+                $renderArray['settingsHref'] = Url::to(['/account/index']);
+                $renderArray['settingsText'] = \Yii::t('base', 'Account settings');
             }
             
             $renderArray['isGuest'] = $isGuest;

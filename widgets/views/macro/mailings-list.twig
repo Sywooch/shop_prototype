@@ -1,0 +1,12 @@
+{% macro list(text, mailings) %}
+    <p><strong>{{ text }}</strong></p>
+    
+    <ol>
+        {% for mailing in mailings %}
+            <li>
+                <strong>{{ mailing.name }}</strong>
+                <br/>{{ mailing.description }}
+            </li>
+        {% endfor %}
+    </ol>
+{% endmacro %}

@@ -149,7 +149,7 @@ class UserGenerateRequestHandler extends AbstractBaseHandler
             $dataArray = [];
             
             $dataArray['header'] = \Yii::t('base', 'Password recovery');
-            $dataArray['template'] = 'generate-empty.twig';
+            $dataArray['template'] = 'empty.twig';
             
             return $dataArray;
         } catch (\Throwable $t) {

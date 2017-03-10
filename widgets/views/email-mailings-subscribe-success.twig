@@ -1,14 +1,7 @@
+{% import '@app/widgets/views/macro/mailings-list.twig' as list %}
+
 <h1>{{ header }}</h1>
 
-<p>{{ text }}</p>
-
-<ol>
-{% for mailing in mailings %}
-    <li>
-        <strong>{{ mailing.name }}</strong>
-        <br>{{ mailing.description }}
-    </li>
-{% endfor %}
-</ol>
+{{ list.list(text, mailings) }}
 
 <p>{{ unsubscribeText }} <a href="{{ unsubscribeHref }}">{{ unsubscribeHref }}</a></p>

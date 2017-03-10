@@ -63,17 +63,12 @@ class AdminCommentsFiltersWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             
-            $renderArray['formModel'] = $this->form;
-            
             $renderArray['sortingFields'] = $this->sortingFields;
             $renderArray['sortingTypes'] = $this->sortingTypes;
             $renderArray['activeStatuses'] = $this->activeStatuses;
+            $renderArray['url'] = Url::current();
             
-            $renderArray['ajaxValidation'] = false;
-            $renderArray['validateOnSubmit'] = false;
-            $renderArray['validateOnChange'] = false;
-            $renderArray['validateOnBlur'] = false;
-            $renderArray['validateOnType'] = false;
+            $renderArray['modelForm'] = $this->form;
             
             $renderArray['formIdApply'] = 'admin-comments-filters-form';
             $renderArray['formActionApply'] = Url::to(['/filters/admin-comments-set']);
@@ -82,6 +77,12 @@ class AdminCommentsFiltersWidget extends AbstractBaseWidget
             $renderArray['formIdClean'] = 'admin-comments-filters-clean';
             $renderArray['formActionClean'] = Url::to(['/filters/admin-comments-unset']);
             $renderArray['buttonClean'] = \Yii::t('base', 'Clean');
+            
+            $renderArray['formSettings']['ajaxValidation'] = false;
+            $renderArray['formSettings']['validateOnSubmit'] = false;
+            $renderArray['formSettings']['validateOnChange'] = false;
+            $renderArray['formSettings']['validateOnBlur'] = false;
+            $renderArray['formSettings']['validateOnType'] = false;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {
