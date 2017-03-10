@@ -30,7 +30,7 @@ class FiltersOrdersUnsetRequestHandlerTests extends TestCase
             {
                 return [
                     'OrdersFiltersForm'=>[
-                        'url'=>'https://shop.com'
+                        'url'=>'/shop-test-3'
                     ]
                 ];
             }
@@ -47,7 +47,7 @@ class FiltersOrdersUnsetRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
         
-        $this->assertEquals('https://shop.com', $result);
+        $this->assertEquals('/shop-test', $result);
         
         $session = \Yii::$app->session;
         $session->open();

@@ -32,7 +32,7 @@ class FiltersUsersSetRequestHandlerTests extends TestCase
                     'UsersFiltersForm'=>[
                         'sortingField'=>'name',
                         'sortingType'=>SORT_ASC,
-                        'url'=>'https://shop.com'
+                        'url'=>'/shop-test-3'
                     ]
                 ];
             }
@@ -40,7 +40,7 @@ class FiltersUsersSetRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
         
-        $this->assertEquals('https://shop.com', $result);
+        $this->assertEquals('/shop-test', $result);
         
         $key = HashHelper::createHash([\Yii::$app->params['usersFilters']]);
         $session = \Yii::$app->session;

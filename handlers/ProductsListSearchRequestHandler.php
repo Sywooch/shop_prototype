@@ -21,7 +21,8 @@ use app\finders\{BrandsFilterSphinxFinder,
     SphinxFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
-    FiltersForm};
+    FiltersForm,
+    UserLoginForm};
 use app\services\GetCurrentCurrencyModelService;
 use app\helpers\HashHelper;
 use app\validators\StripTagsValidator;
@@ -102,6 +103,8 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                     'url'=>Url::current()
                 ]);
                 
+                $userLoginForm = new UserLoginForm();
+                
                 $dataArray = [];
                 
                 if (empty($sphinxArray)) {
@@ -171,7 +174,7 @@ class ProductsListSearchRequestHandler extends AbstractBaseHandler
                     $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($colorsArray, $sizesArray, $brandsArray, $sortingFieldsArray, $sortingTypesArray, $filtersForm);
                 }
                 
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig($searchText);

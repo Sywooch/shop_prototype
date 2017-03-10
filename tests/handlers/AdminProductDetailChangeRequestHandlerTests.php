@@ -119,7 +119,7 @@ class AdminProductDetailChangeRequestHandlerTests extends TestCase
                         'id_colors'=>[1, 2, 3],
                         'id_sizes'=>[1, 2],
                         'id_brand'=>2,
-                        'active'=>false,
+                        'active'=>0,
                         'total_products'=>204,
                         'seocode'=>'new-product',
                         'views'=>304

@@ -12,7 +12,8 @@ use app\finders\{CategoriesFinder,
     CurrencyFinder,
     PurchasesSessionFinder};
 use app\forms\{ChangeCurrencyForm,
-    PurchaseForm};
+    PurchaseForm,
+    UserLoginForm};
 
 /**
  * Обрабатывает запрос данных для рендеринга корзины покупок
@@ -70,11 +71,12 @@ class CartIndexRequestHandler extends AbstractBaseHandler
                 ]);
                 
                 $purchaseForm = new PurchaseForm();
+                $userLoginForm = new UserLoginForm();
                 
                 $dataArray = [];
                 
                 $dataArray['cartWidgetConfig'] = $this->cartWidgetConfig($ordersCollection, $currentCurrencyModel, $purchaseForm);
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartRedirectWidgetConfig'] = $this->shortCartRedirectWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();

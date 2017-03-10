@@ -157,8 +157,9 @@ class AdminIndexRequestHandlerTests extends TestCase
      */
     public function testHandle()
     {
-        $handler = new AdminIndexRequestHandler();
-        $result = $handler->handle();
+        $request = new class() {};
+        
+        $result = $this->handler->handle($request);
         
         $this->assertInternalType('array', $result);
         

@@ -30,7 +30,7 @@ class FiltersAdminProductsUnsetRequestHandlerTests extends TestCase
             {
                 return [
                     'AdminProductsFiltersForm'=>[
-                        'url'=>'https://shop.com'
+                        'url'=>'/shop-com'
                     ]
                 ];
             }
@@ -48,7 +48,7 @@ class FiltersAdminProductsUnsetRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
         
-        $this->assertEquals('https://shop.com', $result);
+        $this->assertEquals('/shop-com', $result);
         
         $session = \Yii::$app->session;
         $session->open();

@@ -15,6 +15,7 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
+    UserLoginForm,
     UserMailingForm};
 use app\validators\StripTagsValidator;
 
@@ -97,13 +98,15 @@ class MailingsUnsubscribeRequestHandler extends AbstractBaseHandler
                 'key'=>$unsubscribeKey
             ]);
             
+            $userLoginForm = new UserLoginForm();
+            
             if (empty($mailingsModelArray)) {
                 $dataArray['unsubscribeEmptyWidgetConfig'] = $this->unsubscribeEmptyWidgetConfig($email);
             } else {
                 $dataArray['unsubscribeFormWidgetConfig'] = $this->unsubscribeFormWidgetConfig($mailingForm, $mailingsModelArray);
             }
             
-            $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+            $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
             $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
             $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
             $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();

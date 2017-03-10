@@ -6,7 +6,7 @@ use yii\base\ErrorException;
 use yii\web\User;
 use yii\helpers\Url;
 use app\widgets\AbstractBaseWidget;
-use app\forms\UserLoginForm;
+use app\forms\AbstractBaseForm;
 
 /**
  * Формирует HTML строку с информацией о текущем статусе аутентификации
@@ -17,6 +17,10 @@ class UserInfoWidget extends AbstractBaseWidget
      * @var object User
      */
     private $user;
+    /**
+     * @var AbstractBaseForm
+     */
+    private $form;
     /**
      * @var string имя шаблона
      */
@@ -31,6 +35,9 @@ class UserInfoWidget extends AbstractBaseWidget
         try {
             if (empty($this->user)) {
                 throw new ErrorException($this->emptyError('user'));
+            }
+            if (empty($this->form)) {
+                throw new ErrorException($this->emptyError('form'));
             }
             if (empty($this->template)) {
                 throw new ErrorException($this->emptyError('template'));
@@ -52,7 +59,7 @@ class UserInfoWidget extends AbstractBaseWidget
                 
                 $renderArray['id'] = $user->id;
                 
-                $renderArray['modelForm'] = new UserLoginForm();
+                $renderArray['modelForm'] = $this->form;
                 $renderArray['formId'] = 'user-logout-form';
                 $renderArray['formAction'] = Url::to(['/user/logout']);
                 $renderArray['button'] = \Yii::t('base', 'Logout');
@@ -77,7 +84,7 @@ class UserInfoWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает User свойству UserInfoWidget::user
+     * Присваивает значение UserInfoWidget::user
      * @param User $user
      */
     public function setUser(User $user)
@@ -90,7 +97,20 @@ class UserInfoWidget extends AbstractBaseWidget
     }
     
     /**
-     * Присваивает имя шаблона свойству UserInfoWidget::template
+     * Присваивает значение UserInfoWidget::form
+     * @param AbstractBaseForm $form
+     */
+    public function setForm(AbstractBaseForm $form)
+    {
+        try {
+            $this->form = $form;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Присваивает значение UserInfoWidget::template
      * @param string $template
      */
     public function setTemplate(string $template)

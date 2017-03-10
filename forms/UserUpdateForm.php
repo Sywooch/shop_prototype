@@ -69,7 +69,7 @@ class UserUpdateForm extends AbstractBaseForm
             [['id', 'name', 'surname', 'phone', 'address', 'city', 'country', 'postcode'], 'required', 'on'=>self::ADMIN_UPDATE],
             [['id', 'postcode'], 'integer'],
             [['name', 'surname', 'phone', 'address', 'city', 'country'], 'string'],
-            [['name', 'surname'], 'match', 'pattern'=>'#^(?:[A-ZА-Я]{1}[a-zа-я]+-?)+$#u'],
+            [['name', 'surname'], 'match', 'pattern'=>'#^(?:[A-ZА-Я]{1}[a-zа-я]+-?\s?)+$#u'],
             [['phone'], 'match', 'pattern'=>'#^[+()0-9\s-]+$#u'],
             [['city', 'country'], 'match', 'pattern'=>'#^[a-zа-я\s0-9]+$#ui'],
         ];

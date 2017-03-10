@@ -61,9 +61,11 @@ class ConfigHandlerTraitTests extends TestCase
      */
     public function testUserInfoWidgetConfig()
     {
+        $form = new class() extends AbstractBaseForm {};
+        
         $reflection = new \ReflectionMethod($this->handler, 'userInfoWidgetConfig');
         $reflection->setAccessible(true);
-        $result = $reflection->invoke($this->handler, \Yii::$app->user);
+        $result = $reflection->invoke($this->handler, \Yii::$app->user, $form);
         
         $this->assertInternalType('array', $result);
         

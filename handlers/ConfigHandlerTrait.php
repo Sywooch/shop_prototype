@@ -22,14 +22,16 @@ trait ConfigHandlerTrait
     /**
      * Возвращает массив конфигурации для виджета UserInfoWidget
      * @param yii\web\User $user
+     * @param AbstractBaseForm $form
      * @return array
      */
-    private function userInfoWidgetConfig(User $webUser): array
+    private function userInfoWidgetConfig(User $webUser, AbstractBaseForm $form): array
     {
         try {
             $dataArray = [];
             
             $dataArray['user'] = $webUser;
+            $dataArray['form'] = $form;
             $dataArray['template'] = 'user-info.twig';
             
             return $dataArray;

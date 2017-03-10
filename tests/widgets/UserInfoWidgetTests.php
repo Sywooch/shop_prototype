@@ -5,9 +5,17 @@ namespace app\tests\widgets;
 use PHPUnit\Framework\TestCase;
 use app\widgets\UserInfoWidget;
 use yii\web\User;
+use app\forms\AbstractBaseForm;
 
 class UserInfoWidgetTests extends TestCase
 {
+    private $widget;
+    
+    public function setUp()
+    {
+        $this->widget = new UserInfoWidget();
+    }
+    
     /**
      * Тестирует наличие свойств
      */
@@ -16,20 +24,8 @@ class UserInfoWidgetTests extends TestCase
         $reflection = new \ReflectionClass(UserInfoWidget::class);
         
         $this->assertTrue($reflection->hasProperty('user'));
+        $this->assertTrue($reflection->hasProperty('form'));
         $this->assertTrue($reflection->hasProperty('template'));
-    }
-    
-    /**
-     * Тестирует метод UserInfoWidget::setUser
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetUserError()
-    {
-        $user = new class() {};
-        
-        $widget = new UserInfoWidget();
-        $widget->setUser($user);
     }
     
     /**
@@ -41,27 +37,29 @@ class UserInfoWidgetTests extends TestCase
             public $identityClass = 'SomeClass';
         };
         
-        $widget = new UserInfoWidget();
-        $widget->setUser($user);
+        $this->widget->setUser($user);
         
-        $reflection = new \ReflectionProperty($widget, 'user');
+        $reflection = new \ReflectionProperty($this->widget, 'user');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInstanceOf(User::class, $result);
     }
     
     /**
-     * Тестирует метод UserInfoWidget::setTemplate
-     * если передан параметр неверного типа
-     * @expectedException TypeError
+     * Тестирует метод UserInfoWidget::setForm
      */
-    public function testSetTemplateError()
+    public function testSetForm()
     {
-        $template = null;
+        $form = new class() extends AbstractBaseForm {};
         
-        $widget = new UserInfoWidget();
-        $widget->setTemplate($template);
+        $this->widget->setForm($form);
+        
+        $reflection = new \ReflectionProperty($this->widget, 'form');
+        $reflection->setAccessible(true);
+        $result = $reflection->getValue($this->widget);
+        
+        $this->assertInstanceOf(AbstractBaseForm::class, $result);
     }
     
     /**
@@ -71,12 +69,11 @@ class UserInfoWidgetTests extends TestCase
     {
         $template = 'Template';
         
-        $widget = new UserInfoWidget();
-        $widget->setTemplate($template);
+        $this->widget->setTemplate($template);
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
     }
@@ -89,8 +86,24 @@ class UserInfoWidgetTests extends TestCase
      */
     public function testRunEmptyUser()
     {
-        $widget = new UserInfoWidget();
-        $widget->run();
+        $this->widget->run();
+    }
+    
+    /**
+     * Тестирует метод PaginationWidget::run
+     * если пуст PaginationWidget::form
+     * @expectedException ErrorException
+     * @expectedExceptionMessage Отсутствуют необходимые данные: form
+     */
+    public function testRunEmptyForm()
+    {
+        $mock = new class() {};
+        
+        $reflection = new \ReflectionProperty($this->widget, 'user');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, $mock);
+        
+        $this->widget->run();
     }
     
     /**
@@ -101,17 +114,17 @@ class UserInfoWidgetTests extends TestCase
      */
     public function testRunEmptyView()
     {
-        $user = new class() extends User {
-            public $identityClass = 'SomeClass';
-        };
+        $mock = new class() {};
         
-        $widget = new UserInfoWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'user');
+        $reflection = new \ReflectionProperty($this->widget, 'user');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $user);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $reflection = new \ReflectionProperty($this->widget, 'form');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, $mock);
+        
+        $this->widget->run();
     }
     
      /**
@@ -126,17 +139,21 @@ class UserInfoWidgetTests extends TestCase
             public $identityClass = 'SomeClass';
         };
         
-        $widget = new UserInfoWidget();
+        $form = new class() extends AbstractBaseForm {};
         
-        $reflection = new \ReflectionProperty($widget, 'user');
+        $reflection = new \ReflectionProperty($this->widget, 'user');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $user);
+        $reflection->setValue($this->widget, $user);
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'user-info.twig');
+        $reflection->setValue($this->widget, $form);
         
-        $result = $widget->run();
+        $reflection = new \ReflectionProperty($this->widget, 'template');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, 'user-info.twig');
+        
+        $result = $this->widget->run();
         
         $this->assertRegExp('/<div class="user-info">/', $result);
         $this->assertRegExp('/<p>' . \Yii::t('base', 'Hello, {placeholder}!', ['placeholder'=>\Yii::t('base', 'Guest')]) . '<\/p>/', $result);
@@ -166,24 +183,27 @@ class UserInfoWidgetTests extends TestCase
             }
         };
         
-        $widget = new UserInfoWidget();
+        $form = new class() extends AbstractBaseForm {};
         
-        $reflection = new \ReflectionProperty($widget, 'user');
+        $reflection = new \ReflectionProperty($this->widget, 'user');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $user);
+        $reflection->setValue($this->widget, $user);
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'user-info.twig');
+        $reflection->setValue($this->widget, $form);
         
-        $result = $widget->run();
+        $reflection = new \ReflectionProperty($this->widget, 'template');
+        $reflection->setAccessible(true);
+        $reflection->setValue($this->widget, 'user-info.twig');
+        
+        $result = $this->widget->run();
         
         $this->assertRegExp('#<div class="user-info">#', $result);
         $this->assertRegExp('#<p>Привет, some@some.com!</p>#', $result);
         $this->assertRegExp('#<form id="user-logout-form"#', $result);
-        $this->assertRegExp('#<input type="hidden" id="userloginform-id"#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="1">#', $result);
         $this->assertRegExp('#<input type="submit" value="Выйти">#', $result);
-        $this->assertRegExp('#<form id="account-settings-form" action=".+" method="GET">#', $result);
-        $this->assertRegExp('#<input type="submit" value="Настройки аккаунта">#', $result);
+        $this->assertRegExp('#<a href=".+">Настройки аккаунта</a>#', $result);
     }
 }

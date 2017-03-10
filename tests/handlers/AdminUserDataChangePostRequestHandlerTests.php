@@ -100,7 +100,7 @@ class AdminUserDataChangePostRequestHandlerTests extends TestCase
                         'address'=>'New Address',
                         'city'=>'New City',
                         'country'=>'New Country',
-                        'postcode'=>'New7865',
+                        'postcode'=>89745,
                     ]
                 ];
             }

@@ -12,7 +12,8 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
-    UserRegistrationForm};
+    UserRegistrationForm,
+    UserLoginForm};
 use app\helpers\HashHelper;
 
 /**
@@ -69,11 +70,12 @@ class UserRegistrationRequestHandler extends AbstractBaseHandler
                 ]);
                 
                 $userRegistrationForm = new UserRegistrationForm();
+                $userLoginForm = new UserLoginForm();
                 
                 $dataArray = [];
                 
                 $dataArray['userRegistrationWidgetConfig'] = $this->userRegistrationWidgetConfig($userRegistrationForm);
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();

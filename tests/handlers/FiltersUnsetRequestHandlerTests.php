@@ -29,7 +29,7 @@ class FiltersUnsetRequestHandlerTests extends TestCase
     {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $url = Url::current();
+        $url = '/shop/next';
         
         $key = HashHelper::createFiltersKey($url);
         
@@ -46,7 +46,7 @@ class FiltersUnsetRequestHandlerTests extends TestCase
             {
                 return [
                     'FiltersForm'=>[
-                        'url'=>Url::current()
+                        'url'=>'/shop/next'
                     ],
                 ];
             }

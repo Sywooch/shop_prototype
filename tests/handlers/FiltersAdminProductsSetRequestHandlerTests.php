@@ -76,9 +76,9 @@ class FiltersAdminProductsSetRequestHandlerTests extends TestCase
                         'sizes'=>[1, 2],
                         'brands'=>[1, 2],
                         'category'=>1,
-                        'subcategory'=>[1],
-                        'active'=>true,
-                        'url'=>'https://shop.com-4'
+                        'subcategory'=>2,
+                        'active'=>1,
+                        'url'=>'/shop-products-4'
                     ]
                 ];
             }
@@ -86,7 +86,7 @@ class FiltersAdminProductsSetRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
         
-        $this->assertEquals('https://shop.com', $result);
+        $this->assertEquals('/shop-products', $result);
         
         $key = HashHelper::createHash([\Yii::$app->params['adminProductsFilters']]);
         $session = \Yii::$app->session;
@@ -110,9 +110,9 @@ class FiltersAdminProductsSetRequestHandlerTests extends TestCase
         $this->assertSame([1, 2], $result['colors']);
         $this->assertSame([1, 2], $result['sizes']);
         $this->assertSame([1, 2], $result['brands']);
-        $this->assertSame(1, $result['category']);
-        $this->assertSame([1], $result['subcategory']);
-        $this->assertSame(true, $result['active']);
+        $this->assertEquals(1, $result['category']);
+        $this->assertEquals(2, $result['subcategory']);
+        $this->assertSame(1, $result['active']);
         
         $session->remove($key);
         $session->close();

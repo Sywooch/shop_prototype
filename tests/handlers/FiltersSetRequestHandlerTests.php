@@ -39,7 +39,7 @@ class FiltersSetRequestHandlerTests extends TestCase
     {
         \Yii::$app->controller = new ProductsListController('products-list', \Yii::$app);
         
-        $url = Url::current();
+        $url = '/shop/next';
         
         $request = new class() {
             public function post($name = null, $defaultValue = null)
@@ -51,7 +51,7 @@ class FiltersSetRequestHandlerTests extends TestCase
                         'colors'=>[12, 4],
                         'sizes'=>[3, 7],
                         'brands'=>[2],
-                        'url'=>Url::current(),
+                        'url'=>'/shop/next',
                     ]
                 ];
             }

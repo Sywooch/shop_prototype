@@ -50,9 +50,9 @@ class ProductsWidget extends AbstractBaseWidget
             foreach ($this->products as $product) {
                 $set = [];
                 $set['id'] = $product->id;
-                $set['linkText'] = Html::encode($product->name);
+                $set['linkText'] = $product->name;
                 $set['linkHref'] = Url::to(['/product-detail/index', 'seocode'=>$product->seocode]);
-                $set['short_description'] = Html::encode($product->short_description);
+                $set['short_description'] = $product->short_description;
                 $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2), $this->currency->code());
                 
                 if (!empty($product->images)) {

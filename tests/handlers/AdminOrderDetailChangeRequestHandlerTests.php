@@ -104,7 +104,7 @@ class AdminOrderDetailChangeRequestHandlerTests extends TestCase
                         'address'=>'Address',
                         'city'=>'City',
                         'country'=>'Country',
-                        'postcode'=>'UIYT67',
+                        'postcode'=>10123,
                         'status'=>'shipped',
                         'quantity'=>13,
                         'id_color'=>2,

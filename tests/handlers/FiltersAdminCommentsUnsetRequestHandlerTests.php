@@ -30,7 +30,7 @@ class FiltersAdminCommentsUnsetRequestHandlerTests extends TestCase
             {
                 return [
                     'AdminCommentsFiltersForm'=>[
-                        'url'=>'https://shop.com'
+                        'url'=>'/shop-comments-34'
                     ]
                 ];
             }
@@ -47,7 +47,7 @@ class FiltersAdminCommentsUnsetRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
         
-        $this->assertEquals('https://shop.com', $result);
+        $this->assertEquals('/shop-comments', $result);
         
         $session = \Yii::$app->session;
         $session->open();

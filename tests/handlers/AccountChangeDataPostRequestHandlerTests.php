@@ -101,7 +101,7 @@ class AccountChangeDataPostRequestHandlerTests extends TestCase
                         'address'=>'New Address',
                         'city'=>'New City',
                         'country'=>'New Country',
-                        'postcode'=>'New7865',
+                        'postcode'=>25698,
                     ]
                 ];
             }
@@ -122,7 +122,7 @@ class AccountChangeDataPostRequestHandlerTests extends TestCase
         $this->assertEquals('New Address', $user->address->address);
         $this->assertEquals('New City', $user->city->city);
         $this->assertEquals('New Country', $user->country->country);
-        $this->assertEquals('New7865', $user->postcode->postcode);
+        $this->assertEquals(25698, $user->postcode->postcode);
     }
     
     public static function tearDownAfterClass()

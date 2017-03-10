@@ -20,7 +20,8 @@ use app\finders\{CategoriesFinder,
 use app\forms\{AbstractBaseForm,
     CommentForm,
     ChangeCurrencyForm,
-    PurchaseForm};
+    PurchaseForm,
+    UserLoginForm};
 use app\helpers\HashHelper;
 use app\services\GetCurrentCurrencyModelService;
 use app\validators\StripTagsValidator;
@@ -120,9 +121,11 @@ class ProductDetailIndexRequestHandler extends AbstractBaseHandler
                     'url'=>Url::current()
                 ]);
                 
+                $userLoginForm = new UserLoginForm();
+                
                 $dataArray = [];
                 
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();

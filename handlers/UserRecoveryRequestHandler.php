@@ -12,7 +12,8 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
-    RecoveryPasswordForm};
+    RecoveryPasswordForm,
+    UserLoginForm};
 use app\helpers\HashHelper;
 
 /**
@@ -73,10 +74,12 @@ class UserRecoveryRequestHandler extends AbstractBaseHandler
                 
                 $recoveryPasswordForm = new RecoveryPasswordForm();
                 
+                $userLoginForm = new UserLoginForm();
+                
                 $dataArray = [];
                 
                 $dataArray['userRecoveryWidgetConfig'] = $this->userRecoveryWidgetConfig($recoveryPasswordForm);
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();

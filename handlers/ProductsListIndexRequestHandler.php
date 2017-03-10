@@ -22,7 +22,8 @@ use app\finders\{BrandsFilterFinder,
     SubcategorySeocodeFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
-    FiltersForm};
+    FiltersForm,
+    UserLoginForm};
 use app\services\GetCurrentCurrencyModelService;
 use app\helpers\HashHelper;
 use app\validators\StripTagsValidator;
@@ -191,6 +192,8 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     'url'=>Url::current()
                 ]);
                 
+                $userLoginForm = new UserLoginForm();
+                
                 $dataArray = [];
                 
                 if ($productsCollection->isEmpty() === true) {
@@ -203,7 +206,7 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection->pagination);
                 }
                 
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();

@@ -93,7 +93,7 @@ class CurrencySetRequestHandlerTests extends TestCase
                 return [
                     'ChangeCurrencyForm'=>[
                         'id'=>1,
-                        'url'=>'https://shop.com',
+                        'url'=>'/shop/com-2',
                     ]
                 ];
             }
@@ -102,7 +102,7 @@ class CurrencySetRequestHandlerTests extends TestCase
         $result = $this->handler->handle($request);
         
         $this->assertInternalType('string', $result);
-        $this->assertEquals('https://shop.com', $result);
+        $this->assertEquals('/shop/com-2', $result);
         
         $this->assertTrue($session->has($key));
         

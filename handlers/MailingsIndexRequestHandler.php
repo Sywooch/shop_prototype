@@ -13,7 +13,8 @@ use app\finders\{CategoriesFinder,
     PurchasesSessionFinder};
 use app\forms\{AbstractBaseForm,
     ChangeCurrencyForm,
-    UserMailingForm};
+    UserMailingForm,
+    UserLoginForm};
 use app\helpers\HashHelper;
 
 /**
@@ -76,10 +77,11 @@ class MailingsIndexRequestHandler extends AbstractBaseHandler
                 ]);
                 
                 $mailingForm = new UserMailingForm();
+                $userLoginForm = new UserLoginForm();
                 
                 $dataArray = [];
                 
-                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+                $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();

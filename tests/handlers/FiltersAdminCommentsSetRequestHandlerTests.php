@@ -33,7 +33,7 @@ class FiltersAdminCommentsSetRequestHandlerTests extends TestCase
                         'sortingField'=>'date',
                         'sortingType'=>SORT_ASC,
                         'activeStatus'=>1,
-                        'url'=>'https://shop.com'
+                        'url'=>'/admin-comments-5'
                     ]
                 ];
             }
@@ -41,7 +41,7 @@ class FiltersAdminCommentsSetRequestHandlerTests extends TestCase
         
         $result = $this->handler->handle($request);
         
-        $this->assertEquals('https://shop.com', $result);
+        $this->assertEquals('/admin-comments', $result);
         
         $key = HashHelper::createHash([\Yii::$app->params['commentsFilters']]);
         $session = \Yii::$app->session;

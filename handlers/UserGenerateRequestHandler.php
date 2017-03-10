@@ -16,7 +16,8 @@ use app\finders\{CategoriesFinder,
 use app\helpers\HashHelper;
 use app\savers\ModelSaver;
 use app\models\UsersModel;
-use app\forms\ChangeCurrencyForm;
+use app\forms\{ChangeCurrencyForm,
+    UserLoginForm};
 use app\validators\StripTagsValidator;
 
 /**
@@ -125,7 +126,9 @@ class UserGenerateRequestHandler extends AbstractBaseHandler
                 'url'=>Url::current()
             ]);
             
-            $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user);
+            $userLoginForm = new UserLoginForm();
+            
+            $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
             $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
             $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
             $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
