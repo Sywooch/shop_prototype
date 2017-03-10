@@ -1,3 +1,7 @@
+{% extends '@theme/templates/base.twig' %}
+
+{% block content %}
+
 {{ register_asset_bundle('app/assets/AdminProductsAsset') }}
 
 {{ use ('app/widgets/AdminProductsBreadcrumbsWidget') }}
@@ -20,3 +24,5 @@
 {{ admin_products_widget_widget(adminProductsWidgetConfig) }}
 
 {{ pagination_widget_widget(paginationWidgetConfig) }}
+
+{% endblock content %}

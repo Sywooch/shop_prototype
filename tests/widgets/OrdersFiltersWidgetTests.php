@@ -7,12 +7,22 @@ use app\widgets\OrdersFiltersWidget;
 use app\collections\{SortingFieldsCollection,
     SortingTypesCollection};
 use app\forms\OrdersFiltersForm;
+use app\controllers\AdminController;
 
 /**
  * Тестирует класс OrdersFiltersWidget
  */
 class OrdersFiltersWidgetTests extends TestCase
 {
+    private $widget;
+    
+    public function setUp()
+    {
+        \Yii::$app->controller = new AdminController('admin', \Yii::$app);
+        
+        $this->widget = new OrdersFiltersWidget();
+    }
+    
     /**
      * Тестирует наличие свойств
      */
@@ -29,46 +39,19 @@ class OrdersFiltersWidgetTests extends TestCase
     
     /**
      * Тестирует метод OrdersFiltersWidget::setStatuses
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetStatusesError()
-    {
-        $statuses = new class() {};
-        
-        $widget = new OrdersFiltersWidget();
-        $widget->setStatuses($statuses);
-    }
-    
-    /**
-     * Тестирует метод OrdersFiltersWidget::setStatuses
      */
     public function testSetStatuses()
     {
         $statuses = new class() {};
         
-        $widget = new OrdersFiltersWidget();
-        $widget->setStatuses([$statuses]);
+        $this->widget->setStatuses([$statuses]);
         
-        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection = new \ReflectionProperty($this->widget, 'statuses');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод OrdersFiltersWidget::setSortingTypes
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetSortingTypesError()
-    {
-        $collection = new class() {};
-        
-        $widget = new OrdersFiltersWidget();
-        $widget->setSortingTypes($collection);
     }
     
     /**
@@ -78,28 +61,14 @@ class OrdersFiltersWidgetTests extends TestCase
     {
         $collection = [SORT_ASC=>'asc'];
         
-        $widget = new OrdersFiltersWidget();
-        $widget->setSortingTypes($collection);
+        $this->widget->setSortingTypes($collection);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод OrdersFiltersWidget::setForm
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetFormError()
-    {
-        $form = new class() {};
-        
-        $widget = new OrdersFiltersWidget();
-        $widget->setForm($form);
     }
     
     /**
@@ -109,27 +78,13 @@ class OrdersFiltersWidgetTests extends TestCase
     {
         $form = new class() extends OrdersFiltersForm {};
         
-        $widget = new OrdersFiltersWidget();
-        $widget->setForm($form);
+        $this->widget->setForm($form);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInstanceOf(OrdersFiltersForm::class, $result);
-    }
-    
-    /**
-     * Тестирует метод OrdersFiltersWidget::setHeader
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetHeaderError()
-    {
-        $header = null;
-        
-        $widget = new OrdersFiltersWidget();
-        $widget->setHeader($header);
     }
     
     /**
@@ -139,27 +94,13 @@ class OrdersFiltersWidgetTests extends TestCase
     {
         $header = 'Header';
         
-        $widget = new OrdersFiltersWidget();
-        $widget->setHeader($header);
+        $this->widget->setHeader($header);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
-    }
-    
-    /**
-     * Тестирует метод OrdersFiltersWidget::setTemplate
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetTemplateError()
-    {
-        $template = null;
-        
-        $widget = new OrdersFiltersWidget();
-        $widget->setTemplate($template);
     }
     
     /**
@@ -169,12 +110,11 @@ class OrdersFiltersWidgetTests extends TestCase
     {
         $template = 'Template';
         
-        $widget = new OrdersFiltersWidget();
-        $widget->setTemplate($template);
+        $this->widget->setTemplate($template);
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
     }
@@ -187,8 +127,7 @@ class OrdersFiltersWidgetTests extends TestCase
      */
     public function testRunEmptyStatuses()
     {
-        $widget = new OrdersFiltersWidget();
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -201,13 +140,11 @@ class OrdersFiltersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new OrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection = new \ReflectionProperty($this->widget, 'statuses');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -220,17 +157,15 @@ class OrdersFiltersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new OrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection = new \ReflectionProperty($this->widget, 'statuses');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -243,21 +178,19 @@ class OrdersFiltersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new OrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection = new \ReflectionProperty($this->widget, 'statuses');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -270,25 +203,23 @@ class OrdersFiltersWidgetTests extends TestCase
     {
         $mock = new class() {};
         
-        $widget = new OrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection = new \ReflectionProperty($this->widget, 'statuses');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, [$mock]);
+        $reflection->setValue($this->widget, [$mock]);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($this->widget, 'Header');
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -302,29 +233,27 @@ class OrdersFiltersWidgetTests extends TestCase
         
         $form = new class() extends OrdersFiltersForm {};
         
-        $widget = new OrdersFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'statuses');
+        $reflection = new \ReflectionProperty($this->widget, 'statuses');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $statuses);
+        $reflection->setValue($this->widget, $statuses);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $sortingTypes);
+        $result = $reflection->setValue($this->widget, $sortingTypes);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $form);
+        $result = $reflection->setValue($this->widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($this->widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, 'orders-filters.twig');
+        $result = $reflection->setValue($this->widget, 'orders-filters.twig');
         
-        $result = $widget->run();
+        $result = $this->widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="admin-orders-filters-form" action=".+" method="POST">#', $result);
@@ -332,7 +261,7 @@ class OrdersFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[sortingType\]">#', $result);
         $this->assertRegExp('#<option value="4">Sort ascending</option>#', $result);
         $this->assertRegExp('#<option value="3">Sort descending</option>#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value=".+">#', $result);
         $this->assertRegExp('#<p><a href=".+" data-timestamp="[0-9]{10}" class="calendar-href-from">[0-9]{1,2} .+ [0-9]{4} г\.</a> &ndash; <a href=".+" data-timestamp="[0-9]{10}" class="calendar-href-to">[0-9]{1,2} .+ [0-9]{4} г\.</a></p>#', $result);
         $this->assertRegExp('#<p class="calendar-place"></p>#', $result);
         $this->assertRegExp('#<label class="control-label" for=".+">Статус</label>#', $result);

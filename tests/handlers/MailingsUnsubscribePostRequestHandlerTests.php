@@ -93,7 +93,7 @@ class MailingsUnsubscribePostRequestHandlerTests extends TestCase
                     'UserMailingForm'=>[
                         'id'=>[1],
                         'email'=>'some@some.com',
-                        'key'=>'key',
+                        'key'=>sha1('key'),
                     ]
                 ];
             }

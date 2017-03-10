@@ -7,9 +7,9 @@
     convertNoticesToExceptions = "true"
     convertWarningsToExceptions = "true"
     processIsolation = "false"
-    stopOnFailure = "true"
-    stopOnRisky = "true"
-    stopOnError = "true"
+    stopOnFailure = "false"
+    stopOnRisky = "false"
+    stopOnError = "false"
     syntaxCheck = "false" 
     bootstrap="./bootstrap.php">
     

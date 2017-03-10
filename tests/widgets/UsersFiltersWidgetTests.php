@@ -8,6 +8,7 @@ use app\collections\{SortingFieldsCollection,
     SortingTypesCollection};
 use app\forms\{AbstractBaseForm,
     UsersFiltersForm};
+use app\controllers\AdminController;
 
 /**
  * Тестирует класс UsersFiltersWidget
@@ -19,6 +20,8 @@ class UsersFiltersWidgetTests extends TestCase
     public function setUp()
     {
         $this->widget = new UsersFiltersWidget();
+        
+        \Yii::$app->controller = new AdminController('admin', \Yii::$app);
     }
     
     /**
@@ -326,7 +329,7 @@ class UsersFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<option value="0">False</option>#', $result);
         $this->assertRegExp('#<input type="submit" value="Применить">#', $result);
         $this->assertRegExp('#<form id="admin-users-filters-clean" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value="https:://shop.com">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value=".+">#', $result);
         $this->assertRegExp('#<input type="submit" value="Очистить">#', $result);
     }
 }

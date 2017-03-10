@@ -7,6 +7,7 @@ use app\widgets\AdminCommentsFiltersWidget;
 use app\collections\{SortingFieldsCollection,
     SortingTypesCollection};
 use app\forms\AbstractBaseForm;
+use app\controllers\AdminController;
 
 /**
  * Тестирует класс AdminCommentsFiltersWidget
@@ -18,6 +19,8 @@ class AdminCommentsFiltersWidgetTests extends TestCase
     public function setUp()
     {
         $this->widget = new AdminCommentsFiltersWidget();
+        
+        \Yii::$app->controller = new AdminController('admin', \Yii::$app);
     }
     
     /**
@@ -318,10 +321,9 @@ class AdminCommentsFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[activeStatus\]">#', $result);
         $this->assertRegExp('#<option value="1">Active</option>#', $result);
         $this->assertRegExp('#<option value="0">Not active</option>#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value="https:://shop.com">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value=".+">#', $result);
         $this->assertRegExp('#<input type="submit" value="Применить">#', $result);
         $this->assertRegExp('#<form id="admin-comments-filters-clean" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value="https:://shop.com">#', $result);
         $this->assertRegExp('#<input type="submit" value="Очистить">#', $result);
     }
 }

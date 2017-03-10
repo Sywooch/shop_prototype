@@ -32,7 +32,9 @@ class Registry extends Object
                 throw new ErrorException($this->emptyError('class'));
             }
             
-            $key = $this->getKey(array_merge([$class], $params));
+            $arrayForKey = $params;
+            $arrayForKey[] = $class;
+            $key = $this->getKey($arrayForKey);
             
             if (array_key_exists($key, $this->items) === false) {
                 $object = \Yii::createObject(array_merge(['class'=>$class], $params));

@@ -196,6 +196,7 @@ class AccountMailingsUnsubscribeWidgetTests extends TestCase
         
         $form = new class() extends AbstractBaseForm {
             public $id;
+            public $id_user;
         };
         
         $reflection = new \ReflectionProperty($this->widget, 'mailings');

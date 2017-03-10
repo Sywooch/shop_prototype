@@ -7,12 +7,22 @@ use app\widgets\AdminProductsFiltersWidget;
 use app\collections\{SortingFieldsCollection,
     SortingTypesCollection};
 use app\forms\AdminProductsFiltersForm;
+use app\controllers\AdminController;
 
 /**
  * Тестирует класс AdminProductsFiltersWidget
  */
 class AdminProductsFiltersWidgetTests extends TestCase
 {
+    private $widget;
+    
+    public function setUp()
+    {
+        \Yii::$app->controller = new AdminController('admin', \Yii::$app);
+        
+        $this->widget = new AdminProductsFiltersWidget();
+    }
+    
     /**
      * Тестирует наличие свойств
      */
@@ -35,46 +45,19 @@ class AdminProductsFiltersWidgetTests extends TestCase
     
     /**
      * Тестирует метод AdminProductsFiltersWidget::setSortingFields
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetSortingFieldsError()
-    {
-        $sortingFields = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setSortingFields($sortingFields);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setSortingFields
      */
     public function testSetSortingFields()
     {
         $sortingFields = [null];
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setSortingFields($sortingFields);
+        $this->widget->setSortingFields($sortingFields);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setSortingTypes
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetSortingTypesError()
-    {
-        $sortingTypes = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setSortingTypes($sortingTypes);
     }
     
     /**
@@ -84,28 +67,14 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $sortingTypes = [null];
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setSortingTypes($sortingTypes);
+        $this->widget->setSortingTypes($sortingTypes);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setColors
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetColorsError()
-    {
-        $colors = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setColors($colors);
     }
     
     /**
@@ -115,28 +84,14 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $colors = [null];
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setColors($colors);
+        $this->widget->setColors($colors);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setSizes
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetSizesError()
-    {
-        $sizes = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setSizes($sizes);
     }
     
     /**
@@ -146,28 +101,14 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $sizes = [null];
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setSizes($sizes);
+        $this->widget->setSizes($sizes);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setBrands
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetBrandsError()
-    {
-        $brands = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setBrands($brands);
     }
     
     /**
@@ -177,28 +118,14 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $brands = [null];
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setBrands($brands);
+        $this->widget->setBrands($brands);
         
-        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection = new \ReflectionProperty($this->widget, 'brands');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setCategories
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetCategoriesError()
-    {
-        $categories = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setCategories($categories);
     }
     
     /**
@@ -208,28 +135,14 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $categories = [null];
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setCategories($categories);
+        $this->widget->setCategories($categories);
         
-        $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection = new \ReflectionProperty($this->widget, 'categories');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setSubcategory
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetSubcategoryError()
-    {
-        $subcategory = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setSubcategory($subcategory);
     }
     
     /**
@@ -239,28 +152,14 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $subcategory = [null];
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setSubcategory($subcategory);
+        $this->widget->setSubcategory($subcategory);
         
-        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection = new \ReflectionProperty($this->widget, 'subcategory');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setActiveStatuses
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetActiveStatusesError()
-    {
-        $activeStatuses = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setActiveStatuses($activeStatuses);
     }
     
     /**
@@ -270,28 +169,14 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $activeStatuses = [null];
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setActiveStatuses($activeStatuses);
+        $this->widget->setActiveStatuses($activeStatuses);
         
-        $reflection = new \ReflectionProperty($widget, 'activeStatuses');
+        $reflection = new \ReflectionProperty($this->widget, 'activeStatuses');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('array', $result);
         $this->assertNotEmpty($result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setForm
-     * передаю параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetFormError()
-    {
-        $form = new class() {};
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setForm($form);
     }
     
     /**
@@ -301,27 +186,13 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $form = new class() extends AdminProductsFiltersForm {};
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setForm($form);
+        $this->widget->setForm($form);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInstanceOf(AdminProductsFiltersForm::class, $result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setHeader
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetHeaderError()
-    {
-        $header = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setHeader($header);
     }
     
     /**
@@ -331,27 +202,13 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $header = 'Header';
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setHeader($header);
+        $this->widget->setHeader($header);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
-    }
-    
-    /**
-     * Тестирует метод AdminProductsFiltersWidget::setTemplate
-     * если передан параметр неверного типа
-     * @expectedException TypeError
-     */
-    public function testSetTemplateError()
-    {
-        $template = null;
-        
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setTemplate($template);
     }
     
     /**
@@ -361,12 +218,11 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $template = 'Template';
         
-        $widget = new AdminProductsFiltersWidget();
-        $widget->setTemplate($template);
+        $this->widget->setTemplate($template);
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $result = $reflection->getValue($widget);
+        $result = $reflection->getValue($this->widget);
         
         $this->assertInternalType('string', $result);
     }
@@ -379,8 +235,7 @@ class AdminProductsFiltersWidgetTests extends TestCase
      */
     public function testRunEmptySortingFields()
     {
-        $widget = new AdminProductsFiltersWidget();
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -393,13 +248,11 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -412,17 +265,15 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -435,21 +286,19 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -462,25 +311,23 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -493,29 +340,27 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection = new \ReflectionProperty($this->widget, 'brands');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -528,33 +373,31 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection = new \ReflectionProperty($this->widget, 'brands');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection = new \ReflectionProperty($this->widget, 'categories');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -567,37 +410,35 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection = new \ReflectionProperty($this->widget, 'brands');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection = new \ReflectionProperty($this->widget, 'categories');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection = new \ReflectionProperty($this->widget, 'subcategory');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -610,41 +451,39 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection = new \ReflectionProperty($this->widget, 'brands');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection = new \ReflectionProperty($this->widget, 'categories');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection = new \ReflectionProperty($this->widget, 'subcategory');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'activeStatuses');
+        $reflection = new \ReflectionProperty($this->widget, 'activeStatuses');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -657,45 +496,43 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection = new \ReflectionProperty($this->widget, 'brands');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection = new \ReflectionProperty($this->widget, 'categories');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection = new \ReflectionProperty($this->widget, 'subcategory');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'activeStatuses');
+        $reflection = new \ReflectionProperty($this->widget, 'activeStatuses');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -708,49 +545,47 @@ class AdminProductsFiltersWidgetTests extends TestCase
     {
         $mock = 'mock';
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection = new \ReflectionProperty($this->widget, 'brands');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection = new \ReflectionProperty($this->widget, 'categories');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection = new \ReflectionProperty($this->widget, 'subcategory');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'activeStatuses');
+        $reflection = new \ReflectionProperty($this->widget, 'activeStatuses');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $mock);
+        $reflection->setValue($this->widget, $mock);
         
-        $widget->run();
+        $this->widget->run();
     }
     
     /**
@@ -768,53 +603,51 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $activeStatuses = [1=>'Active', 0=>'Not active'];
         $form = new class() extends AdminProductsFiltersForm {};
         
-        $widget = new AdminProductsFiltersWidget();
-        
-        $reflection = new \ReflectionProperty($widget, 'sortingFields');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingFields');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $sortingFields);
+        $reflection->setValue($this->widget, $sortingFields);
         
-        $reflection = new \ReflectionProperty($widget, 'sortingTypes');
+        $reflection = new \ReflectionProperty($this->widget, 'sortingTypes');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $sortingTypes);
+        $result = $reflection->setValue($this->widget, $sortingTypes);
         
-        $reflection = new \ReflectionProperty($widget, 'colors');
+        $reflection = new \ReflectionProperty($this->widget, 'colors');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $colors);
+        $result = $reflection->setValue($this->widget, $colors);
         
-        $reflection = new \ReflectionProperty($widget, 'sizes');
+        $reflection = new \ReflectionProperty($this->widget, 'sizes');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $sizes);
+        $result = $reflection->setValue($this->widget, $sizes);
         
-        $reflection = new \ReflectionProperty($widget, 'brands');
+        $reflection = new \ReflectionProperty($this->widget, 'brands');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $brands);
+        $result = $reflection->setValue($this->widget, $brands);
         
-        $reflection = new \ReflectionProperty($widget, 'categories');
+        $reflection = new \ReflectionProperty($this->widget, 'categories');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $categories);
+        $result = $reflection->setValue($this->widget, $categories);
         
-        $reflection = new \ReflectionProperty($widget, 'subcategory');
+        $reflection = new \ReflectionProperty($this->widget, 'subcategory');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, $subcategory);
+        $reflection->setValue($this->widget, $subcategory);
         
-        $reflection = new \ReflectionProperty($widget, 'activeStatuses');
+        $reflection = new \ReflectionProperty($this->widget, 'activeStatuses');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $activeStatuses);
+        $result = $reflection->setValue($this->widget, $activeStatuses);
         
-        $reflection = new \ReflectionProperty($widget, 'form');
+        $reflection = new \ReflectionProperty($this->widget, 'form');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, $form);
+        $result = $reflection->setValue($this->widget, $form);
         
-        $reflection = new \ReflectionProperty($widget, 'header');
+        $reflection = new \ReflectionProperty($this->widget, 'header');
         $reflection->setAccessible(true);
-        $reflection->setValue($widget, 'Header');
+        $reflection->setValue($this->widget, 'Header');
         
-        $reflection = new \ReflectionProperty($widget, 'template');
+        $reflection = new \ReflectionProperty($this->widget, 'template');
         $reflection->setAccessible(true);
-        $result = $reflection->setValue($widget, 'admin-products-filters.twig');
+        $result = $reflection->setValue($this->widget, 'admin-products-filters.twig');
         
-        $result = $widget->run();
+        $result = $this->widget->run();
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<div class="products-filters">#', $result);
@@ -840,7 +673,7 @@ class AdminProductsFiltersWidgetTests extends TestCase
         $this->assertRegExp('#<select id=".+" class="form-control" name=".+\[active\]">#', $result);
         $this->assertRegExp('#<option value="1">Active</option>#', $result);
         $this->assertRegExp('#<option value="0">Not active</option>#', $result);
-        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]">#', $result);
+        $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[url\]" value=".+">#', $result);
         $this->assertRegExp('#<input type="submit" value="Применить">#', $result);
         $this->assertRegExp('#<form id="admin-products-filters-clean" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="submit" value="Очистить">#', $result);

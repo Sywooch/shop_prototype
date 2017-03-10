@@ -40,7 +40,7 @@ class GetAction extends AbstractBaseAction
                 throw new ErrorException($this->invalidError('result'));
             }
             
-            return $this->controller->render($this->view, $result);
+            return $this->controller->renderPartial($this->view, $result);
         } catch (NotFoundHttpException $e) {
             $this->writeErrorInLogs($e, __METHOD__);
             throw $e;

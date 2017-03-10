@@ -110,7 +110,7 @@ class SearchWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<form id="search-form" name="search-form"#', $result);
+        $this->assertRegExp('#<form id="search-form" action=".+" method="GET">#', $result);
         $this->assertRegExp('#<input type="text" name="search" value="" size=60 placeholder="Найти">#', $result);
     }
     
@@ -133,7 +133,7 @@ class SearchWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<form id="search-form" name="search-form"#', $result);
+        $this->assertRegExp('#<form id="search-form" action=".+" method="GET">#', $result);
         $this->assertRegExp('#<input type="text" name="search" value="Some text" size=60 placeholder="Найти">#', $result);
     }
 }

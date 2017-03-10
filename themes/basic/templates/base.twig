@@ -13,7 +13,7 @@
     {{ this.beginBody() }}
         <body>
             
-            {{ content | raw }}
+            {% block content %}{% endblock content %}
             
         </body>
     {{ this.endBody() }}

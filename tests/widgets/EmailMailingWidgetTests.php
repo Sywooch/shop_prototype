@@ -263,13 +263,13 @@ class EmailMailingWidgetTests extends TestCase
         $result = $widget->run();
         
         $this->assertRegExp('#<h1>Привет! Это информация о ваших подписках!</h1>#', $result);
-        $this->assertRegExp('#<p>Вы успешно подписались на рассылки:</p>#', $result);
+        $this->assertRegExp('#<p><strong>Вы успешно подписались на рассылки:</strong></p>#', $result);
         $this->assertRegExp('#<ol>#', $result);
         $this->assertRegExp('#<li>#', $result);
         $this->assertRegExp('#<strong>One</strong>#', $result);
-        $this->assertRegExp('#<br>One description#', $result);
+        $this->assertRegExp('#One description#', $result);
         $this->assertRegExp('#<strong>Two</strong>#', $result);
-        $this->assertRegExp('#<br>Two description#', $result);
+        $this->assertRegExp('#Two description#', $result);
         $this->assertRegExp('#Если вы хотите отписаться от рассылки, перейдите по этой ссылке#', $result);
         $this->assertRegExp('#<a href=".+\?unsubscribe=6aa4f165141cd439c3fd1dbb640b186c6714a30f&amp;email=some%40some.com">.+\?unsubscribe=6aa4f165141cd439c3fd1dbb640b186c6714a30f&amp;email=some%40some.com</a>#', $result);
     }

@@ -1,3 +1,7 @@
+{% extends '@theme/templates/base.twig' %}
+
+{% block content %}
+
 {{ register_asset_bundle('app/assets/MainAsset') }}
 
 {{ use('app/widgets/CategoriesBreadcrumbsWidget') }}
@@ -24,4 +28,4 @@
 
 {{ include('@theme/common/frontend-bottom-common.twig') }}
 
-
+{% endblock content %}

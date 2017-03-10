@@ -239,6 +239,7 @@ class AccountMailingsFormWidgetTests extends TestCase
     {
         $form = new class() extends AbstractBaseForm {
             public $id;
+            public $id_user;
         };
         
         $mailings = [

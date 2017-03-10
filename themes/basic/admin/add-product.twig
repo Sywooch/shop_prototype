@@ -1,3 +1,7 @@
+{% extends '@theme/templates/base.twig' %}
+
+{% block content %}
+
 {{ register_asset_bundle('app/assets/AdminAddProductAsset') }}
 
 {{ use ('app/widgets/AdminAddProductBreadcrumbsWidget') }}
@@ -12,3 +16,5 @@
 <div class="admin-add-product-form">
     {{ admin_add_product_form_widget_widget(adminAddProductFormWidgetConfig) }}
 </div>
+
+{% endblock content %}
