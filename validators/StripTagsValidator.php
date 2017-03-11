@@ -34,18 +34,18 @@ class StripTagsValidator extends Validator
             $rawAttribute = $model->$attribute;
             
             if (!empty($rawAttribute)) {
-                if (in_array($model::className() . '::' . $attribute, $this->exceptProperties)) {
+                /*if (in_array($model::className() . '::' . $attribute, $this->exceptProperties)) {
                     $allowable_tags = $this->allowable_tags;
-                }
+                }*/
                 
                 if (is_array($rawAttribute)) {
                     $resultArray = [];
                     foreach ($rawAttribute as $item) {
-                        $resultArray[] = $this->strip($item, $allowable_tags ?? '');
+                        $resultArray[] = $this->lightStrip($item);
                     }
                     $model->$attribute = $resultArray;
                 } else {
-                    $model->$attribute = $this->strip($rawAttribute, $allowable_tags ?? '');
+                    $model->$attribute = $this->lightStrip($rawAttribute);
                 }
             }
         } catch (\Throwable $t) {
@@ -62,7 +62,7 @@ class StripTagsValidator extends Validator
     {
         try {
             if (!empty($value) && is_string($value)) {
-                $value = $this->strip($value);
+                $value = $this->lightStrip($value);
             }
             
             return $value;
@@ -84,6 +84,23 @@ class StripTagsValidator extends Validator
                 'HTML.Allowed'=>$allowable_tags,
                 'Core.RemoveProcessingInstructions'=>true
             ]);
+            $value = preg_replace('/\s+/u', ' ', $value);
+            $value = trim($value);
+            
+            return $value;
+        } catch (\Throwable $t) {
+            $this->throwException($t, __METHOD__);
+        }
+    }
+    
+    /**
+     * Удаляет множественные пробелы, символы из начала и конца строки
+     * @param string $value обрабатываемая строка
+     * @return string
+     */
+    private function lightStrip(string $value): string
+    {
+        try {
             $value = preg_replace('/\s+/u', ' ', $value);
             $value = trim($value);
             

@@ -1,18 +1,24 @@
-{{ register_asset_bundle('app/assets/AdminCategoriesAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AdminCategoriesBreadcrumbsWidget') }}
-{{ use ('app/widgets/AdminCategoriesWidget') }}
-{{ use ('app/widgets/AdminCreateCategoryWidget') }}
-{{ use ('app/widgets/AdminCreateSubcategoryWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_categories_breadcrumbs_widget_widget() }}
-
-<div class="product-categories">
-    {{ admin_categories_widget_widget(adminCategoriesWidgetConfig) }}
-</div>
-
-{{ admin_create_category_widget_widget(adminCreateCategoryWidgetConfig) }}
-
-{{ admin_create_subcategory_widget_widget(adminCreateSubcategoryWidgetConfig) }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AdminCategoriesAsset') }}
+    
+    {{ use ('app/widgets/AdminCategoriesBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AdminCategoriesWidget') }}
+    {{ use ('app/widgets/AdminCreateCategoryWidget') }}
+    {{ use ('app/widgets/AdminCreateSubcategoryWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_categories_breadcrumbs_widget_widget() }}
+    
+    <div class="product-categories">
+        {{ admin_categories_widget_widget(adminCategoriesWidgetConfig) }}
+    </div>
+    
+    {{ admin_create_category_widget_widget(adminCreateCategoryWidgetConfig) }}
+    
+    {{ admin_create_subcategory_widget_widget(adminCreateSubcategoryWidgetConfig) }}
+    
+{% endblock content %}

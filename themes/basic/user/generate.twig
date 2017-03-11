@@ -1,18 +1,23 @@
-{{ register_asset_bundle('app/assets/UserAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
-{{ use('app/widgets/PasswordGenerateEmptyWidget') }}
-{{ use('app/widgets/PasswordGenerateSuccessWidget') }}
-
-{{ include('@theme/common/frontend-common.twig') }}
-
-{{ recovery_breadcrumbs_widget_widget() }}
-
-{% if passwordGenerateEmptyWidgetConfig %}
-    {{ password_generate_empty_widget_widget(passwordGenerateEmptyWidgetConfig) }}
-{% else %}
-    {{ password_generate_success_widget_widget(passwordGenerateSuccessWidgetConfig) }}
-{% endif %}
-
-{{ include('@theme/common/frontend-bottom-common.twig') }}
-
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/UserAsset') }}
+    
+    {{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
+    {{ use('app/widgets/PasswordGenerateEmptyWidget') }}
+    {{ use('app/widgets/PasswordGenerateSuccessWidget') }}
+    
+    {{ include('@theme/common/frontend-common.twig') }}
+    
+    {{ recovery_breadcrumbs_widget_widget() }}
+    
+    {% if passwordGenerateEmptyWidgetConfig %}
+        {{ password_generate_empty_widget_widget(passwordGenerateEmptyWidgetConfig) }}
+    {% else %}
+        {{ password_generate_success_widget_widget(passwordGenerateSuccessWidgetConfig) }}
+    {% endif %}
+    
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+{% endblock content %}

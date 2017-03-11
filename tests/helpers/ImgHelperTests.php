@@ -100,7 +100,7 @@ class ImgHelperTests extends TestCase
         $result = ImgHelper::saveImages($uploadedFiles);
         
         $this->assertInternalType('integer', $result);
-        $this->assertEquals(10, strlen($result));
+        $this->assertEquals(10, mb_strlen($result, 'UTF-8'));
         
         $path = \Yii::getAlias('@imagesroot' . '/' . $result);
         $this->assertTrue(file_exists($path));

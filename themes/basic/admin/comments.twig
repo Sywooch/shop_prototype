@@ -1,19 +1,25 @@
-{{ register_asset_bundle('app/assets/AdminCommentsAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AdminCommentsBreadcrumbsWidget') }}
-{{ use('app/widgets/AdminCommentsFiltersWidget') }}
-{{ use('app/widgets/AdminCsvCommentsFormWidget') }}
-{{ use ('app/widgets/AdminCommentsWidget') }}
-{{ use('app/widgets/PaginationWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_comments_breadcrumbs_widget_widget() }}
-
-{{ admin_comments_filters_widget_widget(adminCommentsFiltersWidgetConfig) }}
-
-{{ admin_csv_comments_form_widget_widget(adminCsvCommentsFormWidgetConfig) }}
-
-{{ admin_comments_widget_widget(adminCommentsWidgetConfig) }}
-
-{{ pagination_widget_widget(paginationWidgetConfig) }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AdminCommentsAsset') }}
+    
+    {{ use ('app/widgets/AdminCommentsBreadcrumbsWidget') }}
+    {{ use('app/widgets/AdminCommentsFiltersWidget') }}
+    {{ use('app/widgets/AdminCsvCommentsFormWidget') }}
+    {{ use ('app/widgets/AdminCommentsWidget') }}
+    {{ use('app/widgets/PaginationWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_comments_breadcrumbs_widget_widget() }}
+    
+    {{ admin_comments_filters_widget_widget(adminCommentsFiltersWidgetConfig) }}
+    
+    {{ admin_csv_comments_form_widget_widget(adminCsvCommentsFormWidgetConfig) }}
+    
+    {{ admin_comments_widget_widget(adminCommentsWidgetConfig) }}
+    
+    {{ pagination_widget_widget(paginationWidgetConfig) }}
+    
+{% endblock content %}

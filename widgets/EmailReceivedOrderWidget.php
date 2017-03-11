@@ -69,7 +69,7 @@ class EmailReceivedOrderWidget extends AbstractBaseWidget
             foreach ($this->purchases as $purchase) {
                 $set = [];
                 $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
-                $set['linkText'] = Html::encode($purchase->product->name);
+                $set['linkText'] = $purchase->product->name;
                 $set['short_description'] = $purchase->product->short_description;
                 $set['quantity'] = sprintf('%s: %s', \Yii::t('base', 'Quantity'), $purchase->quantity);
                 $set['price'] = sprintf('%s: %s', \Yii::t('base', 'Price'), \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code());

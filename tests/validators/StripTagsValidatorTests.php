@@ -7,17 +7,26 @@ use yii\base\Model;
 use app\validators\StripTagsValidator;
 
 /**
- * Тестирует класс app\validators\StripTagsValidator
+ * Тестирует класс StripTagsValidator
  */
 class StripTagsValidatorTests extends TestCase
 {
+    private $validator;
+    
+    public function setUp()
+    {
+        $this->validator = new StripTagsValidator();
+    }
+    
     private static $withHtmlTags = '<p>Some Name.</p> <ul><li>First punkt</li> </ul><strong>some.com</strong><?= echo "f"; ?>';
     private static $withoutHtmlTags = 'Some Name. First punkt some.com';
+    private static $withoutHtmlTagsAllow = '<p>Some Name.</p> First punkt some.com';
     
     private static $withHtmlHrefTags = '<a href="some.com">some.com</a><php echo "f"; ?>';
     private static $withoutHtmlHrefTags = 'some.com';
     
-    private static $withSomeSpacesTags = 'some    text ';
+    private static $withSomeSpacesTags = '   some    text ';
+    private static $withSomeSpacesTagsParse = "   some    text \n\t";
     private static $withoutSomeSpacesTags = 'some text';
     
     private static $withJavascriptTags = 'some <script type="text/javascript">var a = 12;</script> text';
@@ -26,55 +35,72 @@ class StripTagsValidatorTests extends TestCase
     private static $withJavascriptRequireTags = 'some <script src="/my/script.js"></script> text';
     private static $withoutJavascriptRequireTags = 'some text';
     
-    private static $number = 568.87;
+    /**
+     * Тестирует метод StripTagsValidator::strip
+     */
+    public function testStrip()
+    {
+        $reflection = new \ReflectionMethod($this->validator, 'strip');
+        $reflection->setAccessible(true);
+        
+        $result = $reflection->invoke($this->validator, self::$withHtmlTags);
+        $this->assertSame(self::$withoutHtmlTags, $result);
+        $result = $reflection->invoke($this->validator, self::$withHtmlTags, 'p');
+        $this->assertSame(self::$withoutHtmlTagsAllow, $result);
+        $result = $reflection->invoke($this->validator, self::$withHtmlHrefTags);
+        $this->assertSame(self::$withoutHtmlHrefTags, $result);
+        $result = $reflection->invoke($this->validator, self::$withSomeSpacesTags);
+        $this->assertSame(self::$withoutSomeSpacesTags, $result);
+        $result = $reflection->invoke($this->validator, self::$withJavascriptTags);
+        $this->assertSame(self::$withoutJavascriptTags, $result);
+        $result = $reflection->invoke($this->validator, self::$withJavascriptRequireTags);
+        $this->assertSame(self::$withoutJavascriptRequireTags, $result);
+    }
+    
+    /**
+     * Тестирует метод StripTagsValidator::lightStrip
+     */
+    public function testLightStrip()
+    {
+        $reflection = new \ReflectionMethod($this->validator, 'lightStrip');
+        $reflection->setAccessible(true);
+        
+        $result = $reflection->invoke($this->validator, self::$withSomeSpacesTags);
+        $this->assertSame(self::$withoutSomeSpacesTags, $result);
+        $result = $reflection->invoke($this->validator, self::$withSomeSpacesTagsParse);
+        $this->assertSame(self::$withoutSomeSpacesTags, $result);
+    }
     
     /**
      * Тестирует метод StripTagsValidator::validateAttribute
      */
     public function testValidateAttribute()
     {
-        $validator = new StripTagsValidator();
-        $result = $validator->validate(self::$withHtmlTags);
-        $this->assertEquals(self::$withoutHtmlTags, $result);
+        $model = new class() extends Model {
+            public $field;
+        };
+        $model->field = self::$withSomeSpacesTags;
         
-        $validator = new StripTagsValidator();
-        $result = $validator->validate(self::$withHtmlHrefTags);
-        $this->assertEquals(self::$withoutHtmlHrefTags, $result);
-        
-        $validator = new StripTagsValidator();
-        $result = $validator->validate(self::$withSomeSpacesTags);
-        $this->assertEquals(self::$withoutSomeSpacesTags, $result);
-        
-        $validator = new StripTagsValidator();
-        $result = $validator->validate(self::$withJavascriptTags);
-        $this->assertEquals(self::$withoutJavascriptTags, $result);
-        
-        $validator = new StripTagsValidator();
-        $result = $validator->validate(self::$withJavascriptRequireTags);
-        $this->assertEquals(self::$withoutJavascriptRequireTags, $result);
+        $this->validator->validateAttribute($model, 'field');
+        $this->assertSame(self::$withoutSomeSpacesTags, $model->field);
         
         $model = new class() extends Model {
-            public $description = '<p>Some Name.</p> <ul><li>First punkt</li> </ul><strong>some.com</strong>';
+            public $field;
         };
-        $validator = new StripTagsValidator();
-        $validator->validateAttribute($model, 'description');
+        $model->field = self::$withSomeSpacesTagsParse;
         
-        $this->assertEquals(self::$withoutHtmlTags, $model->description);
-        
-        $model = new class() extends Model {
-            public $description = [
-                '<p>Some Name.</p> <ul><li>First punkt</li> </ul><strong>some.com</strong>',
-                '<a href="some.com">some.com</a>'
-            ];
-        };
-        $validator = new StripTagsValidator();
-        $validator->validateAttribute($model, 'description');
-        
-        $this->assertContains('Some Name. First punkt some.com', $model->description);
-        $this->assertContains('some.com', $model->description);
-        
-        $validator = new StripTagsValidator();
-        $result = $validator->validate(self::$number);
-        $this->assertSame(self::$number, $result);
+        $this->validator->validateAttribute($model, 'field');
+        $this->assertSame(self::$withoutSomeSpacesTags, $model->field);
+    }
+    
+    /**
+     * Тестирует метод StripTagsValidator::validate
+     */
+    public function testValidate()
+    {
+        $result = $this->validator->validate(self::$withSomeSpacesTags);
+        $this->assertSame(self::$withoutSomeSpacesTags, $result);
+        $result = $this->validator->validate(self::$withSomeSpacesTagsParse);
+        $this->assertSame(self::$withoutSomeSpacesTags, $result);
     }
 }

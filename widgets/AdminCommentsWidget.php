@@ -60,7 +60,7 @@ class AdminCommentsWidget extends AbstractBaseWidget
                     $set['email'] = !empty($comment->id_email) ? $comment->email->email: null;
                     $set['commentName'] = !empty($comment->id_product) ? $comment->product->name : null;
                     $set['commentHref'] = !empty($comment->id_product) ? Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$comment->product->seocode]) : null;
-                    $set['text'] = Html::encode($comment->text);
+                    $set['text'] = $comment->text;
                     $set['active'] = $comment->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
                     
                     $set['formId'] = sprintf('admin-comment-detail-get-form-%d', $comment->id);

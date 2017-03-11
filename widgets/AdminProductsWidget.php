@@ -70,9 +70,9 @@ class AdminProductsWidget extends AbstractBaseWidget
                     $set['date'] = \Yii::$app->formatter->asDate($product->date);
                     $set['code'] = $product->code;
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$product->seocode]);
-                    $set['linkText'] = Html::encode($product->name);
-                    $set['short_description'] = Html::encode($product->short_description);
-                    $set['description'] = Html::encode($product->description);
+                    $set['linkText'] = $product->name;
+                    $set['short_description'] = $product->short_description;
+                    $set['description'] = $product->description;
                     $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($product->price * $this->currency->exchangeRate(), 2), $this->currency->code());
                     $set['colors'] = implode(', ', ArrayHelper::getColumn($product->colors, 'color'));
                     $set['sizes'] = implode(', ', ArrayHelper::getColumn($product->sizes, 'size'));

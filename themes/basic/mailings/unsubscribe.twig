@@ -1,19 +1,25 @@
-{{ register_asset_bundle('app/assets/MailingsUnsubscribeAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use('app/widgets/MailingsBreadcrumbsWidget') }}
-{{ use('app/widgets/UnsubscribeEmptyWidget') }}
-{{ use('app/widgets/UnsubscribeFormWidget') }}
-
-{{ include('@theme/common/frontend-common.twig') }}
-
-{{ mailings_breadcrumbs_widget_widget() }}
-
-<div class="unsubscribe">
-    {% if unsubscribeEmptyWidgetConfig %}
-        {{ unsubscribe_empty_widget_widget(unsubscribeEmptyWidgetConfig) }}
-    {% else %}
-    {{ unsubscribe_form_widget_widget(unsubscribeFormWidgetConfig) }}
-    {% endif %}
-</div>
-
-{{ include('@theme/common/frontend-bottom-common.twig') }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/MailingsUnsubscribeAsset') }}
+    
+    {{ use('app/widgets/MailingsBreadcrumbsWidget') }}
+    {{ use('app/widgets/UnsubscribeEmptyWidget') }}
+    {{ use('app/widgets/UnsubscribeFormWidget') }}
+    
+    {{ include('@theme/common/frontend-common.twig') }}
+    
+    {{ mailings_breadcrumbs_widget_widget() }}
+    
+    <div class="unsubscribe">
+        {% if unsubscribeEmptyWidgetConfig %}
+            {{ unsubscribe_empty_widget_widget(unsubscribeEmptyWidgetConfig) }}
+        {% else %}
+            {{ unsubscribe_form_widget_widget(unsubscribeFormWidgetConfig) }}
+        {% endif %}
+    </div>
+    
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+{% endblock content %}

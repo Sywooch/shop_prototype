@@ -1,21 +1,27 @@
-{{ register_asset_bundle('app/assets/CartItemsAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use('app/widgets/CartBreadcrumbsWidget') }}
-{{ use('app/widgets/CartWidget') }}
-{{ use('app/widgets/CartCheckoutLinkWidget') }}
-
-{{ include('@theme/common/frontend-cart-common.twig') }}
-
-{{ cart_breadcrumbs_widget_widget() }}
-
-<div class="cart-items">
-    {{ cart_widget_widget(cartWidgetConfig) }}
-</div>
-
-<div class="cart-checkout">
-    {{ cart_checkout_link_widget_widget(cartCheckoutLinkWidgetConfig) }}
-</div>
-
-{{ short_cart_redirect_widget_widget(shortCartRedirectWidgetConfig) }}
-
-{{ include('@theme/common/frontend-bottom-common.twig') }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/CartItemsAsset') }}
+    
+    {{ use('app/widgets/CartBreadcrumbsWidget') }}
+    {{ use('app/widgets/CartWidget') }}
+    {{ use('app/widgets/CartCheckoutLinkWidget') }}
+    
+    {{ include('@theme/common/frontend-cart-common.twig') }}
+    
+    {{ cart_breadcrumbs_widget_widget() }}
+    
+    <div class="cart-items">
+        {{ cart_widget_widget(cartWidgetConfig) }}
+    </div>
+    
+    <div class="cart-checkout">
+        {{ cart_checkout_link_widget_widget(cartCheckoutLinkWidgetConfig) }}
+    </div>
+    
+    {{ short_cart_redirect_widget_widget(shortCartRedirectWidgetConfig) }}
+    
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+{% endblock content %}

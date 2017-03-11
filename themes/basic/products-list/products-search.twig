@@ -1,28 +1,34 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use('app/widgets/SearchBreadcrumbsWidget') }}
-{{ use('app/widgets/EmptySphinxWidget') }}
-{{ use('app/widgets/FiltersWidget') }}
-{{ use('app/widgets/EmptyProductsWidget') }}
-{{ use('app/widgets/ProductsWidget') }}
-{{ use('app/widgets/PaginationWidget') }}
-
-{{ include('@theme/common/frontend-common.twig') }}
-
-{{ search_breadcrumbs_widget_widget(searchBreadcrumbsWidgetConfig) }}
-
-{% if emptySphinxWidgetConfig %}
-    {{ empty_sphinx_widget_widget(emptySphinxWidgetConfig) }}
-{% else %}
-    {{ filters_widget_widget(filtersWidgetConfig) }}
+{% block content %}
     
-    {% if emptyProductsWidgetConfig %}
-        {{ empty_products_widget_widget(emptyProductsWidgetConfig) }}
+    {{ register_asset_bundle('app/assets/MainAsset') }}
+    
+    {{ use('app/widgets/SearchBreadcrumbsWidget') }}
+    {{ use('app/widgets/EmptySphinxWidget') }}
+    {{ use('app/widgets/FiltersWidget') }}
+    {{ use('app/widgets/EmptyProductsWidget') }}
+    {{ use('app/widgets/ProductsWidget') }}
+    {{ use('app/widgets/PaginationWidget') }}
+    
+    {{ include('@theme/common/frontend-common.twig') }}
+    
+    {{ search_breadcrumbs_widget_widget(searchBreadcrumbsWidgetConfig) }}
+    
+    {% if emptySphinxWidgetConfig %}
+        {{ empty_sphinx_widget_widget(emptySphinxWidgetConfig) }}
     {% else %}
-        {{ products_widget_widget(productsWidgetConfig) }}
+        {{ filters_widget_widget(filtersWidgetConfig) }}
         
-        {{ pagination_widget_widget(paginationWidgetConfig) }}
+        {% if emptyProductsWidgetConfig %}
+            {{ empty_products_widget_widget(emptyProductsWidgetConfig) }}
+        {% else %}
+            {{ products_widget_widget(productsWidgetConfig) }}
+            
+            {{ pagination_widget_widget(paginationWidgetConfig) }}
+        {% endif %}
     {% endif %}
-{% endif %}
-
-{{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+{% endblock content %}

@@ -1,15 +1,21 @@
-{{ register_asset_bundle('app/assets/AdminBrandsAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AdminBrandsBreadcrumbsWidget') }}
-{{ use ('app/widgets/AdminBrandsWidget') }}
-{{ use ('app/widgets/AdminCreateBrandWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_brands_breadcrumbs_widget_widget() }}
-
-<div class="admin-brands">
-    {{ admin_brands_widget_widget(adminBrandsWidgetConfig) }}
-</div>
-
-{{ admin_create_brand_widget_widget(adminCreateBrandWidgetConfig) }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AdminBrandsAsset') }}
+    
+    {{ use ('app/widgets/AdminBrandsBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AdminBrandsWidget') }}
+    {{ use ('app/widgets/AdminCreateBrandWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_brands_breadcrumbs_widget_widget() }}
+    
+    <div class="admin-brands">
+        {{ admin_brands_widget_widget(adminBrandsWidgetConfig) }}
+    </div>
+    
+    {{ admin_create_brand_widget_widget(adminCreateBrandWidgetConfig) }}
+    
+{% endblock content %}

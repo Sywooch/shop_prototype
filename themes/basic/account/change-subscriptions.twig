@@ -1,17 +1,23 @@
-{{ register_asset_bundle('app/assets/AccountChangeSubscriptionsAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AccountChangeSubscriptionsBreadcrumbsWidget') }}
-{{ use ('app/widgets/AccountMailingsUnsubscribeWidget') }}
-{{ use ('app/widgets/AccountMailingsFormWidget') }}
-
-{{ include('@theme/common/account-common.twig') }}
-
-{{ account_change_subscriptions_breadcrumbs_widget_widget() }}
-
-<div class="account-unsubscribe">
-    {{ account_mailings_unsubscribe_widget_widget(accountMailingsUnsubscribeWidgetConfig) }}
-</div>
-
-<div class="account-subscribe">
-    {{ account_mailings_form_widget_widget(accountMailingsFormWidgetConfig) }}
-</div>
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AccountChangeSubscriptionsAsset') }}
+    
+    {{ use ('app/widgets/AccountChangeSubscriptionsBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AccountMailingsUnsubscribeWidget') }}
+    {{ use ('app/widgets/AccountMailingsFormWidget') }}
+    
+    {{ include('@theme/common/account-common.twig') }}
+    
+    {{ account_change_subscriptions_breadcrumbs_widget_widget() }}
+    
+    <div class="account-unsubscribe">
+        {{ account_mailings_unsubscribe_widget_widget(accountMailingsUnsubscribeWidgetConfig) }}
+    </div>
+    
+    <div class="account-subscribe">
+        {{ account_mailings_form_widget_widget(accountMailingsFormWidgetConfig) }}
+    </div>
+    
+{% endblock content %}

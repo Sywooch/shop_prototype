@@ -1,12 +1,18 @@
-{{ register_asset_bundle('app/assets/UserAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
-{{ use('app/widgets/UserRecoverySuccessWidget') }}
-
-{{ include('@theme/common/frontend-common.twig') }}
-
-{{ recovery_breadcrumbs_widget_widget() }}
-
-{{ user_recovery_success_widget_widget(successConfig) }}
-
-{{ include('@theme/common/frontend-bottom-common.twig') }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/UserAsset') }}
+    
+    {{ use('app/widgets/RecoveryBreadcrumbsWidget') }}
+    {{ use('app/widgets/UserRecoverySuccessWidget') }}
+    
+    {{ include('@theme/common/frontend-common.twig') }}
+    
+    {{ recovery_breadcrumbs_widget_widget() }}
+    
+    {{ user_recovery_success_widget_widget(successConfig) }}
+    
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+{% endblock content %}

@@ -1,12 +1,18 @@
-{{ register_asset_bundle('app/assets/UserAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use('app/widgets/UserLoginWidget') }}
-{{ use('app/widgets/LoginBreadcrumbsWidget') }}
-
-{{ include('@theme/common/frontend-common.twig') }}
-
-{{ login_breadcrumbs_widget_widget() }}
-
-{{ user_login_widget_widget(userLoginWidgetConfig) }}
-
-{{ include('@theme/common/frontend-bottom-common.twig') }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/UserAsset') }}
+    
+    {{ use('app/widgets/UserLoginWidget') }}
+    {{ use('app/widgets/LoginBreadcrumbsWidget') }}
+    
+    {{ include('@theme/common/frontend-common.twig') }}
+    
+    {{ login_breadcrumbs_widget_widget() }}
+    
+    {{ user_login_widget_widget(userLoginWidgetConfig) }}
+    
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+{% endblock content %}

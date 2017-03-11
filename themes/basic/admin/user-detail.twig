@@ -1,18 +1,24 @@
-{{ register_asset_bundle('app/assets/MainAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
-{{ use ('app/widgets/AccountContactsWidget') }}
-{{ use ('app/widgets/AccountCurrentOrdersWidget') }}
-{{ use('app/widgets/MailingsWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
-
-{{ include('@theme/common/admin-user-common.twig') }}
-
-{{ account_contacts_widget_widget(accountContactsWidgetConfig) }}
-
-{{ account_current_orders_widget_widget(accountCurrentOrdersWidgetConfig) }}
-
-{{ mailings_widget_widget(accountMailingsWidgetConfig) }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/MainAsset') }}
+    
+    {{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AccountContactsWidget') }}
+    {{ use ('app/widgets/AccountCurrentOrdersWidget') }}
+    {{ use('app/widgets/MailingsWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
+    
+    {{ include('@theme/common/admin-user-common.twig') }}
+    
+    {{ account_contacts_widget_widget(accountContactsWidgetConfig) }}
+    
+    {{ account_current_orders_widget_widget(accountCurrentOrdersWidgetConfig) }}
+    
+    {{ mailings_widget_widget(accountMailingsWidgetConfig) }}
+    
+{% endblock content %}

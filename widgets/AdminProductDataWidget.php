@@ -61,9 +61,9 @@ class AdminProductDataWidget extends AbstractBaseWidget
             $renderArray['date'] = \Yii::$app->formatter->asDate($this->productsModel->date);
             $renderArray['code'] = $this->productsModel->code;
             $renderArray['link'] = Url::to(['/product-detail/index', 'seocode'=>$this->productsModel->seocode]);
-            $renderArray['linkText'] = Html::encode($this->productsModel->name);
-            $renderArray['short_description'] = Html::encode($this->productsModel->short_description);
-            $renderArray['description'] = Html::encode($this->productsModel->description);
+            $renderArray['linkText'] = $this->productsModel->name;
+            $renderArray['short_description'] = $this->productsModel->short_description;
+            $renderArray['description'] = $this->productsModel->description;
             $renderArray['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($this->productsModel->price * $this->currency->exchangeRate(), 2), $this->currency->code());
             $renderArray['colors'] = implode(', ', ArrayHelper::getColumn($this->productsModel->colors, 'color'));
             $renderArray['sizes'] = implode(', ', ArrayHelper::getColumn($this->productsModel->sizes, 'size'));

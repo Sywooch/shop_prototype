@@ -1,15 +1,21 @@
-{{ register_asset_bundle('app/assets/AdminDeliveriesAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AdminDeliveriesBreadcrumbsWidget') }}
-{{ use ('app/widgets/AdminDeliveriesWidget') }}
-{{ use ('app/widgets/AdminCreateDeliveryWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_deliveries_breadcrumbs_widget_widget() }}
-
-<div class="admin-deliveries">
-    {{ admin_deliveries_widget_widget(adminDeliveriesWidgetConfig) }}
-</div>
-
-{{ admin_create_delivery_widget_widget(adminCreateDeliveriesWidgetConfig) }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AdminDeliveriesAsset') }}
+    
+    {{ use ('app/widgets/AdminDeliveriesBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AdminDeliveriesWidget') }}
+    {{ use ('app/widgets/AdminCreateDeliveryWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_deliveries_breadcrumbs_widget_widget() }}
+    
+    <div class="admin-deliveries">
+        {{ admin_deliveries_widget_widget(adminDeliveriesWidgetConfig) }}
+    </div>
+    
+    {{ admin_create_delivery_widget_widget(adminCreateDeliveriesWidgetConfig) }}
+    
+{% endblock content %}

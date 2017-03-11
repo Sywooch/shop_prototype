@@ -1,28 +1,28 @@
 {% extends '@theme/templates/base.twig' %}
 
 {% block content %}
-
-{{ register_asset_bundle('app/assets/AdminProductsAsset') }}
-
-{{ use ('app/widgets/AdminProductsBreadcrumbsWidget') }}
-{{ use ('app/widgets/AdminProductsFiltersWidget') }}
-{{ use ('app/widgets/AdminProductsWidget') }}
-{{ use('app/widgets/PaginationWidget') }}
-{{ use('app/widgets/AdminCsvProductsFormWidget') }}
-{{ use('app/widgets/AdminAddProductButtonWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_products_breadcrumbs_widget_widget() }}
-
-{{ admin_products_filters_widget_widget(adminProductsFiltersWidgetConfig) }}
-
-{{ admin_csv_products_form_widget_widget(adminCsvProductsFormWidgetConfig) }}
-
-{{ admin_add_product_button_widget_widget(adminAddProductButtonWidgetConfig) }}
-
-{{ admin_products_widget_widget(adminProductsWidgetConfig) }}
-
-{{ pagination_widget_widget(paginationWidgetConfig) }}
-
+    
+    {{ register_asset_bundle('app/assets/AdminProductsAsset') }}
+    
+    {{ use ('app/widgets/AdminProductsBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AdminProductsFiltersWidget') }}
+    {{ use ('app/widgets/AdminProductsWidget') }}
+    {{ use('app/widgets/PaginationWidget') }}
+    {{ use('app/widgets/AdminCsvProductsFormWidget') }}
+    {{ use('app/widgets/AdminAddProductButtonWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_products_breadcrumbs_widget_widget() }}
+    
+    {{ admin_products_filters_widget_widget(adminProductsFiltersWidgetConfig) }}
+    
+    {{ admin_csv_products_form_widget_widget(adminCsvProductsFormWidgetConfig) }}
+    
+    {{ admin_add_product_button_widget_widget(adminAddProductButtonWidgetConfig) }}
+    
+    {{ admin_products_widget_widget(adminProductsWidgetConfig) }}
+    
+    {{ pagination_widget_widget(paginationWidgetConfig) }}
+    
 {% endblock content %}

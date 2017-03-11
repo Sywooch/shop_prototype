@@ -1,19 +1,25 @@
-{{ register_asset_bundle('app/assets/AccountChangeSubscriptionsAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
-{{ use ('app/widgets/AdminUserMailingsUnsubscribeWidget') }}
-{{ use ('app/widgets/AdminUserMailingsFormWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
-
-{{ include('@theme/common/admin-user-common.twig') }}
-
-<div class="account-unsubscribe">
-    {{ admin_user_mailings_unsubscribe_widget_widget(adminUserMailingsUnsubscribeWidgetConfig) }}
-</div>
-
-<div class="account-subscribe">
-    {{ admin_user_mailings_form_widget_widget(adminUserMailingsFormWidgetConfig) }}
-</div>
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AccountChangeSubscriptionsAsset') }}
+    
+    {{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AdminUserMailingsUnsubscribeWidget') }}
+    {{ use ('app/widgets/AdminUserMailingsFormWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
+    
+    {{ include('@theme/common/admin-user-common.twig') }}
+    
+    <div class="account-unsubscribe">
+        {{ admin_user_mailings_unsubscribe_widget_widget(adminUserMailingsUnsubscribeWidgetConfig) }}
+    </div>
+    
+    <div class="account-subscribe">
+        {{ admin_user_mailings_form_widget_widget(adminUserMailingsFormWidgetConfig) }}
+    </div>
+    
+{% endblock content %}

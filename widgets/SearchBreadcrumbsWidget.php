@@ -26,7 +26,7 @@ class SearchBreadcrumbsWidget extends BreadcrumbsWidget
     public function init()
     {
         try {
-            $text = !empty($this->text) ? Html::tag('strong', Html::encode($this->text)) : '';
+            $text = !empty($this->text) ? Html::tag('strong', $this->text) : '';
             
             \Yii::$app->params['breadcrumbs'][] = ['label'=>\Yii::t('base', 'Searching results {placeholder}', ['placeholder'=>$text])];
             

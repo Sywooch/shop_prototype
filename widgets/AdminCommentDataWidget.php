@@ -52,7 +52,7 @@ class AdminCommentDataWidget extends AbstractBaseWidget
             $renderArray['email'] = !empty($this->commentsModel->id_email) ? $this->commentsModel->email->email: null;
             $renderArray['commentName'] = !empty($this->commentsModel->id_product) ? $this->commentsModel->product->name : null;
             $renderArray['commentHref'] = !empty($this->commentsModel->id_product) ? Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$this->commentsModel->product->seocode]) : null;
-            $renderArray['text'] = Html::encode($this->commentsModel->text);
+            $renderArray['text'] = $this->commentsModel->text;
             $renderArray['active'] = $this->commentsModel->active ? \Yii::t('base', 'Active') : \Yii::t('base', 'Not active');
             
             $renderArray['modelForm'] = $this->form;

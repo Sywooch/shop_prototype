@@ -108,7 +108,7 @@ class HashHelper
         try {
             $string = self::createHash([time(), random_bytes(20)]);
             $length = $length > 40 ? 40 : $length;
-            return substr($string, 0, $length);
+            return mb_substr($string, 0, $length, 'UTF-8');
         } catch (\Throwable $t) {
             ExceptionsTrait::throwStaticException($t, __METHOD__);
         }

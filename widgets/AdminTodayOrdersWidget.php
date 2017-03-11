@@ -60,7 +60,7 @@ class AdminTodayOrdersWidget extends AbstractBaseWidget
                     $set = [];
                     $set['id'] = $purchase->id;
                     $set['link'] = Url::to(['/product-detail/index', \Yii::$app->params['productKey']=>$purchase->product->seocode]);
-                    $set['linkText'] = Html::encode($purchase->product->name);
+                    $set['linkText'] = $purchase->product->name;
                     if (!empty($purchase->product->images)) {
                         $set['image'] = ImgHelper::randThumbn($purchase->product->images);
                     }

@@ -1,12 +1,18 @@
-{{ register_asset_bundle('app/assets/UserRegistrationAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use('app/widgets/RegistrationBreadcrumbsWidget') }}
-{{ use('app/widgets/UserRegistrationWidget') }}
-
-{{ include('@theme/common/frontend-common.twig') }}
-
-{{ registration_breadcrumbs_widget_widget() }}
-
-<div class="registration">{{ user_registration_widget_widget(userRegistrationWidgetConfig) }}</div>
-
-{{ include('@theme/common/frontend-bottom-common.twig') }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/UserRegistrationAsset') }}
+    
+    {{ use('app/widgets/RegistrationBreadcrumbsWidget') }}
+    {{ use('app/widgets/UserRegistrationWidget') }}
+    
+    {{ include('@theme/common/frontend-common.twig') }}
+    
+    {{ registration_breadcrumbs_widget_widget() }}
+    
+    <div class="registration">{{ user_registration_widget_widget(userRegistrationWidgetConfig) }}</div>
+    
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+{% endblock content %}

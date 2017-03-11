@@ -1,10 +1,16 @@
-{{ register_asset_bundle('app/assets/AccountChangeDataAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AccountChangeDataBreadcrumbsWidget') }}
-{{ use ('app/widgets/AccountChangeDataWidget') }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AccountChangeDataAsset') }}
+    
+    {{ use ('app/widgets/AccountChangeDataBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AccountChangeDataWidget') }}
+    
+    {{ include('@theme/common/account-common.twig') }}
+    
+    {{ account_change_data_breadcrumbs_widget_widget() }}
 
-{{ include('@theme/common/account-common.twig') }}
-
-{{ account_change_data_breadcrumbs_widget_widget() }}
-
-{{ account_change_data_widget_widget(accountChangeDataWidgetConfig) }}
+    {{ account_change_data_widget_widget(accountChangeDataWidgetConfig) }}
+    
+{% endblock content %}

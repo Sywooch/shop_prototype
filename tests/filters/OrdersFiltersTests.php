@@ -130,7 +130,7 @@ class OrdersFiltersTests extends TestCase
     public function testSetDateFromError()
     {
         $filter = new OrdersFilters();
-        $filter->setDateFrom((int) substr(time(), 0, 8));
+        $filter->setDateFrom((int) mb_substr(time(), 0, 8, 'UTF-8'));
     }
     
     /**
@@ -146,7 +146,7 @@ class OrdersFiltersTests extends TestCase
         $result = $reflection->getValue($filter);
         
         $this->assertInternalType('integer', $result);
-        $this->assertEquals(10, strlen($result));
+        $this->assertEquals(10, mb_strlen($result, 'UTF-8'));
     }
     
     /**
@@ -163,7 +163,7 @@ class OrdersFiltersTests extends TestCase
         $result = $filter->getDateFrom();
         
         $this->assertInternalType('integer', $result);
-        $this->assertEquals(10, strlen($result));
+        $this->assertEquals(10, mb_strlen($result, 'UTF-8'));
     }
     
     /**
@@ -175,7 +175,7 @@ class OrdersFiltersTests extends TestCase
     public function testSetDateToError()
     {
         $filter = new OrdersFilters();
-        $filter->setDateTo((int) substr(time(), 0, 8));
+        $filter->setDateTo((int) mb_substr(time(), 0, 8, 'UTF-8'));
     }
     
     /**
@@ -191,7 +191,7 @@ class OrdersFiltersTests extends TestCase
         $result = $reflection->getValue($filter);
         
         $this->assertInternalType('integer', $result);
-        $this->assertEquals(10, strlen($result));
+        $this->assertEquals(10, mb_strlen($result, 'UTF-8'));
     }
     
     /**
@@ -208,7 +208,7 @@ class OrdersFiltersTests extends TestCase
         $result = $filter->getDateTo();
         
         $this->assertInternalType('integer', $result);
-        $this->assertEquals(10, strlen($result));
+        $this->assertEquals(10, mb_strlen($result, 'UTF-8'));
     }
     
     /**

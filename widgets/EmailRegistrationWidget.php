@@ -39,7 +39,7 @@ class EmailRegistrationWidget extends AbstractBaseWidget
             
             $renderArray['header'] = \Yii::t('base', 'Hello! This is information about your account!');
             $renderArray['text'] = \Yii::t('base', 'You can operate it in his <a href="{href}">personal account</a>', ['href'=>Url::to(['/user/login'], true)]);
-            $renderArray['email'] = \Yii::t('base', 'Your username: {email}', ['email'=>Html::encode($this->email)]);
+            $renderArray['email'] = \Yii::t('base', 'Your username: {email}', ['email'=>$this->email]);
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

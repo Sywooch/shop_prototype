@@ -69,8 +69,8 @@ class AccountOrdersWidget extends AbstractBaseWidget
                     $set['id'] = $purchase->id;
                     $set['date'] = \Yii::$app->formatter->asDate($purchase->received_date);
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$purchase->product->seocode], true);
-                    $set['linkText'] = Html::encode($purchase->product->name);
-                    $set['short_description'] = Html::encode($purchase->product->short_description);
+                    $set['linkText'] = $purchase->product->name;
+                    $set['short_description'] = $purchase->product->short_description;
                     $set['quantity'] = $purchase->quantity;
                     $set['price'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal($purchase->price * $this->currency->exchangeRate(), 2), $this->currency->code());
                     $set['totalPrice'] = sprintf('%s %s', \Yii::$app->formatter->asDecimal(($purchase->price * $purchase->quantity) * $this->currency->exchangeRate(), 2), $this->currency->code());

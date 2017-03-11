@@ -1,31 +1,31 @@
 {% extends '@theme/templates/base.twig' %}
 
 {% block content %}
-
-{{ register_asset_bundle('app/assets/MainAsset') }}
-
-{{ use('app/widgets/CategoriesBreadcrumbsWidget') }}
-{{ use('app/widgets/FiltersWidget') }}
-{{ use('app/widgets/EmptyProductsWidget') }}
-{{ use('app/widgets/ProductsWidget') }}
-{{ use('app/widgets/PaginationWidget') }}
-
-{{ include('@theme/common/frontend-common.twig') }}
-
-{{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}
-
-<div class="products-filters">
-    {{ filters_widget_widget(filtersWidgetConfig) }}
-</div>
-
-{% if emptyProductsWidgetConfig %}
-    <div class="products-items">{{ empty_products_widget_widget(emptyProductsWidgetConfig) }}</div>
-{% else %}
-    <div class="products-items">{{ products_widget_widget(productsWidgetConfig) }}</div>
     
-    <div class="products-pagination">{{ pagination_widget_widget(paginationWidgetConfig) }}</div>
-{% endif %}
+    {{ register_asset_bundle('app/assets/MainAsset') }}
+    
+    {{ use('app/widgets/CategoriesBreadcrumbsWidget') }}
+    {{ use('app/widgets/FiltersWidget') }}
+    {{ use('app/widgets/EmptyProductsWidget') }}
+    {{ use('app/widgets/ProductsWidget') }}
+    {{ use('app/widgets/PaginationWidget') }}
+    
+    {{ include('@theme/common/frontend-common.twig') }}
+    
+    {{ categories_breadcrumbs_widget_widget(categoriesBreadcrumbsWidgetConfig) }}
+    
+    <div class="products-filters">
+        {{ filters_widget_widget(filtersWidgetConfig) }}
+    </div>
+    
+    {% if emptyProductsWidgetConfig %}
+        <div class="products-items">{{ empty_products_widget_widget(emptyProductsWidgetConfig) }}</div>
+    {% else %}
+        <div class="products-items">{{ products_widget_widget(productsWidgetConfig) }}</div>
+        
+        <div class="products-pagination">{{ pagination_widget_widget(paginationWidgetConfig) }}</div>
+    {% endif %}
 
-{{ include('@theme/common/frontend-bottom-common.twig') }}
-
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
 {% endblock content %}

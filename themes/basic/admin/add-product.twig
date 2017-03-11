@@ -1,20 +1,20 @@
 {% extends '@theme/templates/base.twig' %}
 
 {% block content %}
-
-{{ register_asset_bundle('app/assets/AdminAddProductAsset') }}
-
-{{ use ('app/widgets/AdminAddProductBreadcrumbsWidget') }}
-{{ use ('app/widgets/AdminAddProductFormWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_add_product_breadcrumbs_widget_widget() }}
-
-<div class="add-product-success"></div>
-
-<div class="admin-add-product-form">
-    {{ admin_add_product_form_widget_widget(adminAddProductFormWidgetConfig) }}
-</div>
-
+    
+    {{ register_asset_bundle('app/assets/AdminAddProductAsset') }}
+    
+    {{ use ('app/widgets/AdminAddProductBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AdminAddProductFormWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_add_product_breadcrumbs_widget_widget() }}
+    
+    <div class="add-product-success"></div>
+    
+    <div class="admin-add-product-form">
+        {{ admin_add_product_form_widget_widget(adminAddProductFormWidgetConfig) }}
+    </div>
+    
 {% endblock content %}

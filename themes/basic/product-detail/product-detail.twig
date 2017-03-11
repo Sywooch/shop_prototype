@@ -1,28 +1,34 @@
-{{ register_asset_bundle('app/assets/ProductDetailAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use('app/widgets/ProductBreadcrumbsWidget') }}
-{{ use('app/widgets/ProductDetailWidget') }}
-{{ use('app/widgets/PurchaseFormWidget') }}
-{{ use('app/widgets/SeeAlsoWidget') }}
-{{ use('app/widgets/CommentsWidget') }}
-{{ use('app/widgets/CommentFormWidget') }}
-
-{{ include('@theme/common/frontend-common.twig') }}
-
-{{ product_breadcrumbs_widget_widget(productBreadcrumbsWidget) }}
-
-{{ product_detail_widget_widget(productDetailWidgetConfig) }}
-
-{{ purchase_form_widget_widget(purchaseFormWidgetConfig) }}
-
-{{ see_also_widget_widget(seeAlsoWidgetSimilarConfig) }}
-
-{{ see_also_widget_widget(seeAlsoWidgetRelatedConfig) }}
-
-<p><strong>Комментарии</strong></p>
-
-{{ comments_widget_widget(commentsWidgetConfig) }}
-
-{{ comment_form_widget_widget(сommentFormWidgetConfig) }}
-
-{{ include('@theme/common/frontend-bottom-common.twig') }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/ProductDetailAsset') }}
+    
+    {{ use('app/widgets/ProductBreadcrumbsWidget') }}
+    {{ use('app/widgets/ProductDetailWidget') }}
+    {{ use('app/widgets/PurchaseFormWidget') }}
+    {{ use('app/widgets/SeeAlsoWidget') }}
+    {{ use('app/widgets/CommentsWidget') }}
+    {{ use('app/widgets/CommentFormWidget') }}
+    
+    {{ include('@theme/common/frontend-common.twig') }}
+    
+    {{ product_breadcrumbs_widget_widget(productBreadcrumbsWidget) }}
+    
+    {{ product_detail_widget_widget(productDetailWidgetConfig) }}
+    
+    {{ purchase_form_widget_widget(purchaseFormWidgetConfig) }}
+    
+    {{ see_also_widget_widget(seeAlsoWidgetSimilarConfig) }}
+    
+    {{ see_also_widget_widget(seeAlsoWidgetRelatedConfig) }}
+    
+    <p><strong>Комментарии</strong></p>
+    
+    {{ comments_widget_widget(commentsWidgetConfig) }}
+    
+    {{ comment_form_widget_widget(сommentFormWidgetConfig) }}
+    
+    {{ include('@theme/common/frontend-bottom-common.twig') }}
+    
+{% endblock content %}

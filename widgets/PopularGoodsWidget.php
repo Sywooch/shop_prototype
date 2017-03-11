@@ -48,7 +48,7 @@ class PopularGoodsWidget extends AbstractBaseWidget
                     $set = [];
                     $set['views'] = $product->views;
                     $set['link'] = Url::to(['/product-detail/index', 'seocode'=>$product->seocode], true);
-                    $set['linkText'] = Html::encode($product->name);
+                    $set['linkText'] = $product->name;
                     if (!empty($product->images)) {
                         $set['image'] = ImgHelper::randThumbn($product->images);
                     }

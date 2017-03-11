@@ -92,8 +92,8 @@ class AdminOrderDetailFormWidget extends AbstractBaseWidget
             
             $renderArray['id'] = $this->purchase->id;
             $renderArray['link'] = Url::to(['/product-detail/index', 'seocode'=>$this->purchase->product->seocode], true);
-            $renderArray['linkText'] = Html::encode($this->purchase->product->name);
-            $renderArray['short_description'] = Html::encode($this->purchase->product->short_description);
+            $renderArray['linkText'] = $this->purchase->product->name;
+            $renderArray['short_description'] = $this->purchase->product->short_description;
             $renderArray['date'] = \Yii::$app->formatter->asDate($this->purchase->received_date);
             $renderArray['price'] = \Yii::$app->formatter->asDecimal($this->purchase->price * $this->currency->exchangeRate(), 2) . ' ' . $this->currency->code();
             $renderArray['email'] = $this->purchase->email->email;

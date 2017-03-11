@@ -1,18 +1,24 @@
-{{ register_asset_bundle('app/assets/AccountOrdersAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
-{{ use('app/widgets/OrdersFiltersWidget') }}
-{{ use ('app/widgets/AccountOrdersWidget') }}
-{{ use('app/widgets/PaginationWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
-
-{{ include('@theme/common/admin-user-common.twig') }}
-
-{{ orders_filters_widget_widget(оrdersFiltersWidgetConfig) }}
-
-{{ account_orders_widget_widget(accountOrdersWidgetConfig) }}
-
-{{ pagination_widget_widget(paginationWidgetConfig) }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AccountOrdersAsset') }}
+    
+    {{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
+    {{ use('app/widgets/OrdersFiltersWidget') }}
+    {{ use ('app/widgets/AccountOrdersWidget') }}
+    {{ use('app/widgets/PaginationWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
+    
+    {{ include('@theme/common/admin-user-common.twig') }}
+    
+    {{ orders_filters_widget_widget(оrdersFiltersWidgetConfig) }}
+    
+    {{ account_orders_widget_widget(accountOrdersWidgetConfig) }}
+    
+    {{ pagination_widget_widget(paginationWidgetConfig) }}
+    
+{% endblock content %}

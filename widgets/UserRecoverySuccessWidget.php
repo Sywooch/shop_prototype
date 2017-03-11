@@ -42,7 +42,7 @@ class UserRecoverySuccessWidget extends AbstractBaseWidget
             
             $renderArray['header'] = $this->header;
             $renderArray['text'] = \Yii::t('base', 'Instructions for restoring the password sent to');
-            $renderArray['email'] = Html::encode($this->email);
+            $renderArray['email'] = $this->email;
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

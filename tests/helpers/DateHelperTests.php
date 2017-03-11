@@ -18,7 +18,7 @@ class DateHelperTests extends TestCase
         $result = DateHelper::getToday00();
         
         $this->assertInternalType('integer', $result);
-        $this->assertEquals(10, strlen($result));
+        $this->assertEquals(10, mb_strlen($result, 'UTF-8'));
         
         sleep(5);
         
@@ -35,6 +35,6 @@ class DateHelperTests extends TestCase
         $result = DateHelper::getDaysAgo00(3);
         
         $this->assertInternalType('integer', $result);
-        $this->assertEquals(10, strlen($result));
+        $this->assertEquals(10, mb_strlen($result, 'UTF-8'));
     }
 }

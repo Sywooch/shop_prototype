@@ -9,7 +9,10 @@ $components = [
         'renderers'=>[
             'twig'=>[
                 'class'=>'yii\twig\ViewRenderer',
-                'options'=>['auto_reload'=>true],
+                'options'=>[
+                    'auto_reload'=>true,
+                    'autoescape'=>'html'
+                ],
             ]
         ],
         'theme'=>[

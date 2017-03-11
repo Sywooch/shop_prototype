@@ -1,12 +1,18 @@
-{{ register_asset_bundle('app/assets/AccountChangeDataAsset') }}
+{% extends '@theme/templates/base.twig' %}
 
-{{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
-{{ use ('app/widgets/AdminChangeUserDataWidget') }}
-
-{{ include('@theme/common/admin-common.twig') }}
-
-{{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
-
-{{ include('@theme/common/admin-user-common.twig') }}
-
-{{ admin_change_user_data_widget_widget(adminChangeUserDataWidgetConfig) }}
+{% block content %}
+    
+    {{ register_asset_bundle('app/assets/AccountChangeDataAsset') }}
+    
+    {{ use ('app/widgets/AdminUserDetailBreadcrumbsWidget') }}
+    {{ use ('app/widgets/AdminChangeUserDataWidget') }}
+    
+    {{ include('@theme/common/admin-common.twig') }}
+    
+    {{ admin_user_detail_breadcrumbs_widget_widget(adminUserDetailBreadcrumbsWidgetConfig) }}
+    
+    {{ include('@theme/common/admin-user-common.twig') }}
+    
+    {{ admin_change_user_data_widget_widget(adminChangeUserDataWidgetConfig) }}
+    
+{% endblock content %}
