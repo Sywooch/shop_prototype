@@ -78,28 +78,12 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     throw new ErrorException($this->invalidError('page'));
                 }
                 
-                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
-                    'key'=>HashHelper::createCurrencyKey()
-                ]);
-                $currentCurrencyModel = $service->get();
-                if (empty($currentCurrencyModel)) {
-                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
-                }
-                
                 $finder = \Yii::$app->registry->get(ProductsFiltersSessionFinder::class, [
                     'key'=>HashHelper::createFiltersKey(Url::current())
                 ]);
                 $filtersModel = $finder->find();
                 if (empty($filtersModel)) {
                     throw new ErrorException($this->emptyError('filtersModel'));
-                }
-                
-                $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
-                    'key'=>HashHelper::createCartKey()
-                ]);
-                $ordersCollection = $finder->find();
-                if (empty($ordersCollection)) {
-                    throw new ErrorException($this->emptyError('ordersCollection'));
                 }
                 
                 $finder = \Yii::$app->registry->get(ProductsFinder::class, [
@@ -109,6 +93,22 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     'filters'=>$filtersModel
                 ]);
                 $productsCollection = $finder->find();
+                
+                $service = \Yii::$app->registry->get(GetCurrentCurrencyModelService::class, [
+                    'key'=>HashHelper::createCurrencyKey()
+                ]);
+                $currentCurrencyModel = $service->get();
+                if (empty($currentCurrencyModel)) {
+                    throw new ErrorException($this->emptyError('currentCurrencyModel'));
+                }
+                
+                $finder = \Yii::$app->registry->get(PurchasesSessionFinder::class, [
+                    'key'=>HashHelper::createCartKey()
+                ]);
+                $ordersCollection = $finder->find();
+                if (empty($ordersCollection)) {
+                    throw new ErrorException($this->emptyError('ordersCollection'));
+                }
                 
                 $finder = \Yii::$app->registry->get(CurrencyFinder::class);
                 $currencyArray = $finder->find();
@@ -146,27 +146,18 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     'subcategory'=>$subcategory
                 ]);
                 $colorsArray = $finder->find();
-                if (empty($colorsArray)) {
-                    throw new ErrorException($this->emptyError('colorsArray'));
-                }
                 
                 $finder = \Yii::$app->registry->get(SizesFilterFinder::class, [
                     'category'=>$category, 
                     'subcategory'=>$subcategory
                 ]);
                 $sizesArray = $finder->find();
-                if (empty($sizesArray)) {
-                    throw new ErrorException($this->emptyError('sizesArray'));
-                }
                 
                 $finder = \Yii::$app->registry->get(BrandsFilterFinder::class, [
                     'category'=>$category, 
                     'subcategory'=>$subcategory
                 ]);
                 $brandsArray = $finder->find();
-                if (empty($brandsArray)) {
-                    throw new ErrorException($this->emptyError('brandsArray'));
-                }
                 
                 $finder = \Yii::$app->registry->get(SortingFieldsFinder::class);
                 $sortingFieldsArray = $finder->find();
@@ -206,13 +197,16 @@ class ProductsListIndexRequestHandler extends AbstractBaseHandler
                     $dataArray['paginationWidgetConfig'] = $this->paginationWidgetConfig($productsCollection->pagination);
                 }
                 
+                if (!empty($colorsArray) && !empty($sizesArray) && !empty($brandsArray)) {
+                    $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($colorsArray, $sizesArray, $brandsArray, $sortingFieldsArray, $sortingTypesArray, $filtersForm);
+                }
+                
                 $dataArray['userInfoWidgetConfig'] = $this->userInfoWidgetConfig(\Yii::$app->user, $userLoginForm);
                 $dataArray['shortCartWidgetConfig'] = $this->shortCartWidgetConfig($ordersCollection, $currentCurrencyModel);
                 $dataArray['currencyWidgetConfig'] = $this->currencyWidgetConfig($currencyArray, $changeCurrencyForm);
                 $dataArray['searchWidgetConfig'] = $this->searchWidgetConfig();
                 $dataArray['categoriesMenuWidgetConfig'] = $this->categoriesMenuWidgetConfig($categoriesModelArray);
                 $dataArray['categoriesBreadcrumbsWidgetConfig'] = $this->categoriesBreadcrumbsWidgetConfig($categoriesModel ?? null, $subcategoryModel ?? null);
-                $dataArray['filtersWidgetConfig'] = $this->filtersWidgetConfig($colorsArray, $sizesArray, $brandsArray, $sortingFieldsArray, $sortingTypesArray, $filtersForm);
                 
                 $this->dataArray = $dataArray;
             }

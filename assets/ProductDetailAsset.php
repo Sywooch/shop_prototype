@@ -16,7 +16,7 @@ class ProductDetailAsset extends AbstractAsset
      */
     public $js = [
         'js/sendComment.js',
-        'js/sendPurchase.js',
+        'js/sendHtmlInsertForm.js',
     ];
     /**
      * @var array зависимости пакета

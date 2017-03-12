@@ -4,16 +4,13 @@ namespace app\finders;
 
 use yii\base\ErrorException;
 use app\models\SizesModel;
-use app\finders\{AbstractBaseFinder,
-    SizesFilterFindersTrait};
+use app\finders\AbstractBaseFinder;
 
 /**
  * Возвращает коллекцию цветов из СУБД
  */
 class SizesFilterSphinxFinder extends AbstractBaseFinder
 {
-    use SizesFilterFindersTrait;
-    
     /**
      * @var array массив ID товаров, найденный sphinx в ответ на запрос
      */
@@ -30,12 +27,17 @@ class SizesFilterSphinxFinder extends AbstractBaseFinder
     public function find()
     {
         try {
+            if (empty($this->sphinx)) {
+                throw new ErrorException($this->emptyError('sphinx'));
+            }
+            
             if (empty($this->storage)) {
-                if (empty($this->sphinx)) {
-                    throw new ErrorException($this->emptyError('sphinx'));
-                }
-                
-                $query = $this->createQuery();
+                $query = SizesModel::find();
+                $query->select(['[[sizes.id]]', '[[sizes.size]]']);
+                $query->distinct();
+                $query->innerJoin('{{products_sizes}}', '[[sizes.id]]=[[products_sizes.id_size]]');
+                $query->innerJoin('{{products}}', '[[products_sizes.id_product]]=[[products.id]]');
+                $query->where(['[[products.active]]'=>true]);
             
                 $query->andWhere(['[[products.id]]'=>$this->sphinx]);
                 

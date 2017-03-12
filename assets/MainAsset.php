@@ -21,8 +21,9 @@ class MainAsset extends AbstractAsset
      * содержащиеся в данном комплекте
      */
     public $js = [
-        'js/sendCleanCart.js',
-        'js/sendLogoutForm.js'
+        'js/helpers.js',
+        'js/sendHtmlInsertForm.js',
+        'js/sendRedirectForm.js'
     ];
     /**
      * @var array зависимости пакета
