@@ -8,14 +8,14 @@ use app\assets\{AbstractAsset,
 /**
  * Задает основной пакет ресурсов
  */
-class UserRegistrationAsset extends AbstractAsset
+class LoginAsset extends AbstractAsset
 {
     /**
      * @var array массив, перечисляющий JavaScript файлы, 
      * содержащиеся в данном комплекте
      */
     public $js = [
-        'js/sendUserRegistration.js',
+        'js/sendLoginForm.js'
     ];
     /**
      * @var array зависимости пакета

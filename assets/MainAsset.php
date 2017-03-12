@@ -23,7 +23,6 @@ class MainAsset extends AbstractAsset
     public $js = [
         'js/helpers.js',
         'js/sendHtmlInsertForm.js',
-        'js/sendRedirectForm.js'
     ];
     /**
      * @var array зависимости пакета

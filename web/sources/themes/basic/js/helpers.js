@@ -17,4 +17,31 @@ function Helpers()
             console.log(e.name + ': ' + e.message);
         }
     };
+    
+    this.loseFocus = function(form) {
+        try {
+            form.find('input, textarea').blur();
+        } catch (e) {
+            console.log(e.name + ': ' + e.message);
+        }
+    };
+    
+    this.cleanFields = function(form) {
+        try {
+            form.find('input:text, textarea').val('');
+            form.find('input:checkbox').prop('checked', false);
+        } catch (e) {
+            console.log(e.name + ': ' + e.message);
+        }
+    };
+    
+    this.timeoutRemove = function(container, time) {
+        try {
+            setTimeout(function() {
+                $(container).empty();
+            }, time);
+        } catch (e) {
+            console.log(e.name + ': ' + e.message);
+        }
+    };
 }

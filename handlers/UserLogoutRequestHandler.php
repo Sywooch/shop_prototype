@@ -26,27 +26,23 @@ class UserLogoutRequestHandler extends AbstractBaseHandler
         try {
             $form = new UserLoginForm(['scenario'=>UserLoginForm::LOGOUT]);
             
-            if ($request->isAjax === true) {
-                if ($form->load($request->post()) === true) {
-                    \Yii::$app->response->format = Response::FORMAT_JSON;
-                    
-                    $errors = ActiveForm::validate($form);
-                    if (!empty($errors)) {
-                        return $errors;
-                    }
-                    
-                    if ((int) $form->id === (int) \Yii::$app->user->id) {
-                        \Yii::$app->user->logout();
-                    }
-                    
-                    $remover = new SessionRemover([
-                        'keys'=>[HashHelper::createSessionIpKey()]
-                    ]);
-                    $remover->remove();
-                    
-                    return Url::to(['/products-list/index']);
-                }
+            if ($form->load($request->post()) === false) {
+                throw new ErrorException($this->emptyError('post'));
             }
+            if ($form->validate() === false) {
+                throw new ErrorException($this->modelError($form->errors));
+            }
+            
+            if ((int) $form->id === (int) \Yii::$app->user->id) {
+                \Yii::$app->user->logout();
+            }
+            
+            $remover = new SessionRemover([
+                'keys'=>[HashHelper::createSessionIpKey()]
+            ]);
+            $remover->remove();
+            
+            return Url::to(['/products-list/index']);
         } catch (\Throwable $t) {
             $this->throwException($t, __METHOD__);
         }

@@ -15,8 +15,8 @@ class CartItemsAsset extends AbstractAsset
      * содержащиеся в данном комплекте
      */
     public $js = [
-        'js/sendCartItems.js',
-        'js/sendCheckoutRequest.js',
+        //'js/sendCartItems.js',
+        //'js/sendCheckoutRequest.js',
     ];
     /**
      * @var array зависимости пакета

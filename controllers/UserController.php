@@ -5,7 +5,8 @@ namespace app\controllers;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use app\actions\{AjaxAction,
-    GetAction};
+    GetAction,
+    RedirectAction};
 use app\handlers\{UserGenerateRequestHandler,
     UserLoginPostRequestHandler,
     UserLoginRequestHandler,
@@ -33,7 +34,7 @@ class UserController extends Controller
                 'handler'=>new UserLoginPostRequestHandler(),
             ],
             'logout'=>[
-                'class'=>AjaxAction::class,
+                'class'=>RedirectAction::class,
                 'handler'=>new UserLogoutRequestHandler(),
             ],
             'registration'=>[
