@@ -1,6 +1,7 @@
 $(function() {
     
-    function Send() {
+    function Send() 
+    {
         AbstractSendForm.call(this);
     };
     

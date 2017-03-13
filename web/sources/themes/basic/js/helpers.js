@@ -40,7 +40,7 @@ function Helpers()
      */
     this.cleanFields = function(form) {
         try {
-            form.find('input:text, textarea').val('');
+            form.find('input:text, input:password, textarea').val('');
             form.find('input:checkbox').prop('checked', false);
         } catch (e) {
             console.log(e.name + ': ' + e.message);
