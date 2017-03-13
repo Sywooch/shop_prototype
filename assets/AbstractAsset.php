@@ -5,16 +5,16 @@ namespace app\assets;
 use yii\web\AssetBundle;
 
 /**
- * Коллекция общих свойств для классов Asset
+ * Общие настройки для классов Asset
  */
 abstract class AbstractAsset extends AssetBundle
 {
     /**
-     * @var string задаёт корневую директорию содержащую файлы ресурса
+     * @var string корневая директория файлов ресурса
      */
     public $basePath = '@webroot/sources/themes/basic';
     /**
-     * @var string задаёт Web доступную директорию, которая содержит файлы 
+     * @var string web директория файлов ресурса
      */
     public $baseUrl = '@web/sources/themes/basic';
 }

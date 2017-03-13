@@ -6,29 +6,27 @@ use yii\web\JqueryAsset;
 use app\assets\AbstractAsset;
 
 /**
- * Задает основной пакет ресурсов
+ * Задает базовый пакет ресурсов
  */
 class MainAsset extends AbstractAsset
 {
     /**
-     * @var array массив, перечисляющий CSS файлы, содержащиеся в данном комплекте
+     * @var array, CSS файлы комплекта
      */
     public $css = [
         'css/main.css',
     ];
     /**
-     * @var array массив, перечисляющий JavaScript файлы, 
-     * содержащиеся в данном комплекте
+     * @var array, JavaScript файлы комплекта
      */
     public $js = [
         'js/helpers.js',
-        'js/sendHtmlInsertForm.js',
+        'js/abstractSendForm.js',
     ];
     /**
-     * @var array зависимости пакета
+     * @var array, зависимости пакета
      */
     public $depends = [
         JqueryAsset::class,
-        AbstractSendFormAsset::class,
     ];
 }

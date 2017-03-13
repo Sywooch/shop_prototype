@@ -41,10 +41,10 @@ AbstractSendForm.prototype.redirectSend = function(event) {
     try {
         this.formInit(event);
         var config = this.baseFormAjaxConfig();
-        config.success = successRedirect;
+        config.success = success;
         $.ajax(config);
         
-        function successRedirect(data, status, jqXHR) {
+        function success(data, status, jqXHR) {
             try {
                 Helpers.call(this);
                 this.cleanHelpBlock(this);
@@ -67,10 +67,10 @@ AbstractSendForm.prototype.htmlSend = function(event, container) {
     try {
         this.formInit(event);
         var config = this.baseFormAjaxConfig();
-        config.success = successHtml;
+        config.success = success;
         $.ajax(config);
         
-        function successHtml(data, status, jqXHR) {
+        function success(data, status, jqXHR) {
             try {
                 Helpers.call(this);
                 this.cleanHelpBlock(this);
@@ -93,10 +93,10 @@ AbstractSendForm.prototype.htmlTimeoutSend = function(event, container) {
     try {
         this.formInit(event);
         var config = this.baseFormAjaxConfig();
-        config.success = successHtmlTimeout;
+        config.success = success;
         $.ajax(config);
         
-        function successHtmlTimeout(data, status, jqXHR) {
+        function success(data, status, jqXHR) {
             try {
                 Helpers.call(this);
                 this.cleanHelpBlock(this);
@@ -108,6 +108,39 @@ AbstractSendForm.prototype.htmlTimeoutSend = function(event, container) {
                     this.timeoutRemove(container, 5000);
                 } else if (typeof data == 'object' && data.length != 0) {
                     this.addErrors(data);
+                }
+            } catch (e) {
+                console.log(e.name + ': ' + e.message);
+            }
+        };
+    } catch (e) {
+        console.log(e.name + ': ' + e.message);
+    }
+};
+
+AbstractSendForm.prototype.htmlArrayRedirectSend = function(event, container1, container2, item1, item2) {
+    try {
+        this.formInit(event);
+        var config = this.baseFormAjaxConfig();
+        config.success = success;
+        $.ajax(config);
+        
+        function success(data, status, jqXHR) {
+            try {
+                Helpers.call(this);
+                this.cleanHelpBlock(this);
+                
+                if (typeof data == 'string') {
+                    window.location.replace(data);
+                } else if (typeof data == 'object' && data.length != 0) {
+                    if (data.hasOwnProperty(item1) && data.hasOwnProperty(item2)) {
+                        $(container1).html(data[item1]);
+                        $(container2).each(function(index, elm) {
+                            $(elm).html(data[item2]);
+                        });
+                    } else {
+                        this.addErrors(data);
+                    }
                 }
             } catch (e) {
                 console.log(e.name + ': ' + e.message);

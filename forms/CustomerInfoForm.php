@@ -92,7 +92,7 @@ class CustomerInfoForm extends AbstractBaseForm
             [['name', 'surname'], 'match', 'pattern'=>'#^(?:[A-ZА-Я]{1}[a-zа-я\s]+-?)+$#u'],
             [['email'], 'email'],
             [['phone'], 'match', 'pattern'=>'#^[+()0-9\s-]+$#u'],
-            [['city', 'country'], 'match', 'pattern'=>'#^[a-zа-я\s0-9]+$#ui'],
+            [['city', 'country'], 'match', 'pattern'=>'#^[a-zа-я\s0-9-]+$#ui'],
             [['email'], UserEmailExistsRegValidator::class, 'on'=>self::CHECKOUT, 'when'=>function($model) {
                 return !empty($model->create);
             }],

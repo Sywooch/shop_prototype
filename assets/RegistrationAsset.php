@@ -6,15 +6,15 @@ use app\assets\{AbstractAsset,
     MainAsset};
 
 /**
- * Задает пакет ресурсов для страницы отписки от рассылок
+ * Задает пакет ресурсов для страницы регистрации
  */
-class MailingsUnsubscribeAsset extends AbstractAsset
+class RegistrationAsset extends AbstractAsset
 {
     /**
      * @var array, JavaScript файлы комплекта
      */
     public $js = [
-        'js/mailingsUnsubscribe.js',
+        'js/registration.js',
     ];
     /**
      * @var array, зависимости пакета

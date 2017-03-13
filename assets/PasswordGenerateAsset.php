@@ -6,15 +6,15 @@ use app\assets\{AbstractAsset,
     MainAsset};
 
 /**
- * Задает пакет ресурсов для страницы отписки от рассылок
+ * Задает пакет ресурсов для страницы генерации нового пароля
  */
-class MailingsUnsubscribeAsset extends AbstractAsset
+class PasswordGenerateAsset extends AbstractAsset
 {
     /**
      * @var array, JavaScript файлы комплекта
      */
     public $js = [
-        'js/mailingsUnsubscribe.js',
+        'js/passwordGenerate.js',
     ];
     /**
      * @var array, зависимости пакета

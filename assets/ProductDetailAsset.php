@@ -6,19 +6,18 @@ use app\assets\{AbstractAsset,
     MainAsset};
 
 /**
- * Задает основной пакет ресурсов
+ * Задает пакет ресурсов для страницы товара
  */
 class ProductDetailAsset extends AbstractAsset
 {
     /**
-     * @var array массив, перечисляющий JavaScript файлы, 
-     * содержащиеся в данном комплекте
+     * @var array, JavaScript файлы комплекта
      */
     public $js = [
-        'js/sendComment.js',
+        'js/productDetail.js',
     ];
     /**
-     * @var array зависимости пакета
+     * @var array, зависимости пакета
      */
     public $depends = [
         MainAsset::class,
