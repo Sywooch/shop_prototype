@@ -126,7 +126,7 @@ AbstractSendForm.prototype.htmlArrayRedirectSend = function(event, container1, c
     }
 };
 
-AbstractSendForm.prototype.htmlRemoveSend = function(event, container) {
+AbstractSendForm.prototype.htmlLiRemoveSend = function(event, container) {
     try {
         var config = this.baseSend(event, success);
         
@@ -161,6 +161,47 @@ AbstractSendForm.prototype.htmlArraySend = function(event, container1, container
                 } else {
                     this.addErrors(data);
                 }
+            } else {
+                throw Error('Invalid data type!');
+            }
+        };
+    } catch (e) {
+        console.log(e.name + ': ' + e.message);
+    }
+};
+
+AbstractSendForm.prototype.htmlLiToggleSend = function(event, container) {
+    try {
+        var config = this.baseSend(event, success);
+        
+        function success(data, status, jqXHR) {
+            this.beforeSuccess();
+            
+            if (typeof data == 'string') {
+                this.form.closest('li').find(container).toggleClass('disable');
+                this.form.closest('li').append(data);
+            } else if (typeof data == 'object' && data.length != 0) {
+                this.addErrors(data);
+            } else {
+                throw Error('Invalid data type!');
+            }
+        };
+    } catch (e) {
+        console.log(e.name + ': ' + e.message);
+    }
+};
+
+AbstractSendForm.prototype.htmlLiSend = function(event, container) {
+    try {
+        var config = this.baseSend(event, success);
+        
+        function success(data, status, jqXHR) {
+            this.beforeSuccess();
+            
+            if (typeof data == 'string') {
+                this.form.closest('li').html(data);
+            } else if (typeof data == 'object' && data.length != 0) {
+                this.addErrors(data);
             } else {
                 throw Error('Invalid data type!');
             }

@@ -6,16 +6,16 @@ use app\assets\{AbstractAsset,
     MainAsset};
 
 /**
- * Задает пакет ресурсов для корзины
+ * Задает пакет ресурсов для страницы администрирования заказов
  */
-class AccountOrdersAsset extends AbstractAsset
+class AdminOrdersAsset extends AbstractAsset
 {
     /**
      * @var array, JavaScript файлы комплекта
      */
     public $js = [
         'js/calendar.js',
-        'js/accountOrders.js',
+        'js/adminOrders.js',
     ];
     /**
      * @var array, зависимости пакета
