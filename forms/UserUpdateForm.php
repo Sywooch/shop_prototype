@@ -71,7 +71,7 @@ class UserUpdateForm extends AbstractBaseForm
             [['name', 'surname', 'phone', 'address', 'city', 'country'], 'string'],
             [['name', 'surname'], 'match', 'pattern'=>'#^(?:[A-ZА-Я]{1}[a-zа-я]+-?\s?)+$#u'],
             [['phone'], 'match', 'pattern'=>'#^[+()0-9\s-]+$#u'],
-            [['city', 'country'], 'match', 'pattern'=>'#^[a-zа-я\s0-9]+$#ui'],
+            [['city', 'country'], 'match', 'pattern'=>'#^[a-zа-я\s0-9-]+$#ui'],
         ];
     }
 }

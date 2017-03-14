@@ -28,7 +28,7 @@ $(function() {
     * обновляет информацию и состоянии
     */
     $('#comment-form').on('click', 'input:submit', function(event) {
-        send.htmlTimeoutSend(event, 'div.comment-success', true);
+        send.htmlSend(event, 'div.comment-success', true, false, true);
         event.preventDefault();
     });
 });

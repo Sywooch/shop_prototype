@@ -1,9 +1,10 @@
 function GetSubcategory() {
+    Helpers.call(this);
     this.target;
     this.url;
     this.token;
     
-    this.send = function(event, container) {
+    this.send = function(event, container, disable=false, filler=false) {
         try {
             this.target = $(event.target);
             this.url = this.target.data('href');
@@ -22,6 +23,12 @@ function GetSubcategory() {
             function success(data, status, jqXHR) {
                 if (typeof data == 'string') {
                     $(container).html(data);
+                    if (filler == true) {
+                        $(container).find('option:first').text('------------------------');
+                    }
+                    if (disable == true) {
+                        this.firstOptionDisable();
+                    }
                 } else {
                     throw Error('Invalid data type!');
                 }

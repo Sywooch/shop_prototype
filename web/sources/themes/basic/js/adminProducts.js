@@ -41,7 +41,8 @@ $(function() {
      * Удаляет товар
      */
     $('li').on('click', 'form[id^="admin-product-detail-delete-form"] > input:submit', function(event) {
-        var result = confirm('Delete this product?');
+        var name = $(event.target).closest('div.admin-product-previous-data').find('a').text();
+        var result = confirm('Delete ' + name + '?');
         if (result == true) {
             send.htmlLiToggleSend(event, 'div.admin-product-previous-data');
         }
@@ -63,6 +64,14 @@ $(function() {
      */
     $('li').on('click', ':submit[name="send"]', function(event) {
         sendFile.htmlLiSend(event);
+        event.preventDefault();
+    });
+    
+    /*
+     * Запрашивает данные в формате CSV
+     */
+    $('#admin-scv-products-form').on('click', 'input:submit', function(event) {
+        send.htmlSend(event, 'p.csv-success');
         event.preventDefault();
     });
     

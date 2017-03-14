@@ -13,7 +13,7 @@ $(function() {
      * Отправляет форму, обновляющую данные пользователя
      */
     $('form').on('click', 'input:submit', function(event) {
-        send.htmlTimeoutSend(event, 'div.account-change-data-success');
+        send.htmlSend(event, 'div.account-change-data-success', false, false, true);
         event.preventDefault();
     });
     
