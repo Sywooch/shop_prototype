@@ -5,17 +5,21 @@ $(function() {
     };
     AccountCalendar.prototype = Object.create(Calendar.prototype);
     
+    var accountCalendar = new AccountCalendar();
+    
     function Send()
     {
         AbstractSendForm.call(this);
     }
     Send.prototype = Object.create(AbstractSendForm.prototype);
     
+    var send = new Send();
+    
     /* 
      * Запрашивает календарь
     */
     $('div.orders-filters').on('click', '[class^="calendar-href"]', function(event) {
-        (new AccountCalendar()).send(event, 'p.calendar-place');
+        accountCalendar.send(event, 'p.calendar-place');
         event.preventDefault();
     });
     
@@ -23,7 +27,7 @@ $(function() {
      * Отправляет форму отменяющую заказ
      */
     $('li').on('click', 'form[id^="order-cancellation-form"] > input:submit', function(event) {
-        (new Send()).htmlLiRemoveSend(event, 'span.account-order-status');
+        send.htmlLiRemoveSend(event, 'span.account-order-status');
         event.preventDefault();
     });
     

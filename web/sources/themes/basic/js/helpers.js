@@ -1,6 +1,7 @@
 function Helpers()
 {
-    /* Очищает информацию об ошибках валидации полей
+    /* 
+     * Очищает информацию об ошибках валидации полей
      * @param объект iQuery form обернутая форма
      */
     this.cleanHelpBlock = function(form) {
@@ -11,7 +12,8 @@ function Helpers()
         }
     };
     
-    /* Добавляет на страницу информацию об ошибках валидации полей
+    /* 
+     * Добавляет на страницу информацию об ошибках валидации полей
      * @param array data массив данных
      */
     this.addErrors = function(data) {
@@ -24,7 +26,22 @@ function Helpers()
         }
     };
     
-    /* Убирает фокус с полей формы
+    /* 
+     * Добавляет на страницу информацию об ошибках валидации полей
+     * @param array data массив данных
+     */
+    this.addClosestErrors = function(data) {
+        try {
+            for (var key in data) {
+                this.form.find('div.help-block').text(data[key]);
+            }
+        } catch (e) {
+            console.log(e.name + ': ' + e.message);
+        }
+    };
+    
+    /* 
+     * Убирает фокус с полей формы
      * @param объект iQuery form обернутая форма
      */
     this.loseFocus = function(form) {
@@ -35,19 +52,22 @@ function Helpers()
         }
     };
     
-    /* Очищает поля формы от введенных данных
+    /* 
+     * Очищает поля формы от введенных данных
      * @param объект iQuery form обернутая форма
      */
     this.cleanFields = function(form) {
         try {
-            form.find('input:text, input:password, textarea').val('');
+            form.find('input:text, input:password, input[type="number"], textarea').val('');
             form.find('input:checkbox').prop('checked', false);
+            form.find('select').prop('selectedIndex', 0);
         } catch (e) {
             console.log(e.name + ': ' + e.message);
         }
     };
     
-    /* Удаляет содержимое у переданного элемента через указанный промежуток времени
+    /* 
+     * Удаляет содержимое у переданного элемента через указанный промежуток времени
      * @param string container имя элемента, который будет очищен
      * @param int time время, через которое он будет очищен
      */
@@ -56,6 +76,19 @@ function Helpers()
             setTimeout(function() {
                 $(container).empty();
             }, time);
+        } catch (e) {
+            console.log(e.name + ': ' + e.message);
+        }
+    };
+    
+    /* 
+     * Делает не активными первые строки в выпадающем списке
+     */
+    this.firstOptionDisable = function() {
+        try {
+            $('select[data-disabled]').each(function(index, domElement) {
+                $(domElement).find('option:first').attr('disabled', true);
+            });
         } catch (e) {
             console.log(e.name + ': ' + e.message);
         }

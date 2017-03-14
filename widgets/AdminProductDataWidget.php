@@ -77,6 +77,9 @@ class AdminProductDataWidget extends AbstractBaseWidget
             $renderArray['total_products'] = $this->productsModel->total_products;
             $renderArray['seocode'] = $this->productsModel->seocode;
             $renderArray['views'] = $this->productsModel->views;
+            if (!empty($this->productsModel->related)) {
+                $renderArray['related'] = implode(',', ArrayHelper::getColumn($this->productsModel->related, 'id_related_product'));
+            }
             
             $renderArray['modelForm'] = $this->form;
             
@@ -109,6 +112,7 @@ class AdminProductDataWidget extends AbstractBaseWidget
             $renderArray['totalProductsHeader'] = \Yii::t('base', 'Total products');
             $renderArray['seocodeHeader'] = \Yii::t('base', 'Seocode');
             $renderArray['viewsHeader'] = \Yii::t('base', 'Views');
+            $renderArray['relatedHeader'] = \Yii::t('base', 'Related products');
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

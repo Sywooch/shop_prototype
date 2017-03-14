@@ -6,11 +6,13 @@ $(function() {
     
     Send.prototype = Object.create(AbstractSendForm.prototype);
     
+    var send = new Send();
+    
     /* Отправляет форму с данными для очистки корзины, 
     * обновляет информацию и состоянии
     */
     $('div.shortCart').on('click', '#clean-cart-form > input:submit', function(event) {
-        (new Send()).htmlSend(event, 'div.shortCart');
+        send.htmlSend(event, 'div.shortCart');
         event.preventDefault();
     });
     
@@ -18,7 +20,7 @@ $(function() {
     * обновляет информацию и состоянии
     */
     $('#recovery-password-form').on('click', 'input:submit', function(event) {
-        (new Send()).htmlSend(event, 'div.recovery');
+        send.htmlSend(event, 'div.recovery');
         event.preventDefault();
     });
 });

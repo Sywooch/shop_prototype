@@ -219,6 +219,7 @@ class AdminProductDataWidgetTests extends TestCase
             public $active = true;
             public $total_products = 568;
             public $views = 5698;
+            public $related = [['id_related_product'=>12], ['id_related_product'=>16]];
             public function __construct()
             {
                 $this->date = time();
@@ -254,6 +255,8 @@ class AdminProductDataWidgetTests extends TestCase
         
         $result = $this->widget->run();
         
+        print_r($result);
+        
         $this->assertRegExp('#<div class="admin-product-previous-data">#', $result);
         $this->assertRegExp('#<a href=".+">Product 1</a>#', $result);
         $this->assertRegExp('#Краткое описание:  Short description#', $result);
@@ -272,6 +275,7 @@ class AdminProductDataWidgetTests extends TestCase
         $this->assertRegExp('#Количество товаров: 568#', $result);
         $this->assertRegExp('#Сеокод: product-1#', $result);
         $this->assertRegExp('#Просмотров: 5698#', $result);
+        $this->assertRegExp('#Связанные товары: 12,16#', $result);
         $this->assertRegExp('#<form id="admin-product-detail-get-form-[0-9]{1}" action=".+" method="POST">#', $result);
         $this->assertRegExp('#<input type="hidden" id=".+" class="form-control" name=".+\[id\]" value="[0-9]{1}">#', $result);
         $this->assertRegExp('#<input type="submit" value="Изменить">#', $result);

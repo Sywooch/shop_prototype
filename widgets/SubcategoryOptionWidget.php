@@ -39,7 +39,7 @@ class SubcategoryOptionWidget extends AbstractBaseWidget
                 asort($subcategoryArray, SORT_STRING);
             }
             
-            $renderArray['dataArray'] = ArrayHelper::merge([\Yii::$app->params['formFiller']], $subcategoryArray ?? []);
+            $renderArray['dataArray'] = ArrayHelper::merge([\Yii::t('base', 'All')], $subcategoryArray ?? []);
             
             return $this->render($this->template, $renderArray);
         } catch (\Throwable $t) {

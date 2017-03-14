@@ -5,17 +5,21 @@ $(function() {
     };
     AdminCalendar.prototype = Object.create(Calendar.prototype);
     
+    var adminCalendar = new AdminCalendar();
+    
     function Send()
     {
         AbstractSendForm.call(this);
     }
     Send.prototype = Object.create(AbstractSendForm.prototype);
     
+    var send = new Send();
+    
     /* 
      * Запрашивает календарь
     */
     $('div.orders-filters').on('click', '[class^="calendar-href"]', function(event) {
-        (new AdminCalendar()).send(event, 'p.calendar-place');
+        adminCalendar.send(event, 'p.calendar-place');
         event.preventDefault();
     });
     
@@ -23,7 +27,7 @@ $(function() {
      * Отправляет запрос формы редактирования заказа
      */
     $('li').on('click', 'form[id^="admin-order-detail-get-form"] > input:submit', function(event) {
-        (new Send()).htmlLiToggleSend(event, 'div.admin-order-previous-data');
+        send.htmlLiToggleSend(event, 'div.admin-order-previous-data');
         event.preventDefault();
     });
     
@@ -41,7 +45,7 @@ $(function() {
      * Отправляет форму
      */
     $('li').on('click', 'form[id^="admin-order-detail-send-form-"] > input:submit[name="send"]', function(event) {
-        (new Send()).htmlLiSend(event);
+        send.htmlLiSend(event);
         event.preventDefault();
     });
     
@@ -49,7 +53,7 @@ $(function() {
      * Запрашивает ссылку на CSV представление данных
      */
     $('#admin-scv-orders-form').on('click', 'input:submit', function(event) {
-        (new Send()).htmlSend(event, 'p.csv-success');
+        send.htmlSend(event, 'p.csv-success');
         event.preventDefault();
     });
     

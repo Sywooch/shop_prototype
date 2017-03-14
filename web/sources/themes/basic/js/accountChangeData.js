@@ -7,11 +7,13 @@ $(function() {
     
     Send.prototype = Object.create(AbstractSendForm.prototype);
     
+    var send = new Send();
+    
     /*
      * Отправляет форму, обновляющую данные пользователя
      */
     $('form').on('click', 'input:submit', function(event) {
-        (new Send()).htmlTimeoutSend(event, 'div.account-change-data-success');
+        send.htmlTimeoutSend(event, 'div.account-change-data-success');
         event.preventDefault();
     });
     

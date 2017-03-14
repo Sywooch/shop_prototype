@@ -19,6 +19,9 @@
     <br>{{ totalProductsHeader }}: {{ total_products }}
     <br>{{ seocodeHeader }}: {{ seocode }}
     <br>{{ viewsHeader }}: {{ views }}
+    {% if related %}
+        <br>{{ relatedHeader }}: {{ related }}
+    {% endif %}
     
     {{ form.form(modelForm, formSettings, formIdChange, formActionChange, id, buttonChange) }}
     
