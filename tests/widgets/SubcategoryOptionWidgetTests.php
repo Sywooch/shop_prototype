@@ -125,7 +125,7 @@ class SubcategoryOptionWidgetTests extends TestCase
         
         $result = $widget->run();
         
-        $this->assertRegExp('#<option value="0">------------------------</option>#', $result);
+        $this->assertRegExp('#<option value="0">Все</option>#', $result);
         $this->assertRegExp('#<option value="1">First</option>#', $result);
         $this->assertRegExp('#<option value="2">Second</option>#', $result);
         $this->assertRegExp('#<option value="3">Three</option>#', $result);

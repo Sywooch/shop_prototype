@@ -152,7 +152,7 @@ class AdminCreateSizeWidgetTests extends TestCase
         
         $this->assertRegExp('#<p><strong>Header</strong></p>#', $result);
         $this->assertRegExp('#<form id="size-create-form" action=".+" method="POST">#', $result);
-        $this->assertRegExp('#<input type="text" id=".+" class="form-control" name=".+\[size\]">#', $result);
+        $this->assertRegExp('#<input type="number" id=".+" class="form-control" name=".+\[size\]" step="0.5" min="14">#', $result);
         $this->assertRegExp('#<input type="submit" value="Создать">#', $result);
     }
 }

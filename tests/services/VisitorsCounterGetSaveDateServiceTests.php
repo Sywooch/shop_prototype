@@ -14,6 +14,7 @@ use app\models\EmailsModel;
 class VisitorsCounterGetSaveDateServiceTests extends TestCase
 {
     private static $dbClass;
+    private static $date;
     
     public static function setUpBeforeClass()
     {
@@ -23,6 +24,13 @@ class VisitorsCounterGetSaveDateServiceTests extends TestCase
             ]
         ]);
         self::$dbClass->loadFixtures();
+        
+        self::$date = time() + (3600 * 3);
+    }
+    
+    public function setUp()
+    {
+        \Yii::$app->registry->clean();
     }
     
     /**
@@ -88,7 +96,7 @@ class VisitorsCounterGetSaveDateServiceTests extends TestCase
         
         $reflection = new \ReflectionProperty($service, 'date');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, time() + (3600 * 3));
+        $reflection->setValue($service, self::$date);
         
         $result = $service->get();
         
@@ -109,7 +117,7 @@ class VisitorsCounterGetSaveDateServiceTests extends TestCase
         
         $reflection = new \ReflectionProperty($service, 'date');
         $reflection->setAccessible(true);
-        $reflection->setValue($service, time() + (3600 * 3));
+        $reflection->setValue($service, self::$date);
         
         $result = $service->get();
         
